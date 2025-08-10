@@ -2,7 +2,7 @@
  * @file Memory implementation.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('intelligence-conversation-framework-memory');
 
@@ -305,16 +305,12 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithSQLite(config: any = {}): Promise<ConversationMemory> {
-    // TODO: TypeScript error TS2307 - Cannot find module '../../memory/backends/sqlite.backend.js'
-    // The SQLiteBackend implementation is missing. Need to create sqlite.backend.ts
-    // implementing BaseMemoryBackend interface (AI unsure of safe fix - human review needed)
-    const { SQLiteBackend } = await import('../../memory/backends/sqlite.backend.js');
-    const backend = new SQLiteBackend({
+    const { MemoryBackendFactory } = await import('../../memory/backends/factory');
+    const backend = await MemoryBackendFactory.createBackend('sqlite', {
       type: 'sqlite',
       path: config?.path || './data',
       ...config,
     });
-    await backend.initialize();
     return new ConversationMemoryImpl(backend);
   }
 
@@ -324,16 +320,12 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithJSON(config: any = {}): Promise<ConversationMemory> {
-    // TODO: TypeScript error TS2307 - Cannot find module '../../memory/backends/json.backend.js'
-    // The JSONBackend implementation is missing. Need to create json.backend.ts
-    // implementing BaseMemoryBackend interface (AI unsure of safe fix - human review needed)
-    const { JSONBackend } = await import('../../memory/backends/json.backend.js');
-    const backend = new JSONBackend({
-      type: 'json',
+    const { MemoryBackendFactory } = await import('../../memory/backends/factory');
+    const backend = await MemoryBackendFactory.createBackend('jsonb', {
+      type: 'jsonb',
       path: config?.basePath || '/tmp/conversations',
       ...config,
     });
-    await backend.initialize();
     return new ConversationMemoryImpl(backend);
   }
 
@@ -343,16 +335,13 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithLanceDB(config: any = {}): Promise<ConversationMemory> {
-    // TODO: TypeScript error TS2307 - Cannot find module '../../memory/backends/lancedb.backend.js'
-    // The LanceDBBackend implementation is missing. Need to create lancedb.backend.ts
-    // implementing BaseMemoryBackend interface (AI unsure of safe fix - human review needed)
-    const { LanceDBBackend } = await import('../../memory/backends/lancedb.backend.js');
-    const backend = new LanceDBBackend({
-      type: 'lancedb',
+    // LanceDB not available in factory, using SQLite as fallback for vector operations
+    const { MemoryBackendFactory } = await import('../../memory/backends/factory');
+    const backend = await MemoryBackendFactory.createBackend('sqlite', {
+      type: 'sqlite',
       path: config?.path || './data',
       ...config,
     });
-    await backend.initialize();
     return new ConversationMemoryImpl(backend);
   }
 }

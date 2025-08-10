@@ -9,12 +9,12 @@
  */
 
 import { existsSync } from 'node:fs';
-import { createServer } from 'node:http';
+import { createServer, type Server as HTTPServer } from 'node:http';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import express from 'express';
+import express, { type Express } from 'express';
 import { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 import { ApiRouteHandler } from './api-route-handler';
 import { DaemonProcessManager } from './daemon-process-manager';
 import { WebSocketCoordinator } from './web-socket-coordinator';
@@ -46,13 +46,14 @@ export class WebInterfaceServer {
   // TODO: Use dependency injection for logger
   // Should inject ILogger from DI container instead of creating directly
   // Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
-  private logger = createLogger('WebServer');
+  private logger = getLogger('WebServer');
   private config: Required<WebConfig>;
-  private app: Express;
-  private server: HTTPServer;
-  private io: SocketIOServer;
-  private webSocketCoordinator: WebSocketCoordinator;
-  private daemonManager: DaemonProcessManager;
+  private app!: Express;
+  private server!: HTTPServer;
+  private io!: SocketIOServer;
+  private webSocketCoordinator!: WebSocketCoordinator;
+  private daemonManager!: DaemonProcessManager;
+  private apiRouteHandler!: ApiRouteHandler;
 
   // TODO: Use dependency injection for better testability and loose coupling
   // Should inject dependencies instead of creating them directly
@@ -253,7 +254,7 @@ export class WebInterfaceServer {
    */
   private async startDaemon(): Promise<void> {
     const _processInfo = await this.daemonManager.startDaemon(process.execPath, [
-      process.argv[1],
+      process.argv[1]!,
       ...process.argv.slice(2).filter((arg) => arg !== '--daemon'),
     ]);
   }

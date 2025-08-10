@@ -8,15 +8,15 @@
  * @file error-monitoring implementation
  */
 
+import { getLogger } from '../config/logging-config';
 import {
   type BaseClaudeZenError,
   type ErrorContext,
   type ErrorMetrics,
   getErrorSeverity,
 } from './errors';
-import { createLogger } from './logger';
 
-const logger = createLogger({ prefix: 'ErrorMonitoring' });
+const logger = getLogger('ErrorMonitoring');
 
 // ===============================
 // Error Aggregation and Tracking

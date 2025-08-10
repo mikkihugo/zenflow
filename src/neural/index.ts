@@ -1,12 +1,19 @@
 /**
- * Neural Module - Barrel Export.
+ * Neural Domain - Main Export Module
  *
- * Central export point for neural network functionality.
+ * @file Central export point for all neural network functionality including types,
+ * models, training, and cognitive patterns. This module serves as the single source
+ * of truth for all neural operations and type definitions.
+ * 
+ * Following domain architecture standard with consolidated types.
  */
 
-// Types (re-export shared types for convenience)
+// Export all neural types (Single Source of Truth)
+export * from './types';
+
 /**
- * @file Neural module exports.
+ * @deprecated Legacy export structure - use domain types instead
+ * @file Neural module legacy exports.
  */
 
 export type {

@@ -20,7 +20,7 @@ import type {
   AgentState,
   AgentStatus,
   AgentType,
-} from '../../types/agent-types';
+} from '../types';
 import { generateId } from '../swarm/core/utils';
 
 export interface AgentManagerConfig {

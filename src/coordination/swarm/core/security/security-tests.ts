@@ -2,7 +2,7 @@
  * @file Test suite for security-tests.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-security-security-tests');
 /**

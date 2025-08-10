@@ -12,9 +12,12 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ApplicationCoordinator } from '../core/application-coordinator';
-// Import core system classes to wrap their EventEmitter usage
-import type { CoreSystem } from '../core/core-system';
+import type { Logger } from '../../../config/logging-config';
+// Import logger (using relative path)
+import { getLogger } from '../../../config/logging-config';
+// Import types (will be set as any for now to fix type resolution issues)
+// import type { ApplicationCoordinator } from '../core/application-coordinator';
+// import type { CoreSystem } from '../core/core-system';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -33,7 +36,6 @@ import type {
 import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces';
 import type { SystemLifecycleEvent } from '../types';
 import { EventPriorityMap } from '../types';
-import { createLogger, type Logger } from '../utils/logger';
 
 /**
  * System event adapter configuration extending UEL EventManagerConfig.
@@ -129,7 +131,7 @@ interface EventCorrelation {
   component: string;
   operation: string;
   status: 'active' | 'completed' | 'failed' | 'timeout';
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 /**
@@ -144,7 +146,7 @@ interface SystemHealthEntry {
   consecutiveFailures: number;
   errorRate: number;
   responseTime: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 /**
@@ -153,7 +155,7 @@ interface SystemHealthEntry {
  * @example
  */
 interface WrappedSystemComponent {
-  component: any;
+  component: EventEmitter | null;
   wrapper: EventEmitter;
   originalMethods: Map<string, Function>;
   eventMappings: Map<string, string>;
@@ -198,8 +200,8 @@ export class SystemEventAdapter implements IEventManager {
 
   // System component integration
   private wrappedComponents = new Map<string, WrappedSystemComponent>();
-  private coreSystem?: CoreSystem;
-  private applicationCoordinator?: ApplicationCoordinator;
+  private coreSystem?: any; // CoreSystem type not available
+  private applicationCoordinator?: any; // ApplicationCoordinator type not available
 
   // Event correlation and tracking
   private eventCorrelations = new Map<string, EventCorrelation>();
@@ -282,7 +284,7 @@ export class SystemEventAdapter implements IEventManager {
       ...config,
     };
 
-    this.logger = createLogger(`SystemEventAdapter:${this.name}`);
+    this.logger = getLogger(`SystemEventAdapter:${this.name}`);
     this.logger.info(`Creating system event adapter: ${this.name}`);
 
     // Set max listeners to handle many system components
@@ -416,7 +418,7 @@ export class SystemEventAdapter implements IEventManager {
         operation: 'emit',
         executionTime: duration,
         success: true,
-        correlationId: event.correlationId,
+        correlationId: event.correlationId || undefined,
         timestamp: new Date(),
       });
 
@@ -435,7 +437,7 @@ export class SystemEventAdapter implements IEventManager {
         operation: 'emit',
         executionTime: duration,
         success: false,
-        correlationId: event.correlationId,
+        correlationId: event.correlationId || undefined,
         errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
         timestamp: new Date(),
       });
@@ -779,12 +781,12 @@ export class SystemEventAdapter implements IEventManager {
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
-    handler: (...args: any[]) => void
+    handler: (...args: unknown[]) => void
   ): void {
     this.eventEmitter.on(event, handler);
   }
 
-  off(event: string, handler?: (...args: any[]) => void): void {
+  off(event: string, handler?: (...args: unknown[]) => void): void {
     if (handler) {
       this.eventEmitter.off(event, handler);
     } else {
@@ -792,7 +794,7 @@ export class SystemEventAdapter implements IEventManager {
     }
   }
 
-  once(event: string, handler: (...args: any[]) => void): void {
+  once(event: string, handler: (...args: unknown[]) => void): void {
     this.eventEmitter.once(event, handler);
   }
 
@@ -931,10 +933,10 @@ export class SystemEventAdapter implements IEventManager {
         let errorRate = 0;
 
         // Get component-specific health data if available
-        if (wrapped.component && typeof wrapped.component.getStatus === 'function') {
-          const status = await wrapped.component.getStatus();
-          isHealthy = status.status === 'ready' || status.status === 'healthy';
-          errorRate = status.errorRate || 0;
+        if (wrapped.component && typeof (wrapped.component as any).getStatus === 'function') {
+          const status = await (wrapped.component as any).getStatus();
+          isHealthy = (status as any).status === 'ready' || (status as any).status === 'healthy';
+          errorRate = (status as any).errorRate || 0;
         }
 
         const responseTime = Date.now() - startTime;
@@ -1288,7 +1290,7 @@ export class SystemEventAdapter implements IEventManager {
               status: health.status === 'unhealthy' ? 'error' : 'warning',
               details: {
                 component,
-                healthScore: health.metadata?.healthScore,
+                healthScore: (health.metadata as any)?.['healthScore'] as number | undefined,
                 errorRate: health.errorRate,
                 consecutiveFailures: health.consecutiveFailures,
               },
@@ -1385,7 +1387,10 @@ export class SystemEventAdapter implements IEventManager {
    * @param event
    * @param data
    */
-  private correlateErrorRecoveryEvent(event: SystemLifecycleEvent, data: any): void {
+  private correlateErrorRecoveryEvent(
+    event: SystemLifecycleEvent,
+    data: Record<string, unknown>
+  ): void {
     // Create correlation between error and recovery events
     const recoveryCorrelationId = this.generateCorrelationId();
 
@@ -1554,7 +1559,7 @@ export class SystemEventAdapter implements IEventManager {
     return transformedEvent;
   }
 
-  private getEventSortValue(event: SystemEvent, sortBy: string): any {
+  private getEventSortValue(event: SystemEvent, sortBy: string): string | number {
     switch (sortBy) {
       case 'timestamp':
         return event.timestamp.getTime();
@@ -1579,11 +1584,12 @@ export class SystemEventAdapter implements IEventManager {
     return 'status';
   }
 
-  private extractStatusFromData(data: any): SystemLifecycleEvent['status'] {
+  private extractStatusFromData(data: unknown): SystemLifecycleEvent['status'] {
     if (!data) return 'success';
-    if (data?.error || data.status === 'error') return 'error';
-    if (data?.warning || data.status === 'warning') return 'warning';
-    if (data.status === 'critical') return 'critical';
+    const dataObj = data as any;
+    if (dataObj?.error || dataObj?.status === 'error') return 'error';
+    if (dataObj?.warning || dataObj?.status === 'warning') return 'warning';
+    if (dataObj?.status === 'critical') return 'critical';
     return 'success';
   }
 
@@ -1648,7 +1654,7 @@ export class SystemEventAdapter implements IEventManager {
    * @param event
    * @param data
    */
-  private emitInternal(event: string, data?: any): void {
+  private emitInternal(event: string, data?: unknown): void {
     this.eventEmitter.emit(event, data);
   }
 }

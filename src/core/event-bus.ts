@@ -2,9 +2,9 @@
  * @file Event-bus implementation.
  */
 
-import { createLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger('src-core-event-bus');
+const logger = getLogger('EventBus');
 
 /**
  * Event Bus - Core event system for claude-zen
@@ -14,11 +14,12 @@ const logger = createLogger('src-core-event-bus');
 
 import { EventEmitter } from 'node:events';
 import type {
-  SystemEvent,
   EventListener,
   EventPriority,
   EventProcessingStrategy,
-} from '../interfaces/events/types';
+  SystemEvent,
+} from '../interfaces/events/core/interfaces';
+import type { EventPriorityMap } from '../interfaces/events/types';
 
 // Define missing types locally
 export interface EventBusConfig {
@@ -43,11 +44,7 @@ export interface EventMetrics {
   listenerCount: number;
 }
 
-export type EventMiddleware = (
-  event: string | symbol,
-  payload: any,
-  next: () => void
-) => void;
+export type EventMiddleware = (event: string | symbol, payload: any, next: () => void) => void;
 
 export interface IEventBus {
   on<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this;
@@ -233,7 +230,7 @@ export class EventBus extends EventEmitter implements IEventBus {
     const next = (): void => {
       if (index < this.middleware.length) {
         const middleware = this.middleware[index++];
-        middleware?.(event, payload, next);
+        middleware?.(event as string | symbol, payload, next);
       }
     };
 

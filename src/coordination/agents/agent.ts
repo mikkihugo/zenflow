@@ -21,7 +21,7 @@ import type {
   Message,
   MessageType,
   Task,
-} from '../../types/agent-types';
+} from '../types';
 import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils';
 
 export class BaseAgent implements Agent {

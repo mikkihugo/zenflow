@@ -11,14 +11,14 @@
  * @file Coordination system: dspy-swarm-intelligence.
  */
 
-import { createLogger } from '../../core/logger';
-import type { DSPyWrapper } from '../neural/dspy-wrapper';
+import { getLogger } from '../../config/logging-config';
+import type { DSPyWrapper } from '../../neural/dspy-wrapper';
 // Using the new wrapper architecture instead of direct dspy.ts imports
-import { createDSPyWrapper } from '../neural/dspy-wrapper';
-import type { DSPyConfig } from '../neural/types/dspy-types';
-import type { AgentType } from '../types/agent-types';
+import { createDSPyWrapper } from '../../neural/dspy-wrapper';
+import type { DSPyConfig } from '../../neural/types/dspy-types';
+import type { AgentType } from '../types';
 
-const logger = createLogger({ prefix: 'DSPySwarmIntelligence' });
+const logger = getLogger('DSPySwarmIntelligence');
 
 export interface SwarmIntelligenceConfig {
   model?: string;

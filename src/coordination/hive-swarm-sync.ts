@@ -12,8 +12,9 @@ import { EventEmitter } from 'node:events';
 import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 import type { HiveFACTSystemInterface } from './shared-types';
 
-// Type alias for backward compatibility  
+// Type alias for backward compatibility
 type HiveFACTSystem = HiveFACTSystemInterface;
+
 import type {
   GlobalAgentInfo,
   GlobalResourceMetrics,
@@ -78,6 +79,14 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   /**
+   * Initialize the hive coordinator.
+   * Required by HiveSwarmCoordinatorInterface.
+   */
+  async initialize(): Promise<void> {
+    await this.start();
+  }
+
+  /**
    * Start hive-swarm synchronization.
    */
   async start(): Promise<void> {
@@ -114,6 +123,14 @@ export class HiveSwarmCoordinator extends EventEmitter {
     }, this.heartbeatInterval);
 
     this.emit('hive:coordination:started');
+  }
+
+  /**
+   * Shutdown the hive coordinator.
+   * Required by HiveSwarmCoordinatorInterface.
+   */
+  async shutdown(): Promise<void> {
+    await this.stop();
   }
 
   /**
@@ -460,7 +477,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   private setupEventHandlers(): void {
     // Handle swarm registration
     (this.eventBus as any).on('swarm:register', (data: any) => {
-      this.registerSwarm(data);
+      this.registerSwarmLegacy(data);
     });
 
     // Handle agent registration
@@ -534,7 +551,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
    *
    * @param data
    */
-  public registerSwarm(data: any): void {
+  private registerSwarmLegacy(data: any): void {
     const swarmInfo: SwarmInfo = {
       id: data?.swarmId,
       hiveMindId: data?.hiveMindId || 'default',
@@ -748,6 +765,98 @@ export class HiveSwarmCoordinator extends EventEmitter {
       resourceEfficiency: 1.0,
       qualityScore: 0,
     };
+  }
+
+  // Interface compatibility methods required by HiveSwarmCoordinatorInterface
+  
+  /**
+   * Register a swarm with the hive coordinator.
+   */
+  async registerSwarm(swarmInfo: SwarmInfo): Promise<void> {
+    this.hiveRegistry.activeSwarms.set(swarmInfo.id, swarmInfo);
+    this.logger?.info(`Registered swarm: ${swarmInfo.id}`);
+    this.emit('swarm:registered', swarmInfo);
+  }
+
+  /**
+   * Unregister a swarm from the hive coordinator.
+   */
+  async unregisterSwarm(swarmId: string): Promise<void> {
+    const swarmInfo = this.hiveRegistry.activeSwarms.get(swarmId);
+    if (swarmInfo) {
+      this.hiveRegistry.activeSwarms.delete(swarmId);
+      this.logger?.info(`Unregistered swarm: ${swarmId}`);
+      this.emit('swarm:unregistered', swarmInfo);
+    }
+  }
+
+  /**
+   * Get information about a specific swarm.
+   */
+  async getSwarmInfo(swarmId: string): Promise<SwarmInfo | null> {
+    return this.hiveRegistry.activeSwarms.get(swarmId) || null;
+  }
+
+  /**
+   * Get information about all registered swarms.
+   */
+  async getAllSwarms(): Promise<SwarmInfo[]> {
+    return Array.from(this.hiveRegistry.activeSwarms.values());
+  }
+
+  /**
+   * Distribute a task across the swarm network.
+   */
+  async distributeTask(task: HiveTask): Promise<void> {
+    this.hiveRegistry.globalTaskQueue.push(task);
+    await this.optimizeTaskDistribution();
+    this.emit('task:distributed', task);
+  }
+
+  /**
+   * Get list of all global agents.
+   */
+  async getGlobalAgents(): Promise<GlobalAgentInfo[]> {
+    return Array.from(this.hiveRegistry.availableAgents.values());
+  }
+
+  /**
+   * Get hive health metrics.
+   */
+  async getHiveHealth(): Promise<HiveHealthMetrics> {
+    return this.hiveRegistry.hiveHealth;
+  }
+
+  /**
+   * Get metrics for a specific swarm.
+   */
+  async getSwarmMetrics(swarmId: string): Promise<SwarmPerformanceMetrics> {
+    const swarm = this.hiveRegistry.activeSwarms.get(swarmId);
+    return swarm?.performance || this.initializeSwarmPerformance();
+  }
+
+  /**
+   * Get global resource metrics.
+   */
+  async getGlobalResourceMetrics(): Promise<GlobalResourceMetrics> {
+    return this.hiveRegistry.globalResources;
+  }
+
+  /**
+   * Notify about FACT updates (optional interface method).
+   */
+  notifyFACTUpdate?(fact: any): void {
+    this.emit('fact:updated', fact);
+  }
+
+  /**
+   * Request FACT search (optional interface method).
+   */
+  async requestFACTSearch?(query: any): Promise<any[]> {
+    if (this.hiveFact) {
+      return await this.hiveFact.searchFacts(query);
+    }
+    return [];
   }
 }
 

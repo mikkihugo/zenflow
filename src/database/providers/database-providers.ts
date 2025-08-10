@@ -57,7 +57,7 @@ import type {
   QueryResult,
   SchemaInfo,
   TransactionContext,
-} from '../../interfaces/shared/types';
+} from '../../core/interfaces/base-interfaces';
 import { injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
 
@@ -70,7 +70,7 @@ import {
 } from '../../utils/type-guards';
 
 // Re-export DatabaseAdapter for external use
-export { DatabaseAdapter } from '../../interfaces/shared/types';
+export { DatabaseAdapter } from '../../core/interfaces/base-interfaces';
 
 /**
  * Graph Database Query Result Interface.
@@ -896,7 +896,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
         error: {
           code: 'POSTGRESQL_QUERY_ERROR',
           message: error instanceof Error ? error.message : 'Unknown error',
-          details: { sql, params: params || undefined },
+          details: { sql, params },
           stack: error instanceof Error ? error.stack : undefined,
         },
         executionTime,
@@ -1662,7 +1662,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
           const limit = limitMatch ? parseInt(limitMatch[1], 10) : 10;
 
           // Parse vector from string - fix for possible undefined
-          if (vectorStr) {
+          if (vectorStr !== undefined) {
             const queryVector = vectorStr.split(',').map((v) => parseFloat(v.trim()));
 
             // Use vector search
@@ -1806,20 +1806,22 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     try {
       // Use DAL vector DAO for similarity search
       const dao = this.vectorDAO as any;
-      const searchResults = dao && typeof dao.similaritySearch === 'function' 
-        ? await dao.similaritySearch(query, { limit, threshold: 0.1 })
-        : [];
+      const searchResults =
+        dao && typeof dao.similaritySearch === 'function'
+          ? await dao.similaritySearch(query, { limit, threshold: 0.1 })
+          : [];
 
       const executionTime = Date.now() - startTime;
 
       // Convert DAL results to VectorResult format
       const result: VectorResult = {
-        matches: (searchResults as any[])?.map((result: any) => ({
-          id: result?.id,
-          vector: result?.vector || query, // fallback to query vector if not available
-          score: result?.score || result?.similarity || 1.0,
-          metadata: result?.metadata || {},
-        })) || [],
+        matches:
+          (searchResults as any[])?.map((result: any) => ({
+            id: result?.id,
+            vector: result?.vector || query, // fallback to query vector if not available
+            score: result?.score || result?.similarity || 1.0,
+            metadata: result?.metadata || {},
+          })) || [],
         executionTime,
       };
 
@@ -1845,9 +1847,10 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
       // Use DAL vector DAO for batch operations
       const dao = this.vectorDAO as any;
-      const result = dao && typeof dao.bulkVectorOperations === 'function'
-        ? await dao.bulkVectorOperations(vectorOperations, 'upsert')
-        : vectorOperations;
+      const result =
+        dao && typeof dao.bulkVectorOperations === 'function'
+          ? await dao.bulkVectorOperations(vectorOperations, 'upsert')
+          : vectorOperations;
 
       const inserted = Array.isArray(result) ? result.length : 1;
       this.logger.debug(`Successfully added ${inserted} vectors to LanceDB via DAL`);
@@ -1891,9 +1894,8 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     try {
       // Get schema info from DAL repository
       const repo = this.vectorRepository as any;
-      const allVectors = repo && typeof repo.findAll === 'function'
-        ? await repo.findAll({ limit: 1 })
-        : [];
+      const allVectors =
+        repo && typeof repo.findAll === 'function' ? await repo.findAll({ limit: 1 }) : [];
       const vectorDim = this.config.options?.['vectorSize'] || 384;
 
       const schemaInfo: SchemaInfo = {

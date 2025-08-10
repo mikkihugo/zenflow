@@ -10,12 +10,12 @@
 
 import { nanoid } from 'nanoid';
 import type {
+  ArchitectureDesign,
+  DetailedSpecification,
+  ProjectSpecification,
+  PseudocodeStructure,
   SPARCTemplate,
   TemplateMetadata,
-  ProjectSpecification,
-  DetailedSpecification,
-  PseudocodeStructure,
-  ArchitectureDesign,
 } from '../types/sparc-types.js';
 
 export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {

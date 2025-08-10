@@ -101,7 +101,7 @@ export {
  * Creates and configures integrated coordination systems.
  */
 import type { ILogger } from '../../core/logger';
-import type { IEventBus } from '../core/event-bus';
+import type { EventBusInterface as IEventBus } from '../core/event-bus';
 import { CommunicationProtocols } from './communication/communication-protocols';
 import { TaskDistributionEngine } from './distribution/task-distribution-engine';
 import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';

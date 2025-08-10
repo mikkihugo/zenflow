@@ -112,7 +112,7 @@ export interface DataServiceConfig extends BaseServiceConfig {
   dataSource?: {
     type: 'database' | 'memory' | 'file' | 'api';
     connection?: string;
-    options?: Record<string, any>;
+    options?: Record<string, unknown>;
   };
   caching?: {
     enabled: boolean;
@@ -122,7 +122,7 @@ export interface DataServiceConfig extends BaseServiceConfig {
   validation?: {
     enabled: boolean;
     strict?: boolean;
-    schemas?: Record<string, any>;
+    schemas?: Record<string, unknown>;
   };
 }
 
@@ -160,7 +160,7 @@ export interface WebServiceConfig extends BaseServiceConfig {
     morgan?: boolean;
     custom?: Array<{
       name: string;
-      options?: any;
+      options?: Record<string, unknown>;
     }>;
   };
 }
@@ -206,7 +206,7 @@ export interface NeuralServiceConfig extends BaseServiceConfig {
   model?: {
     type: 'neural-network' | 'transformer' | 'custom';
     path?: string;
-    config?: Record<string, any>;
+    config?: Record<string, unknown>;
   };
   training?: {
     enabled: boolean;
@@ -333,7 +333,7 @@ export interface MonitoringServiceConfig extends BaseServiceConfig {
     thresholds?: Record<string, number>;
     channels?: Array<{
       type: 'email' | 'webhook' | 'console';
-      config: Record<string, any>;
+      config: Record<string, unknown>;
     }>;
   };
   storage?: {

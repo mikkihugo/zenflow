@@ -940,7 +940,7 @@ export class BehavioralOptimization extends EventEmitter {
       child.parameters.resourceManagement = { ...parent2.parameters.resourceManagement };
     if (Math.random() < 0.5 && child?.parameters && parent2?.parameters)
       child.parameters.coordination = { ...parent2.parameters.coordination };
-    if (Math.random() < 0.5 && child?.parameters && parent2?.parameters) 
+    if (Math.random() < 0.5 && child?.parameters && parent2?.parameters)
       child.parameters.learning = { ...parent2.parameters.learning };
 
     return child;
@@ -1555,10 +1555,11 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Average performance metrics
     Object.keys(centroid.performance).forEach((key) => {
-      const perfValue = behaviors.reduce((sum, b) => {
-        const value = b.performance[key as keyof BehaviorPerformance];
-        return sum + (typeof value === 'number' ? value : 0);
-      }, 0) / behaviors.length;
+      const perfValue =
+        behaviors.reduce((sum, b) => {
+          const value = b.performance[key as keyof BehaviorPerformance];
+          return sum + (typeof value === 'number' ? value : 0);
+        }, 0) / behaviors.length;
       (centroid.performance as any)[key] = perfValue;
     });
 

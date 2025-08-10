@@ -6,10 +6,10 @@
  * @file Coordination system: diagnostics.
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { loggingConfig } from './logging-config';
+import { type LoggerInterface, loggingConfig } from './logging-config';
 
 export interface ConnectionEvent {
   connectionId: string;
@@ -606,8 +606,8 @@ export class DiagnosticsManager {
     };
 
     if (outputPath) {
-      const reportPath = path.resolve(outputPath);
-      fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
+      const reportPath = resolve(outputPath);
+      writeFileSync(reportPath, JSON.stringify(report, null, 2));
       this.logger.info('Diagnostic report saved', { path: reportPath });
     }
 
@@ -677,10 +677,10 @@ export class DiagnosticsManager {
 
   async testFileSystem(): Promise<DiagnosticTest> {
     try {
-      const testPath = path.join(process.cwd(), 'logs', '.diagnostic-test');
-      fs.mkdirSync(path.dirname(testPath), { recursive: true });
-      fs.writeFileSync(testPath, 'test');
-      fs.unlinkSync(testPath);
+      const testPath = join(process.cwd(), 'logs', '.diagnostic-test');
+      mkdirSync(dirname(testPath), { recursive: true });
+      writeFileSync(testPath, 'test');
+      unlinkSync(testPath);
 
       return {
         name: 'File System Access',
@@ -699,8 +699,8 @@ export class DiagnosticsManager {
   async testWasmLoading(): Promise<DiagnosticTest> {
     try {
       // Test if WASM module can be loaded
-      const wasmPath = path.join(process.cwd(), 'wasm', 'ruv_swarm_wasm_bg.wasm');
-      const exists = fs.existsSync(wasmPath);
+      const wasmPath = join(process.cwd(), 'wasm', 'ruv_swarm_wasm_bg.wasm');
+      const exists = existsSync(wasmPath);
 
       return {
         name: 'WASM Module Check',

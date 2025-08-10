@@ -15,8 +15,8 @@ import type { BackendCapabilities } from './factory';
 // Additional types needed for base backend
 export interface MemoryEntry {
   key: string;
-  value: any;
-  metadata: Record<string, any>;
+  value: unknown;
+  metadata: Record<string, unknown>;
   timestamp: number;
   size: number;
   type: string;
@@ -32,9 +32,9 @@ export interface MemoryQueryOptions {
 
 export interface MemorySearchResult {
   key: string;
-  value: any;
+  value: unknown;
   score?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface MemoryStats {
@@ -68,8 +68,8 @@ export abstract class BaseMemoryBackend extends EventEmitter {
 
   // Abstract methods that must be implemented by concrete backends
   abstract initialize(): Promise<void>;
-  abstract store(key: string, value: any, namespace?: string): Promise<any>;
-  abstract retrieve<T = any>(key: string): Promise<T | null>;
+  abstract store(key: string, value: unknown, namespace?: string): Promise<void>;
+  abstract retrieve<T = unknown>(key: string): Promise<T | null>;
   abstract delete(key: string): Promise<boolean>;
   abstract list(pattern?: string): Promise<string[]>;
   abstract clear(): Promise<void>;
@@ -77,8 +77,8 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   abstract getCapabilities(): BackendCapabilities;
 
   // Additional methods for BackendInterface compatibility
-  abstract get<T = any>(key: string): Promise<T | null>;
-  abstract set(key: string, value: any): Promise<void>;
+  abstract get<T = unknown>(key: string): Promise<T | null>;
+  abstract set(key: string, value: unknown): Promise<void>;
   abstract listNamespaces(): Promise<string[]>;
 
   // Common utility methods available to all backends
@@ -129,8 +129,8 @@ export abstract class BaseMemoryBackend extends EventEmitter {
 
   protected createMemoryEntry(
     key: string,
-    value: any,
-    metadata?: Record<string, any>
+    value: unknown,
+    metadata?: Record<string, unknown>
   ): MemoryEntry {
     return {
       key,
@@ -142,7 +142,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
     };
   }
 
-  protected calculateSize(value: any): number {
+  protected calculateSize(value: unknown): number {
     try {
       return JSON.stringify(value).length;
     } catch {
@@ -150,7 +150,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
     }
   }
 
-  protected detectType(value: any): string {
+  protected detectType(value: unknown): string {
     if (value === null) return 'null';
     if (Array.isArray(value)) return 'array';
     if (value instanceof Date) return 'date';
@@ -234,14 +234,14 @@ export abstract class BaseMemoryBackend extends EventEmitter {
 
   // Batch operations support
   public async batchStore(
-    entries: Array<{ key: string; value: any; metadata?: Record<string, any> }>
+    entries: Array<{ key: string; value: unknown; metadata?: Record<string, unknown> }>
   ): Promise<void> {
     for (const entry of entries) {
-      await this.store(entry.key, entry.value, entry.metadata);
+      await this.store(entry.key, entry.value);
     }
   }
 
-  public async batchRetrieve<T = any>(keys: string[]): Promise<Record<string, T | null>> {
+  public async batchRetrieve<T = unknown>(keys: string[]): Promise<Record<string, T | null>> {
     const results: Record<string, T | null> = {};
     for (const key of keys) {
       results?.[key] = await this.retrieve<T>(key);
@@ -258,7 +258,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   }
 
   // Utility method for serialization
-  protected serialize(value: any): string {
+  protected serialize(value: unknown): string {
     try {
       return JSON.stringify(value);
     } catch (error) {
@@ -267,7 +267,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   }
 
   // Utility method for deserialization
-  protected deserialize<T = any>(value: string): T {
+  protected deserialize<T = unknown>(value: string): T {
     try {
       return JSON.parse(value) as T;
     } catch (error) {
@@ -280,17 +280,17 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   /**
    * Concrete implementation of search for BackendInterface compatibility.
    *
-   * @param pattern
-   * @param _namespace
+   * @param pattern - Search pattern to match keys
+   * @param _namespace - Optional namespace (unused in base implementation)
    */
-  public async search(pattern: string, _namespace?: string): Promise<Record<string, any>> {
+  public async search(pattern: string, _namespace?: string): Promise<Record<string, unknown>> {
     // Base implementation - override in subclasses.
     const results = await this.list(pattern);
-    const resultMap: Record<string, any> = {};
+    const resultMap: Record<string, unknown> = {};
     for (const key of results) {
-      const value = await this.retrieve(key);
+      const value = await this.retrieve<unknown>(key);
       if (value !== null) {
-        resultMap?.[key] = value;
+        resultMap[key] = value;
       }
     }
     return resultMap;
@@ -307,7 +307,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
       const healthStatus = await this.healthCheck();
       return healthStatus.healthy;
     } catch (error) {
-      this.emitError(error as Error, 'health');
+      this.emitError(error instanceof Error ? error : new Error(String(error)), 'health');
       return false;
     }
   }

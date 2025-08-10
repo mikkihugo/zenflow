@@ -2,8 +2,8 @@
  * @file Database layer: vector-dao.
  */
 
+import type { Logger } from '../../config/logging-config';
 import { BaseDao } from '../base.dao';
-import type { Logger } from '../utils/logger';
 
 interface VectorDocument<T> {
   id: string | number;
@@ -20,9 +20,9 @@ interface VectorSearchResult<T> {
 
 interface VectorRepository {
   cluster(options: any): Promise<any>;
-  similaritySearch(vector: number[], options: any): Promise<VectorSearchResult<T>[]>;
+  similaritySearch<T>(vector: number[], options: any): Promise<VectorSearchResult<T>[]>;
   addVectors(
-    vectors: VectorDocument<T>[]
+    vectors: VectorDocument<any>[]
   ): Promise<{ inserted: number; errors: Array<{ id: string | number; error: string }> }>;
   updateVector(id: string | number, vector: number[]): Promise<void>;
   getVectorStats(): Promise<{
@@ -40,10 +40,20 @@ interface VectorRepository {
  * @example
  */
 export class VectorDao<T = any> extends BaseDao<T> {
+  private tableName: string = 'vectors';
+
+  // Implement required abstract methods from BaseDao
+  protected mapRowToEntity(row: any): T {
+    return row as T;
+  }
+
+  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
+    return entity as Record<string, any>;
+  }
   private vectorRepository: VectorRepository;
 
-  constructor(repository: any, vectorRepository: VectorRepository, logger: Logger) {
-    super(repository, logger);
+  constructor(repository: any, vectorRepository: VectorRepository, logger: ILogger) {
+    super(repository, logger, 'vectors');
     this.vectorRepository = vectorRepository;
   }
 
@@ -352,8 +362,8 @@ export class VectorDao<T = any> extends BaseDao<T> {
         combined.push({
           id,
           score: combinedScore,
-          document: firstResult?.document,
-          vector: firstResult?.vector,
+          document: firstResult?.document || undefined,
+          vector: firstResult?.vector || undefined,
         });
       }
     }
@@ -373,7 +383,7 @@ export class VectorDao<T = any> extends BaseDao<T> {
     const outliers: Array<{ id: any; distance: number }> = [];
 
     for (let i = 0; i < allEntities.length; i++) {
-      const distance = this.euclideanDistance(vectors[i], mean);
+      const distance = this.euclideanDistance(vectors[i] || [], mean);
       if (distance > threshold) {
         outliers.push({
           id: (allEntities[i] as any).id,
@@ -403,7 +413,7 @@ export class VectorDao<T = any> extends BaseDao<T> {
       const idx2 = Math.floor(Math.random() * vectors.length);
 
       if (idx1 !== idx2) {
-        const similarity = this.cosineSimilarity(vectors[idx1], vectors[idx2]);
+        const similarity = this.cosineSimilarity(vectors[idx1] || [], vectors[idx2] || []);
         similarities.push(similarity);
       }
     }

@@ -70,15 +70,23 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { getLogger } from '../config/logging-config';
 import { DocumentProcessor } from './document-processor';
 import { DocumentationManager } from './documentation-manager';
 import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceManager } from './interface-manager';
-import { createLogger } from './logger';
 import { MemorySystem } from './memory-system';
 import { WorkflowEngine } from './workflow-engine';
 
-const logger = createLogger('CoreSystem');
+interface ExportOptions {
+  filename?: string;
+  compression?: boolean;
+  includeMetrics?: boolean;
+  includeMemoryData?: boolean;
+  [key: string]: unknown;
+}
+
+const logger = getLogger('CoreSystem');
 
 /**
  * Core system configuration with clear, focused options.
@@ -390,7 +398,7 @@ export class System extends EventEmitter {
    */
   async exportSystemData(
     format: string,
-    options: any = {}
+    options: ExportOptions = {}
   ): Promise<{ success: boolean; filename?: string; error?: string }> {
     await this.ensureInitialized();
 

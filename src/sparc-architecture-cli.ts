@@ -1,9 +1,7 @@
-#!/usr/bin/env nodeimport { getLogger } from "./config/logging-config";
+#!/usr/bin/env node
 /**
  * @file Sparc-architecture-cli implementation.
  */
-
-const logger = getLogger('sparc-architecture-cli');
 
 /**
  * SPARC Architecture Engine CLI
@@ -12,7 +10,9 @@ const logger = getLogger('sparc-architecture-cli');
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import type { getLogger } from './core/logger';
+import { getLogger } from './config/logging-config';
+
+const logger = getLogger('sparc-architecture-cli');
 
 const program = new Command();
 
@@ -129,10 +129,9 @@ program
       // const total = validationResults.length;
 
       if (options?.detailed) {
-        validationResults?.forEach((result, _index) => {
-          // xxx NEEDS_HUMAN: Status display logic appears incomplete
-          // const status = result.passed ? '✅' : '❌';
-          // Consider adding console output here
+        validationResults?.forEach((result, index) => {
+          const status = result.passed ? '✅' : '❌';
+          console.log(`${index + 1}. ${status} ${result.rule}: ${result.message}`);
         });
       }
 

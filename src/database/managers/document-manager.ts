@@ -5,11 +5,13 @@
  * Replaces file-based operations with database entities.
  */
 
-import { getLogger } from '../../core/logger';
+import { createLogger } from '../../core/logger';
 
-const logger = getLogger('database-managers-document-manager');
+const logger = createLogger('database-managers-document-manager');
 
 import { nanoid } from 'nanoid';
+import type { DocumentType } from '../../workflows/types';
+import { createDao, EntityTypeValues as EntityTypes } from '../core/dao-factory';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -22,9 +24,7 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../entities/document-entities';
-import { createDao, EntityTypes } from '../core/dao-factory';
 import type { IRepository } from '../interfaces';
-import type { DocumentType } from '../../types/workflow-types';
 
 export interface DocumentCreateOptions {
   autoGenerateRelationships?: boolean;

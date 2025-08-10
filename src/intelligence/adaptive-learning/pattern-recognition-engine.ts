@@ -465,11 +465,15 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
         const commPattern: CommunicationPattern = {
           source,
           target,
-          messageType: this.getMostFrequentMessageType(source, target, communicationTraces),
+          messageType: this.getMostFrequentMessageTypeFromTraces(
+            source,
+            target,
+            communicationTraces
+          ),
           frequency,
-          latency: this.calculateAverageLatency(source, target, communicationTraces),
+          latency: this.calculateAverageLatencyFromTraces(source, target, communicationTraces),
           payloadSize: this.calculateAveragePayloadSize(source, target, communicationTraces),
-          reliability: this.calculateReliability(source, target, communicationTraces),
+          reliability: this.calculateReliabilityFromTraces(source, target, communicationTraces),
         };
 
         this.communicationPatterns.set(pair, commPattern);
@@ -714,7 +718,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return {
       complexity: this.calculateComplexity(pattern, traces),
       predictability: this.calculatePredictability(pattern, traces),
-      stability: this.calculateStability(pattern, traces),
+      stability: this.calculateStabilityFromPattern(pattern, traces),
       anomalyScore: this.calculateAnomalyScore(pattern, traces),
       correlations: this.findCorrelations(pattern, traces),
     };
@@ -823,7 +827,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return [];
   }
 
-  private getMostFrequentMessageType(
+  private getMostFrequentMessageTypeFromTraces(
     source: string,
     target: string,
     traces: ExecutionTrace[]
@@ -1042,9 +1046,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
         memory: data?.resourceUsage?.memory,
         network: data?.resourceUsage?.network,
         diskIO: data?.resourceUsage?.diskIO,
-        timestamp: data?.resourceUsage?.timestamp || Date.now(),
-        duration: data?.resourceUsage?.duration || data?.duration,
-        context: data?.resourceUsage?.context || 'execution',
+        timestamp: (data?.resourceUsage as any)?.timestamp || Date.now(),
+        duration: (data?.resourceUsage as any)?.duration || data?.duration,
+        context: (data?.resourceUsage as any)?.context || 'execution',
       },
     };
   }
@@ -1091,7 +1095,20 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   private calculateCentroid(data: ExecutionData[]): any {
     const avgDuration = data.reduce((sum, d) => sum + d.duration, 0) / data.length;
-    const avgResourceUsage = this.calculateAverageResourceUsage(data.map((d) => d.resourceUsage));
+    const avgResourceUsage = this.calculateAverageResourceUsage(
+      data.map(
+        (d) =>
+          ({
+            cpu: d.resourceUsage.cpu,
+            memory: d.resourceUsage.memory,
+            network: d.resourceUsage.network,
+            diskIO: d.resourceUsage.diskIO,
+            timestamp: (d.resourceUsage as any)?.timestamp || Date.now(),
+            duration: (d.resourceUsage as any)?.duration || d.duration,
+            context: (d.resourceUsage as any)?.context || 'execution',
+          }) as ResourceUsage
+      )
+    );
 
     return {
       avgDuration,
@@ -1222,26 +1239,6 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     const stabilityFactor = clusters.reduce((sum, c) => sum + c.stability, 0) / clusters.length;
 
     return (avgConfidence + stabilityFactor) / 2;
-  }
-
-  private getMostFrequentMessageType(messages: Message[]): string {
-    const typeCounts = new Map<string, number>();
-
-    for (const message of messages) {
-      typeCounts.set(message.type, (typeCounts.get(message.type) || 0) + 1);
-    }
-
-    let maxType = 'unknown';
-    let maxCount = 0;
-
-    for (const [type, count] of typeCounts) {
-      if (count > maxCount) {
-        maxType = type;
-        maxCount = count;
-      }
-    }
-
-    return maxType;
   }
 
   private calculateAverageLatency(messages: Message[]): number {

@@ -29,6 +29,7 @@ interface ILogger {
 // Create a simple database adapter interface
 interface DatabaseAdapter {
   query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
+  execute(sql: string, params?: any[]): Promise<{ affectedRows: number; insertId?: any }>;
   transaction<T>(fn: (tx: any) => Promise<T>): Promise<T>;
   getSchema?(): Promise<any>;
 }

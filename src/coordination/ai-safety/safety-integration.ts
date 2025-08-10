@@ -1,12 +1,12 @@
 /**
  * @file AI Safety Integration with Main System.
- * 
+ *
  * Integrates the AI deception detection system with the main Claude Code application.
  * Adds 'safety' mode to main.ts and provides integration hooks.
  */
 
-import { AISafetyOrchestrator, createAISafetyOrchestrator } from './safety-orchestrator';
-import type { DeceptionAlert, AIInteractionData } from './ai-deception-detector';
+import type { AIInteractionData, DeceptionAlert } from './ai-deception-detector';
+import { type AISafetyOrchestrator, createAISafetyOrchestrator } from './safety-orchestrator';
 
 /**
  * Global safety orchestrator instance.
@@ -24,9 +24,9 @@ export async function initializeAISafetySystem(): Promise<AISafetyOrchestrator> 
   }
 
   console.log('🛡️ Initializing AI Safety System...');
-  
+
   globalSafetyOrchestrator = createAISafetyOrchestrator();
-  
+
   // Set up event handlers for the global instance
   globalSafetyOrchestrator.on('safety:alert', (alert: DeceptionAlert) => {
     console.warn(`🚨 Safety Alert: ${alert.type} from agent ${alert.agentId}`);
@@ -48,9 +48,9 @@ export async function initializeAISafetySystem(): Promise<AISafetyOrchestrator> 
   });
 
   await globalSafetyOrchestrator.startSafetyMonitoring();
-  
+
   console.log('✅ AI Safety System initialized and monitoring active');
-  
+
   return globalSafetyOrchestrator;
 }
 
@@ -64,8 +64,8 @@ export async function initializeAISafetySystem(): Promise<AISafetyOrchestrator> 
  * @example
  */
 export async function monitorAIInteraction(
-  response: string, 
-  toolCalls: string[], 
+  response: string,
+  toolCalls: string[],
   agentId: string = 'unknown'
 ): Promise<DeceptionAlert[]> {
   if (!globalSafetyOrchestrator) {
@@ -79,7 +79,7 @@ export async function monitorAIInteraction(
     toolCalls,
     timestamp: new Date(),
     claimedCapabilities: [],
-    actualWork: []
+    actualWork: [],
   };
 
   return await globalSafetyOrchestrator!.analyzeInteraction(interactionData);
@@ -104,12 +104,12 @@ export function getSafetyMetrics() {
  */
 export async function emergencySafetyShutdown(): Promise<void> {
   console.error('🛑 EMERGENCY SAFETY SHUTDOWN INITIATED');
-  
+
   if (globalSafetyOrchestrator) {
     await globalSafetyOrchestrator.stopSafetyMonitoring();
     console.error('🛑 Safety monitoring stopped');
   }
-  
+
   // In a real implementation, this would:
   // 1. Pause all running AI agents
   // 2. Lock down system capabilities
@@ -125,13 +125,13 @@ export async function emergencySafetyShutdown(): Promise<void> {
 export async function runSafetyMode(): Promise<void> {
   console.log('🛡️ Starting Claude Code Zen in SAFETY mode');
   console.log('🔍 Real-time AI deception detection and monitoring active');
-  
+
   const orchestrator = await initializeAISafetySystem();
-  
+
   // Keep the process running
   console.log('💻 Safety monitoring dashboard active');
   console.log('Press Ctrl+C to stop monitoring');
-  
+
   // Display live metrics every 10 seconds
   const metricsInterval = setInterval(() => {
     const metrics = orchestrator.getSafetyMetrics();
@@ -140,7 +140,7 @@ export async function runSafetyMode(): Promise<void> {
       deceptionDetected: metrics.deceptionDetected,
       humanEscalations: metrics.humanEscalations,
       totalAlerts: metrics.detectorStats.totalAlerts,
-      criticalAlerts: metrics.detectorStats.criticalAlerts
+      criticalAlerts: metrics.detectorStats.criticalAlerts,
     });
   }, 10000);
 
@@ -163,5 +163,5 @@ export async function runSafetyMode(): Promise<void> {
 export const SAFETY_MODE_INTEGRATION = {
   case: 'safety',
   description: 'AI safety monitoring and deception detection',
-  handler: runSafetyMode
+  handler: runSafetyMode,
 };

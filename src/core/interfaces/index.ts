@@ -9,20 +9,20 @@
 
 /**
  * @file Central interface export registry for Claude-Zen system.
- * 
+ *
  * This module provides a unified interface export system that ensures
  * consistency across all system components and prevents interface conflicts.
  * All standardized interfaces should be exported through this registry.
  * @example
  * ```typescript
  * // Import multiple interfaces from central registry
- * import { 
- *   AgentConfig, 
- *   SwarmMetrics, 
+ * import {
+ *   AgentConfig,
+ *   SwarmMetrics,
  *   DatabaseConfig,
- *   BackendInterface 
+ *   BackendInterface
  * } from '@/core/interfaces';
- * 
+ *
  * // Use interfaces with type safety
  * const agent: AgentConfig = {
  *   id: 'agent-123',
@@ -36,16 +36,16 @@
 /**
  * WebAssembly binding interface for neural network operations.
  * Provides high-performance neural computation capabilities.
- * 
+ *
  * @see {@link WasmBindingInterface}
  */
-export { WasmBindingInterface } from '../bindings/wasm-binding-interface';
+export { WasmBindingInterface } from '../../bindings/wasm-binding-interface';
 /**
  * Swarm coordination and agent management interfaces.
- * 
+ *
  * Provides comprehensive types for multi-agent swarm coordination,
  * including communication, task management, and performance monitoring.
- * 
+ *
  * @see {@link SwarmConfig} - Swarm configuration and topology
  * @see {@link AgentPerformance} - Agent performance metrics
  * @see {@link SwarmMetrics} - Swarm-wide performance statistics
@@ -69,40 +69,34 @@ export {
   TaskPriority,
   TaskStatus,
   WasmModule,
-} from '../coordination/swarm/core/types';
+} from '../../coordination/swarm/core/types';
 /**
  * Database configuration and connection interfaces.
- * 
+ *
  * Supports multiple database backends including PostgreSQL, SQLite,
  * MySQL, Kuzu (graph), and LanceDB (vector) databases.
- * 
+ *
  * @see {@link DatabaseConfig} - Multi-backend database configuration
  */
-export { DatabaseConfig } from '../database/providers/database-providers';
+export { DatabaseConfig } from '../../database/providers/database-providers';
 /**
  * Memory management and caching interfaces.
- * 
+ *
  * Provides abstractions for memory caching, session management,
  * and persistent storage with multiple backend support.
- * 
+ *
  * @see {@link BackendInterface} - Pluggable storage backend interface
  * @see {@link CacheEntry} - Memory cache entry structure
  * @see {@link SessionState} - User session state management
  * @see {@link StorageResult} - Unified storage operation results
  */
-export { CacheEntry, SessionState } from '../memory/memory';
-export {
-  BackendInterface,
-  BackendStats,
-  JSONValue,
-  StorageResult,
-} from '../memory-system';
+export { CacheEntry, SessionState } from '../../memory/memory';
 /**
  * Unified agent system interfaces and types.
- * 
+ *
  * Comprehensive agent management system supporting different agent types,
  * capabilities, performance monitoring, and task execution tracking.
- * 
+ *
  * @see {@link Agent} - Core agent interface definition
  * @see {@link AgentConfig} - Agent configuration and initialization
  * @see {@link AgentCapabilities} - Agent skill and capability definitions
@@ -119,23 +113,29 @@ export {
   AgentType,
   ExecutionResult,
   Task,
-} from '../types/agent-types';
+} from '../../coordination/types';
 /**
  * Event system interfaces for pub/sub messaging.
- * 
+ *
  * Provides event-driven architecture support with type-safe
  * event handling, subscription management, and async event processing.
- * 
- * @see {@link ../types/event-types} - Complete event system types
+ *
+ * @see {@link ../../types/event-types} - Complete event system types
  */
-export * from '../types/event-types';
+export * from '../../types/event-types';
+export {
+  BackendInterface,
+  BackendStats,
+  JSONValue,
+  StorageResult,
+} from '../memory-system';
 
 /**
  * Configuration interface for memory/storage backends.
- * 
+ *
  * Provides unified configuration for different storage backends
  * including LanceDB (vector), SQLite (relational), and JSON (file).
- * 
+ *
  * @interface BackendConfig
  * @example
  * ```typescript
@@ -165,10 +165,10 @@ export interface BackendConfig {
 }
 /**
  * Core base interfaces and fundamental contracts.
- * 
+ *
  * Provides foundational interfaces that other system components
  * extend or implement, ensuring consistent patterns across the codebase.
- * 
+ *
  * @see {@link ./base-interfaces} - Fundamental interface definitions
  */
 export * from './base-interfaces';

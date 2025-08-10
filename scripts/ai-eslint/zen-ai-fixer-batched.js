@@ -169,13 +169,22 @@ class ZenAIFixerBatched {
       console.log(`   🎊 Reduced: ${errorReduction} errors (${reductionPercent}%)`);
 
       if (errorReduction === 0) {
-        console.warn('⚠️  No error reduction detected');
-        break;
+        console.warn('⚠️  No error reduction detected - trying different approach...');
+        // Try a different strategy before giving up
+        if (iteration > 3) {
+          console.log(
+            '💡 Switching to different fixing strategies after 3+ iterations with no progress'
+          );
+          console.log(
+            '💡 Suggestion: Run npm run fix:zen:eslint or npm run fix:zen:warnings for different approach'
+          );
+          break;
+        }
       }
 
       currentErrors = remainingErrors;
       iteration++;
-    } while (currentErrors.length > 0 && iteration <= 15);
+    } while (currentErrors.length > 0);
 
     const finalErrors = await this.runTypeScriptCompiler();
     if (finalErrors.length === 0) {

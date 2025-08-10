@@ -2,7 +2,7 @@
  * @file Coordination system: architecture-commands.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../utils/logger';
 
 const logger = getLogger('coordination-swarm-sparc-cli-architecture-commands');
 
@@ -14,8 +14,8 @@ const logger = getLogger('coordination-swarm-sparc-cli-architecture-commands');
 
 import chalk from 'chalk';
 import { Command } from 'commander';
-import type { IDao } from '../database';
-import { createDao, DatabaseTypes, EntityTypes } from '../database';
+import type { IDao } from '../../../database/interfaces';
+import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
 import { ArchitectureMCPToolsImpl } from '../mcp/architecture-tools';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
 import type { ArchitectureDesign, PseudocodeStructure } from '../types/sparc-types';
@@ -307,6 +307,7 @@ function createSamplePseudocode(): PseudocodeStructure {
     id: 'sample-pseudocode',
     algorithms: [
       {
+        id: 'sample-algorithm-1',
         name: 'sampleAlgorithm',
         purpose: 'Sample algorithm for demonstrating SPARC architecture generation',
         steps: [
@@ -345,6 +346,7 @@ function createSamplePseudocode(): PseudocodeStructure {
     ],
     coreAlgorithms: [
       {
+        id: 'core-processing-algorithm-1',
         name: 'coreProcessing',
         purpose: 'Core processing algorithm for data transformation',
         inputs: [{ name: 'data', type: 'Array<any>', description: 'Input data to process' }],

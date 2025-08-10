@@ -6,11 +6,11 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type { HookSystem } from './hook-system-core';
 import { DefaultHookSystem } from './hook-system-core';
 
-const logger = createLogger({ prefix: 'HookManager' });
+const logger = getLogger('HookManager');
 
 export interface HookManagerConfig {
   maxConcurrentHooks: number;

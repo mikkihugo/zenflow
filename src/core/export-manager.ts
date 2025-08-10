@@ -11,9 +11,9 @@
 import { EventEmitter } from 'node:events';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { createLogger } from './logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger('UnifiedExport');
+const logger = getLogger('UnifiedExport');
 
 export interface ExportResult {
   id: string;
@@ -23,7 +23,7 @@ export interface ExportResult {
   timestamp: number;
   success: boolean;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ExportOptions {
@@ -32,7 +32,7 @@ export interface ExportOptions {
   pretty?: boolean;
   compression?: boolean;
   encoding?: 'utf8' | 'base64';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ExporterDefinition {
@@ -40,8 +40,8 @@ export interface ExporterDefinition {
   extension: string;
   mimeType: string;
   description: string;
-  export: (data: any, options?: ExportOptions) => Promise<string> | string;
-  validate?: (data: any) => boolean;
+  export: (data: unknown, options?: ExportOptions) => Promise<string> | string;
+  validate?: (data: unknown) => boolean;
   supports?: string[];
 }
 
@@ -77,10 +77,10 @@ export class ExportSystem extends EventEmitter {
       extension: '.json',
       mimeType: 'application/json',
       description: 'Export data as JSON format',
-      export: (data: any, options?: ExportOptions) => {
+      export: (data: unknown, options?: ExportOptions) => {
         return options?.pretty !== false ? JSON.stringify(data, null, 2) : JSON.stringify(data);
       },
-      validate: (data: any) => {
+      validate: (data: unknown) => {
         try {
           JSON.stringify(data);
           return true;
@@ -96,10 +96,10 @@ export class ExportSystem extends EventEmitter {
       extension: '.yaml',
       mimeType: 'text/yaml',
       description: 'Export data as YAML format',
-      export: (data: any, _options?: ExportOptions) => {
+      export: (data: unknown, _options?: ExportOptions) => {
         return this.convertToYAML(data, 0);
       },
-      validate: (data: any) => data !== undefined && data !== null,
+      validate: (data: unknown) => data !== undefined && data !== null,
     });
 
     // CSV Exporter
@@ -108,10 +108,10 @@ export class ExportSystem extends EventEmitter {
       extension: '.csv',
       mimeType: 'text/csv',
       description: 'Export array data as CSV format',
-      export: (data: any[], _options?: ExportOptions) => {
-        return this.convertToCSV(data);
+      export: (data: unknown, _options?: ExportOptions) => {
+        return this.convertToCSV(data as Record<string, unknown>[]);
       },
-      validate: (data: any) => Array.isArray(data) && data.length > 0,
+      validate: (data: unknown) => Array.isArray(data) && data.length > 0,
       supports: ['array'],
     });
 
@@ -121,13 +121,13 @@ export class ExportSystem extends EventEmitter {
       extension: '.xml',
       mimeType: 'application/xml',
       description: 'Export data as XML format',
-      export: (data: any, _options?: ExportOptions) => {
+      export: (data: unknown, _options?: ExportOptions) => {
         return `<?xml version="1.0" encoding="UTF-8"?>
       <root>
       ${this.convertToXML(data, 1)}
       </root>`;
       },
-      validate: (data: any) => data !== undefined && data !== null,
+      validate: (data: unknown) => data !== undefined && data !== null,
     });
 
     // Markdown Exporter (for documents)
@@ -136,10 +136,10 @@ export class ExportSystem extends EventEmitter {
       extension: '.md',
       mimeType: 'text/markdown',
       description: 'Export document data as Markdown format',
-      export: (data: any, _options?: ExportOptions) => {
+      export: (data: unknown, _options?: ExportOptions) => {
         return this.convertToMarkdown(data);
       },
-      validate: (data: any) => typeof data === 'object' && data !== null,
+      validate: (data: unknown) => typeof data === 'object' && data !== null,
     });
 
     // Plain Text Exporter
@@ -148,7 +148,7 @@ export class ExportSystem extends EventEmitter {
       extension: '.txt',
       mimeType: 'text/plain',
       description: 'Export data as plain text format',
-      export: (data: any, _options?: ExportOptions) => {
+      export: (data: unknown, _options?: ExportOptions) => {
         if (typeof data === 'string') return data;
         if (typeof data === 'object') return JSON.stringify(data, null, 2);
         return String(data);
@@ -162,10 +162,10 @@ export class ExportSystem extends EventEmitter {
       extension: '.html',
       mimeType: 'text/html',
       description: 'Export data as HTML format',
-      export: (data: any, options?: ExportOptions) => {
+      export: (data: unknown, options?: ExportOptions) => {
         return this.convertToHTML(data, options);
       },
-      validate: (data: any) => data !== undefined && data !== null,
+      validate: (data: unknown) => data !== undefined && data !== null,
     });
 
     logger.info(`Registered ${this.exporters.size} built-in exporters`);
@@ -190,7 +190,7 @@ export class ExportSystem extends EventEmitter {
    * @param format
    * @param options
    */
-  async exportData(data: any, format: string, options: ExportOptions = {}): Promise<ExportResult> {
+  async exportData(data: unknown, format: string, options: ExportOptions = {}): Promise<ExportResult> {
     const exporter = this.exporters.get(format.toLowerCase());
 
     if (!exporter) {
@@ -266,7 +266,7 @@ export class ExportSystem extends EventEmitter {
    * @param options
    */
   async batchExport(
-    data: any,
+    data: unknown,
     formats: string[],
     options: ExportOptions = {}
   ): Promise<ExportResult[]> {
@@ -306,12 +306,12 @@ export class ExportSystem extends EventEmitter {
    */
   async exportWorkflowData(
     workflowData: {
-      vision?: any[];
-      adrs?: any[];
-      prds?: any[];
-      epics?: any[];
-      features?: any[];
-      tasks?: any[];
+      vision?: Record<string, unknown>[];
+      adrs?: Record<string, unknown>[];
+      prds?: Record<string, unknown>[];
+      epics?: Record<string, unknown>[];
+      features?: Record<string, unknown>[];
+      tasks?: Record<string, unknown>[];
     },
     format: string,
     options: ExportOptions = {}
@@ -346,7 +346,7 @@ export class ExportSystem extends EventEmitter {
    * @param options
    */
   async exportSystemStatus(
-    statusData: any,
+    statusData: Record<string, unknown>,
     format: string,
     options: ExportOptions = {}
   ): Promise<ExportResult> {
@@ -372,13 +372,13 @@ export class ExportSystem extends EventEmitter {
    *
    * @param data
    */
-  private convertToCSV(data: any[]): string {
+  private convertToCSV(data: Record<string, unknown>[]): string {
     if (!Array.isArray(data) || data.length === 0) {
       return '';
     }
 
     // Get headers from first object
-    const headers = Object.keys(data[0]);
+    const headers = Object.keys(data[0] || {});
     const csvRows = [headers.join(',')];
 
     // Convert each row
@@ -397,7 +397,7 @@ export class ExportSystem extends EventEmitter {
     return csvRows.join('\n');
   }
 
-  private convertToYAML(obj: any, indent: number): string {
+  private convertToYAML(obj: unknown, indent: number): string {
     const spaces = '  '.repeat(indent);
 
     if (obj === null) return 'null';
@@ -422,7 +422,7 @@ export class ExportSystem extends EventEmitter {
     return String(obj);
   }
 
-  private convertToXML(obj: any, indent: number): string {
+  private convertToXML(obj: unknown, indent: number): string {
     const spaces = '  '.repeat(indent);
 
     if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
@@ -454,49 +454,55 @@ export class ExportSystem extends EventEmitter {
     return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;
   }
 
-  private convertToMarkdown(data: any): string {
+  private convertToMarkdown(data: unknown): string {
     let markdown = '';
 
     if (typeof data === 'object' && data !== null) {
       // Handle document-like objects
-      if (data?.title) {
-        markdown += `# ${data?.title}
+      const dataObj = data as Record<string, unknown>;
+      if (dataObj['title']) {
+        markdown += `# ${dataObj['title']}
       \n`;
       }
 
-      if (data?.description) {
-        markdown += `${data?.description}
+      if (dataObj['description']) {
+        markdown += `${dataObj['description']}
       \n`;
       }
 
-      if (data?.metadata) {
+      if (dataObj['metadata']) {
         markdown += '## Metadata\n';
-        for (const [key, value] of Object.entries(data?.metadata)) {
+        for (const [key, value] of Object.entries(dataObj['metadata'] as Record<string, unknown>)) {
           markdown += `- **${key}**: ${value}\n`;
         }
         markdown += '\n';
       }
 
-      if (data?.content) {
+      if (dataObj['content']) {
         markdown += '## Content\n';
-        markdown += `${data?.content}\n`;
+        markdown += `${dataObj['content']}\n`;
       }
 
       // Handle arrays of items
-      for (const [key, value] of Object.entries(data)) {
+      for (const [key, value] of Object.entries(dataObj)) {
         if (Array.isArray(value) && key !== 'metadata') {
           markdown += `## ${key.charAt(0).toUpperCase() + key.slice(1)}
       \n`;
           for (const item of value) {
-            if (typeof item === 'object' && item?.title) {
-              markdown += `### ${item?.title}
+            if (typeof item === 'object' && item !== null) {
+              const itemObj = item as Record<string, unknown>;
+              if (itemObj['title']) {
+                markdown += `### ${itemObj['title']}
       \n`;
-              if (item?.description)
-                markdown += `${item?.description}
+                if (itemObj['description'])
+                  markdown += `${itemObj['description']}
       \n`;
-              if (item?.content)
-                markdown += `${item?.content}
+                if (itemObj['content'])
+                  markdown += `${itemObj['content']}
       \n`;
+              } else {
+                markdown += `- ${JSON.stringify(item)}\n`;
+              }
             } else {
               markdown += `- ${typeof item === 'string' ? item : JSON.stringify(item)}\n`;
             }
@@ -511,15 +517,15 @@ export class ExportSystem extends EventEmitter {
     return markdown;
   }
 
-  private convertToHTML(data: any, _options?: ExportOptions): string {
-    const title = data?.title || 'Claude Code Zen Export';
+  private convertToHTML(data: unknown, _options?: ExportOptions): string {
+    const title = (data as Record<string, unknown>)['title'] || 'Claude Code Zen Export';
 
     let html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${this.escapeHTML(title)}</title>
+    <title>${this.escapeHTML(String(title))}</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
         h1 { color: #0969da; border-bottom: 2px solid #0969da; padding-bottom: 10px; }
@@ -535,10 +541,11 @@ export class ExportSystem extends EventEmitter {
 </head>
 <body>`;
 
-    html += `<h1>${this.escapeHTML(title)}</h1>`;
+    html += `<h1>${this.escapeHTML(String(title))}</h1>`;
 
-    if (data?.timestamp || data?.exportedAt) {
-      html += `<p class="timestamp">Exported: ${new Date(data?.timestamp || data?.exportedAt).toLocaleString()}</p>`;
+    const dataObj = data as Record<string, unknown>;
+    if (dataObj['timestamp'] || dataObj['exportedAt']) {
+      html += `<p class="timestamp">Exported: ${new Date((dataObj['timestamp'] as string) || (dataObj['exportedAt'] as string)).toLocaleString()}</p>`;
     }
 
     html += this.objectToHTML(data);
@@ -550,7 +557,7 @@ export class ExportSystem extends EventEmitter {
     return html;
   }
 
-  private objectToHTML(obj: any, level: number = 2): string {
+  private objectToHTML(obj: unknown, level: number = 2): string {
     let html = '';
 
     if (typeof obj === 'object' && obj !== null) {
@@ -562,8 +569,11 @@ export class ExportSystem extends EventEmitter {
         if (Array.isArray(value)) {
           for (const item of value) {
             html += '<div class="array-item">';
-            if (typeof item === 'object' && item?.title) {
-              html += `<strong>${this.escapeHTML(item?.title)}</strong><br>`;
+            if (typeof item === 'object' && item !== null) {
+              const itemObj = item as Record<string, unknown>;
+              if (itemObj['title']) {
+                html += `<strong>${this.escapeHTML(String(itemObj['title']))}</strong><br>`;
+              }
             }
             html += this.objectToHTML(item, level + 1);
             html += '</div>';

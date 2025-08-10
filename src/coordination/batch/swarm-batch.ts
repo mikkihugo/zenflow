@@ -4,11 +4,11 @@
  * Enables batch agent spawning, task distribution, and coordination.
  */
 
-import { createLogger } from '../../core/logger';
-import type { AgentType } from '../../types/agent-types';
+import { getLogger } from '../../config/logging-config';
+import type { AgentType } from '../types';
 import type { BatchOperation } from './batch-engine';
 
-const logger = createLogger({ prefix: 'SwarmBatch' });
+const logger = getLogger('SwarmBatch');
 
 export interface SwarmOperation {
   type: 'init' | 'spawn' | 'assign' | 'coordinate' | 'terminate' | 'status';

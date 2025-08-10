@@ -4,9 +4,9 @@
  */
 
 import { parseArgs } from 'node:util';
-import { createLogger } from './core/logger';
+import { getLogger } from './config/logging-config';
 
-const logger = createLogger('Main');
+const logger = getLogger('Main');
 
 // Parse command line arguments
 const { values: args } = parseArgs({
@@ -64,42 +64,60 @@ async function main() {
   try {
     switch (mode) {
       case 'core': {
-        const { default: CoreApp } = await import('./claude-zen-core.js');
-        await CoreApp();
+        const { ClaudeZenCore } = await import('./claude-zen-core.js');
+        const app = new ClaudeZenCore();
+        await app.initialize();
         break;
       }
 
       case 'integrated':
       case 'server': {
-        const { default: IntegratedApp } = await import('./claude-zen-integrated.js');
-        await IntegratedApp({ port: parseInt(args.port || '3000') });
+        const { ClaudeZenIntegrated } = await import('./claude-zen-integrated.js');
+        const app = new ClaudeZenIntegrated({ port: parseInt(args.port || '3000') });
+        await app.initialize();
         break;
       }
 
       case 'tui':
       case 'terminal': {
-        const { default: TUIApp } = await import(
-          './interfaces/terminal/InteractiveTerminalApplication.js'
+        const TUIModule = await import(
+          './interfaces/terminal/interactive-terminal-application.js'
         );
-        await TUIApp();
+        // Handle both default and named exports
+        const TUIApp = TUIModule.default || TUIModule.InteractiveTerminalApplication;
+        if (typeof TUIApp === 'function') {
+          await TUIApp({ flags: {}, onExit: (code) => process.exit(code) });
+        } else {
+          throw new Error('TUI application not found or not callable');
+        }
         break;
       }
 
       case 'web': {
-        const { default: WebApp } = await import('./interfaces/web/web-interface.js');
-        await WebApp({ port: parseInt(args.port || '3000') });
+        const WebModule = await import('./interfaces/web/web-interface.js');
+        const WebInterface = WebModule.WebInterface;
+        const webApp = new WebInterface({ port: parseInt(args.port || '3000') });
+        await webApp.run();
         break;
       }
 
       case 'mcp': {
-        const { default: MCPServer } = await import('./interfaces/mcp/start-server.js');
-        await MCPServer();
+        const MCPModule = await import('./interfaces/mcp/start-server.js');
+        const startServer = MCPModule.startHTTPMCPServer;
+        await startServer();
         break;
       }
 
       case 'swarm': {
-        const { default: SwarmServer } = await import('./coordination/mcp/claude-zen-server.js');
-        await SwarmServer();
+        const SwarmModule = await import('./coordination/swarm/mcp/mcp-server.js');
+        // Handle both default and named exports
+        const SwarmServer = SwarmModule.default || SwarmModule.MCPServer;
+        if (typeof SwarmServer === 'function') {
+          const server = new SwarmServer();
+          await server.start();
+        } else {
+          throw new Error('Swarm server not found or not callable');
+        }
         break;
       }
 

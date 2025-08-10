@@ -10,8 +10,9 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import type { ServiceLifecycleStatus } from '../core/interfaces';
-import { createLogger, type Logger } from '../utils/logger';
 import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
@@ -192,7 +193,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
       ...config,
     };
 
-    this.logger = createLogger('InfrastructureServiceFactory');
+    this.logger = getLogger('InfrastructureServiceFactory');
 
     this.metrics = {
       totalServicesCreated: 0,

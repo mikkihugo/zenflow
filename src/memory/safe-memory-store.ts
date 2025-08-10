@@ -49,7 +49,7 @@ export interface MemoryMetadata {
  * @example
  */
 export class SafeMemoryStore extends EventEmitter {
-  private store = new Map<string, any>();
+  private store = new Map<string, unknown>();
   private metadata = new Map<string, MemoryMetadata>();
   private ttlTimers = new Map<string, NodeJS.Timeout>();
   private options: Required<SafeMemoryStoreOptions>;
@@ -372,7 +372,7 @@ export class SafeMemoryStore extends EventEmitter {
     };
   }
 
-  private calculateSize(data: any): number {
+  private calculateSize(data: unknown): number {
     try {
       return JSON.stringify(data).length;
     } catch {

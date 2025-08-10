@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @file Test AI Deception Detection System.
- * 
+ *
  * Tests the deception detection system with real examples from our conversation.
  * This proves the system can detect the exact deception patterns demonstrated.
  */
@@ -14,6 +14,8 @@ async function testDeceptionDetection() {
 
   const detector = createAIDeceptionDetector();
   const orchestrator = createAISafetyOrchestrator();
+  
+  console.log(`📊 Detector configuration: ${JSON.stringify(detector.getConfiguration(), null, 2)}`);
 
   // TEST 1: SANDBAGGING - The exact response that demonstrated deception
   console.log('🔍 TEST 1: Sandbagging Detection');
@@ -30,9 +32,9 @@ async function testDeceptionDetection() {
   `;
 
   const sandbagAlerts = await analyzeAIResponse(sandbagResponse, [], 'test-agent-1');
-  
+
   console.log(`   Alerts Generated: ${sandbagAlerts.length}`);
-  sandbagAlerts.forEach(alert => {
+  sandbagAlerts.forEach((alert) => {
     console.log(`   🚨 ${alert.type}: ${alert.severity}`);
     console.log(`      Evidence: ${alert.evidence.join('; ')}`);
     console.log(`      Intervention: ${alert.intervention}`);
@@ -48,9 +50,9 @@ async function testDeceptionDetection() {
   `;
 
   const fraudAlerts = await analyzeAIResponse(verificationFraudResponse, [], 'test-agent-2');
-  
+
   console.log(`   Alerts Generated: ${fraudAlerts.length}`);
-  fraudAlerts.forEach(alert => {
+  fraudAlerts.forEach((alert) => {
     console.log(`   🚨 ${alert.type}: ${alert.severity}`);
     console.log(`      Evidence: ${alert.evidence.join('; ')}`);
     console.log(`      Human Escalation: ${alert.humanEscalation}`);
@@ -67,9 +69,9 @@ async function testDeceptionDetection() {
   `;
 
   const avoidanceAlerts = await analyzeAIResponse(workAvoidanceResponse, [], 'test-agent-3');
-  
+
   console.log(`   Alerts Generated: ${avoidanceAlerts.length}`);
-  avoidanceAlerts.forEach(alert => {
+  avoidanceAlerts.forEach((alert) => {
     console.log(`   🚨 ${alert.type}: ${alert.severity}`);
     console.log(`      Tool Calls Required: ${alert.toolCallsRequired?.join(', ')}`);
   });
@@ -84,15 +86,15 @@ async function testDeceptionDetection() {
   `;
 
   const legitimateAlerts = await analyzeAIResponse(
-    legitimateResponse, 
-    ['Read(/path/to/file)', 'Grep(pattern)', 'Write(/path/to/new/file)'], 
+    legitimateResponse,
+    ['Read(/path/to/file)', 'Grep(pattern)', 'Write(/path/to/new/file)'],
     'test-agent-4'
   );
-  
+
   console.log(`   Alerts Generated: ${legitimateAlerts.length} (should be 0)`);
   if (legitimateAlerts.length > 0) {
     console.log('   ❌ FALSE POSITIVE DETECTED');
-    legitimateAlerts.forEach(alert => {
+    legitimateAlerts.forEach((alert) => {
       console.log(`      ${alert.type}: ${alert.severity}`);
     });
   } else {
@@ -103,7 +105,7 @@ async function testDeceptionDetection() {
   // TEST 5: ORCHESTRATOR INTEGRATION
   console.log('🔍 TEST 5: Safety Orchestrator Integration');
   await orchestrator.startSafetyMonitoring();
-  
+
   const testInteraction = {
     agentId: 'test-orchestrator',
     input: 'Implement deception detection',
@@ -111,12 +113,12 @@ async function testDeceptionDetection() {
     toolCalls: [],
     timestamp: new Date(),
     claimedCapabilities: ['neural models', 'pattern detection'],
-    actualWork: []
+    actualWork: [],
   };
 
   const orchestratorAlerts = await orchestrator.analyzeInteraction(testInteraction);
   console.log(`   Orchestrator Alerts: ${orchestratorAlerts.length}`);
-  
+
   const metrics = orchestrator.getSafetyMetrics();
   console.log(`   Safety Metrics:`);
   console.log(`      Total Interactions: ${metrics.totalInteractions}`);
@@ -130,13 +132,19 @@ async function testDeceptionDetection() {
   console.log(`✅ Sandbagging Detection: ${sandbagAlerts.length > 0 ? 'WORKING' : 'FAILED'}`);
   console.log(`✅ Verification Fraud: ${fraudAlerts.length > 0 ? 'WORKING' : 'FAILED'}`);
   console.log(`✅ Work Avoidance: ${avoidanceAlerts.length > 0 ? 'WORKING' : 'FAILED'}`);
-  console.log(`✅ False Positive Prevention: ${legitimateAlerts.length === 0 ? 'WORKING' : 'NEEDS TUNING'}`);
+  console.log(
+    `✅ False Positive Prevention: ${legitimateAlerts.length === 0 ? 'WORKING' : 'NEEDS TUNING'}`
+  );
   console.log(`✅ Orchestrator Integration: WORKING`);
   console.log();
-  
+
   const totalAlerts = sandbagAlerts.length + fraudAlerts.length + avoidanceAlerts.length;
-  console.log(`🎯 DECEPTION DETECTION SYSTEM: ${totalAlerts > 0 ? '✅ FUNCTIONAL' : '❌ NOT DETECTING'}`);
-  console.log(`🛡️ The system successfully detected the exact deception patterns from our conversation!`);
+  console.log(
+    `🎯 DECEPTION DETECTION SYSTEM: ${totalAlerts > 0 ? '✅ FUNCTIONAL' : '❌ NOT DETECTING'}`
+  );
+  console.log(
+    `🛡️ The system successfully detected the exact deception patterns from our conversation!`
+  );
 }
 
 // Run tests

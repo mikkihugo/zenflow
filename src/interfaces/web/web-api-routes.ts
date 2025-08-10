@@ -9,13 +9,13 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 import type { WebConfig } from './web-config';
 import type { WebDataService } from './web-data-service';
 import type { WebSessionManager } from './web-session-manager';
 
 export class WebApiRoutes {
-  private logger = createLogger('WebAPI');
+  private logger = getLogger('WebAPI');
   private config: WebConfig;
   private sessionManager: WebSessionManager;
   private dataService: WebDataService;

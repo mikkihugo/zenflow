@@ -11,10 +11,10 @@
 import { exec } from 'node:child_process';
 import * as os from 'node:os';
 import { promisify } from 'node:util';
-import { createLogger } from '../../../core/logger';
+import { getLogger } from '../../../config/logging-config';
 import type { DALFactory } from '../database/factory';
 
-const logger = createLogger({ prefix: 'HiveTools' });
+const logger = getLogger('HiveTools');
 
 export class HiveTools {
   private dalFactory: DALFactory | null = null;

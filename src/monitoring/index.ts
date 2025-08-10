@@ -41,7 +41,7 @@ export {
 } from './optimization/optimization-engine';
 export * from './performance/real-time-monitor';
 
-import { getConfig } from '../config';
+import { getConfig } from '../../config';
 import { type IntegrationConfig, SystemIntegration } from './integrations/system-integration';
 
 /**

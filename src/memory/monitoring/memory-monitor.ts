@@ -284,8 +284,8 @@ export class MemoryMonitor extends EventEmitter {
         timestamp: now,
         operationsPerSecond,
         averageLatency,
-        p95Latency,
-        p99Latency,
+        p95Latency: p95Latency || 0,
+        p99Latency: p99Latency || 0,
         totalMemoryUsage: process.memoryUsage().heapUsed / 1024 / 1024, // MB
         cacheSize: 100, // Simulated cache size in MB
         cacheHitRate,
@@ -463,7 +463,7 @@ export class MemoryMonitor extends EventEmitter {
    * Get current metrics.
    */
   getCurrentMetrics(): MemoryMetrics | null {
-    return this.metrics.length > 0 ? this.metrics[this.metrics.length - 1] : null;
+    return this.metrics.length > 0 ? (this.metrics[this.metrics.length - 1] ?? null) : null;
   }
 
   /**
@@ -577,7 +577,7 @@ export class MemoryMonitor extends EventEmitter {
       overall = 'critical';
     }
 
-    const recommendations = [];
+    const recommendations: string[] = [];
     if (scores.latency < 70) recommendations.push('Optimize system latency');
     if (scores.errorRate < 70) recommendations.push('Investigate and fix error sources');
     if (scores.memory < 70) recommendations.push('Optimize memory usage');

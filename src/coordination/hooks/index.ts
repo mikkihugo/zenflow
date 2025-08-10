@@ -7,15 +7,36 @@
  * @file Hooks module exports.
  */
 
-export * from './auto-agent-assignment';
-export * from './hook-manager';
 // Main Manager
+export * from './hook-manager';
 export { DefaultHookManager } from './hook-manager';
-// Core System
-export * from './hook-system-core';
+
+// Core System - explicit exports to avoid conflicts
+export {
+  HookSystem,
+  DefaultHookSystem,
+  FileOperation as CoreFileOperation,
+  Operation as CoreOperation,
+  RiskLevel as CoreRiskLevel,
+  SecurityRisk as CoreSecurityRisk,
+  ValidationResult as CoreValidationResult
+} from './hook-system-core';
+
+// Performance tracking
 export * from './performance-tracker';
-// Specialized Components
-export * from './safety-validator';
+
+// Safety validation - explicit exports with prefixes
+export {
+  FileOperationValidator,
+  FileOperation as SafetyFileOperation,
+  Operation as SafetyOperation,
+  RiskLevel as SafetyRiskLevel,
+  SecurityRisk as SafetySecurityRisk,
+  ValidationResult as SafetyValidationResult
+} from './safety-validator';
+
+// Auto agent assignment
+export * from './auto-agent-assignment';
 
 // Import for convenience function
 import { DefaultHookManager } from './hook-manager';

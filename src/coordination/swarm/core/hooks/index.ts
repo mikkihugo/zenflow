@@ -2,7 +2,7 @@
  * @file Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-hooks-index');
 
@@ -11,7 +11,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import type { AgentMemoryCoordinationDao } from '../../database';
+import type { AgentMemoryCoordinationDao } from '../../../../database';
 
 // import { DALFactory } from '../../database'; // TODO: Implement proper DI integration
 
@@ -816,7 +816,7 @@ class ZenSwarmHooks {
         ) {
           const memory = JSON.parse(await fs.readFile(memoryPath, 'utf-8'));
           this.sessionData = { ...this.sessionData, ...memory };
-          result?.restored.memory = true;
+          result.restored.memory = true;
         }
       }
 
@@ -833,7 +833,7 @@ class ZenSwarmHooks {
           roster.forEach((agent: any) => {
             this.sessionData.agents.set(agent.id, agent);
           });
-          result?.restored.agents = true;
+          result.restored.agents = true;
         }
       }
 
@@ -847,7 +847,7 @@ class ZenSwarmHooks {
       ) {
         const metrics = JSON.parse(await fs.readFile(metricsPath, 'utf-8'));
         this.sessionData.metrics = { ...this.sessionData.metrics, ...metrics };
-        result?.restored.metrics = true;
+        result.restored.metrics = true;
       }
     } catch (error) {
       logger.error('Session restore error:', error.message);

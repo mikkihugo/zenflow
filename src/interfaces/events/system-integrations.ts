@@ -57,8 +57,8 @@ export class UELEnhancedEventBus extends EventEmitter {
     if (options?.enableUEL && options?.uelIntegration?.eventManager) {
       this.initializeUELIntegration({
         eventManager: options.uelIntegration.eventManager,
-        managerType: options.uelIntegration.managerType,
-        managerName: options.uelIntegration.managerName,
+        managerType: options.uelIntegration.managerType || undefined,
+        managerName: options.uelIntegration.managerName || undefined,
       });
     }
   }
@@ -300,7 +300,7 @@ export class UELEnhancedEventBus extends EventEmitter {
  * @example
  */
 export class UELEnhancedApplicationCoordinator extends EventEmitter {
-  private uelSystem?: UEL;
+  private uelSystem?: any;
   private eventBus?: UELEnhancedEventBus;
   private systemManagers = new Map<string, IEventManager>();
   private logger?: any;
@@ -392,7 +392,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
     ];
 
     for (const [eventName, uelType] of mappings) {
-      this.eventBus.mapEventToUEL(eventName!, uelType);
+      this.eventBus.mapEventToUEL(eventName, uelType);
     }
 
     this.logger.debug(`Configured ${mappings.length} event mappings`);
@@ -462,7 +462,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
     };
     uel: {
       enabled: boolean;
-      systemStatus?: Awaited<ReturnType<UEL['getSystemStatus']>>;
+      systemStatus?: any;
       managersCreated: number;
     };
     eventBus?: ReturnType<UELEnhancedEventBus['getStatus']>;

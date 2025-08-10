@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /**
  * @file Test suite for test-external-servers.
  */
@@ -8,10 +9,10 @@
  * Tests connectivity and tool discovery for external MCP servers.
  */
 
+import { getLogger } from '../../config/logging-config';
 import { ExternalMCPClient } from './external-mcp-client';
-import { createLogger } from './simple-logger';
 
-const logger = createLogger('MCP-Test');
+const logger = getLogger('MCP-Test');
 
 /**
  * Test external MCP server connections.

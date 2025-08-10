@@ -11,9 +11,10 @@
  */
 
 import { getMCPServerURL } from '../../../config';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import type { IService, IServiceFactory, ServiceConfig } from '../core/interfaces';
 import type { ServiceType } from '../types';
-import { createLogger, type Logger } from '../utils/logger';
 import {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
@@ -68,7 +69,7 @@ export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig>
   private createdServices = new Map<string, IntegrationServiceAdapter>();
 
   constructor(options: IntegrationServiceFactoryOptions = {}) {
-    this.logger = createLogger('IntegrationServiceFactory');
+    this.logger = getLogger('IntegrationServiceFactory');
     this.options = {
       defaultBaseURL: getMCPServerURL(),
       defaultDatabaseType: 'postgresql',
@@ -139,7 +140,7 @@ export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig>
    * @param configs
    */
   async createMultiple(configs: ServiceConfig[]): Promise<IService[]> {
-    return Promise.all(configs.map(config => this.create(config)));
+    return Promise.all(configs.map((config) => this.create(config)));
   }
 
   /**
@@ -256,7 +257,7 @@ export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig>
    * @param type
    */
   getServicesByType(type: string): IService[] {
-    return Array.from(this.createdServices.values()).filter(service => service.type === type);
+    return Array.from(this.createdServices.values()).filter((service) => service.type === type);
   }
 
   /**
@@ -287,7 +288,7 @@ export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig>
           enabled: { type: 'boolean' },
           timeout: { type: 'number' },
         },
-        required: ['name', 'type']
+        required: ['name', 'type'],
       };
     }
     return undefined;
@@ -321,7 +322,9 @@ export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig>
         autoInitialize: true,
         enableVersioning: true,
         enableValidationTracking: true,
-        ...(this.options.enableGlobalCaching !== undefined && { cachingEnabled: this.options.enableGlobalCaching }),
+        ...(this.options.enableGlobalCaching !== undefined && {
+          cachingEnabled: this.options.enableGlobalCaching,
+        }),
       },
       safeAPI: { enabled: false },
       protocolManagement: {
@@ -336,21 +339,25 @@ export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig>
         maxSize: 1000,
         keyPrefix: `arch-storage-${name}:`,
       },
-      retry: this.options.defaultRetrySettings ? {
-        ...this.options.defaultRetrySettings,
-        retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
-          'architecture-save',
-          'architecture-retrieve',
-          'architecture-update',
-          'architecture-search',
-        ],
-      } : undefined,
+      retry: this.options.defaultRetrySettings
+        ? {
+            ...this.options.defaultRetrySettings,
+            retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
+              'architecture-save',
+              'architecture-retrieve',
+              'architecture-update',
+              'architecture-search',
+            ],
+          }
+        : undefined,
       security: this.options.defaultSecuritySettings,
       performance: {
         enableRequestDeduplication: true,
         connectionPooling: true,
         maxConcurrency: 10,
-        ...(this.options.enableGlobalMetrics !== undefined && { enableMetricsCollection: this.options.enableGlobalMetrics }),
+        ...(this.options.enableGlobalMetrics !== undefined && {
+          enableMetricsCollection: this.options.enableGlobalMetrics,
+        }),
       },
       ...options,
     });
@@ -411,21 +418,25 @@ export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig>
         maxSize: 500,
         keyPrefix: `safe-api-${name}:`,
       },
-      retry: this.options.defaultRetrySettings ? {
-        ...this.options.defaultRetrySettings,
-        retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
-          'api-get',
-          'api-post',
-          'api-put',
-          'api-delete',
-        ],
-      } : undefined,
+      retry: this.options.defaultRetrySettings
+        ? {
+            ...this.options.defaultRetrySettings,
+            retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
+              'api-get',
+              'api-post',
+              'api-put',
+              'api-delete',
+            ],
+          }
+        : undefined,
       security: this.options.defaultSecuritySettings,
       performance: {
         enableRequestDeduplication: true,
         connectionPooling: true,
         maxConcurrency: 20,
-        ...(this.options.enableGlobalMetrics !== undefined && { enableMetricsCollection: this.options.enableGlobalMetrics }),
+        ...(this.options.enableGlobalMetrics !== undefined && {
+          enableMetricsCollection: this.options.enableGlobalMetrics,
+        }),
       },
       ...options,
     });
@@ -491,20 +502,24 @@ export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig>
         maxSize: 200,
         keyPrefix: `protocol-mgmt-${name}:`,
       },
-      retry: this.options.defaultRetrySettings ? {
-        ...this.options.defaultRetrySettings,
-        retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
-          'protocol-connect',
-          'protocol-send',
-          'protocol-healthcheck',
-        ],
-      } : undefined,
+      retry: this.options.defaultRetrySettings
+        ? {
+            ...this.options.defaultRetrySettings,
+            retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
+              'protocol-connect',
+              'protocol-send',
+              'protocol-healthcheck',
+            ],
+          }
+        : undefined,
       security: this.options.defaultSecuritySettings,
       performance: {
         enableRequestDeduplication: false, // Protocols may need exact message delivery
         connectionPooling: true,
         maxConcurrency: 30,
-        ...(this.options.enableGlobalMetrics !== undefined && { enableMetricsCollection: this.options.enableGlobalMetrics }),
+        ...(this.options.enableGlobalMetrics !== undefined && {
+          enableMetricsCollection: this.options.enableGlobalMetrics,
+        }),
       },
       ...options,
     });
@@ -603,22 +618,26 @@ export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig>
         maxSize: 2000, // Larger cache for unified service
         keyPrefix: `unified-integration-${name}:`,
       },
-      retry: this.options.defaultRetrySettings ? {
-        ...this.options.defaultRetrySettings,
-        retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
-          'architecture-save',
-          'architecture-retrieve',
-          'api-get',
-          'api-post',
-          'protocol-connect',
-        ],
-      } : undefined,
+      retry: this.options.defaultRetrySettings
+        ? {
+            ...this.options.defaultRetrySettings,
+            retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
+              'architecture-save',
+              'architecture-retrieve',
+              'api-get',
+              'api-post',
+              'protocol-connect',
+            ],
+          }
+        : undefined,
       security: this.options.defaultSecuritySettings,
       performance: {
         enableRequestDeduplication: true,
         connectionPooling: true,
         maxConcurrency: 50,
-        ...(this.options.enableGlobalMetrics !== undefined && { enableMetricsCollection: this.options.enableGlobalMetrics }),
+        ...(this.options.enableGlobalMetrics !== undefined && {
+          enableMetricsCollection: this.options.enableGlobalMetrics,
+        }),
       },
       ...adapterOptions,
     });

@@ -6,7 +6,7 @@
  * @file Wasm-optimizer implementation.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type { WasmOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface WasmOptimizationConfig {
@@ -39,7 +39,8 @@ export interface WasmCapabilities {
 export interface WasmModule {
   name: string;
   size: number;
-  operations: string[];
+  compilationTime: number;
+  instantiated: boolean;
 }
 
 export interface LoadingOptimization {
@@ -85,7 +86,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   private moduleCache: Map<string, WebAssembly.Module> = new Map();
   private instanceCache: Map<string, WebAssembly.Instance> = new Map();
   private capabilities: WasmCapabilities;
-  private logger = createLogger('WasmPerformanceOptimizer');
+  private logger = getLogger('WasmOptimizer');
 
   constructor(config: Partial<WasmOptimizationConfig> = {}) {
     this.config = {

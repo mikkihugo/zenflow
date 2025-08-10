@@ -418,7 +418,7 @@ export default {
   AuthTypes,
   HttpMethods,
   ClientStatuses,
-  DefaultClientConfigs,
+  ClientConfigs,
   ProtocolToClientTypeMap,
   HttpStatusCodes,
   WebSocketCloseCodes,

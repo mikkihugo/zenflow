@@ -7,17 +7,18 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '@core/logger';
-import type { FACTSearchQuery, FACTStorageStats } from '../knowledge/types/fact-types';
+import { getLogger } from '../config/logging-config';
+import type { FACTSearchQuery, FACTStorageStats, FACTKnowledgeEntry } from '../knowledge/types/fact-types';
 import type { HiveSwarmCoordinatorInterface } from './shared-types';
 
 // Type alias for backward compatibility
 type HiveSwarmCoordinator = HiveSwarmCoordinatorInterface;
+
 import type { HiveFACTConfig, UniversalFact } from './hive-types';
 
 // import { FACTExternalOrchestrator } from './mcp/tools/fact-external-integration'; // TODO: Migrate to unified MCP
 
-const logger = createLogger({ prefix: 'Hive-FACT' });
+const logger = getLogger('Hive-FACT');
 
 /**
  * Temporary interface for factOrchestrator until unified MCP migration is complete.
@@ -164,11 +165,67 @@ export class HiveFACTSystem extends EventEmitter {
   }
 
   /**
+   * Store a fact in the universal knowledge base.
+   * Implements the required method from HiveFACTSystemInterface.
+   *
+   * @param fact - The fact to store
+   */
+  async storeFact(fact: UniversalFact): Promise<void> {
+    const factKey = `${fact.type}:${fact.subject}`;
+    
+    // Ensure fact has required metadata
+    const storedFact: UniversalFact = {
+      ...fact,
+      timestamp: fact.timestamp || Date.now(),
+      accessCount: fact.accessCount || 0,
+      swarmAccess: fact.swarmAccess || new Set(),
+      freshness: fact.freshness || 'fresh',
+    };
+    
+    // Store in local cache
+    this.universalFacts.set(factKey, storedFact);
+    
+    // Emit update event for coordination
+    this.emit('factStored', storedFact);
+    
+    logger.debug(`Stored fact: ${factKey}`);
+  }
+
+  /**
    * Search for facts across all knowledge.
+   * Returns compatible FACTKnowledgeEntry format for interface compliance.
    *
    * @param query
    */
-  async searchFacts(query: FACTSearchQuery): Promise<UniversalFact[]> {
+  async searchFacts(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
+    const results: UniversalFact[] = [];
+
+    // Search in cached facts first
+    for (const [_key, fact] of this.universalFacts) {
+      if (this.matchesQuery(fact, query)) {
+        results.push(fact);
+      }
+    }
+
+    // If not enough results, query external sources
+    if (results.length < (query.limit || 10)) {
+      const externalResults = await this.searchExternalFacts(query);
+      results.push(...externalResults);
+    }
+
+    // Sort by relevance and limit
+    const sortedResults = results
+      ?.sort((a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0))
+      .slice(0, query.limit || 10);
+
+    // Convert to FACTKnowledgeEntry format
+    return sortedResults.map(fact => this.convertToFACTKnowledgeEntry(fact, query));
+  }
+
+  /**
+   * Internal method to search facts returning UniversalFact format.
+   */
+  async searchFactsInternal(query: FACTSearchQuery): Promise<UniversalFact[]> {
     const results: UniversalFact[] = [];
 
     // Search in cached facts first
@@ -411,7 +468,12 @@ export class HiveFACTSystem extends EventEmitter {
     // Try to use real search implementation if available
     try {
       if (this.factOrchestrator && typeof this.factOrchestrator.gatherKnowledge === 'function') {
-        const result = await this.factOrchestrator.gatherKnowledge(query.query || '', {
+        // Use buildQueryForFactType if we have a specific type
+        const searchQuery = query.type && query.query
+          ? this.buildQueryForFactType(query.type as UniversalFact['type'], query.query)
+          : query.query || '';
+
+        const result = await this.factOrchestrator.gatherKnowledge(searchQuery, {
           sources: this.config.knowledgeSources || ['web', 'internal'],
           maxResults: query.limit || 10,
           timeout: query.timeout || 30000,
@@ -511,8 +573,9 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Get statistics about the FACT system.
+   * Interface-compatible method for HiveFACTSystemInterface.
    */
-  getStats(): FACTStorageStats & { swarmUsage: Record<string, number> } {
+  async getStats(): Promise<FACTStorageStats> {
     const swarmUsage: Record<string, number> = {};
 
     // Calculate per-swarm usage
@@ -540,7 +603,31 @@ export class HiveFACTSystem extends EventEmitter {
       ),
       topDomains: this.config.knowledgeSources || [],
       storageHealth: 'excellent',
-      swarmUsage,
+    };
+  }
+
+  /**
+   * Convert UniversalFact to FACTKnowledgeEntry format for interface compatibility.
+   * 
+   * @param fact Universal fact to convert
+   * @param query Original query for context
+   */
+  private convertToFACTKnowledgeEntry(fact: UniversalFact, query: FACTSearchQuery): FACTKnowledgeEntry {
+    return {
+      query: query.query || fact.subject || '',
+      result: typeof fact.content === 'object' 
+        ? JSON.stringify(fact.content)
+        : String(fact.content || ''),
+      ttl: fact.metadata?.ttl || this.getTTLForFactType(fact.type),
+      lastAccessed: Date.now(),
+      metadata: {
+        source: fact.source || 'unknown',
+        timestamp: fact.timestamp,
+        confidence: fact.confidence || 0.5,
+        factId: fact.id,
+        factType: fact.type,
+        subject: fact.subject
+      }
     };
   }
 

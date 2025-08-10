@@ -14,7 +14,7 @@ export interface WASMExports {
 
   // Swarm class
   ZenSwarm: {
-    new (config: any): ZenSwarm;
+    new (config: SwarmConfig): ZenSwarm;
   };
 
   // Agent class
@@ -26,12 +26,12 @@ export interface WASMExports {
   console_log(message: string): void;
   console_error(message: string): void;
   console_warn(message: string): void;
-  format_js_error(error: any): string;
+  format_js_error(error: Error | unknown): string;
   get_wasm_memory_usage(): bigint;
 
   // Array conversion utilities
-  js_array_to_vec_f32(array: any): Float32Array;
-  vec_f32_to_js_array(vec: Float32Array): any;
+  js_array_to_vec_f32(array: number[] | Float32Array): Float32Array;
+  vec_f32_to_js_array(vec: Float32Array): number[];
 }
 
 export interface RuntimeFeatures {
@@ -45,10 +45,10 @@ export interface ZenSwarm {
   readonly name: string;
   readonly agent_count: number;
   readonly max_agents: number;
-  spawn(config: any): Promise<JsAgent>;
-  orchestrate(task: any): Promise<any>;
+  spawn(config: AgentConfig): Promise<JsAgent>;
+  orchestrate(task: TaskDescriptor): Promise<TaskResult>;
   get_agents(): string[];
-  get_status(): any;
+  get_status(): SwarmStatus;
 }
 
 export interface JsAgent {
@@ -56,8 +56,66 @@ export interface JsAgent {
   readonly agent_type: string;
   readonly status: string;
   readonly tasks_completed: number;
-  execute(task: any): Promise<any>;
-  get_metrics(): any;
+  execute(task: TaskDescriptor): Promise<TaskResult>;
+  get_metrics(): AgentMetrics;
   get_capabilities(): string[];
   reset(): void;
+}
+
+export interface SwarmConfig {
+  name?: string;
+  topology?: 'mesh' | 'star' | 'hierarchical' | 'ring';
+  strategy?: 'balanced' | 'specialized' | 'adaptive';
+  maxAgents?: number;
+  enableCognitiveDiversity?: boolean;
+}
+
+export interface AgentConfig {
+  type?: 'researcher' | 'coder' | 'analyst' | 'optimizer' | 'coordinator';
+  name?: string;
+  capabilities?: string[];
+  cognitivePattern?: string;
+}
+
+export interface TaskDescriptor {
+  description: string;
+  priority?: 'low' | 'medium' | 'high' | 'critical';
+  dependencies?: string[];
+  maxAgents?: number;
+  estimatedDuration?: number;
+}
+
+export interface TaskResult {
+  id: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'failed';
+  result?: unknown;
+  error?: string;
+  duration?: number;
+}
+
+export interface SwarmStatus {
+  id: string;
+  agents: {
+    total: number;
+    active: number;
+    idle: number;
+  };
+  tasks: {
+    total: number;
+    pending: number;
+    in_progress: number;
+    completed: number;
+  };
+  performance?: {
+    throughput: number;
+    latency: number;
+  };
+}
+
+export interface AgentMetrics {
+  tasksCompleted: number;
+  averageExecutionTime: number;
+  successRate: number;
+  memoryUsage: number;
+  capabilities: string[];
 }

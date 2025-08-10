@@ -105,7 +105,8 @@ export * from './integration-service-helpers';
 
 // Integration with global service registry
 import { globalServiceRegistry } from '../factories';
-import { type IServiceFactory, type ServiceConfig, ServiceType } from '../types';
+import { ServiceType } from '../types';
+import { type IServiceFactory, type ServiceConfig } from '../core/interfaces';
 import { CoordinationServiceAdapter } from './coordination-service-adapter';
 import { coordinationServiceFactory } from './coordination-service-factory';
 // Additional imports for default export
@@ -276,7 +277,7 @@ registerInfrastructureServiceFactory();
 
 export default {
   DataServiceAdapter,
-  DataServiceFactory,
+  DataServiceFactory: globalDataServiceFactory,
   DataServiceHelper,
   DataServiceUtils,
   globalDataServiceFactory,
@@ -286,7 +287,7 @@ export default {
   coordinationServiceFactory,
   registerCoordinationServiceFactory,
   IntegrationServiceAdapter,
-  IntegrationServiceFactory,
+  IntegrationServiceFactory: integrationServiceFactory,
   integrationServiceFactory,
   registerIntegrationServiceFactory,
   InfrastructureServiceAdapter,

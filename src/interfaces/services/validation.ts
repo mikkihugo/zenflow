@@ -9,12 +9,21 @@
  * @file Interface implementation: validation.
  */
 
-import { createLogger, type Logger } from '../../core/logger';
+import { getLogger, type Logger } from '../../config/logging-config';
 import { USLCompatibilityLayer } from './compatibility';
 import type { IService, ServiceLifecycleStatus } from './core/interfaces';
 import type { ServiceManager } from './manager';
 import type { EnhancedServiceRegistry } from './registry';
 import { ServiceType } from './types';
+
+interface ServicePerformanceData {
+  performance: {
+    responseTime: number;
+    memoryUsage: number;
+    errorRate: number;
+    availability: number;
+  };
+}
 
 export interface ValidationConfig {
   /** Validation strictness level */
@@ -105,7 +114,7 @@ export interface ValidationSectionResult {
     name: string;
     status: 'pass' | 'warning' | 'fail';
     message: string;
-    details?: any;
+    details?: Record<string, unknown>;
     duration: number;
   }>;
   warnings: string[];
@@ -159,7 +168,7 @@ export class USLValidationFramework {
     this.serviceManager = serviceManager;
     this.registry = registry;
     this.compatibility = new USLCompatibilityLayer();
-    this.logger = createLogger('USLValidation');
+    this.logger = getLogger('USLValidation');
 
     this.config = {
       strictness: config?.strictness || 'moderate',
@@ -1102,7 +1111,12 @@ export class USLValidationFramework {
   private async performLoadTest(): Promise<{
     success: boolean;
     message: string;
-    metrics: any;
+    metrics: {
+      responseTime: number;
+      memoryUsage: number;
+      errorRate: number;
+      availability: number;
+    };
     duration: number;
   }> {
     // TODO: Implement load testing
@@ -1131,7 +1145,11 @@ export class USLValidationFramework {
   private async checkSensitiveDataExposure(): Promise<{
     exposed: boolean;
     message: string;
-    details: any;
+    details: {
+      testResults?: Record<string, boolean>;
+      performanceMetrics?: Record<string, number>;
+      configuration?: Record<string, unknown>;
+    };
     duration: number;
   }> {
     // TODO: Implement sensitive data exposure checking
@@ -1151,7 +1169,11 @@ export class USLValidationFramework {
   private async validateLegacyAPIs(): Promise<{
     compatible: boolean;
     message: string;
-    details: any;
+    details: {
+      testResults?: Record<string, boolean>;
+      performanceMetrics?: Record<string, number>;
+      configuration?: Record<string, unknown>;
+    };
     issues: string[];
   }> {
     // TODO: Implement legacy API validation
@@ -1166,7 +1188,11 @@ export class USLValidationFramework {
   private async testServiceCommunication(): Promise<{
     success: boolean;
     message: string;
-    details: any;
+    details: {
+      testResults?: Record<string, boolean>;
+      performanceMetrics?: Record<string, number>;
+      configuration?: Record<string, unknown>;
+    };
     errors: string[];
   }> {
     // TODO: Implement service communication testing
@@ -1181,7 +1207,11 @@ export class USLValidationFramework {
   private async testDataFlowIntegrity(): Promise<{
     success: boolean;
     message: string;
-    details: any;
+    details: {
+      testResults?: Record<string, boolean>;
+      performanceMetrics?: Record<string, number>;
+      configuration?: Record<string, unknown>;
+    };
     warnings: string[];
   }> {
     // TODO: Implement data flow integrity testing
@@ -1196,7 +1226,11 @@ export class USLValidationFramework {
   private async checkIntegrationHealth(): Promise<{
     healthy: boolean;
     message: string;
-    details: any;
+    details: {
+      testResults?: Record<string, boolean>;
+      performanceMetrics?: Record<string, number>;
+      configuration?: Record<string, unknown>;
+    };
     issues: string[];
   }> {
     // TODO: Implement integration health checking
@@ -1211,7 +1245,15 @@ export class USLValidationFramework {
   private async performFailoverTest(): Promise<{
     success: boolean;
     message: string;
-    results: any;
+    results: {
+      passed: number;
+      failed: number;
+      testCases: Array<{
+        name: string;
+        status: 'passed' | 'failed';
+        duration?: number;
+      }>;
+    };
     duration: number;
   }> {
     // TODO: Implement failover testing
@@ -1223,8 +1265,8 @@ export class USLValidationFramework {
     };
   }
 
-  private calculateP95ResponseTime(services: Record<string, any>): number {
-    const responseTimes = Object.values(services).map((s: any) => s.performance.responseTime);
+  private calculateP95ResponseTime(services: Record<string, ServicePerformanceData>): number {
+    const responseTimes = Object.values(services).map((s) => s.performance.responseTime);
     if (responseTimes.length === 0) return 0;
 
     responseTimes?.sort((a, b) => a - b);
@@ -1232,8 +1274,8 @@ export class USLValidationFramework {
     return responseTimes?.[p95Index] || 0;
   }
 
-  private calculateTotalMemoryUsage(services: Record<string, any>): number {
-    return Object.values(services).reduce((total: number, s: any) => {
+  private calculateTotalMemoryUsage(services: Record<string, ServicePerformanceData>): number {
+    return Object.values(services).reduce((total: number, s) => {
       return total + (s.metrics?.memoryUsage?.used || 0);
     }, 0);
   }

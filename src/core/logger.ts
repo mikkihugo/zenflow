@@ -4,11 +4,15 @@
  * @module Logger
  */
 
-import { createBootstrapLogger, type ILogger, LogLevel as BootstrapLogLevel } from './bootstrap-logger';
+import {
+  type LogLevel as BootstrapLogLevel,
+  createBootstrapLogger,
+  type ILogger,
+} from './bootstrap-logger';
 
+export type { ILogger } from './bootstrap-logger';
 // Re-export for compatibility
 export { LogLevel } from './bootstrap-logger';
-export type { ILogger } from './bootstrap-logger';
 
 export interface LoggerConfig {
   prefix?: string;
@@ -24,7 +28,7 @@ class EnhancedLogger implements ILogger {
   private bootstrapLogger: ILogger;
   private configLoaded: boolean = false;
   private prefix: string;
-  
+
   constructor(prefix: string) {
     this.prefix = prefix;
     this.bootstrapLogger = createBootstrapLogger(prefix);

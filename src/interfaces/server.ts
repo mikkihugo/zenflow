@@ -54,7 +54,7 @@ interface ServerConfig {
 
 export class UnifiedClaudeZenServer {
   private app: express.Application;
-  private server: any;
+  private server: any = null;
   private io?: SocketIOServer;
   private config: ServerConfig;
 
@@ -231,7 +231,7 @@ export class UnifiedClaudeZenServer {
 
     // Global error handler
     this.app.use(
-      (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+      (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
         logger.error('Unhandled server error', {
           error: err.message,
           stack: err.stack,
@@ -239,7 +239,7 @@ export class UnifiedClaudeZenServer {
           method: req.method,
         });
 
-        res.status(err.status || 500).json({
+        res.status((err as any).status || 500).json({
           error: 'Internal server error',
           message: process.env['NODE_ENV'] === 'production' ? 'Something went wrong' : err.message,
           timestamp: new Date().toISOString(),
@@ -353,7 +353,7 @@ export class UnifiedClaudeZenServer {
     await this.initialize();
 
     return new Promise((resolve, reject) => {
-      this.server
+      this.server!
         .listen(this.config.port, this.config.host, () => {
           logServerEvent(logger, 'started', {
             port: this.config.port,
@@ -384,7 +384,7 @@ export class UnifiedClaudeZenServer {
     return new Promise((resolve) => {
       logServerEvent(logger, 'stopping', { port: this.config.port });
 
-      this.server.close(() => {
+      this.server!.close(() => {
         logServerEvent(logger, 'stopped', { port: this.config.port });
         console.log('🛑 Unified Claude-Zen Server stopped');
         resolve();

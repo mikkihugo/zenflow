@@ -11,14 +11,14 @@
  * @file Dspy-integration management system.
  */
 
+import { getLogger } from '../config/logging-config';
 import DSPySwarmIntelligence from '../coordination/swarm/dspy-swarm-intelligence';
 import DSPyEnhancedMCPTools from '../interfaces/mcp/dspy-enhanced-tools';
 import { createDSPyWrapper, type DSPyWrapper } from '../neural/dspy-wrapper';
 import type { DSPyConfig, DSPySystemStats } from '../neural/types/dspy-types';
 import DSPyEnhancedOperations from './dspy-enhanced-operations';
-import { createLogger } from './logger';
 
-const logger = createLogger({ prefix: 'DSPyIntegrationManager' });
+const logger = getLogger('DSPyIntegrationManager');
 
 export interface DSPyUnifiedSystemStats extends DSPySystemStats {
   unified: {

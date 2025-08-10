@@ -8,7 +8,14 @@
  * @file Sqlite-backend implementation.
  */
 
-import type { FACTStorageBackend } from '../types/fact-types.js';
+import type {
+  FACTBackendStats,
+  FACTKnowledgeEntry,
+  FACTSearchQuery,
+  FACTStorageBackend,
+  FACTStorageConfig,
+  FACTStorageStats,
+} from '../types/fact-types.js';
 
 /**
  * SQLite-based FACT storage backend.
@@ -21,6 +28,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   private db: any; // SQLite database instance (stub)
   private stats: FACTBackendStats;
   private isInitialized: boolean = false;
+  private config: FACTStorageConfig;
 
   constructor(config: FACTStorageConfig) {
     this.config = config;
@@ -94,7 +102,7 @@ export class SQLiteBackend implements FACTStorageBackend {
    *
    * @param id
    */
-  async retrieve(id: string): Promise<FACTKnowledgeEntry | null> {
+  async get(id: string): Promise<FACTKnowledgeEntry | null> {
     await this.ensureInitialized();
 
     try {
@@ -154,7 +162,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   /**
    * Get storage statistics.
    */
-  async getStats(): Promise<FACTStorageStats> {
+  async getStats(): Promise<Partial<FACTStorageStats>> {
     await this.ensureInitialized();
 
     try {
@@ -189,6 +197,28 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   /**
+   * Clean up old entries beyond maxAge.
+   */
+  async cleanup(maxAge: number): Promise<number> {
+    await this.ensureInitialized();
+
+    try {
+      // TODO: Delete entries older than maxAge
+      // const stmt = this.db.prepare(`
+      //   DELETE FROM knowledge_entries
+      //   WHERE timestamp < ?
+      // `);
+      // const result = await stmt.run([Date.now() - maxAge]);
+      // return result.changes || 0;
+
+      // Stub implementation
+      return 0;
+    } catch (error) {
+      throw new Error(`Failed to cleanup entries: ${(error as Error).message}`);
+    }
+  }
+
+  /**
    * Clear all knowledge entries.
    */
   async clear(): Promise<void> {
@@ -210,7 +240,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   /**
    * Close database connection.
    */
-  async close(): Promise<void> {
+  async shutdown(): Promise<void> {
     if (this.db) {
       try {
         // TODO: Close SQLite database connection

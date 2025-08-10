@@ -17,6 +17,13 @@
  */
 
 import { EventEmitter } from 'node:events';
+// Import existing FACT integration.
+import {
+  type FACTConfig,
+  FACTIntegration,
+  type FACTQuery,
+  type FACTResult,
+} from '../../../knowledge/knowledge-client';
 import type {
   ClientConfig,
   ClientMetadata,
@@ -29,13 +36,6 @@ import type {
   KnowledgeStats,
   SemanticSearchOptions,
 } from '../interfaces';
-// Import existing FACT integration.
-import {
-  type FACTConfig,
-  FACTIntegration,
-  type FACTQuery,
-  type FACTResult,
-} from '../knowledge/knowledge-client';
 import type { ProtocolType } from '../types';
 import { ClientStatuses, ProtocolTypes } from '../types';
 
@@ -78,9 +78,9 @@ export interface KnowledgeClientConfig extends ClientConfig {
 export interface KnowledgeRequest {
   query: string;
   type: 'exact' | 'fuzzy' | 'semantic' | 'vector' | 'hybrid';
-  tools?: string[];
+  tools?: string[] | undefined;
   metadata?: Record<string, any>;
-  options?: KnowledgeQueryOptions;
+  options?: KnowledgeQueryOptions | undefined;
 }
 
 /**
@@ -116,8 +116,10 @@ export class KnowledgeClientAdapter
 {
   private factIntegration: FACTIntegration;
   private _connected = false;
+  private _status: string = ClientStatuses.DISCONNECTED;
   private metrics: ClientMetrics;
   private startTime: Date;
+  private queryCounter: number = 0;
 
   constructor(private config: KnowledgeClientConfig) {
     super();
@@ -313,8 +315,8 @@ export class KnowledgeClientAdapter
     const request: KnowledgeRequest = {
       query,
       type: 'semantic',
-      tools: this.config.tools,
-      options,
+      tools: this.config.tools || undefined,
+      options: options || undefined,
       metadata: { queryType: 'knowledge_query' },
     };
 
@@ -335,7 +337,7 @@ export class KnowledgeClientAdapter
       query: searchTerm,
       type: options?.fuzzy ? 'fuzzy' : 'exact',
       tools: ['web_scraper', 'documentation_parser'],
-      options,
+      options: options || undefined,
       metadata: { queryType: 'search' },
     };
 
@@ -457,8 +459,8 @@ export class KnowledgeClientAdapter
       query,
       type: 'semantic',
       tools: options?.vectorSearch ? ['vector_search', 'semantic_analyzer'] : ['semantic_analyzer'],
-      options,
-      metadata: { queryType: 'semantic_search', vectorSearch: options?.vectorSearch },
+      options: options || undefined,
+      metadata: { queryType: 'semantic_search', vectorSearch: options?.vectorSearch || undefined },
     };
 
     const response = await this.send<R>(request);
@@ -626,7 +628,11 @@ export class KnowledgeClientFactory implements IClientFactory {
    * @param protocol
    */
   supports(protocol: ProtocolType): boolean {
-    return [ProtocolTypes.HTTP, ProtocolTypes.HTTPS, ProtocolTypes.CUSTOM].includes(protocol);
+    return [
+      ProtocolTypes.HTTP as ProtocolType,
+      ProtocolTypes.HTTPS as ProtocolType,
+      ProtocolTypes.CUSTOM as ProtocolType,
+    ].includes(protocol);
   }
 
   /**

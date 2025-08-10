@@ -163,7 +163,10 @@ export class IntegratedSwarmService implements ISwarmService {
     await this.eventManager.notify(swarmEvent);
   }
 
-  async coordinateSwarm(swarmId: string, _operation: string): Promise<CoordinationResult> {
+  async coordinateSwarm(
+    swarmId: string,
+    context: CoordinationContext
+  ): Promise<CoordinationResult> {
     const agentGroup = this.agentManager.getSwarmGroup(swarmId);
     if (!agentGroup) {
       throw new Error(`Swarm ${swarmId} not found`);
@@ -178,21 +181,6 @@ export class IntegratedSwarmService implements ISwarmService {
         capabilities: agent.getCapabilities().map((cap) => cap.name),
         status: 'idle' as const,
       }));
-
-    // Use strategy pattern for coordination
-    const context: CoordinationContext = {
-      swarmId,
-      timestamp: new Date(),
-      resources: { cpu: 0.8, memory: 0.7, network: 0.6, storage: 0.9 },
-      constraints: {
-        maxLatency: 500,
-        minReliability: 0.9,
-        resourceLimits: { cpu: 1.0, memory: 1.0, network: 1.0, storage: 1.0 },
-        securityLevel: 'medium',
-      },
-      history: [],
-      agents: agents as any[], // Convert to Agent type
-    };
 
     return this.swarmCoordinator.executeCoordination(agents, context);
   }
@@ -483,7 +471,7 @@ export class IntegratedPatternSystem extends EventEmitter {
       realDatabaseService,
       realInterfaceService,
       realWorkflowService,
-      this.eventManager,
+      this.eventManager as any,
       this.commandQueue,
       logger,
       metrics
@@ -782,30 +770,30 @@ export class IntegratedPatternSystem extends EventEmitter {
     try {
       // Import memory coordinator with fallback
       const memoryModule = await import('./memory-coordinator').catch(() => null);
-      if (!memoryModule?.MemoryCoordinator) {
-        throw new Error('MemoryCoordinator not available');
+      if (!memoryModule?.MemorySystem) {
+        throw new Error('MemorySystem not available');
       }
-      const { MemoryCoordinator } = memoryModule;
-      const memoryCoordinator = new MemoryCoordinator();
+      const { MemorySystem } = memoryModule;
+      const memoryCoordinator = new MemorySystem({});
       await memoryCoordinator.initialize();
 
       return {
         store: async (key: string, value: any) => {
           await memoryCoordinator.store(key, value);
         },
-        retrieve: async (key: string) => {
-          return (await memoryCoordinator.retrieve(key)) || null;
+        retrieve: async <T>(key: string): Promise<T | null> => {
+          return ((await memoryCoordinator.retrieve(key)) as T) || null;
         },
         delete: async (key: string) => {
           const result = await memoryCoordinator.delete(key);
-          return result.status === 'success';
+          return (result as any)?.success || false;
         },
         list: async () => {
           const stats = await memoryCoordinator.getStats();
           return Array.from({ length: stats.entries }, (_, i) => `key-${i}`);
         },
         clear: async () => {
-          await memoryCoordinator.clear();
+          await (memoryCoordinator as any).clear();
           return 0; // Would need to track count
         },
         getStats: async () => {
@@ -850,14 +838,20 @@ export class IntegratedPatternSystem extends EventEmitter {
 
       const container = new DIContainer();
       // Register logger provider with proper typing
-      container.register(CORE_TOKENS.Logger, () => console as any);
+      container.register(CORE_TOKENS.Logger, {
+        type: 'singleton',
+        create: () => console as any,
+      });
       // Register config provider with proper typing
-      container.register(CORE_TOKENS.Config, () => ({}) as any);
+      container.register(CORE_TOKENS.Config, {
+        type: 'singleton',
+        create: () => ({}) as any,
+      });
       // Register DAL factory with proper arguments and typing
-      container.register(
-        DATABASE_TOKENS?.DALFactory,
-        () => new (DALFactory as any)(container, logger, {} as any)
-      );
+      container.register(DATABASE_TOKENS?.DALFactory, {
+        type: 'singleton',
+        create: () => new (DALFactory as any)(container, logger, {} as any),
+      });
 
       const _dalFactory = container.resolve(DATABASE_TOKENS?.DALFactory);
 

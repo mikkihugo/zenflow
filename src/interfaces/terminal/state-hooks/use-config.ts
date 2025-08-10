@@ -9,9 +9,9 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createLogger } from '../../../core/logger';
+import { getLogger } from '../../../config/logging-config';
 
-const logger = createLogger({ prefix: 'ConfigHook' });
+const logger = getLogger('ConfigHook');
 
 export interface TerminalConfig {
   theme: 'dark' | 'light';

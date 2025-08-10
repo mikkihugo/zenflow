@@ -19,8 +19,8 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   private _logger: ILogger;
 
   constructor(logger: ILogger, database: IDatabase, strategy?: SwarmStrategy) {
-    this._logger = logger;
     super();
+    this._logger = logger;
     this.strategy = strategy || new ZenSwarmStrategy();
     this.db = database;
   }
@@ -115,17 +115,18 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     _execution: any
   ): Promise<any> {
     const phaseIndex = plan.phases.indexOf(phase);
-    const assignments = plan.phaseAssignments[phaseIndex];
+    const assignments = plan.phaseAssignments.filter(assignment => assignment.phase === phase);
     const agentAssignments = await this.assignAgentsToPhase(task, assignments);
     const results = await Promise.all(
       agentAssignments.map((agentAssignment) =>
         this.strategy.assignTaskToAgent(agentAssignment.agent.id, {
-          phase,
-          taskInfo: task.description,
+          ...task,
+          id: `${task.id}-${phase}`,
+          description: `${task.description} (Phase: ${phase})`,
         })
       )
     );
-    return { phase, results };
+    return { phase, phaseIndex, results };
   }
 
   private async assignAgentsToPhase(
@@ -154,7 +155,16 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
 
   private async findSuitableAgent(requiredCapabilities: string[]): Promise<Agent | null> {
     const agents = await this.strategy.getAgents();
-    const suitableAgents = agents.filter(
+    // Convert SwarmAgents to Agent format for compatibility
+    const compatibleAgents: Agent[] = agents
+      .filter((agent) => agent.status === 'idle' || agent.status === 'busy')
+      .map((agent) => ({
+        id: agent.id,
+        capabilities: agent.capabilities,
+        status: agent.status as 'idle' | 'busy',
+      }));
+    
+    const suitableAgents = compatibleAgents.filter(
       (agent) =>
         agent.status === 'idle' &&
         requiredCapabilities.every((cap) => agent.capabilities.includes(cap))

@@ -1,6 +1,6 @@
 /**
  * @file Shared Command Interfaces.
- * 
+ *
  * Shared interfaces to prevent circular dependencies between CLI and Terminal interfaces.
  * Following dependency injection principles and interface segregation.
  */
@@ -8,13 +8,13 @@
 export interface CommandResult {
   success: boolean;
   message?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   error?: string;
   duration?: number;
   metadata?: {
     command: string;
     args: string[];
-    flags: Record<string, any>;
+    flags: Record<string, unknown>;
     timestamp: string;
   };
 }
@@ -51,7 +51,11 @@ export interface ModeDetectionResult {
  */
 export interface CommandRenderer {
   renderResult(result: CommandResult): React.ReactElement | null;
-  renderProgress(progress: { current: number; total: number; message?: string }): React.ReactElement | null;
+  renderProgress(progress: {
+    current: number;
+    total: number;
+    message?: string;
+  }): React.ReactElement | null;
   renderError(error: Error): React.ReactElement | null;
 }
 
@@ -61,7 +65,7 @@ export interface CommandRenderer {
  * @example
  */
 export interface TerminalApplication {
-  initialize(config?: any): Promise<void>;
+  initialize(config?: Record<string, unknown>): Promise<void>;
   execute(command: string, args: string[], flags: Record<string, any>): Promise<CommandResult>;
   shutdown(): Promise<void>;
 }

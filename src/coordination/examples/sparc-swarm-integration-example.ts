@@ -8,17 +8,17 @@
  * @file Coordination system: sparc-swarm-integration-example.
  */
 
-import { createLogger } from '../../core/logger';
-import { DatabaseDrivenSystem } from '../core/database-driven-system';
-import { WorkflowEngine } from '../core/workflow-engine';
-import type { FeatureDocumentEntity } from '../database/entities/product-entities';
-import { DocumentManager } from '../database/managers/document-manager';
+import { getLogger } from '../../config/logging-config';
+import { DatabaseDrivenSystem } from '../../core/database-driven-system';
+import { WorkflowEngine } from '../../core/workflow-engine';
+import type { FeatureDocumentEntity } from '../../database/entities/product-entities';
+import { DocumentManager } from '../../database/managers/document-manager';
+import type { DocumentType } from '../../workflows/types';
 import { DatabaseSPARCBridge } from '../database-sparc-bridge';
 import { SPARCSwarmCoordinator } from '../swarm/core/sparc-swarm-coordinator';
 import { TaskCoordinator } from '../task-coordinator';
-import type { DocumentType } from '../types/workflow-types';
 
-const logger = createLogger('SPARCSwarmIntegrationExample');
+const logger = getLogger('SPARCSwarmIntegrationExample');
 
 /**
  * Complete Integration Example.
@@ -41,8 +41,7 @@ export class SPARCSwarmIntegrationExample {
     // Initialize core systems with required dependencies
     const mockCoordinator = {} as any; // Mock for database coordinator
     const documentService = new DocumentManager(mockCoordinator);
-    const mockMemory = {} as any; // Mock for unified memory system
-    const workflowEngine = new WorkflowEngine(mockMemory, documentService);
+    const workflowEngine = new WorkflowEngine();
 
     this.databaseSystem = new DatabaseDrivenSystem(documentService, workflowEngine);
     this.sparcSwarm = new SPARCSwarmCoordinator();
@@ -149,8 +148,8 @@ export class SPARCSwarmIntegrationExample {
       ],
       stakeholders: ['Development Team', 'Product Manager', 'Quality Assurance'],
       timeline: {
-        startDate: new Date(),
-        targetCompletion: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+        start_date: new Date(),
+        target_completion: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
         milestones: [
           {
             name: 'SPARC Integration Complete',

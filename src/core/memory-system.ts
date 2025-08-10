@@ -21,9 +21,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from './logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger({ prefix: 'MemorySystem' });
+const logger = getLogger('MemorySystem');
 
 /**
  * JSON-serializable value type.

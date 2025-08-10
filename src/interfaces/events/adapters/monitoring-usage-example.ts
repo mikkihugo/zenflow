@@ -2,7 +2,7 @@
  * @file Interface implementation: monitoring-usage-example.
  */
 
-import { getLogger } from '../../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-events-adapters-monitoring-usage-example');
 
@@ -17,7 +17,6 @@ const logger = getLogger('interfaces-events-adapters-monitoring-usage-example');
 import {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
-  MonitoringEventAdapterFactory,
   MonitoringEventHelpers,
 } from './monitoring-event-adapter';
 import { MonitoringEventRegistry } from './monitoring-event-factory';
@@ -101,8 +100,9 @@ async function basicMonitoringExample(): Promise<void> {
  */
 async function performanceFocusedExample(): Promise<void> {
   // Create performance-focused monitoring adapter
-  const adapter = MonitoringEventAdapterFactory.createPerformanceMonitor('performance-monitor', {
+  const config = createDefaultMonitoringEventAdapterConfig('performance-monitor', {
     metricsOptimization: {
+      enabled: true,
       optimizationInterval: 30000, // 30 seconds
       performanceThresholds: {
         latency: 50,
@@ -110,8 +110,12 @@ async function performanceFocusedExample(): Promise<void> {
         accuracy: 0.99,
         resourceUsage: 0.7,
       },
+      dataAggregation: true,
+      intelligentSampling: true,
+      anomalyDetection: true,
     },
   });
+  const adapter = createMonitoringEventAdapter(config);
 
   try {
     await adapter.start();
@@ -161,15 +165,8 @@ async function performanceFocusedExample(): Promise<void> {
  */
 async function healthFocusedWithCorrelationExample(): Promise<void> {
   // Create health-focused monitoring adapter
-  const adapter = MonitoringEventAdapterFactory.createHealthMonitor('health-monitor', {
-    monitoring: {
-      correlationTTL: 300000, // 5 minutes
-      correlationPatterns: [
-        'monitoring:health->monitoring:alert',
-        'monitoring:metrics->monitoring:health',
-      ],
-    },
-  });
+  const config = createDefaultMonitoringEventAdapterConfig('health-monitor');
+  const adapter = createMonitoringEventAdapter(config);
 
   try {
     await adapter.start();
@@ -239,13 +236,22 @@ async function healthFocusedWithCorrelationExample(): Promise<void> {
  */
 async function analyticsFocusedExample(): Promise<void> {
   // Create analytics-focused monitoring adapter
-  const adapter = MonitoringEventAdapterFactory.createAnalyticsMonitor('analytics-monitor', {
+  const config = createDefaultMonitoringEventAdapterConfig('analytics-monitor', {
     metricsOptimization: {
+      enabled: true,
+      optimizationInterval: 120000,
+      performanceThresholds: {
+        latency: 100,
+        throughput: 1000,
+        accuracy: 0.98,
+        resourceUsage: 0.7,
+      },
       dataAggregation: true,
       intelligentSampling: true,
       anomalyDetection: true,
     },
   });
+  const adapter = createMonitoringEventAdapter(config);
 
   try {
     await adapter.start();
@@ -263,15 +269,8 @@ async function analyticsFocusedExample(): Promise<void> {
       operation: 'report',
       component: 'payment-system',
       details: {
-        insights: {
-          trends: ['increasing-transaction-volume', 'decreasing-latency'],
-          anomalies: ['unusual-error-spike-at-3am'],
-          predictions: {
-            nextHourVolume: 2500,
-            expectedLatency: 125,
-            confidenceLevel: 0.87,
-          },
-        },
+        metricName: 'analytics_insights',
+        metricValue: 2500,
         severity: 'info',
       },
     });
@@ -283,12 +282,8 @@ async function analyticsFocusedExample(): Promise<void> {
       operation: 'anomaly',
       component: 'fraud-detection',
       details: {
-        insights: {
-          anomalyType: 'statistical-outlier',
-          confidence: 0.94,
-          severity: 'high',
-          affectedMetrics: ['transaction-velocity', 'geographic-dispersion'],
-        },
+        metricName: 'anomaly_detection',
+        metricValue: 0.94,
         severity: 'warning',
       },
     });
@@ -309,11 +304,17 @@ async function analyticsFocusedExample(): Promise<void> {
  */
 async function alertManagementExample(): Promise<void> {
   // Create alert-focused monitoring adapter
-  const adapter = MonitoringEventAdapterFactory.createAlertMonitor('alert-monitor', {
+  const config = createDefaultMonitoringEventAdapterConfig('alert-monitor', {
     alertManagement: {
+      enabled: true,
+      wrapAlertEvents: true,
+      wrapEscalationEvents: true,
+      wrapResolutionEvents: true,
+      wrapNotificationEvents: true,
       alertLevels: ['info', 'warning', 'error', 'critical'],
     },
   });
+  const adapter = createMonitoringEventAdapter(config);
 
   try {
     await adapter.start();
@@ -336,7 +337,7 @@ async function alertManagementExample(): Promise<void> {
         alertId,
         severity: 'warning',
         threshold: 85,
-        currentValue: 87,
+        metricValue: 87,
       },
     });
 
@@ -350,7 +351,7 @@ async function alertManagementExample(): Promise<void> {
         alertId,
         severity: 'error',
         threshold: 85,
-        currentValue: 92,
+        metricValue: 92,
       },
     });
 
@@ -364,7 +365,7 @@ async function alertManagementExample(): Promise<void> {
         alertId,
         severity: 'critical',
         threshold: 85,
-        currentValue: 97,
+        metricValue: 97,
       },
     });
 
@@ -384,7 +385,8 @@ async function alertManagementExample(): Promise<void> {
  */
 async function comprehensiveMonitoringExample(): Promise<void> {
   // Create comprehensive monitoring adapter
-  const adapter = MonitoringEventAdapterFactory.createComprehensiveMonitor('comprehensive-monitor');
+  const config = createDefaultMonitoringEventAdapterConfig('comprehensive-monitor');
+  const adapter = createMonitoringEventAdapter(config);
 
   try {
     // Register with monitoring registry for lifecycle management
@@ -413,7 +415,7 @@ async function comprehensiveMonitoringExample(): Promise<void> {
       component: 'web-cluster',
       correlationId: scenarioId,
       details: {
-        performanceData: { cpu: 85, memory: 78, latency: 150, throughput: 1200, errorRate: 0.05 },
+        performanceData: { cpu: 85, memory: 78, disk: 45, network: 28, latency: 150, throughput: 1200, errorRate: 0.05 },
       },
     });
 
@@ -455,10 +457,8 @@ async function comprehensiveMonitoringExample(): Promise<void> {
       component: 'web-cluster',
       correlationId: scenarioId,
       details: {
-        insights: {
-          diagnosis: 'High CPU usage causing increased response times',
-          recommendations: ['Scale horizontally', 'Optimize queries', 'Enable caching'],
-        },
+        metricName: 'system_insights',
+        metricValue: 85,
       },
     });
 
@@ -552,11 +552,22 @@ async function helperFunctionsExample(): Promise<void> {
  */
 async function highPerformanceExample(): Promise<void> {
   // Create high-throughput adapter
-  const throughputAdapter =
-    MonitoringEventAdapterFactory.createHighThroughputMonitor('throughput-test');
+  const throughputConfig = createDefaultMonitoringEventAdapterConfig('throughput-test', {
+    processing: {
+      strategy: 'queued',
+      queueSize: 10000,
+    },
+  });
+  const throughputAdapter = createMonitoringEventAdapter(throughputConfig);
 
   // Create low-latency adapter
-  const latencyAdapter = MonitoringEventAdapterFactory.createLowLatencyMonitor('latency-test');
+  const latencyConfig = createDefaultMonitoringEventAdapterConfig('latency-test', {
+    processing: {
+      strategy: 'immediate',
+      queueSize: 1000,
+    },
+  });
+  const latencyAdapter = createMonitoringEventAdapter(latencyConfig);
 
   try {
     await Promise.all([throughputAdapter.start(), latencyAdapter.start()]);
@@ -564,8 +575,8 @@ async function highPerformanceExample(): Promise<void> {
     let throughputEvents = 0;
     let latencyEvents = 0;
 
-    throughputAdapter.subscribe(['monitoring:metrics'], () => throughputEvents++);
-    latencyAdapter.subscribe(['monitoring:performance'], () => latencyEvents++);
+    throughputAdapter.subscribe(['monitoring:metrics'], () => { throughputEvents++; });
+    latencyAdapter.subscribe(['monitoring:performance'], () => { latencyEvents++; });
 
     const startTime = Date.now();
 
@@ -575,8 +586,8 @@ async function highPerformanceExample(): Promise<void> {
       throughputPromises.push(
         throughputAdapter.emitPerformanceMonitoringEvent({
           source: `source-${i % 10}`,
-          type: 'monitoring:metrics',
-          operation: 'collect',
+          type: 'monitoring:metrics' as const,
+          operation: 'collect' as const,
           component: `component-${i % 5}`,
           details: { metricName: `metric_${i}`, metricValue: Math.random() * 100 },
         })
@@ -589,13 +600,18 @@ async function highPerformanceExample(): Promise<void> {
       latencyPromises.push(
         latencyAdapter.emitPerformanceMonitoringEvent({
           source: `latency-source-${i}`,
-          type: 'monitoring:performance',
-          operation: 'collect',
+          type: 'monitoring:performance' as const,
+          operation: 'collect' as const,
           component: 'latency-critical',
           details: {
             performanceData: {
+              cpu: 50,
+              memory: 60,
+              disk: 30,
+              network: 20,
               latency: Math.random() * 50,
               throughput: 1000 + Math.random() * 2000,
+              errorRate: 0.01,
             },
           },
         })

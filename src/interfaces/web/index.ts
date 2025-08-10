@@ -25,6 +25,10 @@ export {
   WebSocketCoordinator,
 } from './web-socket-coordinator';
 
+// Import the types for internal use
+import type { WebConfig } from './web-interface-server';
+import { WebInterfaceServer } from './web-interface-server';
+
 // Re-export convenience functions
 export const createWebServer = (config?: WebConfig) => {
   return new WebInterfaceServer(config);

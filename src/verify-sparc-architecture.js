@@ -159,7 +159,7 @@ async function verifyDatabaseDrivenArchitecture() {
     };
     const architecture = await architectureEngine.designArchitecture(samplePseudocode);
     const validation = await architectureEngine.validateArchitecturalConsistency(
-      architecture.systemArchitecture,
+      architecture.systemArchitecture
     );
     try {
       const _retrievedArchitecture = await architectureEngine.getArchitectureById(architecture.id);

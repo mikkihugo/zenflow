@@ -13,6 +13,8 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import type { IService, IServiceFactory, ServiceMetrics, ServiceStatus } from '../core/interfaces';
 import {
   ServiceConfigurationError,
@@ -21,7 +23,6 @@ import {
   ServiceOperationError,
 } from '../core/interfaces';
 import { ServiceType } from '../types';
-import { createLogger, type Logger } from '../utils/logger';
 import {
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig,
@@ -81,7 +82,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
   private metricsTimer?: NodeJS.Timer;
 
   constructor(config: DataServiceFactoryConfig = {}) {
-    this.logger = createLogger('DataServiceFactory');
+    this.logger = getLogger('DataServiceFactory');
     this.config = {
       defaultWebDataConfig: {
         enabled: true,

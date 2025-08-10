@@ -66,7 +66,7 @@ export interface ComputeUnit {
 }
 
 export interface AccelerationResult {
-  accelerationType: 'GPU' | 'WASM' | 'CPU';
+  accelerationType: 'GPU' | 'WASM' | 'SIMD';
   speedImprovement: number;
   resourceUtilization: number;
   fallbackStrategy: string;
@@ -220,10 +220,10 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   public async enableGPUAcceleration(computeUnits: ComputeUnit[]): Promise<AccelerationResult> {
     if (!this.config.enableGPUAcceleration) {
       return {
-        accelerationType: 'WASM',
+        accelerationType: 'SIMD',
         speedImprovement: 1.0,
         resourceUtilization: 0,
-        fallbackStrategy: 'CPU processing',
+        fallbackStrategy: 'SIMD processing',
       };
     }
 
@@ -420,17 +420,17 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
       const speedImprovement = simdSupport ? 8.0 : 4.0; // 8x with SIMD, 4x without
 
       return {
-        accelerationType: 'WASM',
+        accelerationType: 'SIMD',
         speedImprovement,
         resourceUtilization: 0.6,
-        fallbackStrategy: 'CPU processing',
+        fallbackStrategy: 'SIMD processing',
       };
     } catch (_error) {
       return {
-        accelerationType: 'WASM',
+        accelerationType: 'SIMD',
         speedImprovement: 1.0,
         resourceUtilization: 0,
-        fallbackStrategy: 'CPU processing',
+        fallbackStrategy: 'SIMD processing',
       };
     }
   }

@@ -8,8 +8,8 @@
  * @file Interface implementation: system-event-factory.
  */
 
+import { getLogger } from '../../../config/logging-config';
 import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
-import { createLogger } from '../../../core/logger';
 import type { IEventManager, IEventManagerFactory } from '../core/interfaces';
 import { EventManagerTypes } from '../core/interfaces';
 import type { SystemEventAdapterConfig } from './system-event-adapter';
@@ -29,7 +29,7 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
   private instances = new Map<string, SystemEventAdapter>();
 
   constructor(logger?: ILogger, config?: IConfig) {
-    this.logger = logger || createLogger('SystemEventManagerFactory');
+    this.logger = logger || getLogger('SystemEventManagerFactory');
     this.config = config || {};
     this.logger.debug('SystemEventManagerFactory initialized');
   }

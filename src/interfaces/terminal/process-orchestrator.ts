@@ -192,9 +192,7 @@ export class TerminalManager extends EventEmitter {
           resolve({
             success: false,
             stdout,
-            stderr:
-              `${stderr 
-              }
+            stderr: `${stderr}
       Process error: ${error.message}`,
             exitCode: -1,
             duration,

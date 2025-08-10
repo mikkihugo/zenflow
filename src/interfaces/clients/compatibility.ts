@@ -5,17 +5,18 @@
  * Ensures zero breaking changes when transitioning to UACL architecture.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-clients-compatibility');
 
+import { getMCPServerURL } from '../../config/defaults';
+import { FACTIntegration } from '../../knowledge/knowledge-client';
 import { type APIClient, createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';
-import { getMCPServerURL } from '../config/url-builder';
-import { FACTIntegration } from '../knowledge/knowledge-client';
 import { ExternalMCPClient } from '../mcp/external-mcp-client';
-import { type ClientInstance, ClientType } from './types';
 import { uaclRegistry } from './core/client-registry';
+import type { ClientInstance } from './registry';
+import { ClientTypes } from './types';
 
 /**
  * Legacy HTTP Client Factory (Backward Compatible).
@@ -269,7 +270,11 @@ export class UACLMigrationHelper {
       total,
       migrated,
       pending: total - migrated,
-      details,
+      details: details.map((d) => ({
+        ...d,
+        clientType: d.clientType ?? '',
+        location: d.location ?? '',
+      })),
     };
   }
 
@@ -281,7 +286,7 @@ export class UACLMigrationHelper {
    * @param config
    */
   static async autoMigrate(
-    clientType: ClientType,
+    clientType: string,
     id: string,
     config: any
   ): Promise<ClientInstance | null> {
@@ -291,18 +296,18 @@ export class UACLMigrationHelper {
       await uacl.initialize();
 
       switch (clientType) {
-        case ClientType.HTTP:
+        case ClientTypes.HTTP:
           return await uacl.createHTTPClient(id, config?.baseURL, config);
-        case ClientType.WEBSOCKET:
+        case ClientTypes.WEBSOCKET:
           return await uacl.createWebSocketClient(id, config?.url, config);
-        case ClientType.KNOWLEDGE:
+        case ClientTypes.KNOWLEDGE:
           return await uacl.createKnowledgeClient(
             id,
             config?.factRepoPath,
             config?.anthropicApiKey,
             config
           );
-        case ClientType.MCP:
+        case ClientTypes.MCP:
           return await uacl.createMCPClient(id, config?.servers, config);
         default:
           return null;

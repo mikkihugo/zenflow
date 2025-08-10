@@ -7,6 +7,7 @@
  */
 
 import 'reflect-metadata';
+import type { DIToken } from '../types/di-types';
 import { getInjectionTokens, setInjectionTokens } from './injectable';
 
 /**

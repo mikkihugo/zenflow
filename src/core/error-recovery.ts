@@ -8,10 +8,10 @@
  * @file Error-recovery implementation.
  */
 
+import { getLogger } from '../config/logging-config';
 import { isRecoverableError } from './errors';
-import { createLogger } from './logger';
 
-const logger = createLogger({ prefix: 'ErrorRecovery' });
+const logger = getLogger('ErrorRecovery');
 
 // ===============================
 // Circuit Breaker Implementation

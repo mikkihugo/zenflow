@@ -12,7 +12,7 @@ import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 
 export interface DaemonConfig {
   pidFile?: string;
@@ -36,7 +36,7 @@ export interface ProcessInfo {
  * @example
  */
 export class DaemonProcessManager {
-  private logger = createLogger('Daemon');
+  private logger = getLogger('Daemon');
   private config: Required<DaemonConfig>;
 
   constructor(config: DaemonConfig = {}) {

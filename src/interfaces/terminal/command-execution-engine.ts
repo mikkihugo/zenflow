@@ -7,9 +7,9 @@
 
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { createSimpleLogger } from './utils/logger';
+import { getLogger } from '../../config/logging-config';
 
-const logger = createSimpleLogger('CommandEngine');
+const logger = getLogger('CommandEngine');
 
 export interface CommandResult {
   success: boolean;
@@ -578,24 +578,26 @@ export class CommandExecutionEngine {
         logger.info('🚀 Using enhanced Progressive Confidence Building System');
         const result = await registry.executeCommand('discover', {
           args: [projectPath],
-          flags: options
+          flags: options,
         });
 
-        return result.success ? {
-          success: true,
-          message: result.message || 'Progressive confidence building completed successfully',
-          data: {
-            enhanced: true,
-            projectPath,
-            options,
-            note: 'Used CLI command adapter',
-            ...result.data
-          },
-        } : {
-          success: false,
-          error: result.error || 'Discovery command failed',
-          message: result.message || 'Failed to execute discover command'
-        };
+        return result.success
+          ? {
+              success: true,
+              message: result.message || 'Progressive confidence building completed successfully',
+              data: {
+                enhanced: true,
+                projectPath,
+                options,
+                note: 'Used CLI command adapter',
+                ...result.data,
+              },
+            }
+          : {
+              success: false,
+              error: result.error || 'Discovery command failed',
+              message: result.message || 'Failed to execute discover command',
+            };
       } catch (enhancedError) {
         logger.warn('Enhanced discover failed, using fallback implementation:', enhancedError);
 

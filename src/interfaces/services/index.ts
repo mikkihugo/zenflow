@@ -16,10 +16,7 @@ import { getLogger } from '../../config/logging-config';
 const logger = getLogger('interfaces-services-index');
 
 // Note: url-builder module not found, removing import
-import {
-  createDefaultIntegrationServiceAdapterConfig,
-  globalDataServiceFactory,
-} from './adapters';
+import { createDefaultIntegrationServiceAdapterConfig, globalDataServiceFactory } from './adapters';
 import type { CompatibilityConfig } from './compatibility';
 import { USLCompatibilityLayer } from './compatibility';
 import type { IService, ServiceCapability, ServiceMetrics, ServiceStatus } from './core/interfaces';
@@ -31,12 +28,8 @@ import {
   globalServiceRegistry,
   globalUSLFactory,
 } from './factories';
-import type { ServiceManager } from './manager';
-import type {
-  EnhancedServiceRegistry,
-  ServiceRegistryConfig,
-} from './registry';
-import type { ServiceManagerConfig } from './manager';
+import type { ServiceManager, ServiceManagerConfig } from './manager';
+import type { EnhancedServiceRegistry, ServiceRegistryConfig } from './registry';
 import { type AnyServiceConfig, ServiceConfigFactory, ServiceType } from './types';
 import type {
   SystemHealthValidation,
@@ -847,7 +840,7 @@ export class USL {
     }
 
     const {
-      baseURL = 'http://localhost:3001',  // Default MCP server URL
+      baseURL = 'http://localhost:3001', // Default MCP server URL
       databaseType = 'postgresql',
       supportedProtocols = ['http', 'websocket', 'mcp-http', 'mcp-stdio'],
       ...adapterOptions

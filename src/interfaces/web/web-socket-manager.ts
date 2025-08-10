@@ -9,7 +9,7 @@
  */
 
 import type { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 import type { WebConfig } from './web-config';
 import type { WebDataService } from './web-data-service';
 
@@ -20,7 +20,7 @@ export interface BroadcastData {
 }
 
 export class WebSocketManager {
-  private logger = createLogger('WebSocket');
+  private logger = getLogger('WebSocket');
   private io: SocketIOServer;
   private config: WebConfig;
   private dataService: WebDataService;

@@ -2,14 +2,17 @@
  * @file Session-based memory storage with pluggable backends.
  */
 
-import { createLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger('src-memory-memory');
+const logger = getLogger('Memory');
 
 import { EventEmitter } from 'node:events';
-import type { IMemoryStore } from '../core/interfaces/base-interfaces';
-import type { BackendInterface, MemoryStats } from '../core/interfaces/base-interfaces';
-import type { JSONValue, StoreOptions } from './backends/base-backend';
+import type {
+  IMemoryStore,
+  MemoryStats,
+  StoreOptions
+} from '../core/interfaces/base-interfaces';
+import type { BackendInterface, JSONValue } from './core/memory-system';
 import { MemoryBackendFactory as BackendFactory } from './backends/factory';
 
 interface BackendConfig {
@@ -30,7 +33,7 @@ interface SessionMemoryStoreOptions {
 
 export interface SessionState {
   sessionId: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   metadata: {
     created: number;
     updated: number;
@@ -45,7 +48,7 @@ export interface SessionState {
 
 export interface CacheEntry {
   key: string;
-  data: any;
+  data: unknown;
   timestamp: number;
 }
 
@@ -86,7 +89,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     try {
       // Create backend instance
       this.backend = await BackendFactory.createBackend(
-        this.options.backendConfig.type as any,
+        this.options.backendConfig.type as 'memory' | 'file' | 'sqlite' | 'jsonb',
         this.options.backendConfig
       );
 
@@ -100,18 +103,18 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     }
   }
 
-  async store(sessionId: string, key: string, data: any, options?: StoreOptions): Promise<void>;
-  async store(key: string, data: any, options?: StoreOptions): Promise<void>;
+  async store(sessionId: string, key: string, data: unknown, options?: StoreOptions): Promise<void>;
+  async store(key: string, data: unknown, options?: StoreOptions): Promise<void>;
   async store(
     sessionIdOrKey: string,
-    keyOrData?: string | any,
-    dataOrOptions?: any | StoreOptions,
+    keyOrData?: string | unknown,
+    dataOrOptions?: unknown | StoreOptions,
     options?: StoreOptions
   ): Promise<void> {
     // Handle both overloads: (sessionId, key, data, options) and (key, data, options)
     let sessionId: string;
     let key: string;
-    let data: any;
+    let data: unknown;
     let storeOptions: StoreOptions | undefined;
 
     if (typeof keyOrData === 'string') {
@@ -164,9 +167,9 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     }
   }
 
-  async retrieve(sessionId: string, key: string): Promise<any>;
-  async retrieve(key: string): Promise<any>;
-  async retrieve(sessionIdOrKey: string, key?: string): Promise<any> {
+  async retrieve<T = unknown>(sessionId: string, key: string): Promise<T | null>;
+  async retrieve<T = unknown>(key: string): Promise<T | null>;
+  async retrieve<T = unknown>(sessionIdOrKey: string, key?: string): Promise<T | null> {
     // Handle both overloads
     const actualSessionId = key ? sessionIdOrKey : 'default';
     const actualKey = key || sessionIdOrKey;
@@ -176,12 +179,12 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     if (this.options.enableCache) {
       const cached = this.getCachedData(actualSessionId, actualKey);
       if (cached !== null) {
-        return cached;
+        return cached as T;
       }
     }
 
     const session = await this.retrieveSession(actualSessionId);
-    return session?.data[actualKey] ?? null;
+    return (session?.data[actualKey] as T) ?? null;
   }
 
   async retrieveSession(sessionId: string): Promise<SessionState | null> {
@@ -279,7 +282,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     }
   }
 
-  private updateCache(sessionId: string, key: string, data: any): void {
+  private updateCache(sessionId: string, key: string, data: unknown): void {
     const cacheKey = `${sessionId}:${key}`;
     if (this.cache.size >= this.options.cacheSize) {
       const oldestKey = this.cacheKeys.shift();
@@ -291,7 +294,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     this.cacheKeys.push(cacheKey);
   }
 
-  private getCachedData(sessionId: string, key: string): any {
+  private getCachedData(sessionId: string, key: string): unknown {
     const cacheKey = `${sessionId}:${key}`;
     const entry = this.cache.get(cacheKey);
     if (!entry) return null;
@@ -322,11 +325,11 @@ export class MemoryManager {
     await this.store.initialize();
   }
 
-  async storeData(key: string, data: any): Promise<void> {
+  async storeData(key: string, data: unknown): Promise<void> {
     return this.store.store('default', key, data);
   }
 
-  async retrieve(key: string): Promise<any> {
+  async retrieve<T = unknown>(key: string): Promise<T | null> {
     return this.store.retrieve('default', key);
   }
 

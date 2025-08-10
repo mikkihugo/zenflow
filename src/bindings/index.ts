@@ -62,12 +62,12 @@ export const BindingsUtils = {
 
 // Binding factory
 export class BindingFactory {
-  private static instance: any = null;
+  private static instance: unknown = null;
 
   /**
    * Get singleton binding instance.
    */
-  static async getInstance(): Promise<any> {
+  static async getInstance(): Promise<unknown> {
     if (!BindingFactory.instance) {
       BindingFactory.instance = await BindingsUtils.loadBinding();
     }

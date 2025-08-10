@@ -17,7 +17,7 @@ const logger = {
   debug: (message: string, meta?: any) => console.log(`[DEBUG] ${message}`, meta || ''),
   info: (message: string, meta?: any) => console.log(`[INFO] ${message}`, meta || ''),
   warn: (message: string, meta?: any) => console.warn(`[WARN] ${message}`, meta || ''),
-  error: (message: string, meta?: any) => console.error(`[ERROR] ${message}`, meta || '')
+  error: (message: string, meta?: any) => console.error(`[ERROR] ${message}`, meta || ''),
 };
 
 /**
@@ -98,7 +98,7 @@ export class AISafetyOrchestrator extends EventEmitter {
   private deceptionDetector: AIDeceptionDetector;
   private isMonitoring: boolean;
   private metrics: SafetyMetrics;
-  private config: any;
+  private _config: any;
   private interventionHistory: Map<string, DeceptionAlert[]>;
 
   constructor() {
@@ -169,7 +169,7 @@ export class AISafetyOrchestrator extends EventEmitter {
     const result: SafetyOrchestrationResult = {
       phase1,
       phase2,
-      phase3,
+      ...(phase3 && { phase3 }),
       totalTime,
       interventionsTriggered: totalInterventions,
     };
@@ -369,10 +369,17 @@ export class AISafetyOrchestrator extends EventEmitter {
   }
 
   /**
+   * Get current orchestrator configuration.
+   */
+  getConfiguration(): any {
+    return this._config;
+  }
+
+  /**
    * Setup configuration using fix:zen:compile proven patterns.
    */
   private setupConfiguration(): void {
-    this.config = {
+    this._config = {
       // Reuse exact coordination protocol from pattern-detection-config.json
       coordinationProtocol: {
         memoryStructure: 'hierarchical',

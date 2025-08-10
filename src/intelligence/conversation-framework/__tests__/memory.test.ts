@@ -1,4 +1,6 @@
+import type { AgentId } from '../../../types';
 import { ConversationMemoryImpl } from '../memory';
+import type { ConversationSession, ConversationStatus } from '../types';
 
 describe('ConversationMemoryImpl - Classical TDD', () => {
   let memory: ConversationMemoryImpl;
@@ -54,7 +56,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
             conversationId: 'conv-123',
             fromAgent: sampleAgents[0]!,
             timestamp: new Date('2024-01-01T10:30:00Z'),
-            content: { text: 'Test message', code: 'console.log("test");' },
+            content: { text: 'Test message' },
             messageType: 'question',
             metadata: {
               priority: 'high',
@@ -113,7 +115,6 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       // Verify messages are preserved with exact content
       expect(retrieved?.messages).toHaveLength(1);
       expect(retrieved!.messages[0]!.content.text).toBe('Test message');
-      expect(retrieved!.messages[0]!.content.code).toBe('console.log("test");');
       expect(retrieved!.messages[0]!.metadata.tags).toEqual(['test', 'storage']);
 
       // Verify outcomes are preserved

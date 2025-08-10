@@ -11,9 +11,9 @@ import { SwarmBatchCoordinator } from './swarm-batch';
 
 export type {
   BatchExecutionConfig,
-  BatchExecutionSummary,
   BatchOperation,
   BatchResult,
+  ExtendedBatchExecutionSummary,
 } from './batch-engine';
 export { BatchEngine, createBatchOperation, createToolBatch } from './batch-engine';
 export type { FileOperation, FileOperationResult } from './file-batch';

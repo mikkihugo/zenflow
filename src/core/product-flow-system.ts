@@ -12,10 +12,10 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
+import { getLogger } from '../config/logging-config';
 import type { DocumentManager } from '../core/workflow-engine';
-import { createLogger } from './logger';
 
-const logger = createLogger('ProductFlowSystem');
+const logger = getLogger('ProductFlowSystem');
 
 /**
  * Product Flow System - Main orchestrator for business workflow.

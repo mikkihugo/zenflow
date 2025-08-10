@@ -9,7 +9,7 @@
  */
 
 import type { Server as SocketIOServer } from 'socket.io';
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 
 export interface WebSession {
   id: string;
@@ -37,7 +37,7 @@ export interface WebSocketConfig {
  * @example
  */
 export class WebSocketCoordinator {
-  private logger = createLogger('WebSocket');
+  private logger = getLogger('WebSocket');
   private sessions = new Map<string, WebSession>();
   private io: SocketIOServer;
 

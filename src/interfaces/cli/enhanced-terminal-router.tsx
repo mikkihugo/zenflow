@@ -10,12 +10,12 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { AdvancedCLIEngine } from '../cli/advanced-cli-engine';
 import type { CLIConfig } from '../cli/types/advanced-cli-types';
-import { 
-  CommandExecutionRendererAdapter, 
-  InteractiveTerminalApplicationAdapter, 
-  ModeDetectorAdapter 
-} from './adapters/terminal-adapters';
 import type { TerminalMode } from '../shared/command-interfaces';
+import {
+  CommandExecutionRendererAdapter,
+  InteractiveTerminalApplicationAdapter,
+  ModeDetectorAdapter,
+} from './adapters/terminal-adapters';
 
 export interface TerminalAppProps {
   commands: string[];

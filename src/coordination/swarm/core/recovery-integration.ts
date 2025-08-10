@@ -19,7 +19,7 @@
 import { EventEmitter } from 'node:events';
 import ChaosEngineering from '../chaos-engineering/chaos-engineering';
 import ConnectionStateManager from '../connection-management/connection-state-manager';
-import HealthMonitor from '../diagnostics/health-monitor';
+import HealthMonitor from '../../diagnostics/health-monitor';
 import { ErrorFactory } from './errors';
 import { Logger } from './logger';
 import MonitoringDashboard from './monitoring-dashboard';
@@ -816,11 +816,11 @@ export class RecoveryIntegration extends EventEmitter {
     // Check component health
     for (const [name, componentData] of this.components) {
       if (componentData?.status === 'failed') {
-        healthResults?.components[name] = 'failed';
+        if (healthResults?.components) healthResults.components[name] = 'failed';
         healthResults?.issues?.push(`Component ${name} failed to initialize`);
         healthResults.overall = 'degraded';
       } else {
-        healthResults?.components[name] = 'healthy';
+        if (healthResults?.components) healthResults.components[name] = 'healthy';
       }
     }
 

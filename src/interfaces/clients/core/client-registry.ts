@@ -1,6 +1,6 @@
 /**
  * @file Client Registry.
- * 
+ *
  * Core client registry to break circular dependencies.
  * Contains the main UACL class and client types without circular imports.
  */
@@ -71,7 +71,7 @@ export class UACLRegistry {
       totalClients: this.clients.size,
       totalClientTypes: this.clientTypes.size,
       clientNames: Array.from(this.clients.keys()),
-      clientTypeNames: Array.from(this.clientTypes.keys())
+      clientTypeNames: Array.from(this.clientTypes.keys()),
     };
   }
 }

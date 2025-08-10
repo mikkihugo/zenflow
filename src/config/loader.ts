@@ -4,9 +4,9 @@
  * Handles loading configuration from multiple sources with proper priority.
  */
 
-import { createLogger } from '../core/logger';
+import { getLogger } from './logging-config';
 
-const logger = createLogger('src-config-loader');
+const logger = getLogger('ConfigLoader');
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';

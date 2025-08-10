@@ -10,7 +10,7 @@
  * This replaces separate coordination/mcp and swarm/mcp servers with one unified server.
  */
 
-import { createLogger } from '../../../interfaces/mcp/mcp-logger';
+import { getLogger } from '../../../config/logging-config';
 import type { McpToolRegistryMap } from '../../../interfaces/mcp/mcp-types';
 import { BaseZenSwarm } from '../index';
 
@@ -336,7 +336,7 @@ class EnhancedMCPTools {
     this.maxErrorLogSize = 1000;
 
     // Initialize logger
-    this.logger = createLogger('mcp-tools') as McpLogger;
+    this.logger = getLogger('mcp-tools') as any;
 
     // Initialize DAA tools integration
     this.daaTools = new ImportedDAA_MCPTools(this);

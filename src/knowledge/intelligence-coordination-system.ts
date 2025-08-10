@@ -651,6 +651,15 @@ export interface EffectivenessMetrics {
   scalability: number;
 }
 
+export interface MaintainabilityMetrics {
+  cyclomatic: number;
+  halstead: number;
+  maintainabilityIndex: number;
+  couplingBetweenObjects: number;
+  linesOfCode: number;
+  duplicatedLinesRatio: number;
+}
+
 export interface AlgorithmParameter {
   name: string;
   value: any;
@@ -2147,6 +2156,14 @@ export interface ReportSchedule {
   exceptions: ScheduleException[];
 }
 
+export interface CompletenessCheck {
+  coverage: number;
+  missingFields: string[];
+  nullValues: number;
+  emptyStrings: number;
+  requiredFieldsFilled: boolean;
+}
+
 export interface PreprocessingStep {
   stepId: string;
   operation: PreprocessingOperationConfig;
@@ -2464,7 +2481,7 @@ export interface EvidenceVerification {
   timestamp: number;
 }
 
-export interface DevelopmentStage {
+export interface DetailedDevelopmentStage {
   stageId: string;
   name: string;
   description: string;

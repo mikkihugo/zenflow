@@ -12,9 +12,9 @@ import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
-import { createLogger } from './logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger('UnifiedDocLinker');
+const logger = getLogger('UnifiedDocLinker');
 
 export interface DocumentationIndex {
   id: string;
@@ -96,7 +96,7 @@ export class DocumentationLinker extends EventEmitter {
     confidenceThreshold: number;
   };
 
-  constructor(config: unknown = {}) {
+  constructor(config: Record<string, unknown> = {}) {
     super();
     this.config = {
       documentationPaths: [
@@ -113,7 +113,7 @@ export class DocumentationLinker extends EventEmitter {
       excludePatterns: ['node_modules', '.git', 'dist', 'build'],
       keywordThreshold: 0.6,
       confidenceThreshold: 0.7,
-      ...config,
+      ...(config as Record<string, string[] | number>),
     };
   }
 
@@ -284,7 +284,11 @@ export class DocumentationLinker extends EventEmitter {
           const functionMatch = line.match(/(?:function|class|interface|type)\s+(\w+)/);
           if (functionMatch) {
             const precedingComment = i > 0 && lines[i - 1] ? lines[i - 1]?.trim() : '';
-            if (!precedingComment.startsWith('//') && !precedingComment.startsWith('*')) {
+            if (
+              precedingComment &&
+              !precedingComment.startsWith('//') &&
+              !precedingComment.startsWith('*')
+            ) {
               await this.addCodeReference({
                 file: filePath,
                 line: lineNumber,
@@ -329,7 +333,7 @@ export class DocumentationLinker extends EventEmitter {
         const doc1 = documents[i];
         const doc2 = documents[j];
 
-        const relationship = this.analyzeDocumentRelationship(doc1, doc2);
+        const relationship = doc1 && doc2 ? this.analyzeDocumentRelationship(doc1, doc2) : null;
         if (relationship) {
           this.crossReferences.push(relationship);
         }
@@ -552,7 +556,9 @@ export class DocumentationLinker extends EventEmitter {
   private calculateLinkConfidence(text: string, suggestedLinks: unknown[]): number {
     if (suggestedLinks.length === 0) return 0;
 
-    const maxRelevance = Math.max(...suggestedLinks.map((link) => link.relevance));
+    const maxRelevance = Math.max(
+      ...suggestedLinks.map((link) => (link as { relevance: number }).relevance)
+    );
     const textSpecificity = Math.min(text.length / 100, 1); // Longer text is more specific
     const linkCount = Math.min(suggestedLinks.length / 3, 1); // More links indicate higher relevance
 
@@ -673,7 +679,7 @@ export class DocumentationLinker extends EventEmitter {
     const sections: Array<{ title: string; level: number; content: string }> = [];
     const lines = content.split('\n');
 
-    let currentSection: { title: string; level: number; content: string } | null = null as unknown;
+    let currentSection: { title: string; level: number; content: string } | null = null;
 
     for (const line of lines) {
       const headingMatch = line.match(/^(#+)\s+(.+)$/);
@@ -693,7 +699,9 @@ export class DocumentationLinker extends EventEmitter {
           };
         }
       } else if (currentSection) {
-        currentSection?.content += `${line}\n`;
+        if (currentSection) {
+          currentSection.content += `${line}\n`;
+        }
       }
     }
 

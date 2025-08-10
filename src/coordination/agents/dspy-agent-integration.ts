@@ -11,7 +11,7 @@
  * @file Coordination system: dspy-agent-integration.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type { SessionMemoryStore } from '../../memory/memory';
 import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
 // Using the new wrapper architecture instead of direct dspy.ts imports
@@ -22,10 +22,10 @@ import type {
   DSPyOptimizationConfig,
   DSPyOptimizationResult,
 } from '../../neural/types/dspy-types';
-import type { AgentType } from '../../types/agent-types';
+import type { AgentType } from '../types';
 import type { SwarmAgent, SwarmCoordinator } from '../swarm/core/swarm-coordinator';
 
-const logger = createLogger({ prefix: 'DSPyAgentIntegration' });
+const logger = getLogger('DSPyAgentIntegration');
 
 /**
  * DSPy Agent Types (matches agent-types.ts).

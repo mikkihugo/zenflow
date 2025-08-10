@@ -9,5 +9,4 @@ export interface ClientManagerHelpers {
   parseResponse<T>(response: unknown): T;
 }
 
-// Convenience exports
-export type { ClientManagerHelpers };
+// Convenience exports - ClientManagerHelpers already exported above

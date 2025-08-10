@@ -17,12 +17,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '../../../core/logger';
+import { getLogger } from '../../../config/logging-config';
+import { SystemError } from '../../../core/errors';
+import type { HealthMonitor } from '../../diagnostics/health-monitor';
 import type { ConnectionStateManager as ConnectionManager } from '../connection-management/connection-state-manager';
-import { ConfigurationError, SystemError, ValidationError } from '../core/errors';
+import { ConfigurationError, ValidationError } from '../core/errors';
 import type { RecoveryWorkflows } from '../core/recovery-workflows';
 import { generateId } from '../core/utils';
-import type { HealthMonitor } from '../diagnostics/health-monitor';
 
 // import { MCPToolsManager } from '../interfaces/mcp/tool-registry'; // xxx NEEDS_HUMAN: Unused import - verify if needed for future integration
 
@@ -157,7 +158,7 @@ type SafetyCheck = (
 
 export class ChaosEngineering extends EventEmitter {
   private options: Required<ChaosEngineeringOptions>;
-  private logger: ReturnType<typeof createLogger>;
+  private logger: ReturnType<typeof getLogger>;
   private experiments: Map<string, ChaosExperiment>;
   private activeExperiments: Map<string, ExperimentExecution>;
   private experimentHistory: Map<string, ExperimentExecution[]>;
@@ -183,7 +184,7 @@ export class ChaosEngineering extends EventEmitter {
       blastRadiusLimit: options?.blastRadiusLimit || 0.3, // 30% of resources
     } as Required<ChaosEngineeringOptions>;
 
-    this.logger = createLogger({ prefix: 'ChaosEngineering' });
+    this.logger = getLogger('ChaosEngineering');
 
     // Experiment state
     this.experiments = new Map();
@@ -288,7 +289,7 @@ export class ChaosEngineering extends EventEmitter {
         `Experiment blast radius (${experiment.blastRadius}) exceeds limit (${this.options?.blastRadiusLimit || 0.5})`,
         'blastRadius',
         this.options.blastRadiusLimit,
-        experiment.blastRadius
+        String(experiment.blastRadius)
       );
     }
 
@@ -337,8 +338,8 @@ export class ChaosEngineering extends EventEmitter {
       throw new ValidationError(
         `Experiment '${experimentName}' is disabled`,
         'enabled',
-        true,
-        false
+        'expected enabled to be true',
+        String(false)
       );
     }
 
@@ -875,11 +876,11 @@ export class ChaosEngineering extends EventEmitter {
   registerBuiltInInjectors() {
     // Memory pressure injector
     this.registerFailureInjector('memory_pressure', {
-      inject: async (params: any) => {
+      inject: async (params: ExperimentParameters) => {
         const size = params.size || 100 * 1024 * 1024; // 100MB default
         const duration = params?.duration || 60000; // 1 minute
 
-        const arrays: Array<unknown[]> = [] as unknown[];
+        const arrays: Array<unknown[]> = [];
         for (let i = 0; i < 10; i++) {
           arrays.push(new Array(size / 10).fill(Math.random()));
         }
@@ -899,14 +900,14 @@ export class ChaosEngineering extends EventEmitter {
           clearTimeout(injectionResult?.cleanupTimer);
         }
         if (injectionResult?.arrays) {
-          injectionResult?.arrays.length = 0;
+          (injectionResult.arrays as any).length = 0;
         }
       },
     });
 
     // CPU stress injector
     this.registerFailureInjector('cpu_stress', {
-      inject: async (params: any) => {
+      inject: async (params: ExperimentParameters) => {
         const duration = params?.duration || 60000; // 1 minute
         const intensity = params?.intensity || 0.5; // 50% CPU usage
 
@@ -924,7 +925,7 @@ export class ChaosEngineering extends EventEmitter {
           workers,
           duration,
           cleanupTimer: setTimeout(() => {
-            workers.forEach((worker) => worker.terminate());
+            workers.forEach((worker: any) => worker.terminate());
           }, duration),
         };
       },
@@ -946,11 +947,11 @@ export class ChaosEngineering extends EventEmitter {
 
     // Network failure injector
     this.registerFailureInjector('network_failure', {
-      inject: async (params: any) => {
+      inject: async (params: ExperimentParameters) => {
         const targetConnections = params?.connections || 'all';
         const failureType = params?.failureType || 'disconnect'; // disconnect, slow, drop
 
-        const affectedConnections: Array<{ id: string; action: string }> = [] as unknown[];
+        const affectedConnections: Array<{ id: string; action: string }> = [];
 
         if (this.connectionManager) {
           const connections = this.connectionManager.getConnectionStatus();
@@ -987,7 +988,7 @@ export class ChaosEngineering extends EventEmitter {
 
     // Process crash injector
     this.registerFailureInjector('process_crash', {
-      inject: async (params: any) => {
+      inject: async (params: ExperimentParameters) => {
         const crashType = params?.crashType || 'graceful'; // graceful, force, oom
 
         if (crashType === 'oom') {

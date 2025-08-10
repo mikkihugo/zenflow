@@ -14,16 +14,27 @@ export * from './command-execution-engine';
 export { CommandExecutionEngine } from './command-execution-engine';
 export * from './command-execution-renderer';
 export { type CommandExecutionProps, CommandExecutionRenderer } from './command-execution-renderer';
+// Additional specific component exports to resolve conflicts
+export type { SwarmStatus } from './components/header';
 // Components - specific exports to avoid conflicts
 export {
-  ErrorMessage, Footer, Header, ProgressBar, Spinner, StatusBadge,
-  type ErrorMessageProps, type FooterProps, type HeaderProps,
-  type ProgressBarProps, type SpinnerProps, type StatusBadgeProps,
-  type BaseComponentProps, type Theme, defaultUnifiedTheme, ComponentUtils
+  type BaseComponentProps,
+  ComponentUtils,
+  defaultUnifiedTheme,
+  ErrorMessage,
+  type ErrorMessageProps,
+  Footer,
+  type FooterProps,
+  Header,
+  type HeaderProps,
+  ProgressBar,
+  type ProgressBarProps,
+  Spinner,
+  type SpinnerProps,
+  StatusBadge,
+  type StatusBadgeProps,
+  type Theme,
 } from './components/index';
-
-// Additional specific component exports to resolve conflicts
-export { type SwarmStatus } from './components/header';
 
 export * from './interactive-terminal-application';
 export {
@@ -32,22 +43,36 @@ export {
 } from './interactive-terminal-application';
 
 // Process orchestrator - specific export to avoid conflicts
-export { TerminalManager, type ProcessResult, type TerminalSession, type TerminalConfig } from './process-orchestrator';
+export {
+  type ProcessResult,
+  type TerminalConfig,
+  TerminalManager,
+  type TerminalSession,
+} from './process-orchestrator';
 
 // Screens - specific exports to avoid conflicts
 export {
-  MainMenu, SwarmDashboard,
-  type MainMenuProps, type SwarmDashboardProps,
-  type ScreenType, type ScreenConfig, defaultScreenConfigs, ScreenUtils
+  defaultScreenConfigs,
+  MainMenu,
+  type MainMenuProps,
+  type ScreenConfig,
+  type ScreenType,
+  ScreenUtils,
+  SwarmDashboard,
+  type SwarmDashboardProps,
 } from './screens/index';
 
 // Additional screen type exports to resolve conflicts
-export { type SwarmAgent, type SwarmMetrics, type SwarmTask } from './screens/swarm-dashboard';
+export type { SwarmAgent, SwarmMetrics, SwarmTask } from './screens/swarm-dashboard';
 // State Hooks (React hooks for component state management) - avoid conflicts
 // Note: Re-exporting from state-hooks causes conflicts, import directly when needed
 // Specific exports to avoid conflicts:
-export { useConfig, type UseConfigReturn } from './state-hooks/use-config';
-export { useSwarmStatus, type UseSwarmStatusReturn, type SwarmState } from './state-hooks/use-swarm-status';
+export { type UseConfigReturn, useConfig } from './state-hooks/use-config';
+export {
+  type SwarmState,
+  type UseSwarmStatusReturn,
+  useSwarmStatus,
+} from './state-hooks/use-swarm-status';
 
 // Main components (updated for Google standards)
 export * from './terminal-interface-router';

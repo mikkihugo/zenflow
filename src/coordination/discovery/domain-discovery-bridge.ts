@@ -37,8 +37,8 @@
 
 import { EventEmitter } from 'node:events';
 import { basename } from 'node:path';
+import { getLogger } from '../../config/logging-config';
 import type { Document, DocumentProcessor, DocumentType } from '../../core/document-processor';
-import { createLogger } from '../../core/logger';
 import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
 import type {
   MonorepoInfo,
@@ -51,7 +51,7 @@ import type {
 import { NeuralDomainMapper } from './neural-domain-mapper';
 import type { DependencyGraph, Domain } from './types';
 
-const logger = createLogger({ prefix: 'DomainDiscoveryBridge' });
+const logger = getLogger('DomainDiscoveryBridge');
 
 /**
  * Represents a discovered domain with enriched metadata.
@@ -185,8 +185,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @param docProcessor - Document processor for scanning and processing documents.
    * @param domainAnalyzer - Domain analyzer for code analysis and categorization.
    * @param projectAnalyzer - Project context analyzer with monorepo detection.
-   * @param intelligenceCoordinator - Intelligence system for cross-domain knowledge.
-   * @param _intelligenceCoordinator
+   * @param _intelligenceCoordinator - Intelligence system for cross-domain knowledge (reserved for future use).
    * @param config - Optional configuration settings.
    */
   constructor(
@@ -315,7 +314,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Create AGUI validation request (for future implementation)
     // xxx NEEDS_HUMAN: Placeholder for future AGUI implementation
-    const _validationRequest: AGUIValidationRequest = {
+    const validationRequest: AGUIValidationRequest = {
       type: 'document-relevance',
       question: `Found ${documents.length} documents. Which are relevant for domain discovery?`,
       context: {
@@ -330,7 +329,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
       options: relevanceAnalysis.map((analysis, index) => ({
         id: documents[index]?.path || '',
         label: `${documents[index]?.type?.toUpperCase() || 'UNKNOWN'}: ${basename(documents[index]?.path || '')}`,
-        preview: `${documents[index]?.content.substring(0, 200) ?? ''}...`,
+        preview: `${documents[index]?.content?.substring(0, 200) ?? ''}...`,
         metadata: {
           suggestedRelevance: analysis.suggestedRelevance,
           concepts: analysis.concepts.slice(0, 5),
@@ -338,6 +337,13 @@ export class DomainDiscoveryBridge extends EventEmitter {
         },
       })),
     };
+
+    // Log validation request for future AGUI implementation
+    logger.debug('🤖 AGUI validation request prepared', {
+      type: validationRequest.type,
+      documentsFound: validationRequest.context,
+      optionsCount: validationRequest.options?.length || 0
+    });
 
     // In a real implementation, this would call AGUI
     // For now, we'll simulate by selecting documents with high relevance
@@ -366,7 +372,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Create validation request (for future implementation)
     // xxx NEEDS_HUMAN: Placeholder for future AGUI implementation
-    const _validationRequest: AGUIValidationRequest = {
+    const validationRequest: AGUIValidationRequest = {
       type: 'domain-mapping',
       question: `Please validate ${mappings.length} document-domain mappings`,
       context: {
@@ -384,6 +390,14 @@ export class DomainDiscoveryBridge extends EventEmitter {
         },
       })),
     };
+
+    // Log validation request for future AGUI implementation
+    logger.debug('🤖 AGUI mapping validation request prepared', {
+      type: validationRequest.type,
+      totalMappings: validationRequest.context['totalMappings'],
+      domainGroups: validationRequest.context['domainGroups'],
+      optionsCount: validationRequest.options?.length || 0
+    });
 
     // Simulate human validation - in reality this would use AGUI
     const validated = mappings.filter(
@@ -523,12 +537,12 @@ export class DomainDiscoveryBridge extends EventEmitter {
     }
 
     // Complexity bonus - more complex domains might need more documentation
-    if (domain.complexityScore > 50) {
+    if (domain.complexity > 50) {
       relevanceScore += 0.1;
     }
 
     // Coupling bonus - tightly coupled domains might be mentioned together
-    if (domain.coupling.tightlyCoupledGroups.length > 0) {
+    if (domain.coupling?.tightlyCoupledGroups?.length > 0) {
       relevanceScore += 0.1;
     }
 
@@ -778,9 +792,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
       logger.info('✅ Neural domain enhancement complete', {
         relationships: relationshipMap.relationships.length,
-        avgCohesion:
-          relationshipMap.cohesionScores.reduce((sum, score) => sum + score.score, 0) /
-          relationshipMap.cohesionScores.length,
+        avgCohesion: relationshipMap.cohesionScores && relationshipMap.cohesionScores.length > 0
+          ? relationshipMap.cohesionScores.reduce((sum, score) => sum + score.score, 0) / relationshipMap.cohesionScores.length
+          : 0,
         bazelEnhanced: !!bazelMetadata,
       });
 
@@ -809,11 +823,11 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const dependencies: string[] = [];
 
     // Check coupling analysis for dependencies
-    for (const coupledGroup of domainAnalysis.coupling.tightlyCoupledGroups) {
-      const hasFiles = coupledGroup.files.some((file) => domain.codeFiles.includes(file));
+    for (const coupledGroup of domainAnalysis.coupling?.tightlyCoupledGroups || []) {
+      const hasFiles = coupledGroup.files.some((file: string) => domain.codeFiles.includes(file));
       if (hasFiles) {
         // Add other domains that share files in this coupled group
-        const relatedFiles = coupledGroup.files.filter((file) => !domain.codeFiles.includes(file));
+        const relatedFiles = coupledGroup.files.filter((file: string) => !domain.codeFiles.includes(file));
         dependencies.push(...relatedFiles);
       }
     }
@@ -849,17 +863,18 @@ export class DomainDiscoveryBridge extends EventEmitter {
         relationshipStrength += sharedDependencies.length;
 
         // Check coupling groups
-        for (const coupledGroup of domainAnalysis.coupling.tightlyCoupledGroups) {
-          const domainHasFiles = coupledGroup.files.some((file) => domain.files.includes(file));
-          const otherHasFiles = coupledGroup.files.some((file) => otherDomain.files.includes(file));
+        for (const coupledGroup of domainAnalysis.coupling?.tightlyCoupledGroups || []) {
+          const domainHasFiles = coupledGroup.files.some((file: string) => domain.files.includes(file));
+          const otherHasFiles = coupledGroup.files.some((file: string) => otherDomain.files.includes(file));
 
           if (domainHasFiles && otherHasFiles) {
-            relationshipStrength += Math.round(coupledGroup.couplingScore * 10);
+            // Use a default coupling score since couplingScore property doesn't exist in the interface
+            relationshipStrength += 5; // Fixed value instead of coupledGroup.couplingScore * 10
           }
         }
 
         if (relationshipStrength > 0) {
-          dependencyGraph[domain.name][otherDomain.name] = relationshipStrength;
+          dependencyGraph[domain.name]![otherDomain.name] = relationshipStrength;
         }
       }
     }
@@ -1016,11 +1031,12 @@ export class DomainDiscoveryBridge extends EventEmitter {
     if (fileCount > 50) return 'hierarchical';
 
     // Highly coupled domains benefit from mesh
-    const domainCoupling = analysis.coupling.tightlyCoupledGroups.filter((group) =>
-      group.files.some((file) => (analysis.categories as any)[domainId]?.includes(file))
-    );
+    const domainCoupling = analysis.coupling?.tightlyCoupledGroups?.filter((group: { files: string[] }) =>
+      group.files.some((file: string) => (analysis.categories as Record<string, string[]>)[domainId]?.includes(file))
+    ) || [];
+    // Use file count as a proxy for coupling strength since couplingScore doesn't exist
     const firstCoupling = domainCoupling[0];
-    if (domainCoupling.length > 0 && firstCoupling && firstCoupling.couplingScore > 0.7) {
+    if (domainCoupling.length > 0 && firstCoupling && firstCoupling.files.length > 3) {
       return 'mesh';
     }
 

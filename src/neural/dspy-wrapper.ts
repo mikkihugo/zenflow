@@ -8,7 +8,7 @@
  * Purpose: Centralize all DSPy API access with full TypeScript support.
  */
 
-import { createLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 import {
   DEFAULT_DSPY_CONFIG,
   DEFAULT_OPTIMIZATION_CONFIG,
@@ -29,7 +29,7 @@ import {
   isDSPyProgram,
 } from './types/index';
 
-const logger = createLogger({ prefix: 'DSPyWrapper' });
+const logger = getLogger('DSPyWrapper');
 
 /**
  * Type-safe wrapper implementation for the dspy.ts package

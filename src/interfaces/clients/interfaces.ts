@@ -6,6 +6,8 @@
  * MCP (Model Context Protocol), and any other client communication mechanisms.
  */
 
+import type { ProtocolType } from '../../types/protocol-types';
+
 /**
  * Generic client interface for standardized API access.
  *

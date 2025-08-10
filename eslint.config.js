@@ -270,31 +270,31 @@ export default [
       'scripts/ai-eslint/github-copilot-integration.js',
       'scripts/ai-eslint/ax-dspy-integration.js',
       'scripts/ai-eslint/simple-dspy-integration.js',
-      
+
       // Node modules and dist
       'node_modules/**',
       'dist/**',
       'build/**',
-      
+
       // Cache directories
       '.cache/**',
       '.next/**',
       '.nuxt/**',
-      
+
       // Log files
       'logs/**',
       '*.log',
-      
+
       // Test coverage
       'coverage/**',
-      
+
       // Environment files
       '.env',
       '.env.local',
       '.env.development.local',
       '.env.test.local',
       '.env.production.local',
-      
+
       // Existing ignores
       '.hive-mind/**',
       '.swarm/**',
@@ -320,11 +320,11 @@ export default [
       'scripts/**/*.py',
       '**/*.backup',
       '*.config.js.backup',
-      
+
       // Test files that aren't in TypeScript project
       'src/__tests__/**',
       '**/tests/**',
-      
+
       // Temporarily ignore problematic files
       'bin/claude-zen-pkg.ts',
       'lint-terminator*.js',

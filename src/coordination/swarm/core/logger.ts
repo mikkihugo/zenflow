@@ -2,7 +2,7 @@
  * @file Coordination system: logger.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-logger');
 
@@ -11,7 +11,7 @@ const logger = getLogger('coordination-swarm-core-logger');
  */
 
 import { randomUUID } from 'node:crypto';
-import { config } from '../../config';
+import { config } from '../../../config';
 
 interface LoggerOptions {
   name?: string;

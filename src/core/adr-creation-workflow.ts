@@ -8,11 +8,11 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { getLogger } from '../config/logging-config';
 import type { Document, DocumentProcessor } from './document-processor';
-import { createLogger } from './logger';
 import type { WorkflowEngine } from './workflow-engine';
 
-const logger = createLogger('ADRCreationWorkflow');
+const logger = getLogger('ADRCreationWorkflow');
 
 /**
  * ADR Decision Context - the circumstances requiring an architectural decision.

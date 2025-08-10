@@ -8,13 +8,31 @@
  * @file Interface implementation: contracts.
  */
 
-import type {
-  CommandContext,
-  CommandResult,
-  ComponentStatus,
-  ProjectConfig,
-  SystemHealth,
-} from './types';
+import type { InterfaceConfig } from '../../config';
+import type { CommandResult, ExecutionContext } from './command-interfaces';
+import type { ComponentStatus } from './types';
+
+// Define types that are used in contracts but don't exist elsewhere
+export interface CommandContext extends ExecutionContext {
+  timestamp?: string;
+  user?: string;
+}
+
+export interface ProjectConfig {
+  name: string;
+  type: string;
+  path: string;
+  template?: string;
+  options?: Record<string, unknown>;
+}
+
+export interface SystemHealth {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  uptime: number;
+  memory?: number;
+  cpu?: number;
+  components: ComponentStatus[];
+}
 
 /**
  * Project Management Contract.

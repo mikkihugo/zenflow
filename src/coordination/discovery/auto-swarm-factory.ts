@@ -12,11 +12,11 @@
 import { EventEmitter } from 'node:events';
 import type { HiveSwarmCoordinator } from '@coordination/hive-swarm-sync';
 import type { SwarmCoordinator } from '@coordination/swarm/core/swarm-coordinator';
-import { createLogger } from '@core/logger';
 import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
 import type { SessionMemoryStore } from '@memory/memory';
+import { getLogger } from '../../config/logging-config';
 
-const logger = createLogger({ prefix: 'AutoSwarmFactory' });
+const logger = getLogger('AutoSwarmFactory');
 
 // Types for auto-swarm creation
 export interface DomainCharacteristics {
@@ -679,14 +679,14 @@ export class AutoSwarmFactory extends EventEmitter {
       id: 'swarm_factory_validation',
       type: 'priority',
       question:
-        `Auto-Swarm Factory will create ${configs.length} swarms with the following configurations:\n\n${ 
-        summary
+        `Auto-Swarm Factory will create ${configs.length} swarms with the following configurations:\n\n${summary
           .map(
             (s) =>
               `• ${s.domain}: ${s.topology} topology, ${s.totalAgentCount} agents (${s.confidence} confidence)`
           )
-          .join('\n') 
-        }\n\nTotal agents across all swarms: ${summary.reduce((sum, s) => sum + s.totalAgentCount, 0)}\n\n` +
+          .join(
+            '\n'
+          )}\n\nTotal agents across all swarms: ${summary.reduce((sum, s) => sum + s.totalAgentCount, 0)}\n\n` +
         `Approve swarm creation and proceed with initialization?`,
       context: { configs, summary },
       options: [

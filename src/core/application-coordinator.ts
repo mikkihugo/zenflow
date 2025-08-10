@@ -16,16 +16,16 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { getLogger } from '../config/logging-config';
 import { MemoryManager } from '../memory/index';
 import { DocumentDrivenSystem } from './document-driven-system';
 import { DocumentationLinker } from './documentation-linker';
 import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceLauncher } from './interface-launcher';
-import { createLogger } from './logger';
 import { MemorySystem } from './memory-system';
 import { WorkflowEngine } from './workflow-engine';
 
-const logger = createLogger('ApplicationCoordinator');
+const logger = getLogger('ApplicationCoordinator');
 
 export interface ApplicationCoordinatorConfig {
   // Interface configuration

@@ -80,8 +80,8 @@ export class DAACognition {
     this.history.push(filtered);
 
     // Cleanup old history
-    if (this.history.length > this.options.maxHistory) {
-      this.history = this.history.slice(-this.options.maxHistory);
+    if (this.history.length > (this.options.maxHistory ?? 1000)) {
+      this.history = this.history.slice(-(this.options.maxHistory ?? 1000));
     }
 
     return filtered;
@@ -111,7 +111,7 @@ export class DAACognition {
 
     // Mock action execution
     const result = await this.performAction(action);
-    action.result = result;
+    (action as any).result = result;
 
     this.actions.set(action.id, action);
     return action;
@@ -176,7 +176,7 @@ export class DAACognition {
     const filtered = { ...decision };
 
     // Threshold filter
-    if (filtered.confidence < this.options.decisionThreshold) {
+    if (filtered.confidence < (this.options.decisionThreshold ?? 0.7)) {
       filtered.filtered = true;
       filtered.reason = 'Below confidence threshold';
     }
@@ -195,20 +195,20 @@ export class DAACognition {
     };
   }
 
-  private calculateAdaptations(feedback) {
-    const changes = [];
+  private calculateAdaptations(feedback): Array<{ type: string; delta: number }> {
+    const changes: Array<{ type: string; delta: number }> = [];
 
     // Adjust adaptation rate based on feedback
     if (feedback.success !== undefined) {
       if (feedback.success) {
         changes.push({
           type: 'adaptationRate',
-          delta: this.options.adaptationRate * 0.1,
+          delta: (this.options.adaptationRate ?? 0.05) * 0.1,
         });
       } else {
         changes.push({
           type: 'adaptationRate',
-          delta: -this.options.adaptationRate * 0.1,
+          delta: -(this.options.adaptationRate ?? 0.05) * 0.1,
         });
       }
     }
@@ -217,7 +217,7 @@ export class DAACognition {
     if (feedback.confidence !== undefined) {
       changes.push({
         type: 'decisionThreshold',
-        delta: (feedback.confidence - this.options.decisionThreshold) * 0.05,
+        delta: (feedback.confidence - (this.options.decisionThreshold ?? 0.7)) * 0.05,
       });
     }
 
@@ -230,13 +230,13 @@ export class DAACognition {
         case 'adaptationRate':
           this.options.adaptationRate = Math.max(
             0.01,
-            Math.min(0.5, this.options.adaptationRate + change.delta)
+            Math.min(0.5, (this.options.adaptationRate ?? 0.05) + change.delta)
           );
           break;
         case 'decisionThreshold':
           this.options.decisionThreshold = Math.max(
             0.1,
-            Math.min(0.9, this.options.decisionThreshold + change.delta)
+            Math.min(0.9, (this.options.decisionThreshold ?? 0.7) + change.delta)
           );
           break;
       }

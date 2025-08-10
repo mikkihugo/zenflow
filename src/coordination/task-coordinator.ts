@@ -7,6 +7,8 @@ import type {
   TaskDocumentEntity,
 } from '../database/entities/product-entities';
 import type { AgentType } from '../types/agent-types';
+import type { DatabaseSPARCBridge } from './database-sparc-bridge';
+import type { SPARCSwarmCoordinator } from './swarm/core/sparc-swarm-coordinator';
 import { generateSubAgentConfig, mapToClaudeSubAgent } from './sub-agent-generator';
 
 export interface TaskConfig {
@@ -250,6 +252,7 @@ export class TaskCoordinator {
       created_at: new Date(),
       updated_at: new Date(),
       checksum: 'temp-checksum',
+      metadata: {}, // Fixed: Added missing metadata property
       task_type: 'development',
       estimated_hours: config?.timeout_minutes ? config?.timeout_minutes / 60 : 8,
       implementation_details: {

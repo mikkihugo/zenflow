@@ -5,12 +5,10 @@
  * This is the main entry point for the Claude-Zen terminal interface.
  * It gets called by the CLI binary and launches the appropriate terminal interface.
  */
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import { detectModeWithReason, launchTerminalInterface } from './index';
 
 const logger = getLogger('interfaces-terminal-main');
-
-import type { getLogger } from '../../core/logger';
-import { detectModeWithReason, launchTerminalInterface } from './index';
 
 /**
  * Main entry point for terminal interface.
@@ -95,7 +93,7 @@ function parseFlags(args: string[]): TerminalFlags {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
-    if (arg.startsWith('--')) {
+    if (arg && arg.startsWith('--')) {
       const key = arg.slice(2);
       const nextArg = args[i + 1];
 
@@ -114,7 +112,7 @@ function parseFlags(args: string[]): TerminalFlags {
       } else {
         flags[key] = true;
       }
-    } else if (arg.startsWith('-') && arg.length > 1) {
+    } else if (arg && arg.startsWith('-') && arg.length > 1) {
       const key = arg.slice(1);
       flags[key] = true;
     }

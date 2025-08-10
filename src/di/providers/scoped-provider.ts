@@ -6,7 +6,7 @@
  * @file Scoped-provider implementation.
  */
 
-import type { Provider } from '../types/di-types';
+import type { Provider, DIContainer, DIScope } from '../types/di-types';
 
 export class ScopedProvider<T> implements Provider<T> {
   readonly type = 'scoped' as const;

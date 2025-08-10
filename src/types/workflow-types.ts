@@ -1,14 +1,22 @@
 /**
- * @file Type definitions for workflow system
- * Core workflow types for the document-driven development system.
+ * @fileoverview MOVED: Workflow Types - Now in Workflows Domain
+ * 
+ * This file provides compatibility by re-exporting from the workflows domain.
+ * All workflow types have been consolidated in /workflows/ for clean architecture.
+ * 
+ * MIGRATION PATH:
+ * - OLD: import {WorkflowStep} from '../types/workflow-types'
+ * - NEW: import {WorkflowStep} from '../workflows/types'
+ * 
+ * This compatibility layer will be removed in a future version.
  */
 
-// Import base workflow types from the main workflow engine
+// Import base workflow types from the unified workflow engine
 import type {
   WorkflowDefinition as BaseWorkflowDefinition,
   WorkflowEngineConfig as BaseWorkflowEngineConfig,
   WorkflowStep as BaseWorkflowStep,
-} from '../workflows/engine';
+} from '../workflows/workflow-engine';
 
 // Re-export base types with aliases to avoid conflicts
 export type WorkflowStep = BaseWorkflowStep & {

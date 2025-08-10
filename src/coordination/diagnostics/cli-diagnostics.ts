@@ -8,8 +8,8 @@
  * Usage: npx ruv-swarm diagnose [options].
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { diagnostics } from './diagnostics';
 import type { LogConfiguration, LoggerInterface } from './logging-config';
 
@@ -106,12 +106,12 @@ async function generateReport(args: string[], logger: LoggerInterface): Promise<
   const report = await diagnostics.generateFullReport();
 
   if (outputPath) {
-    const reportPath = path.resolve(outputPath);
+    const reportPath = resolve(outputPath);
 
     if (format === 'json') {
-      fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
+      writeFileSync(reportPath, JSON.stringify(report, null, 2));
     } else if (format === 'markdown') {
-      fs.writeFileSync(reportPath, formatReportAsMarkdown(report));
+      writeFileSync(reportPath, formatReportAsMarkdown(report));
     }
   } else {
   }
@@ -170,12 +170,12 @@ async function analyzeLogs(args: string[], logger: LoggerInterface): Promise<voi
 
   logger.info('Analyzing logs...', { logDir, pattern });
 
-  if (!fs.existsSync(logDir)) {
+  if (!existsSync(logDir)) {
     logger.error(`❌ Log directory not found: ${logDir}`);
     process.exit(1);
   }
 
-  const logFiles = fs.readdirSync(logDir).filter((f) => f.endsWith('.log'));
+  const logFiles = readdirSync(logDir).filter((f) => f.endsWith('.log'));
 
   const results: {
     totalLines: number;
@@ -190,7 +190,7 @@ async function analyzeLogs(args: string[], logger: LoggerInterface): Promise<voi
   const regex = new RegExp(pattern, 'i');
 
   logFiles.forEach((file) => {
-    const content = fs.readFileSync(path.join(logDir, file), 'utf8');
+    const content = readFileSync(join(logDir, file), 'utf8');
     const lines = content.split('\n');
     const matches = lines.filter((line) => regex.test(line));
 

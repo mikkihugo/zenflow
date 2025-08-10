@@ -9,12 +9,13 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { createLogger } from '../../../core/logger';
-import { dspySwarmMCPTools } from '../mcp/dspy-swarm-mcp-tools';
+import { getLogger } from '../../../config/logging-config';
+import { dspySwarmMCPTools } from '../../mcp/dspy-swarm-mcp-tools';
 import { HiveTools } from './hive-tools';
 import { SwarmTools } from './swarm-tools';
+import type { MCPServerConfig } from './types';
 
-const logger = createLogger({ prefix: 'UnifiedMCPServer' });
+const logger = getLogger('UnifiedMCPServer');
 
 export class StdioMcpServer {
   private server: McpServer;
@@ -83,7 +84,7 @@ export class StdioMcpServer {
           async (args, _extra) => {
             try {
               logger.debug(`Executing tool: ${toolName}`, { args });
-              const result = await toolFunction(args?.params || ({} as any));
+              const result = await (toolFunction as Function)(args?.params || ({} as any));
 
               // Convert result to MCP format with required content array
               return {

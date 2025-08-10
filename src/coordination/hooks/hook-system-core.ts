@@ -175,7 +175,8 @@ export class HookSystem extends EventEmitter implements HookSystem {
 }
 
 // Default instance
-export const hookSystem = new DefaultHookSystem();
+export const hookSystem = new HookSystem();
 
-// Export for compatibility
-export default DefaultHookSystem;
+// Export as DefaultHookSystem for compatibility
+export { HookSystem as DefaultHookSystem };
+export default HookSystem;

@@ -25,9 +25,9 @@ import {
  */
 export interface MemoryBackend {
   /** Store a value with the given key */
-  store(key: string, value: any): Promise<void>;
+  store(key: string, value: unknown): Promise<void>;
   /** Retrieve a value by key */
-  retrieve(key: string): Promise<any>;
+  retrieve<T = unknown>(key: string): Promise<T | null>;
   /** Delete a value by key - returns true if key existed and was deleted, false otherwise */
   delete(key: string): Promise<boolean>;
   /** Clear all stored data */
@@ -105,9 +105,16 @@ export class MemoryProviderFactory {
  *
  * @example
  */
+interface MemoryRecord {
+  id: string;
+  data: unknown;
+  createdAt: string;
+  metadata: { type: string; [key: string]: unknown };
+}
+
 @injectable
 export class SqliteMemoryBackend implements MemoryBackend {
-  private repository: ICoordinationRepository<any>;
+  private repository: ICoordinationRepository<MemoryRecord>;
   private initialized = false;
 
   constructor(
@@ -116,7 +123,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
     private dalFactory: DALFactory
   ) {}
 
-  async store(key: string, value: any): Promise<void> {
+  async store(key: string, value: unknown): Promise<void> {
     this.logger.debug(`Storing key: ${key} in SQLite backend`);
     await this.ensureInitialized();
 
@@ -134,14 +141,14 @@ export class SqliteMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve(key: string): Promise<any> {
+  async retrieve<T = unknown>(key: string): Promise<T | null> {
     this.logger.debug(`Retrieving key: ${key} from SQLite backend`);
     await this.ensureInitialized();
 
     try {
       const results = await this.repository.findAll({});
-      const filtered = results?.filter((r: any) => r.id === key);
-      return filtered.length > 0 ? filtered[0]?.data : null;
+      const filtered = results?.filter((r) => r.id === key);
+      return filtered.length > 0 ? (filtered[0]?.data as T) : null;
     } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
@@ -229,9 +236,20 @@ export class SqliteMemoryBackend implements MemoryBackend {
  *
  * @example
  */
+interface VectorMemoryRecord {
+  id: string;
+  vector: number[];
+  metadata: {
+    originalValue: unknown;
+    storageType: string;
+    createdAt: string;
+    [key: string]: unknown;
+  };
+}
+
 @injectable
 export class LanceDBMemoryBackend implements MemoryBackend {
-  private repository: IVectorRepository<any>;
+  private repository: IVectorRepository<VectorMemoryRecord>;
   private initialized = false;
 
   constructor(
@@ -240,7 +258,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     private dalFactory: DALFactory
   ) {}
 
-  async store(key: string, value: any): Promise<void> {
+  async store(key: string, value: unknown): Promise<void> {
     this.logger.debug(`Storing key: ${key} in LanceDB backend`);
     await this.ensureInitialized();
 
@@ -266,7 +284,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve(key: string): Promise<any> {
+  async retrieve<T = unknown>(key: string): Promise<T | null> {
     this.logger.debug(`Retrieving key: ${key} from LanceDB backend`);
     await this.ensureInitialized();
 
@@ -277,12 +295,13 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       if (
         match &&
         'metadata' in match &&
-        match?.metadata &&
-        typeof match?.metadata === 'object' &&
-        match?.metadata !== null &&
-        'originalValue' in match?.metadata
+        match.metadata &&
+        typeof match.metadata === 'object' &&
+        match.metadata !== null &&
+        'originalValue' in match.metadata
       ) {
-        return (match?.metadata as any).originalValue;
+        const metadata = match.metadata as VectorMemoryRecord['metadata'];
+        return metadata.originalValue as T;
       }
       return null;
     } catch (error) {
@@ -320,7 +339,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       // Get all vectors and delete them
       const allVectors = await this.repository.similaritySearch([0], { limit: 10000 });
       for (const vector of allVectors) {
-        if (vector && 'id' in vector && vector.id) {
+        if (vector && 'id' in vector && typeof vector.id === 'string') {
           await this.repository.delete(vector.id);
         }
       }
@@ -372,11 +391,11 @@ export class LanceDBMemoryBackend implements MemoryBackend {
     }
   }
 
-  private generateVectorFromValue(value: any): number[] {
+  private generateVectorFromValue(value: unknown): number[] {
     // Simple hash-based vector generation for demo purposes
     // In production, you'd use proper embeddings
     const str = JSON.stringify(value);
-    const vector = new Array(384).fill(0);
+    const vector = new Array(384).fill(0) as number[];
 
     for (let i = 0; i < str.length && i < 384; i++) {
       vector[i] = str.charCodeAt(i) / 255; // Normalize to 0-1
@@ -393,7 +412,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
  */
 @injectable
 export class JsonMemoryBackend implements MemoryBackend {
-  private data = new Map<string, any>();
+  private data = new Map<string, unknown>();
   private initialized = false;
 
   constructor(
@@ -401,7 +420,7 @@ export class JsonMemoryBackend implements MemoryBackend {
     private logger: ILogger
   ) {}
 
-  async store(key: string, value: any): Promise<void> {
+  async store(key: string, value: unknown): Promise<void> {
     this.logger.debug(`Storing key: ${key} in JSON backend`);
     await this.ensureInitialized();
 
@@ -415,12 +434,13 @@ export class JsonMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve(key: string): Promise<any> {
+  async retrieve<T = unknown>(key: string): Promise<T | null> {
     this.logger.debug(`Retrieving key: ${key} from JSON backend`);
     await this.ensureInitialized();
 
     try {
-      return this.data.get(key);
+      const value = this.data.get(key);
+      return value !== undefined ? (value as T) : null;
     } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;
@@ -509,7 +529,7 @@ export class JsonMemoryBackend implements MemoryBackend {
  */
 @injectable
 export class InMemoryBackend implements MemoryBackend {
-  private data = new Map<string, any>();
+  private data = new Map<string, unknown>();
   private readonly maxSize: number;
 
   constructor(
@@ -520,7 +540,7 @@ export class InMemoryBackend implements MemoryBackend {
     this.logger.info(`Initialized in-memory backend with max size: ${this.maxSize}`);
   }
 
-  async store(key: string, value: any): Promise<void> {
+  async store(key: string, value: unknown): Promise<void> {
     this.logger.debug(`Storing key: ${key} in memory backend`);
 
     try {
@@ -537,11 +557,12 @@ export class InMemoryBackend implements MemoryBackend {
     }
   }
 
-  async retrieve(key: string): Promise<any> {
+  async retrieve<T = unknown>(key: string): Promise<T | null> {
     this.logger.debug(`Retrieving key: ${key} from memory backend`);
 
     try {
-      return this.data.get(key);
+      const value = this.data.get(key);
+      return value !== undefined ? (value as T) : null;
     } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}: ${error}`);
       throw error;

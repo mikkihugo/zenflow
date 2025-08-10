@@ -3,16 +3,16 @@
  */
 
 import { config } from '../config';
-import type { logger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 import { HTTPMCPServer as MCPServer } from '../interfaces/mcp';
 import { TerminalManager } from '../interfaces/terminal';
 import { MemoryManager } from '../memory/index';
+import type { CoordinationProvider } from '../types/shared-types';
 import { EventBus } from './event-bus';
-import { createLogger } from './logger';
 import { Orchestrator } from './orchestrator';
 
-let orchestratorInstance: Orchestrator | null = null as unknown;
-let coordinationProvider: CoordinationProvider | null = null as unknown;
+let orchestratorInstance: Orchestrator | null = null;
+let coordinationProvider: CoordinationProvider | null = null;
 
 /**
  * Set the coordination provider (dependency injection)
@@ -34,14 +34,14 @@ export function setCoordinationProvider(provider: CoordinationProvider): void {
 export function createOrchestratorInstance(
   customCoordinationProvider?: CoordinationProvider
 ): Orchestrator {
-  const logger = createLogger({ prefix: 'orchestrator' });
+  const logger = getLogger('orchestrator');
   const eventBus = new EventBus();
 
   // Get configuration sections from unified config
-  const terminalConfig = config?.['getSection']('interfaces').terminal;
-  const memoryConfig = config?.['getSection']('storage').memory;
-  const coordinationConfig = config?.['getSection']('coordination');
-  const mcpConfig = config?.['getSection']('interfaces').mcp.http;
+  const terminalConfig = config?.getSection('interfaces').terminal;
+  const memoryConfig = config?.getSection('storage').memory;
+  const coordinationConfig = config?.getSection('coordination');
+  const mcpConfig = config?.getSection('interfaces').mcp.http;
 
   const terminalManager = new TerminalManager(terminalConfig, logger, eventBus);
   const memoryManager = new MemoryManager(memoryConfig);
@@ -77,8 +77,8 @@ export function getOrchestratorInstance(): Orchestrator {
       // Dynamic import to break circular dependency
       import('../coordination/manager')
         .then(({ CoordinationManager }) => {
-          const coordinationConfig = config?.['getSection']('coordination');
-          const logger = createLogger({ prefix: 'coordination' });
+          const coordinationConfig = config?.getSection('coordination');
+          const logger = getLogger('coordination');
           const eventBus = new EventBus();
 
           const coordinationManager = new CoordinationManager(coordinationConfig, logger, eventBus);
@@ -86,6 +86,7 @@ export function getOrchestratorInstance(): Orchestrator {
           setCoordinationProvider(coordinationManager as any);
         })
         .catch((error) => {
+          const logger = getLogger('orchestrator');
           logger.warn('Failed to load coordination manager:', error);
         });
     }

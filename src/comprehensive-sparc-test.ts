@@ -79,7 +79,11 @@ async function testCoreEngine() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' satisfies RiskLevel },
+      riskAssessment: {
+        risks: [],
+        mitigationStrategies: [],
+        overallRisk: 'LOW' satisfies RiskLevel,
+      },
       successMetrics: [],
     };
 
@@ -133,7 +137,11 @@ async function testCLIIntegration() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' satisfies RiskLevel },
+      riskAssessment: {
+        risks: [],
+        mitigationStrategies: [],
+        overallRisk: 'LOW' satisfies RiskLevel,
+      },
       successMetrics: [],
     };
 
@@ -202,7 +210,11 @@ async function testMCPIntegration() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' satisfies RiskLevel },
+      riskAssessment: {
+        risks: [],
+        mitigationStrategies: [],
+        overallRisk: 'LOW' satisfies RiskLevel,
+      },
       successMetrics: [],
     };
 
@@ -287,7 +299,11 @@ async function testEndToEndFlow() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' satisfies RiskLevel },
+      riskAssessment: {
+        risks: [],
+        mitigationStrategies: [],
+        overallRisk: 'LOW' satisfies RiskLevel,
+      },
       successMetrics: [
         {
           id: 'metric-e2e-001',

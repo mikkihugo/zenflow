@@ -14,9 +14,9 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { getLogger } from '../config/logging-config';
 import type { DatabaseDrivenSystem } from '../core/database-driven-system';
 import { generateId } from '../core/helpers';
-import { createLogger } from '../core/logger';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
@@ -24,11 +24,10 @@ import type {
 import type { DocumentManager } from '../database/managers/document-manager';
 import type {
   SPARCSwarmCoordinator,
-  SPARCSwarmMetrics,
   SPARCTask,
 } from './swarm/core/sparc-swarm-coordinator';
 
-const logger = createLogger('DatabaseSPARCBridge');
+const logger = getLogger('DatabaseSPARCBridge');
 
 export interface WorkAssignment {
   id: string;

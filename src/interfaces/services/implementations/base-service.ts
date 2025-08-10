@@ -9,6 +9,8 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import type {
   IService,
   ServiceConfig,
@@ -29,7 +31,6 @@ import {
   ServiceOperationError,
   ServiceTimeoutError,
 } from '../core/interfaces';
-import { createLogger, type Logger } from '../utils/logger';
 
 /**
  * Abstract base service class with common functionality.
@@ -53,7 +54,7 @@ export abstract class BaseService extends EventEmitter implements IService {
     public config: ServiceConfig
   ) {
     super();
-    this.logger = createLogger(`Service:${name}`);
+    this.logger = getLogger(`Service:${name}`);
 
     // Initialize dependencies
     if (config?.dependencies) {

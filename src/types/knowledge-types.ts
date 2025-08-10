@@ -17,5 +17,4 @@ export interface FACTKnowledgeEntry {
   metadata: Record<string, unknown>;
 }
 
-// Convenience exports
-export type { KnowledgeResult, FACTKnowledgeEntry };
+// Convenience exports - KnowledgeResult and FACTKnowledgeEntry already exported above

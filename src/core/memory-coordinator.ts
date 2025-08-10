@@ -9,11 +9,11 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { getLogger } from '../config/logging-config';
 import { createDao, DatabaseTypes, EntityTypes } from '../database/index';
 import type { IRepository, IVectorRepository } from '../database/interfaces';
-import { createLogger } from './logger';
 
-const logger = createLogger('UnifiedMemory');
+const logger = getLogger('UnifiedMemory');
 
 // Core types
 export type JSONValue =
@@ -86,7 +86,7 @@ class LanceDBBackend implements BackendInterface {
   }
 
   async initialize(): Promise<void> {
-    this.vectorRepository = await createDao(EntityTypes.VectorDocument, DatabaseTypes?.LanceDB, {
+    this.vectorRepository = await createDao(EntityTypes.Document, 'lancedb' as DatabaseTypes, {
       database: `${this.config.path}/lancedb`,
       options: {
         vectorSize: this.config.lancedb?.vectorDimension || 384,
@@ -94,7 +94,7 @@ class LanceDBBackend implements BackendInterface {
       },
     });
 
-    this.vectorDAO = await createDao(EntityTypes.VectorDocument, DatabaseTypes?.LanceDB, {
+    this.vectorDAO = await createDao(EntityTypes.Document, 'lancedb' as DatabaseTypes, {
       database: `${this.config.path}/lancedb`,
       options: this.config.lancedb,
     });

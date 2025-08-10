@@ -2,7 +2,7 @@
  * @file Core module exports.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-index');
 
@@ -19,10 +19,10 @@ const logger = getLogger('coordination-swarm-core-index');
  * - Chaos engineering and fault tolerance.
  */
 
-import { AgentPool, createAgent } from '../agents/agent';
-import type { SessionCoordinationDao } from '../database';
+import type { SessionCoordinationDao } from '../../../database';
 // import { DALFactory } from '../database'; // TODO: Implement proper DI integration
-import { WasmModuleLoader } from '../neural/wasm/wasm-loader';
+import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
+import { AgentPool, createAgent } from '../../agents/agent';
 import { executeTaskWithAgent } from './agent-adapter';
 import { getContainer } from './singleton-container';
 import type {
@@ -38,11 +38,11 @@ import type {
 } from './types';
 import { formatMetrics, generateId, priorityToNumber, validateSwarmOptions } from './utils';
 
+export * from '../../../neural/core/neural-network-manager';
+export * from '../../../neural/wasm/wasm-loader2';
 // Enhanced exports with neural capabilities
-export * from '../agents/agent';
+export * from '../../agents/agent';
 export * from '../mcp/mcp-daa-tools';
-export * from '../neural/core/neural-network';
-export * from '../neural/wasm/wasm-loader';
 // Export the base implementation as BaseZenSwarm to avoid conflict
 export { ZenSwarm as BaseZenSwarm } from './base-swarm';
 export * from './errors';
@@ -78,6 +78,7 @@ export class Agent {
   public cognitivePattern: string;
   public capabilities: string[];
   public status: 'idle' | 'active' | 'busy';
+  public state: { status: 'idle' | 'active' | 'busy' };
 
   constructor(config: any = {}) {
     this.id = config?.id || `agent-${Date.now()}`;
@@ -88,11 +89,13 @@ export class Agent {
     this.cognitivePattern = config?.cognitivePattern || 'adaptive';
     this.capabilities = config?.capabilities || [];
     this.status = 'idle';
+    this.state = { status: 'idle' };
   }
 
   async initialize(): Promise<boolean> {
     this.isActive = true;
     this.status = 'active';
+    this.state.status = 'active';
 
     // Initialize neural network if enabled
     if (this.neuralNetworkId) {
@@ -103,6 +106,7 @@ export class Agent {
 
   async execute(task: any): Promise<any> {
     this.status = 'busy';
+    this.state.status = 'busy';
 
     try {
       const result = {
@@ -129,16 +133,19 @@ export class Agent {
       return result;
     } finally {
       this.status = 'active';
+      this.state.status = 'active';
     }
   }
 
   async updateStatus(newStatus: 'idle' | 'active' | 'busy'): Promise<void> {
     this.status = newStatus;
+    this.state.status = newStatus;
   }
 
   async cleanup(): Promise<boolean> {
     this.isActive = false;
     this.status = 'idle';
+    this.state.status = 'idle';
 
     if (this.neuralNetworkId) {
     }
@@ -587,7 +594,7 @@ export class ZenSwarm implements SwarmEventEmitter {
       throw new Error(`Agent ${agentId} not found`);
     }
 
-    if (agent.state.status === 'busy') {
+    if ((agent as any).status === 'busy') {
       throw new Error(`Cannot remove busy agent ${agentId}`);
     }
 
@@ -849,7 +856,7 @@ export class ZenSwarm implements SwarmEventEmitter {
       }
 
       for (const agent of Array.from(this.state.agents.values())) {
-        this.state.metrics.agentUtilization.set(agent.id, agent.state.status === 'busy' ? 1 : 0);
+        this.state.metrics.agentUtilization.set((agent as any).id, (agent as any).status === 'busy' ? 1 : 0);
       }
     }, this.options.syncInterval);
   }

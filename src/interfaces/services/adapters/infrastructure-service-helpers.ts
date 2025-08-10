@@ -9,8 +9,8 @@
  * @file Interface implementation: infrastructure-service-helpers.
  */
 
+import { getLogger } from '../../../config/logging-config';
 import type { ServiceOperationOptions } from '../core/interfaces';
-import { createLogger } from '../utils/logger';
 import type {
   InfrastructureServiceAdapter,
   InfrastructureServiceAdapterConfig,
@@ -22,7 +22,7 @@ import {
 import type { CreateServiceOptions } from './infrastructure-service-factory';
 import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
 
-const logger = createLogger('InfrastructureServiceHelpers');
+const logger = getLogger('InfrastructureServiceHelpers');
 
 // ============================================
 // Service Creation Helpers

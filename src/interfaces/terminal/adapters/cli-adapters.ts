@@ -1,14 +1,14 @@
 /**
  * @file CLI Adapters for Terminal Interface.
- * 
+ *
  * Provides terminal interface with access to CLI functionality without direct imports.
  * Uses adapter pattern to maintain interface separation.
  */
 
-import type { 
-  CommandResult, 
+import type {
+  CommandResult,
+  DiscoverCommandInterface,
   ExecutionContext,
-  DiscoverCommandInterface
 } from '../../shared/command-interfaces';
 
 /**
@@ -26,11 +26,10 @@ export class DiscoverCommandAdapter implements DiscoverCommandInterface {
       // Dynamic import to avoid circular dependency
       const { DiscoverCommand } = await import('../../cli/commands/discover');
       const discoverCommand = new DiscoverCommand();
-      
+
       // Execute the discover command
-      const result = await discoverCommand.execute?.(context) || 
-                     await discoverCommand.run?.(context) ||
-                     { success: true, message: 'Discovery completed' };
+      const result = (await discoverCommand.execute?.(context)) ||
+        (await discoverCommand.run?.(context)) || { success: true, message: 'Discovery completed' };
 
       return result;
     } catch (error) {
@@ -38,7 +37,7 @@ export class DiscoverCommandAdapter implements DiscoverCommandInterface {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Discovery failed',
-        message: 'Could not execute discover command'
+        message: 'Could not execute discover command',
       };
     }
   }
@@ -76,7 +75,7 @@ export class CLICommandRegistry {
       return {
         success: false,
         error: `Command '${name}' not found`,
-        message: `Available commands: ${Array.from(this.commands.keys()).join(', ')}`
+        message: `Available commands: ${Array.from(this.commands.keys()).join(', ')}`,
       };
     }
 

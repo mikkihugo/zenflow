@@ -8,7 +8,7 @@
  * @file Web-data service implementation.
  */
 
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 
 export interface SystemStatusData {
   system: string;
@@ -60,7 +60,7 @@ export interface CommandResult {
 }
 
 export class WebDataService {
-  private logger = createLogger('WebData');
+  private logger = getLogger('WebData');
 
   /**
    * Get comprehensive system status.

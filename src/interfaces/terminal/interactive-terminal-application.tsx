@@ -11,8 +11,16 @@
 
 import { Box, Text, useInput } from 'ink';
 import { useEffect, useState } from 'react';
-import { ErrorMessage, SwarmSpinner } from './components/index';
-import { MainMenu, ScreenUtils, SwarmDashboard } from './screens/index';
+import { ErrorMessage, SwarmSpinner, type SwarmStatus } from './components/index';
+import {
+  MainMenu,
+  type ScreenType,
+  ScreenUtils,
+  type SwarmAgent,
+  SwarmDashboard,
+  type SwarmMetrics,
+  type SwarmTask,
+} from './screens/index';
 
 export interface TUIModeProps {
   flags: Record<string, any>;
@@ -241,7 +249,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
       return;
     }
 
-    setState((prev) => ({
+    setState((prev: TUIState) => ({
       ...prev,
       currentScreen: screen,
       error: undefined, // Clear any previous errors
@@ -279,7 +287,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
         <ErrorMessage
           error={state.error}
           title="TUI Error"
-          showStack={flags.verbose}
+          showStack={flags['verbose']}
           actions={[
             { key: 'Esc', action: 'Main Menu' },
             { key: 'Q', action: 'Quit' },

@@ -5,13 +5,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '@core/logger';
 import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
 import type { SessionMemoryStore } from '@memory/memory';
+import { getLogger } from '../../config/logging-config';
 import { getHiveFACT, type HiveFACTSystem } from '../hive-fact-integration';
 import type { DiscoveredDomain, DomainDiscoveryBridge } from './domain-discovery-bridge';
 
-const logger = createLogger({ prefix: 'ProgressiveConfidence' });
+const logger = getLogger('ProgressiveConfidence');
 
 export interface LearningEvent {
   timestamp: number;
@@ -945,9 +945,9 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     // Extract key insights from facts
     return facts.map((f) => {
       if (typeof f.content === 'string') {
-        return `${f.content.substring(0, 100)  }...`;
+        return `${f.content.substring(0, 100)}...`;
       }
-      return `${JSON.stringify(f.content).substring(0, 100)  }...`;
+      return `${JSON.stringify(f.content).substring(0, 100)}...`;
     });
   }
 

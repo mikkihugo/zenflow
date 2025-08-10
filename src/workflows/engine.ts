@@ -2,9 +2,12 @@
  * @file Engine implementation.
  */
 
-import { createLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
+import type { DocumentManager } from '../database/managers/document-manager';
+import type { MemorySystemFactory } from '../memory/index';
+import type { BaseDocumentEntity } from '../database/entities/product-entities';
 
-const logger = createLogger('src-workflows-engine');
+const logger = getLogger('WorkflowEngine');
 
 /**
  * Workflow Engine
@@ -35,6 +38,29 @@ export interface WorkflowDefinition {
 
 export interface WorkflowContext {
   [key: string]: any;
+}
+
+export interface DocumentContent {
+  id: string;
+  type: string;
+  title: string;
+  content: string;
+  metadata?: Record<string, any>;
+}
+
+export interface StepExecutionResult {
+  success: boolean;
+  output?: any;
+  error?: string;
+  duration?: number;
+}
+
+export interface WorkflowData {
+  id: string;
+  name: string;
+  description?: string;
+  version?: string;
+  data: Record<string, any>;
 }
 
 export interface WorkflowState {
@@ -75,7 +101,16 @@ export class WorkflowEngine extends EventEmitter {
   private stepHandlers = new Map<string, (context: WorkflowContext, params: any) => Promise<any>>();
   private isInitialized = false;
 
-  constructor(config: WorkflowEngineConfig = {}) {
+  // Enhanced capabilities to match core WorkflowEngine
+  public memory?: MemorySystemFactory;
+  private documentManager?: DocumentManager;
+  private documentWorkflows = new Map<string, WorkflowDefinition>();
+
+  constructor(
+    config: WorkflowEngineConfig = {},
+    documentManager?: DocumentManager,
+    memoryFactory?: MemorySystemFactory
+  ) {
     super();
 
     this.config = {
@@ -89,6 +124,10 @@ export class WorkflowEngine extends EventEmitter {
       enableVisualization:
         config.enableVisualization === undefined ? false : config?.enableVisualization,
     };
+    
+    // Enhanced capabilities
+    this.documentManager = documentManager;
+    this.memory = memoryFactory;
   }
 
   async initialize(): Promise<void> {
@@ -587,6 +626,207 @@ export class WorkflowEngine extends EventEmitter {
     this.stepHandlers.clear();
     this.workflowMetrics.clear();
     this.removeAllListeners();
+  }
+
+  // ====================================================================
+  // ENHANCED METHODS TO MATCH CORE WORKFLOW ENGINE INTERFACE
+  // ====================================================================
+
+  /**
+   * Register document workflows for automated processing.
+   */
+  async registerDocumentWorkflows(): Promise<void> {
+    // Document workflow definitions
+    const documentWorkflows = [
+      {
+        name: 'vision-to-prds',
+        description: 'Process vision document and generate product requirements documents',
+        version: '1.0.0',
+        steps: [
+          {
+            type: 'extract-product-requirements',
+            name: 'Extract product requirements from vision',
+            params: { outputKey: 'product_requirements' },
+          },
+          {
+            type: 'create-prd-document',
+            name: 'Create PRD document',
+            params: { templateKey: 'prd_template', outputKey: 'prd_document' },
+          },
+        ],
+      },
+    ];
+
+    // Register all document workflows
+    for (const workflow of documentWorkflows) {
+      await this.registerWorkflowDefinition(workflow.name, workflow as WorkflowDefinition);
+      this.documentWorkflows.set(workflow.name, workflow as WorkflowDefinition);
+    }
+
+    logger.info(`Registered ${documentWorkflows.length} document workflows`);
+  }
+
+  /**
+   * Process document event to trigger appropriate workflows.
+   */
+  async processDocumentEvent(eventType: string, documentData: any): Promise<void> {
+    logger.info(`Processing document event: ${eventType}`);
+
+    // Auto-trigger workflows based on document type
+    const documentType = documentData.type || 'unknown';
+    const triggerWorkflows: string[] = [];
+
+    switch (documentType) {
+      case 'vision':
+        triggerWorkflows.push('vision-to-prds');
+        break;
+      case 'prd':
+        triggerWorkflows.push('prds-to-epics');
+        break;
+      default:
+        logger.debug(`No automatic workflow for document type: ${documentType}`);
+        return;
+    }
+
+    // Execute triggered workflows
+    for (const workflowName of triggerWorkflows) {
+      try {
+        const result = await this.startWorkflow(workflowName, {
+          documentData,
+          eventType,
+          triggeredAt: new Date().toISOString(),
+        });
+        logger.info(`Triggered workflow ${workflowName}: ${result.success ? 'SUCCESS' : 'FAILED'}`);
+      } catch (error) {
+        logger.error(`Failed to trigger workflow ${workflowName}:`, error);
+      }
+    }
+  }
+
+  /**
+   * Convert entity to document content.
+   */
+  convertEntityToDocumentContent(entity: BaseDocumentEntity): DocumentContent {
+    return {
+      id: entity.id,
+      type: entity.type,
+      title: entity.title || `${entity.type} Document`,
+      content: entity.content || '',
+      metadata: {
+        entityId: entity.id,
+        createdAt: entity.createdAt,
+        updatedAt: entity.updatedAt,
+        version: entity.version,
+        status: entity.status,
+      },
+    };
+  }
+
+  /**
+   * Execute workflow step with enhanced error handling.
+   */
+  async executeWorkflowStep(
+    step: WorkflowStep,
+    context: WorkflowContext,
+    workflowId: string
+  ): Promise<StepExecutionResult> {
+    const startTime = Date.now();
+
+    try {
+      const handler = this.stepHandlers.get(step.type);
+      if (!handler) {
+        throw new Error(`No handler found for step type: ${step.type}`);
+      }
+
+      const output = await handler(context, step.params || {});
+      const duration = Date.now() - startTime;
+
+      return { success: true, output, duration };
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+        duration,
+      };
+    }
+  }
+
+  /**
+   * Get workflow data by ID.
+   */
+  async getWorkflowData(workflowId: string): Promise<WorkflowData | null> {
+    const workflow = this.activeWorkflows.get(workflowId);
+    if (!workflow) {
+      return null;
+    }
+
+    return {
+      id: workflow.id,
+      name: workflow.definition.name,
+      description: workflow.definition.description,
+      version: workflow.definition.version,
+      data: {
+        status: workflow.status,
+        context: workflow.context,
+        currentStep: workflow.currentStep,
+        stepResults: workflow.stepResults,
+      },
+    };
+  }
+
+  /**
+   * Create workflow from data.
+   */
+  async createWorkflowFromData(data: WorkflowData): Promise<string> {
+    const definition: WorkflowDefinition = {
+      name: data.name,
+      description: data.description,
+      version: data.version,
+      steps: [],
+    };
+
+    const result = await this.startWorkflow(definition, data.data || {});
+    if (!result.success || !result.workflowId) {
+      throw new Error(`Failed to create workflow: ${result.error}`);
+    }
+
+    return result.workflowId;
+  }
+
+  /**
+   * Update workflow data.
+   */
+  async updateWorkflowData(workflowId: string, updates: Partial<WorkflowData>): Promise<void> {
+    const workflow = this.activeWorkflows.get(workflowId);
+    if (!workflow) {
+      throw new Error(`Workflow ${workflowId} not found`);
+    }
+
+    if (updates.data) {
+      Object.assign(workflow.context, updates.data);
+    }
+
+    await this.saveWorkflow(workflow);
+  }
+
+  /**
+   * Enhanced shutdown with cleanup.
+   */
+  async shutdown(): Promise<void> {
+    logger.info('Shutting down WorkflowEngine...');
+
+    const activeWorkflowIds = Array.from(this.activeWorkflows.keys());
+    for (const workflowId of activeWorkflowIds) {
+      try {
+        await this.cancelWorkflow(workflowId);
+      } catch (error) {
+        logger.error(`Error cancelling workflow ${workflowId}:`, error);
+      }
+    }
+
+    await this.cleanup();
+    this.isInitialized = false;
   }
 }
 

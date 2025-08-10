@@ -881,10 +881,16 @@ Use your tools directly - do not return code in your response. Just fix the file
       prompt += `\n`;
     });
 
+    prompt += `IMPORTANT LOGGING RULES:\n`;
+    prompt += `- PRESERVE all "import { getLogger } from '../config/logging-config'" patterns\n`;
+    prompt += `- PRESERVE all "getLogger('ComponentName')" calls\n`;
+    prompt += `- DO NOT revert to old createLogger patterns\n`;
+    prompt += `- LogTape migration is COMPLETE - do not change logging imports\n\n`;
     prompt += `Please use your Read and Write tools to:\n`;
     prompt += `1. Read the file: ${path.relative(REPO_ROOT, filePath)}\n`;
     prompt += `2. Fix ALL ${violations.length} violations listed above\n`;
-    prompt += `3. Write the corrected file back\n\n`;
+    prompt += `3. PRESERVE all existing LogTape migration patterns\n`;
+    prompt += `4. Write the corrected file back\n\n`;
     prompt += `Use your tools directly - do not return code in your response. Just fix all issues and confirm they're done.`;
 
     return prompt;

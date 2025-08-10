@@ -1,18 +1,23 @@
 /**
- * Unified Data Access Layer (DAL) - Main Export Module.
+ * Database Domain - Main Export Module
  *
- * @file Central export point for the unified DAL providing standardized access
- * to all database types through a consistent interface architecture. This module serves as
- * the primary entry point for all database operations including CRUD operations, transactions,
- * vector searches, graph queries, and multi-database coordination.
- * @author Claude-Zen DAL Team
- * @version 2.0.0
- * @since 1.0.0
- * @example Basic DAO Creation
+ * @file Central export point for all database functionality including types,
+ * entities, managers, and API controllers. This module serves as the single source
+ * of truth for all database operations and type definitions.
+ * 
+ * Following domain architecture standard with consolidated types.
+ */
+
+// Export all database types (Single Source of Truth)
+export * from './types';
+
+/**
+ * @deprecated Legacy export structure - use domain types instead
+ * @example Legacy Usage
  * ```typescript
  * import { createDao, EntityTypes, DatabaseTypes } from './database';
  *
- * // Create a PostgreSQL DAO for user entities
+ * // Create a PostgreSQL DAO for user entities  
  * const userDao = await createDao<User>(
  *   EntityTypes.User,
  *   DatabaseTypes.PostgreSQL,
@@ -668,9 +673,21 @@ export const QuickSetup = {
   async swarmCoordination() {
     const { createDao: createDaoFn } = await import('./core/dao-factory');
     return {
-      agents: await createDaoFn<any>('agent', 'coordination' as any, getDefaultConfig('coordination')),
-      tasks: await createDaoFn<any>('task', 'coordination' as any, getDefaultConfig('coordination')),
-      executions: await createDaoFn<any>('coordination', 'coordination' as any, getDefaultConfig('coordination')),
+      agents: await createDaoFn<any>(
+        'agent',
+        'coordination' as any,
+        getDefaultConfig('coordination')
+      ),
+      tasks: await createDaoFn<any>(
+        'task',
+        'coordination' as any,
+        getDefaultConfig('coordination')
+      ),
+      executions: await createDaoFn<any>(
+        'coordination',
+        'coordination' as any,
+        getDefaultConfig('coordination')
+      ),
       memory: await createDaoFn<any>('memory', 'memory' as any, getDefaultConfig('memory')),
       vectors: await createDaoFn<any>('vector', 'lancedb' as any, getDefaultConfig('lancedb')),
     };
@@ -682,7 +699,11 @@ export const QuickSetup = {
   async aimlData() {
     const { createDao: createDaoFn } = await import('./core/dao-factory');
     return {
-      documents: await createDaoFn<any>('document', 'postgresql' as any, getDefaultConfig('postgresql')),
+      documents: await createDaoFn<any>(
+        'document',
+        'postgresql' as any,
+        getDefaultConfig('postgresql')
+      ),
       embeddings: await createDaoFn<any>('vector', 'lancedb' as any, getDefaultConfig('lancedb')),
       relationships: await createDaoFn<any>('node', 'kuzu' as any, getDefaultConfig('kuzu')),
       cache: await createDaoFn<any>('memory', 'memory' as any, getDefaultConfig('memory')),

@@ -4,12 +4,13 @@
  * Achieves 2.8-4.4x speed improvements through concurrent execution.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
+import type { BatchExecutionSummary } from './performance-monitor';
 
 // TODO: Use dependency injection for logger
 // Should inject ILogger from DI container instead of creating directly
 // Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
-const logger = createLogger({ prefix: 'BatchEngine' });
+const logger = getLogger('BatchEngine');
 
 export interface BatchOperation {
   id: string;
@@ -39,16 +40,10 @@ export interface BatchResult {
   endTime: number;
 }
 
-export interface BatchExecutionSummary {
-  totalOperations: number;
-  successfulOperations: number;
-  failedOperations: number;
-  totalExecutionTime: number;
-  averageExecutionTime: number;
+export interface ExtendedBatchExecutionSummary extends BatchExecutionSummary {
   concurrencyAchieved: number;
   speedImprovement: number; // Compared to sequential execution
   tokenReduction: number; // Percentage reduction in tokens used
-  executionTime: number; // Total execution time in milliseconds
 }
 
 /**
@@ -84,7 +79,7 @@ export class BatchEngine {
    * @param operations.
    * @param operations
    */
-  async executeBatch(operations: BatchOperation[]): Promise<BatchExecutionSummary> {
+  async executeBatch(operations: BatchOperation[]): Promise<ExtendedBatchExecutionSummary> {
     const startTime = Date.now();
 
     if (this.config.trackPerformance) {
@@ -108,7 +103,11 @@ export class BatchEngine {
     const totalExecutionTime = endTime - startTime;
 
     // Calculate performance metrics
-    const summary = this.calculatePerformanceSummary(totalExecutionTime, operations.length);
+    const summary = this.calculatePerformanceSummary(
+      totalExecutionTime,
+      operations.length,
+      startTime
+    );
 
     if (this.config.trackPerformance) {
       logger.info('Batch execution completed', {
@@ -352,8 +351,9 @@ export class BatchEngine {
    */
   private calculatePerformanceSummary(
     totalExecutionTime: number,
-    totalOperations: number
-  ): BatchExecutionSummary {
+    totalOperations: number,
+    startTime: number
+  ): ExtendedBatchExecutionSummary {
     const results = Array.from(this.results.values());
     const successfulOperations = results?.filter((r) => r.success).length;
     const failedOperations = results?.filter((r) => !r.success).length;
@@ -382,10 +382,11 @@ export class BatchEngine {
       failedOperations,
       totalExecutionTime,
       averageExecutionTime,
+      startTime: startTime,
+      endTime: Date.now(),
       concurrencyAchieved,
       speedImprovement: Math.round(speedImprovement * 100) / 100,
       tokenReduction: Math.round(tokenReduction * 10) / 10,
-      executionTime: totalExecutionTime,
     };
   }
 
@@ -480,7 +481,7 @@ export function createToolBatch(
     const options: Partial<Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>> = {};
 
     if (tool.dependencies !== undefined) {
-      options?.dependencies = tool.dependencies;
+      options.dependencies = tool.dependencies;
     }
 
     return createBatchOperation(

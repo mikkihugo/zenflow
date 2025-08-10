@@ -8,9 +8,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
-import LRUCache from 'lru-cache';
+import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { ILogger } from '../../../core/interfaces/base-interfaces';
+import { LRUCache } from 'lru-cache';
 
 // Core optimization types
 export interface OptimizationConfig {

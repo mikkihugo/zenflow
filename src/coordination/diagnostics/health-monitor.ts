@@ -34,10 +34,10 @@ export interface HealthMonitorOptions {
   enableSystemChecks?: boolean;
   enableCustomChecks?: boolean;
   maxHistorySize?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
-export type HealthCheckFunction = () => Promise<any> | any;
+export type HealthCheckFunction = () => Promise<HealthCheckResult | Partial<HealthCheckResult>> | HealthCheckResult | Partial<HealthCheckResult>;
 
 export interface HealthCheck {
   name: string;
@@ -48,7 +48,7 @@ export interface HealthCheck {
   critical: boolean;
   description: string;
   lastRun: string | null;
-  lastResult: any;
+  lastResult: HealthCheckResult | null;
   runCount: number;
   errorCount: number;
 }
@@ -57,7 +57,7 @@ export interface HealthCheckResult {
   score: number;
   status: string;
   details: string;
-  metrics: Record<string, any>;
+  metrics: Record<string, unknown>;
   duration: number;
 }
 
@@ -78,7 +78,7 @@ export interface HealthAlert {
   timestamp: string;
   title: string;
   message: string;
-  details: any;
+  details: Record<string, unknown> | string | null;
   resolved: boolean;
 }
 
@@ -260,14 +260,16 @@ export class HealthMonitor extends EventEmitter {
       if (result?.status === 'fulfilled') {
         const { score, status, details, metrics } = result?.value;
 
-        results?.[checkName] = {
-          score,
-          status,
-          details,
-          metrics,
-          timestamp: new Date().toISOString(),
-          duration: result?.value?.duration,
-        };
+        if (results) {
+          results[checkName] = {
+            score,
+            status,
+            details,
+            metrics,
+            timestamp: new Date().toISOString(),
+            duration: result?.value?.duration,
+          };
+        }
 
         totalScore += score * check.weight;
         totalWeight += check.weight;
@@ -280,14 +282,16 @@ export class HealthMonitor extends EventEmitter {
         check.lastRun = new Date().toISOString();
         check.runCount++;
       } else {
-        results?.[checkName] = {
-          score: 0,
-          status: 'error',
-          details: (result as PromiseRejectedResult).reason?.message ?? 'Unknown error',
-          metrics: {},
-          timestamp: new Date().toISOString(),
-          duration: 0,
-        };
+        if (results) {
+          results[checkName] = {
+            score: 0,
+            status: 'error',
+            details: (result as PromiseRejectedResult).reason?.message ?? 'Unknown error',
+            metrics: {},
+            timestamp: new Date().toISOString(),
+            duration: 0,
+          };
+        }
 
         check.errorCount++;
 
@@ -361,12 +365,12 @@ export class HealthMonitor extends EventEmitter {
       const duration = performance.now() - startTime;
 
       // Normalize result format
-      const normalizedResult = {
-        score: typeof result === 'number' ? result : result?.score || 100,
-        status: result?.status || 'healthy',
-        details: result?.details || result?.message || 'Health check passed',
-        metrics: result?.metrics || {},
-        duration,
+      const normalizedResult: HealthCheckResult = {
+        score: typeof result === 'number' ? result : (result as any)?.score ?? 100,
+        status: (result as any)?.status || 'healthy',
+        details: (result as any)?.details || (result as any)?.message || 'Health check passed',
+        metrics: (result as any)?.metrics || {},
+        duration: (result as any)?.duration ?? duration,
       };
 
       return normalizedResult;

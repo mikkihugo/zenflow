@@ -25,6 +25,9 @@ import type {
   WebSocketRequestOptions,
 } from './websocket-types';
 
+// WebSocket ready state type
+type WebSocketReadyState = 0 | 1 | 2 | 3;
+
 // Legacy interface for backward compatibility
 interface WebSocketClientOptions {
   reconnect?: boolean;
@@ -145,7 +148,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           this.reconnectAttempts = 0;
           this.connectionId = this.generateConnectionId();
           this.connectionInfo.connectTime = new Date();
-          this.connectionInfo.readyState = this.ws?.readyState;
+          this.connectionInfo.readyState = (this.ws?.readyState ??
+            WebSocket.CLOSED) as WebSocketReadyState;
 
           // Emit both legacy and UACL events
           this.emit('connected'); // Legacy
@@ -163,7 +167,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         this.ws.onclose = (event) => {
           clearTimeout(timeout);
           this._isConnected = false;
-          this.connectionInfo.readyState = this.ws?.readyState;
+          this.connectionInfo.readyState = (this.ws?.readyState ??
+            WebSocket.CLOSED) as WebSocketReadyState;
           this.stopHeartbeat();
 
           // Emit both legacy and UACL events
@@ -241,7 +246,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       uptime: Date.now() - this.startTime,
       metadata: {
         connectionId: this.connectionId,
-        readyState: this.ws?.readyState || -1,
+        readyState: (this.ws?.readyState ?? WebSocket.CLOSED) as WebSocketReadyState,
         queuedMessages: this.messageQueue.length,
         reconnectAttempts: this.reconnectAttempts,
         url: this.url,
@@ -334,11 +339,11 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * @param handler.
    * @param handler
    */
-  on(
+  override on(
     event: 'connect' | 'disconnect' | 'error' | 'retry' | string,
     handler: (...args: any[]) => void
-  ): void {
-    super.on(event, handler);
+  ): this {
+    return super.on(event, handler);
   }
 
   /**
@@ -348,11 +353,12 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * @param handler.
    * @param handler
    */
-  off(event: string, handler?: (...args: any[]) => void): void {
+  override off(event: string, handler?: (...args: any[]) => void): this {
     if (handler) {
-      super.off(event, handler);
+      return super.off(event, handler);
     } else {
       super.removeAllListeners(event);
+      return this;
     }
   }
 
@@ -467,7 +473,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   getConnectionInfo(): WebSocketConnectionInfo {
     return {
       ...this.connectionInfo,
-      readyState: this.ws?.readyState || -1,
+      readyState: (this.ws?.readyState ?? WebSocket.CLOSED) as WebSocketReadyState,
       bufferedAmount: this.ws?.bufferedAmount || 0,
       lastActivity: new Date(),
     };
@@ -612,7 +618,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
             connectionId: this.connectionId,
             messageType: 'response',
           },
-        });
+        } as ClientResponse<T>);
       };
 
       this.once(`response:${requestId}`, responseHandler);
@@ -785,13 +791,13 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       name: `ws-client-${Date.now()}`,
       baseURL: url,
       url: url,
-      timeout: options?.timeout,
+      timeout: options?.timeout ?? undefined,
       reconnection: {
-        enabled: options?.reconnect || true,
-        maxAttempts: options?.maxReconnectAttempts || 10,
-        initialDelay: options?.reconnectInterval || 1000,
+        enabled: options?.reconnect ?? true,
+        maxAttempts: options?.maxReconnectAttempts ?? 10,
+        initialDelay: options?.reconnectInterval ?? 1000,
         maxDelay: 30000,
-        backoff: 'exponential',
+        backoff: 'exponential' as const,
       },
       heartbeat: {
         enabled: true,

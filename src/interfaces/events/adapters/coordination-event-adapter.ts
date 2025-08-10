@@ -15,11 +15,12 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { getLogger } from '../../../config/logging-config';
 import type { AgentManager } from '../../../coordination/agents/agent-manager';
 import type { ProductWorkflowEngine as Orchestrator } from '../../../coordination/orchestration/product-workflow-engine';
 // Import coordination system classes to wrap their EventEmitter usage
 import type { SPARCSwarmCoordinator as SwarmCoordinator } from '../../../coordination/swarm/core/sparc-swarm-coordinator';
-import { createLogger, type Logger } from '../../../core/logger';
+import type { Logger } from '../../../core/logger';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -376,7 +377,7 @@ export class CoordinationEventAdapter implements IEventManager {
       ...config,
     };
 
-    this.logger = createLogger(`CoordinationEventAdapter:${this.name}`);
+    this.logger = getLogger(`CoordinationEventAdapter:${this.name}`);
     this.logger.info(`Creating coordination event adapter: ${this.name}`);
 
     // Set max listeners to handle many coordination components

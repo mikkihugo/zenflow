@@ -12,6 +12,8 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import { DaaService } from '../../../coordination/swarm/core/daa-service';
 import { SessionEnabledSwarm } from '../../../coordination/swarm/core/session-integration';
 import type { SessionConfig, SessionState } from '../../../coordination/swarm/core/session-manager';
@@ -19,7 +21,6 @@ import type { SwarmAgent, SwarmMetrics } from '../../../coordination/swarm/core/
 import { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator';
 import type { SwarmOptions, SwarmTopology } from '../../../coordination/swarm/core/types';
 import type { AgentType } from '../../../types/agent-types';
-import { createLogger, type ILogger } from '../../../utils/logger';
 import type {
   IService,
   ServiceConfig,
@@ -334,7 +335,7 @@ export class CoordinationServiceAdapter implements IService {
       ...config,
     };
 
-    this.logger = createLogger(`CoordinationServiceAdapter:${this.name}`);
+    this.logger = getLogger(`CoordinationServiceAdapter:${this.name}`);
     this.logger.info(`Creating coordination service adapter: ${this.name}`);
   }
 

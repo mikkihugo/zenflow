@@ -125,21 +125,7 @@ export interface Message {
 // Task Types
 // ============================================
 
-export interface Task {
-  id: string;
-  name: string;
-  description: string;
-  status: TaskStatus;
-  type: TaskType;
-  assignedTo?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  completedAt?: Date;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  metadata?: Record<string, any>;
-}
-
-export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
+// Task interface moved to line 179 to avoid duplication
 export type TaskType =
   | 'analysis'
   | 'generation'
@@ -181,13 +167,18 @@ export interface Task {
   name: string;
   description?: string;
   status: TaskStatus;
+  type?: TaskType;
   priority: TaskPriority;
   assignee?: string;
+  assignedTo?: string; // Legacy compatibility
   dependencies?: string[];
   metadata?: Record<string, any>;
   created: Date;
   updated: Date;
   completed?: Date;
+  createdAt?: Date; // Legacy compatibility
+  updatedAt?: Date; // Legacy compatibility
+  completedAt?: Date; // Legacy compatibility
 }
 
 export type TaskStatus = 'pending' | 'active' | 'completed' | 'failed' | 'cancelled';

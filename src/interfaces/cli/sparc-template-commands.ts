@@ -2,7 +2,7 @@
  * @file Interface implementation: sparc-template-commands.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-cli-sparc-template-commands');
 
@@ -14,9 +14,9 @@ const logger = getLogger('interfaces-cli-sparc-template-commands');
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import { TemplateEngine } from '../coordination/swarm/sparc/core/template-engine';
-import { SpecificationPhaseEngine } from '../coordination/swarm/sparc/phases/specification/specification-engine';
-import type { ProjectSpecification } from '../coordination/swarm/sparc/types/sparc-types';
+import { TemplateEngine } from '../../coordination/swarm/sparc/core/template-engine';
+import { SpecificationPhaseEngine } from '../../coordination/swarm/sparc/phases/specification/specification-engine';
+import type { ProjectSpecification } from '../../coordination/swarm/sparc/types/sparc-types';
 
 export function createSPARCTemplateCommands(): Command {
   const sparcTemplateCmd = new Command('spec');

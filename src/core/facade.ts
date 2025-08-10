@@ -4,10 +4,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { SwarmTopology } from '../types/event-types';
-import type { EventMap as AllSystemEvents } from '../types/event-types';
 import type { ISystemEventManager } from '../interfaces/events/factories';
 import type { MCPCommandQueue } from '../interfaces/mcp/command-system';
+import type { EventMap as AllSystemEvents, SwarmTopology } from '../types/event-types';
 
 // Re-export types for convenience
 export type { SwarmTopology } from '../types/event-types';
@@ -672,8 +671,8 @@ export class ClaudeZenFacade extends EventEmitter {
           errors: initErrors.length,
           warnings: initWarnings.length,
         },
-        ...(initErrors.length > 0 && { errors: initErrors }),
-        ...(initWarnings.length > 0 && { warnings: initWarnings }),
+        errors: initErrors.length > 0 ? initErrors : undefined,
+        warnings: initWarnings.length > 0 ? initWarnings : undefined,
       };
 
       this.metrics.endOperation(
@@ -1024,7 +1023,9 @@ export class ClaudeZenFacade extends EventEmitter {
       await this.commandQueue.shutdown();
 
       // Shutdown event manager
-      await this.eventManager.shutdown();
+      if ('shutdown' in this.eventManager) {
+        await (this.eventManager as any).shutdown();
+      }
 
       // Close database connections
       if ('shutdown' in this.databaseService) {
@@ -1042,11 +1043,12 @@ export class ClaudeZenFacade extends EventEmitter {
   // Private helper methods
   private setupEventHandlers(): void {
     // Set up cross-service event coordination
-    this.eventManager.on('swarm:created', (event) => {
+    // Note: Using 'any' to handle event type mismatch until proper event types are defined
+    (this.eventManager as any).on('swarm:created', (event: any) => {
       this.logger.info('Swarm created', { swarmId: event.swarmId });
     });
 
-    this.eventManager.on('neural:training_complete', (event) => {
+    (this.eventManager as any).on('neural:training_complete', (event: any) => {
       this.logger.info('Neural training completed', { modelId: event.modelId });
     });
 

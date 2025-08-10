@@ -308,7 +308,7 @@ export class BashSafetyValidator implements SafetyValidator {
       const fileOp: FileOperation = {
         type: operation.type as any,
         path: operation.filePath,
-        content: operation.parameters['content'] as string,
+        content: (operation.parameters?.['content'] as string) || '',
       };
       const result = await this.validateFileOperation(fileOp);
       return result?.riskLevel;

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @file Test Log-Based Deception Detection.
- * 
+ *
  * Tests the system against actual log files to detect real deception patterns.
  */
 
@@ -23,7 +23,7 @@ async function testLogBasedDeception() {
   const result1 = await detector.analyzeRecentActivity(deceptiveResponse);
   const report1 = detector.generateReport(result1);
   console.log(report1);
-  console.log(`\n${  '='.repeat(60)  }\n`);
+  console.log(`\n${'='.repeat(60)}\n`);
 
   // TEST 2: Legitimate response with actual tool usage
   console.log('TEST 2: Legitimate Development Activity');
@@ -36,7 +36,7 @@ async function testLogBasedDeception() {
   const result2 = await detector.analyzeRecentActivity(legitimateResponse);
   const report2 = detector.generateReport(result2);
   console.log(report2);
-  console.log(`\n${  '='.repeat(60)  }\n`);
+  console.log(`\n${'='.repeat(60)}\n`);
 
   // TEST 3: Sandbagging detection
   console.log('TEST 3: Sandbagging Detection');

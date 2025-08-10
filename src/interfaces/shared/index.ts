@@ -15,28 +15,32 @@
  * @file Shared module exports.
  */
 
+// Re-export config types
+export type { InterfaceConfig } from '../../config/types';
+// Re-export types from CLI advanced types
+export type {
+  ComplexityLevel,
+  ProjectType,
+} from '../cli/types/advanced-cli-types';
+// Re-export command types from command-interfaces
+export type { CommandResult } from './command-interfaces';
 export * from './config';
 export type {
+  // Export the types defined in contracts
+  CommandContext,
   CommandExecutorContract,
   ConfigurationContract,
   DataServiceContract,
+  ProjectConfig,
   ProjectManagerContract,
   SwarmCoordinatorContract,
+  SystemHealth,
   SystemMonitorContract,
 } from './contracts';
 // Export all contracts
 export * from './contracts';
+// Re-export key types for convenience - only the ones that actually exist
+export type { ComponentStatus } from './types';
 
-// Re-export key types for convenience
-export type {
-  CommandContext,
-  CommandResult,
-  ComplexityLevel,
-  ComponentStatus,
-  InterfaceConfig,
-  ProjectConfig,
-  ProjectType,
-  SystemHealth,
-} from './types';
 // Export all shared types
 export * from './types';

@@ -2,7 +2,7 @@
  * @file Sqlite-backend implementation.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('knowledge-storage-backends-sqlite-backend');
 
@@ -15,9 +15,9 @@ const logger = getLogger('knowledge-storage-backends-sqlite-backend');
 
 import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
-import type { DatabaseAdapter, DatabaseConfig } from '../database/providers/database-providers';
+import type { DatabaseAdapter, DatabaseConfig } from '../../database/providers/database-providers';
 // Use DAL instead of direct database access
-import { DatabaseProviderFactory } from '../database/providers/database-providers';
+import { DatabaseProviderFactory } from '../../database/providers/database-providers';
 import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,
@@ -366,6 +366,204 @@ export class SQLiteBackend implements FACTStorageBackend {
       this.dalAdapter = undefined;
     }
     this.isInitialized = false;
+  }
+
+  async clearByQuality(minQuality: number): Promise<number> {
+    if (!this.dalAdapter) {
+      throw new Error('SQLite backend not initialized');
+    }
+
+    try {
+      const result = await this.dalAdapter.execute(
+        `DELETE FROM ${this.config.tableName} WHERE JSON_EXTRACT(metadata, '$.confidence') < ?`,
+        [minQuality]
+      );
+
+      // Clean up FTS table if enabled
+      if (this.config.enableFullTextSearch) {
+        await this.dalAdapter.execute(
+          `DELETE FROM ${this.config.tableName}_fts 
+           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`
+        );
+      }
+
+      return result?.rowsAffected || 0;
+    } catch (error) {
+      logger.error('Failed to clear entries by quality:', error);
+      return 0;
+    }
+  }
+
+  async clearByAge(maxAgeMs: number): Promise<number> {
+    if (!this.dalAdapter) {
+      throw new Error('SQLite backend not initialized');
+    }
+
+    try {
+      const cutoffTime = Date.now() - maxAgeMs;
+      const result = await this.dalAdapter.execute(
+        `DELETE FROM ${this.config.tableName} WHERE timestamp < ?`,
+        [cutoffTime]
+      );
+
+      // Clean up FTS table if enabled
+      if (this.config.enableFullTextSearch) {
+        await this.dalAdapter.execute(
+          `DELETE FROM ${this.config.tableName}_fts 
+           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`
+        );
+      }
+
+      return result?.rowsAffected || 0;
+    } catch (error) {
+      logger.error('Failed to clear entries by age:', error);
+      return 0;
+    }
+  }
+
+  async clearMemoryCache(): Promise<number> {
+    // SQLite backend doesn't have a separate memory cache
+    // This is a no-op for SQLite backend
+    return 0;
+  }
+
+  async clearAll(): Promise<number> {
+    if (!this.dalAdapter) {
+      throw new Error('SQLite backend not initialized');
+    }
+
+    try {
+      const countResult = await this.dalAdapter.query(
+        `SELECT COUNT(*) as count FROM ${this.config.tableName}`
+      );
+      const totalEntries = countResult?.rows?.[0]?.count || 0;
+
+      await this.clear();
+      return totalEntries;
+    } catch (error) {
+      logger.error('Failed to clear all entries:', error);
+      return 0;
+    }
+  }
+
+  async optimize(
+    strategy: 'aggressive' | 'balanced' | 'conservative' = 'balanced'
+  ): Promise<{ optimized: boolean; details: string }> {
+    if (!this.dalAdapter) {
+      throw new Error('SQLite backend not initialized');
+    }
+
+    try {
+      const operations = [];
+
+      // Always vacuum the database
+      await this.dalAdapter.execute('VACUUM');
+      operations.push('VACUUM completed');
+
+      // Reindex based on strategy
+      if (strategy === 'aggressive' || strategy === 'balanced') {
+        await this.dalAdapter.execute('REINDEX');
+        operations.push('REINDEX completed');
+      }
+
+      // Analyze statistics for query optimization
+      if (strategy === 'aggressive') {
+        await this.dalAdapter.execute('ANALYZE');
+        operations.push('ANALYZE completed');
+      }
+
+      // Clean up expired entries
+      const cleaned = await this.cleanup(0); // Clean all expired
+      if (cleaned > 0) {
+        operations.push(`Cleaned ${cleaned} expired entries`);
+      }
+
+      return {
+        optimized: true,
+        details: `Optimization complete: ${operations.join(', ')}`,
+      };
+    } catch (error) {
+      logger.error('Failed to optimize storage:', error);
+      return {
+        optimized: false,
+        details: `Optimization failed: ${(error as Error).message}`,
+      };
+    }
+  }
+
+  async getStorageStats(): Promise<FACTStorageStats> {
+    if (!this.dalAdapter) {
+      throw new Error('SQLite backend not initialized');
+    }
+
+    try {
+      // Get basic counts and timestamps
+      const basicStatsResult = await this.dalAdapter.query(
+        `SELECT 
+         COUNT(*) as total_count,
+         MIN(timestamp) as oldest_timestamp,
+         MAX(timestamp) as newest_timestamp,
+         AVG(access_count) as avg_access_count
+         FROM ${this.config.tableName}`
+      );
+      const basicStats = basicStatsResult?.rows?.[0] as any;
+
+      // Get top domains
+      const domainsResult = await this.dalAdapter.query(
+        `SELECT JSON_EXTRACT(metadata, '$.domains') as domains, COUNT(*) as count
+         FROM ${this.config.tableName}
+         GROUP BY JSON_EXTRACT(metadata, '$.domains')
+         ORDER BY count DESC
+         LIMIT 10`
+      );
+      const topDomains = domainsResult?.rows
+        ?.map((row: any) => {
+          try {
+            const domains = JSON.parse(row.domains || '[]');
+            return Array.isArray(domains) ? domains : [];
+          } catch {
+            return [];
+          }
+        })
+        .flat()
+        .slice(0, 10) || [];
+
+      // Calculate storage health based on various metrics
+      let storageHealth: 'excellent' | 'good' | 'fair' | 'poor' = 'excellent';
+      const totalEntries = basicStats?.total_count || 0;
+      const avgAccessCount = basicStats?.avg_access_count || 0;
+
+      if (totalEntries > 10000 && avgAccessCount < 2) {
+        storageHealth = 'fair';
+      } else if (totalEntries > 50000) {
+        storageHealth = 'good';
+      } else if (totalEntries < 100) {
+        storageHealth = 'poor';
+      }
+
+      return {
+        memoryEntries: 0, // SQLite backend doesn't use memory cache
+        persistentEntries: totalEntries,
+        totalMemorySize: 0, // SQLite backend doesn't use memory cache
+        cacheHitRate: 0, // Not applicable for persistent-only storage
+        oldestEntry: basicStats?.oldest_timestamp || 0,
+        newestEntry: basicStats?.newest_timestamp || 0,
+        topDomains,
+        storageHealth,
+      };
+    } catch (error) {
+      logger.error('Failed to get storage stats:', error);
+      return {
+        memoryEntries: 0,
+        persistentEntries: 0,
+        totalMemorySize: 0,
+        cacheHitRate: 0,
+        oldestEntry: 0,
+        newestEntry: 0,
+        topDomains: [],
+        storageHealth: 'poor',
+      };
+    }
   }
 
   private async createTables(): Promise<void> {

@@ -11,7 +11,7 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 import type { WebConfig } from './web-config';
 
 export interface ProcessInfo {
@@ -22,7 +22,7 @@ export interface ProcessInfo {
 }
 
 export class WebProcessManager {
-  private logger = createLogger('WebProcess');
+  private logger = getLogger('WebProcess');
   private config: WebConfig;
   private pid?: number;
   private pidFile: string;

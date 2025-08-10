@@ -9,7 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '@core/logger';
+import { getLogger } from '../config/logging-config';
 import type { SessionMemoryStore } from '../memory';
 import { getHiveFACT, type HiveFACTSystem, type UniversalFact } from './hive-fact-integration';
 import type { HiveSwarmCoordinator } from './hive-swarm-sync';
@@ -20,7 +20,7 @@ interface SwarmContext {
   agentCompatibility?: number | undefined;
 }
 
-const logger = createLogger({ prefix: 'Hive-Knowledge-Bridge' });
+const logger = getLogger('Hive-Knowledge-Bridge');
 
 export interface KnowledgeRequest {
   requestId: string;

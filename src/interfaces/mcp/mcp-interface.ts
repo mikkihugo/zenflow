@@ -9,9 +9,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from './mcp-logger';
+import { getLogger } from '../../config/logging-config';
 
-const logger = createLogger('MCPInterface');
+const logger = getLogger('MCPInterface');
 
 export interface MCPInterfaceConfig {
   serverUrl?: string;

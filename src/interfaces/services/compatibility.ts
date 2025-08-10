@@ -9,7 +9,7 @@
  * @file Interface implementation: compatibility.
  */
 
-import { createLogger, type Logger } from '../utils/logger';
+import { getLogger, type Logger } from '../../config/logging-config';
 import type { IService } from './core/interfaces';
 import { ServiceManager } from './manager';
 import { type AnyServiceConfig, ServicePriority, ServiceType } from './types';
@@ -65,7 +65,7 @@ export class USLCompatibilityLayer {
   }> = [];
 
   constructor(config?: Partial<CompatibilityConfig>) {
-    this.logger = createLogger('USLCompatibility');
+    this.logger = getLogger('USLCompatibility');
     this.serviceManager = new ServiceManager();
 
     this.config = {
@@ -114,7 +114,9 @@ export class USLCompatibilityLayer {
 
     // Legacy fallback
     if (!this.uslInstance) {
-      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+      throw new Error(
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
+      );
     }
     return await this.uslInstance.createWebDataService(name, options);
   }
@@ -138,7 +140,9 @@ export class USLCompatibilityLayer {
 
     // Legacy fallback
     if (!this.uslInstance) {
-      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+      throw new Error(
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
+      );
     }
     return await this.uslInstance.createDocumentService(name, dbType as any, options);
   }
@@ -157,9 +161,14 @@ export class USLCompatibilityLayer {
 
     // Legacy fallback - map to coordination service
     if (!this.uslInstance) {
-      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+      throw new Error(
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
+      );
     }
-    return await this.uslInstance.createCoordinationService(name, { type: ServiceType.DAA, ...options });
+    return await this.uslInstance.createCoordinationService(name, {
+      type: ServiceType.DAA,
+      ...options,
+    });
   }
 
   /**
@@ -179,7 +188,9 @@ export class USLCompatibilityLayer {
 
     // Legacy fallback
     if (!this.uslInstance) {
-      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+      throw new Error(
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
+      );
     }
     return await this.uslInstance.createCoordinationService(name, {
       type: ServiceType.SESSION_RECOVERY,
@@ -213,7 +224,9 @@ export class USLCompatibilityLayer {
 
     // Legacy fallback
     if (!this.uslInstance) {
-      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+      throw new Error(
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
+      );
     }
     return await this.uslInstance.createArchitectureStorageService(name, dbType as any, options);
   }
@@ -233,7 +246,9 @@ export class USLCompatibilityLayer {
 
     // Legacy fallback
     if (!this.uslInstance) {
-      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+      throw new Error(
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
+      );
     }
     return await this.uslInstance.createSafeAPIService(name, baseURL, options);
   }

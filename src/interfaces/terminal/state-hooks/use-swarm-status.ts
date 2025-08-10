@@ -9,9 +9,9 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createLogger } from '../../../core/logger';
+import { getLogger } from '../../../config/logging-config';
 
-const logger = createLogger({ prefix: 'SwarmStatusHook' });
+const logger = getLogger('SwarmStatusHook');
 
 // Missing interface definitions
 export interface SwarmMetrics {

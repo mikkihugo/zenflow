@@ -10,9 +10,6 @@
  */
 
 import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject } from '../../di/decorators/inject';
-import { injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   ClientConfig,
   ClientHealthStatus,
@@ -27,9 +24,9 @@ import type {
 } from './interfaces';
 import type { ClientStatus, ClientType, ProtocolType } from './types';
 import {
+  ClientConfigs,
   ClientErrorCodes,
   ClientTypes,
-  DefaultClientConfigs,
   ProtocolToClientTypeMap,
   ProtocolTypes,
   TypeGuards,
@@ -96,7 +93,6 @@ export interface ClientRegistry {
  *
  * @example
  */
-@injectable
 export class UACLFactory {
   private clientCache = new Map<string, IClient>();
   private factoryCache = new Map<ClientType, IClientFactory>();
@@ -104,8 +100,8 @@ export class UACLFactory {
   private transactionLog = new Map<string, ClientTransaction>();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
-    @inject(CORE_TOKENS.Config) private _config: IConfig
+    private _logger: ILogger,
+    private _config: IConfig
   ) {
     this.initializeFactories();
   }
@@ -140,7 +136,7 @@ export class UACLFactory {
       const mergedConfig = this.mergeWithDefaults(clientType, protocol, url, config);
 
       // Create client instance
-      const client = await factory.create(protocol, mergedConfig);
+      const client = await factory.create(protocol as any, mergedConfig);
 
       // Register and cache the client
       const clientId = this.registerClient(client, mergedConfig, cacheKey);
@@ -356,7 +352,7 @@ export class UACLFactory {
             name: 'ClientError',
             message: result?.reason?.message || 'Unknown error',
             code: ClientErrorCodes.UNKNOWN_ERROR,
-            protocol: 'unknown' as ProtocolType,
+            protocol: 'unknown' as any,
           };
         }
       });
@@ -370,7 +366,7 @@ export class UACLFactory {
         name: 'TransactionError',
         message: error instanceof Error ? error.message : 'Transaction failed',
         code: ClientErrorCodes.UNKNOWN_ERROR,
-        protocol: 'unknown' as ProtocolType,
+        protocol: 'unknown' as any,
       };
 
       this._logger.error(`Transaction failed: ${transactionId}`, error);
@@ -470,13 +466,13 @@ export class UACLFactory {
     switch (clientType) {
       case ClientTypes.HTTP: {
         const { HTTPClientFactory } = await import('./factories/http-client-factory');
-        FactoryClass = HTTPClientFactory as new (...args: any[]) => IClientFactory;
+        FactoryClass = HTTPClientFactory as unknown as new (...args: any[]) => IClientFactory;
         break;
       }
 
       case ClientTypes.WEBSOCKET: {
         const { WebSocketClientFactory } = await import('./adapters/websocket-client-factory');
-        FactoryClass = WebSocketClientFactory as new (...args: any[]) => IClientFactory;
+        FactoryClass = WebSocketClientFactory as unknown as new (...args: any[]) => IClientFactory;
         break;
       }
 
@@ -484,7 +480,7 @@ export class UACLFactory {
         const { KnowledgeClientFactory } = await import(
           './implementations/knowledge-client-factory'
         );
-        FactoryClass = KnowledgeClientFactory;
+        FactoryClass = KnowledgeClientFactory as unknown as new (...args: any[]) => IClientFactory;
         break;
       }
 
@@ -526,8 +522,7 @@ export class UACLFactory {
     url: string,
     config?: Partial<ClientConfig>
   ): ClientConfig {
-    const defaults =
-      DefaultClientConfigs?.[clientType] || DefaultClientConfigs?.[ClientTypes.GENERIC];
+    const defaults = ClientConfigs?.[clientType] || ClientConfigs?.[ClientTypes.GENERIC];
 
     return {
       ...defaults,
@@ -741,12 +736,12 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
       case 'round-robin': {
         const client = this.clients[this.currentIndex];
         this.currentIndex = (this.currentIndex + 1) % this.clients.length;
-        return client?.client || this.clients[0]?.client;
+        return client?.client || this.clients[0]!.client;
       }
 
       case 'random': {
         const randomIndex = Math.floor(Math.random() * this.clients.length);
-        return this.clients[randomIndex]?.client || this.clients[0]?.client;
+        return this.clients[randomIndex]?.client || this.clients[0]!.client;
       }
 
       case 'weighted': {
@@ -761,11 +756,11 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
           }
         }
 
-        return this.clients[0]?.client; // Fallback
+        return this.clients[0]!.client; // Fallback
       }
 
       default:
-        return this.clients[0]?.client;
+        return this.clients[0]!.client;
     }
   }
 }
@@ -787,24 +782,17 @@ export async function createClient<T = any>(
   url: string,
   config?: Partial<ClientConfig>
 ): Promise<IClient<T>> {
-  const { UACLFactory } = await import('./factories');
-  const { DIContainer } = await import('../../di/container/di-container');
-  const { CORE_TOKENS } = await import('../../di/tokens/core-tokens');
-
-  // Create basic DI container for factory dependencies
-  const container = new DIContainer();
-
-  // Register basic logger and config
-  container.register(CORE_TOKENS.Logger, (() => ({
+  // Create basic logger and config
+  const logger: ILogger = {
     debug: console.debug.bind(console),
     info: console.info.bind(console),
     warn: console.warn.bind(console),
     error: console.error.bind(console),
-  })) as any);
+  };
 
-  container.register(CORE_TOKENS.Config, (() => ({})) as any);
+  const appConfig: IConfig = {} as IConfig;
 
-  const factory = container.resolve(UACLFactory as any) as UACLFactory;
+  const factory = new UACLFactory(logger, appConfig);
 
   return await factory.createClient<T>({
     clientType,

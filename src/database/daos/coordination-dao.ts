@@ -8,7 +8,7 @@
 
 export { CoordinationDao as CoordinationDAO } from '../dao/coordination.dao';
 
-import type { Logger } from '../utils/logger';
+import type { Logger } from '../../config/logging-config';
 
 interface CoordinationEvent<T = any> {
   type: string;

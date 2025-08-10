@@ -7,7 +7,7 @@
  */
 
 import * as path from 'node:path';
-import type { AgentType } from '../types/agent-types';
+import type { AgentType } from '../types';
 import type {
   AgentAssignment,
   AgentContext,

@@ -607,7 +607,10 @@ class SimplifiedDatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      const totalRows = results.reduce((sum: number, r: any) => sum + (r.rowCount || r.affectedRows || 0), 0);
+      const totalRows = results.reduce(
+        (sum: number, r: any) => sum + (r.rowCount || r.affectedRows || 0),
+        0
+      );
       const successfulOps = results.filter((r: any) => r.success).length;
 
       this.logger.debug(

@@ -1,17 +1,17 @@
 /**
  * @file Terminal Adapters for CLI Interface.
- * 
+ *
  * Provides CLI interface with access to terminal functionality without direct imports.
  * Uses adapter pattern to maintain interface separation while sharing functionality.
  */
 
 import type React from 'react';
-import type { 
-  CommandResult, 
-  ExecutionContext,
-  TerminalMode,
+import type {
   CommandRenderer,
-  TerminalApplication
+  CommandResult,
+  ExecutionContext,
+  TerminalApplication,
+  TerminalMode,
 } from '../../shared/command-interfaces';
 
 /**
@@ -22,7 +22,7 @@ import type {
  */
 export class CommandExecutionRendererAdapter implements CommandRenderer {
   private renderer: any = null;
-  
+
   async initialize(): Promise<void> {
     // Dynamic import to avoid circular dependency
     const { CommandExecutionRenderer } = await import('../../terminal/command-execution-renderer');
@@ -34,7 +34,11 @@ export class CommandExecutionRendererAdapter implements CommandRenderer {
     return this.renderer.renderResult?.(result) || null;
   }
 
-  renderProgress(progress: { current: number; total: number; message?: string }): React.ReactElement | null {
+  renderProgress(progress: {
+    current: number;
+    total: number;
+    message?: string;
+  }): React.ReactElement | null {
     if (!this.renderer) return null;
     return this.renderer.renderProgress?.(progress) || null;
   }
@@ -56,16 +60,22 @@ export class InteractiveTerminalApplicationAdapter implements TerminalApplicatio
 
   async initialize(config?: any): Promise<void> {
     // Dynamic import to avoid circular dependency
-    const { InteractiveTerminalApplication } = await import('../../terminal/interactive-terminal-application');
+    const { InteractiveTerminalApplication } = await import(
+      '../../terminal/interactive-terminal-application'
+    );
     this.terminal = new InteractiveTerminalApplication(config || {});
     await this.terminal.initialize?.();
   }
 
-  async execute(command: string, args: string[], flags: Record<string, any>): Promise<CommandResult> {
+  async execute(
+    command: string,
+    args: string[],
+    flags: Record<string, any>
+  ): Promise<CommandResult> {
     if (!this.terminal) {
       return {
         success: false,
-        error: 'Terminal not initialized'
+        error: 'Terminal not initialized',
       };
     }
 
@@ -75,7 +85,7 @@ export class InteractiveTerminalApplicationAdapter implements TerminalApplicatio
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -92,10 +102,7 @@ export class InteractiveTerminalApplicationAdapter implements TerminalApplicatio
  * @example
  */
 export class ModeDetectorAdapter {
-  static async detectMode(
-    args: string[], 
-    flags: Record<string, any>
-  ): Promise<TerminalMode> {
+  static async detectMode(args: string[], flags: Record<string, any>): Promise<TerminalMode> {
     try {
       // Dynamic import to avoid circular dependency
       const { detectMode } = await import('../../terminal/utils/mode-detector');

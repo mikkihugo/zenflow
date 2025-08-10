@@ -6,9 +6,9 @@
  * @file Coordination system: error-handler.
  */
 
-import { createLogger } from '../../../core/logger';
+import { getLogger } from '../../../config/logging-config';
 
-const logger = createLogger({ prefix: 'MCP-ErrorHandler' });
+const logger = getLogger('MCP-ErrorHandler');
 
 export class ValidationError extends Error {
   public field?: string | undefined;

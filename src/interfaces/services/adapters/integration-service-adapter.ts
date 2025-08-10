@@ -8,11 +8,13 @@
 
 import { EventEmitter } from 'node:events';
 import { config, getMCPServerURL } from '../../../config';
+import { getLogger } from '../../../config/logging-config';
 import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage';
 import type {
   ArchitecturalValidation,
   ArchitectureDesign,
 } from '../../../coordination/swarm/sparc/types/sparc-types';
+import type { ILogger } from '../../../core/logger';
 import type { ConnectionConfig } from '../../../integration/adapter-system';
 import {
   MCPAdapter,
@@ -20,7 +22,6 @@ import {
   RESTAdapter,
   WebSocketAdapter,
 } from '../../../integration/adapter-system';
-import { createLogger, type ILogger } from '../../../utils/logger';
 import type { APIResult } from '../../../utils/type-guards';
 import { SafeAPIClient, SafeAPIService } from '../../api/safe-api-client';
 import type {
@@ -80,8 +81,7 @@ class ServiceTimeoutError extends Error {
  *
  * @example
  */
-export interface IntegrationServiceAdapterConfig
-  extends Omit<IntegrationServiceConfig, 'name' | 'type'> {
+export interface IntegrationServiceAdapterConfig extends Omit<IntegrationServiceConfig, 'type'> {
   /** Service name */
   name?: string;
   /** Service type */
@@ -301,7 +301,7 @@ export class IntegrationServiceAdapter implements IService {
   // Service state
   private lifecycleStatus: ServiceLifecycleStatus = 'uninitialized';
   private eventEmitter = new EventEmitter();
-  private logger: Logger;
+  private logger: ILogger;
   private startTime?: Date;
   private operationCount = 0;
   private successCount = 0;
@@ -342,8 +342,8 @@ export class IntegrationServiceAdapter implements IService {
   >();
 
   constructor(config: IntegrationServiceAdapterConfig) {
-    this.name = config?.name;
-    this.type = config?.type;
+    this.name = config?.name || 'integration-service-adapter';
+    this.type = config?.type || 'integration-service';
     this.config = {
       // Default configuration values
       architectureStorage: {
@@ -420,6 +420,11 @@ export class IntegrationServiceAdapter implements IService {
           'health-check',
         ],
         ...config?.retry,
+      } as ServiceRetryConfig & {
+        enabled: boolean;
+        maxAttempts: number;
+        backoffMultiplier: number;
+        retryableOperations: string[];
       },
       cache: {
         enabled: true,
@@ -447,7 +452,7 @@ export class IntegrationServiceAdapter implements IService {
       ...config,
     };
 
-    this.logger = createLogger(`IntegrationServiceAdapter:${this.name}`);
+    this.logger = getLogger(`IntegrationServiceAdapter:${this.name}`);
     this.logger.info(`Creating integration service adapter: ${this.name}`);
   }
 
@@ -761,10 +766,10 @@ export class IntegrationServiceAdapter implements IService {
       this.circuitBreakers.clear();
 
       // Clear services
-      this.architectureStorageService = undefined;
-      this.safeAPIService = undefined;
-      this.safeAPIClient = undefined;
-      this.protocolManager = undefined;
+      this.architectureStorageService = undefined as any;
+      this.safeAPIService = undefined as any;
+      this.safeAPIClient = undefined as any;
+      this.protocolManager = undefined as any;
       // Clear services - integratedPatternSystem property removed
 
       // Remove all event listeners

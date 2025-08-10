@@ -13,6 +13,8 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import {
   ClaudeZenFacade,
   type IDatabaseService,
@@ -39,7 +41,6 @@ import type {
   ServiceStatus,
 } from '../core/interfaces';
 import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
-import { createLogger, type Logger } from '../utils/logger';
 
 // Define ServiceError locally if not available in types
 class ServiceError extends Error {
@@ -403,7 +404,7 @@ export class InfrastructureServiceAdapter implements IService {
       ...config,
     };
 
-    this.logger = createLogger(`InfrastructureServiceAdapter:${this.name}`);
+    this.logger = getLogger(`InfrastructureServiceAdapter:${this.name}`);
     this.logger.info(`Creating infrastructure service adapter: ${this.name}`);
   }
 

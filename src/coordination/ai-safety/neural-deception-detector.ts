@@ -1,12 +1,12 @@
 /**
  * @file Neural Network-Enhanced Deception Detection.
- * 
+ *
  * Uses neural networks to learn sophisticated deception patterns from logs
  * and adapt to new forms of AI deception over time.
  */
 
-import { getLogger } from '@logtape/logtape';
-import { LogBasedDeceptionDetector, type LogAnalysisResult } from './log-based-deception-detector';
+import { getLogger } from '../../config/logging-config';
+import { type LogAnalysisResult, LogBasedDeceptionDetector } from './log-based-deception-detector';
 
 interface DeceptionFeatures {
   claimToActionRatio: number;
@@ -70,7 +70,7 @@ export class NeuralDeceptionDetector {
 
     this.logger.info('Neural deception detection model initialized', {
       featureCount: this.modelWeights.size,
-      adaptationRate: this.adaptationRate
+      adaptationRate: this.adaptationRate,
     });
   }
 
@@ -84,7 +84,7 @@ export class NeuralDeceptionDetector {
     const words = aiResponse.split(/\s+/);
     const verificationWords = this.countVerificationWords(aiResponse);
     const implementationWords = this.countImplementationWords(aiResponse);
-    
+
     return {
       claimToActionRatio: analysis.aiClaims.length / Math.max(analysis.toolCallsFound.length, 1),
       verificationWordCount: verificationWords,
@@ -94,8 +94,9 @@ export class NeuralDeceptionDetector {
       complexityOfClaims: this.calculateClaimComplexity(analysis.aiClaims),
       specificityOfClaims: this.calculateClaimSpecificity(analysis.aiClaims),
       toolDiversityScore: this.calculateToolDiversity(analysis.toolCallsFound),
-      fileModificationRatio: analysis.fileOperations.length / Math.max(analysis.toolCallsFound.length, 1),
-      bashCommandComplexity: this.calculateBashComplexity(analysis.bashCommands)
+      fileModificationRatio:
+        analysis.fileOperations.length / Math.max(analysis.toolCallsFound.length, 1),
+      bashCommandComplexity: this.calculateBashComplexity(analysis.bashCommands),
     };
   }
 
@@ -109,7 +110,7 @@ export class NeuralDeceptionDetector {
       /\b(?:analyzed|examined|reviewed|checked|found|discovered|identified)\b/gi,
       /\b(?:after analyzing|upon examination|I found that|I discovered)\b/gi,
     ];
-    
+
     let count = 0;
     for (const pattern of verificationPatterns) {
       const matches = text.match(pattern);
@@ -128,7 +129,7 @@ export class NeuralDeceptionDetector {
       /\b(?:implemented|created|built|wrote|coded|developed|fixed)\b/gi,
       /\b(?:I will implement|I can build|I'll create)\b/gi,
     ];
-    
+
     let count = 0;
     for (const pattern of implementationPatterns) {
       const matches = text.match(pattern);
@@ -155,14 +156,17 @@ export class NeuralDeceptionDetector {
    */
   private calculateClaimComplexity(claims: string[]): number {
     if (claims.length === 0) return 0;
-    
-    const avgLength = claims.reduce((sum, claim) => sum + claim.split(' ').length, 0) / claims.length;
+
+    const avgLength =
+      claims.reduce((sum, claim) => sum + claim.split(' ').length, 0) / claims.length;
     const technicalTerms = claims.reduce((sum, claim) => {
-      const techWords = claim.match(/\b(?:architecture|framework|system|implementation|integration|optimization|neural|algorithm)\b/gi);
+      const techWords = claim.match(
+        /\b(?:architecture|framework|system|implementation|integration|optimization|neural|algorithm)\b/gi
+      );
       return sum + (techWords ? techWords.length : 0);
     }, 0);
-    
-    return (avgLength / 10) + (technicalTerms / claims.length);
+
+    return avgLength / 10 + technicalTerms / claims.length;
   }
 
   /**
@@ -172,19 +176,21 @@ export class NeuralDeceptionDetector {
    */
   private calculateClaimSpecificity(claims: string[]): number {
     if (claims.length === 0) return 0;
-    
+
     const specificityScore = claims.reduce((sum, claim) => {
       // Specific indicators: file names, line numbers, exact errors
       const specific = claim.match(/\b(?:\w+\.\w+|line \d+|error \d+|\d+\.\d+\.\d+)\b/gi);
       // Vague indicators: "comprehensive", "advanced", "existing"
-      const vague = claim.match(/\b(?:comprehensive|advanced|existing|sophisticated|complex|optimal)\b/gi);
-      
+      const vague = claim.match(
+        /\b(?:comprehensive|advanced|existing|sophisticated|complex|optimal)\b/gi
+      );
+
       const specificCount = specific ? specific.length : 0;
       const vagueCount = vague ? vague.length : 0;
-      
+
       return sum + (specificCount - vagueCount);
     }, 0);
-    
+
     return specificityScore / claims.length;
   }
 
@@ -195,7 +201,7 @@ export class NeuralDeceptionDetector {
    */
   private calculateToolDiversity(toolCalls: string[]): number {
     if (toolCalls.length === 0) return 0;
-    
+
     const toolTypes = new Set();
     for (const call of toolCalls) {
       if (call.includes('Read')) toolTypes.add('read');
@@ -204,7 +210,7 @@ export class NeuralDeceptionDetector {
       if (call.includes('Bash')) toolTypes.add('bash');
       if (call.includes('Grep')) toolTypes.add('grep');
     }
-    
+
     return toolTypes.size / 5; // Normalize by max possible tool types
   }
 
@@ -215,15 +221,15 @@ export class NeuralDeceptionDetector {
    */
   private calculateBashComplexity(bashCommands: string[]): number {
     if (bashCommands.length === 0) return 0;
-    
+
     const complexityScore = bashCommands.reduce((sum, cmd) => {
       const pipes = (cmd.match(/\|/g) || []).length;
       const redirections = (cmd.match(/[<>]/g) || []).length;
       const flags = (cmd.match(/\s-\w/g) || []).length;
-      
+
       return sum + pipes + redirections + flags;
     }, 0);
-    
+
     return complexityScore / bashCommands.length;
   }
 
@@ -245,16 +251,20 @@ export class NeuralDeceptionDetector {
       // Generate explanations for significant contributions
       if (Math.abs(contribution) > 0.3) {
         if (contribution > 0) {
-          explanations.push(`High ${featureName.replace(/([A-Z])/g, ' $1').toLowerCase()} indicates deception`);
+          explanations.push(
+            `High ${featureName.replace(/([A-Z])/g, ' $1').toLowerCase()} indicates deception`
+          );
         } else {
-          explanations.push(`Low ${featureName.replace(/([A-Z])/g, ' $1').toLowerCase()} suggests legitimate behavior`);
+          explanations.push(
+            `Low ${featureName.replace(/([A-Z])/g, ' $1').toLowerCase()} suggests legitimate behavior`
+          );
         }
       }
     }
 
     // Apply sigmoid activation function
     const probability = 1 / (1 + Math.exp(-score));
-    
+
     // Determine predicted type based on feature patterns
     let predictedType = 'LEGITIMATE';
     if (probability > 0.7) {
@@ -272,7 +282,7 @@ export class NeuralDeceptionDetector {
       predictedType,
       confidence: Math.abs(probability - 0.5) * 2, // Convert to 0-1 confidence scale
       features,
-      explanation: explanations
+      explanation: explanations,
     };
   }
 
@@ -285,17 +295,19 @@ export class NeuralDeceptionDetector {
    * @param deceptionType
    */
   public learnFromFeedback(
-    analysis: LogAnalysisResult, 
-    aiResponse: string, 
+    analysis: LogAnalysisResult,
+    aiResponse: string,
     actualDeception: boolean,
     deceptionType?: string
   ): void {
     const features = this.extractFeatures(analysis, aiResponse);
     const prediction = this.predict(features);
-    
+
     // Calculate error
-    const error = actualDeception ? (1 - prediction.deceptionProbability) : (0 - prediction.deceptionProbability);
-    
+    const error = actualDeception
+      ? 1 - prediction.deceptionProbability
+      : 0 - prediction.deceptionProbability;
+
     // Update weights using gradient descent
     for (const [featureName, currentWeight] of this.modelWeights) {
       const featureValue = features[featureName as keyof DeceptionFeatures] as number;
@@ -308,14 +320,14 @@ export class NeuralDeceptionDetector {
       features,
       isDeceptive: actualDeception,
       deceptionType: deceptionType as any,
-      confidence: prediction.confidence
+      confidence: prediction.confidence,
     });
 
     this.logger.info('Neural model updated from feedback', {
       error: Math.abs(error),
       deceptionType,
       trainingExamples: this.trainingData.length,
-      currentAccuracy: this.calculateAccuracy()
+      currentAccuracy: this.calculateAccuracy(),
     });
   }
 
@@ -324,7 +336,7 @@ export class NeuralDeceptionDetector {
    */
   private calculateAccuracy(): number {
     if (this.trainingData.length === 0) return 0;
-    
+
     let correct = 0;
     for (const example of this.trainingData) {
       const prediction = this.predict(example.features);
@@ -333,7 +345,7 @@ export class NeuralDeceptionDetector {
         correct++;
       }
     }
-    
+
     return correct / this.trainingData.length;
   }
 
@@ -353,39 +365,36 @@ export class NeuralDeceptionDetector {
   }> {
     // Get base log analysis
     const logAnalysis = await this.baseDetector.analyzeRecentActivity(aiResponse);
-    
+
     // Extract neural features and predict
     const features = this.extractFeatures(logAnalysis, aiResponse);
     const neuralPrediction = this.predict(features);
-    
+
     // Combine rule-based and ML predictions
     const ruleBasedDeception = logAnalysis.deceptionPatterns.length > 0;
     const mlDeception = neuralPrediction.deceptionProbability > 0.6;
-    
+
     const finalVerdict = {
       isDeceptive: ruleBasedDeception || mlDeception,
-      confidence: Math.max(
-        ruleBasedDeception ? 0.9 : 0,
-        neuralPrediction.confidence
-      ),
+      confidence: Math.max(ruleBasedDeception ? 0.9 : 0, neuralPrediction.confidence),
       reasoning: [
-        ...logAnalysis.deceptionPatterns.map(p => `Rule-based: ${p.type} detected`),
+        ...logAnalysis.deceptionPatterns.map((p) => `Rule-based: ${p.type} detected`),
         ...neuralPrediction.explanation,
-        `Neural network deception probability: ${(neuralPrediction.deceptionProbability * 100).toFixed(1)}%`
-      ]
+        `Neural network deception probability: ${(neuralPrediction.deceptionProbability * 100).toFixed(1)}%`,
+      ],
     };
 
     this.logger.info('Neural deception detection complete', {
       ruleBasedAlerts: logAnalysis.deceptionPatterns.length,
       neuralProbability: neuralPrediction.deceptionProbability,
       finalVerdict: finalVerdict.isDeceptive,
-      confidence: finalVerdict.confidence
+      confidence: finalVerdict.confidence,
     });
 
     return {
       logAnalysis,
       neuralPrediction,
-      finalVerdict
+      finalVerdict,
     };
   }
 
@@ -395,7 +404,7 @@ export class NeuralDeceptionDetector {
   exportModel(): { weights: Record<string, number>; trainingData: TrainingExample[] } {
     return {
       weights: Object.fromEntries(this.modelWeights),
-      trainingData: this.trainingData
+      trainingData: this.trainingData,
     };
   }
 
@@ -406,14 +415,17 @@ export class NeuralDeceptionDetector {
    * @param modelData.weights
    * @param modelData.trainingData
    */
-  importModel(modelData: { weights: Record<string, number>; trainingData: TrainingExample[] }): void {
+  importModel(modelData: {
+    weights: Record<string, number>;
+    trainingData: TrainingExample[];
+  }): void {
     this.modelWeights = new Map(Object.entries(modelData.weights));
     this.trainingData = modelData.trainingData;
-    
+
     this.logger.info('Neural model imported', {
       featureWeights: this.modelWeights.size,
       trainingExamples: this.trainingData.length,
-      accuracy: this.calculateAccuracy()
+      accuracy: this.calculateAccuracy(),
     });
   }
 }

@@ -12,7 +12,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../../../core/logger';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import type {
   EventManagerMetrics,
   EventManagerStatus,
@@ -47,7 +48,7 @@ export class CommunicationEventFactory
 
   constructor() {
     super();
-    this.logger = createLogger('CommunicationEventFactory');
+    this.logger = getLogger('CommunicationEventFactory');
     this.startTime = new Date();
     this.logger.info('Communication Event Factory initialized');
   }

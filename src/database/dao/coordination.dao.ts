@@ -9,8 +9,8 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces';
 import { BaseDao } from '../base.dao';
-import type { DatabaseAdapter, ILogger } from '../core/interfaces/base-interfaces';
 import type {
   CoordinationChange,
   CoordinationEvent,
@@ -129,8 +129,8 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     this.logger.debug(`Releasing lock: ${lockId}`);
 
     // Find lock by ID
-    let resourceId: string | null = null as unknown;
-    let lockInfo: LockInfo | null = null as unknown;
+    let resourceId: string | null = null;
+    let lockInfo: LockInfo | null = null;
 
     for (const [resource, lock] of this.locks.entries()) {
       if (lock.id === lockId) {
@@ -277,11 +277,27 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     try {
       const result = await this.adapter.execute(sql, params);
       return {
-        affectedRows: result?.rowCount,
-        insertId: result?.insertId,
+        affectedRows: result.affectedRows,
+        insertId: result.insertId,
       };
     } catch (error) {
       this.logger.error('Execute query failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Query database directly - implements ICoordinationRepository interface.
+   *
+   * @param sql
+   * @param params
+   */
+  async query(sql: string, params?: unknown[]): Promise<any[]> {
+    try {
+      const result = await this.adapter.query(sql, params);
+      return result.rows;
+    } catch (error) {
+      this.logger.error('Query failed:', error);
       throw error;
     }
   }
@@ -439,7 +455,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
    * Get active locks.
    */
   async getActiveLocks(): Promise<CoordinationLock[]> {
-    const activeLocks: CoordinationLock[] = [] as unknown[];
+    const activeLocks: CoordinationLock[] = [];
     const now = new Date();
 
     for (const lock of this.locks.values()) {
@@ -473,7 +489,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
       id: sub.id,
       pattern: sub.pattern,
       createdAt: sub.createdAt,
-      lastTriggered: sub.lastTriggered || undefined,
+      ...(sub.lastTriggered && { lastTriggered: sub.lastTriggered }),
       triggerCount: sub.triggerCount,
     }));
   }
@@ -490,7 +506,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     const change: CoordinationChange<T> = {
       type,
       entityId,
-      entity: entity as T | undefined,
+      entity,
       timestamp: new Date(),
       metadata: {
         tableName: this.tableName,

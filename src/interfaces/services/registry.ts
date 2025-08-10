@@ -10,7 +10,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../utils/logger';
+import { getLogger, type Logger } from '../../config/logging-config';
 import type {
   IService,
   IServiceFactory,
@@ -142,7 +142,7 @@ export class EnhancedServiceRegistry extends EventEmitter implements IServiceReg
 
   constructor(config?: Partial<ServiceRegistryConfig>) {
     super();
-    this.logger = createLogger('EnhancedServiceRegistry');
+    this.logger = getLogger('EnhancedServiceRegistry');
 
     this.config = {
       healthMonitoring: {

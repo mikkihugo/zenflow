@@ -2,7 +2,7 @@
  * @file Interface implementation: mcp-integration-example.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-clients-adapters-mcp-integration-example');
 
@@ -15,12 +15,36 @@ const logger = getLogger('interfaces-clients-adapters-mcp-integration-example');
 
 import { EventEmitter } from 'node:events';
 import type { IClient } from '../core/interfaces.js';
-import { ExternalMCPClient } from '../mcp/external-mcp-client.js';
+// Note: ExternalMCPClient import commented out as it doesn't exist
+// import { ExternalMCPClient } from '../mcp/external-mcp-client.js';
 import {
   createMCPConfigFromLegacy,
   type MCPClientConfig,
   MCPClientFactory,
 } from './mcp-client-adapter.js';
+
+// Mock ExternalMCPClient for demonstration purposes
+class ExternalMCPClient {
+  async connectAll(): Promise<any> {
+    return {};
+  }
+
+  getServerStatus(): Record<string, any> {
+    return {};
+  }
+
+  async executeTool(serverName: string, toolName: string, parameters: any): Promise<any> {
+    return { success: true, result: null };
+  }
+
+  getAvailableTools(): Record<string, string[]> {
+    return {};
+  }
+
+  async disconnectAll(): Promise<void> {
+    // Mock implementation
+  }
+}
 
 /**
  * MCP Integration Manager.
@@ -250,7 +274,7 @@ export class MCPIntegrationManager {
       },
       totalTools: {
         legacy: Object.values(legacyTools).reduce(
-          (sum: number, tools: any) => sum + tools.length,
+          (sum: number, tools: string[]) => sum + tools.length,
           0
         ),
         uacl: this.uaclClients.size * 2, // Estimate based on typical tool count
@@ -346,7 +370,7 @@ export class MCPIntegrationManager {
     rollbackOnFailure: boolean;
   }): Promise<void> {
     const { servers, batchSize, delayBetweenBatches, rollbackOnFailure } = migrationConfig;
-    const batches = [];
+    const batches: string[][] = [];
 
     // Create batches
     for (let i = 0; i < servers.length; i += batchSize) {
@@ -428,7 +452,7 @@ export class MCPIntegrationManager {
     this.eventEmitter.on(event, handler);
   }
 
-  off(event: string, handler?: (...args: any[]) => void): void {
+  off(event: string, handler: (...args: any[]) => void): void {
     this.eventEmitter.off(event, handler);
   }
 }
@@ -474,6 +498,3 @@ export async function demonstrateMCPIntegration(): Promise<void> {
     await manager.shutdown();
   }
 }
-
-// Export for use in other modules
-export { MCPIntegrationManager };

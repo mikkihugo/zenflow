@@ -2,7 +2,7 @@
  * @file Interface implementation: coordination-usage-example.
  */
 
-import { getLogger } from '../../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-events-adapters-coordination-usage-example');
 
@@ -15,10 +15,8 @@ const logger = getLogger('interfaces-events-adapters-coordination-usage-example'
 
 import {
   CoordinationEventAdapter,
+  type CoordinationEventAdapterConfig,
   CoordinationEventHelpers,
-  createComprehensiveCoordinationEventManager,
-  createCoordinationEventManager,
-  createHighPerformanceCoordinationEventManager,
 } from './coordination-event-adapter';
 
 /**
@@ -31,7 +29,10 @@ import {
  */
 export async function basicCoordinationExample(): Promise<void> {
   // Create coordination event manager
-  const coordinator = await createCoordinationEventManager('main-coordinator');
+  const coordinator = new CoordinationEventAdapter({
+    name: 'main-coordinator',
+    type: 'coordination',
+  });
   await coordinator.start();
 
   // Subscribe to different types of coordination events
@@ -72,7 +73,19 @@ export async function basicCoordinationExample(): Promise<void> {
  */
 export async function advancedCoordinationExample(): Promise<void> {
   // Create comprehensive coordination manager
-  const coordinator = await createComprehensiveCoordinationEventManager('advanced-coordinator');
+  const coordinator = new CoordinationEventAdapter({
+    name: 'advanced-coordinator',
+    type: 'coordination',
+    coordination: {
+      enabled: true,
+      strategy: 'swarm',
+      correlationTTL: 300000,
+      maxCorrelationDepth: 15,
+      correlationPatterns: ['coordination:swarm->coordination:agent'],
+      trackAgentCommunication: true,
+      trackSwarmHealth: true,
+    },
+  });
   await coordinator.start();
 
   // Set up detailed event monitoring
@@ -92,7 +105,7 @@ export async function advancedCoordinationExample(): Promise<void> {
   setInterval(async () => {
     const healthStatus = await coordinator.getCoordinationHealthStatus();
     const unhealthyComponents = Object.entries(healthStatus).filter(
-      ([_, health]) => health.status !== 'healthy'
+      ([_, health]) => (health as any).status !== 'healthy'
     );
 
     if (unhealthyComponents.length > 0) {
@@ -120,7 +133,21 @@ export async function advancedCoordinationExample(): Promise<void> {
  */
 export async function highPerformanceCoordinationExample(): Promise<void> {
   // Create high-performance coordinator
-  const coordinator = await createHighPerformanceCoordinationEventManager('perf-coordinator');
+  const coordinator = new CoordinationEventAdapter({
+    name: 'perf-coordinator',
+    type: 'coordination',
+    performance: {
+      enableSwarmCorrelation: true,
+      enableAgentTracking: true,
+      enableTaskMetrics: true,
+      maxConcurrentCoordinations: 1000,
+      coordinationTimeout: 5000,
+      enablePerformanceTracking: true,
+    },
+    processing: {
+      strategy: 'immediate',
+    },
+  });
   await coordinator.start();
 
   // Set up minimal but essential monitoring
@@ -331,7 +358,6 @@ async function simulateComplexCoordinationWorkflow(
         targetId: `swarm-${swarmId}-agent-${agentId}`,
         correlationId,
         details: {
-          swarmId: `swarm-${swarmId}`,
           capabilities: ['research', 'analysis', 'coordination'],
         },
       });
@@ -348,7 +374,6 @@ async function simulateComplexCoordinationWorkflow(
     details: {
       taskType: 'coordination',
       assignedTo: ['swarm-1', 'swarm-2', 'swarm-3'],
-      complexity: 'high',
     },
   });
 }
@@ -372,7 +397,6 @@ async function simulateResearchCoordination(coordinator: CoordinationEventAdapte
     details: {
       topology: 'hierarchical',
       agentCount: 4,
-      researchType: 'pattern-analysis',
     },
   });
 
@@ -387,7 +411,6 @@ async function simulateResearchCoordination(coordinator: CoordinationEventAdapte
       targetId: `research-${role}`,
       correlationId: researchSession,
       details: {
-        swarmId: 'research-swarm',
         specialization: role,
         capabilities: ['research', 'analysis', role],
       },

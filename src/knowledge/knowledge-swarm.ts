@@ -2,9 +2,9 @@
  * @file Knowledge-swarm implementation.
  */
 
-import { createLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger('knowledge-swarm');
+const logger = getLogger('KnowledgeSwarm');
 
 /**
  * Knowledge Swarm System for Claude-Zen.
@@ -172,7 +172,6 @@ export class KnowledgeSwarm extends EventEmitter {
       if (!uacl.isInitialized()) {
         await uacl.initialize({
           healthCheckInterval: 30000,
-          autoReconnect: true,
           enableLogging: true,
         });
       }
@@ -189,7 +188,7 @@ export class KnowledgeSwarm extends EventEmitter {
         //   }
         // );
 
-        this.vectorDAO = await createDao(EntityTypes.VectorDocument, DatabaseTypes?.LanceDB, {
+        this.vectorDAO = await createDao(EntityTypes.Vector, 'lancedb' as any, {
           database: './data/knowledge-swarm',
           options: { vectorSize: 1536 },
         });
@@ -377,8 +376,10 @@ export class KnowledgeSwarm extends EventEmitter {
               pythonPath: this.config.pythonPath,
               enableCache: this.config.enableCache,
               cacheConfig: {
-                ...this.config.cacheConfig,
                 prefix: `${this.config.cacheConfig?.prefix || 'fact'}-${spec.name}`,
+                minTokens: this.config.cacheConfig?.minTokens || 100,
+                maxSize: this.config.cacheConfig?.maxSize || '1MB',
+                ttlSeconds: this.config.cacheConfig?.ttlSeconds || 3600,
               },
             }
           );
@@ -411,8 +412,10 @@ export class KnowledgeSwarm extends EventEmitter {
               pythonPath: this.config.pythonPath,
               enableCache: this.config.enableCache,
               cacheConfig: {
-                ...this.config.cacheConfig,
                 prefix: `${this.config.cacheConfig?.prefix || 'fact'}-${spec.name}`,
+                minTokens: this.config.cacheConfig?.minTokens || 100,
+                maxSize: this.config.cacheConfig?.maxSize || '1MB',
+                ttlSeconds: this.config.cacheConfig?.ttlSeconds || 3600,
               },
             });
 
@@ -420,7 +423,7 @@ export class KnowledgeSwarm extends EventEmitter {
               id: agentId,
               specialization: spec,
               factInstance,
-              clientInstance: undefined, // No UACL management
+              clientInstance: undefined as ClientInstance | undefined,
               currentLoad: 0,
               totalQueries: 0,
               successRate: 1.0,
@@ -620,7 +623,7 @@ export class KnowledgeSwarm extends EventEmitter {
     }
 
     if (results.length === 1) {
-      return results[0]?.response;
+      return results[0]?.response || 'No response available';
     }
 
     // Group results by similarity and merge
@@ -630,7 +633,7 @@ export class KnowledgeSwarm extends EventEmitter {
     let consolidatedResponse = '# Consolidated Knowledge Swarm Results\\n\\n';
 
     uniqueResults?.forEach((result, index) => {
-      consolidatedResponse += `## Source ${index + 1} (${result?.metadata?.agentId || 'Unknown Agent'})\n`;
+      consolidatedResponse += `## Source ${index + 1} (${(result?.metadata as any)?.['agentId'] || 'Unknown Agent'})\n`;
       consolidatedResponse += `**Tools Used:** ${result?.toolsUsed?.join(', ')}\n`;
       consolidatedResponse += `**Execution Time:** ${result?.executionTimeMs}ms\n`;
       consolidatedResponse += `**Cache Hit:** ${result?.cacheHit ? 'Yes' : 'No'}\n\n`;
@@ -694,8 +697,8 @@ export class KnowledgeSwarm extends EventEmitter {
         metadata: {
           queryId: query.id,
           query: query.query,
-          agentId: result?.metadata?.agentId || 'unknown',
-          specialization: result?.metadata?.specialization || 'general',
+          agentId: (result?.metadata as any)?.['agentId'] || 'unknown',
+          specialization: (result?.metadata as any)?.['specialization'] || 'general',
           domains: query.domains?.join(',') || '',
           timestamp: new Date().toISOString(),
           executionTime: result?.executionTimeMs.toString(),

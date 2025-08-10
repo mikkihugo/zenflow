@@ -15,9 +15,9 @@ import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { createLogger } from './logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger({ prefix: 'DocumentDriven' });
+const logger = getLogger('DocumentDriven');
 
 // Document types in your workflow
 export interface VisionaryDocument {

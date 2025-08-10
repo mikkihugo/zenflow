@@ -14,8 +14,8 @@
  * @file Interface implementation: coordination-event-factory.
  */
 
+import { getLogger } from '../../../config/logging-config';
 import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
-import { createLogger } from '../../../core/logger';
 import type { IEventManager, IEventManagerFactory } from '../core/interfaces';
 import { EventManagerTypes } from '../core/interfaces';
 import type { CoordinationEventAdapterConfig } from './coordination-event-adapter';
@@ -40,8 +40,8 @@ export class CoordinationEventManagerFactory
   private instances = new Map<string, CoordinationEventAdapter>();
 
   constructor(logger?: ILogger, config?: IConfig) {
-    this.logger = logger || createLogger('CoordinationEventManagerFactory');
-    this.config = config || {};
+    this.logger = logger || getLogger('CoordinationEventManagerFactory');
+    this.config = config || { get: () => undefined, set: () => {}, has: () => false };
     this.logger.debug('CoordinationEventManagerFactory initialized');
   }
 
@@ -64,7 +64,7 @@ export class CoordinationEventManagerFactory
       this.instances.set(config?.name, adapter);
 
       this.logger.info(`Coordination event manager created successfully: ${config?.name}`);
-      return adapter;
+      return adapter as IEventManager;
     } catch (error) {
       this.logger.error(`Failed to create coordination event manager ${config?.name}:`, error);
       throw error;
@@ -114,14 +114,14 @@ export class CoordinationEventManagerFactory
    * @param name
    */
   get(name: string): IEventManager | undefined {
-    return this.instances.get(name);
+    return this.instances.get(name) as IEventManager | undefined;
   }
 
   /**
    * List all coordination event managers.
    */
   list(): IEventManager[] {
-    return Array.from(this.instances.values());
+    return Array.from(this.instances.values()) as IEventManager[];
   }
 
   /**
@@ -805,7 +805,15 @@ export async function createDevelopmentCoordinationEventManager(
       autoRecoveryEnabled: true,
     },
     swarmOptimization: {
-      enabled: false, // Disable optimization for debugging
+      enabled: false,
+      optimizationInterval: 60000,
+      performanceThresholds: {
+        latency: 100,
+        throughput: 50,
+        reliability: 0.8,
+      },
+      autoScaling: false,
+      loadBalancing: false,
     },
     performance: {
       enableSwarmCorrelation: true,

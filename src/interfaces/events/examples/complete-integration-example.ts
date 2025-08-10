@@ -371,9 +371,9 @@ export class UELIntegrationExample {
       details: { example: true },
     };
 
-    const customValidation = validationFramework?.validateEventType ? 
-      validationFramework.validateEventType(customEvent as any) :
-      { valid: true, score: 100, errors: [], warnings: [] };
+    const customValidation = validationFramework?.validateEventType
+      ? validationFramework.validateEventType(customEvent as any)
+      : { valid: true, score: 100, errors: [], warnings: [] };
     this.logger.info('Custom event validation:', {
       valid: customValidation.valid,
       score: customValidation.score,

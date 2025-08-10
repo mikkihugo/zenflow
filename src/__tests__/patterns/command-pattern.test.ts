@@ -40,6 +40,7 @@ describe('Command Pattern Implementation', () => {
         spawnAgent: vi.fn(),
         orchestrateTask: vi.fn(),
         getSwarmStatus: vi.fn(),
+        isHealthy: vi.fn().mockReturnValue(true),
       };
 
       mockLogger = {

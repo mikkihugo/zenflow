@@ -50,16 +50,16 @@ export class ClaudeZenIntegrated {
 
       if (arg === '--port' && i + 1 < args.length) {
         const nextArg = args[i + 1];
-        if (nextArg !== undefined) {
-          options?.port = parseInt(nextArg, 10);
+        if (nextArg !== undefined && options) {
+          options.port = parseInt(nextArg, 10);
         }
         i++; // Skip next argument
       } else if (arg === '--daemon') {
-        options?.daemon = true;
+        if (options) options.daemon = true;
       } else if (arg === '--dev') {
-        options?.dev = true;
+        if (options) options.dev = true;
       } else if (arg === '--verbose' || arg === '-v') {
-        options?.verbose = true;
+        if (options) options.verbose = true;
       } else if (arg === '--help' || arg === '-h') {
         process.exit(0);
       }
@@ -121,7 +121,7 @@ export class ClaudeZenIntegrated {
     // Close HTTP server
     if (this.server) {
       await new Promise<void>((resolve, reject) => {
-        this.server.close((err?: Error) => {
+        this.server?.close((err?: Error) => {
           if (err) reject(err);
           else resolve();
         });

@@ -3,6 +3,7 @@
  * Provides no-op authentication for development with structure for future implementation.
  */
 
+import type { NextFunction, Request, Response } from 'express';
 import { LogLevel, log } from './logging';
 
 /**
@@ -44,7 +45,11 @@ export interface AuthContext {
  * @param _res
  * @param next Next function to continue middleware chain.
  */
-export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+export const authMiddleware = (
+  req: Request & { auth?: AuthContext },
+  res: Response,
+  next: NextFunction
+): void => {
   // Create anonymous user context
   const authContext: AuthContext = {
     user: {
@@ -62,7 +67,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
 
   // Log authentication status (only in development)
   if (process.env['NODE_ENV'] === 'development') {
-    log(LogLevel['DEBUG'], 'Authentication: No auth required - allowing request', req, {
+    log(LogLevel['DEBUG'], 'Authentication: No auth required - allowing request', req as any, {
       authStatus: 'no_auth_required',
       userType: 'anonymous',
       permissions: authContext.user?.permissions,
@@ -84,9 +89,13 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
  * @param res
  * @param next
  */
-export const optionalAuthMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+export const optionalAuthMiddleware = (
+  req: Request & { auth?: AuthContext },
+  res: Response,
+  next: NextFunction
+): void => {
   // Check for auth headers (but don't enforce)
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers['authorization'] as string | undefined;
   const apiKey = req.headers['x-api-key'] as string;
 
   let authContext: AuthContext;
@@ -107,7 +116,7 @@ export const optionalAuthMiddleware = (req: Request, res: Response, next: NextFu
     };
 
     if (process.env['NODE_ENV'] === 'development') {
-      log(LogLevel['DEBUG'], 'Optional auth: Token provided but not validated', req, {
+      log(LogLevel['DEBUG'], 'Optional auth: Token provided but not validated', req as any, {
         hasAuthHeader: !!authHeader,
         hasApiKey: !!apiKey,
         tokenType: authContext.tokenType,
@@ -140,7 +149,10 @@ export const optionalAuthMiddleware = (req: Request, res: Response, next: NextFu
  * @param req
  * @param permission
  */
-export const hasPermission = (req: Request, permission: string): boolean => {
+export const hasPermission = (
+  req: Request & { auth?: AuthContext },
+  permission: string
+): boolean => {
   const authContext = req.auth;
 
   if (!authContext?.user) {
@@ -162,7 +174,7 @@ export const hasPermission = (req: Request, permission: string): boolean => {
  * @param req
  * @param role
  */
-export const hasRole = (req: Request, role: string): boolean => {
+export const hasRole = (req: Request & { auth?: AuthContext }, role: string): boolean => {
   const authContext = req.auth;
 
   if (!authContext?.user) {
@@ -193,7 +205,7 @@ export const isAdmin = (req: Request): boolean => {
  *
  * @param req
  */
-export const getCurrentUser = (req: Request): User | undefined => {
+export const getCurrentUser = (req: Request & { auth?: AuthContext }): User | undefined => {
   return req.auth?.user;
 };
 

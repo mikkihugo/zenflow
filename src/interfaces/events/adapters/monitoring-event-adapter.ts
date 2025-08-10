@@ -1,4 +1,4 @@
-import { getLogger } from '../../../utils/logger';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-events-adapters-monitoring-event-adapter');
 
@@ -432,6 +432,15 @@ export class MonitoringEventAdapter implements IEventManager {
         trackHealthStatus: true,
         trackPerformanceInsights: true,
         ...config?.monitoring,
+      } as EventMonitoringConfig & {
+        enabled: boolean;
+        strategy: 'metrics' | 'health' | 'analytics' | 'alerts' | 'custom';
+        correlationTTL: number;
+        maxCorrelationDepth: number;
+        correlationPatterns: string[];
+        trackMetricsFlow: boolean;
+        trackHealthStatus: boolean;
+        trackPerformanceInsights: boolean;
       },
       healthMonitoringConfig: {
         enabled: true,
@@ -609,11 +618,11 @@ export class MonitoringEventAdapter implements IEventManager {
         operation: (event as any).operation || 'unknown',
         executionTime: duration,
         success: true,
-        correlationId: event.correlationId || undefined,
-        metricName: this.extractMetricName(event) || undefined,
-        metricValue: this.extractMetricValue(event) || undefined,
-        alertLevel: this.extractAlertLevel(event) || undefined,
-        healthScore: this.extractHealthScore(event) || undefined,
+        correlationId: event.correlationId,
+        metricName: this.extractMetricName(event),
+        metricValue: this.extractMetricValue(event),
+        alertLevel: this.extractAlertLevel(event),
+        healthScore: this.extractHealthScore(event),
         performanceData: this.extractPerformanceData(event),
         timestamp: new Date(),
       });
@@ -633,11 +642,11 @@ export class MonitoringEventAdapter implements IEventManager {
         operation: (event as any).operation || 'unknown',
         executionTime: duration,
         success: false,
-        correlationId: event.correlationId || undefined,
-        metricName: this.extractMetricName(event) || undefined,
-        metricValue: this.extractMetricValue(event) || undefined,
-        alertLevel: this.extractAlertLevel(event) || undefined,
-        healthScore: this.extractHealthScore(event) || undefined,
+        correlationId: event.correlationId,
+        metricName: this.extractMetricName(event),
+        metricValue: this.extractMetricValue(event),
+        alertLevel: this.extractAlertLevel(event),
+        healthScore: this.extractHealthScore(event),
         performanceData: this.extractPerformanceData(event),
         errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
         recoveryAttempts: undefined,
@@ -1406,7 +1415,7 @@ export class MonitoringEventAdapter implements IEventManager {
     for (const monitorName of monitors) {
       const wrapper = new EventEmitter();
       const wrappedComponent: WrappedMonitoringComponent = {
-        component: null, // Would be actual RealTimePerformanceMonitor instance
+        component: {} as RealTimePerformanceMonitor, // Would be actual RealTimePerformanceMonitor instance
         componentType: 'performance',
         wrapper,
         originalMethods: new Map(),
@@ -1475,7 +1484,7 @@ export class MonitoringEventAdapter implements IEventManager {
     for (const componentName of components) {
       const wrapper = new EventEmitter();
       const wrappedComponent: WrappedMonitoringComponent = {
-        component: null, // Would be actual health monitoring instance
+        component: {} as PerformanceAnalyzer, // Would be actual health monitoring instance
         componentType: 'health',
         wrapper,
         originalMethods: new Map(),
@@ -1544,7 +1553,7 @@ export class MonitoringEventAdapter implements IEventManager {
     for (const analyzerName of analyzers) {
       const wrapper = new EventEmitter();
       const wrappedComponent: WrappedMonitoringComponent = {
-        component: null, // Would be actual PerformanceAnalyzer instance
+        component: {} as PerformanceAnalyzer, // Would be actual PerformanceAnalyzer instance
         componentType: 'analytics',
         wrapper,
         originalMethods: new Map(),
@@ -1604,7 +1613,7 @@ export class MonitoringEventAdapter implements IEventManager {
   private async wrapAlertManagement(): Promise<void> {
     const wrapper = new EventEmitter();
     const wrappedComponent: WrappedMonitoringComponent = {
-      component: null, // Would be actual alert manager instance
+      component: {} as MetricsCollector, // Would be actual alert manager instance
       componentType: 'alert',
       wrapper,
       originalMethods: new Map(),
@@ -1662,7 +1671,7 @@ export class MonitoringEventAdapter implements IEventManager {
     for (const dashboardName of dashboards) {
       const wrapper = new EventEmitter();
       const wrappedComponent: WrappedMonitoringComponent = {
-        component: null, // Would be actual dashboard instance
+        component: {} as RealTimePerformanceMonitor, // Would be actual dashboard instance
         componentType: 'dashboard',
         wrapper,
         originalMethods: new Map(),
@@ -1860,7 +1869,7 @@ export class MonitoringEventAdapter implements IEventManager {
               operation: 'alert',
               component: component,
               details: {
-                healthScore: health.healthScore || undefined,
+                healthScore: health.healthScore,
                 severity: health.status === 'unhealthy' ? ('error' as const) : ('warning' as const),
                 performanceData: {
                   cpu: health.resourceUsage.cpu,

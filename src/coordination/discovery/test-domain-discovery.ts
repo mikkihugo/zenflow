@@ -22,7 +22,7 @@ node;
  * ```
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import { DocumentProcessor } from '../core/document-processor';
 import { EventBus } from '../core/event-bus';
 import { MemorySystem } from '../core/memory-system';
@@ -32,7 +32,7 @@ import ProjectContextAnalyzer from '../knowledge/project-context-analyzer';
 import { DomainAnalysisEngine } from '../tools/domain-splitting/analyzers/domain-analyzer';
 import { DomainDiscoveryBridge } from './domain-discovery-bridge';
 
-const logger = createLogger('DomainDiscoveryTest');
+const logger = getLogger('DomainDiscoveryTest');
 
 /**
  * Test the Domain Discovery Bridge with a real project.

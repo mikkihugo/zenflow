@@ -20,10 +20,10 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { getLogger } from '../config/logging-config';
 import type { MemorySystem } from '../memory/memory-system';
-import { createLogger } from './logger';
 
-const logger = createLogger('DocumentationManager');
+const logger = getLogger('DocumentationManager');
 
 /**
  * Documentation manager configuration.

@@ -24,12 +24,12 @@ type StreamableHTTPServerTransport = any; // Placeholder type for missing MCP SD
 
 import express from 'express';
 import { z } from 'zod';
-import { config, getCORSOrigins } from '../config';
-import { createLogger } from './mcp-logger';
+import { config, getCORSOrigins } from '../../config';
+import { getLogger } from '../../config/logging-config';
 import type { AdvancedMCPTool } from './mcp-tools';
 import { advancedToolRegistry } from './mcp-tools';
 
-const logger = createLogger('SDK-HTTP-MCP-Server');
+const logger = getLogger('SDK-HTTP-MCP-Server');
 
 // Advanced MCP Tools Manager adapter
 const advancedMCPToolsManager = {

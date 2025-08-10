@@ -9,7 +9,10 @@
 import { EventEmitter } from 'node:events';
 
 // Import these after class definitions to avoid circular dependency
-let MemoryOptimizer: any, PATTERN_MEMORY_CONFIG: any;
+let MemoryOptimizer:
+  | typeof import('../../memory/optimization/performance-optimizer').PerformanceOptimizer
+  | null = null;
+let PATTERN_MEMORY_CONFIG: Record<string, unknown> | null = null;
 
 // Cognitive diversity patterns for different agent types
 const COGNITIVE_PATTERNS = {
@@ -62,7 +65,7 @@ interface Task {
   id?: string;
   description?: string;
   priority?: 'low' | 'medium' | 'high' | 'critical';
-  dependencies?: any[];
+  dependencies?: Array<{ id: string; type: string; description?: string }>;
 }
 
 interface TaskResult {
@@ -70,6 +73,8 @@ interface TaskResult {
   metrics?: {
     linesOfCode?: number;
     testsPass?: number;
+    timeElapsed?: number;
+    memoryUsed?: number;
   };
 }
 
@@ -323,7 +328,7 @@ class NeuralNetwork {
         continue;
       }
 
-      for (let j = 0; j < this.weights[i - 1].length; j++) {
+      for (let j = 0; j < (this.weights[i - 1]?.length || 0); j++) {
         let error = 0;
         for (let k = 0; k < weights.length; k++) {
           const weight = weights[k]?.[j];
@@ -357,14 +362,16 @@ class NeuralNetwork {
         }
 
         // Update weights with momentum
-        for (let k = 0; k < weights[j].length; k++) {
+        for (let k = 0; k < (weights[j]?.length || 0); k++) {
           const layerErr = layerError[j];
           const inputVal = layerInput[k];
           if (layerErr !== undefined && inputVal !== undefined) {
             const delta = lr * layerErr * inputVal;
             const prevDelta = this.previousWeightDeltas[i]?.[j]?.[k] || 0;
             const momentumDelta = this.momentum * prevDelta;
-            weights[j]![k] += delta + momentumDelta;
+            if (weights[j] && weights[j][k] !== undefined) {
+              weights[j][k] += delta + momentumDelta;
+            }
             if (this.previousWeightDeltas[i]?.[j]) {
               this.previousWeightDeltas[i]![j]![k] = delta;
             }
@@ -419,7 +426,8 @@ class NeuralAgent extends EventEmitter {
       networkLayers: [128, 64, 32],
       activationFunction: 'sigmoid' as const,
     };
-    this.memoryOptimizer = memoryOptimizer || new MemoryOptimizer();
+    this.memoryOptimizer =
+      memoryOptimizer || (MemoryOptimizer ? new (MemoryOptimizer as any)() : null);
 
     // Add cognitive pattern to neural network config for memory optimization
     const networkConfig: NeuralNetworkConfig = {
@@ -858,9 +866,9 @@ class NeuralAgent extends EventEmitter {
           const collected = await this.memoryOptimizer.garbageCollect();
           if (collected > 0) {
             // Recalculate memory usage after GC
-            const patternConfig = PATTERN_MEMORY_CONFIG?.[this.cognitiveProfile.primary];
+            const patternConfig = PATTERN_MEMORY_CONFIG?.[this.cognitiveProfile.primary] as any;
             this.memoryUsage.current =
-              patternConfig?.baseMemory * (1 - patternConfig?.poolSharing * 0.5);
+              (patternConfig?.baseMemory || 100) * (1 - (patternConfig?.poolSharing || 0.5) * 0.5);
           }
         }
 
@@ -873,19 +881,19 @@ class NeuralAgent extends EventEmitter {
    * Initialize memory tracking for the agent.
    */
   private _initializeMemoryTracking(): void {
-    const patternConfig = PATTERN_MEMORY_CONFIG?.[this.cognitiveProfile.primary] || {
+    const patternConfig = (PATTERN_MEMORY_CONFIG?.[this.cognitiveProfile.primary] as any) || {
       baseMemory: 100,
       poolSharing: 0.5,
     };
-    this.memoryUsage.baseline = patternConfig?.baseMemory;
-    this.memoryUsage.current = patternConfig?.baseMemory;
+    this.memoryUsage.baseline = patternConfig.baseMemory || 100;
+    this.memoryUsage.current = patternConfig.baseMemory || 100;
 
     // Initialize memory pools if not already done
     if (this.memoryOptimizer && !this.memoryOptimizer.isPoolInitialized()) {
       this.memoryOptimizer.initializePools().then(() => {
         // Recalculate memory usage with pooling
         this.memoryUsage.current =
-          patternConfig?.baseMemory * (1 - patternConfig?.poolSharing * 0.5);
+          (patternConfig.baseMemory || 100) * (1 - (patternConfig.poolSharing || 0.5) * 0.5);
       });
     }
   }
@@ -983,8 +991,10 @@ class NeuralAgentFactory {
 
   static async initializeFactory(): Promise<void> {
     if (!NeuralAgentFactory.memoryOptimizer) {
-      NeuralAgentFactory.memoryOptimizer = new MemoryOptimizer();
-      await NeuralAgentFactory.memoryOptimizer.initializePools();
+      NeuralAgentFactory.memoryOptimizer = MemoryOptimizer ? new (MemoryOptimizer as any)() : null;
+      if (NeuralAgentFactory.memoryOptimizer) {
+        await NeuralAgentFactory.memoryOptimizer.initializePools();
+      }
     }
   }
 
@@ -1019,7 +1029,24 @@ setImmediate(() => {
     })
     .catch(() => {
       // Fallback if neural module doesn't exist yet
-      MemoryOptimizer = class MockMemoryOptimizer {
+      MemoryOptimizer = class MockMemoryOptimizer extends EventEmitter {
+        static override once = EventEmitter.once;
+        static override on = EventEmitter.on;
+        static override listenerCount = EventEmitter.listenerCount;
+        static override getEventListeners = EventEmitter.getEventListeners;
+        static override getMaxListeners = EventEmitter.getMaxListeners;
+        static override setMaxListeners = EventEmitter.setMaxListeners;
+        static override addAbortListener = EventEmitter.addAbortListener;
+        static override eventNames() {
+          return [];
+        }
+        static override emit() {
+          return false;
+        }
+        static override removeListener() {
+          return MockMemoryOptimizer;
+        }
+
         isPoolInitialized() {
           return false;
         }
@@ -1029,7 +1056,7 @@ setImmediate(() => {
         garbageCollect() {
           return Promise.resolve(0);
         }
-      };
+      } as any;
       PATTERN_MEMORY_CONFIG = { convergent: { baseMemory: 100, poolSharing: 0.5 } };
     });
 });

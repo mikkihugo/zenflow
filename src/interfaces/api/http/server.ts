@@ -6,7 +6,7 @@
  * Clean separation: REST API layer independent from business domains.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-api-http-server');
 
@@ -18,8 +18,7 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 
 // Import centralized configuration
-import { DEFAULT_CONFIG } from '../config/defaults';
-import { getAPIEndpoints, getCORSOrigins } from '../config/url-builder';
+import { DEFAULT_CONFIG, getCORSOrigins } from '../../../config/defaults';
 
 // Optional dependencies - handle missing gracefully
 let compression: any = null;
@@ -46,7 +45,7 @@ try {
   logger.warn('swagger packages not available - API documentation disabled');
 }
 
-import { getConfig } from '../config';
+import { config as getConfig } from '../../../config';
 import { authMiddleware } from './middleware/auth';
 // Import middleware
 import { errorHandler } from './middleware/errors';
@@ -95,7 +94,7 @@ export interface APIClientConfig {
  * Default server configuration with secure defaults from centralized config.
  */
 export const DEFAULT_API_CONFIG: APIServerConfig = (() => {
-  const centralConfig = getConfig();
+  const centralConfig = getConfig().getAll();
   return {
     port: centralConfig?.interfaces?.web?.port,
     host: centralConfig?.interfaces?.web?.host,
@@ -118,7 +117,7 @@ export const DEFAULT_API_CONFIG: APIServerConfig = (() => {
  * Unified documentation for all domain APIs.
  */
 const swaggerOptions = (() => {
-  const centralConfig = getConfig();
+  const centralConfig = getConfig().getAll();
   return {
     definition: {
       openapi: '3.0.0',
@@ -136,7 +135,12 @@ const swaggerOptions = (() => {
           url: 'https://opensource.org/licenses/MIT',
         },
       },
-      servers: getAPIEndpoints(),
+      servers: [
+        {
+          url: 'http://localhost:3456',
+          description: 'Development server'
+        }
+      ],
       components: {
         securitySchemes: {
           BearerAuth: {
@@ -202,7 +206,7 @@ export class APIServer {
   private setupMiddleware(): void {
     // Security middleware
     this.app.use((_req, res, next) => {
-      res.locals.nonce = randomBytes(16).toString('hex');
+      res.locals['nonce'] = randomBytes(16).toString('hex');
       next();
     });
 

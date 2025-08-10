@@ -8,13 +8,13 @@
  * @file Coordination system: dspy-swarm-mcp-tools
  */
 
-import { createLogger } from '../../core/logger';
-import type { DSPyConfig } from '../neural/types/dspy-types';
+import { getLogger } from '../../config/logging-config';
+import type { DSPyConfig } from '../../neural/types/dspy-types';
 import type { DSPyTask } from '../swarm/dspy-swarm-coordinator';
 import { DSPySwarmCoordinator } from '../swarm/dspy-swarm-coordinator';
-import type { AgentType } from '../types/agent-types';
+import type { AgentType } from '../types';
 
-const logger = createLogger({ prefix: 'DSPySwarmMCPTools' });
+const logger = getLogger('DSPySwarmMCPTools');
 
 // Global DSPy swarm coordinator instance
 let globalDSPySwarm: DSPySwarmCoordinator | null = null;

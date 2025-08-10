@@ -2,7 +2,7 @@
  * @file Coordination system: session-utils.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-session-utils');
 

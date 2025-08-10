@@ -46,6 +46,11 @@
 
 import { getLogger } from '../../config/logging-config';
 import {
+  globalClientManager as actualGlobalClientManager,
+  type ClientManager,
+  ClientManagerHelpers,
+} from './manager';
+import {
   type ClientInstance,
   ClientType,
   type HTTPClientConfig,
@@ -53,7 +58,6 @@ import {
   type MCPClientConfig,
   type WebSocketClientConfig,
 } from './registry';
-import { ClientManager, globalClientManager as actualGlobalClientManager, ClientManagerHelpers } from './manager';
 
 // Legacy FACT integration
 export { FACTIntegration } from '../../knowledge/knowledge-client';
@@ -105,7 +109,6 @@ export interface ClientMetrics {
   averageLatency: number;
   totalThroughput: number;
 }
-
 
 // Global client manager instance
 export const globalClientManager = actualGlobalClientManager;
@@ -707,7 +710,7 @@ export class UACL {
    * console.log(`Health Checks: ${status.configuration.enableHealthChecks ? 'Enabled' : 'Disabled'}`);
    * ```
    */
-  getSystemStatus(): ReturnType<typeof ClientManagerHelpers['getSystemStatus']> {
+  getSystemStatus(): ReturnType<(typeof ClientManagerHelpers)['getSystemStatus']> {
     return ClientManagerHelpers.getSystemStatus();
   }
 

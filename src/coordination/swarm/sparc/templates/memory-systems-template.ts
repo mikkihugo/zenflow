@@ -9,6 +9,14 @@
  */
 
 import { nanoid } from 'nanoid';
+import type {
+  ArchitectureDesign,
+  DetailedSpecification,
+  ProjectSpecification,
+  PseudocodeStructure,
+  SPARCTemplate,
+  TemplateMetadata,
+} from '../types/sparc-types.js';
 
 export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
   id: 'memory-systems-template',

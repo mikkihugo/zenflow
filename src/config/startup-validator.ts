@@ -396,8 +396,6 @@ async function outputValidationResults(
 export async function validateAndExit(options: StartupValidationOptions = {}): Promise<never> {
   const result = await runStartupValidation(options);
   process.exit(result?.exitCode);
-  // TypeScript requires this for never return type, though it's unreachable
-  return new Promise(() => {}) as Promise<never>;
 }
 
 /**

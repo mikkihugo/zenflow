@@ -6,7 +6,7 @@
  * @file Di-scope implementation.
  */
 
-import type { DIScope as IDIScope } from '../types/di-types';
+import type { DIContainer, DIToken, DIScope as IDIScope, Provider } from '../types/di-types';
 
 export class DIScope implements IDIScope {
   private readonly scopedProviders = new Map<symbol, Provider<any>>();

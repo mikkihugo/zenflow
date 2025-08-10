@@ -9,8 +9,8 @@ import { EventEmitter } from 'node:events';
 import {
   createMCPConfigFromLegacy,
   MCPClientAdapter,
-  MCPClientFactory,
   type MCPClientConfig,
+  MCPClientFactory,
 } from '../mcp-client-adapter.js';
 
 // Mock child_process for testing
@@ -237,7 +237,7 @@ describe('MCPClientAdapter', () => {
         baseURL: 'https://api.example.com',
         protocol: 'http',
         url: 'https://api.example.com/mcp',
-        authentication: { type: 'bearer', credentials: { token: 'test-token' } },
+        authentication: { type: 'bearer', token: 'test-token' },
         tools: { timeout: 30000, retries: 3, discovery: true },
         server: { name: 'remote-server', version: '2.0.0' },
       };
@@ -460,7 +460,7 @@ describe('MCPClientFactory', () => {
       baseURL: 'stdio://test',
       protocol: 'stdio',
       command: ['node', 'test.js'],
-      authentication: { type: 'none' },
+      authentication: { type: 'custom' },
       tools: { timeout: 10000, retries: 2, discovery: true },
       server: { name: 'test', version: '1.0.0' },
     };
@@ -507,7 +507,7 @@ describe('MCPClientFactory', () => {
       baseURL: 'stdio://test',
       protocol: 'stdio',
       command: ['node', 'test.js'],
-      authentication: { type: 'none' },
+      authentication: { type: 'custom' },
       tools: { timeout: 10000, retries: 2, discovery: true },
       server: { name: 'test', version: '1.0.0' },
     };
@@ -529,7 +529,7 @@ describe('MCPClientFactory', () => {
       baseURL: 'stdio://test',
       protocol: 'stdio',
       command: ['node', 'test.js'],
-      authentication: { type: 'none' },
+      authentication: { type: 'custom' },
       tools: { timeout: 10000, retries: 2, discovery: true },
       server: { name: 'test', version: '1.0.0' },
     };
@@ -599,7 +599,7 @@ describe('createMCPConfigFromLegacy', () => {
       name: 'minimal-client',
       protocol: 'http',
       timeout: 30000,
-      authentication: { type: 'none' },
+      authentication: { type: 'custom' },
       tools: {
         timeout: 30000,
         retries: 3,

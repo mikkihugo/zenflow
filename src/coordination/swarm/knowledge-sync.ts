@@ -10,7 +10,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '@core/logger';
+import { getLogger } from '../../config/logging-config';
 import type {
   KnowledgeDistributionUpdate,
   KnowledgeRequest,
@@ -19,7 +19,7 @@ import type {
 } from '../hive-knowledge-bridge';
 import type { SessionMemoryStore } from '../memory/memory';
 
-const logger = createLogger({ prefix: 'Swarm-Knowledge-Sync' });
+const logger = getLogger('Swarm-Knowledge-Sync');
 
 export interface SwarmKnowledgeConfig {
   swarmId: string;

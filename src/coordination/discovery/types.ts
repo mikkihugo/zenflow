@@ -30,4 +30,10 @@ export interface DomainRelationshipMap {
     targetDomain: string;
     count: number;
   }[];
+  bazelEnhancements?: {
+    totalTargets: number;
+    languages: string[];
+    toolchains: string[];
+    workspaceName?: string;
+  };
 }

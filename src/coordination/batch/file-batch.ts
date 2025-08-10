@@ -6,10 +6,10 @@
 
 import { promises as fs } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type { BatchOperation } from './batch-engine';
 
-const logger = createLogger({ prefix: 'FileBatch' });
+const logger = getLogger('FileBatch');
 
 export interface FileOperation {
   type: 'read' | 'write' | 'create' | 'delete' | 'copy' | 'move' | 'mkdir' | 'rmdir';

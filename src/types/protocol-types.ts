@@ -5,5 +5,4 @@
 
 export type ProtocolType = 'http' | 'websocket' | 'mcp' | 'stdio';
 
-// Convenience exports
-export type { ProtocolType };
+// Convenience exports - ProtocolType already exported above

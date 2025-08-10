@@ -2,7 +2,7 @@
  * @file Claude-integration module exports.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../logging-config';
 
 const logger = getLogger('coordination-swarm-core-claude-integration-index');
 
@@ -11,7 +11,7 @@ const logger = getLogger('coordination-swarm-core-claude-integration-index');
  * Coordinates all integration modules for modular, remote-capable setup.
  */
 
-import { ClaudeIntegrationCore } from '../core';
+import { ClaudeIntegrationCore } from './core';
 import { ClaudeDocsGenerator } from './docs';
 import { RemoteWrapperGenerator } from './remote';
 
@@ -74,35 +74,45 @@ class ClaudeIntegrationOrchestrator {
         success: true,
         modules: {},
       };
-      results?.modules.docs = await this.docs.generateAll({
-        force: this.options.forceSetup ?? false,
-        merge: this.options.mergeSetup ?? false,
-        backup: this.options.backupSetup ?? false,
-        noBackup: this.options.noBackup ?? false,
-        interactive: this.options.interactive ?? true,
-      });
-      results?.modules.remote = await this.remote.createAll();
+      if (results.modules) {
+        results.modules.docs = await this.docs.generateAll({
+          force: this.options.forceSetup ?? false,
+          merge: this.options.mergeSetup ?? false,
+          backup: this.options.backupSetup ?? false,
+          noBackup: this.options.noBackup ?? false,
+          interactive: this.options.interactive ?? true,
+        });
+      }
+      if (results.modules) {
+        results.modules.remote = await this.remote.createAll();
+      }
 
       // Step 3: Initialize core integration (if auto setup enabled)
       if (this.options.autoSetup) {
         try {
-          results?.modules.core = await this.core.initialize();
+          if (results.modules) {
+            results.modules.core = await this.core.initialize();
+          }
         } catch (error: any) {
-          results?.modules.core = {
-            success: false,
-            error: error.message,
-            manualSetup: true,
-          };
+          if (results.modules) {
+            results.modules.core = {
+              success: false,
+              error: error.message,
+              manualSetup: true,
+            };
+          }
         }
       } else {
-        results?.modules.core = {
-          success: true,
-          manualSetup: true,
-          instructions: [
-            'Run: claude mcp add ruv-swarm npx ruv-swarm mcp start',
-            'Test with: mcp__zen-swarm__agent_spawn',
-          ],
-        };
+        if (results.modules) {
+          results.modules.core = {
+            success: true,
+            manualSetup: true,
+            instructions: [
+              'Run: claude mcp add ruv-swarm npx ruv-swarm mcp start',
+              'Test with: mcp__zen-swarm__agent_spawn',
+            ],
+          };
+        }
       }
       if (results?.modules?.core?.manualSetup) {
       } else {

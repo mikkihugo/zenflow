@@ -9,11 +9,11 @@
  */
 
 import type { NextFunction, Request, Response } from 'express';
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 import type { WebConfig, WebSession } from './web-config';
 
 export class WebSessionManager {
-  private logger = createLogger('WebSessions');
+  private logger = getLogger('WebSessions');
   private sessions = new Map<string, WebSession>();
   private config: WebConfig;
 

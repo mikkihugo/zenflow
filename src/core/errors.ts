@@ -8,9 +8,9 @@
  * @file Errors implementation.
  */
 
-import { createLogger } from './logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger({ prefix: 'ErrorSystem' });
+const logger = getLogger('ErrorSystem');
 
 // ===============================
 // Core Error Context Interface
@@ -18,7 +18,7 @@ const logger = createLogger({ prefix: 'ErrorSystem' });
 
 /**
  * Context information for error tracking and debugging.
- * 
+ *
  * @interface ErrorContext
  * @example
  * ```typescript
@@ -55,7 +55,7 @@ export interface ErrorContext {
 
 /**
  * Configuration options for error recovery strategies.
- * 
+ *
  * @interface ErrorRecoveryOptions
  * @example
  * ```typescript
@@ -86,7 +86,7 @@ export interface ErrorRecoveryOptions {
 
 /**
  * Metrics for error tracking and monitoring.
- * 
+ *
  * @interface ErrorMetrics
  * @example
  * ```typescript
@@ -121,10 +121,10 @@ export interface ErrorMetrics {
 
 /**
  * Base class for all Claude-Zen error types with rich context and recovery options.
- * 
+ *
  * Provides structured error handling with severity levels, context tracking,
  * automatic logging, and recovery information.
- * 
+ *
  * @abstract
  * @class BaseClaudeZenError
  * @augments Error
@@ -139,7 +139,7 @@ export interface ErrorMetrics {
  *     this.name = 'CustomError';
  *   }
  * }
- * 
+ *
  * const error = new CustomError('Something went wrong');
  * console.log(error.severity); // 'medium'
  * console.log(error.recoverable); // true
@@ -159,7 +159,7 @@ export abstract class BaseClaudeZenError extends Error {
 
   /**
    * Creates a new BaseClaudeZenError instance.
-   * 
+   *
    * @param message - Error message.
    * @param category - Error category for classification.
    * @param severity - Error severity level (defaults to 'medium').
@@ -201,7 +201,7 @@ export abstract class BaseClaudeZenError extends Error {
 
   /**
    * Converts the error to a JSON-serializable object.
-   * 
+   *
    * @returns JSON representation of the error.
    * @example
    * ```typescript
@@ -229,7 +229,7 @@ export abstract class BaseClaudeZenError extends Error {
 
 /**
  * Base error class for FACT (Flexible AI Context Transfer) system failures.
- * 
+ *
  * @class FACTError
  * @augments BaseClaudeZenError
  * @example
@@ -244,7 +244,7 @@ export abstract class BaseClaudeZenError extends Error {
 export class FACTError extends BaseClaudeZenError {
   /**
    * Creates a new FACTError instance.
-   * 
+   *
    * @param message - Error message.
    * @param severity - Error severity level (defaults to 'medium').
    * @param context - Additional error context (optional).
@@ -261,7 +261,7 @@ export class FACTError extends BaseClaudeZenError {
 
 /**
  * Error for FACT storage backend operations.
- * 
+ *
  * @class FACTStorageError
  * @augments FACTError
  * @example
@@ -277,7 +277,7 @@ export class FACTError extends BaseClaudeZenError {
 export class FACTStorageError extends FACTError {
   /**
    * Creates a new FACTStorageError instance.
-   * 
+   *
    * @param message - Error message.
    * @param backend - Storage backend name (e.g., 'sqlite', 'lancedb').
    * @param operation - Storage operation that failed (e.g., 'read', 'write').
@@ -324,7 +324,7 @@ export class FACTProcessingError extends FACTError {
 
 /**
  * Base error class for RAG (Retrieval Augmented Generation) system failures.
- * 
+ *
  * @class RAGError
  * @augments BaseClaudeZenError
  * @example
@@ -339,7 +339,7 @@ export class FACTProcessingError extends FACTError {
 export class RAGError extends BaseClaudeZenError {
   /**
    * Creates a new RAGError instance.
-   * 
+   *
    * @param message - Error message.
    * @param severity - Error severity level (defaults to 'medium').
    * @param context - Additional error context (optional).
@@ -396,7 +396,7 @@ export class RAGRetrievalError extends RAGError {
 
 /**
  * Base error class for swarm coordination system failures.
- * 
+ *
  * @class SwarmError
  * @augments BaseClaudeZenError
  * @example
@@ -412,7 +412,7 @@ export class RAGRetrievalError extends RAGError {
 export class SwarmError extends BaseClaudeZenError {
   /**
    * Creates a new SwarmError instance.
-   * 
+   *
    * @param message - Error message.
    * @param swarmId - Unique identifier of the swarm (optional).
    * @param severity - Error severity level (defaults to 'medium').
@@ -431,7 +431,7 @@ export class SwarmError extends BaseClaudeZenError {
 
 /**
  * Error class for individual agent failures within a swarm.
- * 
+ *
  * @class AgentError
  * @augments BaseClaudeZenError
  * @example
@@ -447,7 +447,7 @@ export class SwarmError extends BaseClaudeZenError {
 export class AgentError extends BaseClaudeZenError {
   /**
    * Creates a new AgentError instance.
-   * 
+   *
    * @param message - Error message.
    * @param agentId - Unique identifier of the agent (optional).
    * @param agentType - Type of agent (e.g., 'researcher', 'coder') (optional).
@@ -495,7 +495,7 @@ export class SwarmCoordinationError extends SwarmError {
 
 /**
  * Base error class for MCP (Model Context Protocol) system failures.
- * 
+ *
  * @class MCPError
  * @augments BaseClaudeZenError
  * @example
@@ -511,7 +511,7 @@ export class SwarmCoordinationError extends SwarmError {
 export class MCPError extends BaseClaudeZenError {
   /**
    * Creates a new MCPError instance.
-   * 
+   *
    * @param message - Error message.
    * @param toolName - Name of the MCP tool that failed (optional).
    * @param severity - Error severity level (defaults to 'medium').
@@ -574,7 +574,7 @@ export class MCPTimeoutError extends MCPError {
 
 /**
  * Base error class for WASM (WebAssembly) integration failures.
- * 
+ *
  * @class WASMError
  * @augments BaseClaudeZenError
  * @example
@@ -589,7 +589,7 @@ export class MCPTimeoutError extends MCPError {
 export class WASMError extends BaseClaudeZenError {
   /**
    * Creates a new WASMError instance.
-   * 
+   *
    * @param message - Error message.
    * @param severity - Error severity level (defaults to 'medium').
    * @param context - Additional error context (optional).
@@ -646,7 +646,7 @@ export class WASMMemoryError extends WASMError {
 
 /**
  * General system infrastructure error for core system failures.
- * 
+ *
  * @class SystemError
  * @augments BaseClaudeZenError
  * @example
@@ -662,7 +662,7 @@ export class WASMMemoryError extends WASMError {
 export class SystemError extends BaseClaudeZenError {
   /**
    * Creates a new SystemError instance.
-   * 
+   *
    * @param message - Error message.
    * @param code - System error code for classification (optional).
    * @param severity - Error severity level (defaults to 'high').
@@ -681,7 +681,7 @@ export class SystemError extends BaseClaudeZenError {
 
 /**
  * Error for input validation failures.
- * 
+ *
  * @class ValidationError
  * @augments BaseClaudeZenError
  * @example
@@ -697,7 +697,7 @@ export class SystemError extends BaseClaudeZenError {
 export class ValidationError extends BaseClaudeZenError {
   /**
    * Creates a new ValidationError instance.
-   * 
+   *
    * @param message - Error message.
    * @param field - Name of the field that failed validation (optional).
    * @param expectedValue - Expected value or format (optional).
@@ -727,7 +727,7 @@ export class NotFoundError extends BaseClaudeZenError {
 
 /**
  * Error for operation timeout failures.
- * 
+ *
  * @class TimeoutError
  * @augments BaseClaudeZenError
  * @example
@@ -743,7 +743,7 @@ export class NotFoundError extends BaseClaudeZenError {
 export class TimeoutError extends BaseClaudeZenError {
   /**
    * Creates a new TimeoutError instance.
-   * 
+   *
    * @param message - Error message.
    * @param timeoutMs - Configured timeout in milliseconds (optional).
    * @param actualTimeMs - Actual time taken in milliseconds (optional).
@@ -842,7 +842,7 @@ export class TransactionError extends DatabaseError {
 
 /**
  * Determines if an error is recoverable and can be retried.
- * 
+ *
  * @param error - Error to check for recoverability.
  * @returns True if the error is recoverable, false otherwise.
  * @example
@@ -876,7 +876,7 @@ export function isRecoverableError(error: Error): boolean {
 
 /**
  * Gets the severity level of an error for prioritization and handling.
- * 
+ *
  * @param error - Error to assess severity for.
  * @returns Severity level ('low', 'medium', 'high', or 'critical').
  * @example
@@ -910,7 +910,7 @@ export function getErrorSeverity(error: Error): 'low' | 'medium' | 'high' | 'cri
 
 /**
  * Determines if an operation should be retried based on error type and attempt count.
- * 
+ *
  * @param error - Error that occurred during the operation.
  * @param attempt - Current attempt number (0-based).
  * @param maxRetries - Maximum number of retries allowed (defaults to 3).
@@ -919,7 +919,7 @@ export function getErrorSeverity(error: Error): 'low' | 'medium' | 'high' | 'cri
  * ```typescript
  * let attempt = 0;
  * const maxRetries = 3;
- * 
+ *
  * while (attempt <= maxRetries) {
  *   try {
  *     const result = await unreliableOperation();

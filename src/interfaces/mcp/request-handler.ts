@@ -8,9 +8,9 @@
  * @file Interface implementation: request-handler.
  */
 
-import { createLogger } from './mcp-logger';
+import { getLogger } from '../../config/logging-config';
 
-const logger = createLogger('MCP-RequestHandler');
+const logger = getLogger('MCP-RequestHandler');
 
 export interface MCPRequest {
   jsonrpc: '2.0';

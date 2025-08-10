@@ -7,7 +7,7 @@
  * @file Validation Framework Implementation.
  */
 
-import type { ILogger } from '../core/interfaces/base-interfaces';
+import type { ILogger } from '../../core/interfaces/base-interfaces';
 import type { EventManagerConfig, EventManagerType, SystemEvent } from './core/interfaces';
 
 import { EventManagerTypes, EventTypeGuards } from './core/interfaces';
@@ -441,13 +441,13 @@ export class UELValidationFramework {
       });
     }
 
-    if (config?.queueSize !== undefined && config?.queueSize > 50000) {
+    if (config?.processing?.queueSize !== undefined && config?.processing?.queueSize > 50000) {
       warnings.push({
         code: 'LARGE_QUEUE_SIZE',
-        message: `Large queue size may impact memory usage: ${config?.queueSize}`,
+        message: `Large queue size may impact memory usage: ${config?.processing?.queueSize}`,
         category: 'optimization',
         impact: 'high',
-        context: { queueSize: config?.queueSize },
+        context: { queueSize: config?.processing?.queueSize },
       });
 
       recommendations.push({

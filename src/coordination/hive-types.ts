@@ -15,7 +15,7 @@ export interface UniversalFact {
   type: 'npm-package' | 'github-repo' | 'api-docs' | 'security-advisory' | 'general' | 'external';
   category: string;
   subject: string; // e.g., "react@18.2.0", "github.com/facebook/react"
-  content: any;
+  content: Record<string, unknown> | string | null;
   source: string;
   confidence: number;
   timestamp: number;
@@ -28,6 +28,7 @@ export interface UniversalFact {
   };
   accessCount: number;
   swarmAccess: Set<string>; // Which swarms have accessed this fact
+  freshness?: 'fresh' | 'stale' | 'expired'; // Track data freshness
 }
 
 export interface GlobalAgentInfo {
@@ -73,7 +74,7 @@ export interface Task {
   };
   status: 'pending' | 'assigned' | 'executing' | 'completed' | 'failed';
   assignedAgents: string[];
-  result?: any;
+  result?: Record<string, unknown> | string | number | boolean | null;
 }
 
 export interface AgentCapability {

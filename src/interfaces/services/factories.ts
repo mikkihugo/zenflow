@@ -36,7 +36,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../utils/logger';
+import { getLogger, type Logger } from '../../config/logging-config';
 import type {
   IService,
   IServiceCapabilityRegistry,
@@ -174,7 +174,7 @@ export class USLFactory implements IServiceFactory {
   private config: Required<USLFactoryConfig>;
 
   constructor(config: USLFactoryConfig = {}) {
-    this.logger = createLogger('USLFactory');
+    this.logger = getLogger('USLFactory');
     this.config = {
       maxConcurrentInits: config?.maxConcurrentInits ?? 5,
       defaultTimeout: config?.defaultTimeout ?? 30000,
@@ -978,7 +978,7 @@ export class ServiceRegistry implements IServiceRegistry {
   private logger: Logger;
 
   constructor() {
-    this.logger = createLogger('ServiceRegistry');
+    this.logger = getLogger('ServiceRegistry');
   }
 
   registerFactory<T extends ServiceConfig>(type: string, factory: IServiceFactory<T>): void {
@@ -1208,7 +1208,7 @@ export class ServiceConfigValidator implements IServiceConfigValidator {
   private logger: Logger;
 
   constructor() {
-    this.logger = createLogger('ServiceConfigValidator');
+    this.logger = getLogger('ServiceConfigValidator');
     this.initializeDefaultSchemas();
   }
 
@@ -1300,7 +1300,7 @@ export class ServiceCapabilityRegistry implements IServiceCapabilityRegistry {
   private logger: Logger;
 
   constructor() {
-    this.logger = createLogger('ServiceCapabilityRegistry');
+    this.logger = getLogger('ServiceCapabilityRegistry');
   }
 
   register(serviceName: string, capability: ServiceCapability): void {

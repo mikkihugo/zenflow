@@ -15,9 +15,9 @@ export type {
   WorkflowEngineConfig,
   WorkflowState,
 } from '../types/workflow-types';
-export type { CoreSystemConfig, SystemStatus } from './core-system';
+export type { SystemConfig as CoreSystemConfig, SystemStatus } from './core-system';
 // Main system coordinator
-export { CoreSystem } from './core-system';
+export { System as CoreSystem } from './core-system';
 export type {
   Document,
   DocumentMetadata,
@@ -31,7 +31,7 @@ export type { DocumentationManagerConfig, DocumentationStats } from './documenta
 export { DocumentationManager } from './documentation-manager';
 export type { ExporterDefinition, ExportOptions, ExportResult } from './export-manager';
 // Management systems
-export { UnifiedExportSystem as ExportManager } from './export-manager';
+export { ExportSystem as ExportManager } from './export-manager';
 export type { InterfaceManagerConfig, InterfaceMode, InterfaceStats } from './interface-manager';
 export { InterfaceManager } from './interface-manager';
 export type {
@@ -81,9 +81,10 @@ export type { ExportConfig, ExportResult as LegacyExportResult } from './exporte
 export { ExportSystem, ExportUtils } from './exporters';
 export * from './helpers';
 export { InterfaceModeDetector } from './interface-mode-detector';
-export type { ILogger, LoggerConfig, LogLevel, LogMeta } from './logger';
+export type { ILogger, LoggerConfig, LogLevel } from './logger';
+export type { LogMeta } from './logger-old';
 // Logging system
-export { createLogger, Logger, logger } from './logger';
+export { createLogger, Logger } from './logger';
 export { Orchestrator } from './orchestrator';
 export * from './orchestrator-provider';
 // External systems

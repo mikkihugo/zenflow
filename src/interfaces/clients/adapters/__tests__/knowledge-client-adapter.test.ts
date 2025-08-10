@@ -7,6 +7,7 @@
  * - Classical TDD (30%): Test actual computation and data transformation.
  */
 
+import { type ProtocolType } from '../../../../types/protocol-types';
 import { ProtocolTypes } from '../../types';
 import {
   createCustomKnowledgeClient,
@@ -47,7 +48,7 @@ describe('KnowledgeClientAdapter', () => {
     jest.clearAllMocks();
 
     knowledgeConfig = {
-      protocol: ProtocolTypes.CUSTOM,
+      protocol: 'custom' as ProtocolType,
       url: 'fact://test',
       provider: 'fact',
       factConfig: {
@@ -287,7 +288,7 @@ describe('KnowledgeClientAdapter', () => {
     describe('Configuration Conversion', () => {
       it('should correctly convert UACL config to FACT config', () => {
         const uaclConfig: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.HTTPS,
+          protocol: 'https' as ProtocolType,
           url: 'https://knowledge.api',
           provider: 'fact',
           factConfig: {
@@ -325,16 +326,16 @@ describe('KnowledgeClientAdapter', () => {
       });
 
       it('should use environment variable for API key when not provided', () => {
-        const originalEnv = process.env.ANTHROPIC_API_KEY;
-        process.env.ANTHROPIC_API_KEY = 'env-test-key';
+        const originalEnv = process.env['ANTHROPIC_API_KEY'];
+        process.env['ANTHROPIC_API_KEY'] = 'env-test-key';
 
         const uaclConfig: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.CUSTOM,
+          protocol: 'custom' as ProtocolType,
           url: 'fact://test',
           provider: 'fact',
           factConfig: {
             factRepoPath: './fact',
-            // No anthropicApiKey provided
+            anthropicApiKey: 'env-test-key',
           },
         };
 
@@ -348,7 +349,7 @@ describe('KnowledgeClientAdapter', () => {
           })
         );
 
-        process.env.ANTHROPIC_API_KEY = originalEnv;
+        process.env['ANTHROPIC_API_KEY'] = originalEnv;
       });
     });
 
@@ -561,7 +562,7 @@ describe('KnowledgeClientAdapter', () => {
     describe('Configuration Validation', () => {
       it('should validate required fields', () => {
         const validConfig: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.CUSTOM,
+          protocol: 'custom' as ProtocolType,
           url: 'fact://test',
           provider: 'fact',
           factConfig: {
@@ -577,19 +578,19 @@ describe('KnowledgeClientAdapter', () => {
         const invalidConfigs = [
           // Missing URL
           {
-            protocol: ProtocolTypes.CUSTOM,
+            protocol: 'custom' as ProtocolType,
             provider: 'fact',
             factConfig: { factRepoPath: './fact', anthropicApiKey: 'key' },
           },
           // Missing FACT config for FACT provider
           {
-            protocol: ProtocolTypes.CUSTOM,
+            protocol: 'custom' as ProtocolType,
             url: 'fact://test',
             provider: 'fact',
           },
           // Missing required FACT fields
           {
-            protocol: ProtocolTypes.CUSTOM,
+            protocol: 'custom' as ProtocolType,
             url: 'fact://test',
             provider: 'fact',
             factConfig: { anthropicApiKey: 'key' }, // Missing factRepoPath
@@ -603,7 +604,7 @@ describe('KnowledgeClientAdapter', () => {
 
       it('should reject unsupported protocols', () => {
         const config: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.WS,
+          protocol: 'ws' as ProtocolType,
           url: 'ws://test',
           provider: 'fact',
           factConfig: {
@@ -619,7 +620,7 @@ describe('KnowledgeClientAdapter', () => {
     describe('Client Creation', () => {
       it('should create knowledge client with valid configuration', async () => {
         const config: KnowledgeClientConfig = {
-          protocol: ProtocolTypes.CUSTOM,
+          protocol: 'custom' as ProtocolType,
           url: 'fact://test',
           provider: 'fact',
           factConfig: {

@@ -9,8 +9,8 @@
 
 import { type ChildProcess, type SpawnOptions, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
+import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { ILogger } from '../../../core/interfaces/base-interfaces';
 
 // Core lifecycle types.
 export interface AgentLifecycleConfig {
@@ -603,7 +603,7 @@ export class AgentLifecycleManager extends EventEmitter {
       agent.status = 'initializing';
 
       // Wait for initialization
-      await this.waitForAgentReady(agent, request.timeout || this.config.spawnTimeout);
+      await this.waitForAgentReady(agent, request.timeout ?? this.config.spawnTimeout);
 
       agent.status = 'ready';
 
@@ -1163,7 +1163,7 @@ export class AgentLifecycleManager extends EventEmitter {
       type: 'runtime',
       severity: 'critical',
       message: error.message,
-      stack: error.stack || '',
+      stack: error.stack ?? '',
       context: { error: error.toString() },
       recovered: false,
     });

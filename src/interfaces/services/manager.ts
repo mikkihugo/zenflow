@@ -68,29 +68,34 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import type { CoordinationServiceAdapterConfig } from './adapters/coordination-service-adapter';
 import {
-  type CoordinationServiceAdapterConfig,
   type CoordinationServiceFactory,
   coordinationServiceFactory,
 } from './adapters/coordination-service-factory';
+import type { DataServiceAdapterConfig } from './adapters/data-service-adapter';
 // Import all service adapter factories
 import {
-  type DataServiceAdapterConfig,
   type DataServiceFactory,
+  type DataServiceFactoryConfig,
   globalDataServiceFactory,
 } from './adapters/data-service-factory';
+import type { InfrastructureServiceAdapterConfig } from './adapters/infrastructure-service-adapter';
 import {
+  type CreateServiceOptions,
   getInfrastructureServiceFactory,
-  type InfrastructureServiceAdapterConfig,
   type InfrastructureServiceFactory,
 } from './adapters/infrastructure-service-factory';
+import type { IntegrationServiceAdapterConfig } from './adapters/integration-service-adapter';
 import {
-  type IntegrationServiceAdapterConfig,
   type IntegrationServiceFactory,
   integrationServiceFactory,
 } from './adapters/integration-service-factory';
 import type { IService, IServiceFactory, ServiceMetrics, ServiceStatus } from './core/interfaces';
 import {
+  type ServiceConfig,
   ServiceDependencyError,
   ServiceInitializationError,
   ServiceOperationError,
@@ -98,7 +103,6 @@ import {
 import { USLFactory, type USLFactoryConfig } from './factories';
 import { EnhancedServiceRegistry, type ServiceRegistryConfig } from './registry';
 import { type AnyServiceConfig, ServicePriority, ServiceType } from './types';
-import { createLogger, type Logger } from './utils/logger';
 
 /**
  * Service Manager Configuration.
@@ -299,7 +303,7 @@ export class ServiceManager extends EventEmitter {
 
   constructor(config?: Partial<ServiceManagerConfig>) {
     super();
-    this.logger = createLogger('ServiceManager');
+    this.logger = getLogger('ServiceManager');
 
     // Initialize configuration with defaults
     this.config = this.initializeConfig(config);
@@ -522,7 +526,10 @@ export class ServiceManager extends EventEmitter {
     name: string,
     config?: Partial<DataServiceAdapterConfig>
   ): Promise<IService> {
-    return (await this.dataServiceFactory.createWebDataAdapter(name, config)) as IService;
+    return (await this.dataServiceFactory.createWebDataAdapter(
+      name,
+      config
+    )) as unknown as IService;
   }
 
   async createDocumentService(
@@ -534,7 +541,7 @@ export class ServiceManager extends EventEmitter {
       name,
       databaseType,
       config
-    )) as IService;
+    )) as unknown as IService;
   }
 
   async createUnifiedDataService(
@@ -546,7 +553,7 @@ export class ServiceManager extends EventEmitter {
       name,
       databaseType,
       config
-    )) as IService;
+    )) as unknown as IService;
   }
 
   // Coordination Services
@@ -645,9 +652,9 @@ export class ServiceManager extends EventEmitter {
     // TODO: Method createFacadeAdapter does not exist on InfrastructureServiceFactory
     // Use generic createService method instead
     return (await this.infrastructureServiceFactory.createService(name, {
-      config,
+      config: config || undefined,
       autoStart: true,
-    })) as IService;
+    } as CreateServiceOptions)) as IService;
   }
 
   async createPatternIntegrationService(
@@ -658,10 +665,10 @@ export class ServiceManager extends EventEmitter {
     // TODO: Method createPatternIntegrationAdapter does not exist on InfrastructureServiceFactory
     // Use generic createService method instead
     return (await this.infrastructureServiceFactory.createService(`${name}-${configProfile}`, {
-      config,
+      config: config || undefined,
       autoStart: true,
       tags: ['pattern-integration', configProfile],
-    })) as IService;
+    } as CreateServiceOptions)) as IService;
   }
 
   async createUnifiedInfrastructureService(
@@ -674,10 +681,10 @@ export class ServiceManager extends EventEmitter {
     return (await this.infrastructureServiceFactory.createService(
       `${name}-unified-${configProfile}`,
       {
-        config,
+        config: config || undefined,
         autoStart: true,
         tags: ['unified-infrastructure', configProfile],
-      }
+      } as CreateServiceOptions
     )) as IService;
   }
 

@@ -9,7 +9,7 @@
 
 import { EventEmitter } from 'node:events';
 import type { ILogger } from '../../../core/logger';
-import type { IEventBus } from '../core/event-bus';
+import type { EventBusInterface as IEventBus } from '../../core/event-bus';
 
 // Core types for task distribution
 export interface TaskDefinition {
@@ -785,11 +785,10 @@ export class TaskDistributionEngine extends EventEmitter {
       network: Math.min(task.requirements.resourceRequirements.network, 1.0),
       storage: Math.min(task.requirements.resourceRequirements.storage, 1.0),
       priority: this.getPriorityWeight(task.priority),
+      ...(task.requirements.resourceRequirements.gpu !== undefined
+        ? { gpu: task.requirements.resourceRequirements.gpu }
+        : {}),
     };
-
-    if (task.requirements.resourceRequirements.gpu !== undefined) {
-      allocation.gpu = task.requirements.resourceRequirements.gpu;
-    }
 
     return allocation;
   }

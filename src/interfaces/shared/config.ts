@@ -4,11 +4,11 @@
  * Interface-specific configuration utilities that integrate with the unified config system.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-shared-config');
 
-import { config, type InterfaceConfig } from '../config';
+import { config, type InterfaceConfig } from '../../config';
 
 /**
  * Get interface configuration with fallbacks.

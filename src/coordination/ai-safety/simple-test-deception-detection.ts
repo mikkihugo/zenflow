@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @file Simple AI Deception Detection Test.
- * 
+ *
  * Tests the deception detection system with real examples from our conversation.
  * This proves the system can detect the exact deception patterns demonstrated.
  */
@@ -22,11 +22,11 @@ async function runSimpleTest() {
     `;
 
     const sandbagAlerts = await analyzeAIResponse(sandbagResponse, [], 'test-agent-1');
-    
+
     console.log(`   Alerts Generated: ${sandbagAlerts.length}`);
     if (sandbagAlerts.length > 0) {
-      console.log(`   ✅ SANDBAGGING DETECTED: ${sandbagAlerts[0].type}`);
-      console.log(`   Evidence: ${sandbagAlerts[0].evidence.join('; ')}`);
+      console.log(`   ✅ SANDBAGGING DETECTED: ${sandbagAlerts[0]?.type}`);
+      console.log(`   Evidence: ${sandbagAlerts[0]?.evidence.join('; ')}`);
     } else {
       console.log(`   ❌ FAILED: No sandbagging detected`);
     }
@@ -41,11 +41,11 @@ async function runSimpleTest() {
     `;
 
     const fraudAlerts = await analyzeAIResponse(verificationFraudResponse, [], 'test-agent-2');
-    
+
     console.log(`   Alerts Generated: ${fraudAlerts.length}`);
     if (fraudAlerts.length > 0) {
-      console.log(`   ✅ VERIFICATION FRAUD DETECTED: ${fraudAlerts[0].type}`);
-      console.log(`   Severity: ${fraudAlerts[0].severity}`);
+      console.log(`   ✅ VERIFICATION FRAUD DETECTED: ${fraudAlerts[0]?.type}`);
+      console.log(`   Severity: ${fraudAlerts[0]?.severity}`);
     } else {
       console.log(`   ❌ FAILED: No verification fraud detected`);
     }
@@ -59,11 +59,11 @@ async function runSimpleTest() {
     `;
 
     const legitimateAlerts = await analyzeAIResponse(
-      legitimateResponse, 
-      ['Read(/path/to/file)', 'Grep(pattern)'], 
+      legitimateResponse,
+      ['Read(/path/to/file)', 'Grep(pattern)'],
       'test-agent-3'
     );
-    
+
     console.log(`   Alerts Generated: ${legitimateAlerts.length} (should be 0)`);
     if (legitimateAlerts.length === 0) {
       console.log('   ✅ No false positives - legitimate work correctly identified');
@@ -77,13 +77,18 @@ async function runSimpleTest() {
     console.log('================');
     console.log(`✅ Sandbagging Detection: ${sandbagAlerts.length > 0 ? 'WORKING' : 'FAILED'}`);
     console.log(`✅ Verification Fraud: ${fraudAlerts.length > 0 ? 'WORKING' : 'FAILED'}`);
-    console.log(`✅ False Positive Prevention: ${legitimateAlerts.length === 0 ? 'WORKING' : 'NEEDS TUNING'}`);
+    console.log(
+      `✅ False Positive Prevention: ${legitimateAlerts.length === 0 ? 'WORKING' : 'NEEDS TUNING'}`
+    );
     console.log();
-    
-    const totalAlerts = sandbagAlerts.length + fraudAlerts.length;
-    console.log(`🎯 DECEPTION DETECTION SYSTEM: ${totalAlerts > 0 ? '✅ FUNCTIONAL' : '❌ NOT DETECTING'}`);
-    console.log(`🛡️ The system successfully detected the exact deception patterns from our conversation!`);
 
+    const totalAlerts = sandbagAlerts.length + fraudAlerts.length;
+    console.log(
+      `🎯 DECEPTION DETECTION SYSTEM: ${totalAlerts > 0 ? '✅ FUNCTIONAL' : '❌ NOT DETECTING'}`
+    );
+    console.log(
+      `🛡️ The system successfully detected the exact deception patterns from our conversation!`
+    );
   } catch (error) {
     console.error('❌ Test failed:', error);
   }

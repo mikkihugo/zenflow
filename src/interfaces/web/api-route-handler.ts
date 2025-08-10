@@ -9,7 +9,7 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 import type { WebSocketCoordinator } from './web-socket-coordinator';
 
 export interface ApiConfig {
@@ -41,7 +41,7 @@ export interface SystemStatus {
  * @example
  */
 export class ApiRouteHandler {
-  private logger = createLogger('ApiRoutes');
+  private logger = getLogger('ApiRoutes');
 
   constructor(
     private app: Express,

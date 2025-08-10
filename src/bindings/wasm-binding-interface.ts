@@ -2,14 +2,14 @@
  * @file Wasm-binding-interface implementation.
  */
 
+import { getLogger } from '../config/logging-config';
 import type {
   NeuralConfig,
   NeuralNetworkInterface,
   WasmNeuralBinding,
 } from '../core/interfaces/base-interfaces';
-import { createLogger } from '../core/logger';
 
-const logger = createLogger('src-bindings-wasm-binding-interface');
+const logger = getLogger('WasmBinding');
 
 /**
  * WASM binding interface contract.
@@ -18,7 +18,7 @@ const logger = createLogger('src-bindings-wasm-binding-interface');
  * @example
  */
 export interface WasmBindingInterface extends WasmNeuralBinding {
-  loadWasm(): Promise<any>;
+  loadWasm(): Promise<WebAssembly.Module | Record<string, unknown>>;
   isWasmAvailable(): boolean;
   getWasmCapabilities(): string[];
   createNeuralNetwork(config: NeuralConfig): Promise<NeuralNetworkInterface>;
@@ -31,9 +31,9 @@ export interface WasmBindingInterface extends WasmNeuralBinding {
  * @example
  */
 class WasmBindingProvider implements WasmBindingInterface {
-  private wasmModule: any = null;
+  private wasmModule: WebAssembly.Module | Record<string, unknown> | null = null;
 
-  async loadWasm(): Promise<any> {
+  async loadWasm(): Promise<WebAssembly.Module | Record<string, unknown>> {
     if (!this.wasmModule) {
       try {
         // Use public API instead of direct neural/wasm import

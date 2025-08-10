@@ -10,10 +10,17 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
 
+type ExporterFunction = {
+  name: string;
+  extension: string;
+  mimeType: string;
+  export: (data: unknown) => string;
+};
+
 export interface ExportResult {
   success: boolean;
   filePath?: string;
-  data?: any;
+  data?: unknown;
   error?: string;
   timestamp: number;
 }
@@ -22,11 +29,11 @@ export interface ExportConfig {
   format: 'json' | 'csv' | 'yaml' | 'xml' | 'markdown';
   outputPath?: string;
   fileName?: string;
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 }
 
 export class ExportSystem {
-  private exporters = new Map<string, any>();
+  private exporters = new Map<string, ExporterFunction>();
   private exportHistory: ExportResult[] = [];
 
   constructor() {
@@ -39,7 +46,7 @@ export class ExportSystem {
       name: 'JSON Exporter',
       extension: '.json',
       mimeType: 'application/json',
-      export: (data: any) => JSON.stringify(data, null, 2),
+      export: (data: unknown) => JSON.stringify(data, null, 2),
     });
 
     // CSV exporter
@@ -47,7 +54,7 @@ export class ExportSystem {
       name: 'CSV Exporter',
       extension: '.csv',
       mimeType: 'text/csv',
-      export: (data: any[]) => this.convertToCSV(data),
+      export: (data: unknown) => this.convertToCSV(data as any[]),
     });
 
     // YAML exporter
@@ -55,7 +62,7 @@ export class ExportSystem {
       name: 'YAML Exporter',
       extension: '.yaml',
       mimeType: 'application/x-yaml',
-      export: (data: any) => this.convertToYAML(data),
+      export: (data: unknown) => this.convertToYAML(data),
     });
 
     // XML exporter
@@ -63,7 +70,7 @@ export class ExportSystem {
       name: 'XML Exporter',
       extension: '.xml',
       mimeType: 'application/xml',
-      export: (data: any) => this.convertToXML(data),
+      export: (data: unknown) => this.convertToXML(data),
     });
 
     // Markdown exporter
@@ -71,11 +78,11 @@ export class ExportSystem {
       name: 'Markdown Exporter',
       extension: '.md',
       mimeType: 'text/markdown',
-      export: (data: any) => this.convertToMarkdown(data),
+      export: (data: unknown) => this.convertToMarkdown(data),
     });
   }
 
-  async exportData(data: any, config: ExportConfig): Promise<ExportResult> {
+  async exportData(data: unknown, config: ExportConfig): Promise<ExportResult> {
     const timestamp = Date.now();
 
     try {
@@ -128,7 +135,7 @@ export class ExportSystem {
     }
   }
 
-  public convertToCSV(data: any[]): string {
+  public convertToCSV(data: unknown[]): string {
     if (!Array.isArray(data) || data.length === 0) {
       return '';
     }
@@ -151,9 +158,9 @@ export class ExportSystem {
     return csvRows.join('\n');
   }
 
-  public convertToYAML(data: any): string {
+  public convertToYAML(data: unknown): string {
     // Simple YAML conversion - in production, use a proper YAML library
-    const yamlify = (obj: any, indent = 0): string => {
+    const yamlify = (obj: unknown, indent = 0): string => {
       const spaces = '  '.repeat(indent);
 
       if (obj === null || obj === undefined) {
@@ -188,8 +195,8 @@ export class ExportSystem {
     return yamlify(data);
   }
 
-  public convertToXML(data: any): string {
-    const xmlify = (obj: any, name = 'root'): string => {
+  public convertToXML(data: unknown): string {
+    const xmlify = (obj: unknown, name = 'root'): string => {
       if (obj === null || obj === undefined) {
         return `<${name}></${name}>`;
       }
@@ -216,8 +223,8 @@ export class ExportSystem {
       ${xmlify(data)}`;
   }
 
-  public convertToMarkdown(data: any): string {
-    const mdify = (obj: any, level = 1): string => {
+  public convertToMarkdown(data: unknown): string {
+    const mdify = (obj: unknown, level = 1): string => {
       if (obj === null || obj === undefined) {
         return '';
       }
@@ -274,7 +281,7 @@ export class ExportSystem {
     return Array.from(this.exporters.keys());
   }
 
-  getExporterInfo(format: string): any {
+  getExporterInfo(format: string): ExporterFunction | undefined {
     return this.exporters.get(format);
   }
 }
@@ -286,14 +293,14 @@ export const ExportUtils = {
    *
    * @param data
    */
-  toJSON: (data: any): string => JSON.stringify(data, null, 2),
+  toJSON: (data: unknown): string => JSON.stringify(data, null, 2),
 
   /**
    * Quick CSV export for arrays.
    *
    * @param data
    */
-  toCSV: (data: any[]): string => {
+  toCSV: (data: unknown[]): string => {
     const system = new ExportSystem();
     return system.convertToCSV(data);
   },
@@ -303,7 +310,7 @@ export const ExportUtils = {
    *
    * @param data
    */
-  toYAML: (data: any): string => {
+  toYAML: (data: unknown): string => {
     const system = new ExportSystem();
     return system.convertToYAML(data);
   },
@@ -313,7 +320,7 @@ export const ExportUtils = {
    *
    * @param data
    */
-  toXML: (data: any): string => {
+  toXML: (data: unknown): string => {
     const system = new ExportSystem();
     return system.convertToXML(data);
   },
@@ -323,7 +330,7 @@ export const ExportUtils = {
    *
    * @param data
    */
-  toMarkdown: (data: any): string => {
+  toMarkdown: (data: unknown): string => {
     const system = new ExportSystem();
     return system.convertToMarkdown(data);
   },

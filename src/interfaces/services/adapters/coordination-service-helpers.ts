@@ -9,11 +9,11 @@
  * @file Interface implementation: coordination-service-helpers.
  */
 
+import { getLogger } from '../../../config/logging-config';
 import type { SessionState } from '../../../coordination/swarm/core/session-manager';
 import type { SwarmAgent } from '../../../coordination/swarm/core/swarm-coordinator';
 import type { AgentType } from '../../../types/agent-types';
 import type { SwarmTopology } from '../../../types/shared-types';
-import { createLogger } from '../../../utils/logger';
 import type { CoordinationServiceAdapter } from './coordination-service-adapter';
 
 // ============================================
@@ -40,7 +40,7 @@ export async function createIntelligentAgent(
     learningEnabled?: boolean;
   }
 ): Promise<any> {
-  const logger = createLogger('CoordinationHelpers:Agent');
+  const logger = getLogger('CoordinationHelpers:Agent');
 
   logger.info(`Creating intelligent agent: ${config?.type}`);
 
@@ -103,7 +103,7 @@ export async function createAgentBatch(
     staggerDelay?: number;
   }
 ): Promise<any[]> {
-  const logger = createLogger('CoordinationHelpers:AgentBatch');
+  const logger = getLogger('CoordinationHelpers:AgentBatch');
   const maxConcurrency = options?.maxConcurrency || 5;
   const staggerDelay = options?.staggerDelay || 100;
 
@@ -171,7 +171,7 @@ export async function optimizeAgentPerformance(
     priority: 'low' | 'medium' | 'high';
   }>;
 }> {
-  const logger = createLogger('CoordinationHelpers:AgentOptimization');
+  const logger = getLogger('CoordinationHelpers:AgentOptimization');
 
   // Get agent metrics
   const metricsResult = await adapter.execute('agent-metrics');
@@ -260,7 +260,7 @@ export async function createManagedSession(
   sessionId: string;
   monitoringId: string;
 }> {
-  const logger = createLogger('CoordinationHelpers:Session');
+  const logger = getLogger('CoordinationHelpers:Session');
 
   logger.info(`Creating managed session: ${name}`);
 
@@ -334,7 +334,7 @@ export async function monitorSessionHealth(
   recovered: string[];
   failed: string[];
 }> {
-  const logger = createLogger('CoordinationHelpers:SessionHealth');
+  const logger = getLogger('CoordinationHelpers:SessionHealth');
 
   // Get all sessions if none specified
   let targetSessions: string[];
@@ -430,7 +430,7 @@ export async function coordinateIntelligentSwarm(
     throughput: number;
   };
 }> {
-  const logger = createLogger('CoordinationHelpers:IntelligentSwarm');
+  const logger = getLogger('CoordinationHelpers:IntelligentSwarm');
   const targetLatency = options?.targetLatency || 100; // ms
   const minSuccessRate = options?.minSuccessRate || 0.9;
   const adaptiveTopology = options?.adaptiveTopology ?? true;
@@ -549,7 +549,7 @@ export async function distributeSwarmTasks(
     [agentId: string]: number;
   };
 }> {
-  const logger = createLogger('CoordinationHelpers:TaskDistribution');
+  const logger = getLogger('CoordinationHelpers:TaskDistribution');
   const strategy = options?.strategy || 'capability-match';
   const maxTasksPerAgent = options?.maxTasksPerAgent || 10;
 
@@ -693,7 +693,7 @@ export async function analyzeCoordinationPerformance(
     optimalTopology: SwarmTopology;
   };
 }> {
-  const logger = createLogger('CoordinationHelpers:PerformanceAnalysis');
+  const logger = getLogger('CoordinationHelpers:PerformanceAnalysis');
 
   logger.info('Starting comprehensive coordination performance analysis');
 

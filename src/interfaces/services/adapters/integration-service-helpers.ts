@@ -9,10 +9,9 @@
  * @file Interface implementation: integration-service-helpers.
  */
 
+import { getLogger } from '../../../config/logging-config';
 import type { ArchitectureDesign } from '../../../types/shared-types';
-
 import type { APIResult } from '../../types/shared-types';
-import { createLogger } from '../utils/logger';
 import type {
   IntegrationServiceAdapter,
   IntegrationServiceAdapterConfig,
@@ -133,7 +132,7 @@ export class IntegrationServiceHelper {
   private logger: any;
 
   constructor(private adapter: IntegrationServiceAdapter) {
-    this.logger = createLogger(`IntegrationServiceHelper:${adapter.name}`);
+    this.logger = getLogger(`IntegrationServiceHelper:${adapter.name}`);
   }
 
   // ============================================

@@ -212,7 +212,7 @@ export class UACLValidator {
     try {
       const wsClient = await uacl.createWebSocketClient(
         'test-ws',
-        `${getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws')  }/ws`,
+        `${getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws')}/ws`,
         {
           enabled: false,
           priority: 1,

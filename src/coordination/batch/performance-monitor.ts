@@ -4,9 +4,19 @@
  * Implements claude-zen's performance monitoring patterns.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 
-const logger = createLogger({ prefix: 'BatchPerformanceMonitor' });
+const logger = getLogger('BatchPerformanceMonitor');
+
+export interface BatchExecutionSummary {
+  totalOperations: number;
+  totalExecutionTime: number;
+  averageExecutionTime: number;
+  successfulOperations: number;
+  failedOperations: number;
+  startTime: number;
+  endTime: number;
+}
 
 export interface PerformanceMetrics {
   executionMode: 'batch' | 'sequential';

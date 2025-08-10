@@ -8,11 +8,11 @@
  * @file System-resilience implementation.
  */
 
+import { getLogger } from '../config/logging-config';
 import { errorMonitor } from './error-monitoring';
 import { AgentError, SystemError, TimeoutError, WASMMemoryError } from './errors';
-import { createLogger } from './logger';
 
-const logger = createLogger({ prefix: 'SystemResilience' });
+const logger = getLogger('SystemResilience');
 
 // ===============================
 // Resource Management and Cleanup
@@ -20,7 +20,7 @@ const logger = createLogger({ prefix: 'SystemResilience' });
 
 /**
  * Represents a managed system resource with cleanup capabilities.
- * 
+ *
  * @interface ResourceHandle
  * @example
  * ```typescript
@@ -51,7 +51,7 @@ export interface ResourceHandle {
 
 /**
  * System resource limits configuration.
- * 
+ *
  * @interface ResourceLimits
  * @example
  * ```typescript
@@ -82,23 +82,23 @@ export interface ResourceLimits {
 
 /**
  * Manages system resources with automatic cleanup and limit enforcement.
- * 
+ *
  * Tracks resource allocation, enforces limits, and provides cleanup mechanisms
  * to prevent resource leaks and system exhaustion.
- * 
+ *
  * @class ResourceManager
  * @example
  * ```typescript
  * const manager = new ResourceManager({ maxMemoryMB: 1024 });
- * 
+ *
  * // Allocate a resource
  * const resourceId = await manager.allocateResource(
- *   'memory', 
- *   'my-component', 
+ *   'memory',
+ *   'my-component',
  *   1024 * 1024,
  *   async () => { await cleanup(); }
  * );
- * 
+ *
  * // Release the resource
  * await manager.releaseResource(resourceId);
  * ```
@@ -112,7 +112,7 @@ export class ResourceManager {
 
   /**
    * Creates a new ResourceManager instance.
-   * 
+   *
    * @param limits - Partial resource limits configuration.
    */
   constructor(limits: Partial<ResourceLimits> = {}) {
@@ -136,7 +136,7 @@ export class ResourceManager {
 
   /**
    * Allocates a new system resource with tracking and limits enforcement.
-   * 
+   *
    * @param type - Type of resource to allocate.
    * @param owner - Component or operation that owns the resource.
    * @param size - Size of resource in bytes (optional).
@@ -191,7 +191,7 @@ export class ResourceManager {
 
   /**
    * Releases a previously allocated resource and performs cleanup.
-   * 
+   *
    * @param resourceId - Unique identifier of resource to release.
    * @throws {SystemError} When resource cleanup fails.
    * @example
@@ -234,7 +234,7 @@ export class ResourceManager {
 
   /**
    * Releases all resources owned by a specific component or operation.
-   * 
+   *
    * @param owner - Owner identifier to release resources for.
    * @example
    * ```typescript
@@ -260,7 +260,7 @@ export class ResourceManager {
 
   /**
    * Enforces resource limits before allocation.
-   * 
+   *
    * @private
    * @param type - Type of resource to check limits for.
    * @param size - Size of resource in bytes (optional).
@@ -391,7 +391,7 @@ export class ResourceManager {
 
   /**
    * Gets current resource usage statistics.
-   * 
+   *
    * @returns Object containing resource statistics.
    * @example
    * ```typescript
@@ -429,10 +429,10 @@ export class ResourceManager {
 
   /**
    * Performs emergency cleanup of all resources.
-   * 
+   *
    * Used during system shutdown or emergency situations.
    * Attempts to release all resources regardless of individual failures.
-   * 
+   *
    * @example
    * ```typescript
    * await manager.emergencyCleanup();
@@ -454,7 +454,7 @@ export class ResourceManager {
 
   /**
    * Stops the resource manager and cleanup monitoring.
-   * 
+   *
    * @example
    * ```typescript
    * manager.stop();
@@ -474,7 +474,7 @@ export class ResourceManager {
 
 /**
  * Configuration for bulkhead pattern implementation.
- * 
+ *
  * @interface BulkheadConfig
  * @example
  * ```typescript
@@ -502,7 +502,7 @@ export interface BulkheadConfig {
 
 /**
  * Performance metrics for a bulkhead instance.
- * 
+ *
  * @interface BulkheadMetrics
  * @example
  * ```typescript
@@ -533,10 +533,10 @@ export interface BulkheadMetrics {
 
 /**
  * Bulkhead pattern implementation for isolating system resources.
- * 
+ *
  * Prevents cascading failures by limiting concurrent executions and
  * providing queuing with timeout and priority support.
- * 
+ *
  * @class Bulkhead
  * @example
  * ```typescript
@@ -547,7 +547,7 @@ export interface BulkheadMetrics {
  *   timeoutMs: 30000,
  *   priority: 7
  * });
- * 
+ *
  * const result = await bulkhead.execute(async () => {
  *   return await database.query('SELECT * FROM users');
  * }, 8); // higher priority
@@ -556,9 +556,9 @@ export interface BulkheadMetrics {
 export class Bulkhead {
   private currentExecutions: number = 0;
   private queue: Array<{
-    operation: () => Promise<any>;
-    resolve: (value: any) => void;
-    reject: (error: any) => void;
+    operation: () => Promise<unknown>;
+    resolve: (value: unknown) => void;
+    reject: (error: unknown) => void;
     enqueuedAt: number;
     priority: number;
   }> = [];
@@ -571,14 +571,14 @@ export class Bulkhead {
 
   /**
    * Creates a new Bulkhead instance.
-   * 
+   *
    * @param config - Bulkhead configuration.
    */
   constructor(private config: BulkheadConfig) {}
 
   /**
    * Executes an operation within the bulkhead's constraints.
-   * 
+   *
    * @template T
    * @param operation - Async operation to execute.
    * @param priority - Operation priority (defaults to bulkhead priority).
@@ -704,7 +704,7 @@ export class Bulkhead {
 
   /**
    * Gets current bulkhead performance metrics.
-   * 
+   *
    * @returns Bulkhead performance metrics.
    * @example
    * ```typescript
@@ -735,7 +735,7 @@ export class Bulkhead {
 
   /**
    * Drains the bulkhead by waiting for all operations to complete.
-   * 
+   *
    * @returns Promise that resolves when all operations are finished.
    * @example
    * ```typescript
@@ -757,10 +757,10 @@ export class Bulkhead {
 
 /**
  * Manages operation timeouts with automatic cleanup.
- * 
+ *
  * Provides timeout functionality for async operations with automatic
  * cleanup and tracking of active timeouts.
- * 
+ *
  * @class TimeoutManager
  * @example
  * ```typescript
@@ -777,7 +777,7 @@ export class TimeoutManager {
 
   /**
    * Executes an operation with a timeout.
-   * 
+   *
    * @template T
    * @param operation - Async operation to execute.
    * @param timeoutMs - Timeout in milliseconds.
@@ -836,9 +836,9 @@ export class TimeoutManager {
 
   /**
    * Clears all active timeouts.
-   * 
+   *
    * Used during emergency shutdown to prevent timeout callbacks.
-   * 
+   *
    * @example
    * ```typescript
    * TimeoutManager.clearAllTimeouts();
@@ -853,7 +853,7 @@ export class TimeoutManager {
 
   /**
    * Gets the number of active timeouts.
-   * 
+   *
    * @returns Number of currently active timeouts.
    * @example
    * ```typescript
@@ -872,7 +872,7 @@ export class TimeoutManager {
 
 /**
  * Configuration for error boundary implementation.
- * 
+ *
  * @interface ErrorBoundaryConfig
  * @example
  * ```typescript
@@ -904,10 +904,10 @@ export interface ErrorBoundaryConfig {
 
 /**
  * Error boundary implementation for containing and recovering from failures.
- * 
+ *
  * Tracks errors within a time window and triggers breach handling and
  * recovery procedures when error thresholds are exceeded.
- * 
+ *
  * @class ErrorBoundary
  * @example
  * ```typescript
@@ -922,7 +922,7 @@ export interface ErrorBoundaryConfig {
  *     return await reconnectDatabase();
  *   }
  * });
- * 
+ *
  * try {
  *   await boundary.execute(() => database.query('SELECT 1'));
  * } catch (error) {
@@ -937,14 +937,14 @@ export class ErrorBoundary {
 
   /**
    * Creates a new ErrorBoundary instance.
-   * 
+   *
    * @param config - Error boundary configuration.
    */
   constructor(private config: ErrorBoundaryConfig) {}
 
   /**
    * Executes an operation within the error boundary.
-   * 
+   *
    * @template T
    * @param operation - Async operation to execute.
    * @returns Promise resolving to operation result.
@@ -1005,7 +1005,7 @@ export class ErrorBoundary {
 
   /**
    * Attempts to recover the error boundary from breached state.
-   * 
+   *
    * @returns Promise resolving to true if recovery succeeded.
    * @example
    * ```typescript
@@ -1049,7 +1049,7 @@ export class ErrorBoundary {
 
   /**
    * Gets current error boundary status.
-   * 
+   *
    * @returns Error boundary status information.
    * @example
    * ```typescript
@@ -1077,9 +1077,9 @@ export class ErrorBoundary {
 
   /**
    * Resets the error boundary to initial state.
-   * 
+   *
    * Clears all error history and resets breach status.
-   * 
+   *
    * @example
    * ```typescript
    * boundary.reset();
@@ -1101,7 +1101,7 @@ export class ErrorBoundary {
 
 /**
  * Emergency shutdown procedure definition.
- * 
+ *
  * @interface EmergencyProcedure
  * @example
  * ```typescript
@@ -1128,22 +1128,22 @@ export interface EmergencyProcedure {
 
 /**
  * Emergency shutdown system with ordered procedure execution.
- * 
+ *
  * Manages emergency shutdown procedures with prioritized execution
  * and timeout handling for graceful system termination.
- * 
+ *
  * @class EmergencyShutdownSystem
  * @example
  * ```typescript
  * const shutdown = new EmergencyShutdownSystem();
- * 
+ *
  * shutdown.addProcedure({
  *   name: 'save-state',
  *   priority: 1,
  *   timeoutMs: 3000,
  *   procedure: async () => await saveApplicationState()
  * });
- * 
+ *
  * // Initiate emergency shutdown
  * await shutdown.initiateEmergencyShutdown('Critical system error');
  * ```
@@ -1154,7 +1154,7 @@ export class EmergencyShutdownSystem {
 
   /**
    * Adds an emergency procedure to the shutdown sequence.
-   * 
+   *
    * @param procedure - Emergency procedure to add.
    * @example
    * ```typescript
@@ -1218,10 +1218,10 @@ export class EmergencyShutdownSystem {
 
 /**
  * Main orchestrator for system resilience patterns.
- * 
+ *
  * Coordinates resource management, bulkheads, error boundaries, and
  * emergency shutdown procedures for comprehensive system resilience.
- * 
+ *
  * @class SystemResilienceOrchestrator
  * @example
  * ```typescript
@@ -1229,7 +1229,7 @@ export class EmergencyShutdownSystem {
  *   maxMemoryMB: 1024,
  *   maxAgents: 100
  * });
- * 
+ *
  * // Execute operation with resilience patterns
  * const result = await orchestrator.executeWithResilience(
  *   async () => await complexOperation(),
@@ -1250,7 +1250,7 @@ export class SystemResilienceOrchestrator {
 
   /**
    * Creates a new SystemResilienceOrchestrator instance.
-   * 
+   *
    * @param resourceLimits - Optional resource limits configuration.
    */
   constructor(resourceLimits?: Partial<ResourceLimits>) {
@@ -1397,7 +1397,7 @@ export class SystemResilienceOrchestrator {
 
   /**
    * Gets a bulkhead by name.
-   * 
+   *
    * @param name - Name of the bulkhead to retrieve.
    * @returns Bulkhead instance or undefined if not found.
    * @example
@@ -1414,7 +1414,7 @@ export class SystemResilienceOrchestrator {
 
   /**
    * Gets an error boundary by name.
-   * 
+   *
    * @param name - Name of the error boundary to retrieve.
    * @returns ErrorBoundary instance or undefined if not found.
    * @example
@@ -1431,7 +1431,7 @@ export class SystemResilienceOrchestrator {
 
   /**
    * Gets the resource manager instance.
-   * 
+   *
    * @returns ResourceManager instance.
    * @example
    * ```typescript
@@ -1445,7 +1445,7 @@ export class SystemResilienceOrchestrator {
 
   /**
    * Executes an operation with comprehensive resilience patterns.
-   * 
+   *
    * @template T
    * @param operation - Async operation to execute.
    * @param options.bulkhead - Name of bulkhead to use for execution isolation.
@@ -1511,7 +1511,7 @@ export class SystemResilienceOrchestrator {
 
   /**
    * Gets comprehensive system resilience status.
-   * 
+   *
    * @returns System status including all resilience components.
    * @example
    * ```typescript
@@ -1522,8 +1522,8 @@ export class SystemResilienceOrchestrator {
    */
   public getSystemStatus(): {
     bulkheads: Record<string, BulkheadMetrics>;
-    errorBoundaries: Record<string, any>;
-    resources: any;
+    errorBoundaries: Record<string, unknown>;
+    resources: unknown;
     activeTimeouts: number;
     emergencyShutdown: boolean;
   } {
@@ -1532,7 +1532,7 @@ export class SystemResilienceOrchestrator {
       bulkheadMetrics[name] = bulkhead.getMetrics();
     }
 
-    const errorBoundaryStatus: Record<string, any> = {};
+    const errorBoundaryStatus: Record<string, unknown> = {};
     for (const [name, boundary] of this.errorBoundaries.entries()) {
       errorBoundaryStatus[name] = boundary.getStatus();
     }
@@ -1548,7 +1548,7 @@ export class SystemResilienceOrchestrator {
 
   /**
    * Initiates emergency shutdown of the entire system.
-   * 
+   *
    * @param reason - Reason for emergency shutdown.
    * @example
    * ```typescript

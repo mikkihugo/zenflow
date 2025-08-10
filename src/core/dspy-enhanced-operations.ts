@@ -2,9 +2,9 @@
  * @file Dspy-enhanced-operations implementation.
  */
 
-import { createLogger } from './logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger({ prefix: 'DSPyOperations' });
+const logger = getLogger('DSPyOperations');
 
 export class DSPyEnhancedOperations {
   private dspyWrapper: DSPyWrapper;

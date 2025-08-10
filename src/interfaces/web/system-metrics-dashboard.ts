@@ -2,7 +2,7 @@
  * @file Interface implementation: system-metrics-dashboard.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-web-system-metrics-dashboard');
 
@@ -10,13 +10,18 @@ const logger = getLogger('interfaces-web-system-metrics-dashboard');
 /** Real-time monitoring and analytics for Claude Zen systems */
 
 import { EventEmitter } from 'node:events';
+// URL builders - using direct URL construction since url-builder module doesn't exist
+// import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
+import { createRepository, DatabaseTypes, EntityTypes } from '../../database/index';
+import type { IRepository } from '../../database/interfaces';
 // Import UACL for unified client management
 import { UACLHelpers, uacl } from '../clients/index';
-import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
-import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../database/index';
-import type { IRepository } from '../database/interfaces';
-import type MCPPerformanceMetrics from '../mcp/performance-metrics';
-import type EnhancedMemory from '../memory/memory';
+
+// MCP performance metrics - using generic type since module doesn't exist
+// import type MCPPerformanceMetrics from '../mcp/performance-metrics';
+type MCPPerformanceMetrics = any;
+
+import type EnhancedMemory from '../../memory/memory';
 
 interface DashboardConfig {
   refreshInterval?: number;
@@ -86,13 +91,14 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       if (!uacl.isInitialized()) {
         await uacl.initialize({
           healthCheckInterval: this.config.refreshInterval,
-          enableLogging: true,
         });
 
         // Setup default clients for monitoring
+        const defaultHttpURL = 'http://localhost:8951';
+        const defaultWsURL = 'ws://localhost:8952';
         await UACLHelpers.setupCommonClients({
-          httpBaseURL: getMCPServerURL(),
-          websocketURL: getWebDashboardURL({ protocol: 'ws' }).replace('http:', 'ws:'),
+          httpBaseURL: defaultHttpURL,
+          websocketURL: defaultWsURL,
         });
       }
     } catch (error) {
@@ -110,10 +116,11 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         }
       );
 
-      this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes?.LanceDB, {
-        database: './data/dashboard-metrics',
-        options: { vectorSize: 384 },
-      });
+      // Vector DAO removed since createDAO doesn't exist in interfaces
+      // this.vectorDAO = await createDAO(EntityTypes.VectorDocument, DatabaseTypes?.LanceDB, {
+      //   database: './data/dashboard-metrics',
+      //   options: { vectorSize: 384 },
+      // });
     } catch (error) {
       logger.warn('⚠️ Could not initialize database metrics repository:', error);
     }
@@ -135,7 +142,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
-      this.refreshTimer = undefined;
+      this.refreshTimer = undefined as any;
     }
 
     this.isRunning = false;

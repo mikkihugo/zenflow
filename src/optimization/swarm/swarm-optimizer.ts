@@ -6,7 +6,7 @@
  * @file Swarm-optimizer implementation.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type { SwarmOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface SwarmOptimizationConfig {
@@ -87,7 +87,7 @@ export interface ScalingStrategy {
 
 export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   private config: SwarmOptimizationConfig;
-  private logger = createLogger('SwarmCoordinationOptimizer');
+  private logger = getLogger('SwarmOptimizer');
 
   constructor(config: Partial<SwarmOptimizationConfig> = {}) {
     this.config = {

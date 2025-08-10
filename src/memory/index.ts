@@ -1,13 +1,19 @@
 /**
- * Memory Module - Enhanced Barrel Export.
+ * Memory Domain - Main Export Module
  *
- * Central export point for advanced memory management functionality.
- * Includes coordination, optimization, monitoring, and MCP integration.
+ * @file Central export point for all memory functionality including types,
+ * stores, backends, and API controllers. This module serves as the single source
+ * of truth for all memory operations and type definitions.
+ * 
+ * Following domain architecture standard with consolidated types.
  */
 
-// Core memory functionality
+// Export all memory types (Single Source of Truth)
+export * from './types';
+
 /**
- * @file Memory module exports.
+ * @deprecated Legacy export structure - use domain types instead
+ * @file Memory module legacy exports.
  */
 
 export * from './backends/base-backend';
@@ -83,7 +89,7 @@ export class MemorySystemFactory {
     coordination?: MemoryCoordinationConfig;
     optimization?: OptimizationConfig;
     monitoring?: MonitoringConfig;
-    backends?: Array<{ id: string; type: string; config: any }>;
+    backends?: Array<{ id: string; type: string; config: Record<string, unknown> }>;
   }) {
     // Import directly from source modules instead of circular self-import
     const { MemoryCoordinator } = await import('./core/memory-coordinator');
@@ -107,7 +113,7 @@ export class MemorySystemFactory {
     if (config?.['backends']) {
       for (const backendConfig of config?.['backends']) {
         const backend = await MemoryBackendFactory.createBackend(
-          backendConfig?.type as any,
+          backendConfig?.type as 'sqlite' | 'json' | 'lancedb' | 'memory',
           backendConfig?.config
         );
         await backend.initialize();
@@ -173,7 +179,7 @@ export class MemorySystemFactory {
           size: backends.size,
           lastModified: Date.now(),
           namespaces: 1,
-        } as any; // Allow flexible return type
+        } as MemoryStats; // Properly typed return
       },
     };
   }
@@ -183,7 +189,9 @@ export class MemorySystemFactory {
    *
    * @param backends
    */
-  static async createBasicMemorySystem(backends: Array<{ id: string; type: string; config: any }>) {
+  static async createBasicMemorySystem(
+    backends: Array<{ id: string; type: string; config: Record<string, unknown> }>
+  ) {
     return MemorySystemFactory.createAdvancedMemorySystem({
       backends,
       coordination: {

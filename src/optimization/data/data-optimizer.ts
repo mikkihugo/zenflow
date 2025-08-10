@@ -6,7 +6,7 @@
  * @file Data-optimizer implementation.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type { DataOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface DataOptimizationConfig {
@@ -95,7 +95,7 @@ export interface CompressionResult {
 export class DataPerformanceOptimizer implements DataOptimizer {
   private config: DataOptimizationConfig;
   private queryCache: Map<string, any> = new Map();
-  private logger = createLogger('DataPerformanceOptimizer');
+  private logger = getLogger('DataPerformanceOptimizer');
 
   constructor(config: Partial<DataOptimizationConfig> = {}) {
     this.config = {

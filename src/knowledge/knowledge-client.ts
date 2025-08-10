@@ -2,7 +2,7 @@
  * @file Knowledge-client implementation.
  */
 
-import { getLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-knowledge-knowledge-client');
 
@@ -74,6 +74,7 @@ export class FACTIntegration extends EventEmitter {
   private config: FACTConfig;
   private factProcess: ChildProcess | null = null;
   private isInitialized = false;
+  private queryCounter = 0;
   private pendingQueries = new Map<
     string,
     {

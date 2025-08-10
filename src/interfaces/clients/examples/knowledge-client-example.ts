@@ -14,6 +14,7 @@
  * @file Interface implementation: knowledge-client-example.
  */
 
+import { getConfig } from '../../config';
 import {
   createFACTClient,
   type KnowledgeClientAdapter,
@@ -21,7 +22,6 @@ import {
   type KnowledgeRequest,
   type KnowledgeResponse,
 } from '../adapters/knowledge-client-adapter';
-import { getConfig } from '../config';
 import { UACLFactory } from '../factories';
 
 /**

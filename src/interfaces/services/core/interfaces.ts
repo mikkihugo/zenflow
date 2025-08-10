@@ -77,7 +77,7 @@ export interface ServiceAuthConfig {
   };
 
   /** Custom authentication handler function */
-  customAuth?: (context: any) => Promise<boolean>;
+  customAuth?: (context: Record<string, unknown>) => Promise<boolean>;
 }
 
 /**
@@ -90,7 +90,7 @@ export interface ServiceRetryConfig {
   delay: number;
   backoff: 'linear' | 'exponential' | 'fixed';
   maxDelay?: number;
-  retryCondition?: (error: any) => boolean;
+  retryCondition?: (error: Error) => boolean;
 }
 
 /**
@@ -265,7 +265,7 @@ export interface ServiceOperationResponse<T = any> {
   error?: {
     code: string;
     message: string;
-    details?: any;
+    details?: Record<string, unknown>;
     stack?: string;
   };
   metadata?: {
@@ -299,7 +299,7 @@ export interface ServiceEvent {
   type: ServiceEventType;
   serviceName: string;
   timestamp: Date;
-  data?: any;
+  data?: unknown;
   error?: Error;
 }
 
@@ -500,7 +500,7 @@ export interface IService {
    * @param error Optional error object.
    * @example service.emit('error', null, new Error('Something went wrong'));
    */
-  emit(event: ServiceEventType, data?: any, error?: Error): void;
+  emit(event: ServiceEventType, data?: unknown, error?: Error): void;
 
   // Dependency management
   addDependency(dependency: ServiceDependencyConfig): Promise<void>;

@@ -8,6 +8,7 @@
  * @file Error-system-integration implementation.
  */
 
+import { getLogger } from '../config/logging-config';
 import { mcpErrorHandler } from '../coordination/swarm/mcp/error-handler';
 import { errorMonitor } from './error-monitoring';
 import { errorRecoveryOrchestrator } from './error-recovery';
@@ -21,10 +22,9 @@ import {
   SystemError,
   WASMError,
 } from './errors';
-import { createLogger } from './logger';
 import { systemResilienceOrchestrator } from './system-resilience';
 
-const logger = createLogger({ prefix: 'ErrorSystemIntegration' });
+const logger = getLogger('ErrorSystemIntegration');
 
 // ===============================
 // Central Error Handler

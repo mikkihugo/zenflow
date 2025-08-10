@@ -1,9 +1,7 @@
-#!/usr/bin/env nodeimport { getLogger } from "./config/logging-config";
+#!/usr/bin/env node
 /**
  * @file Sparc-pseudocode-cli implementation.
  */
-
-const logger = getLogger('sparc-pseudocode-cli');
 
 /**
  * Simple standalone CLI test for SPARC Pseudocode Engine.
@@ -12,7 +10,9 @@ const logger = getLogger('sparc-pseudocode-cli');
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import type { getLogger } from './core/logger';
+import { getLogger } from './config/logging-config';
+
+const logger = getLogger('sparc-pseudocode-cli');
 
 const program = new Command();
 
@@ -82,15 +82,15 @@ program
       const validation = await engine.validatePseudocode(pseudocodeStructure);
 
       if (validation.logicErrors.length > 0) {
-        validation.logicErrors.forEach((_error, _index) => {});
+        validation.logicErrors.forEach((_error: unknown, _index: number) => {});
       }
 
       if (validation.optimizationSuggestions.length > 0) {
-        validation.optimizationSuggestions.forEach((_suggestion, _index) => {});
+        validation.optimizationSuggestions.forEach((_suggestion: unknown, _index: number) => {});
       }
 
       if (validation.recommendations.length > 0) {
-        validation.recommendations.forEach((_rec, _index) => {});
+        validation.recommendations.forEach((_rec: unknown, _index: number) => {});
       }
 
       // Exit with appropriate code

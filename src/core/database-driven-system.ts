@@ -11,7 +11,7 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import type { DocumentManager } from '../database/managers/document-manager';
+import { getLogger } from '../config/logging-config';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -22,11 +22,54 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../database/entities/product-entities';
+import type { DocumentManager } from '../database/managers/document-manager';
 import type { DocumentType } from '../types/workflow-types';
-import type { WorkflowEngine } from '../workflows/engine';
-import { createLogger } from './logger';
+import type { WorkflowEngine } from './workflow-engine';
 
-const logger = createLogger('DatabaseDriven');
+const logger = getLogger('DatabaseDriven');
+
+// Event payload types
+interface DocumentProcessedEvent {
+  document: {
+    type: string;
+    title: string;
+    id: string;
+    content?: string;
+  };
+  workspaceId: string;
+}
+
+interface WorkspaceCreatedEvent {
+  workspaceId: string;
+  projectId: string;
+  project: {
+    id: string;
+    name: string;
+    spec: Record<string, unknown>; // ProjectSpecification type from imports
+  };
+}
+
+interface WorkspaceLoadedEvent {
+  workspaceId: string;
+  documentCount: number;
+  projectId?: string;
+}
+
+interface VisionSpecification {
+  title: string;
+  businessObjectives: string[];
+  successCriteria: string[];
+  stakeholders: string[];
+  timeline?: {
+    start_date?: Date;
+    target_completion?: Date;
+    milestones?: Array<{
+      name: string;
+      date: Date;
+      description: string;
+    }>;
+  };
+}
 
 export interface DatabaseWorkspaceContext {
   workspaceId: string;
@@ -228,8 +271,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     if (options?.startWorkflows !== false) {
       const workflowIds = await this.workflowEngine.processDocumentEvent(
         'document:created',
-        document,
-        { workspaceId }
+        document
       );
 
       if (workflowIds.length > 0) {
@@ -255,8 +297,8 @@ export class DatabaseDrivenSystem extends EventEmitter {
    * @param visionSpec.successCriteria
    * @param visionSpec.stakeholders
    * @param visionSpec.timeline
-   * @param visionSpec.timeline.startDate
-   * @param visionSpec.timeline.targetCompletion
+   * @param visionSpec.timeline.start_date
+   * @param visionSpec.timeline.target_completion
    * @param visionSpec.timeline.milestones
    * @param options
    */
@@ -268,8 +310,8 @@ export class DatabaseDrivenSystem extends EventEmitter {
       successCriteria: string[];
       stakeholders: string[];
       timeline?: {
-        startDate?: Date;
-        targetCompletion?: Date;
+        start_date?: Date;
+        target_completion?: Date;
         milestones?: Array<{
           name: string;
           date: Date;
@@ -293,7 +335,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
       author: 'database-driven-system',
       tags: ['vision', 'strategic'],
       project_id: context.projectId,
-      parent_document_id: undefined as string | undefined,
+      parent_document_id: undefined,
       dependencies: [],
       related_documents: [],
       version: '1.0.0',
@@ -306,10 +348,8 @@ export class DatabaseDrivenSystem extends EventEmitter {
       success_criteria: visionSpec.successCriteria,
       stakeholders: visionSpec.stakeholders,
       timeline: {
-        ...(visionSpec.timeline?.startDate && { start_date: visionSpec.timeline.startDate }),
-        ...(visionSpec.timeline?.targetCompletion && {
-          target_completion: visionSpec.timeline.targetCompletion,
-        }),
+        start_date: visionSpec.timeline?.start_date,
+        target_completion: visionSpec.timeline?.target_completion,
         milestones: visionSpec.timeline?.milestones || [],
       },
       generated_adrs: [],
@@ -449,7 +489,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
     return {
       workspace: context,
-      project,
+      project: project as unknown as ProductProjectEntity,
       documents: {
         total: allDocs.length,
         byType: docsByType,
@@ -517,15 +557,15 @@ export class DatabaseDrivenSystem extends EventEmitter {
     this.on('workspace:loaded', this.handleWorkspaceLoaded.bind(this));
   }
 
-  private async handleDocumentProcessed(event: any): Promise<void> {
+  private async handleDocumentProcessed(event: DocumentProcessedEvent): Promise<void> {
     logger.debug(`Document processed: ${event.document.type} - ${event.document.title}`);
   }
 
-  private async handleWorkspaceCreated(event: any): Promise<void> {
+  private async handleWorkspaceCreated(event: WorkspaceCreatedEvent): Promise<void> {
     logger.debug(`Workspace created: ${event.workspaceId}`);
   }
 
-  private async handleWorkspaceLoaded(event: any): Promise<void> {
+  private async handleWorkspaceLoaded(event: WorkspaceLoadedEvent): Promise<void> {
     logger.debug(`Workspace loaded: ${event.workspaceId} (${event.documentCount} documents)`);
   }
 
@@ -541,7 +581,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     return nextSteps[documentType] || [];
   }
 
-  private generateVisionContent(spec: any): string {
+  private generateVisionContent(spec: VisionSpecification): string {
     return `# ${spec.title}
 
 ## Business Objectives
@@ -557,11 +597,11 @@ ${spec.stakeholders.map((sh: string) => `- ${sh}`).join('\n')}
 ${
   spec.timeline
     ? `
-Start Date: ${spec.timeline.startDate?.toISOString().split('T')[0] || 'TBD'}
-Target Completion: ${spec.timeline.targetCompletion?.toISOString().split('T')[0] || 'TBD'}
+Start Date: ${spec.timeline.start_date?.toISOString().split('T')[0] || 'TBD'}
+Target Completion: ${spec.timeline.target_completion?.toISOString().split('T')[0] || 'TBD'}
 
 ### Milestones
-${spec.timeline.milestones?.map((m: any) => `- **${m.name}** (${m.date.toISOString().split('T')[0]}): ${m.description}`).join('\n') || 'No milestones defined'}
+${spec.timeline.milestones?.map((m: { name: string; date: Date; description: string }) => `- **${m.name}** (${m.date.toISOString().split('T')[0]}): ${m.description}`).join('\n') || 'No milestones defined'}
 `
     : 'Timeline to be determined'
 }

@@ -9,8 +9,8 @@
 
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
+import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { ILogger } from '../../../core/interfaces/base-interfaces';
 
 // Core coordination types
 export interface CoordinationNode {

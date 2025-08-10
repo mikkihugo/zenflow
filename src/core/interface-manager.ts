@@ -21,10 +21,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { config } from '../config';
-import { createLogger } from './logger';
+import { config } from '../../config';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger('InterfaceManager');
+const logger = getLogger('InterfaceManager');
 
 /**
  * Interface mode types.

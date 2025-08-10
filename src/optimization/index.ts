@@ -1,9 +1,19 @@
 /**
- * Performance Optimization System.
- * Comprehensive performance optimization across all system components.
+ * Optimization Domain - Main Export Module
+ *
+ * @file Central export point for all optimization functionality including types,
+ * performance optimization, neural optimization, and WASM acceleration. This module 
+ * serves as the single source of truth for all optimization operations and type definitions.
+ * 
+ * Following domain architecture standard with consolidated types.
  */
+
+// Export all optimization types (Single Source of Truth)
+export * from './types';
+
 /**
- * @file Optimization module exports.
+ * @deprecated Legacy export structure - use domain types instead
+ * @file Optimization module legacy exports.
  */
 
 export * from './benchmarks/performance-benchmarks';

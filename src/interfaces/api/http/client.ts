@@ -9,14 +9,14 @@
  */
 
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
-import { getMCPServerURL } from '../config/url-builder';
+import { getMCPServerURL } from '../../../config/defaults.js';
 import type {
   Agent,
   HealthStatus,
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../coordination/schemas';
+} from '../../../coordination/schemas.js';
 import type { APIError } from './schemas/common';
 import type {
   NeuralNetwork,
@@ -93,7 +93,7 @@ export class APIClient {
   private createHttpClient(): AxiosInstance {
     const client = axios.create({
       baseURL: this.config.baseURL,
-      timeout: this.config.timeout,
+      ...(this.config.timeout !== undefined && { timeout: this.config.timeout }),
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -193,9 +193,9 @@ export class APIClient {
     const config: AxiosRequestConfig = {
       method,
       url: endpoint,
-      data,
-      timeout: options?.timeout,
-      headers: options?.headers,
+      ...(data !== undefined && { data }),
+      ...(options?.timeout !== undefined && { timeout: options.timeout }),
+      ...(options?.headers !== undefined && { headers: options.headers }),
     };
 
     const response: AxiosResponse<T> = await this.http.request(config);

@@ -2,7 +2,7 @@
  * @file Coordination system: performance-tracker.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('coordination-hooks-performance-tracker');
 
@@ -11,7 +11,7 @@ const logger = getLogger('coordination-hooks-performance-tracker');
  * Tracks operation performance, collects metrics, and provides optimization suggestions.
  */
 
-import type { AgentType } from '../types/agent-types';
+import type { AgentType } from '../types';
 import type {
   AgentPerformanceSummary,
   Bottleneck,
@@ -54,13 +54,13 @@ export class HookPerformanceTracker implements MetricsTracker {
     const metrics: OperationMetrics = {
       operationId: operation.id,
       type: operation.type,
-      startTime: result?.startTime,
-      endTime: result?.endTime,
-      duration: result?.endTime?.getTime() - result?.startTime?.getTime(),
-      success: result?.success,
-      resourceUsage: result?.resourceUsage,
-      ...(result?.error?.type && { errorType: result?.error?.type }),
-      ...(result?.agentMetrics && { agentPerformance: result?.agentMetrics }),
+      startTime: result?.startTime!,
+      endTime: result?.endTime!,
+      duration: result?.endTime!.getTime() - result?.startTime!.getTime(),
+      success: result?.success!,
+      resourceUsage: result?.resourceUsage!,
+      ...(result?.error?.type ? { errorType: result.error.type } : {}),
+      ...(result?.agentMetrics ? { agentPerformance: result.agentMetrics } : {}),
       qualityScore: await this.calculateQualityScore(operation, result),
       userSatisfaction: await this.estimateUserSatisfaction(operation, result),
     };

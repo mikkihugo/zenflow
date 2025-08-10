@@ -2,7 +2,7 @@
  * @file Interface implementation: websocket-client-factory.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-clients-adapters-websocket-client-factory');
 
@@ -13,7 +13,13 @@ const logger = getLogger('interfaces-clients-adapters-websocket-client-factory')
  * Following the UACL (Unified API Client Layer) architecture.
  */
 
-import type { ClientMetrics, ClientStatus, IClient, IClientFactory } from '../core/interfaces';
+import type {
+  ClientConfig,
+  ClientMetrics,
+  ClientStatus,
+  IClient,
+  IClientFactory,
+} from '../core/interfaces';
 import { EnhancedWebSocketClient } from './enhanced-websocket-client';
 import { createWebSocketClient, WebSocketClientAdapter } from './websocket-client-adapter';
 
@@ -47,12 +53,14 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     // Create client based on configuration preference
     let client: IClient;
 
-    if (config?.metadata?.clientType === 'enhanced') {
+    if (config?.metadata?.['clientType'] === 'enhanced') {
       // Use enhanced client with backward compatibility
       client = new EnhancedWebSocketClient(config);
     } else {
       // Use pure UACL adapter
-      client = new WebSocketClientAdapter(config);
+      client = new WebSocketClientAdapter(
+        config as import('./websocket-client-adapter').WebSocketClientConfig
+      );
     }
 
     // Initialize connection
@@ -431,8 +439,8 @@ export class LoadBalancedWebSocketClient implements IClient {
     }
   }
 
-  get config() {
-    return this.clients[0]?.config;
+  get config(): ClientConfig {
+    return this.clients[0]?.config as ClientConfig;
   }
 
   get name() {
@@ -546,7 +554,7 @@ export class LoadBalancedWebSocketClient implements IClient {
     this.clients.forEach((client) => client.updateConfig(config));
   }
 
-  on(event: string, handler: (...args: any[]) => void): void {
+  on(event: 'connect' | 'disconnect' | 'error' | 'retry', handler: (...args: any[]) => void): void {
     this.clients.forEach((client) => client.on(event, handler));
   }
 
@@ -563,20 +571,20 @@ export class LoadBalancedWebSocketClient implements IClient {
       case 'round-robin': {
         const client = this.clients[this.currentIndex];
         this.currentIndex = (this.currentIndex + 1) % this.clients.length;
-        return client;
+        return client!;
       }
 
       case 'random': {
         const randomIndex = Math.floor(Math.random() * this.clients.length);
-        return this.clients[randomIndex];
+        return this.clients[randomIndex]!;
       }
 
       case 'least-connections':
         // Simple implementation - could be enhanced with actual connection tracking
-        return this.clients[0];
+        return this.clients[0]!;
 
       default:
-        return this.clients[0];
+        return this.clients[0]!;
     }
   }
 }
@@ -650,7 +658,7 @@ export class FailoverWebSocketClient implements IClient {
     this.currentClient.updateConfig(config);
   }
 
-  on(event: string, handler: (...args: any[]) => void): void {
+  on(event: 'connect' | 'disconnect' | 'error' | 'retry', handler: (...args: any[]) => void): void {
     this.currentClient.on(event, handler);
   }
 
@@ -666,7 +674,7 @@ export class FailoverWebSocketClient implements IClient {
   private async failover(): Promise<void> {
     if (this.fallbackIndex < this.fallbackClients.length) {
       logger.info(`Failing over to client ${this.fallbackIndex}`);
-      this.currentClient = this.fallbackClients[this.fallbackIndex];
+      this.currentClient = this.fallbackClients[this.fallbackIndex]!;
       this.fallbackIndex++;
 
       try {

@@ -11,22 +11,22 @@
  * @file Interface implementation: api-client-wrapper.
  */
 
-import { HTTPClientAdapter } from '../adapters/http-client-adapter';
-import type { HTTPClientConfig } from '../adapters/http-types';
-import type {
-  NeuralNetwork,
-  PredictionRequest,
-  PredictionResponse,
-  TrainingRequest,
-} from '../api/http/schemas/neural';
-import { getMCPServerURL } from '../config/url-builder';
+import { getMCPServerURL } from '../../../config/index';
 import type {
   Agent,
   HealthStatus,
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../coordination/schemas';
+} from '../../../coordination/schemas';
+import type {
+  NeuralNetwork,
+  PredictionRequest,
+  PredictionResponse,
+  TrainingRequest,
+} from '../../api/http/schemas/neural';
+import { HTTPClientAdapter } from '../adapters/http-client-adapter';
+import type { HTTPClientConfig } from '../adapters/http-types';
 
 /**
  * Legacy API Client Configuration (maintained for compatibility).
@@ -97,8 +97,8 @@ export class APIClient {
     const uaclConfig: HTTPClientConfig = {
       name: 'api-client',
       baseURL: this.config.baseURL,
-      timeout: this.config.timeout,
-      headers: this.config.headers,
+      timeout: this.config.timeout ?? undefined,
+      headers: this.config.headers ?? undefined,
 
       // Convert authentication
       authentication: this.createAuthConfig(),
@@ -170,9 +170,9 @@ export class APIClient {
     options?: RequestOptions
   ): Promise<T> {
     const uaclOptions = {
-      timeout: options?.timeout,
-      headers: options?.headers,
-      retries: options?.retries,
+      timeout: options?.timeout ?? undefined,
+      headers: options?.headers ?? undefined,
+      retries: options?.retries ?? undefined,
     };
 
     let response;

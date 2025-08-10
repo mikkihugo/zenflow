@@ -3,7 +3,7 @@
  * Comprehensive MCP tools for advanced database coordination and management.
  */
 
-import { getLogger } from '../../utils/logger';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('database-mcp-database-tools');
 

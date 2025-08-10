@@ -17,8 +17,8 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import { createLogger } from '../../core/logger';
-import type { MemorySystem } from '../core/memory-system';
+import { getLogger } from '../../config/logging-config';
+import type { MemorySystem } from '../../core/memory-system';
 import type {
   ADRDocumentEntity,
   EpicDocumentEntity,
@@ -26,30 +26,90 @@ import type {
   PRDDocumentEntity,
   TaskDocumentEntity,
   VisionDocumentEntity,
-} from '../database/entities/product-entities';
-import type { DocumentManager } from '../database/managers/document-manager';
+} from '../../database/entities/product-entities';
+import type { DocumentManager } from '../../database/managers/document-manager';
+import type {
+  StepExecutionResult,
+  WorkflowContext,
+  WorkflowData,
+  WorkflowDefinition,
+  WorkflowEngineConfig,
+  WorkflowState,
+} from '../../workflows/types';
+import type {
+  WorkflowGateRequest,
+  WorkflowGateResult,
+  WorkflowContext as GateWorkflowContext,
+  GateEscalationLevel
+} from '../workflows/workflow-gate-request';
+import { 
+  WorkflowAGUIAdapter,
+  type WorkflowAGUIConfig 
+} from '../../interfaces/agui/workflow-agui-adapter';
+import type {
+  WorkflowHumanGate,
+  WorkflowHumanGateType,
+  WorkflowGatePriority,
+  WorkflowGateContext,
+  WorkflowGateData
+} from './workflow-gates';
+import { TypeSafeEventBus } from '../../core/type-safe-event-system';
 import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine';
 import type {
   ProjectSpecification,
   SPARCPhase,
   SPARCProject,
 } from '../swarm/sparc/types/sparc-types';
-import type {
-  CompletedStepInfo,
-  StepExecutionResult,
-  WorkflowContext,
-  WorkflowData,
-  WorkflowDefinition,
-  WorkflowEngineConfig,
-  WorkflowError,
-  WorkflowExecutionOptions,
-  WorkflowMetrics,
-  WorkflowStatus,
-  WorkflowStepResults,
-  WorkflowStepState,
-} from '../types/workflow-types';
 
-const logger = createLogger({ prefix: 'ProductWorkflow' });
+// Define missing types locally
+type WorkflowStatus = 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
+
+interface CompletedStepInfo {
+  index: number;
+  step: WorkflowStep;
+  result: any;
+  duration: number;
+  timestamp: string;
+}
+
+interface WorkflowError {
+  code: string;
+  message: string;
+  recoverable: boolean;
+}
+
+interface WorkflowExecutionOptions {
+  dryRun?: boolean;
+  timeout?: number;
+  maxConcurrency?: number;
+}
+
+interface WorkflowMetrics {
+  totalDuration: number;
+  avgStepDuration: number;
+  successRate: number;
+  retryRate: number;
+  resourceUsage: {
+    cpuTime: number;
+    memoryPeak: number;
+    diskIo: number;
+    networkRequests: number;
+  };
+  throughput: number;
+}
+
+type WorkflowStepResults = Record<string, StepExecutionResult | any>;
+
+interface WorkflowStepState {
+  step: WorkflowStep;
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'skipped';
+  attempts: number;
+}
+
+// Import WorkflowStep from workflow-types
+import type { WorkflowStep } from '../../workflows/types';
+
+const logger = getLogger('ProductWorkflow');
 
 /**
  * Product Flow Step Types (Business Flow).
@@ -125,6 +185,11 @@ export interface ProductWorkflowConfig extends WorkflowEngineConfig {
   sparcDomainMapping: Record<string, string>; // feature type -> SPARC domain
   autoTriggerSPARC: boolean;
   sparcQualityGates: boolean;
+  templatesPath?: string;
+  outputPath?: string;
+  enablePersistence?: boolean;
+  maxConcurrentWorkflows?: number;
+  storageBackend?: { type: string; config: any };
 }
 
 /**
@@ -146,16 +211,40 @@ export class ProductWorkflowEngine extends EventEmitter {
     (context: WorkflowContext, params: WorkflowData) => Promise<StepExecutionResult>
   >();
   private config: ProductWorkflowConfig;
+  private aguiAdapter: WorkflowAGUIAdapter;
+  private pendingGates = new Map<string, WorkflowGateRequest>();
+  private gateDefinitions = new Map<string, WorkflowHumanGate>();
+  private eventBus: TypeSafeEventBus;
 
   constructor(
     memory: MemorySystem,
     documentService: DocumentManager,
+    eventBus: TypeSafeEventBus,
+    aguiAdapter?: WorkflowAGUIAdapter,
     config: Partial<ProductWorkflowConfig> = {}
   ) {
     super();
     this.memory = memory;
     this.documentService = documentService;
+    this.eventBus = eventBus;
     this.sparcEngine = new SPARCEngineCore();
+    
+    // Initialize AGUI adapter with default config if not provided
+    this.aguiAdapter = aguiAdapter || new WorkflowAGUIAdapter(eventBus, {
+      enableRichPrompts: true,
+      enableDecisionLogging: true,
+      enableTimeoutHandling: true,
+      enableEscalationManagement: true,
+      auditRetentionDays: 90,
+      maxAuditRecords: 10000,
+      timeoutConfig: {
+        initialTimeout: 300000, // 5 minutes
+        escalationTimeouts: [600000, 1200000, 1800000], // 10, 20, 30 minutes
+        maxTotalTimeout: 3600000, // 1 hour
+        enableAutoEscalation: true,
+        notifyOnTimeout: true
+      }
+    });
     this.config = {
       enableSPARCIntegration: true,
       sparcDomainMapping: {
@@ -167,7 +256,6 @@ export class ProductWorkflowEngine extends EventEmitter {
       },
       autoTriggerSPARC: true,
       sparcQualityGates: true,
-      workspaceRoot: './',
       templatesPath: './templates',
       outputPath: './output',
       maxConcurrentWorkflows: 10,
@@ -181,6 +269,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     this.registerProductFlowHandlers();
     this.registerSPARCIntegrationHandlers();
     this.registerProductWorkflowDefinitions();
+    this.initializeGateDefinitions();
   }
 
   async initialize(): Promise<void> {
@@ -244,7 +333,9 @@ export class ProductWorkflowEngine extends EventEmitter {
         canAccessResources: ['*'],
       },
       ...context,
-      ...(context.currentDocument !== undefined && { currentDocument: context.currentDocument }),
+      ...(context.currentDocument !== undefined
+        ? { currentDocument: context.currentDocument }
+        : {}),
     };
 
     // Create enhanced workflow state with Product Flow + SPARC integration
@@ -459,6 +550,21 @@ export class ProductWorkflowEngine extends EventEmitter {
    */
   private async integrateSPARCForFeatures(workflow: ProductWorkflowState): Promise<void> {
     logger.info('🔧 Integrating SPARC methodology for feature implementation');
+    
+    // Check for gate before SPARC integration
+    const shouldOpenGate = await this.shouldExecuteGate('sparc-integration', workflow);
+    if (shouldOpenGate) {
+      const gateResult = await this.executeWorkflowGate('sparc-integration', workflow, {
+        question: 'Should we proceed with SPARC methodology integration for technical implementation?',
+        businessImpact: 'critical',
+        stakeholders: ['technical-lead', 'architect', 'product-manager'],
+        gateType: 'approval'
+      });
+      
+      if (!gateResult.approved) {
+        throw new Error('SPARC integration gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+      }
+    }
 
     for (const feature of workflow.productFlow.documents.features) {
       // Only create SPARC projects for features that need technical implementation
@@ -629,23 +735,87 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   // Placeholder implementations for Product Flow steps
-  private async executeVisionAnalysis(_workflow: ProductWorkflowState): Promise<void> {
+  private async executeVisionAnalysis(workflow: ProductWorkflowState): Promise<void> {
     logger.info('📄 Analyzing vision document for requirements extraction');
+    
+    // Check for gate before vision analysis
+    const shouldOpenGate = await this.shouldExecuteGate('vision-analysis', workflow);
+    if (shouldOpenGate) {
+      const gateResult = await this.executeWorkflowGate('vision-analysis', workflow, {
+        question: 'Should we proceed with vision analysis?',
+        businessImpact: 'high',
+        stakeholders: ['product-manager', 'business-analyst'],
+        gateType: 'checkpoint'
+      });
+      
+      if (!gateResult.approved) {
+        throw new Error('Vision analysis gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+      }
+    }
+    
     // Implementation would analyze vision document and extract key requirements
   }
 
-  private async createPRDsFromVision(_workflow: ProductWorkflowState): Promise<void> {
+  private async createPRDsFromVision(workflow: ProductWorkflowState): Promise<void> {
     logger.info('📋 Creating Product Requirements Documents from vision');
+    
+    // Check for gate before PRD creation
+    const shouldOpenGate = await this.shouldExecuteGate('prd-creation', workflow);
+    if (shouldOpenGate) {
+      const gateResult = await this.executeWorkflowGate('prd-creation', workflow, {
+        question: 'Are the PRDs ready for creation based on the vision analysis?',
+        businessImpact: 'high',
+        stakeholders: ['product-manager', 'business-stakeholder', 'technical-lead'],
+        gateType: 'approval'
+      });
+      
+      if (!gateResult.approved) {
+        throw new Error('PRD creation gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+      }
+    }
+    
     // Implementation would break down vision into detailed product requirements
   }
 
-  private async breakdownPRDsToEpics(_workflow: ProductWorkflowState): Promise<void> {
+  private async breakdownPRDsToEpics(workflow: ProductWorkflowState): Promise<void> {
     logger.info('📈 Breaking down PRDs into Epic-level features');
+    
+    // Check for gate before epic breakdown
+    const shouldOpenGate = await this.shouldExecuteGate('epic-breakdown', workflow);
+    if (shouldOpenGate) {
+      const gateResult = await this.executeWorkflowGate('epic-breakdown', workflow, {
+        question: 'Should we proceed with breaking down PRDs into epics?',
+        businessImpact: 'medium',
+        stakeholders: ['product-manager', 'engineering-manager'],
+        gateType: 'checkpoint'
+      });
+      
+      if (!gateResult.approved) {
+        throw new Error('Epic breakdown gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+      }
+    }
+    
     // Implementation would group related requirements into epic-level features
   }
 
-  private async defineFeatures(_workflow: ProductWorkflowState): Promise<void> {
+  private async defineFeatures(workflow: ProductWorkflowState): Promise<void> {
     logger.info('🎯 Defining individual implementable features');
+    
+    // Check for gate before feature definition
+    const shouldOpenGate = await this.shouldExecuteGate('feature-definition', workflow);
+    if (shouldOpenGate) {
+      const gateResult = await this.executeWorkflowGate('feature-definition', workflow, {
+        question: 'Are we ready to define individual features from the epics?',
+        businessImpact: 'high',
+        stakeholders: ['product-manager', 'tech-lead', 'ux-designer'],
+        gateType: 'approval'
+      });
+      
+      if (!gateResult.approved) {
+        throw new Error('Feature definition gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+      }
+    }
+    
     // Implementation would break down epics into individual features
   }
 
@@ -706,35 +876,55 @@ export class ProductWorkflowEngine extends EventEmitter {
     _context: WorkflowContext,
     _params: WorkflowData
   ): Promise<StepExecutionResult> {
-    return { success: true, data: { analyzed: true }, duration: 1000, timestamp: new Date() };
+    return {
+      success: true,
+      data: { analyzed: true },
+      metadata: { timestamp: new Date().toISOString() },
+    };
   }
 
   private async handlePRDCreation(
     _context: WorkflowContext,
     _params: WorkflowData
   ): Promise<StepExecutionResult> {
-    return { success: true, data: { prds_created: 2 }, duration: 3000, timestamp: new Date() };
+    return {
+      success: true,
+      data: { prds_created: 2 },
+      metadata: { timestamp: new Date().toISOString() },
+    };
   }
 
   private async handleEpicBreakdown(
     _context: WorkflowContext,
     _params: WorkflowData
   ): Promise<StepExecutionResult> {
-    return { success: true, data: { epics_created: 5 }, duration: 2500, timestamp: new Date() };
+    return {
+      success: true,
+      data: { epics_created: 5 },
+      metadata: { timestamp: new Date().toISOString() },
+    };
   }
 
   private async handleFeatureDefinition(
     _context: WorkflowContext,
     _params: WorkflowData
   ): Promise<StepExecutionResult> {
-    return { success: true, data: { features_defined: 12 }, duration: 4000, timestamp: new Date() };
+    return {
+      success: true,
+      data: { features_defined: 12 },
+      metadata: { timestamp: new Date().toISOString() },
+    };
   }
 
   private async handleTaskCreation(
     _context: WorkflowContext,
     _params: WorkflowData
   ): Promise<StepExecutionResult> {
-    return { success: true, data: { tasks_created: 24 }, duration: 3500, timestamp: new Date() };
+    return {
+      success: true,
+      data: { tasks_created: 24 },
+      metadata: { timestamp: new Date().toISOString() },
+    };
   }
 
   private async handleSPARCIntegration(
@@ -744,8 +934,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     return {
       success: true,
       data: { sparc_projects_created: 8 },
-      duration: 5000,
-      timestamp: new Date(),
+      metadata: { timestamp: new Date().toISOString() },
     };
   }
 
@@ -756,8 +945,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     return {
       success: true,
       data: { specifications_completed: true },
-      duration: 2000,
-      timestamp: new Date(),
+      metadata: { timestamp: new Date().toISOString() },
     };
   }
 
@@ -768,8 +956,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     return {
       success: true,
       data: { pseudocode_generated: true },
-      duration: 3000,
-      timestamp: new Date(),
+      metadata: { timestamp: new Date().toISOString() },
     };
   }
 
@@ -780,8 +967,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     return {
       success: true,
       data: { architecture_designed: true },
-      duration: 4000,
-      timestamp: new Date(),
+      metadata: { timestamp: new Date().toISOString() },
     };
   }
 
@@ -792,8 +978,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     return {
       success: true,
       data: { refinements_applied: true },
-      duration: 2500,
-      timestamp: new Date(),
+      metadata: { timestamp: new Date().toISOString() },
     };
   }
 
@@ -804,9 +989,367 @@ export class ProductWorkflowEngine extends EventEmitter {
     return {
       success: true,
       data: { implementation_completed: true },
-      duration: 6000,
-      timestamp: new Date(),
+      metadata: { timestamp: new Date().toISOString() },
     };
+  }
+
+  // ============================================================================
+  // GATE INTEGRATION METHODS - AGUI gate capabilities
+  // ============================================================================
+
+  /**
+   * Initialize gate definitions for workflow steps
+   */
+  private initializeGateDefinitions(): void {
+    const gateDefinitions: Array<{ id: string; gate: WorkflowHumanGate }> = [
+      {
+        id: 'vision-analysis',
+        gate: this.createGateDefinition(
+          'vision-analysis',
+          'Vision Analysis Gate',
+          'Strategic gate to validate vision document analysis before proceeding',
+          'strategic',
+          WorkflowGatePriority.HIGH
+        )
+      },
+      {
+        id: 'prd-creation',
+        gate: this.createGateDefinition(
+          'prd-creation',
+          'PRD Creation Gate',
+          'Business gate to approve PRD creation based on vision analysis',
+          'business',
+          WorkflowGatePriority.HIGH
+        )
+      },
+      {
+        id: 'epic-breakdown',
+        gate: this.createGateDefinition(
+          'epic-breakdown',
+          'Epic Breakdown Gate',
+          'Checkpoint gate to validate epic breakdown from PRDs',
+          'checkpoint',
+          WorkflowGatePriority.MEDIUM
+        )
+      },
+      {
+        id: 'feature-definition',
+        gate: this.createGateDefinition(
+          'feature-definition',
+          'Feature Definition Gate',
+          'Strategic gate to approve individual feature definitions',
+          'strategic',
+          WorkflowGatePriority.HIGH
+        )
+      },
+      {
+        id: 'sparc-integration',
+        gate: this.createGateDefinition(
+          'sparc-integration',
+          'SPARC Integration Gate',
+          'Architectural gate to approve SPARC methodology integration',
+          'architectural',
+          WorkflowGatePriority.CRITICAL
+        )
+      }
+    ];
+
+    gateDefinitions.forEach(({ id, gate }) => {
+      this.gateDefinitions.set(id, gate);
+    });
+
+    logger.info('Initialized gate definitions', {
+      gateCount: this.gateDefinitions.size,
+      gates: Array.from(this.gateDefinitions.keys())
+    });
+  }
+
+  /**
+   * Create a gate definition template
+   */
+  private createGateDefinition(
+    subtype: string,
+    title: string,
+    description: string,
+    category: string,
+    priority: WorkflowGatePriority
+  ): WorkflowHumanGate {
+    const gateId = `product-workflow-gate-${subtype}-${Date.now()}`;
+
+    return {
+      id: gateId,
+      type: 'STRATEGIC' as WorkflowHumanGateType, // Default type, will be updated based on category
+      subtype,
+      title,
+      description,
+      status: 'PENDING' as any,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      workflowContext: {
+        gateWorkflowId: 'product-workflow',
+        phaseName: subtype,
+        businessDomain: 'product',
+        technicalDomain: 'workflow',
+        stakeholderGroups: ['product-manager', 'technical-lead'],
+        impactAssessment: {
+          businessImpact: 0.8,
+          technicalImpact: 0.7,
+          riskImpact: 0.6,
+          resourceImpact: {
+            timeHours: 40,
+            costImpact: 10000,
+            teamSize: 3,
+            criticality: 'medium'
+          },
+          complianceImpact: {
+            regulations: [],
+            riskLevel: 'low',
+            requiredReviews: ['product'],
+            deadlines: []
+          },
+          userExperienceImpact: 0.5
+        }
+      } as WorkflowGateContext,
+      gateData: {
+        payload: { category, phase: subtype },
+        structured: { type: category },
+        attachments: [],
+        externalReferences: []
+      } as WorkflowGateData,
+      triggers: [],
+      priority,
+      approvalConfig: {
+        requiredApprovals: 1,
+        approvers: ['product-manager'],
+        escalationChain: {
+          levels: [GateEscalationLevel.TEAM_LEAD, GateEscalationLevel.MANAGER],
+          timeout: 300000 // 5 minutes
+        }
+      } as any,
+      metrics: {
+        createdAt: new Date(),
+        triggeredCount: 0,
+        totalResolutionTime: 0,
+        averageResolutionTime: 0,
+        approvalRate: 0,
+        escalationRate: 0
+      } as any
+    };
+  }
+
+  /**
+   * Determine if a gate should be executed for a workflow step
+   */
+  private async shouldExecuteGate(
+    stepName: string,
+    workflow: ProductWorkflowState
+  ): Promise<boolean> {
+    // Check if gate is defined for this step
+    const gateDefinition = this.gateDefinitions.get(stepName);
+    if (!gateDefinition) {
+      return false;
+    }
+
+    // Check workflow configuration
+    if (!this.config.sparcQualityGates) {
+      return false;
+    }
+
+    // Additional logic can be added here to determine gate necessity
+    // based on workflow context, business impact, etc.
+    return true;
+  }
+
+  /**
+   * Execute a workflow gate with AGUI integration
+   */
+  async executeWorkflowGate(
+    stepName: string,
+    workflow: ProductWorkflowState,
+    gateConfig: {
+      question: string;
+      businessImpact: 'low' | 'medium' | 'high' | 'critical';
+      stakeholders: string[];
+      gateType: 'approval' | 'checkpoint' | 'review' | 'decision' | 'escalation' | 'emergency';
+    }
+  ): Promise<WorkflowGateResult> {
+    const startTime = Date.now();
+    const gateId = `${workflow.id}-${stepName}-${Date.now()}`;
+
+    logger.info('Executing workflow gate', {
+      gateId,
+      stepName,
+      workflowId: workflow.id,
+      gateType: gateConfig.gateType,
+      businessImpact: gateConfig.businessImpact
+    });
+
+    try {
+      // Create gate context from workflow state
+      const gateWorkflowContext: GateWorkflowContext = {
+        workflowId: workflow.id,
+        stepName,
+        businessImpact: gateConfig.businessImpact,
+        decisionScope: 'task',
+        stakeholders: gateConfig.stakeholders,
+        deadline: new Date(Date.now() + 3600000), // 1 hour from now
+        dependencies: [],
+        riskFactors: [
+          {
+            id: 'workflow-dependency',
+            category: 'operational',
+            severity: 'medium',
+            probability: 0.3,
+            description: 'Workflow step dependency risk'
+          }
+        ]
+      };
+
+      // Create workflow gate request
+      const gateRequest: WorkflowGateRequest = {
+        // ValidationQuestion base properties
+        id: gateId,
+        type: 'checkpoint',
+        question: gateConfig.question,
+        context: {
+          workflowStep: stepName,
+          workflowId: workflow.id,
+          productFlow: workflow.productFlow
+        },
+        confidence: 0.8,
+        priority: gateConfig.businessImpact === 'critical' ? 'critical' : 'medium',
+        validationReason: `Product workflow gate for ${stepName}`,
+        expectedImpact: gateConfig.businessImpact === 'critical' ? 0.9 : 0.5,
+
+        // WorkflowGateRequest specific properties
+        workflowContext: gateWorkflowContext,
+        gateType: gateConfig.gateType,
+        requiredApprovalLevel: this.getRequiredApprovalLevel(gateConfig.businessImpact),
+        timeoutConfig: {
+          initialTimeout: 300000, // 5 minutes
+          escalationTimeouts: [600000, 1200000], // 10, 20 minutes
+          maxTotalTimeout: 1800000 // 30 minutes
+        },
+        integrationConfig: {
+          correlationId: `${workflow.id}-${stepName}`,
+          domainValidation: true,
+          enableMetrics: true
+        }
+      };
+
+      // Store pending gate
+      this.pendingGates.set(gateId, gateRequest);
+
+      // Pause workflow execution
+      const pausedWorkflow = {
+        ...workflow,
+        status: 'paused' as any,
+        pausedAt: new Date()
+      };
+      this.activeWorkflows.set(workflow.id, pausedWorkflow);
+      await this.saveWorkflow(pausedWorkflow);
+
+      // Process gate through AGUI adapter
+      const gateResponse = await this.aguiAdapter.processWorkflowGate(gateRequest);
+      const approved = this.interpretGateResponse(gateResponse);
+
+      // Create gate result
+      const gateResult: WorkflowGateResult = {
+        success: true,
+        gateId,
+        approved,
+        processingTime: Date.now() - startTime,
+        escalationLevel: GateEscalationLevel.NONE,
+        decisionMaker: 'user',
+        correlationId: gateRequest.integrationConfig?.correlationId || ''
+      };
+
+      // Resume workflow if approved
+      if (approved) {
+        const resumedWorkflow = {
+          ...pausedWorkflow,
+          status: 'running' as any
+        };
+        delete (resumedWorkflow as any).pausedAt;
+        this.activeWorkflows.set(workflow.id, resumedWorkflow);
+        await this.saveWorkflow(resumedWorkflow);
+      }
+
+      // Cleanup pending gate
+      this.pendingGates.delete(gateId);
+
+      logger.info('Workflow gate completed', {
+        gateId,
+        approved,
+        processingTime: gateResult.processingTime,
+        decisionMaker: gateResult.decisionMaker
+      });
+
+      return gateResult;
+
+    } catch (error) {
+      logger.error('Workflow gate execution failed', {
+        gateId,
+        stepName,
+        error: error instanceof Error ? error.message : String(error)
+      });
+
+      // Cleanup pending gate
+      this.pendingGates.delete(gateId);
+
+      return {
+        success: false,
+        gateId,
+        approved: false,
+        processingTime: Date.now() - startTime,
+        escalationLevel: GateEscalationLevel.NONE,
+        error: error instanceof Error ? error : new Error(String(error)),
+        correlationId: ''
+      };
+    }
+  }
+
+  /**
+   * Get required approval level based on business impact
+   */
+  private getRequiredApprovalLevel(
+    businessImpact: 'low' | 'medium' | 'high' | 'critical'
+  ): GateEscalationLevel {
+    switch (businessImpact) {
+      case 'low':
+        return GateEscalationLevel.NONE;
+      case 'medium':
+        return GateEscalationLevel.TEAM_LEAD;
+      case 'high':
+        return GateEscalationLevel.MANAGER;
+      case 'critical':
+        return GateEscalationLevel.DIRECTOR;
+      default:
+        return GateEscalationLevel.TEAM_LEAD;
+    }
+  }
+
+  /**
+   * Interpret gate response from AGUI adapter
+   */
+  private interpretGateResponse(response: string): boolean {
+    const approvalKeywords = ['yes', 'approve', 'approved', 'accept', 'ok', 'continue', 'proceed'];
+    const rejectionKeywords = ['no', 'reject', 'rejected', 'deny', 'stop', 'cancel', 'abort'];
+    
+    const lowerResponse = response.toLowerCase();
+    
+    // Check for explicit approval
+    if (approvalKeywords.some(keyword => lowerResponse.includes(keyword))) {
+      return true;
+    }
+    
+    // Check for explicit rejection
+    if (rejectionKeywords.some(keyword => lowerResponse.includes(keyword))) {
+      return false;
+    }
+    
+    // Default to rejection for ambiguous responses (safety first)
+    return false;
   }
 
   // Utility methods
@@ -856,7 +1399,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     return this.activeWorkflows.get(workflowId) || null;
   }
 
-  async pauseProductWorkflow(workflowId: string): Promise<{ success: boolean; error?: string }> {
+  async pauseProductWorkflow(workflowId: string, reason?: string): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'running') {
       // Create paused workflow state
@@ -867,13 +1410,15 @@ export class ProductWorkflowEngine extends EventEmitter {
       };
       this.activeWorkflows.set(workflowId, pausedWorkflow);
       await this.saveWorkflow(pausedWorkflow);
-      this.emit('product-workflow:paused', { workflowId });
+      this.emit('product-workflow:paused', { workflowId, reason });
+      
+      logger.info('Product workflow paused', { workflowId, reason });
       return { success: true };
     }
     return { success: false, error: 'Product workflow not found or not running' };
   }
 
-  async resumeProductWorkflow(workflowId: string): Promise<{ success: boolean; error?: string }> {
+  async resumeProductWorkflow(workflowId: string, reason?: string): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'paused') {
       // Create resumed workflow state
@@ -889,9 +1434,93 @@ export class ProductWorkflowEngine extends EventEmitter {
         logger.error(`Product workflow ${workflowId} failed after resume:`, error);
       });
 
-      this.emit('product-workflow:resumed', { workflowId });
+      this.emit('product-workflow:resumed', { workflowId, reason });
+      
+      logger.info('Product workflow resumed', { workflowId, reason });
       return { success: true };
     }
     return { success: false, error: 'Product workflow not found or not paused' };
+  }
+
+  // ============================================================================
+  // GATE MANAGEMENT API - Public methods for gate control
+  // ============================================================================
+
+  /**
+   * Get all pending gates for active workflows
+   */
+  async getPendingGates(): Promise<Map<string, WorkflowGateRequest>> {
+    return new Map(this.pendingGates);
+  }
+
+  /**
+   * Get gate definitions for workflow steps
+   */
+  getGateDefinitions(): Map<string, WorkflowHumanGate> {
+    return new Map(this.gateDefinitions);
+  }
+
+  /**
+   * Cancel a pending gate
+   */
+  async cancelGate(gateId: string, reason: string): Promise<{ success: boolean; error?: string }> {
+    const gateRequest = this.pendingGates.get(gateId);
+    if (!gateRequest) {
+      return { success: false, error: 'Gate not found' };
+    }
+
+    try {
+      // Cancel the gate through AGUI adapter
+      const cancelled = await this.aguiAdapter.cancelGate(gateId, reason);
+      if (cancelled) {
+        this.pendingGates.delete(gateId);
+        
+        logger.info('Gate cancelled', { gateId, reason });
+        return { success: true };
+      } else {
+        return { success: false, error: 'Failed to cancel gate through AGUI adapter' };
+      }
+    } catch (error) {
+      logger.error('Error cancelling gate', {
+        gateId,
+        error: error instanceof Error ? error.message : String(error)
+      });
+      
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : String(error)
+      };
+    }
+  }
+
+  /**
+   * Get workflow decision history from AGUI adapter
+   */
+  getWorkflowDecisionHistory(workflowId: string) {
+    return this.aguiAdapter.getWorkflowDecisionHistory(workflowId);
+  }
+
+  /**
+   * Get AGUI adapter statistics
+   */
+  getGateStatistics() {
+    return this.aguiAdapter.getStatistics();
+  }
+
+  /**
+   * Shutdown gate capabilities
+   */
+  async shutdownGates(): Promise<void> {
+    logger.info('Shutting down workflow gates');
+    
+    // Cancel all pending gates
+    for (const [gateId] of this.pendingGates) {
+      await this.cancelGate(gateId, 'System shutdown');
+    }
+    
+    // Shutdown AGUI adapter
+    await this.aguiAdapter.shutdown();
+    
+    logger.info('Workflow gates shutdown complete');
   }
 }

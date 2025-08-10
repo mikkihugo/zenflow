@@ -9,11 +9,16 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getWebDashboardURL } from '../config/url-builder';
-import { InterfaceModeDetector } from './interface-mode-detector';
-import { createLogger } from './logger';
+import { getWebDashboardURL } from '../config/defaults';
+import { getLogger } from '../config/logging-config';
+import type { WebConfig } from '../interfaces/web/web-config';
+import {
+  type InterfaceMode,
+  InterfaceModeDetector,
+  type ModeDetectionOptions,
+} from './interface-mode-detector';
 
-const logger = createLogger('InterfaceLauncher');
+const logger = getLogger('InterfaceLauncher');
 
 export interface LaunchOptions extends ModeDetectionOptions {
   verbose?: boolean;
@@ -21,7 +26,7 @@ export interface LaunchOptions extends ModeDetectionOptions {
   config?: {
     theme?: 'dark' | 'light';
     realTime?: boolean;
-    coreSystem?: any; // Reference to ApplicationCoordinator
+    coreSystem?: Record<string, unknown>; // Reference to ApplicationCoordinator
   };
 }
 
@@ -40,8 +45,8 @@ export class InterfaceLauncher extends EventEmitter {
   private activeInterface?:
     | {
         mode: InterfaceMode;
-        process?: any;
-        server?: any;
+        process?: NodeJS.Process;
+        server?: Record<string, unknown>;
         url?: string;
         pid?: number;
       }
@@ -242,7 +247,7 @@ export class InterfaceLauncher extends EventEmitter {
       // Dynamic import of Web interface
       const { WebInterface } = await import('../interfaces/web/web-interface');
 
-      const webConfig: WebInterfaceConfig = {
+      const webConfig: WebConfig = {
         port: webPort,
         theme: options?.['config']?.theme || 'dark',
         realTime: options?.['config']?.realTime !== false,
@@ -290,8 +295,15 @@ export class InterfaceLauncher extends EventEmitter {
 
       try {
         // Show system status
-        const status = await system.getSystemStatus();
-        for (const [_name, _info] of Object.entries(status.components)) {
+        if (system && typeof system === 'object' && 'getSystemStatus' in system) {
+          const getSystemStatusFn = system['getSystemStatus'];
+          if (typeof getSystemStatusFn === 'function') {
+            const status = await getSystemStatusFn();
+            if (status && typeof status === 'object' && 'components' in status) {
+              for (const [_name, _info] of Object.entries(status.components as Record<string, unknown>)) {
+              }
+            }
+          }
         }
       } catch (error) {
         logger.error('Failed to show system status:', error);
@@ -335,15 +347,25 @@ export class InterfaceLauncher extends EventEmitter {
       if (this.activeInterface.server) {
         // Web server shutdown
         await new Promise<void>((resolve) => {
-          this.activeInterface?.server.close(() => {
+          const server = this.activeInterface?.server;
+          if (server && typeof server === 'object' && 'close' in server) {
+            const closeFn = server['close'];
+            if (typeof closeFn === 'function') {
+              closeFn(() => {
+                resolve();
+              });
+            } else {
+              resolve();
+            }
+          } else {
             resolve();
-          });
+          }
         });
       }
 
       if (this.activeInterface.process) {
         // Process-based interface shutdown
-        this.activeInterface.process.kill();
+        this.activeInterface.process.kill('SIGTERM');
       }
 
       this.emit('interface:shutdown', {
@@ -413,7 +435,7 @@ export class InterfaceLauncher extends EventEmitter {
       process.exit(1);
     });
 
-    process.on('unhandledRejection', async (reason: any) => {
+    process.on('unhandledRejection', async (reason: unknown) => {
       logger.error('Unhandled rejection:', reason);
       try {
         await this.shutdown();

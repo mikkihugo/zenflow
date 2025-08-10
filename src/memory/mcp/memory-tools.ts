@@ -25,14 +25,14 @@ export interface MCPTool {
     properties: Record<string, any>;
     required?: string[];
   };
-  handler: (params: any) => Promise<any>;
+  handler: (params: Record<string, unknown>) => Promise<unknown>;
 }
 
 export interface MCPToolResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Memory System Initialization Tool
@@ -170,7 +170,7 @@ export const memoryInitTool: MCPTool = {
       for (const backendConfig of backends) {
         try {
           const backend = await MemoryBackendFactory.createBackend(
-            backendConfig?.type as any,
+            backendConfig?.type as 'sqlite' | 'json' | 'lancedb' | 'memory',
             backendConfig?.config
           );
           await backend.initialize();

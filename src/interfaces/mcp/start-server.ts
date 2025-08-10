@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /**
  * @file Interface implementation: start-server.
  */
@@ -10,12 +11,12 @@
  * This replaces the custom Express.js implementation while maintaining all functionality.
  */
 
-import { getConfig } from '../config';
+import { config } from '../../config';
+import { getLogger } from '../../config/logging-config';
 import { DEFAULT_CONFIG } from '../config/defaults';
 import { HTTPMCPServer } from './http-mcp-server';
-import { createLogger } from './mcp-logger';
 
-const logger = createLogger('MCP-Starter');
+const logger = getLogger('MCP-Starter');
 
 interface StartupConfig {
   port?: number;
@@ -179,7 +180,7 @@ async function main(): Promise<void> {
     logger.info('Starting Claude-Zen SDK HTTP MCP Server...', { config });
 
     // Get centralized configuration
-    const centralConfig = getConfig();
+    const centralConfig = config.get();
 
     // Create and configure server using centralized config with environment overrides
     const server = new HTTPMCPServer({

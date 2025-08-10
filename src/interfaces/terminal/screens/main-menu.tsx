@@ -11,7 +11,7 @@
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import { useState } from 'react';
-import { Header, InteractiveFooter, StatusBadge } from '../components/index';
+import { Header, InteractiveFooter, StatusBadge, type SwarmStatus } from '../components/index';
 
 export interface MenuItem {
   label: string;
@@ -44,7 +44,7 @@ export interface MenuProps {
  * @param root0.showHeader
  * @param root0.showFooter
  */
-export const Menu: React.FC<MainMenuProps> = ({
+export const Menu: React.FC<MenuProps> = ({
   title = 'Claude Code Zen',
   items,
   swarmStatus,
@@ -140,9 +140,10 @@ export const Menu: React.FC<MainMenuProps> = ({
       {/* Main menu */}
       <Box flexGrow={1} paddingX={2}>
         <Box flexDirection="column" width="100%">
-          <Text bold marginBottom={1}>
+          <Text bold>
             Select an option:
           </Text>
+          <Box marginBottom={1} />
 
           <SelectInput
             items={menuItems}
@@ -173,9 +174,9 @@ export const Menu: React.FC<MainMenuProps> = ({
             { key: 'Enter', name: 'Select' },
           ]}
           status={
-            swarmStatus
+            swarmStatus && 'activeAgents' in swarmStatus && 'totalAgents' in swarmStatus
               ? `${swarmStatus.activeAgents}/${swarmStatus.totalAgents} agents`
-              : undefined
+              : swarmStatus?.toString()
           }
         />
       )}
@@ -232,4 +233,4 @@ export const createDefaultMenuItems = (handlers: {
   ];
 };
 
-export default MainMenu;
+export default Menu;

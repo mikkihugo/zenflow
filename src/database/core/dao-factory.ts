@@ -5,12 +5,8 @@
  * Contains factory functions and entity type definitions.
  */
 
-import type { 
-  DatabaseTypes, 
-  EntityTypes as EntityTypesEnum, 
-  IDao 
-} from '../interfaces';
 import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces';
+import type { DatabaseTypes, EntityTypes as EntityTypesEnum, IDao } from '../interfaces';
 
 /**
  * Multi-database DAO interface for cross-database operations.
@@ -31,10 +27,11 @@ export interface IMultiDatabaseDao<T> {
   findBy(filter: Partial<T>): Promise<T[]>;
   count(filter?: Partial<T>): Promise<number>;
 }
+
 import { BaseDao } from '../base.dao';
 import { CoordinationDao } from '../dao/coordination.dao';
-import { MemoryDao } from '../dao/memory.dao';
 import { GraphDao } from '../dao/graph.dao';
+import { MemoryDao } from '../dao/memory.dao';
 
 /**
  * Entity type constant mapping for type safety.
@@ -87,7 +84,7 @@ export interface DatabaseConfig {
 
 /**
  * Create a Data Access Object (DAO) for a specific entity type and database.
- * 
+ *
  * This is a factory function that creates appropriate DAO instances based on
  * the entity type and database configuration provided.
  *
@@ -143,14 +140,20 @@ export async function createDao<T>(
     transaction: async (fn) => fn({} as any),
     health: async () => true,
     getSchema: async () => ({ tables: [], views: [], version: '1.0.0' }),
-    getConnectionStats: async () => ({ total: 1, active: 1, idle: 0, utilization: 100, averageConnectionTime: 0 })
+    getConnectionStats: async () => ({
+      total: 1,
+      active: 1,
+      idle: 0,
+      utilization: 100,
+      averageConnectionTime: 0,
+    }),
   };
 
   const iLogger: ILogger = {
     debug: logger.debug?.bind(logger) || (() => {}),
     info: logger.info?.bind(logger) || (() => {}),
     warn: logger.warn?.bind(logger) || (() => {}),
-    error: logger.error?.bind(logger) || (() => {})
+    error: logger.error?.bind(logger) || (() => {}),
   };
 
   // Create specialized DAOs based on entity type
@@ -158,16 +161,16 @@ export async function createDao<T>(
     case EntityTypeValues.Memory:
     case 'memory':
       return createMemoryDao<T>(adapter, iLogger, tableName);
-    
+
     case EntityTypeValues.Product: // Use available enum value instead of Coordination
     case 'coordination':
       return createCoordinationDao<T>(adapter, iLogger, tableName);
-    
+
     case EntityTypeValues.Vector: // Use Vector instead of Graph for GraphDao
     case 'node':
     case 'edge':
       return createGraphDao<T>(adapter, iLogger, tableName);
-    
+
     default:
       // Cannot instantiate abstract BaseDao directly - create a concrete implementation
       return new ConcreteDao<T>(adapter, iLogger, tableName);
@@ -236,15 +239,15 @@ export async function createMultiDatabaseSetup<T>(
     entityType,
     primaryDatabase.databaseType,
     primaryDatabase.config,
-    { 
-      logger: options?.logger
+    {
+      logger: options?.logger,
     }
   );
 
   const fallbackDaos = await Promise.all(
-    fallbackDatabases.map(db =>
-      createDao<T>(entityType, db.databaseType, db.config, { 
-        logger: options?.logger 
+    fallbackDatabases.map((db) =>
+      createDao<T>(entityType, db.databaseType, db.config, {
+        logger: options?.logger,
       })
     )
   );
@@ -265,9 +268,7 @@ export async function createMultiDatabaseSetup<T>(
           for (const fallbackDao of fallbackDaos) {
             try {
               return await fallbackDao.findById(id);
-            } catch (fallbackError) {
-              continue;
-            }
+            } catch (fallbackError) {}
           }
         }
         throw error;
@@ -275,14 +276,15 @@ export async function createMultiDatabaseSetup<T>(
     },
 
     async findAll(): Promise<T[]> {
-      const dao = this.readPreference === 'fallback' && fallbackDaos.length > 0
-        ? fallbackDaos[0]
-        : primaryDao;
-      
+      const dao =
+        this.readPreference === 'fallback' && fallbackDaos.length > 0
+          ? fallbackDaos[0]
+          : primaryDao;
+
       if (!dao) {
         throw new Error('No DAO available');
       }
-      
+
       try {
         return await dao.findAll();
       } catch (error) {
@@ -295,57 +297,58 @@ export async function createMultiDatabaseSetup<T>(
 
     async create(entity: Omit<T, 'id'>): Promise<T> {
       const created = await primaryDao.create(entity);
-      
+
       if (this.writePolicy === 'replicated') {
         // Fire-and-forget replication to fallbacks
-        fallbackDaos.forEach(dao => {
+        fallbackDaos.forEach((dao) => {
           dao.create(entity).catch(() => {
             // Log but don't fail the operation
             options?.logger?.warn('Fallback replication failed');
           });
         });
       }
-      
+
       return created;
     },
 
     async update(id: string, updates: Partial<T>): Promise<T | null> {
       const updated = await primaryDao.update(id, updates);
-      
+
       if (this.writePolicy === 'replicated') {
-        fallbackDaos.forEach(dao => {
+        fallbackDaos.forEach((dao) => {
           dao.update(id, updates).catch(() => {
             options?.logger?.warn('Fallback update failed');
           });
         });
       }
-      
+
       return updated;
     },
 
     async delete(id: string): Promise<boolean> {
       const deleted = await primaryDao.delete(id);
-      
+
       if (this.writePolicy === 'replicated') {
-        fallbackDaos.forEach(dao => {
+        fallbackDaos.forEach((dao) => {
           dao.delete(id).catch(() => {
             options?.logger?.warn('Fallback deletion failed');
           });
         });
       }
-      
+
       return deleted;
     },
 
     async findBy(filter: Partial<T>): Promise<T[]> {
-      const dao = this.readPreference === 'fallback' && fallbackDaos.length > 0
-        ? fallbackDaos[0]
-        : primaryDao;
-      
+      const dao =
+        this.readPreference === 'fallback' && fallbackDaos.length > 0
+          ? fallbackDaos[0]
+          : primaryDao;
+
       if (!dao) {
         throw new Error('No DAO available');
       }
-      
+
       try {
         return await dao.findBy(filter);
       } catch (error) {
@@ -368,7 +371,7 @@ export async function createMultiDatabaseSetup<T>(
         }
         throw error;
       }
-    }
+    },
   } as IMultiDatabaseDao<T>;
 }
 
@@ -383,7 +386,7 @@ function getDefaultTableName(entityType: EntityType): string {
   // Convert entity type to plural table name
   const entityMap: Record<string, string> = {
     [EntityTypeValues.User]: 'users',
-    [EntityTypeValues.Agent]: 'agents', 
+    [EntityTypeValues.Agent]: 'agents',
     [EntityTypeValues.Memory]: 'memories',
     [EntityTypeValues.Swarm]: 'swarms',
     [EntityTypeValues.Task]: 'tasks',
@@ -406,7 +409,7 @@ function getDefaultTableName(entityType: EntityType): string {
     [EntityTypeValues.Relationship]: 'relationships',
     [EntityTypeValues.WorkflowState]: 'workflow_states',
   };
-  
+
   return entityMap[entityType] || `${entityType}s`;
 }
 
@@ -428,7 +431,11 @@ function createMemoryDao<T>(adapter: DatabaseAdapter, logger: ILogger, tableName
   return new MemoryDaoImpl(adapter, logger, tableName) as IDao<T>;
 }
 
-function createCoordinationDao<T>(adapter: DatabaseAdapter, logger: ILogger, tableName: string): IDao<T> {
+function createCoordinationDao<T>(
+  adapter: DatabaseAdapter,
+  logger: ILogger,
+  tableName: string
+): IDao<T> {
   // Create a specialized coordination DAO implementation
   class CoordinationDaoImpl extends CoordinationDao<T> {
     constructor(adapter: DatabaseAdapter, logger: ILogger, tableName: string) {

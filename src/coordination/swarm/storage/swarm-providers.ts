@@ -2,7 +2,7 @@
  * @file Coordination system: swarm-providers.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-storage-swarm-providers');
 

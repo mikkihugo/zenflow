@@ -10,13 +10,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type { DiscoveredDomain } from '../../interfaces/tui/types';
 import type { SessionMemoryStore } from '../../memory/memory';
 import type { HiveFACTSystem } from '../hive-fact-integration';
 import type { SwarmKnowledgeSync } from '../swarm/knowledge-sync';
 
-const logger = createLogger({ prefix: 'Knowledge-Aware-Discovery' });
+const logger = getLogger('Knowledge-Aware-Discovery');
 
 export interface KnowledgeAwareConfig {
   swarmId: string;

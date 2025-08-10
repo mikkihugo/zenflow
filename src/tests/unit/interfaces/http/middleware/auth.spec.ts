@@ -1,6 +1,9 @@
 import { createMock } from 'ts-auto-mock'; // optional; if unavailable, replace with simple stubs
+import { IncomingMessage, ServerResponse } from 'http';
 // Import the actual auth middleware when available. Keep path aligned with your project layout.
 import { authMiddleware } from '../../../../../interfaces/api/http/middleware/auth';
+
+type NextFunction = (err?: any) => void;
 
 // Minimal Request/Response mocks if express types are in use; otherwise adapt to your HTTP adapter
 type Req = IncomingMessage & {

@@ -14,5 +14,4 @@ export interface ConversationSession {
   metadata: Record<string, unknown>;
 }
 
-// Convenience exports
-export type { ConversationSession };
+// Convenience exports - ConversationSession already exported above

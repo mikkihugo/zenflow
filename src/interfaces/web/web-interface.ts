@@ -11,7 +11,7 @@
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createLogger } from '../utils/logger';
+import { getLogger } from '../../config/logging-config';
 import { WebApiRoutes } from './web-api-routes';
 // Import modular components
 import { createWebConfig, type WebConfig } from './web-config';
@@ -34,7 +34,7 @@ const _dirname = dirname(_filename);
  * @example
  */
 export class WebInterface {
-  private logger = createLogger('WebInterface');
+  private logger = getLogger('WebInterface');
   private config: WebConfig;
 
   // Component instances

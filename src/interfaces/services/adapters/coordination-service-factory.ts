@@ -9,9 +9,10 @@
  * @file Interface implementation: coordination-service-factory.
  */
 
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import type { IServiceFactory } from '../core/interfaces';
 import { ServicePriority, ServiceType } from '../types';
-import { createLogger, type Logger } from '../utils/logger';
 import {
   type CoordinationServiceAdapter,
   type CoordinationServiceAdapterConfig,
@@ -31,7 +32,7 @@ export class CoordinationServiceFactory
   private logger: Logger;
 
   constructor() {
-    this.logger = createLogger('CoordinationServiceFactory');
+    this.logger = getLogger('CoordinationServiceFactory');
   }
 
   /**

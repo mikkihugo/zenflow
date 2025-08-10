@@ -3,9 +3,9 @@
  * Provides simple logging functionality for the application.
  */
 
-import { createLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 
-const logger = createLogger('src-utils-logger');
+const logger = getLogger('src-utils-logger');
 
 import { config } from '../config';
 

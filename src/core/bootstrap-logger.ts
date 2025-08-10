@@ -1,9 +1,9 @@
 /**
  * @file Bootstrap Logger - Logtape Integration.
- * 
+ *
  * Simple logger that works without config dependencies by using logtape directly.
  * Used for early initialization before full config system is ready.
- * 
+ *
  * This BREAKS the circular dependency: logger ↔ config.
  */
 

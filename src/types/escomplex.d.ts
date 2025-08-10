@@ -25,16 +25,16 @@ declare module 'escomplex' {
           total: number;
         };
       };
-      functions: any[];
+      functions: ComplexityFunctionReport[];
       maintainability: number;
-      dependencies: any[];
+      dependencies: DependencyReport[];
       loc: {
         logical: number;
         physical: number;
       };
     };
     reports: ComplexityFunctionReport[];
-    errors: any[];
+    errors: ComplexityError[];
   }
 
   export interface ComplexityFunctionReport {
@@ -72,7 +72,21 @@ declare module 'escomplex' {
     ignoreErrors?: boolean;
   }
 
+  export interface DependencyReport {
+    path: string;
+    type: 'CommonJS' | 'AMD' | 'ES6';
+    line: number;
+    source: string;
+  }
+
+  export interface ComplexityError {
+    name: string;
+    message: string;
+    line?: number;
+    column?: number;
+  }
+
   export function analyze(code: string, options?: AnalyzeOptions): ComplexityReport;
 
-  export function analyzeModule(ast: any, options?: AnalyzeOptions): ComplexityReport;
+  export function analyzeModule(ast: unknown, options?: AnalyzeOptions): ComplexityReport;
 }

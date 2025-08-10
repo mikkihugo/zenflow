@@ -180,7 +180,7 @@ declare module 'ruv-swarm' {
     totalAgents: number;
     totalTasks: number;
     memoryUsage: number;
-    performance: Record<string, any>;
+    performance: Record<string, unknown>;
     features: SwarmFeatures;
     wasm_modules: ModuleStatusMap;
     timestamp: string;
@@ -289,7 +289,7 @@ declare module 'ruv-swarm' {
   export interface WasmModule {
     instance: WebAssembly.Instance;
     module: WebAssembly.Module;
-    exports: any;
+    exports: Record<string, WebAssembly.ExportValue>;
     memory: WebAssembly.Memory;
     isPlaceholder?: boolean;
   }
@@ -323,7 +323,7 @@ declare module 'ruv-swarm' {
     name?: string;
     capabilities?: string[];
     cognitivePattern?: string;
-    neuralConfig?: any;
+    neuralConfig?: NeuralNetworkConfig;
     swarmId?: string;
   }
 
@@ -366,9 +366,9 @@ declare module 'ruv-swarm' {
     priority: string;
     strategy: string;
     assigned_agents: string[];
-    swarm_info: any;
-    orchestration: any;
-    performance: any;
+    swarm_info: SwarmInfo;
+    orchestration: OrchestrationPlan;
+    performance: TaskPerformanceMetrics;
     message: string;
   }
 
@@ -381,10 +381,62 @@ declare module 'ruv-swarm' {
   // Neural agent exports
   export { NeuralAgent, NeuralAgentFactory, NeuralNetwork } from './neural-agent';
   export const COGNITIVE_PATTERNS: Record<string, CognitivePattern>;
-  export const AGENT_COGNITIVE_PROFILES: Record<string, any>;
+  export const AGENT_COGNITIVE_PROFILES: Record<string, CognitiveProfile>;
 
   // Template exports
   export const NeuralNetworkTemplates: {
     getTemplate(templateName: string): NeuralConfig;
   };
+
+  // Additional type definitions
+  export interface SwarmInfo {
+    id: string;
+    topology: string;
+    agent_count: number;
+    max_agents: number;
+    created: string;
+    status: 'active' | 'idle' | 'terminated';
+  }
+
+  export interface OrchestrationPlan {
+    strategy: 'parallel' | 'sequential' | 'adaptive';
+    agent_assignments: Array<{
+      agent_id: string;
+      role: string;
+      weight: number;
+    }>;
+    estimated_completion: string;
+    resource_allocation: {
+      memory_mb: number;
+      cpu_cores: number;
+    };
+  }
+
+  export interface TaskPerformanceMetrics {
+    start_time_ms: number;
+    execution_time_ms: number;
+    memory_usage_mb: number;
+    cpu_usage_percent: number;
+    throughput_ops_per_sec: number;
+    success_rate: number;
+  }
+
+  export interface NeuralNetworkConfig {
+    architecture: string;
+    layers: number[];
+    activation_function: string;
+    learning_rate: number;
+    optimizer: string;
+    batch_size: number;
+  }
+
+  export interface CognitiveProfile {
+    pattern: CognitivePattern;
+    strengths: string[];
+    preferred_tasks: string[];
+    learning_style: string;
+    decision_making_speed: 'fast' | 'medium' | 'slow';
+    creativity_level: number;
+    analytical_depth: number;
+  }
 }

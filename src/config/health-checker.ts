@@ -408,7 +408,7 @@ export async function initializeConfigHealthChecker(options?: {
  * ```
  */
 export function createConfigHealthEndpoint() {
-  return async (req: any, res: any) => {
+  return async (_req: any, res: any) => {
     try {
       const healthReport = await configHealthChecker?.getHealthReport(true);
 
@@ -441,7 +441,7 @@ export function createConfigHealthEndpoint() {
  * ```
  */
 export function createDeploymentReadinessEndpoint() {
-  return async (req: any, res: any) => {
+  return async (_req: any, res: any) => {
     try {
       const deploymentCheck = await configHealthChecker?.validateForProduction();
       const portCheck = await configHealthChecker?.checkPortConflicts();

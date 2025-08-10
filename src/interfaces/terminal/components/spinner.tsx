@@ -60,7 +60,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
   // Determine which animation set to use
   const isSwarmType = ['swarm', 'neural', 'coordination', 'processing'].includes(type);
   const animations = isSwarmType ? swarmAnimations : standardAnimations;
-  const frames = animations[type as keyof typeof animations] || standardAnimations.dots;
+  const frames: string[] = animations[type as keyof typeof animations] || standardAnimations.dots;
 
   // Adjust speed for swarm animations (they tend to be more visual, so slower)
   const adjustedSpeed = isSwarmType ? Math.max(speed, 120) : speed;
@@ -103,12 +103,12 @@ export const SpinnerPresets = {
 
 // Convenience components for common use cases
 export const LoadingSpinner: React.FC<{ text?: string }> = ({ text }) => (
-  <Spinner {...SpinnerPresets.loading} text={text} />
+  <Spinner {...SpinnerPresets.loading} text={text ?? undefined} />
 );
 
 export const SwarmSpinner: React.FC<{
   text?: string;
   type?: 'swarm' | 'neural' | 'coordination' | 'processing';
-}> = ({ text, type = 'swarm' }) => <Spinner type={type} text={text} color="cyan" speed={120} />;
+}> = ({ text, type = 'swarm' }) => <Spinner type={type} text={text ?? undefined} color="cyan" speed={120} />;
 
 export default Spinner;

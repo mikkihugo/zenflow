@@ -1,4 +1,4 @@
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('coordination-strategies-ruv-swarmstrategy');
 
@@ -6,7 +6,8 @@ const logger = getLogger('coordination-strategies-ruv-swarmstrategy');
  * @file A swarm strategy that uses the ZenSwarm implementation.
  */
 
-import type { Agent, SwarmStrategy } from '../../types';
+import type { SwarmStrategy } from '../types';
+import type { SwarmAgent } from '../../types/shared-types';
 import { ZenSwarm } from '../swarm/core';
 
 export class ZenSwarmStrategy implements SwarmStrategy {
@@ -16,12 +17,15 @@ export class ZenSwarmStrategy implements SwarmStrategy {
     this.swarm = new ZenSwarm();
   }
 
-  async createAgent(config: any): Promise<Agent> {
+  async createAgent(config: any): Promise<SwarmAgent> {
     const agentId = this.swarm.addAgent(config);
     return {
       id: agentId,
+      name: config?.name || `Agent-${agentId}`,
+      type: config?.type || 'researcher',
       capabilities: config?.capabilities || [],
       status: 'idle' as const,
+      metadata: config?.metadata || {},
     };
   }
 
@@ -41,10 +45,17 @@ export class ZenSwarmStrategy implements SwarmStrategy {
     await this.swarm.submitTask(swarmTask);
   }
 
-  async getAgents(): Promise<Agent[]> {
+  async getAgents(): Promise<SwarmAgent[]> {
     const agents = this.swarm
       .getTasksByStatus('in_progress')
       .flatMap((t) => t.assignedAgents || []);
-    return agents.map((a) => ({ id: a, capabilities: [], status: 'busy' }));
+    return agents.map((a) => ({ 
+      id: a, 
+      name: `Agent-${a}`,
+      type: 'researcher' as const,
+      capabilities: [], 
+      status: 'busy' as const,
+      metadata: {}
+    }));
   }
 }

@@ -8,10 +8,10 @@
  * @file Interface implementation: mock-command-handler.
  */
 
-import { createLogger } from '../../../core/logger';
+import { getLogger } from '../../../config/logging-config';
 import { CommandExecutionEngine } from '../command-execution-engine';
 
-const logger = createLogger({ prefix: 'mock-command-handler' });
+const logger = getLogger('mock-command-handler');
 
 export interface CommandResult {
   success: boolean;

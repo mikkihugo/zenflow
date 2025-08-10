@@ -3,12 +3,12 @@
  * Integrates neural network components with Claude-Zen system.
  */
 
-import { createLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 
 // TODO: Use dependency injection for logger
 // Should inject ILogger from DI container instead of creating directly
 // Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
-const logger = createLogger({ prefix: 'Neural' });
+const logger = getLogger('Neural');
 
 export interface NeuralConfig {
   wasmPath?: string;

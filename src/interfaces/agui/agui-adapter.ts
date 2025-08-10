@@ -10,9 +10,9 @@
 
 import { EventEmitter } from 'node:events';
 import * as readline from 'node:readline';
-import { createLogger } from '@core/logger';
+import { getLogger } from '../../config/logging-config';
 
-const logger = createLogger({ prefix: 'AGUIAdapter' });
+const logger = getLogger('AGUIAdapter');
 
 // Define our own interface since we're adapting @ag-ui/core
 export interface ValidationQuestion {

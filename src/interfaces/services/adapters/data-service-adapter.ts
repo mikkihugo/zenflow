@@ -12,6 +12,8 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { getLogger } from '../../../config/logging-config';
+import type { ILogger } from '../../../core/logger';
 import type { BaseDocumentEntity } from '../../../database/entities/product-entities';
 import type {
   DocumentCreateOptions,
@@ -28,10 +30,11 @@ import type {
 } from '../../../interfaces/web/web-data-service';
 import { WebDataService } from '../../../interfaces/web/web-data-service';
 import type { DocumentType } from '../../../types/workflow-types';
-import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   IService,
+  ServiceConfig,
   ServiceDependencyConfig,
+  ServiceError,
   ServiceEvent,
   ServiceEventType,
   ServiceLifecycleStatus,
@@ -40,7 +43,7 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../../core/interfaces';
-import type { DataServiceConfig, ServiceError } from '../types';
+import type { DataServiceConfig } from '../types';
 import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
 
 /**
@@ -53,8 +56,8 @@ export interface DataServiceAdapterConfig {
   name: string;
   type: string;
   enabled?: boolean;
-  priority?: string;
-  environment?: string;
+  priority?: ServicePriority;
+  environment?: ServiceEnvironment;
   timeout?: number;
   health?: {
     enabled: boolean;
@@ -180,7 +183,7 @@ export class DataServiceAdapter implements IService {
   // Service state
   private lifecycleStatus: ServiceLifecycleStatus = 'uninitialized';
   private eventEmitter = new EventEmitter();
-  private logger: Logger;
+  private logger: ILogger;
   private startTime?: Date;
   private operationCount = 0;
   private successCount = 0;
@@ -255,7 +258,7 @@ export class DataServiceAdapter implements IService {
       ...config,
     };
 
-    this.logger = createLogger(`DataServiceAdapter:${this.name}`);
+    this.logger = getLogger(`DataServiceAdapter:${this.name}`);
     this.logger.info(`Creating data service adapter: ${this.name}`);
   }
 
@@ -280,7 +283,7 @@ export class DataServiceAdapter implements IService {
       }
 
       // Validate configuration
-      const isValidConfig = await this.validateConfig(this.config);
+      const isValidConfig = await this.validateConfig(this.config as ServiceConfig);
       if (!isValidConfig) {
         throw new Error('Invalid data service adapter configuration');
       }

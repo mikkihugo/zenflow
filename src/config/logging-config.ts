@@ -117,7 +117,7 @@ class LoggingConfigurationManager {
         error: (message: string, meta?: any) => coreLogger.error(message, meta),
       };
 
-      // Add success and progress methods 
+      // Add success and progress methods
       enhancedLogger.success = (message: string, meta?: any) => {
         coreLogger.info(`✅ ${message}`, meta);
       };

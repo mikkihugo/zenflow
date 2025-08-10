@@ -24,12 +24,12 @@ import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
+import { getLogger } from '../config/logging-config';
 import type { BaseDocumentEntity } from '../database/entities/product-entities';
-import { createLogger } from './logger';
 import type { MemorySystem } from './memory-system';
 import type { WorkflowEngine } from './workflow-engine';
 
-const logger = createLogger('DocumentProcessor');
+const logger = getLogger('DocumentProcessor');
 
 /**
  * Document types in the processing workflow.

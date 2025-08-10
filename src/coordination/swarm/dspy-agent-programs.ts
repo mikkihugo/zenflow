@@ -8,11 +8,11 @@
  * @file Coordination system: dspy-agent-programs
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type { DSPyProgram, DSPyWrapper } from '../neural/dspy-wrapper';
 import type { DSPyExample } from '../neural/types/dspy-types';
 
-const logger = createLogger({ prefix: 'DSPyAgentPrograms' });
+const logger = getLogger('DSPyAgentPrograms');
 
 /**
  * Base class for DSPy Agent Programs.

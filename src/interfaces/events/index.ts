@@ -8,9 +8,9 @@
  * - Global instances and initialization.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 
-const logger = createLogger('interfaces-events-index');
+const logger = getLogger('interfaces-events-index');
 
 // UEL Event Adapters - Unified Event Adapter Integration
 export {
@@ -191,7 +191,8 @@ export {
   UELCompatibleEventEmitter,
   wrapWithUEL,
 } from './compatibility';
-
+// Import UEL from singleton to avoid circular dependency
+export { UEL, uel } from './core/uel-singleton';
 // Factory convenience functions
 export {
   createCommunicationEventBus,
@@ -200,7 +201,6 @@ export {
   createMonitoringEventBus,
   createSystemEventBus,
 } from './factories';
-
 export type {
   ConnectionManager,
   CoordinationSettings,
@@ -208,7 +208,6 @@ export type {
   EventManagerCreationOptions,
   ManagerStatistics,
 } from './manager';
-
 // Legacy compatibility - re-export from observer system
 export {
   type AllSystemEvents,
@@ -231,7 +230,6 @@ export {
   type ToolResult,
   WebSocketObserver,
 } from './observer-system';
-
 // UEL Integration Layer - Complete System Components
 export type {
   EventDiscoveryConfig,
@@ -241,14 +239,12 @@ export type {
   FactoryRegistry,
   HealthMonitoringConfig,
 } from './registry';
-
 export {
   analyzeSystemEventEmitterUsage,
   enhanceWithUEL,
   SystemIntegrationFactory,
   UELSystemIntegration,
 } from './system-integrations';
-
 export type {
   EventTypeSchema,
   HealthValidationConfig,
@@ -260,11 +256,8 @@ export type {
   ValidationWarning,
 } from './validation';
 
-// Import UEL from singleton to avoid circular dependency
-export { UEL, uel } from './core/uel-singleton';
-
 // Import for use in this file
-import { UEL, uel } from './core/uel-singleton';
+import { type UEL, uel } from './core/uel-singleton';
 
 /**
  * Initialize UEL with default configuration.
@@ -444,7 +437,12 @@ export const UELHelpers = {
       // Migrate EventEmitter if it exists - using proper type casting
       if (observerSystem && typeof (observerSystem as any).emit === 'function') {
         const compatible = await uel.migrateEventEmitter(
-          observerSystem as unknown as { on: Function; off?: Function; emit: Function; listeners?: Function },
+          observerSystem as unknown as {
+            on: Function;
+            off?: Function;
+            emit: Function;
+            listeners?: Function;
+          },
           'migrated-observer',
           'system'
         );

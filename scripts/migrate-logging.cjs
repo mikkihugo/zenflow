@@ -48,10 +48,11 @@ module.exports = function transformer(file, api) {
   let hasConsoleUsage = false;
   let loggerImported = false;
   
-  // Check if logger is already imported
+  // Check if logger is already imported (including LogTape imports)
   source.find(j.ImportDeclaration).forEach(path => {
     if (path.value.source.value.includes('logging-config') ||
-        path.value.source.value.includes('logger')) {
+        path.value.source.value.includes('logger') ||
+        path.value.source.value.includes('@logtape/logtape')) {
       loggerImported = true;
     }
   });

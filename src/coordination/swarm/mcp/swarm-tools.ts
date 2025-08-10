@@ -8,9 +8,9 @@
  * @file Coordination system: swarm-tools.
  */
 
-import { createLogger } from '../../../core/logger';
+import { getLogger } from '../../../config/logging-config';
 
-const logger = createLogger({ prefix: 'SwarmTools' });
+const logger = getLogger('SwarmTools');
 
 export class SwarmTools {
   public tools: Record<string, Function>;

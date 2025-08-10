@@ -1,26 +1,28 @@
 /**
- * Workflows Domain - Index
- * Exports for workflow execution and management.
- * Migrated from plugins to proper domain structure.
+ * @fileoverview Workflows Domain - Clean Architecture
+ * 
+ * Single source of truth for all workflow functionality.
+ * Google TypeScript style with unified, focused implementation.
  */
 
-// Re-export workflow types
-/**
- * @file Workflows module exports.
- */
+// Primary exports from unified engine
+export {WorkflowEngine} from './workflow-engine';
+export {WorkflowEngine as default} from './workflow-engine';
 
+// Re-export all types
 export type {
   WorkflowContext,
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-} from './engine';
-// Core workflow engine
-export { WorkflowEngine, WorkflowEngine as default } from './engine';
+  DocumentContent,
+  StepExecutionResult,
+  WorkflowData,
+} from './workflow-engine';
 
 // Import for factory use
-import { WorkflowEngine } from './engine';
+import {WorkflowEngine} from './workflow-engine';
 
 // Workflow utilities
 export const WorkflowUtils = {

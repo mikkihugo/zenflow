@@ -15,12 +15,12 @@ import { exec } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import { ProjectContextAnalyzer } from '../../knowledge/project-context-analyzer';
 import { NeuralDomainMapper } from './neural-domain-mapper';
 
 const execAsync = promisify(exec);
-const logger = createLogger({ prefix: 'BazelIntegrationTest' });
+const logger = getLogger('BazelIntegrationTest');
 
 interface TestResult {
   name: string;

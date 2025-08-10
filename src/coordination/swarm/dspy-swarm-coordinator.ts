@@ -9,13 +9,13 @@
  * @file Dspy-swarm coordination system.
  */
 
-import { createLogger } from '../../core/logger';
-import type { DSPyProgram, DSPyWrapper } from '../neural/dspy-wrapper';
-import { createDSPyWrapper } from '../neural/dspy-wrapper';
-import type { DSPyConfig } from '../neural/types/dspy-types';
-import type { AgentType } from '../types/agent-types';
+import { getLogger } from '../../config/logging-config';
+import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
+import { createDSPyWrapper } from '../../neural/dspy-wrapper';
+import type { DSPyConfig } from '../../neural/types/dspy-types';
+import type { AgentType } from '../types';
 
-const logger = createLogger({ prefix: 'DSPySwarmCoordinator' });
+const logger = getLogger('DSPySwarmCoordinator');
 
 /**
  * DSPy Agent - Each agent is a DSPy program with specific capabilities.

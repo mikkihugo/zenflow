@@ -10,8 +10,8 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { gunzipSync, gzipSync } from 'node:zlib';
-import type { IEventBus } from '@core/event-bus';
-import type { ILogger } from '@core/logger';
+import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { ILogger } from '../../../core/interfaces/base-interfaces';
 
 // Core communication types
 export interface Message {
@@ -1005,17 +1005,17 @@ export class CommunicationProtocols extends EventEmitter {
   private updateMessageMetrics(message: Message): void {
     // Update sender metrics
     const senderNode = this.nodes.get(message.sender);
-    if (senderNode) {
-      senderNode?.metrics.messagesSent++;
-      senderNode?.metrics.lastUpdated = new Date();
+    if (senderNode && senderNode.metrics) {
+      senderNode.metrics.messagesSent++;
+      senderNode.metrics.lastUpdated = new Date();
     }
 
     // Update recipient metrics
     for (const recipientId of message.recipients) {
       const recipientNode = this.nodes.get(recipientId);
-      if (recipientNode) {
-        recipientNode?.metrics.messagesReceived++;
-        recipientNode?.metrics.lastUpdated = new Date();
+      if (recipientNode && recipientNode.metrics) {
+        recipientNode.metrics.messagesReceived++;
+        recipientNode.metrics.lastUpdated = new Date();
       }
     }
   }
@@ -1174,6 +1174,7 @@ class RoutingEngine {
   ): Promise<void> {
     // Generic routing implementation
     for (const recipient of message.recipients) {
+      if (!recipient) continue;
       const route = routingTable.get(recipient);
       if (route && route.length > 0 && route[0]) {
         await this.forwardMessage(message, route[0], nodes);
@@ -1272,7 +1273,7 @@ class ConsensusEngine {
   private activeProposals = new Map<string, ConsensusProposal>();
 
   constructor(
-    private nodeId: string,
+    private _nodeId: string,
     private logger: ILogger
   ) {}
 
@@ -1287,7 +1288,7 @@ class ConsensusEngine {
     this.logger.debug('Consensus initiated', {
       proposalId,
       type: proposal.type,
-      nodeId: this.nodeId,
+      nodeId: this._nodeId,
     });
   }
 
@@ -1317,7 +1318,7 @@ class ConsensusEngine {
 
 class GossipEngine {
   constructor(
-    private nodeId: string,
+    private _nodeId: string,
     private logger: ILogger
   ) {}
 
@@ -1330,7 +1331,7 @@ class GossipEngine {
     this.logger.debug('Gossip state propagated', {
       key,
       version: state.version,
-      nodeId: this.nodeId,
+      nodeId: this._nodeId,
     });
   }
 
@@ -1348,7 +1349,7 @@ class GossipEngine {
       this.logger.debug('Gossip state updated', {
         key,
         version: state.version,
-        nodeId: this.nodeId,
+        nodeId: this._nodeId,
       });
     }
   }
