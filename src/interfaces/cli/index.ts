@@ -1,5 +1,5 @@
 /**
- * @file Advanced CLI Interface Module
+ * @file Advanced CLI Interface Module.
  *
  * Exports all components of the revolutionary Advanced CLI system.
  * Provides intelligent project management, real-time swarm coordination,
@@ -32,6 +32,7 @@ export interface CLIModuleConfig {
  * Initialize the Advanced CLI Module.
  *
  * @param config
+ * @example
  */
 export async function initializeAdvancedCLI(
   config: Partial<CLIModuleConfig> = {}
@@ -66,6 +67,8 @@ export async function initializeAdvancedCLI(
  * Create CLI instance with intelligent defaults.
  *
  * @param _options
+ * @param options
+ * @example
  */
 export function createAdvancedCLI(options: Partial<CLIModuleConfig> = {}): AdvancedCLIEngine {
   return new AdvancedCLIEngine();

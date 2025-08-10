@@ -18,8 +18,7 @@ import type {
   DocumentQueryOptions,
   DocumentSearchOptions,
 } from '../../../database/managers/document-manager';
-import type { DocumentType } from '../../../types/workflow-types';
-import { createLogger, type Logger } from '../../../utils/logger';
+import { DocumentService } from '../../../database/services/document-service-legacy';
 import type {
   CommandResult,
   DocumentData,
@@ -28,6 +27,8 @@ import type {
   TaskData,
 } from '../../../interfaces/web/web-data-service';
 import { WebDataService } from '../../../interfaces/web/web-data-service';
+import type { DocumentType } from '../../../types/workflow-types';
+import { createLogger, type Logger } from '../../../utils/logger';
 import type {
   IService,
   ServiceDependencyConfig,
@@ -39,14 +40,8 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../../core/interfaces';
-import {
-  ServiceEnvironment,
-  ServicePriority,
-  ServiceType,
-} from '../types';
-import type { ServiceError } from '../types';
-import { DocumentService } from '../../../database/services/document-service-legacy';
-import type { DataServiceConfig } from '../types';
+import type { DataServiceConfig, ServiceError } from '../types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
 
 /**
  * Data service adapter configuration extending USL DataServiceConfig.
@@ -673,13 +668,21 @@ export class DataServiceAdapter implements IService {
       }
 
       // Validate retry configuration
-      if (dataConfig?.retry?.enabled && dataConfig?.retry?.maxAttempts && dataConfig?.retry?.maxAttempts < 1) {
+      if (
+        dataConfig?.retry?.enabled &&
+        dataConfig?.retry?.maxAttempts &&
+        dataConfig?.retry?.maxAttempts < 1
+      ) {
         this.logger.error('Retry max attempts must be at least 1');
         return false;
       }
 
       // Validate cache configuration
-      if (dataConfig?.cache?.enabled && dataConfig?.cache?.maxSize && dataConfig?.cache?.maxSize < 1) {
+      if (
+        dataConfig?.cache?.enabled &&
+        dataConfig?.cache?.maxSize &&
+        dataConfig?.cache?.maxSize < 1
+      ) {
         this.logger.error('Cache max size must be at least 1');
         return false;
       }
@@ -755,13 +758,23 @@ export class DataServiceAdapter implements IService {
     try {
       // Check if service is ready
       if (!this.isReady()) {
-        throw new Error(`ServiceOperationError: ${this.name} - Operation ${operation} failed: Service not ready`);
+        throw new Error(
+          `ServiceOperationError: ${this.name} - Operation ${operation} failed: Service not ready`
+        );
       }
 
       // Apply timeout if specified
       const timeout = options?.timeout || this.config.performance?.requestTimeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error(`ServiceTimeoutError: ${this.name} - Operation ${operation} timed out after ${timeout}ms`)), timeout);
+        setTimeout(
+          () =>
+            reject(
+              new Error(
+                `ServiceTimeoutError: ${this.name} - Operation ${operation} timed out after ${timeout}ms`
+              )
+            ),
+          timeout
+        );
       });
 
       // Execute operation with timeout
@@ -1092,7 +1105,9 @@ export class DataServiceAdapter implements IService {
         return (await this.getServiceStats()) as T;
 
       default:
-        throw new Error(`ServiceOperationError: ${this.name} - Operation ${operation} failed: Unknown operation`);
+        throw new Error(
+          `ServiceOperationError: ${this.name} - Operation ${operation} failed: Unknown operation`
+        );
     }
   }
 

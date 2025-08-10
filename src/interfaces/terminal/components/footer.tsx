@@ -5,10 +5,8 @@
  * Adapts content based on current mode and available actions.
  */
 /**
- * @file Interface implementation: footer
+ * @file Interface implementation: footer.
  */
-
-
 
 import { Box, Text } from 'ink';
 

@@ -14,14 +14,14 @@ console.log('🔧 Fixing final TypeScript syntax errors...\n');
 const buildOutput = execSync('npm run build 2>&1 || true', { encoding: 'utf8' });
 const errorLines = buildOutput
   .split('\n')
-  .filter(line => line.includes(') error TS'))
+  .filter((line) => line.includes(') error TS'))
   .slice(0, 50); // Limit to first 50 errors
 
 console.log(`Found ${errorLines.length} TypeScript errors to fix:`);
 
 // Parse errors by file
 const errorsByFile = new Map();
-errorLines.forEach(line => {
+errorLines.forEach((line) => {
   const match = line.match(/^([^(]+)\((\d+),(\d+)\): error (TS\d+): (.+)$/);
   if (match) {
     const [, file, lineNum, col, errorCode, message] = match;
@@ -32,7 +32,7 @@ errorLines.forEach(line => {
       line: parseInt(lineNum),
       column: parseInt(col),
       code: errorCode,
-      message: message.trim()
+      message: message.trim(),
     });
   }
 });
@@ -44,14 +44,14 @@ let fixedCount = 0;
 // Fix each file
 for (const [filePath, errors] of errorsByFile) {
   console.log(`📁 Fixing ${filePath} (${errors.length} errors):`);
-  
+
   try {
     if (!fs.existsSync(filePath)) {
       console.log(`  ⚠️ File not found: ${filePath}`);
       continue;
     }
 
-    let content = fs.readFileSync(filePath, 'utf8');
+    const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
     let modified = false;
 
@@ -61,7 +61,7 @@ for (const [filePath, errors] of errorsByFile) {
     for (const error of errors) {
       const lineIndex = error.line - 1;
       if (lineIndex < 0 || lineIndex >= lines.length) continue;
-      
+
       const line = lines[lineIndex];
       let fixedLine = line;
 
@@ -102,8 +102,8 @@ for (const [filePath, errors] of errorsByFile) {
           break;
 
         case 'TS1381': // Unexpected token
-          if (error.message.includes("rbrace")) {
-            fixedLine = line.replace(/}\s*$/, "}");
+          if (error.message.includes('rbrace')) {
+            fixedLine = line.replace(/}\s*$/, '}');
           }
           break;
 
@@ -143,7 +143,9 @@ for (const [filePath, errors] of errorsByFile) {
 
       if (fixedLine !== line) {
         lines[lineIndex] = fixedLine;
-        console.log(`  ✅ Fixed ${error.code} at line ${error.line}: "${line.trim()}" → "${fixedLine.trim()}"`);
+        console.log(
+          `  ✅ Fixed ${error.code} at line ${error.line}: "${line.trim()}" → "${fixedLine.trim()}"`
+        );
         modified = true;
         fixedCount++;
       } else {
@@ -157,11 +159,10 @@ for (const [filePath, errors] of errorsByFile) {
     } else {
       console.log(`  ℹ️ No changes needed in ${filePath}`);
     }
-    
   } catch (error) {
     console.error(`  ❌ Error processing ${filePath}:`, error.message);
   }
-  
+
   console.log('');
 }
 
@@ -172,12 +173,13 @@ try {
   const newBuildOutput = execSync('npm run build 2>&1 || true', { encoding: 'utf8' });
   const remainingErrors = newBuildOutput
     .split('\n')
-    .filter(line => line.includes(') error TS'))
-    .length;
-    
+    .filter((line) => line.includes(') error TS')).length;
+
   console.log(`📊 TypeScript errors: Before: ${errorLines.length}, After: ${remainingErrors}`);
   if (remainingErrors < errorLines.length) {
-    console.log(`🚀 Reduced errors by ${errorLines.length - remainingErrors} (${Math.round((errorLines.length - remainingErrors) / errorLines.length * 100)}% improvement)`);
+    console.log(
+      `🚀 Reduced errors by ${errorLines.length - remainingErrors} (${Math.round(((errorLines.length - remainingErrors) / errorLines.length) * 100)}% improvement)`
+    );
   }
 } catch (error) {
   console.log('⚠️ Could not verify improvements due to build error');

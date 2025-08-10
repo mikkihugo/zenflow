@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: schemas
+ * @file Coordination system: schemas.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

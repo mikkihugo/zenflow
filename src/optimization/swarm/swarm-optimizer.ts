@@ -3,10 +3,8 @@
  * Optimizes message routing, caching, latency, and scaling for swarm systems.
  */
 /**
- * @file swarm-optimizer implementation
+ * @file Swarm-optimizer implementation.
  */
-
-
 
 import { createLogger } from '../../core/logger';
 import type { SwarmOptimizer } from '../interfaces/optimization-interfaces';
@@ -34,6 +32,57 @@ export interface CoordinationMetrics {
   coordinationOverhead: number;
   faultTolerance: number;
   networkUtilization: number;
+}
+
+export interface SwarmTopology {
+  type: 'mesh' | 'hierarchical' | 'ring' | 'star';
+  nodes: number;
+  connections: number;
+}
+
+export interface RoutingOptimization {
+  routingLatency: number;
+  messageCompression: number;
+  protocolEfficiency: number;
+  topologyOptimization: string;
+  routingAlgorithmImprovement: number;
+  executionTime: number;
+  performance: {
+    latencyImprovement: number;
+    executionTime: number;
+    beforeLatency: number;
+    afterLatency: number;
+  };
+}
+
+export interface CoordinationLayer {
+  [key: string]: any;
+}
+
+export interface CacheStrategy {
+  hitRatio: number;
+  evictionPolicy: 'LRU' | 'LFU' | 'TTL' | 'adaptive';
+  cacheSize: number;
+  layers: number;
+}
+
+export interface Protocol {
+  [key: string]: any;
+}
+
+export interface LatencyReduction {
+  reductionPercentage: number;
+  averageLatency: number;
+  p95Latency: number;
+  optimizationTechniques: string[];
+}
+
+export interface ScalingStrategy {
+  maxAgents: number;
+  loadBalancing: 'round-robin' | 'least-connections' | 'weighted' | 'adaptive';
+  autoScaling: boolean;
+  resourceAllocation: string;
+  utilizationAnalysis: any;
 }
 
 export class SwarmCoordinationOptimizer implements SwarmOptimizer {

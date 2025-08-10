@@ -13,10 +13,8 @@
  * - Chaos engineering support for testing recovery procedures.
  */
 /**
- * @file Coordination system: recovery-workflows
+ * @file Coordination system: recovery-workflows.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { ErrorFactory } from './errors';

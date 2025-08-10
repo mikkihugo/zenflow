@@ -1,3 +1,7 @@
+/**
+ * @file Memory and Neural MCP Tools - Provides persistent memory storage/retrieval and neural network operations for the MCP system.
+ */
+
 const memoryNeuralTools: MCPTool[] = [
   {
     name: 'memory_usage',

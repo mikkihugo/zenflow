@@ -1,13 +1,11 @@
 /**
  * Advanced Performance Optimization System
  * Provides adaptive batch sizing, connection pooling and reuse,
- * message deduplication and caching, real-time performance monitoring
+ * message deduplication and caching, real-time performance monitoring.
  */
 /**
- * @file Coordination system: performance-optimizer
+ * @file Coordination system: performance-optimizer.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus } from '@core/event-bus';

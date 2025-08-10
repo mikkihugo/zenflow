@@ -1,9 +1,10 @@
 /**
- * @fileoverview Centralized Logging Configuration
+ * @file Centralized Logging Configuration
  * Provides unified logging configuration and factory methods for the entire application.
  */
 
-import { Logger as CoreLogger } from '../core/logger';
+import { getLogger as getLogTapeLogger } from '@logtape/logtape';
+import type { ILogger } from '../core/bootstrap-logger';
 
 export enum LoggingLevel {
   DEBUG = 'debug',
@@ -21,11 +22,7 @@ export interface LoggingConfig {
   components: Record<string, LoggingLevel>;
 }
 
-export interface Logger {
-  debug(message: string, meta?: any): void;
-  info(message: string, meta?: any): void;
-  warn(message: string, meta?: any): void;
-  error(message: string, meta?: any): void;
+export interface Logger extends ILogger {
   success?(message: string, meta?: any): void;
   progress?(message: string, meta?: any): void;
 }
@@ -109,10 +106,10 @@ class LoggingConfigurationManager {
     process.env['LOG_LEVEL'] = componentLevel;
 
     try {
-      // Create logger using existing infrastructure
-      const coreLogger = new CoreLogger(component);
+      // Create logger using logtape (no circular deps since we import directly)
+      const coreLogger = getLogTapeLogger(component);
 
-      // Enhance with additional methods if they exist
+      // Enhance with additional methods compatible with existing interfaces
       const enhancedLogger: Logger = {
         debug: (message: string, meta?: any) => coreLogger.debug(message, meta),
         info: (message: string, meta?: any) => coreLogger.info(message, meta),
@@ -120,15 +117,14 @@ class LoggingConfigurationManager {
         error: (message: string, meta?: any) => coreLogger.error(message, meta),
       };
 
-      // Add success and progress methods if available
-      if ('success' in coreLogger && typeof coreLogger.success === 'function') {
-        enhancedLogger.success = (message: string, meta?: any) => coreLogger.success(message, meta);
-      }
+      // Add success and progress methods 
+      enhancedLogger.success = (message: string, meta?: any) => {
+        coreLogger.info(`✅ ${message}`, meta);
+      };
 
-      if ('progress' in coreLogger && typeof coreLogger.progress === 'function') {
-        enhancedLogger.progress = (message: string, meta?: any) =>
-          coreLogger.progress(message, meta);
-      }
+      enhancedLogger.progress = (message: string, meta?: any) => {
+        coreLogger.info(`🔄 ${message}`, meta);
+      };
 
       return enhancedLogger;
     } finally {

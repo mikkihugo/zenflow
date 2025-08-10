@@ -1,12 +1,10 @@
 /**
  * Security module for command sanitization and input validation
- * Addresses critical vulnerabilities in Issue #115
+ * Addresses critical vulnerabilities in Issue #115.
  */
 /**
- * @file Coordination system: command-sanitizer
+ * @file Coordination system: command-sanitizer.
  */
-
-
 
 const { spawn } = require('node:child_process');
 const path = require('node:path');

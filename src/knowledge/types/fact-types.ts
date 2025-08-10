@@ -4,10 +4,8 @@
  * Type definitions for the FACT storage system - independent from RAG/vector systems.
  */
 /**
- * @file TypeScript type definitions
+ * @file TypeScript type definitions.
  */
-
-
 
 export interface FACTStorageConfig {
   backend: 'sqlite' | 'jsonb' | 'file' | 'memory';

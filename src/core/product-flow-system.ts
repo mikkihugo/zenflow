@@ -7,10 +7,8 @@
  * - Clear naming: Product Flow = WHAT, SPARC = HOW.
  */
 /**
- * @file product-flow-system implementation
+ * @file Product-flow-system implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';

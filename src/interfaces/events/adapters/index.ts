@@ -8,6 +8,30 @@
  * @file Adapters module exports.
  */
 
+import {
+  createCommunicationEventAdapter as _createCommunicationEventAdapter,
+  createDefaultCommunicationEventAdapterConfig as _createDefaultCommunicationEventAdapterConfig,
+  CommunicationEventAdapter,
+  CommunicationEventAdapterConfig,
+  CommunicationEventHelpers,
+} from './communication-event-adapter';
+import { CommunicationEventFactory } from './communication-event-factory';
+import {
+  createCoordinationEventAdapter as _createCoordinationEventAdapter,
+  createDefaultCoordinationEventAdapterConfig as _createDefaultCoordinationEventAdapterConfig,
+  CoordinationEventAdapter,
+  CoordinationEventAdapterConfig,
+  CoordinationEventHelpers,
+} from './coordination-event-adapter';
+import { CoordinationEventManagerFactory } from './coordination-event-factory';
+import {
+  createDefaultMonitoringEventAdapterConfig as _createDefaultMonitoringEventAdapterConfig,
+  createMonitoringEventAdapter as _createMonitoringEventAdapter,
+  MonitoringEventAdapter,
+  MonitoringEventAdapterConfig,
+  MonitoringEventHelpers,
+} from './monitoring-event-adapter';
+import { MonitoringEventFactory } from './monitoring-event-factory';
 // Import functions and types for local use in EventAdapterUtils
 import {
   createDefaultSystemEventAdapterConfig as _createDefaultSystemEventAdapterConfig,
@@ -16,36 +40,10 @@ import {
   SystemEventAdapterConfig,
   SystemEventHelpers,
 } from './system-event-adapter';
-import {
-  createDefaultCoordinationEventAdapterConfig as _createDefaultCoordinationEventAdapterConfig,
-  createCoordinationEventAdapter as _createCoordinationEventAdapter,
-  CoordinationEventAdapter,
-  CoordinationEventAdapterConfig,
-  CoordinationEventHelpers,
-} from './coordination-event-adapter';
-import {
-  createDefaultCommunicationEventAdapterConfig as _createDefaultCommunicationEventAdapterConfig,
-  createCommunicationEventAdapter as _createCommunicationEventAdapter,
-  CommunicationEventAdapter,
-  CommunicationEventAdapterConfig,
-  CommunicationEventHelpers,
-} from './communication-event-adapter';
-import {
-  createDefaultMonitoringEventAdapterConfig as _createDefaultMonitoringEventAdapterConfig,
-  createMonitoringEventAdapter as _createMonitoringEventAdapter,
-  MonitoringEventAdapter,
-  MonitoringEventAdapterConfig,
-  MonitoringEventHelpers,
-} from './monitoring-event-adapter';
-
 // Import factory classes first to ensure they're available
 import { SystemEventManagerFactory } from './system-event-factory';
-import { CoordinationEventManagerFactory } from './coordination-event-factory';
-import { CommunicationEventFactory } from './communication-event-factory';
-import { MonitoringEventFactory } from './monitoring-event-factory';
 
-
-
+// Type exports for convenience
 export type {
   EventBatch,
   EventEmissionOptions,
@@ -54,6 +52,8 @@ export type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
+  EventPriority,
+  EventProcessingStrategy,
   EventQueryOptions,
   EventSubscription,
   EventTransform,
@@ -65,11 +65,6 @@ export {
   EventManagerPresets,
   EventManagerTypes,
   EventTypeGuards,
-} from '../core/interfaces';
-// Type exports for convenience
-export type {
-  EventPriority,
-  EventProcessingStrategy,
 } from '../core/interfaces';
 export type {
   CommunicationEvent,
@@ -93,10 +88,11 @@ export {
 } from './communication-event-adapter';
 export { CommunicationEventAdapter, CommunicationEventAdapterConfig, CommunicationEventHelpers };
 export type { CommunicationEventAdapterConfig as CommunicationEventAdapterConfigType } from './communication-event-adapter';
-
 // Communication Event Factory - Factory pattern
+// Re-export CommunicationEventFactory for compatibility
 export {
   CommunicationEventFactory,
+  CommunicationEventFactory as CommunicationEventFactoryImpl,
   communicationEventFactory,
   createComprehensiveCommunicationAdapter,
   createHTTPCommunicationAdapter,
@@ -104,8 +100,6 @@ export {
   createProtocolCommunicationAdapter,
   createWebSocketCommunicationAdapter,
 } from './communication-event-factory';
-// Re-export CommunicationEventFactory for compatibility
-export { CommunicationEventFactory as CommunicationEventFactoryImpl } from './communication-event-factory';
 // Coordination Event Adapter - Main export
 export {
   createCoordinationEventAdapter,
@@ -173,10 +167,10 @@ export type EventAdapterType = (typeof EventAdapterTypes)[keyof typeof EventAdap
  * Adapter factory registry for easy access to all adapter factories.
  */
 export const EventAdapterFactories = {
-  [EventAdapterTypes["SYSTEM"]]: SystemEventManagerFactory,
-  [EventAdapterTypes["COORDINATION"]]: CoordinationEventManagerFactory,
-  [EventAdapterTypes["COMMUNICATION"]]: CommunicationEventFactory,
-  [EventAdapterTypes["MONITORING"]]: MonitoringEventFactory,
+  [EventAdapterTypes['SYSTEM']]: SystemEventManagerFactory,
+  [EventAdapterTypes['COORDINATION']]: CoordinationEventManagerFactory,
+  [EventAdapterTypes['COMMUNICATION']]: CommunicationEventFactory,
+  [EventAdapterTypes['MONITORING']]: MonitoringEventFactory,
 } as const;
 
 /**

@@ -81,10 +81,10 @@ async function runDemo() {
   // Listen to progress events
   confidenceBuilder.on('progress', (event) => {
     logger.info('📊 Progress Event:', {
-      iteration: event["iteration"],
-      confidence: `${(event["confidence"] * 100).toFixed(1)}%`,
-      domains: event["domainCount"],
-      metrics: Object.entries(event["metrics"])
+      iteration: event['iteration'],
+      confidence: `${(event['confidence'] * 100).toFixed(1)}%`,
+      domains: event['domainCount'],
+      metrics: Object.entries(event['metrics'])
         .map(([key, value]) => `${key}: ${(value * 100).toFixed(1)}%`)
         .join(', '),
     });

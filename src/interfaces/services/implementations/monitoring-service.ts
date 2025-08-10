@@ -5,10 +5,8 @@
  * alerting, and performance tracking.
  */
 /**
- * @file monitoring service implementation
+ * @file Monitoring service implementation.
  */
-
-
 
 import type { IService } from '../core/interfaces';
 import type { MonitoringServiceConfig, ServiceOperationOptions } from '../types';

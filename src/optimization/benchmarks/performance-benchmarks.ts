@@ -3,10 +3,8 @@
  * Comprehensive benchmarking for all optimization components.
  */
 /**
- * @file performance-benchmarks implementation
+ * @file Performance-benchmarks implementation.
  */
-
-
 
 import type {
   DataOptimizer,

@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * @file test-template processing engine
+ * @file Test-template processing engine.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

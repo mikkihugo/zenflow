@@ -1,7 +1,7 @@
 /**
  * @file Claude-Zen Batch Execution Engine
  * Implementation of claude-zen's "1 MESSAGE = ALL OPERATIONS" principle.
- * Achieves 2.8-4.4x speed improvements through concurrent execution
+ * Achieves 2.8-4.4x speed improvements through concurrent execution.
  */
 
 import { createLogger } from '../../core/logger';
@@ -79,9 +79,10 @@ export class BatchEngine {
 
   /**
    * Execute multiple operations concurrently following the claude-zen pattern
-   * This is the core implementation of "1 MESSAGE = ALL OPERATIONS"
+   * This is the core implementation of "1 MESSAGE = ALL OPERATIONS".
    *
    * @param operations.
+   * @param operations
    */
   async executeBatch(operations: BatchOperation[]): Promise<BatchExecutionSummary> {
     const startTime = Date.now();
@@ -248,9 +249,10 @@ export class BatchEngine {
   }
 
   /**
-   * Perform the actual operation (to be extended by specific implementations)
+   * Perform the actual operation (to be extended by specific implementations).
    *
    * @param operation.
+   * @param operation
    */
   private async performOperation(operation: BatchOperation): Promise<unknown> {
     switch (operation.type) {
@@ -268,7 +270,7 @@ export class BatchEngine {
   }
 
   /**
-   * Execute tool operation (to be implemented by specific tool handlers)
+   * Execute tool operation (to be implemented by specific tool handlers).
    *
    * @param operation
    */
@@ -287,7 +289,7 @@ export class BatchEngine {
   }
 
   /**
-   * Execute file operation (implemented by file-batch.ts)
+   * Execute file operation (implemented by file-batch.ts).
    *
    * @param operation
    */
@@ -306,7 +308,7 @@ export class BatchEngine {
   }
 
   /**
-   * Execute swarm operation (implemented by swarm-batch.ts)
+   * Execute swarm operation (implemented by swarm-batch.ts).
    *
    * @param operation
    */
@@ -433,6 +435,7 @@ export class BatchEngine {
  * @param operation
  * @param params
  * @param options
+ * @example
  */
 export function createBatchOperation(
   id: string,
@@ -464,6 +467,7 @@ export function createBatchOperation(
  * Utility to create multiple tool operations for batch execution.
  *
  * @param tools
+ * @example
  */
 export function createToolBatch(
   tools: Array<{

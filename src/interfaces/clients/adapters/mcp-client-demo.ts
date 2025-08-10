@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: mcp-client-demo
+ * @file Interface implementation: mcp-client-demo.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -14,10 +13,16 @@ const logger = getLogger('interfaces-clients-adapters-mcp-client-demo');
  * and provides examples of both stdio and HTTP protocol usage.
  */
 
-import { createMCPConfigFromLegacy, MCPClientAdapter, MCPClientFactory } from './mcp-client-adapter.js';
+import {
+  createMCPConfigFromLegacy,
+  MCPClientAdapter,
+  MCPClientFactory,
+} from './mcp-client-adapter.js';
 
 /**
  * Example: Convert existing external MCP client setup to UACL.
+ *
+ * @example
  */
 export async function demonstrateMCPClientConversion() {
   // 1. Create UACL MCP clients from existing configurations
@@ -117,6 +122,8 @@ export async function demonstrateMCPClientConversion() {
 
 /**
  * Example: Migrate from legacy ExternalMCPClient to UACL.
+ *
+ * @example
  */
 export async function migrateLegacyMCPClient() {
   // Legacy configuration (from existing external-mcp-client.ts)
@@ -175,6 +182,8 @@ export async function migrateLegacyMCPClient() {
 
 /**
  * Example: Usage patterns for different MCP protocols.
+ *
+ * @example
  */
 export async function demonstrateProtocolPatterns() {
   const factory = new MCPClientFactory();

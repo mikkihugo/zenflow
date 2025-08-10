@@ -2,21 +2,18 @@
  * USL Integration Service Factory.
  *
  * Factory for creating and managing IntegrationServiceAdapter instances.
- * with predefined configurations for different integration scenarios.
+ * With predefined configurations for different integration scenarios.
  * Provides convenience methods for Architecture Storage, Safe API, and.
  * Protocol Management integration patterns.
  */
 /**
- * @file Interface implementation: integration-service-factory
+ * @file Interface implementation: integration-service-factory.
  */
 
-
-
-import { createLogger, type Logger } from '../utils/logger';
-import { getMCPServerURL } from '../config/url-builder';
+import { getMCPServerURL } from '../../../config';
 import type { IService, IServiceFactory, ServiceConfig } from '../core/interfaces';
-
 import type { ServiceType } from '../types';
+import { createLogger, type Logger } from '../utils/logger';
 import {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
@@ -45,6 +42,7 @@ export interface IntegrationServiceFactoryOptions {
     enabled: boolean;
     maxAttempts: number;
     backoffMultiplier: number;
+    retryableOperations?: string[];
   };
   /** Default security settings for all created services */
   defaultSecuritySettings?: {
@@ -64,7 +62,7 @@ export interface IntegrationServiceFactoryOptions {
  *
  * @example
  */
-export class IntegrationServiceFactory implements IServiceFactory {
+export class IntegrationServiceFactory implements IServiceFactory<ServiceConfig> {
   private logger: Logger;
   private options: IntegrationServiceFactoryOptions;
   private createdServices = new Map<string, IntegrationServiceAdapter>();
@@ -136,6 +134,166 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
+   * Create multiple service instances.
+   *
+   * @param configs
+   */
+  async createMultiple(configs: ServiceConfig[]): Promise<IService[]> {
+    return Promise.all(configs.map(config => this.create(config)));
+  }
+
+  /**
+   * Get a service instance by name.
+   *
+   * @param name
+   */
+  get(name: string): IService | undefined {
+    return this.createdServices.get(name);
+  }
+
+  /**
+   * List all managed service instances.
+   */
+  list(): IService[] {
+    return Array.from(this.createdServices.values());
+  }
+
+  /**
+   * Check if a service with the given name exists.
+   *
+   * @param name
+   */
+  has(name: string): boolean {
+    return this.createdServices.has(name);
+  }
+
+  /**
+   * Remove and destroy a service instance.
+   *
+   * @param name
+   */
+  async remove(name: string): Promise<boolean> {
+    return await this.removeService(name);
+  }
+
+  /**
+   * Check if factory supports the given service type.
+   *
+   * @param type
+   */
+  supportsType(type: string): boolean {
+    return this.canHandle(type);
+  }
+
+  /**
+   * Start all services.
+   */
+  async startAll(): Promise<void> {
+    const startPromises = Array.from(this.createdServices.values()).map(async (service) => {
+      try {
+        await service.start();
+      } catch (error) {
+        this.logger.error(`Error starting service ${service.name}:`, error);
+      }
+    });
+    await Promise.all(startPromises);
+  }
+
+  /**
+   * Stop all services.
+   */
+  async stopAll(): Promise<void> {
+    const stopPromises = Array.from(this.createdServices.values()).map(async (service) => {
+      try {
+        await service.stop();
+      } catch (error) {
+        this.logger.error(`Error stopping service ${service.name}:`, error);
+      }
+    });
+    await Promise.all(stopPromises);
+  }
+
+  /**
+   * Health check all services.
+   */
+  async healthCheckAll(): Promise<Map<string, any>> {
+    const results = new Map();
+    for (const [name, service] of this.createdServices) {
+      try {
+        results.set(name, await service.getStatus());
+      } catch (error) {
+        results.set(name, { health: 'unhealthy', error: error.message });
+      }
+    }
+    return results;
+  }
+
+  /**
+   * Get metrics for all services.
+   */
+  async getMetricsAll(): Promise<Map<string, any>> {
+    const results = new Map();
+    for (const [name, service] of this.createdServices) {
+      try {
+        results.set(name, await service.getMetrics());
+      } catch (error) {
+        results.set(name, { error: error.message });
+      }
+    }
+    return results;
+  }
+
+  /**
+   * Get active service count.
+   */
+  getActiveCount(): number {
+    return this.createdServices.size;
+  }
+
+  /**
+   * Get services by type.
+   *
+   * @param type
+   */
+  getServicesByType(type: string): IService[] {
+    return Array.from(this.createdServices.values()).filter(service => service.type === type);
+  }
+
+  /**
+   * Validate configuration.
+   *
+   * @param config
+   */
+  async validateConfig(config: ServiceConfig): Promise<boolean> {
+    try {
+      return this.canHandle(config.type) && config.name != null;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Get configuration schema.
+   *
+   * @param type
+   */
+  getConfigSchema(type: string): Record<string, any> | undefined {
+    if (this.canHandle(type)) {
+      return {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          type: { type: 'string' },
+          enabled: { type: 'boolean' },
+          timeout: { type: 'number' },
+        },
+        required: ['name', 'type']
+      };
+    }
+    return undefined;
+  }
+
+  /**
    * Get supported service types.
    */
   getSupportedTypes(): (ServiceType | string)[] {
@@ -163,24 +321,36 @@ export class IntegrationServiceFactory implements IServiceFactory {
         autoInitialize: true,
         enableVersioning: true,
         enableValidationTracking: true,
-        cachingEnabled: this.options.enableGlobalCaching,
+        ...(this.options.enableGlobalCaching !== undefined && { cachingEnabled: this.options.enableGlobalCaching }),
       },
       safeAPI: { enabled: false },
-      protocolManagement: { enabled: false },
+      protocolManagement: {
+        enabled: false,
+        supportedProtocols: [],
+        defaultProtocol: 'http',
+      },
       cache: {
-        enabled: this.options.enableGlobalCaching,
+        enabled: this.options.enableGlobalCaching ?? true,
         strategy: 'memory',
         defaultTTL: 600000,
         maxSize: 1000,
         keyPrefix: `arch-storage-${name}:`,
       },
-      retry: this.options.defaultRetrySettings,
+      retry: this.options.defaultRetrySettings ? {
+        ...this.options.defaultRetrySettings,
+        retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
+          'architecture-save',
+          'architecture-retrieve',
+          'architecture-update',
+          'architecture-search',
+        ],
+      } : undefined,
       security: this.options.defaultSecuritySettings,
       performance: {
-        enableMetricsCollection: this.options.enableGlobalMetrics,
         enableRequestDeduplication: true,
         connectionPooling: true,
         maxConcurrency: 10,
+        ...(this.options.enableGlobalMetrics !== undefined && { enableMetricsCollection: this.options.enableGlobalMetrics }),
       },
       ...options,
     });
@@ -221,8 +391,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
           burstSize: 200,
         },
         authentication: {
-          type: 'bearer',
-          credentials: undefined,
+          type: 'bearer' as const,
         },
         validation: {
           enabled: true,
@@ -230,21 +399,33 @@ export class IntegrationServiceFactory implements IServiceFactory {
           sanitization: true,
         },
       },
-      protocolManagement: { enabled: false },
+      protocolManagement: {
+        enabled: false,
+        supportedProtocols: [],
+        defaultProtocol: 'http',
+      },
       cache: {
-        enabled: this.options.enableGlobalCaching,
+        enabled: this.options.enableGlobalCaching ?? true,
         strategy: 'memory',
         defaultTTL: 300000, // 5 minutes for API responses
         maxSize: 500,
         keyPrefix: `safe-api-${name}:`,
       },
-      retry: this.options.defaultRetrySettings,
+      retry: this.options.defaultRetrySettings ? {
+        ...this.options.defaultRetrySettings,
+        retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
+          'api-get',
+          'api-post',
+          'api-put',
+          'api-delete',
+        ],
+      } : undefined,
       security: this.options.defaultSecuritySettings,
       performance: {
-        enableMetricsCollection: this.options.enableGlobalMetrics,
         enableRequestDeduplication: true,
         connectionPooling: true,
         maxConcurrency: 20,
+        ...(this.options.enableGlobalMetrics !== undefined && { enableMetricsCollection: this.options.enableGlobalMetrics }),
       },
       ...options,
     });
@@ -304,19 +485,26 @@ export class IntegrationServiceFactory implements IServiceFactory {
         enableCircuitBreaker: true,
       },
       cache: {
-        enabled: this.options.enableGlobalCaching,
+        enabled: this.options.enableGlobalCaching ?? true,
         strategy: 'memory',
         defaultTTL: 120000, // 2 minutes for protocol data
         maxSize: 200,
         keyPrefix: `protocol-mgmt-${name}:`,
       },
-      retry: this.options.defaultRetrySettings,
+      retry: this.options.defaultRetrySettings ? {
+        ...this.options.defaultRetrySettings,
+        retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
+          'protocol-connect',
+          'protocol-send',
+          'protocol-healthcheck',
+        ],
+      } : undefined,
       security: this.options.defaultSecuritySettings,
       performance: {
-        enableMetricsCollection: this.options.enableGlobalMetrics,
         enableRequestDeduplication: false, // Protocols may need exact message delivery
         connectionPooling: true,
         maxConcurrency: 30,
+        ...(this.options.enableGlobalMetrics !== undefined && { enableMetricsCollection: this.options.enableGlobalMetrics }),
       },
       ...options,
     });
@@ -331,10 +519,11 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Create unified integration adapter (all features enabled)
+   * Create unified integration adapter (all features enabled).
    *
    * @param name
    * @param options.
+   * @param options
    */
   async createUnifiedIntegrationAdapter(
     name: string,
@@ -356,7 +545,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
     const config = createDefaultIntegrationServiceAdapterConfig(name, {
       architectureStorage: {
         enabled: true,
-        databaseType,
+        ...(databaseType !== undefined && { databaseType }),
         autoInitialize: true,
         enableVersioning: true,
         enableValidationTracking: true,
@@ -373,8 +562,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
           burstSize: 200,
         },
         authentication: {
-          type: 'bearer',
-          credentials: undefined,
+          type: 'bearer' as const,
         },
         validation: {
           enabled: true,
@@ -384,7 +572,7 @@ export class IntegrationServiceFactory implements IServiceFactory {
       },
       protocolManagement: {
         enabled: true,
-        supportedProtocols,
+        supportedProtocols: supportedProtocols ?? ['http'],
         defaultProtocol: supportedProtocols?.[0] || 'http',
         connectionPooling: {
           enabled: true,
@@ -409,19 +597,28 @@ export class IntegrationServiceFactory implements IServiceFactory {
         enableCircuitBreaker: true,
       },
       cache: {
-        enabled: this.options.enableGlobalCaching,
+        enabled: this.options.enableGlobalCaching ?? true,
         strategy: 'memory',
         defaultTTL: 600000,
         maxSize: 2000, // Larger cache for unified service
         keyPrefix: `unified-integration-${name}:`,
       },
-      retry: this.options.defaultRetrySettings,
+      retry: this.options.defaultRetrySettings ? {
+        ...this.options.defaultRetrySettings,
+        retryableOperations: this.options.defaultRetrySettings.retryableOperations || [
+          'architecture-save',
+          'architecture-retrieve',
+          'api-get',
+          'api-post',
+          'protocol-connect',
+        ],
+      } : undefined,
       security: this.options.defaultSecuritySettings,
       performance: {
-        enableMetricsCollection: this.options.enableGlobalMetrics,
         enableRequestDeduplication: true,
         connectionPooling: true,
         maxConcurrency: 50,
+        ...(this.options.enableGlobalMetrics !== undefined && { enableMetricsCollection: this.options.enableGlobalMetrics }),
       },
       ...adapterOptions,
     });
@@ -436,11 +633,12 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Create Web Data integration adapter (specialized for web-based data operations)
+   * Create Web Data integration adapter (specialized for web-based data operations).
    *
    * @param name
    * @param baseURL
    * @param options.
+   * @param options
    */
   async createWebDataIntegrationAdapter(
     name: string,
@@ -517,11 +715,12 @@ export class IntegrationServiceFactory implements IServiceFactory {
   }
 
   /**
-   * Create Document integration adapter (specialized for document operations)
+   * Create Document integration adapter (specialized for document operations).
    *
    * @param name
    * @param databaseType
    * @param options.
+   * @param options
    */
   async createDocumentIntegrationAdapter(
     name: string,
@@ -540,7 +739,11 @@ export class IntegrationServiceFactory implements IServiceFactory {
         cachingEnabled: true,
       },
       safeAPI: { enabled: false },
-      protocolManagement: { enabled: false },
+      protocolManagement: {
+        enabled: false,
+        supportedProtocols: [],
+        defaultProtocol: 'http',
+      },
       cache: {
         enabled: true,
         strategy: 'memory',
@@ -702,8 +905,11 @@ export class IntegrationServiceFactory implements IServiceFactory {
     // Apply global factory settings
     if (this.options.enableGlobalCaching !== undefined) {
       adapterConfig.cache = {
-        ...adapterConfig?.cache,
         enabled: this.options.enableGlobalCaching,
+        strategy: adapterConfig?.cache?.strategy || 'memory',
+        defaultTTL: adapterConfig?.cache?.defaultTTL || 300000,
+        maxSize: adapterConfig?.cache?.maxSize || 1000,
+        keyPrefix: adapterConfig?.cache?.keyPrefix || 'default:',
       };
     }
 
@@ -716,8 +922,10 @@ export class IntegrationServiceFactory implements IServiceFactory {
 
     if (this.options.defaultRetrySettings) {
       adapterConfig.retry = {
-        ...adapterConfig?.retry,
-        ...this.options.defaultRetrySettings,
+        enabled: this.options.defaultRetrySettings.enabled,
+        maxAttempts: this.options.defaultRetrySettings.maxAttempts,
+        backoffMultiplier: this.options.defaultRetrySettings.backoffMultiplier,
+        retryableOperations: this.options.defaultRetrySettings.retryableOperations || [],
       };
     }
 

@@ -6,8 +6,6 @@
  * @file Coordination system: weighted-round-robin
  */
 
-
-
 import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 

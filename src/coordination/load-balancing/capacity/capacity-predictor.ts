@@ -6,8 +6,6 @@
  * @file Coordination system: capacity-predictor
  */
 
-
-
 interface AgentCapacityProfile {
   agentId: string;
   utilizationHistory: number[];

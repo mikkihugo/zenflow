@@ -4,7 +4,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { MemoryErrorCode } from './memory-errors';
+import type { BaseMemoryBackend } from '../backends/base-backend';
+import type { BackendInterface } from '../core/memory-system';
+import { type MemoryError, MemoryErrorCode } from './memory-errors';
 
 export interface RecoveryStrategy {
   name: string;
@@ -208,7 +210,10 @@ export class RecoveryStrategyManager extends EventEmitter {
     this.registerStrategy({
       name: 'node_reconnection',
       description: 'Attempt to reconnect to unreachable nodes',
-      applicableErrors: [MemoryErrorCode["NODE_UNREACHABLE"], MemoryErrorCode["BACKEND_CONNECTION_LOST"]],
+      applicableErrors: [
+        MemoryErrorCode['NODE_UNREACHABLE'],
+        MemoryErrorCode['BACKEND_CONNECTION_LOST'],
+      ],
       priority: 8,
       timeoutMs: 10000,
       maxRetries: 3,
@@ -264,7 +269,7 @@ export class RecoveryStrategyManager extends EventEmitter {
     this.registerStrategy({
       name: 'data_repair',
       description: 'Attempt to repair corrupted or inconsistent data',
-      applicableErrors: [MemoryErrorCode["DATA_CORRUPTION"], MemoryErrorCode["DATA_INCONSISTENCY"]],
+      applicableErrors: [MemoryErrorCode['DATA_CORRUPTION'], MemoryErrorCode['DATA_INCONSISTENCY']],
       priority: 9,
       timeoutMs: 15000,
       maxRetries: 2,
@@ -287,7 +292,7 @@ export class RecoveryStrategyManager extends EventEmitter {
           const dataVersions = new Map();
           const healthyBackends = [];
 
-          for (const [id, backend] of context.backends) {
+          for (const [id, backend] of Array.from(context.backends.entries())) {
             try {
               let data;
               if ('get' in backend && typeof backend.get === 'function') {
@@ -301,7 +306,7 @@ export class RecoveryStrategyManager extends EventEmitter {
               if (data !== null) {
                 const dataKey = JSON.stringify(data);
                 dataVersions?.set(dataKey, (dataVersions?.get(dataKey) || 0) + 1);
-                healthyBackends.push({ id, backend, data });
+                healthyBackends.push({ id, backend, data } as never);
               }
             } catch {
               // Skip unhealthy backends
@@ -322,7 +327,7 @@ export class RecoveryStrategyManager extends EventEmitter {
           let consensusData = null;
           let maxCount = 0;
 
-          for (const [dataStr, count] of dataVersions) {
+          for (const [dataStr, count] of Array.from(dataVersions.entries())) {
             if (count > maxCount) {
               maxCount = count;
               consensusData = JSON.parse(dataStr);
@@ -380,8 +385,8 @@ export class RecoveryStrategyManager extends EventEmitter {
       name: 'cache_optimization',
       description: 'Optimize cache settings to improve performance',
       applicableErrors: [
-        MemoryErrorCode["CACHE_MISS_RATE_HIGH"],
-        MemoryErrorCode["LATENCY_THRESHOLD_EXCEEDED"],
+        MemoryErrorCode['CACHE_MISS_RATE_HIGH'],
+        MemoryErrorCode['LATENCY_THRESHOLD_EXCEEDED'],
       ],
       priority: 5,
       timeoutMs: 5000,
@@ -431,7 +436,7 @@ export class RecoveryStrategyManager extends EventEmitter {
     this.registerStrategy({
       name: 'retry_with_backoff',
       description: 'Retry failed operation with exponential backoff',
-      applicableErrors: [MemoryErrorCode["CONSENSUS_TIMEOUT"], MemoryErrorCode["SYSTEM_OVERLOAD"]],
+      applicableErrors: [MemoryErrorCode['CONSENSUS_TIMEOUT'], MemoryErrorCode['SYSTEM_OVERLOAD']],
       priority: 3,
       timeoutMs: 30000,
       maxRetries: 5,
@@ -526,9 +531,9 @@ export class RecoveryStrategyManager extends EventEmitter {
       name: 'graceful_degradation',
       description: 'Degrade functionality gracefully to maintain partial service',
       applicableErrors: [
-        MemoryErrorCode["RESOURCE_EXHAUSTED"],
-        MemoryErrorCode["BACKEND_CAPACITY_EXCEEDED"],
-        MemoryErrorCode["QUORUM_NOT_REACHED"],
+        MemoryErrorCode['RESOURCE_EXHAUSTED'],
+        MemoryErrorCode['BACKEND_CAPACITY_EXCEEDED'],
+        MemoryErrorCode['QUORUM_NOT_REACHED'],
       ],
       priority: 2,
       timeoutMs: 3000,
@@ -537,22 +542,22 @@ export class RecoveryStrategyManager extends EventEmitter {
         const startTime = Date.now();
 
         try {
-          const degradationActions = [];
+          const degradationActions: string[] = [];
 
           // Reduce memory usage
-          if (error.code === MemoryErrorCode["RESOURCE_EXHAUSTED"]) {
+          if (error.code === MemoryErrorCode['RESOURCE_EXHAUSTED']) {
             degradationActions.push('reduced_cache_size');
             degradationActions.push('enabled_compression');
           }
 
           // Use single node instead of quorum
-          if (error.code === MemoryErrorCode["QUORUM_NOT_REACHED"]) {
+          if (error.code === MemoryErrorCode['QUORUM_NOT_REACHED']) {
             degradationActions.push('fallback_to_single_node');
             degradationActions.push('reduced_consistency_guarantee');
           }
 
           // Archive old data
-          if (error.code === MemoryErrorCode["BACKEND_CAPACITY_EXCEEDED"]) {
+          if (error.code === MemoryErrorCode['BACKEND_CAPACITY_EXCEEDED']) {
             degradationActions.push('archived_old_data');
             degradationActions.push('reduced_retention_period');
           }

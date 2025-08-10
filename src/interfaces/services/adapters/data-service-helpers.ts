@@ -1,5 +1,5 @@
 /**
- * @fileoverview USL Data Service Helper Functions
+ * @file USL Data Service Helper Functions.
  *
  * Collection of utility functions and helper methods for common data operations.
  * across DataServiceAdapter instances. Provides simplified interfaces for
@@ -1026,13 +1026,14 @@ export class DataServiceHelper {
  * Factory function for creating data service helpers.
  *
  * @param adapter
+ * @example
  */
 export function createDataServiceHelper(adapter: DataServiceAdapter): DataServiceHelper {
   return new DataServiceHelper(adapter);
 }
 
 /**
- * Utility functions for common data operations (stateless)
+ * Utility functions for common data operations (stateless).
  */
 export const DataServiceUtils = {
   /**

@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: session-utils
+ * @file Coordination system: session-utils.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

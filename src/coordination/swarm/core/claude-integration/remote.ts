@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: remote
+ * @file Coordination system: remote.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

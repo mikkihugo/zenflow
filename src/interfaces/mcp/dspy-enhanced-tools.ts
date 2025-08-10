@@ -5,13 +5,11 @@
  * - Smart project analysis and recommendations
  * - Intelligent code generation and fixes
  * - Automated workflow optimization
- * - Context-aware task orchestration
+ * - Context-aware task orchestration.
  */
 /**
  * @file Interface implementation: dspy-enhanced-tools.
  */
-
-
 
 import { DSPy, type DSPyProgram } from 'dspy.ts';
 import { createLogger } from '../../core/logger';

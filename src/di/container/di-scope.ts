@@ -3,10 +3,8 @@
  * Provides hierarchical scoping for service lifetimes.
  */
 /**
- * @file di-scope implementation
+ * @file Di-scope implementation.
  */
-
-
 
 import type { DIScope as IDIScope } from '../types/di-types';
 
@@ -53,7 +51,7 @@ export class DIScope implements IDIScope {
   }
 
   /**
-   * Create a child scope (alias for createScope)
+   * Create a child scope (alias for createScope).
    */
   createChild(): IDIScope {
     return this.createScope();

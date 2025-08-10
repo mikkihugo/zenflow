@@ -5,9 +5,8 @@
 
 // Container implementations - Import for internal use and export
 /**
- * @file di module exports
+ * @file Di module exports.
  */
-
 
 import { DIContainer } from './container/di-container';
 import { DIScope } from './container/di-scope';

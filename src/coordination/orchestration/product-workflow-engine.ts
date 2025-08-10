@@ -12,10 +12,8 @@
  * 4. Workflow orchestrates both flows seamlessly.
  */
 /**
- * @file product-workflow processing engine
+ * @file Product-workflow processing engine.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
@@ -30,6 +28,12 @@ import type {
   VisionDocumentEntity,
 } from '../database/entities/product-entities';
 import type { DocumentManager } from '../database/managers/document-manager';
+import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine';
+import type {
+  ProjectSpecification,
+  SPARCPhase,
+  SPARCProject,
+} from '../swarm/sparc/types/sparc-types';
 import type {
   CompletedStepInfo,
   StepExecutionResult,
@@ -44,12 +48,6 @@ import type {
   WorkflowStepResults,
   WorkflowStepState,
 } from '../types/workflow-types';
-import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine';
-import type {
-  ProjectSpecification,
-  SPARCPhase,
-  SPARCProject,
-} from '../swarm/sparc/types/sparc-types';
 
 const logger = createLogger({ prefix: 'ProductWorkflow' });
 
@@ -58,7 +56,6 @@ const logger = createLogger({ prefix: 'ProductWorkflow' });
  */
 export type ProductFlowStep =
   | 'vision-analysis'
-  | 'adr-generation'
   | 'prd-creation'
   | 'epic-breakdown'
   | 'feature-definition'
@@ -134,7 +131,7 @@ export interface ProductWorkflowConfig extends WorkflowEngineConfig {
  * Product Workflow Engine - Main Orchestrator.
  *
  * Orchestrates the complete Product Flow (Vision→Task) with SPARC methodology.
- * applied as the technical implementation tool WITHIN Features and Tasks.
+ * Applied as the technical implementation tool WITHIN Features and Tasks..
  *
  * @example
  */
@@ -352,7 +349,6 @@ export class ProductWorkflowEngine extends EventEmitter {
       // Execute Product Flow steps in sequence
       const productFlowSteps: ProductFlowStep[] = [
         'vision-analysis',
-        'adr-generation',
         'prd-creation',
         'epic-breakdown',
         'feature-definition',
@@ -426,9 +422,6 @@ export class ProductWorkflowEngine extends EventEmitter {
       switch (step) {
         case 'vision-analysis':
           await this.executeVisionAnalysis(workflow);
-          break;
-        case 'adr-generation':
-          await this.generateADRsFromVision(workflow);
           break;
         case 'prd-creation':
           await this.createPRDsFromVision(workflow);
@@ -641,11 +634,6 @@ export class ProductWorkflowEngine extends EventEmitter {
     // Implementation would analyze vision document and extract key requirements
   }
 
-  private async generateADRsFromVision(_workflow: ProductWorkflowState): Promise<void> {
-    logger.info('🏗️ Generating Architecture Decision Records from vision');
-    // Implementation would create ADR documents based on architectural requirements from vision
-  }
-
   private async createPRDsFromVision(_workflow: ProductWorkflowState): Promise<void> {
     logger.info('📋 Creating Product Requirements Documents from vision');
     // Implementation would break down vision into detailed product requirements
@@ -675,7 +663,6 @@ export class ProductWorkflowEngine extends EventEmitter {
   private registerProductFlowHandlers(): void {
     // Register handlers for Product Flow steps
     this.stepHandlers.set('vision-analysis', this.handleVisionAnalysis.bind(this));
-    this.stepHandlers.set('adr-generation', this.handleADRGeneration.bind(this));
     this.stepHandlers.set('prd-creation', this.handlePRDCreation.bind(this));
     this.stepHandlers.set('epic-breakdown', this.handleEpicBreakdown.bind(this));
     this.stepHandlers.set('feature-definition', this.handleFeatureDefinition.bind(this));
@@ -696,11 +683,11 @@ export class ProductWorkflowEngine extends EventEmitter {
     // Register Product Flow workflow definitions
     const completeProductWorkflow: WorkflowDefinition = {
       name: 'complete-product-flow',
-      description: 'Complete Product Flow: Vision → ADRs → PRDs → Epics → Features → Tasks → Code',
+      description:
+        'Complete Product Flow: Vision → PRDs → Epics → Features → Tasks → Code (ADRs managed independently)',
       version: '2.0.0',
       steps: [
         { type: 'vision-analysis', name: 'Analyze Vision Document' },
-        { type: 'adr-generation', name: 'Generate Architecture Decision Records' },
         { type: 'prd-creation', name: 'Create Product Requirements Documents' },
         { type: 'epic-breakdown', name: 'Break down PRDs into Epics' },
         { type: 'feature-definition', name: 'Define Individual Features' },
@@ -720,13 +707,6 @@ export class ProductWorkflowEngine extends EventEmitter {
     _params: WorkflowData
   ): Promise<StepExecutionResult> {
     return { success: true, data: { analyzed: true }, duration: 1000, timestamp: new Date() };
-  }
-
-  private async handleADRGeneration(
-    _context: WorkflowContext,
-    _params: WorkflowData
-  ): Promise<StepExecutionResult> {
-    return { success: true, data: { adrs_generated: 3 }, duration: 2000, timestamp: new Date() };
   }
 
   private async handlePRDCreation(

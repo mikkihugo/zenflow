@@ -8,10 +8,8 @@
  * - Unified learning and optimization across all DSPy systems.
  */
 /**
- * @file dspy-integration management system
+ * @file Dspy-integration management system.
  */
-
-
 
 import DSPySwarmIntelligence from '../coordination/swarm/dspy-swarm-intelligence';
 import DSPyEnhancedMCPTools from '../interfaces/mcp/dspy-enhanced-tools';

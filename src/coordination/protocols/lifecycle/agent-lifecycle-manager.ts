@@ -1,13 +1,11 @@
 /**
  * Advanced Agent Lifecycle Management System
  * Provides dynamic agent spawning/termination, health monitoring,
- * automatic replacement, capability discovery, and performance ranking
+ * automatic replacement, capability discovery, and performance ranking.
  */
 /**
- * @file agent-lifecycle management system
+ * @file Agent-lifecycle management system.
  */
-
-
 
 import { type ChildProcess, type SpawnOptions, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';

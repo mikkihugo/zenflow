@@ -3,10 +3,8 @@
  * Creates a new instance every time the service is resolved.
  */
 /**
- * @file transient-provider implementation
+ * @file Transient-provider implementation.
  */
-
-
 
 import type { Provider } from '../types/di-types';
 

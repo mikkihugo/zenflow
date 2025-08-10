@@ -5,10 +5,8 @@
  * Follows Google TypeScript standards for clear interface design.
  */
 /**
- * @file Interface implementation: web-config
+ * @file Interface implementation: web-config.
  */
-
-
 
 export interface WebConfig {
   port?: number;
@@ -61,6 +59,7 @@ export const DEFAULT_WEB_CONFIG: Required<Omit<WebConfig, 'auth' | 'coreSystem'>
  * Create web configuration with defaults.
  *
  * @param config
+ * @example
  */
 export function createWebConfig(config: WebConfig = {}): Required<
   Omit<WebConfig, 'auth' | 'coreSystem'>

@@ -2,7 +2,7 @@
  * Chaos Engineering Test Framework for ZenSwarm.
  *
  * Provides comprehensive chaos engineering capabilities for testing.
- * recovery workflows and system resilience under failure conditions.
+ * Recovery workflows and system resilience under failure conditions.
  *
  * Features:
  * - Controlled failure injection (memory, network, process, etc.)
@@ -10,21 +10,19 @@
  * - Blast radius management and safety controls
  * - Test result analysis and reporting
  * - Integration with recovery workflows validation
- * - Reproducible failure scenarios
+ * - Reproducible failure scenarios.
  */
 /**
- * @file Coordination system: chaos-engineering
+ * @file Coordination system: chaos-engineering.
  */
 
-
-
 import { EventEmitter } from 'node:events';
-import { ConfigurationError, SystemError, ValidationError } from '../core/errors';
 import { createLogger } from '../../../core/logger';
-import type { HealthMonitor } from '../diagnostics/health-monitor';
 import type { ConnectionStateManager as ConnectionManager } from '../connection-management/connection-state-manager';
+import { ConfigurationError, SystemError, ValidationError } from '../core/errors';
 import type { RecoveryWorkflows } from '../core/recovery-workflows';
 import { generateId } from '../core/utils';
+import type { HealthMonitor } from '../diagnostics/health-monitor';
 
 // import { MCPToolsManager } from '../interfaces/mcp/tool-registry'; // xxx NEEDS_HUMAN: Unused import - verify if needed for future integration
 

@@ -3,10 +3,8 @@
  * Optimizes WASM module loading, compilation, memory sharing, and SIMD acceleration.
  */
 /**
- * @file wasm-optimizer implementation
+ * @file Wasm-optimizer implementation.
  */
-
-
 
 import { createLogger } from '../../core/logger';
 import type { WasmOptimizer } from '../interfaces/optimization-interfaces';
@@ -36,6 +34,50 @@ export interface WasmCapabilities {
   threadsSupport: boolean;
   bulkMemorySupport: boolean;
   referenceTypesSupport: boolean;
+}
+
+export interface WasmModule {
+  name: string;
+  size: number;
+  operations: string[];
+}
+
+export interface LoadingOptimization {
+  loadTime: number;
+  cacheUtilization: boolean;
+  streamingEnabled: boolean;
+  preloadStrategy: string;
+}
+
+export interface WasmFile {
+  path: string;
+}
+
+export interface StreamingResult {
+  compilationTime: number;
+  streamingEnabled: boolean;
+  memoryEfficiency: number;
+  instantiationSpeed: number;
+}
+
+export type Bridge = {};
+
+export interface MemoryOptimization {
+  memoryReduction: number;
+  compressionRatio: number;
+  garbageCollectionImprovement: number;
+  poolingStrategy: string;
+}
+
+export interface Kernel {
+  operations: string[];
+}
+
+export interface SIMDResult {
+  simdSupport: boolean;
+  performanceGain: number;
+  instructionOptimization: string[];
+  vectorizationLevel: number;
 }
 
 export class WasmPerformanceOptimizer implements WasmOptimizer {
@@ -357,7 +399,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
         const compiledModule = await this.compileModule(module);
 
         // Check cache size and evict if necessary
-        if (this.getCacheSize() + module["size"] > this.config.maxModuleCacheSize) {
+        if (this.getCacheSize() + module['size'] > this.config.maxModuleCacheSize) {
           await this.evictLeastRecentlyUsed();
         }
 
@@ -398,7 +440,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
     try {
       // Simulate streaming fetch and compilation
-      const response = await this.streamingFetch(wasmFile["path"]);
+      const response = await this.streamingFetch(wasmFile['path']);
       const module = await WebAssembly.compileStreaming(response);
 
       const compilationTime = performance.now() - startTime;
@@ -408,12 +450,12 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
       const instantiationTime = performance.now() - instantiationStart;
 
       // Cache the compiled module
-      this.moduleCache.set(wasmFile["path"], module);
-      this.instanceCache.set(wasmFile["path"], instance);
+      this.moduleCache.set(wasmFile['path'], module);
+      this.instanceCache.set(wasmFile['path'], instance);
 
       return { compilationTime, instantiationTime };
     } catch (error) {
-      throw new Error(`Streaming compilation failed for ${wasmFile["path"]}: ${error}`);
+      throw new Error(`Streaming compilation failed for ${wasmFile['path']}: ${error}`);
     }
   }
 

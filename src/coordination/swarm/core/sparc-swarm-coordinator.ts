@@ -14,15 +14,13 @@
  * @file sparc-swarm coordination system
  */
 
-
-
 import { createLogger } from '../../../core/logger';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../database/entities/product-entities';
-import type { AgentType } from '../types/agent-types';
 import type { SPARCPhase } from '../sparc/types/sparc-types';
+import type { AgentType } from '../types/agent-types';
 import { type SwarmAgent, SwarmCoordinator, type SwarmMetrics } from './swarm-coordinator';
 
 const logger = createLogger('SPARCSwarmCoordinator');

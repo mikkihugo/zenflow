@@ -2,13 +2,11 @@
  * Public API for Coordination Layer.
  *
  * This file provides the public interface for external modules to interact
- * with the coordination layer without directly accessing internal implementations
+ * with the coordination layer without directly accessing internal implementations.
  */
 /**
  * @file Coordination system: public-api.
  */
-
-
 
 import type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types';
 
@@ -45,6 +43,7 @@ export interface PublicSwarmCoordinator {
  * This wraps the internal SwarmCoordinator with a limited public interface.
  *
  * @param config
+ * @example
  */
 export async function createPublicSwarmCoordinator(
   config?: SwarmConfig

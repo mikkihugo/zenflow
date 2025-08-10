@@ -1,10 +1,11 @@
 /**
- * @file task coordination system
+ * @file Task coordination system.
  */
 
-
-import type { FeatureDocumentEntity } from '../database/entities/product-entities';
-import type { TaskDocumentEntity } from '../database/entities/product-entities';
+import type {
+  FeatureDocumentEntity,
+  TaskDocumentEntity,
+} from '../database/entities/product-entities';
 import type { AgentType } from '../types/agent-types';
 import { generateSubAgentConfig, mapToClaudeSubAgent } from './sub-agent-generator';
 

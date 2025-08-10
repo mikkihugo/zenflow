@@ -9,9 +9,8 @@
  * @example
  */
 /**
- * @file Coordination system: errors
+ * @file Coordination system: errors.
  */
-
 
 class ZenSwarmError extends Error {
   public code: string;

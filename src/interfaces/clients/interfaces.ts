@@ -2,20 +2,19 @@
  * Unified API Client Layer (UACL) - Core Interfaces.
  *
  * Provides generic interfaces for standardizing client access across all protocols.
- * including HTTP (REST API), WebSocket (Real-time), Knowledge (FACT integration),
+ * Including HTTP (REST API), WebSocket (Real-time), Knowledge (FACT integration),
  * MCP (Model Context Protocol), and any other client communication mechanisms.
  */
 
 /**
  * Generic client interface for standardized API access.
  *
- * @template T The request/response type this client handles
+ * @template T The request/response type this client handles.
  * @example
  */
 /**
- * @file Interface implementation: interfaces
+ * @file Interface implementation: interfaces.
  */
-
 
 export interface IClient<T = any> {
   /** Connect to the service */
@@ -60,7 +59,7 @@ export interface IClientFactory {
 }
 
 /**
- * Specialized interface for HTTP clients (REST API)
+ * Specialized interface for HTTP clients (REST API).
  *
  * @example
  */
@@ -91,7 +90,7 @@ export interface IHttpClient<T = any> extends IClient<T> {
 }
 
 /**
- * Specialized interface for WebSocket clients (Real-time)
+ * Specialized interface for WebSocket clients (Real-time).
  *
  * @example
  */
@@ -119,7 +118,7 @@ export interface IWebSocketClient<T = any> extends IClient<T> {
 }
 
 /**
- * Specialized interface for Knowledge clients (FACT integration)
+ * Specialized interface for Knowledge clients (FACT integration).
  *
  * @example
  */
@@ -150,9 +149,10 @@ export interface IKnowledgeClient<T = any> extends IClient<T> {
 }
 
 /**
- * Specialized interface for MCP clients (Model Context Protocol)
+ * Specialized interface for MCP clients (Model Context Protocol).
  *
  * @example.
+ * @example
  */
 export interface IMcpClient<T = any> extends IClient<T> {
   /** List available tools */

@@ -1,7 +1,6 @@
 /**
- * @file sqlite-backend implementation
+ * @file Sqlite-backend implementation.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

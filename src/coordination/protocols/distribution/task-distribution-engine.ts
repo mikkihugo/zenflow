@@ -1,17 +1,15 @@
 /**
  * Advanced Task Distribution Engine
  * Provides intelligent task decomposition, optimal agent assignment,
- * dynamic work redistribution, and priority-based scheduling
+ * dynamic work redistribution, and priority-based scheduling.
  */
 /**
- * @file task-distribution processing engine.
+ * @file Task-distribution processing engine.
  */
 
-
-
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../../../core/logger';
+import type { IEventBus } from '../core/event-bus';
 
 // Core types for task distribution
 export interface TaskDefinition {

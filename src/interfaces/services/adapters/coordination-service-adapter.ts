@@ -32,18 +32,14 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../core/interfaces';
-import { 
-  ServiceDependencyError, 
+import {
+  ServiceDependencyError,
   ServiceError,
   ServiceOperationError,
-  ServiceTimeoutError 
+  ServiceTimeoutError,
 } from '../core/interfaces';
-import {
-  ServiceEnvironment,
-  ServicePriority,
-  ServiceType,
-} from '../types';
 import type { CoordinationServiceConfig } from '../types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
 
 /**
  * Coordination service adapter configuration extending USL CoordinationServiceConfig.
@@ -262,7 +258,7 @@ export class CoordinationServiceAdapter implements IService {
     this.config = config?.service;
     this.adapterConfig = {
       ...config,
-      // Default configuration values  
+      // Default configuration values
       daaService: {
         enabled: true,
         autoInitialize: true,
@@ -368,7 +364,7 @@ export class CoordinationServiceAdapter implements IService {
         throw new Error('Invalid coordination service adapter configuration');
       }
 
-      // Initialize DaaService if enabled  
+      // Initialize DaaService if enabled
       if (this.adapterConfig.daaService?.enabled) {
         this.logger.debug('Initializing DaaService integration');
         this.daaService = new DaaService();
@@ -1132,7 +1128,10 @@ export class CoordinationServiceAdapter implements IService {
     } catch (error) {
       const shouldRetry = this.shouldRetryOperation(operation, error, attempt);
 
-      if (shouldRetry && attempt < (this.adapterConfig.retry?.maxAttempts || this.adapterConfig.retry?.attempts || 3)) {
+      if (
+        shouldRetry &&
+        attempt < (this.adapterConfig.retry?.maxAttempts || this.adapterConfig.retry?.attempts || 3)
+      ) {
         const delay = (this.adapterConfig.retry?.backoffMultiplier || 2) ** (attempt - 1) * 1000;
         this.logger.warn(
           `Operation ${operation} failed (attempt ${attempt}), retrying in ${delay}ms:`,
@@ -1685,7 +1684,11 @@ export class CoordinationServiceAdapter implements IService {
     }
 
     // Don't retry certain types of errors
-    if (error instanceof ServiceTimeoutError && 'timeout' in error && (error as any).timeout < 5000) {
+    if (
+      error instanceof ServiceTimeoutError &&
+      'timeout' in error &&
+      (error as any).timeout < 5000
+    ) {
       return false; // Don't retry short timeouts
     }
 

@@ -237,8 +237,8 @@ class CognitivePatternEvolution {
   /**
    * Initialize agent with cognitive patterns.
    *
-   * @param {string} agentId - Agent identifier
-   * @param {Object} config - Agent configuration
+   * @param {string} agentId - Agent identifier.
+   * @param {Object} config - Agent configuration.
    */
   async initializeAgent(agentId: string, config: any) {
     const initialPatterns = this.selectInitialPatterns(config);
@@ -266,7 +266,7 @@ class CognitivePatternEvolution {
   /**
    * Select initial cognitive patterns based on configuration.
    *
-   * @param {Object} config - Agent configuration
+   * @param {Object} config - Agent configuration.
    */
   selectInitialPatterns(config: any): string[] {
     const patterns: string[] = [];
@@ -327,8 +327,8 @@ class CognitivePatternEvolution {
   /**
    * Evolve cognitive patterns based on training data and performance.
    *
-   * @param {string} agentId - Agent identifier
-   * @param {Object} trainingData - Training data context
+   * @param {string} agentId - Agent identifier.
+   * @param {Object} trainingData - Training data context.
    */
   async evolvePatterns(agentId: string, trainingData: any) {
     const agentData = this.agentPatterns.get(agentId);
@@ -365,7 +365,7 @@ class CognitivePatternEvolution {
   /**
    * Analyze training context to understand cognitive requirements.
    *
-   * @param {Object} trainingData - Training data
+   * @param {Object} trainingData - Training data.
    */
   analyzeTrainingContext(trainingData: any) {
     const context = {
@@ -385,7 +385,7 @@ class CognitivePatternEvolution {
   /**
    * Calculate data complexity score.
    *
-   * @param {Object} trainingData - Training data
+   * @param {Object} trainingData - Training data.
    */
   calculateDataComplexity(trainingData: any) {
     if (!trainingData?.samples || trainingData?.samples.length === 0) {
@@ -407,7 +407,7 @@ class CognitivePatternEvolution {
   /**
    * Calculate feature variance across samples.
    *
-   * @param {Array} samples - Training samples
+   * @param {Array} samples - Training samples.
    */
   calculateFeatureVariance(samples: any[]) {
     if (samples.length < 2) {
@@ -439,7 +439,7 @@ class CognitivePatternEvolution {
   /**
    * Calculate label distribution entropy.
    *
-   * @param {Array} samples - Training samples
+   * @param {Array} samples - Training samples.
    */
   calculateLabelDistribution(samples: any[]) {
     const labelCounts = new Map();
@@ -465,7 +465,7 @@ class CognitivePatternEvolution {
   /**
    * Infer task type from training data characteristics.
    *
-   * @param {Object} trainingData - Training data
+   * @param {Object} trainingData - Training data.
    */
   inferTaskType(trainingData: any) {
     if (!trainingData?.samples) {
@@ -496,7 +496,7 @@ class CognitivePatternEvolution {
   /**
    * Estimate noise level in training data.
    *
-   * @param {Object} trainingData - Training data
+   * @param {Object} trainingData - Training data.
    */
   estimateNoiseLevel(trainingData: any) {
     if (!trainingData?.samples || trainingData?.samples.length < 10) {
@@ -525,7 +525,7 @@ class CognitivePatternEvolution {
   /**
    * Assess pattern regularity in data.
    *
-   * @param {Object} trainingData - Training data
+   * @param {Object} trainingData - Training data.
    */
   assessPatternRegularity(trainingData: any) {
     // Simplified regularity assessment
@@ -545,7 +545,7 @@ class CognitivePatternEvolution {
   /**
    * Calculate effective dimensionality.
    *
-   * @param {Object} trainingData - Training data
+   * @param {Object} trainingData - Training data.
    */
   calculateDimensionality(trainingData: ExtendedTrainingData): number {
     if (!trainingData?.samples || trainingData?.samples.length === 0) {
@@ -563,7 +563,7 @@ class CognitivePatternEvolution {
   /**
    * Assess temporal dependency in data.
    *
-   * @param {Object} trainingData - Training data
+   * @param {Object} trainingData - Training data.
    */
   assessTemporalDependency(trainingData: TrainingData | ExtendedTrainingData): number {
     // Check if data has temporal structure
@@ -585,7 +585,7 @@ class CognitivePatternEvolution {
   /**
    * Estimate required abstraction level.
    *
-   * @param {Object} trainingData - Training data
+   * @param {Object} trainingData - Training data.
    */
   estimateAbstractionLevel(trainingData: TrainingData | ExtendedTrainingData): number {
     // Higher abstraction for complex, structured data
@@ -598,7 +598,7 @@ class CognitivePatternEvolution {
   /**
    * Assess creativity requirement from data.
    *
-   * @param {Object} trainingData - Training data
+   * @param {Object} trainingData - Training data.
    */
   assessCreativityRequirement(trainingData: TrainingData | ExtendedTrainingData): number {
     // Check for generation tasks or high variability
@@ -617,8 +617,8 @@ class CognitivePatternEvolution {
   /**
    * Evaluate effectiveness of current cognitive patterns.
    *
-   * @param {string} agentId - Agent identifier
-   * @param {Object} context - Training context
+   * @param {string} agentId - Agent identifier.
+   * @param {Object} context - Training context.
    */
   async evaluatePatternEffectiveness(
     agentId: string,
@@ -656,8 +656,8 @@ class CognitivePatternEvolution {
   /**
    * Calculate how well a pattern template matches the current context.
    *
-   * @param {Object} template - Pattern template
-   * @param {Object} context - Current context
+   * @param {Object} template - Pattern template.
+   * @param {Object} context - Current context.
    */
   calculateContextMatch(template: PatternTemplate, context: PatternContext): number {
     const { characteristics } = template;
@@ -695,8 +695,8 @@ class CognitivePatternEvolution {
   /**
    * Match decision making style to context needs.
    *
-   * @param {string} style - Decision making style
-   * @param {number} systematicNeed - Need for systematic approach (0-1)
+   * @param {string} style - Decision making style.
+   * @param {number} systematicNeed - Need for systematic approach (0-1).
    */
   matchDecisionStyle(style: string, systematicNeed: number): number {
     const styleScores = {
@@ -715,8 +715,8 @@ class CognitivePatternEvolution {
   /**
    * Match pattern recognition approach to context.
    *
-   * @param {string} approach - Pattern recognition approach
-   * @param {Object} context - Context object
+   * @param {string} approach - Pattern recognition approach.
+   * @param {Object} context - Context object.
    */
   matchPatternRecognition(approach: string, context: PatternContext): number {
     const approachScores = {
@@ -734,8 +734,8 @@ class CognitivePatternEvolution {
   /**
    * Match search strategy to context.
    *
-   * @param {string} strategy - Search strategy
-   * @param {Object} context - Context object
+   * @param {string} strategy - Search strategy.
+   * @param {Object} context - Context object.
    */
   matchSearchStrategy(strategy: string, context: PatternContext): number {
     const strategyScores = {
@@ -753,8 +753,8 @@ class CognitivePatternEvolution {
   /**
    * Get historical performance of a pattern for an agent.
    *
-   * @param {string} agentId - Agent identifier
-   * @param {string} patternType - Pattern type
+   * @param {string} agentId - Agent identifier.
+   * @param {string} patternType - Pattern type.
    */
   getHistoricalPerformance(agentId: string, patternType: string): number {
     const history = this.evolutionHistory.get(agentId) || [];
@@ -778,8 +778,8 @@ class CognitivePatternEvolution {
   /**
    * Get adaptation success rate for a pattern.
    *
-   * @param {string} agentId - Agent identifier
-   * @param {string} patternType - Pattern type
+   * @param {string} agentId - Agent identifier.
+   * @param {string} patternType - Pattern type.
    */
   getAdaptationSuccess(agentId: string, patternType: string): number {
     const agentData = this.agentPatterns.get(agentId);
@@ -799,8 +799,8 @@ class CognitivePatternEvolution {
   /**
    * Assess if cognitive evolution is needed.
    *
-   * @param {Object} effectiveness - Pattern effectiveness scores
-   * @param {Object} context - Current context
+   * @param {Object} effectiveness - Pattern effectiveness scores.
+   * @param {Object} context - Current context.
    */
   assessEvolutionNeed(
     effectiveness: Record<string, { overall?: number }>,
@@ -837,8 +837,9 @@ class CognitivePatternEvolution {
   /**
    * Select evolution strategy based on need and context.
    *
-   * @param {Object} evolutionNeed - Evolution need assessment
-   * @param {Object} context - Current context
+   * @param {Object} evolutionNeed - Evolution need assessment.
+   * @param evolutionNeed.urgency
+   * @param {Object} context - Current context.
    */
   selectEvolutionStrategy(
     evolutionNeed: { urgency: string },
@@ -883,9 +884,10 @@ class CognitivePatternEvolution {
   /**
    * Apply evolution strategy to agent patterns.
    *
-   * @param {string} agentId - Agent identifier
-   * @param {Object} strategy - Evolution strategy
-   * @param {Object} context - Current context
+   * @param {string} agentId - Agent identifier.
+   * @param {Object} strategy - Evolution strategy.
+   * @param strategy.type
+   * @param {Object} context - Current context.
    */
   async applyEvolution(
     agentId: string,
@@ -946,10 +948,10 @@ class CognitivePatternEvolution {
   /**
    * Add new cognitive patterns.
    *
-   * @param {string} agentId - Agent identifier
+   * @param {string} agentId - Agent identifier.
    * @param _agentId
-   * @param {Array} currentPatterns - Current patterns
-   * @param {Object} context - Current context
+   * @param {Array} currentPatterns - Current patterns.
+   * @param {Object} context - Current context.
    */
   async addPatterns(
     _agentId: string,
@@ -988,10 +990,10 @@ class CognitivePatternEvolution {
   /**
    * Remove ineffective cognitive patterns.
    *
-   * @param {string} agentId - Agent identifier
+   * @param {string} agentId - Agent identifier.
    * @param _agentId
-   * @param {Array} currentPatterns - Current patterns
-   * @param {Object} context - Current context
+   * @param {Array} currentPatterns - Current patterns.
+   * @param {Object} context - Current context.
    */
   async removePatterns(
     _agentId: string,
@@ -1025,12 +1027,12 @@ class CognitivePatternEvolution {
   }
 
   /**
-   * Modify existing patterns (create adaptive variants)
+   * Modify existing patterns (create adaptive variants).
    *
-   * @param {string} agentId - Agent identifier
+   * @param {string} agentId - Agent identifier.
    * @param _agentId
-   * @param {Array} currentPatterns - Current patterns
-   * @param {Object} context - Current context
+   * @param {Array} currentPatterns - Current patterns.
+   * @param {Object} context - Current context.
    */
   async modifyPatterns(
     _agentId: string,
@@ -1060,8 +1062,8 @@ class CognitivePatternEvolution {
   /**
    * Create adaptive variant of a pattern template.
    *
-   * @param {Object} template - Original template
-   * @param {Object} context - Current context
+   * @param {Object} template - Original template.
+   * @param {Object} context - Current context.
    */
   createAdaptiveVariant(template: PatternTemplate, context: PatternContext): PatternTemplate {
     const adaptiveTemplate = JSON.parse(JSON.stringify(template)); // Deep copy
@@ -1096,10 +1098,10 @@ class CognitivePatternEvolution {
   /**
    * Rebalance pattern priorities and weights.
    *
-   * @param {string} agentId - Agent identifier
+   * @param {string} agentId - Agent identifier.
    * @param _agentId
-   * @param {Array} currentPatterns - Current patterns
-   * @param {Object} context - Current context
+   * @param {Array} currentPatterns - Current patterns.
+   * @param {Object} context - Current context.
    */
   async rebalancePatterns(
     _agentId: string,
@@ -1128,10 +1130,10 @@ class CognitivePatternEvolution {
   /**
    * Create hybrid patterns by combining existing ones.
    *
-   * @param {string} agentId - Agent identifier
+   * @param {string} agentId - Agent identifier.
    * @param _agentId
-   * @param {Array} currentPatterns - Current patterns
-   * @param {Object} context - Current context
+   * @param {Array} currentPatterns - Current patterns.
+   * @param {Object} context - Current context.
    */
   async hybridizePatterns(
     _agentId: string,
@@ -1166,9 +1168,9 @@ class CognitivePatternEvolution {
   /**
    * Create hybrid template from two parent templates.
    *
-   * @param {Object} template1 - First parent template
-   * @param {Object} template2 - Second parent template
-   * @param {Object} context - Current context
+   * @param {Object} template1 - First parent template.
+   * @param {Object} template2 - Second parent template.
+   * @param {Object} context - Current context.
    */
   createHybridTemplate(
     template1: PatternTemplate,
@@ -1208,8 +1210,8 @@ class CognitivePatternEvolution {
   /**
    * Select dominant pattern from active patterns.
    *
-   * @param {Array} patterns - Active patterns
-   * @param {Object} context - Current context
+   * @param {Array} patterns - Active patterns.
+   * @param {Object} context - Current context.
    */
   selectDominantPattern(patterns: string[], context: PatternContext): string {
     if (patterns.length === 0) {
@@ -1250,8 +1252,8 @@ class CognitivePatternEvolution {
   /**
    * Record evolution event.
    *
-   * @param {string} agentId - Agent identifier
-   * @param {Object} evolution - Evolution details
+   * @param {string} agentId - Agent identifier.
+   * @param {Object} evolution - Evolution details.
    */
   recordEvolution(agentId: string, evolution: EvolutionRecord): void {
     const history = this.evolutionHistory.get(agentId) || [];
@@ -1268,8 +1270,9 @@ class CognitivePatternEvolution {
   /**
    * Enable cross-agent pattern evolution.
    *
-   * @param {Array} agentIds - List of agent IDs
-   * @param {Object} session - Collaborative session
+   * @param {Array} agentIds - List of agent IDs.
+   * @param {Object} session - Collaborative session.
+   * @param session.id
    */
   async enableCrossAgentEvolution(agentIds: string[], session: { id: string }): Promise<void> {
     // Create cross-agent pattern exchange matrix
@@ -1308,8 +1311,8 @@ class CognitivePatternEvolution {
   /**
    * Transfer patterns between agents.
    *
-   * @param {string} targetAgentId - Target agent ID
-   * @param {Array} patterns - Patterns to transfer
+   * @param {string} targetAgentId - Target agent ID.
+   * @param {Array} patterns - Patterns to transfer.
    */
   async transferPatterns(
     targetAgentId: string,
@@ -1350,8 +1353,9 @@ class CognitivePatternEvolution {
   /**
    * Evaluate pattern compatibility with target agent.
    *
-   * @param {string} agentId - Target agent ID
-   * @param {Object} pattern - Pattern to evaluate
+   * @param {string} agentId - Target agent ID.
+   * @param {Object} pattern - Pattern to evaluate.
+   * @param pattern.type
    */
   async evaluatePatternCompatibility(
     agentId: string,
@@ -1392,7 +1396,7 @@ class CognitivePatternEvolution {
   /**
    * Extract patterns from agent for sharing.
    *
-   * @param {string} agentId - Agent identifier
+   * @param {string} agentId - Agent identifier.
    */
   async extractPatterns(
     agentId: string
@@ -1427,8 +1431,8 @@ class CognitivePatternEvolution {
   /**
    * Apply pattern updates from coordination.
    *
-   * @param {string} agentId - Agent identifier
-   * @param {Array} patternUpdates - Pattern updates
+   * @param {string} agentId - Agent identifier.
+   * @param {Array} patternUpdates - Pattern updates.
    */
   async applyPatternUpdates(agentId: string, patternUpdates: any[]): Promise<void> {
     const agentData = this.agentPatterns.get(agentId);
@@ -1464,7 +1468,7 @@ class CognitivePatternEvolution {
   /**
    * Calculate aggregation weights for gradient coordination.
    *
-   * @param {Array} gradients - Array of gradient sets
+   * @param {Array} gradients - Array of gradient sets.
    */
   calculateAggregationWeights(gradients: any[]): number[] {
     // Weight gradients based on cognitive pattern effectiveness
@@ -1478,7 +1482,7 @@ class CognitivePatternEvolution {
   /**
    * Assess cognitive growth for an agent.
    *
-   * @param {string} agentId - Agent identifier
+   * @param {string} agentId - Agent identifier.
    */
   async assessGrowth(agentId: string): Promise<number> {
     const agentData = this.agentPatterns.get(agentId);
@@ -1550,7 +1554,7 @@ class CognitivePatternEvolution {
   /**
    * Preserve cognitive evolution history before agent reset.
    *
-   * @param {string} agentId - Agent identifier
+   * @param {string} agentId - Agent identifier.
    */
   async preserveHistory(agentId: string): Promise<any> {
     const agentData = this.agentPatterns.get(agentId);
@@ -1567,8 +1571,8 @@ class CognitivePatternEvolution {
   /**
    * Restore cognitive evolution history after agent reset.
    *
-   * @param {string} agentId - Agent identifier
-   * @param {Object} preservedHistory - Preserved history
+   * @param {string} agentId - Agent identifier.
+   * @param {Object} preservedHistory - Preserved history.
    */
   async restoreHistory(agentId: string, preservedHistory: any): Promise<void> {
     if (preservedHistory.patterns) {

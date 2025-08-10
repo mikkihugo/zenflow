@@ -5,9 +5,9 @@
  * - HTTP, WebSocket, GraphQL, gRPC clients
  * - Consistent authentication, retry, and monitoring patterns
  * - Factory pattern for client creation and management
- * - Health checks and performance monitoring
+ * - Health checks and performance monitoring.
  *
- * @file Core interfaces defining the UACL contract for all client types
+ * @file Core interfaces defining the UACL contract for all client types.
  * @module interfaces/clients/core.
  * @version 2.0.0
  * @description This module defines the foundational interfaces that all UACL clients must implement,
@@ -20,7 +20,7 @@
  * - Event-driven: Built on EventEmitter for real-time notifications
  * - Observable: Comprehensive metrics and health monitoring
  * - Resilient: Built-in retry logic and error handling
- * - Extensible: Support for custom authentication and middleware
+ * - Extensible: Support for custom authentication and middleware.
  * @example
  * ```typescript
  * // Implement a custom client using UACL interfaces.
@@ -56,14 +56,14 @@
  * @interface AuthenticationConfig
  * @description Unified authentication configuration supporting multiple authentication methods.
  *              Provides a flexible, extensible approach to client authentication across all protocols.
- * @property {'bearer'|'apikey'|'oauth'|'basic'|'custom'} type - Authentication method type
- * @property {string} [token] - Bearer token for token-based authentication
- * @property {string} [apiKey] - API key for key-based authentication
- * @property {string} [apiKeyHeader='X-API-Key'] - Header name for API key authentication
- * @property {object} [credentials] - OAuth 2.0 credentials configuration
- * @property {string} [username] - Username for basic authentication
- * @property {string} [password] - Password for basic authentication
- * @property {Function} [customAuth] - Custom authentication handler function
+ * @property {'bearer'|'apikey'|'oauth'|'basic'|'custom'} type - Authentication method type.
+ * @property {string} [token] - Bearer token for token-based authentication.
+ * @property {string} [apiKey] - API key for key-based authentication.
+ * @property {string} [apiKeyHeader='X-API-Key'] - Header name for API key authentication.
+ * @property {object} [credentials] - OAuth 2.0 credentials configuration.
+ * @property {string} [username] - Username for basic authentication.
+ * @property {string} [password] - Password for basic authentication.
+ * @property {Function} [customAuth] - Custom authentication handler function.
  * @example
  * ```typescript
  * // Bearer token authentication
@@ -146,11 +146,11 @@ export interface AuthenticationConfig {
  * @interface RetryConfig
  * @description Configuration for automatic retry logic with various backoff strategies.
  *              Provides intelligent retry behavior for handling transient failures.
- * @property {number} attempts - Maximum number of retry attempts (1-10 recommended)
- * @property {number} delay - Base delay between retries in milliseconds
- * @property {'linear'|'exponential'|'fixed'} backoff - Backoff strategy for retry delays
- * @property {number} [maxDelay] - Maximum delay cap for exponential/linear backoff (ms)
- * @property {Function} [retryCondition] - Custom function to determine if error should be retried
+ * @property {number} attempts - Maximum number of retry attempts (1-10 recommended).
+ * @property {number} delay - Base delay between retries in milliseconds.
+ * @property {'linear'|'exponential'|'fixed'} backoff - Backoff strategy for retry delays.
+ * @property {number} [maxDelay] - Maximum delay cap for exponential/linear backoff (ms).
+ * @property {Function} [retryCondition] - Custom function to determine if error should be retried.
  * @example
  * ```typescript
  * // Exponential backoff for API rate limiting
@@ -396,8 +396,8 @@ export interface IClient {
   /**
    * Establish connection to the service.
    *
-   * @returns {Promise<void>} Resolves when connection is established
-   * @throws {ConnectionError} If connection fails
+   * @returns {Promise<void>} Resolves when connection is established.
+   * @throws {ConnectionError} If connection fails.
    * @fires connect When connection is established
    * @fires error If connection fails
    */
@@ -406,7 +406,7 @@ export interface IClient {
   /**
    * Gracefully close connection to the service.
    *
-   * @returns {Promise<void>} Resolves when disconnection is complete
+   * @returns {Promise<void>} Resolves when disconnection is complete.
    * @fires disconnect When disconnection is complete
    */
   disconnect(): Promise<void>;
@@ -414,33 +414,33 @@ export interface IClient {
   /**
    * Check if client is currently connected.
    *
-   * @returns {boolean} True if connected, false otherwise
+   * @returns {boolean} True if connected, false otherwise.
    */
   isConnected(): boolean;
 
   /**
    * Perform health check and get current status.
    *
-   * @returns {Promise<ClientStatus>} Current health status with metrics
-   * @throws {Error} If health check fails
+   * @returns {Promise<ClientStatus>} Current health status with metrics.
+   * @throws {Error} If health check fails.
    */
   healthCheck(): Promise<ClientStatus>;
 
   /**
    * Get current performance metrics.
    *
-   * @returns {Promise<ClientMetrics>} Performance metrics and statistics
+   * @returns {Promise<ClientMetrics>} Performance metrics and statistics.
    */
   getMetrics(): Promise<ClientMetrics>;
 
   /**
    * Perform GET request.
    *
-   * @template T Response data type
-   * @param {string} endpoint - Request endpoint/path
-   * @param {RequestOptions} [options] - Request configuration options
-   * @returns {Promise<ClientResponse<T>>} Response with typed data
-   * @throws {Error} If request fails after retries
+   * @template T Response data type.
+   * @param {string} endpoint - Request endpoint/path.
+   * @param {RequestOptions} [options] - Request configuration options.
+   * @returns {Promise<ClientResponse<T>>} Response with typed data.
+   * @throws {Error} If request fails after retries.
    * @fires retry On retry attempts
    * @fires error On request failures
    */
@@ -449,42 +449,42 @@ export interface IClient {
   /**
    * Perform POST request.
    *
-   * @template T Response data type
-   * @param {string} endpoint - Request endpoint/path
-   * @param {any} [data] - Request body data
-   * @param {RequestOptions} [options] - Request configuration options
-   * @returns {Promise<ClientResponse<T>>} Response with typed data
-   * @throws {Error} If request fails after retries
+   * @template T Response data type.
+   * @param {string} endpoint - Request endpoint/path.
+   * @param {any} [data] - Request body data.
+   * @param {RequestOptions} [options] - Request configuration options.
+   * @returns {Promise<ClientResponse<T>>} Response with typed data.
+   * @throws {Error} If request fails after retries.
    */
   post<T = any>(endpoint: string, data?: any, options?: RequestOptions): Promise<ClientResponse<T>>;
 
   /**
    * Perform PUT request.
    *
-   * @template T Response data type
-   * @param {string} endpoint - Request endpoint/path
-   * @param {any} [data] - Request body data
-   * @param {RequestOptions} [options] - Request configuration options
-   * @returns {Promise<ClientResponse<T>>} Response with typed data
-   * @throws {Error} If request fails after retries
+   * @template T Response data type.
+   * @param {string} endpoint - Request endpoint/path.
+   * @param {any} [data] - Request body data.
+   * @param {RequestOptions} [options] - Request configuration options.
+   * @returns {Promise<ClientResponse<T>>} Response with typed data.
+   * @throws {Error} If request fails after retries.
    */
   put<T = any>(endpoint: string, data?: any, options?: RequestOptions): Promise<ClientResponse<T>>;
 
   /**
    * Perform DELETE request.
    *
-   * @template T Response data type
-   * @param {string} endpoint - Request endpoint/path
-   * @param {RequestOptions} [options] - Request configuration options
-   * @returns {Promise<ClientResponse<T>>} Response with typed data
-   * @throws {Error} If request fails after retries
+   * @template T Response data type.
+   * @param {string} endpoint - Request endpoint/path.
+   * @param {RequestOptions} [options] - Request configuration options.
+   * @returns {Promise<ClientResponse<T>>} Response with typed data.
+   * @throws {Error} If request fails after retries.
    */
   delete<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>>;
 
   /**
    * Update client configuration.
    *
-   * @param {Partial<ClientConfig>} config - Partial configuration to update
+   * @param {Partial<ClientConfig>} config - Partial configuration to update.
    * @description Updates the client configuration and reinitializes affected components.
    *              Not all configuration changes may take effect immediately.
    */
@@ -493,8 +493,8 @@ export interface IClient {
   /**
    * Register event handler.
    *
-   * @param {'connect'|'disconnect'|'error'|'retry'|string} event - Event name
-   * @param {Function} handler - Event handler function
+   * @param {'connect'|'disconnect'|'error'|'retry'|string} event - Event name.
+   * @param {Function} handler - Event handler function.
    * @description Register listeners for client lifecycle and operational events.
    */
   on(event: 'connect' | 'disconnect' | 'error' | 'retry', handler: (...args: any[]) => void): void;
@@ -502,15 +502,15 @@ export interface IClient {
   /**
    * Remove event handler.
    *
-   * @param {string} event - Event name
-   * @param {Function} [handler] - Specific handler to remove (removes all if not specified)
+   * @param {string} event - Event name.
+   * @param {Function} [handler] - Specific handler to remove (removes all if not specified).
    */
   off(event: string, handler?: (...args: any[]) => void): void;
 
   /**
    * Clean up resources and destroy client.
    *
-   * @returns {Promise<void>} Resolves when cleanup is complete
+   * @returns {Promise<void>} Resolves when cleanup is complete.
    * @description Performs complete cleanup including disconnection, timer cleanup,
    *              and resource deallocation. Client cannot be used after calling destroy().
    */

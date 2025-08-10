@@ -1,6 +1,6 @@
 /**
- * @fileoverview UEL System Event Adapter
- * 
+ * @file UEL System Event Adapter.
+ *
  * Unified Event Layer adapter for system-level events, providing
  * a consistent interface to scattered EventEmitter patterns across the core system
  * while maintaining full backward compatibility and adding enhanced monitoring,
@@ -15,7 +15,6 @@ import { EventEmitter } from 'node:events';
 import type { ApplicationCoordinator } from '../core/application-coordinator';
 // Import core system classes to wrap their EventEmitter usage
 import type { CoreSystem } from '../core/core-system';
-import { createLogger, type Logger } from '../utils/logger';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -34,6 +33,7 @@ import type {
 import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces';
 import type { SystemLifecycleEvent } from '../types';
 import { EventPriorityMap } from '../types';
+import { createLogger, type Logger } from '../utils/logger';
 
 /**
  * System event adapter configuration extending UEL EventManagerConfig.
@@ -164,7 +164,7 @@ interface WrappedSystemComponent {
  * Unified System Event Adapter.
  *
  * Provides a unified interface to system-level EventEmitter patterns.
- * while implementing the IEventManager interface for UEL compatibility.
+ * While implementing the IEventManager interface for UEL compatibility.
  *
  * Features:
  * - Application lifecycle event management
@@ -176,7 +176,7 @@ interface WrappedSystemComponent {
  * - Unified configuration management
  * - Health monitoring and auto-recovery
  * - Event forwarding and transformation
- * - Error handling with retry logic
+ * - Error handling with retry logic.
  *
  * @example
  */
@@ -771,10 +771,11 @@ export class SystemEventAdapter implements IEventManager {
   }
 
   /**
-   * Event handler management (EventEmitter compatibility)
+   * Event handler management (EventEmitter compatibility).
    *
    * @param event
    * @param handler.
+   * @param handler
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
@@ -1656,6 +1657,7 @@ export class SystemEventAdapter implements IEventManager {
  * Factory function for creating SystemEventAdapter instances.
  *
  * @param config
+ * @example
  */
 export function createSystemEventAdapter(config: SystemEventAdapterConfig): SystemEventAdapter {
   return new SystemEventAdapter(config);
@@ -1666,6 +1668,7 @@ export function createSystemEventAdapter(config: SystemEventAdapterConfig): Syst
  *
  * @param name
  * @param overrides
+ * @example
  */
 export function createDefaultSystemEventAdapterConfig(
   name: string,

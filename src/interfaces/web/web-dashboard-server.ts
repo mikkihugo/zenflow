@@ -1,14 +1,12 @@
 /**
- * Web Dashboard Server - Express.js HTTP server setup
+ * Web Dashboard Server - Express.js HTTP server setup.
  *
  * Handles Express server initialization, middleware, and core HTTP functionality.
  * Separated from business logic for better maintainability.
  */
 /**
- * @file Interface implementation: web-dashboard-server
+ * @file Interface implementation: web-dashboard-server.
  */
-
-
 
 import { existsSync } from 'node:fs';
 import { createServer, type Server as HTTPServer } from 'node:http';
@@ -51,7 +49,7 @@ export class WebDashboardServer {
   }
 
   /**
-   * Get Socket.IO instance
+   * Get Socket.IO instance.
    */
   getSocketIO(): SocketIOServer {
     return this.io;

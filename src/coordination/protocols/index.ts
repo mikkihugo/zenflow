@@ -5,9 +5,8 @@
 
 // Communication Protocols
 /**
- * @file protocols module exports
+ * @file Protocols module exports.
  */
-
 
 export {
   type CommunicationNode,
@@ -97,12 +96,12 @@ export {
   type TopologyType,
 } from './topology/topology-manager';
 
-import type { IEventBus } from '../core/event-bus';
 /**
  * Advanced Coordination System Factory.
  * Creates and configures integrated coordination systems.
  */
 import type { ILogger } from '../../core/logger';
+import type { IEventBus } from '../core/event-bus';
 import { CommunicationProtocols } from './communication/communication-protocols';
 import { TaskDistributionEngine } from './distribution/task-distribution-engine';
 import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';
@@ -288,6 +287,7 @@ export interface CoordinationMetrics {
  * @param config
  * @param logger
  * @param eventBus
+ * @example
  */
 export async function createAdvancedCoordinationSystem(
   config: AdvancedCoordinationConfig,
@@ -374,6 +374,7 @@ export async function createAdvancedCoordinationSystem(
  *
  * @param systems
  * @param logger
+ * @example
  */
 async function setupIntegrations(
   systems: AdvancedCoordinationSystem,
@@ -426,6 +427,7 @@ async function setupIntegrations(
  * Get comprehensive coordination metrics.
  *
  * @param systems
+ * @example
  */
 export function getCoordinationMetrics(systems: AdvancedCoordinationSystem): CoordinationMetrics {
   const topologyMetrics = systems.topologyManager.getTopologyMetrics();
@@ -511,6 +513,7 @@ function calculateAdaptabilityScore(metrics: any): number {
  *
  * @param systems
  * @param logger
+ * @example
  */
 export async function shutdownCoordinationSystem(
   systems: AdvancedCoordinationSystem,
@@ -538,6 +541,7 @@ export async function shutdownCoordinationSystem(
  * Default configuration for advanced coordination system.
  *
  * @param nodeId
+ * @example
  */
 export function getDefaultCoordinationConfig(nodeId: string): AdvancedCoordinationConfig {
   return {

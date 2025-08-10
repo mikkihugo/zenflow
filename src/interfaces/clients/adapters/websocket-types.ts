@@ -4,10 +4,8 @@
  * WebSocket-specific extensions to UACL core interfaces and types.
  */
 /**
- * @file TypeScript type definitions for interfaces
+ * @file TypeScript type definitions for interfaces.
  */
-
-
 
 import type {
   AuthenticationConfig,
@@ -43,7 +41,7 @@ export const WebSocketMessageType = {
 export type WebSocketMessageType = (typeof WebSocketMessageType)[keyof typeof WebSocketMessageType];
 
 /**
- * WebSocket close codes (RFC 6455)
+ * WebSocket close codes (RFC 6455).
  */
 export const WebSocketCloseCode = {
   NORMAL_CLOSURE: 1000,

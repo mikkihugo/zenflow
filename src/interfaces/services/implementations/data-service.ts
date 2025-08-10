@@ -2,19 +2,18 @@
  * Data Service Implementation.
  *
  * Service implementation for data management operations, including.
- * data processing, validation, caching, and persistence operations.
+ * Data processing, validation, caching, and persistence operations.
  * Integrates with existing WebDataService and DocumentService patterns.
  */
 
 // Import existing data services for integration
 /**
- * @file data service implementation
+ * @file Data service implementation.
  */
 
-
-import { WebDataService } from '../web/web-data-service';
 import type { IService } from '../core/interfaces';
 import type { DataServiceConfig, ServiceOperationOptions } from '../types';
+import { WebDataService } from '../web/web-data-service';
 import { BaseService } from './base-service';
 
 /**

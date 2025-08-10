@@ -27,28 +27,28 @@ async function getOneErrorFiles() {
         reject(error);
         return;
       }
-      
+
       const files = [];
-      const lines = stdout.split('\n').filter(line => line.includes('error TS2307'));
-      
+      const lines = stdout.split('\n').filter((line) => line.includes('error TS2307'));
+
       for (const line of lines) {
         const match = line.match(/^src\/[^(]+/);
         if (match) {
           files.push(match[0]);
         }
       }
-      
+
       // Count errors per file
       const fileCounts = {};
-      files.forEach(file => {
+      files.forEach((file) => {
         fileCounts[file] = (fileCounts[file] || 0) + 1;
       });
-      
+
       // Return only 1-error files
       const oneErrorFiles = Object.entries(fileCounts)
         .filter(([_, count]) => count === 1)
         .map(([file]) => file);
-      
+
       resolve(oneErrorFiles);
     });
   });
@@ -58,20 +58,20 @@ async function fixSimpleImports(filePath) {
   try {
     let content = fs.readFileSync(filePath, 'utf8');
     let fixed = false;
-    
+
     for (const fix of commonFixes) {
       if (content.includes(fix.from)) {
         content = content.replace(fix.from, fix.to);
         fixed = true;
       }
     }
-    
+
     if (fixed) {
       fs.writeFileSync(filePath, content);
       console.log(`✅ Fixed: ${path.basename(filePath)}`);
       return true;
     }
-    
+
     return false;
   } catch (error) {
     console.log(`❌ Failed: ${path.basename(filePath)} - ${error.message}`);
@@ -82,20 +82,22 @@ async function fixSimpleImports(filePath) {
 async function main() {
   console.log('🔧 Bulk Import Fixer - Simple Module Resolution fixes');
   console.log('⚡ Running in parallel with complex fixer...\n');
-  
+
   try {
     const oneErrorFiles = await getOneErrorFiles();
     console.log(`📊 Found ${oneErrorFiles.length} files with single errors`);
-    
+
     let fixed = 0;
-    for (const file of oneErrorFiles.slice(0, 20)) { // Limit to 20 files
+    for (const file of oneErrorFiles.slice(0, 20)) {
+      // Limit to 20 files
       if (await fixSimpleImports(file)) {
         fixed++;
       }
     }
-    
-    console.log(`\n🎉 Bulk fixes complete: ${fixed}/${oneErrorFiles.slice(0, 20).length} files fixed`);
-    
+
+    console.log(
+      `\n🎉 Bulk fixes complete: ${fixed}/${oneErrorFiles.slice(0, 20).length} files fixed`
+    );
   } catch (error) {
     console.error('❌ Bulk fixer error:', error.message);
   }

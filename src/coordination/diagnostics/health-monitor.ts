@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: health-monitor
+ * @file Coordination system: health-monitor.
  */
-
 
 import { getLogger } from '../../config/logging-config';
 
@@ -85,9 +84,10 @@ export interface HealthAlert {
 
 /**
  * HealthMonitor provides comprehensive system health monitoring
- * with configurable checks and automatic alerting
+ * with configurable checks and automatic alerting.
  *
  * @example.
+ * @example
  */
 export class HealthMonitor extends EventEmitter {
   private options: HealthMonitorOptions;

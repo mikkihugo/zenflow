@@ -2,10 +2,8 @@
  * Domain analyzer for complexity analysis and splitting recommendations.
  */
 /**
- * @file domain-analyzer implementation
+ * @file Domain-analyzer implementation.
  */
-
-
 
 import * as path from 'node:path';
 import * as acorn from 'acorn';

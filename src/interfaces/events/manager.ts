@@ -890,9 +890,7 @@ export class EventManager {
         }
 
         case EventManagerTypes.MONITORING: {
-          const { MonitoringEventFactory } = await import(
-            './adapters/monitoring-event-factory'
-          );
+          const { MonitoringEventFactory } = await import('./adapters/monitoring-event-factory');
           // MonitoringEventFactory is static, wrap it in a compatible interface
           FactoryClass = class implements IEventManagerFactory {
             async create(config: EventManagerConfig) {

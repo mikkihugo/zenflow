@@ -6,9 +6,8 @@
 
 // Types (re-export shared types for convenience)
 /**
- * @file neural module exports
+ * @file Neural module exports.
  */
-
 
 export type {
   ModelMetadata,

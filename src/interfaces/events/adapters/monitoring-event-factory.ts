@@ -3,13 +3,11 @@
  *
  * Factory for creating and managing MonitoringEventAdapter instances
  * with unified configuration management and pre-configured setups.
- * following the exact same patterns as other UEL adapter factories.
+ * Following the exact same patterns as other UEL adapter factories.
  */
 /**
- * @file Interface implementation: monitoring-event-factory
+ * @file Interface implementation: monitoring-event-factory.
  */
-
-
 
 import {
   createDefaultMonitoringEventAdapterConfig,

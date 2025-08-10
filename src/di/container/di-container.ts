@@ -1,7 +1,6 @@
 /**
- * @file di-container implementation
+ * @file Di-container implementation.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

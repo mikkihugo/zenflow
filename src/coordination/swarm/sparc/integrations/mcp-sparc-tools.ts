@@ -5,10 +5,8 @@
  * Enables AI assistants to coordinate SPARC projects and execute phases.
  */
 /**
- * @file Coordination system: mcp-sparc-tools
+ * @file Coordination system: mcp-sparc-tools.
  */
-
-
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { SPARCEngineCore } from '../core/sparc-engine';
@@ -863,7 +861,7 @@ export class SPARCMCPTools {
 
   /**
    * Handle epic creation from SPARC project.
-   * adrs: comprehensive.adrs.length,
+   * Adrs: comprehensive.adrs.length,
    * epics: comprehensive.epics.length,
    * features: comprehensive.features.length,
    * prd: 1,

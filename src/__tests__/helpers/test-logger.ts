@@ -208,7 +208,7 @@ export class TestLogger {
 
     this.logs.push(entry);
 
-    if (!this.silent && process.env["NODE_ENV"] === 'test') {
+    if (!this.silent && process.env['NODE_ENV'] === 'test') {
       const _prefix = this.testName ? `[${this.testName}] ` : '';
     }
   }

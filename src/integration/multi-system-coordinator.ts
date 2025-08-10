@@ -4,10 +4,8 @@
  * Provides unified interface and cross-system intelligence.
  */
 /**
- * @file multi-system coordination system
+ * @file Multi-system coordination system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { ILogger } from '../core/interfaces/base-interfaces';
@@ -30,14 +28,14 @@ export class MultiSystemCoordinator extends EventEmitter {
    * Initialize all systems with coordination.
    */
   async initialize(): Promise<void> {
-    this["_logger"]?.info('Initializing Multi-System Coordinator...');
+    this['_logger']?.info('Initializing Multi-System Coordinator...');
 
     try {
       // Initialize systems - placeholder implementation
       this.isInitialized = true;
-      this["_logger"]?.info('Multi-System Coordinator initialized successfully');
+      this['_logger']?.info('Multi-System Coordinator initialized successfully');
     } catch (error) {
-      this["_logger"]?.error('Failed to initialize Multi-System Coordinator', error);
+      this['_logger']?.error('Failed to initialize Multi-System Coordinator', error);
       throw error;
     }
   }
@@ -57,7 +55,7 @@ export class MultiSystemCoordinator extends EventEmitter {
     this.activeOperations.set(operationId, { operation, data, startTime: Date.now() });
 
     try {
-      this["_logger"]?.debug(`Coordinating operation: ${operation}`, { operationId });
+      this['_logger']?.debug(`Coordinating operation: ${operation}`, { operationId });
 
       // Placeholder coordination logic
       const result = { operationId, operation, status: 'completed', data };
@@ -66,7 +64,7 @@ export class MultiSystemCoordinator extends EventEmitter {
       return result;
     } catch (error) {
       this.activeOperations.delete(operationId);
-      this["_logger"]?.error(`Operation failed: ${operation}`, error);
+      this['_logger']?.error(`Operation failed: ${operation}`, error);
       throw error;
     }
   }
@@ -86,10 +84,10 @@ export class MultiSystemCoordinator extends EventEmitter {
    * Shutdown coordinator and cleanup resources.
    */
   async shutdown(): Promise<void> {
-    this["_logger"]?.info('Shutting down Multi-System Coordinator...');
+    this['_logger']?.info('Shutting down Multi-System Coordinator...');
     this.activeOperations.clear();
     this.crossSystemCache.clear();
     this.isInitialized = false;
-    this["_logger"]?.info('Multi-System Coordinator shutdown completed');
+    this['_logger']?.info('Multi-System Coordinator shutdown completed');
   }
 }

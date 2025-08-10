@@ -1,8 +1,7 @@
 #!/usr/bin/env nodeimport { getLogger } from "./config/logging-config";
 /**
- * @file sparc-architecture-cli implementation
+ * @file Sparc-architecture-cli implementation.
  */
-
 
 const logger = getLogger('sparc-architecture-cli');
 

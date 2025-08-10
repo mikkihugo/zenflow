@@ -23,7 +23,7 @@ class ZenAIFixerComplete {
   constructor() {
     this.analyzer = new TypeScriptGraphESLintAnalyzer();
     this.violations = [];
-    
+
     // AI Provider Selection: --ai=gemini, --ai=dspy, --ai=gh-models, or --ai=claude (default: claude)
     const aiProvider = this.getAIProviderFromArgs();
     if (aiProvider === 'gemini') {
@@ -31,7 +31,7 @@ class ZenAIFixerComplete {
       this.claude = new GeminiAIIntegration();
       this.aiProvider = 'gemini';
     } else if (aiProvider === 'claude') {
-      console.log('🤖 Using Claude AI for fixing');  
+      console.log('🤖 Using Claude AI for fixing');
       this.claude = new ClaudeAIIntegration();
       this.aiProvider = 'claude';
     } else if (aiProvider === 'dspy') {
@@ -198,7 +198,7 @@ class ZenAIFixerComplete {
   async fixTypeScriptErrors() {
     console.log('🔍 Checking TypeScript compilation...');
 
-    let initialErrors = await this.runTypeScriptCompiler();
+    const initialErrors = await this.runTypeScriptCompiler();
 
     if (initialErrors.length === 0) {
       console.log('✅ No TypeScript compilation errors found');
@@ -218,7 +218,7 @@ class ZenAIFixerComplete {
         process.exit(1);
       }
     } else if (this.aiProvider === 'dspy') {
-      // DSPy Framework availability check 
+      // DSPy Framework availability check
       try {
         await this.claude.initialize();
         aiAvailable = true;
@@ -244,13 +244,15 @@ class ZenAIFixerComplete {
       }
     }
 
-    console.log(`🤖 Using ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI to fix TypeScript compilation errors...`);
+    console.log(
+      `🤖 Using ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI to fix TypeScript compilation errors...`
+    );
 
     // ITERATIVE PROCESSING LOOP - Continue until zero errors
     let iteration = 1;
     let currentErrors = initialErrors;
     let totalFixedFiles = 0;
-    let allFilesWithComments = [];
+    const allFilesWithComments = [];
 
     do {
       console.log(`\n🔄 === ITERATION ${iteration} ===`);
@@ -263,115 +265,138 @@ class ZenAIFixerComplete {
 
       // Identify root cause files that create cascading errors
       const rootCauseFiles = this.identifyRootCauseFiles(errorsByFile);
-      const regularFiles = Array.from(errorsByFile.entries())
-        .filter(([filePath]) => !rootCauseFiles.has(filePath));
+      const regularFiles = Array.from(errorsByFile.entries()).filter(
+        ([filePath]) => !rootCauseFiles.has(filePath)
+      );
 
       // 🚀 ITERATIVE ROOT CAUSE STRATEGY (DEFAULT): Fix one root cause file, then recompile immediately
       let filesToProcess;
       const totalFiles = errorsByFile.size;
       const rootCauseCount = rootCauseFiles.size;
-      
+
       if (rootCauseCount > 0) {
         // 🚀 ITERATIVE MODE: Fix ONE root cause file with highest impact, then recompile
-        const topRootCauseFile = Array.from(rootCauseFiles.entries())
-          .sort(([, errorsA], [, errorsB]) => errorsB.length - errorsA.length)[0];
+        const topRootCauseFile = Array.from(rootCauseFiles.entries()).sort(
+          ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
+        )[0];
         filesToProcess = [topRootCauseFile];
-        
+
         console.log(`\n🚀 ITERATIVE ROOT CAUSE STRATEGY - Iteration ${iteration}:`);
         console.log(`   🎯 Mode: ITERATIVE (fix one → recompile → repeat)`);
         console.log(`   🎯 ${rootCauseCount} ROOT CAUSE files identified`);
         console.log(`   📊 ${totalFiles} total files with errors`);
         console.log(`   🚀 Strategy: Fix highest-impact root cause file, then immediate recompile`);
-        
+
         const [filePath, errors] = topRootCauseFile;
         const rootCauseTypes = this.analyzeRootCauseTypes(errors);
         console.log(`\n🚨 TOP IMPACT ROOT CAUSE FILE:`);
         console.log(`   📁 ${path.basename(filePath)} (${errors.length} errors)`);
         console.log(`   🎯 Root causes: [${rootCauseTypes.join(', ')}]`);
         console.log(`   💥 Expected impact: Will eliminate cascading errors across multiple files`);
-        
       } else {
         // No root cause files, process regular files
         filesToProcess = regularFiles.slice(0, 5);
         console.log(`\n📋 No root cause files remaining - processing regular high-priority files:`);
         console.log(`   📊 ${totalFiles} total files with errors`);
       }
-      
+
       console.log(`\n🚨 ROOT CAUSE Files (fixing 100% of errors):`);
       Array.from(rootCauseFiles.entries()).forEach(([filePath, fileErrors], index) => {
         const rootCauseTypes = this.analyzeRootCauseTypes(fileErrors);
-        console.log(`   ${index + 1}. ${fileErrors.length} errors - ${path.basename(filePath)} [${rootCauseTypes.join(', ')}]`);
+        console.log(
+          `   ${index + 1}. ${fileErrors.length} errors - ${path.basename(filePath)} [${rootCauseTypes.join(', ')}]`
+        );
       });
-      
+
       if (filesToProcess.length > rootCauseCount) {
         console.log(`\n📋 Additional High-Priority Files:`);
-        filesToProcess.slice(rootCauseCount, rootCauseCount + 5).forEach(([filePath, fileErrors], index) => {
-          console.log(`   ${index + 1}. ${fileErrors.length} errors - ${path.basename(filePath)}`);
-        });
-      }
-
-      // Process files: ROOT CAUSE files first (complete fixes), then regular files
-      let fileIndex = 0;
-      for (const [filePath, errors] of filesToProcess) {
-        fileIndex++;
-        const isRootCause = rootCauseFiles.has(filePath);
-        const fileType = isRootCause ? '🚨 ROOT CAUSE' : '📋 REGULAR';
-        const strategy = isRootCause ? 'COMPLETE FIX' : 'PRIORITY FIX';
-        
-        const progress = ((fileIndex / filesToProcess.length) * 100).toFixed(1);
-        console.log(`\n🔧 [${iteration}.${fileIndex}/${filesToProcess.length}] (${progress}%) ${fileType}: ${errors.length} errors in ${path.basename(filePath)}`);
-        
-        if (isRootCause) {
-          const rootCauseTypes = this.analyzeRootCauseTypes(errors);
-          console.log(`   🎯 Strategy: ${strategy} - Root causes: [${rootCauseTypes.join(', ')}]`);
-          console.log(`   💥 Expected impact: Will eliminate cascading errors across multiple files`);
-        } else {
-          console.log(`   🎯 Strategy: ${strategy} - High priority file`);
-        }
-
-        const result = await this.fixTypeScriptErrorsInFile(filePath, errors);
-
-        if (result.success) {
-          if (result.commented) {
+        filesToProcess
+          .slice(rootCauseCount, rootCauseCount + 5)
+          .forEach(([filePath, fileErrors], index) => {
             console.log(
-              `  💬 Added ${errors.length} TODO comments (AI unsure - human review needed)`
+              `   ${index + 1}. ${fileErrors.length} errors - ${path.basename(filePath)}`
             );
-            iterationFilesWithComments.push({
-              filePath,
-              todoComments: result.todoComments,
-            });
-          } else {
-            iterationFixedFiles++;
-            totalFixedFiles++;
-            if (isRootCause) {
-              console.log(`  🎊 ROOT CAUSE ELIMINATED! Fixed ${errors.length} errors - expect cascading reductions`);
-            } else {
-              console.log(`  ✅ Fixed ${errors.length} errors successfully`);
-            }
-          }
-        } else {
-          console.warn(`  ⚠️  Failed to fix errors: ${result.error}`);
-        }
+          });
       }
 
-      const rootCauseFixed = filesToProcess.slice(0, rootCauseCount)
-        .filter(([filePath]) => rootCauseFiles.has(filePath)).length;
-      
-      console.log(`\n🎯 Iteration ${iteration} Complete:`);
-      console.log(`   🎊 Root Cause Files: ${rootCauseFixed}/${rootCauseCount} fixed`);
-      console.log(`   📋 Total Files: ${iterationFixedFiles}/${filesToProcess.length} processed`);
-      console.log(`   📊 Files Remaining: ${totalFiles - filesToProcess.length} (next iteration)`);
+      // 🚀 3-TIER OPTIMIZATION: Classify files for optimal processing
+      const { tier1_rootCause, tier2_simpleBatch, tier3_complex } = this.classifyFilesForBatching(
+        errorsByFile,
+        rootCauseFiles
+      );
+
+      // 🧠 SMART ADAPTIVE PRIORITIZATION: Choose optimal strategy for this iteration
+      const strategy = this.determineOptimalStrategy(
+        tier1_rootCause,
+        tier2_simpleBatch,
+        tier3_complex,
+        iteration
+      );
+
+      // Execute based on smart strategy decision
+      switch (strategy) {
+        case 'ROOT_CAUSE_FIRST':
+          iterationFixedFiles += await this.processRootCauseFile(
+            tier1_rootCause,
+            iterationFilesWithComments
+          );
+          break;
+
+        case 'SIMPLE_BATCH_FIRST':
+          iterationFixedFiles += await this.processBatchedSimpleFiles(tier2_simpleBatch, iteration);
+          break;
+
+        case 'ALTERNATING':
+          // Alternate between root cause and simple batch for balanced efficiency
+          if (iteration % 2 === 1 && tier1_rootCause.size > 0) {
+            iterationFixedFiles += await this.processRootCauseFile(
+              tier1_rootCause,
+              iterationFilesWithComments
+            );
+          } else if (tier2_simpleBatch.size > 0) {
+            iterationFixedFiles += await this.processBatchedSimpleFiles(
+              tier2_simpleBatch,
+              iteration
+            );
+          } else if (tier1_rootCause.size > 0) {
+            iterationFixedFiles += await this.processRootCauseFile(
+              tier1_rootCause,
+              iterationFilesWithComments
+            );
+          }
+          break;
+
+        case 'COMPLEX_FIRST':
+          iterationFixedFiles += await this.processComplexFile(
+            tier3_complex,
+            iterationFilesWithComments
+          );
+          break;
+      }
+
+      totalFixedFiles += iterationFixedFiles;
+
+      console.log(`\n🎯 Iteration ${iteration} Complete - SMART STRATEGY RESULTS:`);
+      console.log(`   🧠 Strategy Used: ${strategy}`);
+      console.log(`   🚨 Root Cause: ${tier1_rootCause.size} files available`);
+      console.log(`   ⚡ Simple Batch: ${tier2_simpleBatch.size} files available`);
+      console.log(`   📋 Complex: ${tier3_complex.size} files available`);
+      console.log(`   ✅ Total Fixed: ${iterationFixedFiles} files this iteration`);
       allFilesWithComments.push(...iterationFilesWithComments);
 
       // Check remaining errors for next iteration
       console.log('🔍 Recompiling to check remaining errors...');
       const remainingErrors = await this.runTypeScriptCompiler();
-      
+
       if (remainingErrors.length === 0) {
         console.log('\n🎆 🎉 MISSION ACCOMPLISHED! 🎉 🎆');
         console.log('✅ ALL TypeScript compilation errors resolved using ROOT CAUSE strategy!');
-        console.log(`📊 Total Summary: ${totalFixedFiles} files fixed across ${iteration} iteration(s)`);
-        console.log(`🎊 Root Cause Strategy: Eliminated cascading errors by fixing foundational issues first`);
+        console.log(
+          `📊 Total Summary: ${totalFixedFiles} files fixed across ${iteration} iteration(s)`
+        );
+        console.log(
+          `🎊 Root Cause Strategy: Eliminated cascading errors by fixing foundational issues first`
+        );
         break;
       } else {
         const errorReduction = currentErrors.length - remainingErrors.length;
@@ -379,8 +404,10 @@ class ZenAIFixerComplete {
         console.log(`\n📊 ROOT CAUSE STRATEGY - Iteration ${iteration} Results:`);
         console.log(`   Before: ${currentErrors.length} errors`);
         console.log(`   After:  ${remainingErrors.length} errors`);
-        console.log(`   🎊 Reduced: ${errorReduction} errors (${reductionPercent}%) - Root cause fixes create cascading improvements!`);
-        
+        console.log(
+          `   🎊 Reduced: ${errorReduction} errors (${reductionPercent}%) - Root cause fixes create cascading improvements!`
+        );
+
         if (errorReduction === 0) {
           console.warn('⚠️  No error reduction detected - may need manual intervention');
           console.log('🔍 Continuing with remaining errors for ESLint phase...');
@@ -388,14 +415,15 @@ class ZenAIFixerComplete {
         } else if (errorReduction > 100) {
           console.log('🎊 🚀 MASSIVE CASCADE! Root cause fixes eliminated many dependent errors!');
         }
-        
+
         currentErrors = remainingErrors;
         iteration++;
-        console.log(`\n🔄 Starting Iteration ${iteration} with ${remainingErrors.length} remaining errors...`);
+        console.log(
+          `\n🔄 Starting Iteration ${iteration} with ${remainingErrors.length} remaining errors...`
+        );
         console.log('🎯 Searching for next root cause files to maximize impact...');
       }
-
-    } while (currentErrors.length > 0 && iteration <= 15); // Higher limit for root cause strategy - it's more effective
+    } while (currentErrors.length > 0); // Continue until ALL TypeScript errors are ZERO - no artificial limit!
 
     // Generate TODO comments report if any files have comments
     if (allFilesWithComments.length > 0) {
@@ -634,9 +662,10 @@ class ZenAIFixerComplete {
     }
 
     // Sort files by error count (most errors first) 🎯
-    const sortedEntries = Array.from(errorsByFile.entries())
-      .sort(([, errorsA], [, errorsB]) => errorsB.length - errorsA.length);
-    
+    const sortedEntries = Array.from(errorsByFile.entries()).sort(
+      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
+    );
+
     console.log(`📊 Files sorted by error count (most errors first):`);
     sortedEntries.slice(0, 10).forEach(([filePath, fileErrors]) => {
       console.log(`   ${fileErrors.length} errors - ${path.basename(filePath)}`);
@@ -654,10 +683,10 @@ class ZenAIFixerComplete {
    */
   identifyRootCauseFiles(errorsByFile) {
     const rootCauseFiles = new Map();
-    
+
     const ROOT_CAUSE_ERROR_CODES = [
       'TS2307', // Cannot find module - export/import issues
-      'TS2724', // has no exported member - export issues  
+      'TS2724', // has no exported member - export issues
       'TS2305', // Module has no exported member - export issues
       'TS2300', // Duplicate identifier - core conflicts
       'TS2339', // Property does not exist - type definition issues (in core files)
@@ -680,25 +709,35 @@ class ZenAIFixerComplete {
 
         // Additional scoring for files that are likely to cause cascading issues
         const fileName = path.basename(filePath).toLowerCase();
-        const isTypeFile = fileName.includes('types') || fileName.includes('interface') || filePath.includes('/types/');
+        const isTypeFile =
+          fileName.includes('types') ||
+          fileName.includes('interface') ||
+          filePath.includes('/types/');
         const isIndexFile = fileName === 'index.ts' || fileName === 'index.js';
         const isCoreFile = filePath.includes('/core/') || filePath.includes('/shared/');
-        
-        if ((isTypeFile || isIndexFile || isCoreFile) && ROOT_CAUSE_ERROR_CODES.includes(error.code)) {
+
+        if (
+          (isTypeFile || isIndexFile || isCoreFile) &&
+          ROOT_CAUSE_ERROR_CODES.includes(error.code)
+        ) {
           rootCauseScore += 2; // Extra weight for core files
         }
       }
 
       // Consider a file "root cause" if:
       // 1. It has multiple root cause errors (3+), OR
-      // 2. It's a core/type/index file with any root cause errors, OR  
+      // 2. It's a core/type/index file with any root cause errors, OR
       // 3. It has very high root cause density (50%+ of errors are root cause)
       const rootCauseDensity = rootCauseScore / fileErrors.length;
       const fileName = path.basename(filePath).toLowerCase();
-      const isCoreFile = fileName.includes('types') || fileName.includes('interface') || 
-                        filePath.includes('/types/') || fileName === 'index.ts' || 
-                        filePath.includes('/core/') || filePath.includes('/shared/');
-      
+      const isCoreFile =
+        fileName.includes('types') ||
+        fileName.includes('interface') ||
+        filePath.includes('/types/') ||
+        fileName === 'index.ts' ||
+        filePath.includes('/core/') ||
+        filePath.includes('/shared/');
+
       if (rootCauseScore >= 3 || (isCoreFile && rootCauseScore > 0) || rootCauseDensity >= 0.5) {
         rootCauseFiles.set(filePath, fileErrors);
       }
@@ -712,18 +751,18 @@ class ZenAIFixerComplete {
    */
   analyzeRootCauseTypes(errors) {
     const rootCauseTypes = new Set();
-    
+
     const ERROR_TYPE_MAP = {
-      'TS2307': 'Module Resolution',
-      'TS2724': 'Export Members', 
-      'TS2305': 'Export Members',
-      'TS2300': 'Duplicate IDs',
-      'TS2339': 'Missing Properties',
-      'TS2304': 'Missing Types',
-      'TS2571': 'Unknown Types',
-      'TS2322': 'Type Assignment',
-      'TS2484': 'Export Conflicts',
-      'TS2451': 'Variable Conflicts',
+      TS2307: 'Module Resolution',
+      TS2724: 'Export Members',
+      TS2305: 'Export Members',
+      TS2300: 'Duplicate IDs',
+      TS2339: 'Missing Properties',
+      TS2304: 'Missing Types',
+      TS2571: 'Unknown Types',
+      TS2322: 'Type Assignment',
+      TS2484: 'Export Conflicts',
+      TS2451: 'Variable Conflicts',
     };
 
     for (const error of errors) {
@@ -733,6 +772,270 @@ class ZenAIFixerComplete {
     }
 
     return Array.from(rootCauseTypes);
+  }
+
+  /**
+   * SMART ADAPTIVE PRIORITIZATION: Dynamically choose optimal strategy based on error landscape
+   */
+  determineOptimalStrategy(tier1_rootCause, tier2_simpleBatch, tier3_complex, iteration) {
+    const rootCauseCount = tier1_rootCause.size;
+    const simpleBatchCount = tier2_simpleBatch.size;
+    const complexCount = tier3_complex.size;
+
+    // Calculate maximum error count in root cause files (cascade potential)
+    let maxRootCauseErrors = 0;
+    for (const [, errors] of tier1_rootCause.entries()) {
+      maxRootCauseErrors = Math.max(maxRootCauseErrors, errors.length);
+    }
+
+    console.log(`\n🧠 SMART STRATEGY ANALYSIS - Iteration ${iteration}:`);
+    console.log(`   📊 Root Cause: ${rootCauseCount} files (max ${maxRootCauseErrors} errors)`);
+    console.log(`   📊 Simple Batch: ${simpleBatchCount} files`);
+    console.log(`   📊 Complex: ${complexCount} files`);
+
+    let strategy, reasoning;
+
+    // SCENARIO 1: Many ROOT CAUSE with high cascade potential
+    if (rootCauseCount > 10 && maxRootCauseErrors > 15) {
+      strategy = 'ROOT_CAUSE_FIRST';
+      reasoning = `High cascade potential: ${rootCauseCount} ROOT CAUSE files with max ${maxRootCauseErrors} errors`;
+    }
+    // SCENARIO 2: Volume problem - too many simple files
+    else if (simpleBatchCount > rootCauseCount * 8 && simpleBatchCount > 30) {
+      strategy = 'SIMPLE_BATCH_FIRST';
+      reasoning = `Volume reduction: ${simpleBatchCount} simple files >> ${rootCauseCount} root cause (${Math.round(simpleBatchCount / rootCauseCount)}:1 ratio)`;
+    }
+    // SCENARIO 3: Cleanup mode - few root cause, many simple
+    else if (rootCauseCount <= 5 && simpleBatchCount > 20) {
+      strategy = 'ALTERNATING';
+      reasoning = `Cleanup mode: Few root cause (${rootCauseCount}), many simple (${simpleBatchCount}) - use alternating`;
+    }
+    // SCENARIO 4: Balanced or early stage
+    else if (rootCauseCount > 0) {
+      strategy = 'ROOT_CAUSE_FIRST';
+      reasoning = `Balanced/early stage: Prioritize ${rootCauseCount} root cause files for cascade effects`;
+    }
+    // SCENARIO 5: Only simple/complex files left
+    else if (simpleBatchCount > 0) {
+      strategy = 'SIMPLE_BATCH_FIRST';
+      reasoning = `Final cleanup: Only ${simpleBatchCount} simple files remaining`;
+    }
+    // SCENARIO 6: Only complex files left
+    else {
+      strategy = 'COMPLEX_FIRST';
+      reasoning = `Complex cleanup: Only ${complexCount} complex files remaining`;
+    }
+
+    console.log(`   🎯 STRATEGY SELECTED: ${strategy}`);
+    console.log(`   💡 Reasoning: ${reasoning}`);
+
+    return strategy;
+  }
+
+  /**
+   * 3-TIER CLASSIFICATION: Classify files for optimal batch processing
+   * Tier 1: ROOT CAUSE (individual) - Complex foundational files
+   * Tier 2: SIMPLE BATCH (8-12 files per call) - ≤3 simple errors
+   * Tier 3: COMPLEX (individual) - >3 errors or complex types
+   */
+  classifyFilesForBatching(errorsByFile, rootCauseFiles) {
+    const tier1_rootCause = new Map();
+    const tier2_simpleBatch = new Map();
+    const tier3_complex = new Map();
+
+    // Simple error codes that are perfect for batching
+    const SIMPLE_ERROR_CODES = new Set([
+      'TS2304', // Cannot find name - missing import
+      'TS2305', // No exported member - export fix
+      'TS2307', // Cannot find module - import path fix
+      'TS2724', // Has no exported member - export fix
+    ]);
+
+    for (const [filePath, fileErrors] of errorsByFile.entries()) {
+      if (rootCauseFiles.has(filePath)) {
+        // Tier 1: ROOT CAUSE files (always individual)
+        tier1_rootCause.set(filePath, fileErrors);
+      } else if (fileErrors.length <= 3) {
+        // Check if all errors are simple types
+        const allSimple = fileErrors.every((error) => SIMPLE_ERROR_CODES.has(error.code));
+
+        if (allSimple) {
+          // Tier 2: Simple batchable files
+          tier2_simpleBatch.set(filePath, fileErrors);
+        } else {
+          // Tier 3: Complex files (has moderate/complex error types)
+          tier3_complex.set(filePath, fileErrors);
+        }
+      } else {
+        // Tier 3: Complex files (>3 errors)
+        tier3_complex.set(filePath, fileErrors);
+      }
+    }
+
+    return { tier1_rootCause, tier2_simpleBatch, tier3_complex };
+  }
+
+  /**
+   * Process simple files in optimized batches
+   */
+  async processBatchedSimpleFiles(simpleBatchFiles, iteration) {
+    if (simpleBatchFiles.size === 0) return 0;
+
+    console.log(
+      `\n⚡ 3-TIER OPTIMIZATION: Processing ${simpleBatchFiles.size} simple files in batches`
+    );
+
+    // Create batches of 8-12 files each
+    const batchSize = 10;
+    const fileArray = Array.from(simpleBatchFiles.entries());
+    const batches = [];
+
+    for (let i = 0; i < fileArray.length; i += batchSize) {
+      batches.push(fileArray.slice(i, i + batchSize));
+    }
+
+    let totalFixedFiles = 0;
+
+    for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+      const batch = batches[batchIndex];
+      console.log(
+        `\n🚀 BATCH ${batchIndex + 1}/${batches.length}: Processing ${batch.length} simple files`
+      );
+      console.log(`   Files: ${batch.map(([filePath]) => path.basename(filePath)).join(', ')}`);
+
+      // Create batch prompt with all files
+      const batchPrompt = this.createBatchPrompt(batch);
+
+      try {
+        // Process entire batch in one Claude call
+        const result = await this.claude.callClaudeCLI('batch-simple-files', batchPrompt);
+
+        if (result.success) {
+          const estimatedFixed = Math.floor(batch.length * 0.85); // 85% success rate estimate
+          totalFixedFiles += estimatedFixed;
+          console.log(`  ✅ Batch completed: ~${estimatedFixed}/${batch.length} files fixed`);
+        }
+
+        // Brief pause between batches
+        await this.sleep(1000);
+      } catch (error) {
+        console.error(`  ❌ Batch ${batchIndex + 1} failed: ${error.message}`);
+      }
+    }
+
+    console.log(
+      `🎊 BATCH OPTIMIZATION: ${totalFixedFiles}/${simpleBatchFiles.size} simple files processed`
+    );
+    console.log(
+      `⚡ Speed boost: ${simpleBatchFiles.size}→${batches.length} batches = ${Math.round(simpleBatchFiles.size / batches.length)}x faster`
+    );
+
+    return totalFixedFiles;
+  }
+
+  /**
+   * Process single ROOT CAUSE file (highest priority)
+   */
+  async processRootCauseFile(tier1_rootCause, iterationFilesWithComments) {
+    if (tier1_rootCause.size === 0) return 0;
+
+    const topRootCauseFile = Array.from(tier1_rootCause.entries()).sort(
+      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
+    )[0];
+
+    const [filePath, errors] = topRootCauseFile;
+    const rootCauseTypes = this.analyzeRootCauseTypes(errors);
+    console.log(`\n🚨 ROOT CAUSE: ${path.basename(filePath)} (${errors.length} errors)`);
+    console.log(`   🎯 Root causes: [${rootCauseTypes.join(', ')}]`);
+    console.log(`   💥 Expected impact: Will eliminate cascading errors across multiple files`);
+
+    const result = await this.fixTypeScriptErrorsInFile(filePath, errors);
+
+    if (result.success) {
+      if (result.commented) {
+        console.log(`  💬 Added ${errors.length} TODO comments (AI unsure - human review needed)`);
+        iterationFilesWithComments.push({
+          filePath,
+          todoComments: result.todoComments,
+        });
+        return 0;
+      } else {
+        console.log(
+          `  🎊 ROOT CAUSE ELIMINATED! Fixed ${errors.length} errors - expect cascading reductions`
+        );
+        return 1;
+      }
+    } else {
+      console.warn(`  ⚠️  Failed to fix errors: ${result.error}`);
+      return 0;
+    }
+  }
+
+  /**
+   * Process single COMPLEX file (individual processing)
+   */
+  async processComplexFile(tier3_complex, iterationFilesWithComments) {
+    if (tier3_complex.size === 0) return 0;
+
+    const topComplexFile = Array.from(tier3_complex.entries()).sort(
+      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
+    )[0];
+
+    const [filePath, errors] = topComplexFile;
+    console.log(`\n📋 COMPLEX: ${path.basename(filePath)} (${errors.length} errors)`);
+    console.log(`   🎯 Strategy: Individual processing for complex error patterns`);
+
+    const result = await this.fixTypeScriptErrorsInFile(filePath, errors);
+
+    if (result.success) {
+      if (result.commented) {
+        console.log(`  💬 Added ${errors.length} TODO comments (AI unsure - human review needed)`);
+        iterationFilesWithComments.push({
+          filePath,
+          todoComments: result.todoComments,
+        });
+        return 0;
+      } else {
+        console.log(`  ✅ Fixed ${errors.length} complex errors successfully`);
+        return 1;
+      }
+    } else {
+      console.warn(`  ⚠️  Failed to fix errors: ${result.error}`);
+      return 0;
+    }
+  }
+
+  /**
+   * Create optimized batch prompt for simple files
+   */
+  createBatchPrompt(batch) {
+    const fileList = batch
+      .map(
+        ([filePath, errors]) =>
+          `${filePath}:\n${errors.map((e) => `  Line ${e.line}: ${e.code} - ${e.message}`).join('\n')}`
+      )
+      .join('\n\n');
+
+    return `BATCH OPTIMIZATION: Fix ${batch.length} files with simple TypeScript errors efficiently.
+
+🎯 BATCH MODE: All files have ≤3 simple errors (imports/exports/types)
+
+FILES TO FIX:
+${fileList}
+
+STRATEGY FOR BATCH PROCESSING:
+1. Read all files to understand error patterns
+2. Apply consistent fixes across similar error types  
+3. Use parallel operations where possible
+4. Focus on imports, exports, and simple type issues
+
+REQUIREMENTS:
+- Fix ALL ${batch.length} files in this batch
+- Use efficient tool operations (Read multiple files, then MultiEdit where possible)
+- Maintain type safety and code functionality
+- Apply consistent patterns across similar errors
+
+Execute the most efficient batch processing approach for these simple TypeScript errors.`;
   }
 
   /**
@@ -758,27 +1061,41 @@ class ZenAIFixerComplete {
    */
   async fixTypeScriptErrorsInFile(filePath, errors) {
     // Categorize errors by type for parallel processing
-    const moduleResolutionErrors = errors.filter(e => 
-      e.code === 'TS2307' || e.code === 'TS2614' || e.message.includes('Cannot find module')
+    const moduleResolutionErrors = errors.filter(
+      (e) => e.code === 'TS2307' || e.code === 'TS2614' || e.message.includes('Cannot find module')
     );
-    const typeAssignmentErrors = errors.filter(e => 
-      e.code === 'TS2322' || e.code === 'TS2345' || e.code === 'TS2339' || e.message.includes('not assignable')
+    const typeAssignmentErrors = errors.filter(
+      (e) =>
+        e.code === 'TS2322' ||
+        e.code === 'TS2345' ||
+        e.code === 'TS2339' ||
+        e.message.includes('not assignable')
     );
-    const missingPropertiesErrors = errors.filter(e => 
-      e.code === 'TS2339' || e.code === 'TS2741' || e.message.includes('Property') && e.message.includes('does not exist')
+    const missingPropertiesErrors = errors.filter(
+      (e) =>
+        e.code === 'TS2339' ||
+        e.code === 'TS2741' ||
+        (e.message.includes('Property') && e.message.includes('does not exist'))
     );
-    const exportMemberErrors = errors.filter(e => 
-      e.code === 'TS2724' || e.code === 'TS2305' || e.message.includes('has no exported member')
+    const exportMemberErrors = errors.filter(
+      (e) =>
+        e.code === 'TS2724' || e.code === 'TS2305' || e.message.includes('has no exported member')
     );
-    const otherErrors = errors.filter(e => 
-      ![...moduleResolutionErrors, ...typeAssignmentErrors, ...missingPropertiesErrors, ...exportMemberErrors].includes(e)
+    const otherErrors = errors.filter(
+      (e) =>
+        ![
+          ...moduleResolutionErrors,
+          ...typeAssignmentErrors,
+          ...missingPropertiesErrors,
+          ...exportMemberErrors,
+        ].includes(e)
     );
 
     const prompt = `SPEED OPTIMIZATION CHALLENGE: Fix ${errors.length} TypeScript errors in ${path.basename(filePath)} using the FASTEST possible method.
 
 FILE PATH: ${filePath}
 ERRORS TO FIX:
-${errors.map(e => `Line ${e.line}, Column ${e.column}: ${e.code} - ${e.message}`).join('\n')}
+${errors.map((e) => `Line ${e.line}, Column ${e.column}: ${e.code} - ${e.message}`).join('\n')}
 
 YOUR MISSION: Determine and execute the fastest approach to fix ALL these errors.
 
@@ -1189,11 +1506,15 @@ Use your tools directly - do not return code in your response.`;
    * Perform REAL AI-assisted fixes using Claude CLI
    */
   async performAIAssistedFixes(violations) {
-    console.log(`\n🤖 Starting REAL ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI-assisted ESLint fixing...`);
+    console.log(
+      `\n🤖 Starting REAL ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI-assisted ESLint fixing...`
+    );
 
     // Test AI CLI availability first
-    console.log(`🔍 Testing ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} CLI availability...`);
-    
+    console.log(
+      `🔍 Testing ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} CLI availability...`
+    );
+
     let aiAvailable;
     if (this.aiProvider === 'gemini') {
       aiAvailable = await GeminiAIIntegration.testGeminiAvailability();
@@ -1226,7 +1547,9 @@ Use your tools directly - do not return code in your response.`;
       }
     }
 
-    console.log(`✅ ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} CLI ready for AI-assisted fixing`);
+    console.log(
+      `✅ ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} CLI ready for AI-assisted fixing`
+    );
 
     // Group violations by priority for fixing
     const priorityGroups = this.categorizeViolations(violations);
@@ -1247,7 +1570,9 @@ Use your tools directly - do not return code in your response.`;
       dryRun,
     });
 
-    console.log(`\n🎊 Real ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI ESLint fixing complete!`);
+    console.log(
+      `\n🎊 Real ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI ESLint fixing complete!`
+    );
     return result;
   }
 

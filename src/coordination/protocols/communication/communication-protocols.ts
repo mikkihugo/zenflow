@@ -7,8 +7,6 @@
  * @file Coordination system: communication-protocols
  */
 
-
-
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { gunzipSync, gzipSync } from 'node:zlib';

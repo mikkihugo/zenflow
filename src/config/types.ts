@@ -29,11 +29,28 @@ export interface Config {
 }
 
 /**
- * Core system configuration (alias for Config).
+ * Core system configuration.
  *
  * @example
  */
-export interface Config extends Config {}
+export interface CoreConfig {
+  logger: {
+    level: 'debug' | 'info' | 'warn' | 'error';
+    console: boolean;
+    file?: string;
+    structured: boolean;
+  };
+  performance: {
+    enableMetrics: boolean;
+    metricsInterval: number;
+    enableProfiling: boolean;
+  };
+  security: {
+    enableSandbox: boolean;
+    allowShellAccess: boolean;
+    trustedHosts: string[];
+  };
+}
 
 /**
  * Interface-specific configuration.

@@ -3,10 +3,8 @@
  * Intelligently assigns optimal agents based on file types, operations, and agent capabilities.
  */
 /**
- * @file Coordination system: auto-agent-assignment
+ * @file Coordination system: auto-agent-assignment.
  */
-
-
 
 import * as path from 'node:path';
 import type { AgentType } from '../types/agent-types';

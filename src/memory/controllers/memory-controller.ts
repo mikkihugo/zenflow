@@ -2,8 +2,8 @@
  * Memory Domain REST API Controller.
  * Provides comprehensive REST endpoints for memory management.
  *
- * @file memory-controller.ts
- * @description Enhanced memory controller with DI integration for Issue #63
+ * @file Memory-controller.ts.
+ * @description Enhanced memory controller with DI integration for Issue #63.
  */
 
 import { inject, injectable } from '../di/decorators/injectable';
@@ -623,7 +623,7 @@ export class MemoryController {
   }
 
   /**
-   * Process value for storage (add metadata, compression, etc.)
+   * Process value for storage (add metadata, compression, etc.).
    *
    * @param value
    * @param options
@@ -650,7 +650,7 @@ export class MemoryController {
   }
 
   /**
-   * Process value from storage (decompress, check TTL, etc.)
+   * Process value from storage (decompress, check TTL, etc.).
    *
    * @param rawValue
    */

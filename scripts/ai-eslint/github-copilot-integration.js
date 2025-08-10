@@ -2,7 +2,7 @@
 
 /**
  * GitHub Copilot Integration for Zen AI Fixer
- * 
+ *
  * Uses GitHub Copilot API for reliable, high-quality code fixing.
  * Benefits:
  * - Access to GPT-4o and other top models through Copilot subscription
@@ -42,9 +42,11 @@ export class GitHubCopilotIntegration {
     try {
       // Try to get GitHub Copilot OAuth token from apps.json (official method)
       this.apiKey = await this.getGitHubCopilotToken();
-      
+
       if (!this.apiKey) {
-        throw new Error('GitHub Copilot OAuth token required. Please sign into Copilot via VS Code or JetBrains IDE, or set OPENAI_API_KEY environment variable.');
+        throw new Error(
+          'GitHub Copilot OAuth token required. Please sign into Copilot via VS Code or JetBrains IDE, or set OPENAI_API_KEY environment variable.'
+        );
       }
 
       console.log('🤖 Using GitHub Copilot API with GPT-4o');
@@ -52,7 +54,6 @@ export class GitHubCopilotIntegration {
 
       // Load existing patterns
       await this.loadPatternCache();
-
     } catch (error) {
       console.error('Failed to initialize GitHub Copilot:', error.message);
       throw new Error(`GitHub Copilot initialization failed: ${error.message}`);
@@ -68,7 +69,7 @@ export class GitHubCopilotIntegration {
       console.log('   🔑 Using OPENAI_API_KEY for Copilot');
       return process.env.OPENAI_API_KEY;
     }
-    
+
     // Method 2: Try to read from GitHub Copilot apps.json (JetBrains)
     try {
       const os = await import('os');
@@ -83,7 +84,7 @@ export class GitHubCopilotIntegration {
     } catch (error) {
       console.warn('   ⚠️ Could not read GitHub Copilot apps.json:', error.message);
     }
-    
+
     // Method 2.5: Try to read from VS Code GitHub Copilot extension
     try {
       const os = await import('os');
@@ -91,9 +92,16 @@ export class GitHubCopilotIntegration {
         path.join(os.homedir(), '.vscode', 'User', 'globalStorage', 'github.copilot'),
         path.join(os.homedir(), '.vscode-insiders', 'User', 'globalStorage', 'github.copilot'),
         path.join(os.homedir(), '.config', 'Code', 'User', 'globalStorage', 'github.copilot'),
-        path.join(os.homedir(), '.config', 'Code - Insiders', 'User', 'globalStorage', 'github.copilot')
+        path.join(
+          os.homedir(),
+          '.config',
+          'Code - Insiders',
+          'User',
+          'globalStorage',
+          'github.copilot'
+        ),
       ];
-      
+
       for (const vscodeConfigPath of vscodeConfigPaths) {
         const tokenPath = path.join(vscodeConfigPath, 'hosts.json');
         if (fs.existsSync(tokenPath)) {
@@ -107,27 +115,27 @@ export class GitHubCopilotIntegration {
     } catch (error) {
       console.warn('   ⚠️ Could not read VS Code Copilot token:', error.message);
     }
-    
+
     // Method 3: GitHub CLI authentication token (fallback)
     if (process.env.GITHUB_TOKEN) {
       console.log('   🔑 Trying GITHUB_TOKEN as fallback');
       return process.env.GITHUB_TOKEN;
     }
-    
+
     // Method 4: Try gh auth token command
     try {
       const { spawn } = await import('child_process');
       const { promisify } = await import('util');
       const exec = promisify(spawn);
-      
+
       const result = await new Promise((resolve, reject) => {
         const child = spawn('gh', ['auth', 'token'], { stdio: 'pipe' });
         let output = '';
-        
+
         child.stdout.on('data', (data) => {
           output += data.toString();
         });
-        
+
         child.on('close', (code) => {
           if (code === 0) {
             resolve(output.trim());
@@ -135,10 +143,10 @@ export class GitHubCopilotIntegration {
             reject(new Error('gh auth token failed'));
           }
         });
-        
+
         child.on('error', reject);
       });
-      
+
       if (result) {
         console.log('   🔑 Using gh auth token');
         return result;
@@ -146,7 +154,7 @@ export class GitHubCopilotIntegration {
     } catch (error) {
       console.warn('   ⚠️ Could not get gh auth token:', error.message);
     }
-    
+
     return null;
   }
 
@@ -164,7 +172,7 @@ export class GitHubCopilotIntegration {
     try {
       // Read file content
       const fileContent = fs.readFileSync(filePath, 'utf8');
-      
+
       // Extract errors from prompt
       const errors = this.extractErrorsFromPrompt(prompt);
       console.log(`   🔍 Processing ${errors.length} errors`);
@@ -177,19 +185,25 @@ export class GitHubCopilotIntegration {
       }
 
       // Step 1: Diagnose errors using GPT-4o (compact prompt)
-      const errorText = errors.map(e => e.message || e).join('\\n').substring(0, 500); // Limit error text
+      const errorText = errors
+        .map((e) => e.message || e)
+        .join('\\n')
+        .substring(0, 500); // Limit error text
       const diagnosisResult = await this.callGitHubCopilotAPI({
         model: this.model,
-        messages: [{
-          role: 'system',
-          content: 'TypeScript expert. Analyze errors, provide JSON fix strategy.'
-        }, {
-          role: 'user',
-          content: `Fix TS errors:
+        messages: [
+          {
+            role: 'system',
+            content: 'TypeScript expert. Analyze errors, provide JSON fix strategy.',
+          },
+          {
+            role: 'user',
+            content: `Fix TS errors:
 ${errorText}
 Code: ${this.truncateFileContext(fileContent)}
-JSON: {"analysis":"cause","strategy":"fix","confidence":0.9}`
-        }]
+JSON: {"analysis":"cause","strategy":"fix","confidence":0.9}`,
+          },
+        ],
       });
 
       let diagnosis;
@@ -200,7 +214,7 @@ JSON: {"analysis":"cause","strategy":"fix","confidence":0.9}`
         diagnosis = {
           analysis: diagnosisResult.content.substring(0, 200),
           strategy: 'Fix TypeScript compilation errors',
-          confidence: 0.7
+          confidence: 0.7,
         };
       }
 
@@ -211,17 +225,20 @@ JSON: {"analysis":"cause","strategy":"fix","confidence":0.9}`
       const compactCode = this.truncateFileContext(fileContent, 1200); // Larger limit for fixing
       const fixingResult = await this.callGitHubCopilotAPI({
         model: this.model,
-        messages: [{
-          role: 'system', 
-          content: 'TypeScript dev. Fix code issues, return JSON with complete corrected code.'
-        }, {
-          role: 'user',
-          content: `Apply fixes:
+        messages: [
+          {
+            role: 'system',
+            content: 'TypeScript dev. Fix code issues, return JSON with complete corrected code.',
+          },
+          {
+            role: 'user',
+            content: `Apply fixes:
 Analysis: ${(diagnosis.analysis || '').substring(0, 100)}
 Strategy: ${(diagnosis.strategy || '').substring(0, 100)}
 Code: ${compactCode}
-JSON: {"fixedCode":"corrected code","explanation":"changes"}`
-        }]
+JSON: {"fixedCode":"corrected code","explanation":"changes"}`,
+          },
+        ],
       });
 
       let fixResult;
@@ -231,7 +248,7 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
         // Fallback if JSON parsing fails
         fixResult = {
           fixedCode: fileContent, // Keep original if parsing fails
-          explanation: 'Applied TypeScript fixes'
+          explanation: 'Applied TypeScript fixes',
         };
       }
 
@@ -240,7 +257,7 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
 
       // Calculate metrics
       const duration = Date.now() - startTime;
-      const cost = 0.00; // FREE with GitHub Copilot!
+      const cost = 0.0; // FREE with GitHub Copilot!
       const success = this.validateFix(fixResult.fixedCode);
 
       // Cache successful patterns
@@ -252,8 +269,8 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
       this.totalCost += cost; // Still $0.00!
       this.updateAverageTime(duration);
 
-      console.log(`   ✅ Fixed in ${(duration/1000).toFixed(1)}s (cost: FREE 🆓)`);
-      
+      console.log(`   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: FREE 🆓)`);
+
       // Save patterns periodically
       if (this.successCount % 3 === 0) {
         await this.savePatternCache();
@@ -261,20 +278,19 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
 
       return {
         success: true,
-        cost: 0.00,
+        cost: 0.0,
         duration,
         method: 'GitHub-Copilot-GPT4o',
         confidence: diagnosis.confidence || 0.7,
-        explanation: fixResult.explanation || ''
+        explanation: fixResult.explanation || '',
       };
-
     } catch (error) {
       console.error(`   ❌ GitHub Copilot error: ${error.message}`);
-      
+
       return {
         success: false,
         error: error.message,
-        fallback: 'claude'
+        fallback: 'claude',
       };
     }
   }
@@ -287,9 +303,9 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
+        Authorization: `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
@@ -306,16 +322,16 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
   extractErrorsFromPrompt(prompt) {
     const errors = [];
     const lines = prompt.split('\\n');
-    
+
     for (const line of lines) {
       if (line.includes('error TS') || line.includes('Error:')) {
         errors.push({
           message: line.trim(),
-          type: this.classifyError(line)
+          type: this.classifyError(line),
         });
       }
     }
-    
+
     return errors;
   }
 
@@ -330,11 +346,11 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
       'type-assignment': ['is not assignable to', 'Type mismatch'],
       'duplicate-ids': ['Duplicate identifier', 'already declared'],
       'optional-properties': ['exactOptionalPropertyTypes', 'undefined'],
-      'import-errors': ['Cannot resolve', 'import error']
+      'import-errors': ['Cannot resolve', 'import error'],
     };
 
     for (const [type, keywords] of Object.entries(patterns)) {
-      if (keywords.some(keyword => errorLine.includes(keyword))) {
+      if (keywords.some((keyword) => errorLine.includes(keyword))) {
         return type;
       }
     }
@@ -345,7 +361,10 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
    * Generate pattern key for caching
    */
   generatePatternKey(errors, fileExtension) {
-    const errorTypes = errors.map(e => e.type).sort().join(',');
+    const errorTypes = errors
+      .map((e) => e.type)
+      .sort()
+      .join(',');
     const errorCount = Math.min(errors.length, 10);
     return `${errorTypes}-${fileExtension}-${errorCount}`;
   }
@@ -360,7 +379,7 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
       confidence: diagnosisResult.confidence || 0.7,
       sampleFix: fixingResult.explanation || '',
       created: Date.now(),
-      usageCount: 0
+      usageCount: 0,
     });
   }
 
@@ -376,17 +395,20 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`
       const compactCode = this.truncateFileContext(fileContent, 1200);
       const fixingResult = await this.callGitHubCopilotAPI({
         model: this.model,
-        messages: [{
-          role: 'system',
-          content: 'TypeScript dev. Apply cached fix strategy.'
-        }, {
-          role: 'user',
-          content: `Apply fix:
+        messages: [
+          {
+            role: 'system',
+            content: 'TypeScript dev. Apply cached fix strategy.',
+          },
+          {
+            role: 'user',
+            content: `Apply fix:
 Diagnosis: ${(pattern.diagnosis || '').substring(0, 80)}
 Strategy: ${(pattern.fixStrategy || '').substring(0, 80)}
 Code: ${compactCode}
-JSON: {"fixedCode":"corrected","explanation":"changes"}`
-        }]
+JSON: {"fixedCode":"corrected","explanation":"changes"}`,
+          },
+        ],
       });
 
       let fixResult;
@@ -395,28 +417,29 @@ JSON: {"fixedCode":"corrected","explanation":"changes"}`
       } catch {
         fixResult = {
           fixedCode: fileContent,
-          explanation: 'Applied cached fix strategy'
+          explanation: 'Applied cached fix strategy',
         };
       }
 
       fs.writeFileSync(filePath, fixResult.fixedCode);
 
       const duration = Date.now() - startTime;
-      const cost = 0.00; // FREE!
+      const cost = 0.0; // FREE!
       this.totalCost += cost;
       this.updateAverageTime(duration);
 
-      console.log(`   ⚡ Pattern applied in ${(duration/1000).toFixed(1)}s (FREE 🆓) - Used ${pattern.usageCount}x`);
+      console.log(
+        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (FREE 🆓) - Used ${pattern.usageCount}x`
+      );
 
       return {
         success: true,
-        cost: 0.00,
+        cost: 0.0,
         duration,
         method: 'GitHub-Copilot-Pattern',
         confidence: pattern.confidence,
-        explanation: fixResult.explanation || pattern.sampleFix
+        explanation: fixResult.explanation || pattern.sampleFix,
       };
-
     } catch (error) {
       console.log(`   ⚠️ Pattern failed: ${error.message}, removing from cache`);
       this.patternCache.delete(patternKey);
@@ -429,26 +452,26 @@ JSON: {"fixedCode":"corrected","explanation":"changes"}`
    */
   truncateFileContext(content, maxChars = 800) {
     if (content.length <= maxChars) return content;
-    
+
     // Keep imports and a small sample of the problematic area
     const lines = content.split('\\n');
-    const importLines = lines.filter(line => line.trim().startsWith('import')).slice(0, 5); // Max 5 imports
-    const otherLines = lines.filter(line => !line.trim().startsWith('import'));
-    
+    const importLines = lines.filter((line) => line.trim().startsWith('import')).slice(0, 5); // Max 5 imports
+    const otherLines = lines.filter((line) => !line.trim().startsWith('import'));
+
     let result = importLines.join('\\n') + '\\n\\n';
-    let remaining = maxChars - result.length - 100; // Leave buffer
-    
+    const remaining = maxChars - result.length - 100; // Leave buffer
+
     // Add just enough content to show the structure
     for (let i = 0; i < Math.min(otherLines.length, 20); i++) {
       const line = otherLines[i];
       if (result.length + line.length + 1 > remaining) break;
       result += line + '\\n';
     }
-    
+
     if (result.length < maxChars - 50) {
       result += '\\n... (truncated for API limits)';
     }
-    
+
     return result;
   }
 
@@ -456,11 +479,13 @@ JSON: {"fixedCode":"corrected","explanation":"changes"}`
    * Basic validation of fixed code
    */
   validateFix(fixedCode) {
-    return fixedCode && 
-           fixedCode.trim().length > 0 && 
-           !fixedCode.includes('undefined') &&
-           !fixedCode.includes('FIXME') &&
-           !fixedCode.includes('TODO');
+    return (
+      fixedCode &&
+      fixedCode.trim().length > 0 &&
+      !fixedCode.includes('undefined') &&
+      !fixedCode.includes('FIXME') &&
+      !fixedCode.includes('TODO')
+    );
   }
 
   /**
@@ -511,12 +536,15 @@ JSON: {"fixedCode":"corrected","explanation":"changes"}`
     return {
       patternsLearned: this.patternCache.size,
       successfulFixes: this.successCount,
-      totalCost: 0.00, // Always FREE!
-      avgCost: 0.00,
+      totalCost: 0.0, // Always FREE!
+      avgCost: 0.0,
       avgExecutionTime: this.avgExecutionTime,
       model: this.model,
-      cacheHitRate: this.successCount > 0 ? 
-        (Array.from(this.patternCache.values()).reduce((sum, p) => sum + p.usageCount, 0) / this.successCount) : 0
+      cacheHitRate:
+        this.successCount > 0
+          ? Array.from(this.patternCache.values()).reduce((sum, p) => sum + p.usageCount, 0) /
+            this.successCount
+          : 0,
     };
   }
 
@@ -530,7 +558,7 @@ JSON: {"fixedCode":"corrected","explanation":"changes"}`
     console.log(`   🎯 Successful Fixes: ${stats.successfulFixes}`);
     console.log(`   🧠 Patterns Learned: ${stats.patternsLearned}`);
     console.log(`   💰 Total Cost: FREE 🆓 (GitHub Copilot)`);
-    console.log(`   ⚡ Avg Execution: ${(stats.avgExecutionTime/1000).toFixed(1)}s`);
+    console.log(`   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`);
     console.log(`   🔄 Cache Hit Rate: ${(stats.cacheHitRate * 100).toFixed(1)}%`);
   }
 

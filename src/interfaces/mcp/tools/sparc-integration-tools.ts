@@ -5,13 +5,11 @@
  * Provides database-driven SPARC operations instead of isolated system.
  */
 /**
- * @file Interface implementation: sparc-integration-tools
+ * @file Interface implementation: sparc-integration-tools.
  */
 
-
-
 import type { DocumentService } from '../services/document-service';
-import type { MCPTool } from '../tool-registry';
+import type { MCPTool } from '../types';
 
 export function createSPARCIntegrationTools(_documentService: DocumentService): MCPTool[] {
   return [

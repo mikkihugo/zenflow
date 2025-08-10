@@ -1,8 +1,7 @@
 #!/usr/bin/env nodeimport { getLogger } from '../config/logging-config";
 /**
- * @file Interface implementation: validate-external-config
+ * @file Interface implementation: validate-external-config.
  */
-
 
 const logger = getLogger('interfaces-mcp-validate-external-config');
 
@@ -17,6 +16,8 @@ import type { getLogger } from '../../core/logger';
 
 /**
  * Validate configuration files.
+ *
+ * @example
  */
 function validateConfigurationFiles(): void {
   const configFiles = [
@@ -71,6 +72,8 @@ function validateConfigurationFiles(): void {
 
 /**
  * Test MCP server configuration.
+ *
+ * @example
  */
 function testMCPConfiguration(): void {
   try {
@@ -104,11 +107,15 @@ function testMCPConfiguration(): void {
 
 /**
  * Print setup instructions.
+ *
+ * @example
  */
 function printSetupInstructions(): void {}
 
 /**
  * Main function.
+ *
+ * @example
  */
 function main(): void {
   validateConfigurationFiles();

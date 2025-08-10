@@ -2,7 +2,6 @@
  * @file Knowledge-storage implementation.
  */
 
-
 import { Logger } from '../core/logger';
 
 const logger = new Logger('src-knowledge-knowledge-storage');

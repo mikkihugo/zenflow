@@ -8,8 +8,6 @@
  * @file Interface implementation: main-menu.
  */
 
-
-
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import { useState } from 'react';
@@ -193,6 +191,11 @@ export const Menu: React.FC<MainMenuProps> = ({
  * @param _handlers.onViewStatus
  * @param _handlers.onViewLogs
  * @param _handlers.onSettings
+ * @param handlers
+ * @param handlers.onStartSwarm
+ * @param handlers.onViewStatus
+ * @param handlers.onViewLogs
+ * @param handlers.onSettings
  */
 export const createDefaultMenuItems = (handlers: {
   onStartSwarm?: () => void;

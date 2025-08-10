@@ -1,9 +1,9 @@
 /**
- * @file Test suite for comprehensive-sparc-test
+ * @file Test suite for comprehensive-sparc-test.
  */
 
-
 import { getLogger } from './config/logging-config';
+import type { Priority, RiskLevel } from './coordination/swarm/sparc/types/sparc-types';
 
 const logger = getLogger('comprehensive-sparc-test');
 
@@ -30,20 +30,20 @@ async function runComprehensiveTest() {
 
   try {
     const coreTest = await testCoreEngine();
-    results?.coreEngine = coreTest.success;
+    results.coreEngine = coreTest.success;
     const cliTest = await testCLIIntegration();
-    results?.cliIntegration = cliTest.success;
+    results.cliIntegration = cliTest.success;
     const mcpTest = await testMCPIntegration();
-    results?.mcpIntegration = mcpTest.success;
+    results.mcpIntegration = mcpTest.success;
     const e2eTest = await testEndToEndFlow();
-    results?.endToEndFlow = e2eTest.success;
+    results.endToEndFlow = e2eTest.success;
 
     // Overall assessment
-    results?.overallSuccess = Object.values(results)
+    results.overallSuccess = Object.values(results)
       .slice(0, -1)
       .every((r) => r);
 
-    if (results?.overallSuccess) {
+    if (results.overallSuccess) {
     } else {
     }
 
@@ -70,7 +70,7 @@ async function testCoreEngine() {
           title: 'Core Algorithm Test',
           description: 'Test core algorithm generation',
           type: 'algorithmic',
-          priority: 'HIGH' as Priority,
+          priority: 'HIGH' satisfies Priority,
           testCriteria: ['Algorithm generates correctly'],
         },
       ],
@@ -79,7 +79,7 @@ async function testCoreEngine() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
+      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' satisfies RiskLevel },
       successMetrics: [],
     };
 
@@ -124,7 +124,7 @@ async function testCLIIntegration() {
           title: 'CLI Memory Algorithm',
           description: 'Test memory algorithm via CLI',
           type: 'algorithmic',
-          priority: 'HIGH' as Priority,
+          priority: 'HIGH' satisfies Priority,
           testCriteria: ['CLI generation works'],
         },
       ],
@@ -133,7 +133,7 @@ async function testCLIIntegration() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
+      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' satisfies RiskLevel },
       successMetrics: [],
     };
 
@@ -193,7 +193,7 @@ async function testMCPIntegration() {
           title: 'MCP Neural Algorithm',
           description: 'Test neural algorithm via MCP',
           type: 'algorithmic',
-          priority: 'HIGH' as Priority,
+          priority: 'HIGH' satisfies Priority,
           testCriteria: ['MCP generation works'],
         },
       ],
@@ -202,7 +202,7 @@ async function testMCPIntegration() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
+      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' satisfies RiskLevel },
       successMetrics: [],
     };
 
@@ -255,7 +255,7 @@ async function testEndToEndFlow() {
           title: 'E2E Data Processing',
           description: 'End-to-end data processing algorithm',
           type: 'algorithmic',
-          priority: 'HIGH' as Priority,
+          priority: 'HIGH' satisfies Priority,
           testCriteria: ['Processes data correctly', 'Handles edge cases'],
         },
         {
@@ -263,7 +263,7 @@ async function testEndToEndFlow() {
           title: 'E2E Validation',
           description: 'Data validation and error handling',
           type: 'algorithmic',
-          priority: 'MEDIUM' as Priority,
+          priority: 'MEDIUM' satisfies Priority,
           testCriteria: ['Validates input', 'Reports errors clearly'],
         },
       ],
@@ -273,7 +273,7 @@ async function testEndToEndFlow() {
           title: 'Performance',
           description: 'System performance requirements',
           metrics: { latency: '<50ms', throughput: '>2000/sec' },
-          priority: 'HIGH' as Priority,
+          priority: 'HIGH' satisfies Priority,
         },
       ],
       constraints: [
@@ -287,7 +287,7 @@ async function testEndToEndFlow() {
       assumptions: [],
       dependencies: [],
       acceptanceCriteria: [],
-      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' as RiskLevel },
+      riskAssessment: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' satisfies RiskLevel },
       successMetrics: [
         {
           id: 'metric-e2e-001',
@@ -343,7 +343,7 @@ async function testEndToEndFlow() {
 // Run the comprehensive test if this file is executed directly
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   runComprehensiveTest().then((results) => {
-    process.exit(results?.overallSuccess ? 0 : 1);
+    process.exit(results.overallSuccess ? 0 : 1);
   });
 }
 

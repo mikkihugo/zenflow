@@ -1,5 +1,5 @@
-import { BaseCommand } from './base-command'; // Assuming a BaseCommand class exists
 import { DiscoveryPipeline } from '../../../coordination/discovery/pipeline'; // Assuming a DiscoveryPipeline class exists
+import { BaseCommand } from './base-command'; // Assuming a BaseCommand class exists
 
 export interface DiscoverOptions {
   autoSwarms: boolean;
@@ -17,7 +17,8 @@ export class DiscoverCommand extends BaseCommand {
     },
     '--confidence-threshold': {
       type: 'number',
-      description: 'Minimum confidence score for domain discovery to trigger swarm creation (0.0-1.0).',
+      description:
+        'Minimum confidence score for domain discovery to trigger swarm creation (0.0-1.0).',
       default: 0.8,
     },
     '--skip-validation': {
@@ -67,7 +68,7 @@ export class DiscoverCommand extends BaseCommand {
 
     // This is a placeholder for actual user input.
     // In a real application, this would use a library like 'inquirer' for interactive prompts.
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       process.stdin.once('data', (data) => {
         resolve(data.toString().trim());
       });

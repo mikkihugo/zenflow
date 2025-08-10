@@ -2,13 +2,11 @@
  * FACT Storage Interface.
  *
  * Backend-agnostic storage interface for FACT external knowledge system.
- * Allows pluggable storage backends (SQLite, JSONB, File-based, etc.)
+ * Allows pluggable storage backends (SQLite, JSONB, File-based, etc.).
  */
 /**
- * @file storage-interface implementation
+ * @file Storage-interface implementation.
  */
-
-
 
 export interface FACTKnowledgeEntry {
   id: string;

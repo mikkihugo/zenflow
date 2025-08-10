@@ -1,5 +1,5 @@
 /**
- * @fileoverview UEL Communication Event Adapter providing unified event management for communication-related events.
+ * @file UEL Communication Event Adapter providing unified event management for communication-related events.
  *
  * Unified Event Layer adapter for communication-related events, providing
  * a consistent interface to scattered EventEmitter patterns across the communication system.
@@ -27,6 +27,7 @@ import type {
   EventManagerMetrics,
   EventManagerStatus,
   EventManagerType,
+  EventPriority,
   EventQueryOptions,
   EventSubscription,
   EventTransform,
@@ -36,7 +37,6 @@ import type {
 import { EventManagerTypes } from '../core/interfaces';
 import type { CommunicationEvent } from '../types';
 import { EventPriorityMap } from '../types';
-import type { EventPriority } from '../core/interfaces';
 
 // Note: MCP SDK imports commented out for tests - would be real imports in production
 // import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
@@ -166,11 +166,13 @@ interface CommunicationEventMetrics {
   messageId?: string | undefined;
   protocolType?: string | undefined;
   communicationLatency?: number | undefined;
-  resourceUsage?: {
-    cpu: number;
-    memory: number;
-    network: number;
-  } | undefined;
+  resourceUsage?:
+    | {
+        cpu: number;
+        memory: number;
+        network: number;
+      }
+    | undefined;
   errorType?: string | undefined;
   recoveryAttempts?: number | undefined;
   timestamp: Date;
@@ -607,19 +609,34 @@ export class CommunicationEventAdapter implements IEventManager {
       // TODO: Fix batch type conversion issues - cast batches to CommunicationEvent when needed
       switch (this.config.processing?.strategy) {
         case 'immediate':
-          await this.processCommunicationBatchImmediate(batch as EventBatch<CommunicationEvent>, options);
+          await this.processCommunicationBatchImmediate(
+            batch as EventBatch<CommunicationEvent>,
+            options
+          );
           break;
         case 'queued':
-          await this.processCommunicationBatchQueued(batch as EventBatch<CommunicationEvent>, options);
+          await this.processCommunicationBatchQueued(
+            batch as EventBatch<CommunicationEvent>,
+            options
+          );
           break;
         case 'batched':
-          await this.processCommunicationBatchBatched(batch as EventBatch<CommunicationEvent>, options);
+          await this.processCommunicationBatchBatched(
+            batch as EventBatch<CommunicationEvent>,
+            options
+          );
           break;
         case 'throttled':
-          await this.processCommunicationBatchThrottled(batch as EventBatch<CommunicationEvent>, options);
+          await this.processCommunicationBatchThrottled(
+            batch as EventBatch<CommunicationEvent>,
+            options
+          );
           break;
         default:
-          await this.processCommunicationBatchQueued(batch as EventBatch<CommunicationEvent>, options);
+          await this.processCommunicationBatchQueued(
+            batch as EventBatch<CommunicationEvent>,
+            options
+          );
       }
 
       const duration = Date.now() - startTime;
@@ -785,7 +802,9 @@ export class CommunicationEventAdapter implements IEventManager {
 
     // Apply filters
     if (options?.filter) {
-      events = events.filter((event) => this.applyFilter(event as CommunicationEvent, options?.filter!));
+      events = events.filter((event) =>
+        this.applyFilter(event as CommunicationEvent, options?.filter!)
+      );
     }
 
     // Apply sorting
@@ -1652,7 +1671,10 @@ export class CommunicationEventAdapter implements IEventManager {
     // Apply global transforms
     let transformedEvent = event;
     for (const transform of this.transforms.values()) {
-      transformedEvent = await this.applyTransform(transformedEvent as unknown as CommunicationEvent, transform) as unknown as T;
+      transformedEvent = (await this.applyTransform(
+        transformedEvent as unknown as CommunicationEvent,
+        transform
+      )) as unknown as T;
     }
 
     // Process subscriptions manually to handle filtering and transformation per subscription
@@ -1663,14 +1685,20 @@ export class CommunicationEventAdapter implements IEventManager {
 
       try {
         // Apply subscription-specific filters
-        if (subscription.filter && !this.applyFilter(transformedEvent as unknown as CommunicationEvent, subscription.filter)) {
+        if (
+          subscription.filter &&
+          !this.applyFilter(transformedEvent as unknown as CommunicationEvent, subscription.filter)
+        ) {
           continue;
         }
 
         // Apply subscription-specific transforms
         let subscriptionEvent = transformedEvent;
         if (subscription.transform) {
-          subscriptionEvent = await this.applyTransform(transformedEvent as unknown as CommunicationEvent, subscription.transform) as unknown as T;
+          subscriptionEvent = (await this.applyTransform(
+            transformedEvent as unknown as CommunicationEvent,
+            subscription.transform
+          )) as unknown as T;
         }
 
         // Call the listener

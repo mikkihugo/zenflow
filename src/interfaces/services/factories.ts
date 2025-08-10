@@ -10,7 +10,7 @@
  * - Health monitoring and auto-recovery mechanisms
  * - Service discovery and registration
  * - Metrics collection and performance monitoring
- * - Event-driven service coordination
+ * - Event-driven service coordination.
  * @example
  * ```typescript
  * import { USLFactory, globalUSLFactory } from '@claude-zen/usl';
@@ -74,7 +74,7 @@ import {
  *
  * @interface USLFactoryConfig
  * @description Comprehensive configuration options for the USL Factory system,
- * controlling service creation, monitoring, discovery, and lifecycle management
+ * controlling service creation, monitoring, discovery, and lifecycle management.
  * @example
  * ```typescript
  * const factoryConfig: USLFactoryConfig = {

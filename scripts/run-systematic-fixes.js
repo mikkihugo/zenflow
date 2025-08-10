@@ -18,34 +18,34 @@ class SystematicFixRunner {
   async runAllFixes() {
     console.log('🚀 Running All Systematic Fix Scripts...');
     console.log('=====================================');
-    
+
     // Define fix scripts in order of execution
     const fixScripts = [
       {
         name: 'Missing Types Generator',
         script: 'fix-missing-types.js',
-        description: 'Auto-generates missing type definitions (WorkflowContext, NeuralError, etc.)'
+        description: 'Auto-generates missing type definitions (WorkflowContext, NeuralError, etc.)',
       },
       {
-        name: 'Import Path Fixer', 
+        name: 'Import Path Fixer',
         script: 'fix-import-paths.js',
-        description: 'Fixes TS2307 "Cannot find module" import errors'
+        description: 'Fixes TS2307 "Cannot find module" import errors',
       },
       {
         name: 'Optional Chaining Fixer',
         script: 'fix-optional-chaining.js',
-        description: 'Fixes TS2779 optional property access assignment errors'
+        description: 'Fixes TS2779 optional property access assignment errors',
       },
       {
         name: 'Test Any Types Fixer',
-        script: 'fix-test-any-types.js', 
-        description: 'Replaces test file "any" types with proper interfaces'
+        script: 'fix-test-any-types.js',
+        description: 'Replaces test file "any" types with proper interfaces',
       },
       {
         name: 'JSDoc Violations Fixer',
         script: 'fix-jsdoc-violations.js',
-        description: 'Adds missing JSDoc file overviews and descriptions'
-      }
+        description: 'Adds missing JSDoc file overviews and descriptions',
+      },
     ];
 
     console.log(`\n📋 Planned fixes (${fixScripts.length} scripts):`);
@@ -62,14 +62,14 @@ class SystematicFixRunner {
       console.log(`\n${'='.repeat(60)}`);
       console.log(`📦 Running ${i + 1}/${fixScripts.length}: ${fix.name}`);
       console.log(`${'='.repeat(60)}`);
-      
+
       const result = await this.runScript(fix.script);
       this.results.push({
         ...fix,
         success: result.success,
         output: result.output,
         error: result.error,
-        duration: result.duration
+        duration: result.duration,
       });
 
       if (result.success) {
@@ -94,8 +94,8 @@ class SystematicFixRunner {
         cwd: path.resolve(process.cwd()),
         env: {
           ...process.env,
-          NODE_OPTIONS: '--max-old-space-size=2048'
-        }
+          NODE_OPTIONS: '--max-old-space-size=2048',
+        },
       });
 
       let stdout = '';
@@ -121,7 +121,7 @@ class SystematicFixRunner {
           success: code === 0,
           output: stdout,
           error: stderr || (code !== 0 ? `Process exited with code ${code}` : null),
-          duration
+          duration,
         });
       });
 
@@ -131,7 +131,7 @@ class SystematicFixRunner {
           success: false,
           output: stdout,
           error: error.message,
-          duration
+          duration,
         });
       });
     });
@@ -142,24 +142,26 @@ class SystematicFixRunner {
     console.log(`🎯 SYSTEMATIC FIXES COMPLETE - FINAL REPORT`);
     console.log(`${'='.repeat(60)}`);
 
-    const successful = this.results.filter(r => r.success);
-    const failed = this.results.filter(r => !r.success);
+    const successful = this.results.filter((r) => r.success);
+    const failed = this.results.filter((r) => !r.success);
 
     console.log(`\n📊 Summary:`);
     console.log(`   ✅ Successful: ${successful.length}/${this.results.length} scripts`);
     console.log(`   ❌ Failed: ${failed.length}/${this.results.length} scripts`);
-    console.log(`   ⏱️  Total time: ${this.formatDuration(this.results.reduce((sum, r) => sum + r.duration, 0))}`);
+    console.log(
+      `   ⏱️  Total time: ${this.formatDuration(this.results.reduce((sum, r) => sum + r.duration, 0))}`
+    );
 
     if (successful.length > 0) {
       console.log(`\n✅ Successful fixes:`);
-      successful.forEach(result => {
+      successful.forEach((result) => {
         console.log(`   • ${result.name} (${this.formatDuration(result.duration)})`);
       });
     }
 
     if (failed.length > 0) {
       console.log(`\n❌ Failed fixes:`);
-      failed.forEach(result => {
+      failed.forEach((result) => {
         console.log(`   • ${result.name}: ${result.error}`);
       });
     }
@@ -184,9 +186,9 @@ class SystematicFixRunner {
 
   async checkBuildStatus() {
     console.log(`Running quick TypeScript check...`);
-    
+
     const buildResult = await this.runCommand('npm', ['run', 'build']);
-    
+
     if (buildResult.success) {
       console.log(`🎉 BUILD SUCCESS! All TypeScript errors may be fixed!`);
     } else {
@@ -202,7 +204,7 @@ class SystematicFixRunner {
     return new Promise((resolve) => {
       const childProcess = spawn(command, args, {
         stdio: 'pipe',
-        cwd: path.resolve(process.cwd())
+        cwd: path.resolve(process.cwd()),
       });
 
       let output = '';
@@ -219,7 +221,7 @@ class SystematicFixRunner {
       childProcess.on('close', (code) => {
         resolve({
           success: code === 0,
-          output: output + error
+          output: output + error,
         });
       });
     });
@@ -238,10 +240,9 @@ async function main() {
     console.log(`🧘 Claude Code Zen - Systematic Fix Runner`);
     console.log(`🎯 Goal: Bulk fix systematic TypeScript/ESLint issues`);
     console.log(`📈 Expected: Reduce 3,500+ TypeScript errors to manageable number\n`);
-    
+
     const runner = new SystematicFixRunner();
     await runner.runAllFixes();
-    
   } catch (error) {
     console.error('❌ Systematic fix runner failed:', error.message);
     process.exit(1);

@@ -7,27 +7,48 @@
 
 // Business logic (separated from UI)
 /**
- * @file terminal module exports
+ * @file Terminal module exports.
  */
-
 
 export * from './command-execution-engine';
 export { CommandExecutionEngine } from './command-execution-engine';
 export * from './command-execution-renderer';
 export { type CommandExecutionProps, CommandExecutionRenderer } from './command-execution-renderer';
-// Components
-export * from './components/index';
+// Components - specific exports to avoid conflicts
+export {
+  ErrorMessage, Footer, Header, ProgressBar, Spinner, StatusBadge,
+  type ErrorMessageProps, type FooterProps, type HeaderProps,
+  type ProgressBarProps, type SpinnerProps, type StatusBadgeProps,
+  type BaseComponentProps, type Theme, defaultUnifiedTheme, ComponentUtils
+} from './components/index';
+
+// Additional specific component exports to resolve conflicts
+export { type SwarmStatus } from './components/header';
+
 export * from './interactive-terminal-application';
 export {
   InteractiveTerminalApplication,
   type TUIModeProps,
 } from './interactive-terminal-application';
-export * from './process-orchestrator';
-export { TerminalManager } from './process-orchestrator';
-// Screens
-export * from './screens/index';
-// State Hooks (React hooks for component state management)
-export * from './state-hooks/index';
+
+// Process orchestrator - specific export to avoid conflicts
+export { TerminalManager, type ProcessResult, type TerminalSession, type TerminalConfig } from './process-orchestrator';
+
+// Screens - specific exports to avoid conflicts
+export {
+  MainMenu, SwarmDashboard,
+  type MainMenuProps, type SwarmDashboardProps,
+  type ScreenType, type ScreenConfig, defaultScreenConfigs, ScreenUtils
+} from './screens/index';
+
+// Additional screen type exports to resolve conflicts
+export { type SwarmAgent, type SwarmMetrics, type SwarmTask } from './screens/swarm-dashboard';
+// State Hooks (React hooks for component state management) - avoid conflicts
+// Note: Re-exporting from state-hooks causes conflicts, import directly when needed
+// Specific exports to avoid conflicts:
+export { useConfig, type UseConfigReturn } from './state-hooks/use-config';
+export { useSwarmStatus, type UseSwarmStatusReturn, type SwarmState } from './state-hooks/use-swarm-status';
+
 // Main components (updated for Google standards)
 export * from './terminal-interface-router';
 // Re-export key items for convenience (updated names)
@@ -56,6 +77,7 @@ export interface TerminalInterfaceConfig {
   mode?: 'auto' | 'command' | 'interactive';
   theme?: 'dark' | 'light';
   verbose?: boolean;
+  debug?: boolean;
   autoRefresh?: boolean;
   refreshInterval?: number;
 }
@@ -99,6 +121,7 @@ export class TerminalInterface {
     const commands = process.argv.slice(2).filter((arg) => !arg.startsWith('-'));
     const flags = this.parseFlags(process.argv.slice(2));
     if (this.config.debug) {
+      console.log('Debug mode enabled', { mode: _mode, commands, flags });
     }
 
     // Render the appropriate interface
@@ -131,7 +154,7 @@ export class TerminalInterface {
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
 
-      if (arg.startsWith('--')) {
+      if (arg && arg.startsWith('--')) {
         const key = arg.slice(2);
         const nextArg = args[i + 1];
 
@@ -141,7 +164,7 @@ export class TerminalInterface {
         } else {
           flags[key] = true;
         }
-      } else if (arg.startsWith('-')) {
+      } else if (arg && arg.startsWith('-')) {
         const key = arg.slice(1);
         flags[key] = true;
       }

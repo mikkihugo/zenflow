@@ -783,13 +783,13 @@ NODE_ENV=production
               valid: missing.length === 0,
               missing,
               warnings:
-                process.env["NODE_ENV"] !== 'production' ? ['NODE_ENV not set to production'] : [],
+                process.env['NODE_ENV'] !== 'production' ? ['NODE_ENV not set to production'] : [],
             };
           },
         };
       });
 
-      process.env["CLAUDE_API_KEY"] = 'test-key';
+      process.env['CLAUDE_API_KEY'] = 'test-key';
       const result = validateEnvironment();
 
       expect(result.valid).toBe(true);

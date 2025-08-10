@@ -402,9 +402,10 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   /**
-   * Calculate trend from array of values (positive = increasing)
+   * Calculate trend from array of values (positive = increasing).
    *
    * @param values.
+   * @param values
    */
   private calculateTrend(values: number[]): number {
     if (values.length < 2) return 0;

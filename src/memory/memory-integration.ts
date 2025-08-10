@@ -1,7 +1,6 @@
 /**
- * @file Memory management: memory-integration
+ * @file Memory management: memory-integration.
  */
-
 
 import { getLogger } from '../core/logger';
 
@@ -11,7 +10,7 @@ const logger = getLogger('src-memory-memory-integration');
  * Memory Domain DI Integration.
  *
  * Provides unified registration and setup for memory services.
- * with proper DAL Factory integration.
+ * With proper DAL Factory integration.
  */
 
 import type { DALFactory } from '../database/factory.js';
@@ -93,6 +92,7 @@ export const memoryBackendSpecs = {
  * Register memory providers with DI container.
  *
  * @param container
+ * @example
  */
 export function registerMemoryProviders(
   container: DIContainer,
@@ -101,7 +101,7 @@ export function registerMemoryProviders(
   }
 ): void {
   // Register memory provider factory (uses DAL Factory)
-  container.register(MEMORY_TOKENS["ProviderFactory"], {
+  container.register(MEMORY_TOKENS['ProviderFactory'], {
     type: 'singleton',
     create: (container) =>
       new MemoryProviderFactory(
@@ -129,7 +129,7 @@ export function registerMemoryProviders(
     type: 'singleton',
     create: (container) =>
       new MemoryController(
-        container.resolve(MEMORY_TOKENS["ProviderFactory"]) as MemoryProviderFactory,
+        container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory,
         container.resolve(MEMORY_TOKENS.Config) as MemoryConfig,
         container.resolve(CORE_TOKENS.Logger)
       ),
@@ -140,6 +140,7 @@ export function registerMemoryProviders(
  * Create specialized memory backends for different use cases.
  *
  * @param container
+ * @example
  */
 export async function createMemoryBackends(container: DIContainer): Promise<{
   cache: any;
@@ -147,7 +148,7 @@ export async function createMemoryBackends(container: DIContainer): Promise<{
   semantic: any;
   debug: any;
 }> {
-  const factory = container.resolve(MEMORY_TOKENS["ProviderFactory"]) as MemoryProviderFactory;
+  const factory = container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory;
 
   return {
     cache: factory.createProvider(defaultMemoryConfigurations?.cache),
@@ -166,6 +167,7 @@ export async function createMemoryBackends(container: DIContainer): Promise<{
  * @param options.enableSessions
  * @param options.enableSemantic
  * @param options.enableDebug
+ * @example
  */
 export async function initializeMemorySystem(
   container: DIContainer,
@@ -199,30 +201,30 @@ export async function initializeMemorySystem(
   const backends: Record<string, any> = {};
   const enabledBackends: string[] = [];
 
-  if (options?.["enableCache"]) {
+  if (options?.['enableCache']) {
     backends.cache = (
-      container.resolve(MEMORY_TOKENS["ProviderFactory"]) as MemoryProviderFactory
+      container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.cache);
     enabledBackends.push('cache');
   }
 
-  if (options?.["enableSessions"]) {
+  if (options?.['enableSessions']) {
     backends.session = (
-      container.resolve(MEMORY_TOKENS["ProviderFactory"]) as MemoryProviderFactory
+      container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.session);
     enabledBackends.push('session');
   }
 
-  if (options?.["enableSemantic"]) {
+  if (options?.['enableSemantic']) {
     backends.semantic = (
-      container.resolve(MEMORY_TOKENS["ProviderFactory"]) as MemoryProviderFactory
+      container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.semantic);
     enabledBackends.push('semantic');
   }
 
-  if (options?.["enableDebug"]) {
+  if (options?.['enableDebug']) {
     backends.debug = (
-      container.resolve(MEMORY_TOKENS["ProviderFactory"]) as MemoryProviderFactory
+      container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.debug);
     enabledBackends.push('debug');
   }
@@ -261,6 +263,7 @@ export async function initializeMemorySystem(
  * Utility function to create a pre-configured memory DI container.
  *
  * @param customConfigs
+ * @example
  */
 export function createMemoryContainer(
   customConfigs?: Parameters<typeof registerMemoryProviders>[1]

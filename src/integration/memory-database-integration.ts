@@ -10,6 +10,8 @@ import { MemorySystemFactory } from '../memory/index';
 
 /**
  * Example: Complete system integration with Memory and Database coordination.
+ *
+ * @example
  */
 export async function createIntegratedSystem() {
   // Initialize advanced memory system with coordination
@@ -78,7 +80,7 @@ export async function createIntegratedSystem() {
   });
 
   // Register database provider factory
-  container.register(DATABASE_TOKENS?.["ProviderFactory"], {
+  container.register(DATABASE_TOKENS?.['ProviderFactory'], {
     type: 'singleton',
     create: () => ({
       createProvider: async (type: string, config: any) => {
@@ -95,7 +97,7 @@ export async function createIntegratedSystem() {
       new DALFactory(
         c.resolve(CORE_TOKENS.Logger),
         c.resolve(CORE_TOKENS.Config),
-        c.resolve(DATABASE_TOKENS?.["ProviderFactory"]) as any
+        c.resolve(DATABASE_TOKENS?.['ProviderFactory']) as any
       ),
   });
 
@@ -299,6 +301,8 @@ export async function createIntegratedSystem() {
 
 /**
  * Example: Using MCP tools for system management.
+ *
+ * @example
  */
 export async function demonstrateMCPIntegration() {
   // Import MCP tools
@@ -364,6 +368,8 @@ export async function demonstrateMCPIntegration() {
 
 /**
  * Example: Advanced error handling and recovery.
+ *
+ * @example
  */
 export async function demonstrateErrorHandling() {
   const system = await createIntegratedSystem();
@@ -405,6 +411,8 @@ export async function demonstrateErrorHandling() {
 
 /**
  * Example: Performance optimization workflow.
+ *
+ * @example
  */
 export async function demonstrateOptimization() {
   const system = await createIntegratedSystem();

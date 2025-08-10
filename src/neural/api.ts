@@ -1,13 +1,11 @@
 /**
  * Neural Domain API
  * Temporary stub to fix import errors
- * xxx NEEDS_HUMAN: Complete implementation based on actual neural functionality
+ * xxx NEEDS_HUMAN: Complete implementation based on actual neural functionality.
  */
 /**
- * @file Neural network: api
+ * @file Neural network: api.
  */
-
-
 
 export interface NeuralModel {
   id: string;
@@ -39,10 +37,14 @@ export interface NeuralMetrics {
 /**
  * Neural Domain API class
  * xxx NEEDS_HUMAN: Complete implementation with actual neural services.
+ *
+ * @example
  */
 export class NeuralDomainAPI {
   /**
    * Create a new neural model.
+   *
+   * @param model
    */
   async createModel(model: Omit<NeuralModel, 'id' | 'status'>): Promise<NeuralModel> {
     // xxx NEEDS_HUMAN: Implement actual model creation
@@ -55,6 +57,8 @@ export class NeuralDomainAPI {
 
   /**
    * Get model by ID.
+   *
+   * @param modelId
    */
   async getModel(modelId: string): Promise<NeuralModel | null> {
     // xxx NEEDS_HUMAN: Implement actual model retrieval
@@ -71,6 +75,8 @@ export class NeuralDomainAPI {
 
   /**
    * Train a model.
+   *
+   * @param request
    */
   async train(request: TrainingRequest): Promise<NeuralMetrics> {
     // xxx NEEDS_HUMAN: Implement actual training
@@ -84,6 +90,8 @@ export class NeuralDomainAPI {
 
   /**
    * Make a prediction.
+   *
+   * @param request
    */
   async predict(request: PredictionRequest): Promise<number[]> {
     // xxx NEEDS_HUMAN: Implement actual prediction
@@ -92,6 +100,8 @@ export class NeuralDomainAPI {
 
   /**
    * Delete a model.
+   *
+   * @param modelId
    */
   async deleteModel(modelId: string): Promise<boolean> {
     // xxx NEEDS_HUMAN: Implement actual model deletion
@@ -100,6 +110,8 @@ export class NeuralDomainAPI {
 
   /**
    * Get training metrics.
+   *
+   * @param modelId
    */
   async getMetrics(modelId: string): Promise<NeuralMetrics | null> {
     // xxx NEEDS_HUMAN: Implement actual metrics retrieval

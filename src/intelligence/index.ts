@@ -6,9 +6,8 @@
 
 // Legacy exports for backward compatibility
 /**
- * @file intelligence module exports
+ * @file Intelligence module exports.
  */
-
 
 export * from './adaptive-learning/behavioral-optimization';
 export * from './adaptive-learning/knowledge-evolution';
@@ -66,10 +65,10 @@ export const IntelligenceUtils = {
   validateConfig: (config: any): boolean => {
     return Boolean(
       config &&
-        (config?.["learningRate"] || config?.["adaptationRate"]) &&
-        config?.["patternRecognition"] &&
-        config?.["learning"] &&
-        config?.["optimization"]
+        (config?.['learningRate'] || config?.['adaptationRate']) &&
+        config?.['patternRecognition'] &&
+        config?.['learning'] &&
+        config?.['optimization']
     );
   },
 
@@ -124,10 +123,10 @@ export const IntelligenceUtils = {
     };
 
     const systemContext = {
-      environment: config?.["environment"] || 'production',
-      resources: config?.["resources"] || [],
-      constraints: config?.["constraints"] || [],
-      objectives: config?.["objectives"] || [],
+      environment: config?.['environment'] || 'production',
+      resources: config?.['resources'] || [],
+      constraints: config?.['constraints'] || [],
+      objectives: config?.['objectives'] || [],
     };
 
     const systems = await Promise.all([
@@ -156,14 +155,14 @@ export const IntelligenceUtils = {
     return {
       patternRecognition:
         patternRecognitionModule &&
-        new patternRecognitionModule["PatternRecognitionEngine"](defaultConfig, systemContext),
+        new patternRecognitionModule['PatternRecognitionEngine'](defaultConfig, systemContext),
       learningCoordinator:
         learningCoordinatorModule &&
         // TODO: TypeScript error TS2554 - Expected 3 arguments, but got 2. (AI unsure of safe fix - human review needed)
-        new learningCoordinatorModule["LearningCoordinator"](defaultConfig, systemContext),
+        new learningCoordinatorModule['LearningCoordinator'](defaultConfig, systemContext),
       performanceOptimizer:
         performanceOptimizerModule &&
-        new performanceOptimizerModule["PerformanceOptimizer"](defaultConfig, systemContext),
+        new performanceOptimizerModule['PerformanceOptimizer'](defaultConfig, systemContext),
       mlRegistry: mlRegistryModule && new mlRegistryModule.MLModelRegistry(defaultConfig),
       behavioralOptimization: behavioralOptimizationModule,
       knowledgeEvolution: knowledgeEvolutionModule,
@@ -214,10 +213,10 @@ export const IntelligenceUtils = {
     };
 
     const systemContext = {
-      environment: config?.["environment"] || 'production',
-      resources: config?.["resources"] || [],
-      constraints: config?.["constraints"] || [],
-      objectives: config?.["objectives"] || [],
+      environment: config?.['environment'] || 'production',
+      resources: config?.['resources'] || [],
+      constraints: config?.['constraints'] || [],
+      objectives: config?.['objectives'] || [],
     };
 
     return {

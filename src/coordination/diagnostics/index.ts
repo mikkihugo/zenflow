@@ -4,10 +4,8 @@
  * Central export point for diagnostics functionality.
  */
 /**
- * @file diagnostics module exports
+ * @file Diagnostics module exports.
  */
-
-
 
 export * from './cli-diagnostics';
 export * from './diagnostics';

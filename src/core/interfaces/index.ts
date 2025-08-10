@@ -4,7 +4,7 @@
  * This file provides a single point for importing all standardized interfaces,
  * ensuring consistency across the codebase and preventing interface conflicts.
  *
- * @file Central interface export registry
+ * @file Central interface export registry.
  */
 
 // Neural interfaces
@@ -32,6 +32,12 @@ export {
 export { DatabaseConfig } from '../database/providers/database-providers';
 // Memory interfaces
 export { CacheEntry, SessionState } from '../memory/memory';
+export {
+  BackendInterface,
+  BackendStats,
+  JSONValue,
+  StorageResult,
+} from '../memory-system';
 // Agent interfaces - unified types
 export {
   Agent,
@@ -46,12 +52,6 @@ export {
 } from '../types/agent-types';
 // Event interfaces
 export * from '../types/event-types';
-export {
-  BackendInterface,
-  BackendStats,
-  JSONValue,
-  StorageResult,
-} from '../memory-system';
 
 export interface BackendConfig {
   backend: 'lancedb' | 'sqlite' | 'json';

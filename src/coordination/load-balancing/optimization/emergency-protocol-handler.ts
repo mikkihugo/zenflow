@@ -2,7 +2,6 @@
  * @file Coordination system: emergency-protocol-handler
  */
 
-
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('coordination-load-balancing-optimization-emergency-protocol-handler');

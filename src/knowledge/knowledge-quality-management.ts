@@ -13,8 +13,6 @@
  * @file Knowledge-quality-management implementation.
  */
 
-
-
 import { EventEmitter } from 'node:events';
 import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 
@@ -59,11 +57,23 @@ export type ReviewQuality = any;
 export type ReviewStandards = any;
 
 // Additional missing types from error messages
-export type EvidenceType = 'empirical' | 'logical' | 'statistical' | 'peer-reviewed' | 'expert-opinion';
+export type EvidenceType =
+  | 'empirical'
+  | 'logical'
+  | 'statistical'
+  | 'peer-reviewed'
+  | 'expert-opinion';
 export type SourceReliabilityRequirement = 'low' | 'medium' | 'high' | 'critical';
 export type CrossReferencingConfig = any;
-export type ValidatorSelectionStrategy = 'random' | 'expertise-based' | 'reputation-weighted' | 'availability';
-export type DisagreementResolutionStrategy = 'majority-vote' | 'expert-mediation' | 'consensus-building';
+export type ValidatorSelectionStrategy =
+  | 'random'
+  | 'expertise-based'
+  | 'reputation-weighted'
+  | 'availability';
+export type DisagreementResolutionStrategy =
+  | 'majority-vote'
+  | 'expert-mediation'
+  | 'consensus-building';
 export type ConsensusConfiguration = any;
 export type ValidationEvidence = any;
 export type ValidationIssue = any;
@@ -600,7 +610,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   private initializeSystems(): void {
     // Create mock implementations for now
     this.reputationSystem = this.createMockReputationSystem();
-    
+
     this.validationProtocols = new Map();
     if (this.config.validation?.protocols) {
       this.config.validation.protocols.forEach((protocol: ValidationProtocol) => {
@@ -1081,7 +1091,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
       lastUpdated: Date.now(),
       trend: 'stable' as any,
       rank: 0,
-      percentile: 50
+      percentile: 50,
     };
   }
 
@@ -1102,18 +1112,12 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
     return { overallScore: 0.5 };
   }
 
-  private async applyDecayFunctions(
-    _score: any,
-    _decayFunctions: DecayFunction[]
-  ): Promise<any> {
+  private async applyDecayFunctions(_score: any, _decayFunctions: DecayFunction[]): Promise<any> {
     // TODO: Implement decay function application
     return _score;
   }
 
-  private async normalizeReputationScore(
-    _score: any,
-    _model: ReputationModel
-  ): Promise<any> {
+  private async normalizeReputationScore(_score: any, _model: ReputationModel): Promise<any> {
     // TODO: Implement score normalization
     return _score;
   }
@@ -1127,7 +1131,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
       ..._oldScore,
       overallScore: _newScore.overallScore,
       lastUpdated: Date.now(),
-      trend: 'improving' as any
+      trend: 'improving' as any,
     };
   }
 
@@ -1147,10 +1151,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
     return {} as ReviewProcess;
   }
 
-  private async selectReviewers(
-    _item: KnowledgeItem,
-    _process: ReviewProcess
-  ): Promise<any[]> {
+  private async selectReviewers(_item: KnowledgeItem, _process: ReviewProcess): Promise<any[]> {
     // TODO: Implement reviewer selection
     return [];
   }
@@ -1225,10 +1226,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
     return [];
   }
 
-  private async generateImprovementRecommendations(
-    _issues: any[],
-    _trends: any
-  ): Promise<any[]> {
+  private async generateImprovementRecommendations(_issues: any[], _trends: any): Promise<any[]> {
     // TODO: Implement improvement recommendation generation
     return [];
   }
@@ -1246,7 +1244,9 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   // Metrics getter methods
   private async getAverageReputation(): Promise<number> {
     const scores = Array.from(this.reputationScores.values());
-    return scores.length > 0 ? scores.reduce((sum, s) => sum + s.overallScore, 0) / scores.length : 0;
+    return scores.length > 0
+      ? scores.reduce((sum, s) => sum + s.overallScore, 0) / scores.length
+      : 0;
   }
 
   private async getReputationDistribution(): Promise<any> {
@@ -1263,7 +1263,7 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
   private async getValidationSuccessRate(): Promise<number> {
     const results = Array.from(this.validationResults.values());
-    const successful = results.filter(r => r.isValid).length;
+    const successful = results.filter((r) => r.isValid).length;
     return results.length > 0 ? successful / results.length : 0;
   }
 

@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * @file Coordination system: cli-demo
+ * @file Coordination system: cli-demo.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

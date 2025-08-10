@@ -1,11 +1,11 @@
-import { getLogger } from '../../config/logging-config';
-
-const logger = getLogger('coordination-agents-composite-system');
-
 /**
  * @file Composite Pattern Implementation for Agent Hierarchies
  * Provides uniform interfaces for individual agents and agent groups.
  */
+
+import { getLogger } from '../../config/logging-config';
+
+const logger = getLogger('coordination-agents-composite-system');
 
 import { EventEmitter } from 'node:events';
 

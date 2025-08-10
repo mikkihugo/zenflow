@@ -3,10 +3,8 @@
  * Marks classes as injectable and enables automatic dependency resolution.
  */
 /**
- * @file injectable implementation
+ * @file Injectable implementation.
  */
-
-
 
 import 'reflect-metadata';
 import type { Constructor, DIToken, InjectionMetadata } from '../types/di-types';
@@ -19,6 +17,7 @@ const INJECTABLE_KEY = Symbol('injectable');
  * Injectable decorator for marking classes as injectable.
  *
  * @param constructor
+ * @example
  */
 export function injectable<T extends Constructor>(constructor: T): T {
   // Mark as injectable
@@ -41,6 +40,7 @@ export function injectable<T extends Constructor>(constructor: T): T {
  * Inject decorator for parameter injection.
  *
  * @param token
+ * @example
  */
 export function inject<T>(token: DIToken<T>) {
   return (target: any, _propertyKey: string | symbol | undefined, parameterIndex: number) => {
@@ -54,6 +54,7 @@ export function inject<T>(token: DIToken<T>) {
  * Check if a class is marked as injectable.
  *
  * @param constructor
+ * @example
  */
 export function isInjectable(constructor: Constructor): boolean {
   return Reflect.getMetadata(INJECTABLE_KEY, constructor) === true;
@@ -63,6 +64,7 @@ export function isInjectable(constructor: Constructor): boolean {
  * Get injection tokens for a constructor.
  *
  * @param constructor
+ * @example
  */
 export function getInjectionTokens(
   constructor: Constructor
@@ -75,6 +77,7 @@ export function getInjectionTokens(
  *
  * @param constructor
  * @param tokens
+ * @example
  */
 export function setInjectionTokens(
   constructor: Constructor,
@@ -87,6 +90,7 @@ export function setInjectionTokens(
  * Get injection metadata for a constructor.
  *
  * @param constructor
+ * @example
  */
 export function getInjectionMetadata(constructor: Constructor): InjectionMetadata | undefined {
   const parameterTypes = Reflect.getMetadata('design:paramtypes', constructor);
@@ -107,6 +111,7 @@ export function getInjectionMetadata(constructor: Constructor): InjectionMetadat
  *
  * @param constructor
  * @param metadata
+ * @example
  */
 export function setInjectionMetadata(constructor: Constructor, metadata: InjectionMetadata): void {
   Reflect.defineMetadata('design:paramtypes', metadata?.parameterTypes, constructor);
@@ -118,6 +123,7 @@ export function setInjectionMetadata(constructor: Constructor, metadata: Injecti
  *
  * @param source
  * @param target
+ * @example
  */
 export function copyMetadata(source: Constructor, target: Constructor): void {
   const keys = Reflect.getMetadataKeys(source);

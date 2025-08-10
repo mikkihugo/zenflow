@@ -3,10 +3,8 @@
  * Defines tokens for fundamental system services.
  */
 /**
- * @file core-tokens implementation
+ * @file Core-tokens implementation.
  */
-
-
 
 import { createToken } from './token-factory';
 

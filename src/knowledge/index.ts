@@ -8,7 +8,6 @@
  * @file Knowledge module exports.
  */
 
-
 export type {
   CollaborativeSolution,
   ConsensusResult,

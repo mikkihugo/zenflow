@@ -1,3 +1,7 @@
+/**
+ * @file Main entry point for REST API layer.
+ */
+
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('interfaces-api-http-index');
@@ -8,8 +12,6 @@ const logger = getLogger('interfaces-api-http-index');
  * Central export point for the REST API layer.
  * Following Google Code Standards with explicit exports.
  * Clean separation between API layer and business domains.
- *
- * @file Main entry point for REST API layer
  */
 
 import { getCORSOrigins, getMCPServerURL } from '../config/url-builder';

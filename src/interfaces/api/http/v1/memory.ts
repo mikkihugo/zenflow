@@ -4,7 +4,7 @@
  * REST API routes for memory management domain.
  * Following Google API Design Guide standards.
  *
- * @file Memory management domain API routes
+ * @file Memory management domain API routes.
  */
 
 import { type Request, type Response, Router } from 'express';

@@ -8,8 +8,6 @@
  * @file Coordination system: gap-analysis.
  */
 
-
-
 import type { AgentType } from '../../types/agent-types';
 
 // claude-zen's 54 agent types (from their documentation)

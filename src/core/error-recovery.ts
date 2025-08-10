@@ -5,10 +5,8 @@
  * Includes retry patterns, circuit breakers, fallback strategies, and graceful degradation.
  */
 /**
- * @file error-recovery implementation
+ * @file Error-recovery implementation.
  */
-
-
 
 import { isRecoverableError } from './errors';
 import { createLogger } from './logger';
@@ -45,7 +43,7 @@ export interface CircuitBreakerMetrics {
 }
 
 export class CircuitBreaker {
-  private state: CircuitBreakerState = CircuitBreakerState["CLOSED"];
+  private state: CircuitBreakerState = CircuitBreakerState['CLOSED'];
   private failureCount: number = 0;
   private successCount: number = 0;
   private lastFailureTime: number = 0;
@@ -67,7 +65,7 @@ export class CircuitBreaker {
     this.totalCalls++;
 
     // Check if circuit is open
-    if (this.state === CircuitBreakerState["OPEN"]) {
+    if (this.state === CircuitBreakerState['OPEN']) {
       if (Date.now() < this.nextAttemptTime) {
         logger.warn(`Circuit breaker [${this.name}] is OPEN - failing fast`);
 
@@ -79,7 +77,7 @@ export class CircuitBreaker {
         throw new Error(`Circuit breaker [${this.name}] is open`);
       } else {
         // Transition to half-open for testing
-        this.state = CircuitBreakerState["HALF_OPEN"];
+        this.state = CircuitBreakerState['HALF_OPEN'];
         this.successCount = 0;
         logger.info(`Circuit breaker [${this.name}] transitioning to HALF_OPEN`);
       }
@@ -118,9 +116,9 @@ export class CircuitBreaker {
       this.responseTimes = this.responseTimes.slice(-50);
     }
 
-    if (this.state === CircuitBreakerState["HALF_OPEN"]) {
+    if (this.state === CircuitBreakerState['HALF_OPEN']) {
       if (this.successCount >= this.config.successThreshold) {
-        this.state = CircuitBreakerState["CLOSED"];
+        this.state = CircuitBreakerState['CLOSED'];
         logger.info(`Circuit breaker [${this.name}] recovered - state: CLOSED`);
       }
     }
@@ -133,9 +131,12 @@ export class CircuitBreaker {
     this.responseTimes.push(responseTime);
 
     // Check if we should open the circuit
-    if (this.state === CircuitBreakerState["CLOSED"] || this.state === CircuitBreakerState["HALF_OPEN"]) {
+    if (
+      this.state === CircuitBreakerState['CLOSED'] ||
+      this.state === CircuitBreakerState['HALF_OPEN']
+    ) {
       if (this.shouldOpenCircuit()) {
-        this.state = CircuitBreakerState["OPEN"];
+        this.state = CircuitBreakerState['OPEN'];
         this.nextAttemptTime = Date.now() + this.config.recoveryTimeout;
         logger.warn(
           `Circuit breaker [${this.name}] opened due to failures - next attempt: ${new Date(this.nextAttemptTime).toISOString()}`
@@ -183,7 +184,7 @@ export class CircuitBreaker {
   }
 
   public reset(): void {
-    this.state = CircuitBreakerState["CLOSED"];
+    this.state = CircuitBreakerState['CLOSED'];
     this.failureCount = 0;
     this.successCount = 0;
     this.totalCalls = 0;
@@ -563,8 +564,8 @@ export class ErrorRecoveryOrchestrator {
     options: ErrorRecoveryOptions = {}
   ): Promise<T> {
     const circuitBreaker = this.circuitBreakerRegistry.getOrCreate(operationName, {
-      failureThreshold: options?.["circuitBreakerThreshold"] || 5,
-      maxRetries: options?.["maxRetries"] || 3,
+      failureThreshold: options?.['circuitBreakerThreshold'] || 5,
+      maxRetries: options?.['maxRetries'] || 3,
     });
 
     const retryStrategy = this.getOrCreateRetryStrategy(operationName, options);
@@ -578,7 +579,7 @@ export class ErrorRecoveryOrchestrator {
       this.degradationManager.reportError(error as Error);
 
       // Try fallback if available and enabled
-      if (options?.["fallbackEnabled"]) {
+      if (options?.['fallbackEnabled']) {
         const fallbackManager = this.fallbackManagers.get(operationName);
         if (fallbackManager) {
           return await fallbackManager.executeWithFallbacks(operation, error as Error);
@@ -597,9 +598,9 @@ export class ErrorRecoveryOrchestrator {
       this.retryStrategies.set(
         operationName,
         new RetryStrategy({
-          maxAttempts: options?.["maxRetries"] || 3,
-          initialDelayMs: options?.["retryDelayMs"] || 1000,
-          exponentialBase: options?.["exponentialBackoff"] ? 2 : 1,
+          maxAttempts: options?.['maxRetries'] || 3,
+          initialDelayMs: options?.['retryDelayMs'] || 1000,
+          exponentialBase: options?.['exponentialBackoff'] ? 2 : 1,
         })
       );
     }

@@ -3,10 +3,8 @@
  * Comprehensive performance optimization across all system components.
  */
 /**
- * @file optimization module exports
+ * @file Optimization module exports.
  */
-
-
 
 export * from './benchmarks/performance-benchmarks';
 export * from './core/performance-optimizer';

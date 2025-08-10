@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * @file sparc-template-demo implementation
+ * @file Sparc-template-demo implementation.
  */
-
 
 /**
  * Complete SPARC Template Engine Demonstration.

@@ -1,10 +1,9 @@
 /**
- * @file Database layer: vector-dao
+ * @file Database layer: vector-dao.
  */
 
-
-import type { Logger } from '../utils/logger';
 import { BaseDao } from '../base.dao';
+import type { Logger } from '../utils/logger';
 
 interface VectorDocument<T> {
   id: string | number;
@@ -536,4 +535,5 @@ export class VectorDao<T = any> extends BaseDao<T> {
  * @deprecated Use VectorDao from '../dao/vector.dao'.
  * This shim will be removed after migration period.
  */
-export { VectorDao as VectorDAO } from './vector-dao';
+// Export alias for compatibility - removed self-reference
+export { VectorDao as VectorDAO };

@@ -20,7 +20,7 @@ class ComprehensiveTestOrchestrator {
         platform: process.platform,
         arch: process.arch,
         nodeVersion: process.version,
-        testMode: process.env["NODE_ENV"] || 'test',
+        testMode: process.env['NODE_ENV'] || 'test',
       },
       testSuites: [],
       summary: {

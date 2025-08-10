@@ -2,13 +2,11 @@
  * Web Interface Server - Main web dashboard server.
  *
  * Refactored Google-standard web interface that coordinates between.
- * focused modules for WebSocket, API routes, and daemon management.
+ * Focused modules for WebSocket, API routes, and daemon management.
  */
 /**
- * @file Interface implementation: web-interface-server
+ * @file Interface implementation: web-interface-server.
  */
-
-
 
 import { existsSync } from 'node:fs';
 import { createServer } from 'node:http';

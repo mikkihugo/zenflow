@@ -3,10 +3,8 @@
  * Batch execution capabilities consolidated from coordination layer.
  */
 /**
- * @file Coordination system: batch-tools
+ * @file Coordination system: batch-tools.
  */
-
-
 
 import type { MCPToolResult } from './types';
 

@@ -13,8 +13,6 @@
  * @file Intelligence-coordination-system implementation.
  */
 
-
-
 import { EventEmitter } from 'node:events';
 import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 import type { CoordinationEvent } from '../interfaces/events/types';
@@ -30,7 +28,7 @@ export interface ExpertiseDiscoveryEngine extends EventEmitter {
   expertiseEvolution: ExpertiseEvolutionTracker;
   competencyMapping: CompetencyMappingSystem;
   reputationSystem: ReputationSystem;
-  
+
   // Required methods
   incorporateSpecialization(specialization: any): Promise<void>;
   shutdown(): Promise<void>;
@@ -2916,7 +2914,7 @@ export interface KnowledgeRoutingSystem extends EventEmitter {
   loadBalancing: LoadBalancingConfig;
   qualityOfService: QoSConfig;
   adaptiveRouting: AdaptiveRoutingConfig;
-  
+
   // Required methods
   updateRoutingTable(profile: ExpertiseProfile): Promise<void>;
   shutdown(): Promise<void>;
@@ -3000,7 +2998,7 @@ export interface SpecializationEmergenceDetector extends EventEmitter {
   specialization: SpecializationTracker;
   adaptationMechanisms: AdaptationMechanism[];
   feedbackLoops: FeedbackLoop[];
-  
+
   // Required methods
   shutdown(): Promise<void>;
 }
@@ -3073,7 +3071,7 @@ export interface CrossDomainTransferSystem extends EventEmitter {
   abstractionEngine: AbstractionEngine;
   transferValidation: TransferValidationSystem;
   transferOptimization: TransferOptimizationEngine;
-  
+
   // Required methods
   shutdown(): Promise<void>;
 }
@@ -3146,7 +3144,7 @@ export interface CollectiveMemoryManager extends EventEmitter {
   retrieval: MemoryRetrievalSystem;
   forgetting: ForgettingMechanism;
   episodicMemory: EpisodicMemorySystem;
-  
+
   // Required methods
   storeTransferExperience(transfer: any): Promise<void>;
   recordRoutingSuccess(routing: any): Promise<void>;
@@ -3414,7 +3412,11 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       );
 
       // Route query to selected expert(s)
-      const routingExecution = await this.executeRouting({ query, selectedExperts, routingStrategy });
+      const routingExecution = await this.executeRouting({
+        query,
+        selectedExperts,
+        routingStrategy,
+      });
 
       // Monitor routing performance and collect feedback
       const performanceMetrics = await this.monitorRoutingPerformance(routingExecution);
@@ -3540,10 +3542,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       );
 
       // Apply transfer mechanism to adapt knowledge
-      const adaptedKnowledge = await this.adaptKnowledge(
-        extractedKnowledge,
-        targetDomain
-      );
+      const adaptedKnowledge = await this.adaptKnowledge(extractedKnowledge, targetDomain);
 
       // Validate transfer quality and applicability
       const validationResults = await this.validateTransfer(adaptedKnowledge, targetDomain);
@@ -3580,7 +3579,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
         knowledge: result.applicationResults,
         transferType: result.transferType,
         confidence: result.domainCompatibility,
-        effectiveness: result.effectivenessScore
+        effectiveness: result.effectivenessScore,
       };
       this.knowledgeTransfers.set(result.transferId, transferKnowledge);
 
@@ -3684,7 +3683,10 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
     return {};
   }
 
-  private async generateSpecializationRecommendations(_distribution: any, _gapAnalysis: any): Promise<any[]> {
+  private async generateSpecializationRecommendations(
+    _distribution: any,
+    _gapAnalysis: any
+  ): Promise<any[]> {
     // Implementation placeholder
     return [];
   }
@@ -5321,7 +5323,7 @@ class ExpertiseDiscoverySystemImpl extends EventEmitter implements ExpertiseDisc
     // Store the specialization in expertise profiles
     const agentId = specialization.agentId || `agent-${Date.now()}`;
     const existingProfile = this.expertiseProfiles.get(agentId);
-    
+
     if (existingProfile) {
       // Update existing profile with new specialization
       existingProfile.domains.push({
@@ -5332,33 +5334,35 @@ class ExpertiseDiscoverySystemImpl extends EventEmitter implements ExpertiseDisc
         lastUpdated: Date.now(),
         subdomains: [],
         relatedDomains: [],
-        specializations: []
+        specializations: [],
       });
     } else {
       // Create new profile
       const profile: ExpertiseProfile = {
         agentId,
-        domains: [{
-          domain: specialization.domain || 'general',
-          expertiseLevel: specialization.expertiseLevel || 'intermediate',
-          confidence: specialization.confidence || 0.5,
-          evidenceCount: 1,
-          lastUpdated: Date.now(),
-          subdomains: [],
-          relatedDomains: [],
-          specializations: []
-        }],
+        domains: [
+          {
+            domain: specialization.domain || 'general',
+            expertiseLevel: specialization.expertiseLevel || 'intermediate',
+            confidence: specialization.confidence || 0.5,
+            evidenceCount: 1,
+            lastUpdated: Date.now(),
+            subdomains: [],
+            relatedDomains: [],
+            specializations: [],
+          },
+        ],
         skills: specialization.skills || [],
         experience: specialization.experience || { totalTime: 0, completedTasks: 0, domains: [] },
         reputation: specialization.reputation || { score: 0.5, feedback: [], trustLevel: 'medium' },
         availability: specialization.availability || { status: 'available', capacity: 100 },
         preferences: specialization.preferences || { collaborationStyle: 'adaptive' },
         learningHistory: [],
-        performanceMetrics: specialization.performanceMetrics || { accuracy: 0.5, efficiency: 0.5 }
+        performanceMetrics: specialization.performanceMetrics || { accuracy: 0.5, efficiency: 0.5 },
       };
       this.expertiseProfiles.set(agentId, profile);
     }
-    
+
     this.emit('expertise:updated', this.expertiseProfiles.get(agentId));
   }
 
@@ -5384,13 +5388,13 @@ class KnowledgeRoutingSystemImpl extends EventEmitter implements KnowledgeRoutin
   ) {
     super();
     // Initialize required properties
-    this.loadBalancing = config.loadBalancing || {} as LoadBalancingConfig;
-    this.qualityOfService = config.qualityOfService || {} as QoSConfig;
-    this.adaptiveRouting = config.adaptiveRouting || {} as AdaptiveRoutingConfig;
+    this.loadBalancing = config.loadBalancing || ({} as LoadBalancingConfig);
+    this.qualityOfService = config.qualityOfService || ({} as QoSConfig);
+    this.adaptiveRouting = config.adaptiveRouting || ({} as AdaptiveRoutingConfig);
   }
 
   async updateRoutingTable(profile: ExpertiseProfile): Promise<void> {
-    const domains = profile.domains.map(d => d.domain);
+    const domains = profile.domains.map((d) => d.domain);
     const routingEntry: RoutingEntry = {
       destination: profile.agentId,
       domains,
@@ -5399,45 +5403,45 @@ class KnowledgeRoutingSystemImpl extends EventEmitter implements KnowledgeRoutin
         minLevel: 'intermediate',
         required: true,
         alternatives: [],
-        priority: 1
+        priority: 1,
       },
       capacity: {
         currentLoad: 0,
         maxCapacity: profile.availability.capacity || 100,
         availableSlots: profile.availability.capacity || 100,
         utilizationRate: 0,
-        projectedLoad: 0
+        projectedLoad: 0,
       },
       latency: {
         averageLatency: 50,
         p95Latency: 75,
         p99Latency: 100,
         networkLatency: 10,
-        processingLatency: 40
+        processingLatency: 40,
       },
       reliability: {
         uptime: 0.99,
         errorRate: 0.01,
         responseConsistency: 0.95,
         serviceLevel: 0.98,
-        trustScore: 0.9
+        trustScore: 0.9,
       },
       cost: {
         operationalCost: 1.0,
         computationalCost: 0.5,
         opportunityCost: 0.1,
         qualityAdjustedCost: 1.5,
-        totalCostOfOwnership: 2.1
-      }
+        totalCostOfOwnership: 2.1,
+      },
     };
-    
+
     // Store routing entry for each domain
-    domains.forEach(domain => {
+    domains.forEach((domain) => {
       const existingRoutes = this.routingTable.get(domain) || [];
       existingRoutes.push(routingEntry);
       this.routingTable.set(domain, existingRoutes);
     });
-    
+
     this.emit('routing:successful', { profile, routingEntry });
   }
 
@@ -5452,7 +5456,10 @@ class KnowledgeRoutingSystemImpl extends EventEmitter implements KnowledgeRoutin
   }
 }
 
-class SpecializationEmergenceDetectorImpl extends EventEmitter implements SpecializationEmergenceDetector {
+class SpecializationEmergenceDetectorImpl
+  extends EventEmitter
+  implements SpecializationEmergenceDetector
+{
   emergencePatterns: EmergencePattern[] = [];
   detectionAlgorithms: EmergenceDetectionAlgorithm[] = [];
   specialization: SpecializationTracker;
@@ -5466,7 +5473,7 @@ class SpecializationEmergenceDetectorImpl extends EventEmitter implements Specia
   ) {
     super();
     // Initialize required properties
-    this.specialization = config.specialization || {} as SpecializationTracker;
+    this.specialization = config.specialization || ({} as SpecializationTracker);
   }
 
   async detectEmergingSpecialization(data: any): Promise<void> {
@@ -5477,9 +5484,9 @@ class SpecializationEmergenceDetectorImpl extends EventEmitter implements Specia
       competencies: data.competencies || [],
       emergenceStrength: data.strength || 0.5,
       agentId: data.agentId,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     if (specialization.emergenceStrength > 0.7) {
       this.emit('specialization:emerged', specialization);
     }
@@ -5512,11 +5519,11 @@ class CrossDomainTransferSystemImpl extends EventEmitter implements CrossDomainT
   ) {
     super();
     // Initialize required properties
-    this.transferMap = config.transferMap || {} as CrossDomainTransferMap;
-    this.analogyEngine = config.analogyEngine || {} as AnalogyEngine;
-    this.abstractionEngine = config.abstractionEngine || {} as AbstractionEngine;
-    this.transferValidation = config.transferValidation || {} as TransferValidationSystem;
-    this.transferOptimization = config.transferOptimization || {} as TransferOptimizationEngine;
+    this.transferMap = config.transferMap || ({} as CrossDomainTransferMap);
+    this.analogyEngine = config.analogyEngine || ({} as AnalogyEngine);
+    this.abstractionEngine = config.abstractionEngine || ({} as AbstractionEngine);
+    this.transferValidation = config.transferValidation || ({} as TransferValidationSystem);
+    this.transferOptimization = config.transferOptimization || ({} as TransferOptimizationEngine);
   }
 
   async completeTransfer(transferData: any): Promise<void> {
@@ -5526,9 +5533,9 @@ class CrossDomainTransferSystemImpl extends EventEmitter implements CrossDomainT
       targetDomain: transferData.targetDomain,
       success: true,
       data: transferData,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     this.emit('transfer:completed', transfer);
   }
 
@@ -5564,9 +5571,9 @@ class CollectiveMemoryManagerImpl extends EventEmitter implements CollectiveMemo
       type: 'transfer_experience',
       data: experience,
       timestamp: Date.now(),
-      importance: 0.8
+      importance: 0.8,
     };
-    
+
     // Emit memory retrieved event for propagation
     this.emit('memory:retrieved', memoryEntry);
   }
@@ -5578,9 +5585,9 @@ class CollectiveMemoryManagerImpl extends EventEmitter implements CollectiveMemo
       type: 'routing_success',
       data: success,
       timestamp: Date.now(),
-      importance: 0.7
+      importance: 0.7,
     };
-    
+
     // Emit memory retrieved event for propagation
     this.emit('memory:retrieved', memoryEntry);
   }

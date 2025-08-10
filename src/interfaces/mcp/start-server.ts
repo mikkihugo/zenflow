@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 /**
- * @file Interface implementation: start-server
+ * @file Interface implementation: start-server.
  */
-
-
 
 /**
  * Start HTTP MCP Server - Official SDK Implementation.
@@ -28,6 +26,8 @@ interface StartupConfig {
 
 /**
  * Parse command line arguments.
+ *
+ * @example
  */
 function parseArgs(): StartupConfig {
   const config: StartupConfig = {};
@@ -90,6 +90,8 @@ function parseArgs(): StartupConfig {
 
 /**
  * Print usage information.
+ *
+ * @example
  */
 function printUsage(): void {}
 
@@ -97,6 +99,7 @@ function printUsage(): void {}
  * Setup graceful shutdown.
  *
  * @param server
+ * @example
  */
 function setupGracefulShutdown(server: HTTPMCPServer): void {
   let shutdownInProgress = false;
@@ -141,6 +144,7 @@ function setupGracefulShutdown(server: HTTPMCPServer): void {
  * Validate startup configuration.
  *
  * @param config
+ * @example
  */
 function validateConfig(config: StartupConfig): void {
   // Validate port
@@ -161,6 +165,8 @@ function validateConfig(config: StartupConfig): void {
 
 /**
  * Main startup function.
+ *
+ * @example
  */
 async function main(): Promise<void> {
   try {

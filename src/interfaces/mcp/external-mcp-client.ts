@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: external-mcp-client
+ * @file Interface implementation: external-mcp-client.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -212,9 +211,10 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Get mock tools for demonstration (replace with actual MCP tool discovery)
+   * Get mock tools for demonstration (replace with actual MCP tool discovery).
    *
    * @param serverName.
+   * @param serverName
    */
   private getMockToolsForServer(serverName: string): MCPTool[] {
     const toolSets = {
@@ -293,7 +293,7 @@ export class ExternalMCPClient extends EventEmitter {
   }
 
   /**
-   * Simulate tool execution (replace with actual MCP protocol calls)
+   * Simulate tool execution (replace with actual MCP protocol calls).
    *
    * @param serverName
    * @param toolName

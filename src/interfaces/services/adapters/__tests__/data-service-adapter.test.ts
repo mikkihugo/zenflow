@@ -10,6 +10,7 @@
  */
 
 import { jest } from '@jest/globals';
+import { DocumentService } from '../../../../database/managers/document-manager';
 import { WebDataService } from '../../../web/web-data-service';
 import { ServiceType } from '../../types';
 import {
@@ -19,7 +20,6 @@ import {
 } from '../data-service-adapter';
 import { DataServiceFactory } from '../data-service-factory';
 import { DataServiceHelper, DataServiceUtils } from '../data-service-helpers';
-import { DocumentService } from '../../../../database/managers/document-manager';
 
 // Mock external dependencies
 jest.mock('../../../web/web-data-service');
@@ -684,7 +684,7 @@ describe('DataServiceFactory', () => {
 
   describe('Specialized Factory Methods (Classical TDD)', () => {
     let mockDocumentService: jest.Mocked<DocumentService>;
-    
+
     beforeEach(() => {
       mockDocumentService = {
         initialize: jest.fn(),
@@ -736,7 +736,7 @@ describe('DataServiceFactory', () => {
 
   describe('Factory Statistics (Classical TDD)', () => {
     let mockDocumentService: jest.Mocked<DocumentService>;
-    
+
     beforeEach(() => {
       mockDocumentService = {
         initialize: jest.fn(),

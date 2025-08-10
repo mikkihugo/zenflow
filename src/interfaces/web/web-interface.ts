@@ -5,10 +5,8 @@
  * Orchestrates web server, API routes, WebSocket, sessions, and process management.
  */
 /**
- * @file Interface implementation: web-interface
+ * @file Interface implementation: web-interface.
  */
-
-
 
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -231,7 +229,7 @@ export class WebInterface {
   }
 
   /**
-   * Get web interface capabilities (static method)
+   * Get web interface capabilities (static method).
    */
   static getCapabilities(): any {
     return WebDashboardServer.getCapabilities();

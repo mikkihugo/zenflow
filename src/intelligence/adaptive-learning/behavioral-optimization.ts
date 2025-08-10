@@ -5,10 +5,8 @@
  * communication protocols, resource allocation, and coordination strategies.
  */
 /**
- * @file behavioral-optimization implementation
+ * @file Behavioral-optimization implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { ExecutionPattern } from './pattern-recognition-engine';
@@ -655,7 +653,7 @@ export class BehavioralOptimization extends EventEmitter {
       const bestFitness = Math.max(...fitness);
       if (
         generation > 0 &&
-        Math.abs(bestFitness - fitness[0]) < (this.config.convergenceThreshold || 0.01)
+        Math.abs(bestFitness - (fitness[0] || 0)) < (this.config.convergenceThreshold || 0.01)
       ) {
         break;
       }
@@ -763,7 +761,7 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Return best candidate
     const bestIndex = evaluations.indexOf(Math.max(...evaluations));
-    return candidates[bestIndex];
+    return candidates[bestIndex] || behavior;
   }
 
   private async reinforcementOptimization(
@@ -895,9 +893,9 @@ export class BehavioralOptimization extends EventEmitter {
 
       for (let j = 1; j < tournamentSize; j++) {
         const candidateIndex = Math.floor(Math.random() * population.length);
-        if (fitness[candidateIndex] > bestFitness) {
+        if ((fitness[candidateIndex] || 0) > (bestFitness || 0)) {
           bestIndex = candidateIndex;
-          bestFitness = fitness[candidateIndex];
+          bestFitness = fitness[candidateIndex] || 0;
         }
       }
 
@@ -934,15 +932,16 @@ export class BehavioralOptimization extends EventEmitter {
     const child = JSON.parse(JSON.stringify(parent1));
 
     // Mix parameters from both parents
-    if (Math.random() < 0.5)
-      child?.parameters.taskSelection = { ...parent2?.parameters?.taskSelection };
-    if (Math.random() < 0.5)
-      child?.parameters.communication = { ...parent2?.parameters?.communication };
-    if (Math.random() < 0.5)
-      child?.parameters.resourceManagement = { ...parent2?.parameters?.resourceManagement };
-    if (Math.random() < 0.5)
-      child?.parameters.coordination = { ...parent2?.parameters?.coordination };
-    if (Math.random() < 0.5) child?.parameters.learning = { ...parent2?.parameters?.learning };
+    if (Math.random() < 0.5 && child?.parameters && parent2?.parameters)
+      child.parameters.taskSelection = { ...parent2.parameters.taskSelection };
+    if (Math.random() < 0.5 && child?.parameters && parent2?.parameters)
+      child.parameters.communication = { ...parent2.parameters.communication };
+    if (Math.random() < 0.5 && child?.parameters && parent2?.parameters)
+      child.parameters.resourceManagement = { ...parent2.parameters.resourceManagement };
+    if (Math.random() < 0.5 && child?.parameters && parent2?.parameters)
+      child.parameters.coordination = { ...parent2.parameters.coordination };
+    if (Math.random() < 0.5 && child?.parameters && parent2?.parameters) 
+      child.parameters.learning = { ...parent2.parameters.learning };
 
     return child;
   }
@@ -1156,7 +1155,8 @@ export class BehavioralOptimization extends EventEmitter {
 
     if (Math.random() < epsilon) {
       // Explore: random action
-      return actions[Math.floor(Math.random() * actions.length)] || actions[0];
+      const randomIndex = Math.floor(Math.random() * actions.length);
+      return actions[randomIndex] || (actions[0] as BehaviorAction);
     } else {
       // Exploit: best action
       let bestAction = actions[0];
@@ -1170,7 +1170,7 @@ export class BehavioralOptimization extends EventEmitter {
         }
       });
 
-      return bestAction || actions[0];
+      return (bestAction || actions[0]) as BehaviorAction;
     }
   }
 
@@ -1555,9 +1555,11 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Average performance metrics
     Object.keys(centroid.performance).forEach((key) => {
-      centroid.performance[key as keyof BehaviorPerformance] =
-        behaviors.reduce((sum, b) => sum + b.performance[key as keyof BehaviorPerformance], 0) /
-        behaviors.length;
+      const perfValue = behaviors.reduce((sum, b) => {
+        const value = b.performance[key as keyof BehaviorPerformance];
+        return sum + (typeof value === 'number' ? value : 0);
+      }, 0) / behaviors.length;
+      (centroid.performance as any)[key] = perfValue;
     });
 
     centroid.agentId = `centroid_${Date.now()}`;

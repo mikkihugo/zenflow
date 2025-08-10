@@ -7,10 +7,8 @@
  * - Leverages existing repository and DAO patterns.
  */
 /**
- * @file swarm-database management system
+ * @file Swarm-database management system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import path from 'node:path';

@@ -1,9 +1,7 @@
 // Interface mode detection utilities
 /**
- * @file interface-mode-detector implementation
+ * @file Interface-mode-detector implementation.
  */
-
-
 
 export type InterfaceMode = 'cli' | 'tui' | 'web';
 

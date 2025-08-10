@@ -12,10 +12,8 @@
  * Supports the hive document workflow: Vision → ADRs → PRDs → Epics → Features → Tasks → Code.
  */
 /**
- * @file application coordination system
+ * @file Application coordination system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { MemoryManager } from '../memory/index';

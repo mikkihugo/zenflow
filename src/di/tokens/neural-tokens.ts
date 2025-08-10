@@ -3,10 +3,8 @@
  * Defines tokens for neural network and AI services.
  */
 /**
- * @file neural-tokens implementation
+ * @file Neural-tokens implementation.
  */
-
-
 
 import { createToken } from './token-factory';
 

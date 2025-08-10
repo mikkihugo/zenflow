@@ -149,11 +149,7 @@ function setupClassicalTDD() {
    * @param expected - Expected value
    * @param tolerance - Allowed difference (default: 1e-10)
    */
-  expectNearlyEqual = (
-    actual: number,
-    expected: number,
-    tolerance: number = 1e-10
-  ) => {
+  expectNearlyEqual = (actual: number, expected: number, tolerance: number = 1e-10) => {
     expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
   };
 }
@@ -168,10 +164,7 @@ function setupHybridTDD() {
   setupClassicalTDD();
 
   // Hybrid-specific utilities
-  testWithApproach = (
-    approach: 'london' | 'classical',
-    testFn: () => void | Promise<void>
-  ) => {
+  testWithApproach = (approach: 'london' | 'classical', testFn: () => void | Promise<void>) => {
     if (approach === 'london') {
       // Use mocks for external dependencies
       return testFn();

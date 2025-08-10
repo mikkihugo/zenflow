@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: websocket-index
+ * @file Interface implementation: websocket-index.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -97,6 +96,7 @@ export {
  * @param options.pooling
  * @param options.pooling.enabled
  * @param options.pooling.size
+ * @example
  */
 export async function createOptimalWebSocketClient(
   config: WebSocketClientConfig,
@@ -168,6 +168,7 @@ export async function createOptimalWebSocketClient(
  * @param options.reconnect
  * @param options.heartbeat
  * @param options.useEnhanced
+ * @example
  */
 export async function createSimpleWebSocketClient(
   url: string,

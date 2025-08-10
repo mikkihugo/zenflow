@@ -5,10 +5,8 @@
  * integrating with multi-backend database system.
  */
 /**
- * @file Coordination system: architecture-storage
+ * @file Coordination system: architecture-storage.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import type { ArchitecturalValidation, ArchitectureDesign, Component } from '../types/sparc-types';

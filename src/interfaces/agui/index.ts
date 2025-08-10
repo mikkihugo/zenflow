@@ -5,10 +5,8 @@
  * Based on the @ag-ui/core protocol but adapted for our specific needs.
  */
 /**
- * @file agui module exports
+ * @file Agui module exports.
  */
-
-
 
 export type { AGUIInterface, ValidationQuestion } from './agui-adapter';
 export * from './agui-adapter';

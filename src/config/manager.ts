@@ -1,12 +1,12 @@
-import { getLogger } from './logging-config';
-
-const logger = getLogger('src-config-manager');
-
 /**
- * @fileoverview Unified Configuration Manager
+ * @file Unified Configuration Manager.
  *
  * Central configuration management with hot-reloading, validation, and event system.
  */
+
+import { getLogger } from './logging-config';
+
+const logger = getLogger('src-config-manager');
 
 import { EventEmitter } from 'node:events';
 import * as fs from 'node:fs';
@@ -25,9 +25,10 @@ import { ConfigValidator } from './validator';
  * - Configuration validation with detailed errors
  * - Event-driven configuration changes
  * - Thread-safe configuration access
- * - Configuration history and rollback
+ * - Configuration history and rollback.
  *
  * @example.
+ * @example
  */
 export class ConfigurationManager extends EventEmitter {
   private static instance: ConfigurationManager | null = null;
@@ -131,10 +132,11 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Update configuration (runtime only)
+   * Update configuration (runtime only).
    *
    * @param path
    * @param value.
+   * @param value
    */
   update(path: string, value: any): ConfigValidationResult {
     const oldValue = this.get(path);
@@ -349,10 +351,11 @@ export class ConfigurationManager extends EventEmitter {
   }
 
   /**
-   * Simple YAML export (basic implementation)
+   * Simple YAML export (basic implementation).
    *
    * @param obj
    * @param indent.
+   * @param indent
    */
   private toSimpleYaml(obj: any, indent = 0): string {
     const spaces = '  '.repeat(indent);

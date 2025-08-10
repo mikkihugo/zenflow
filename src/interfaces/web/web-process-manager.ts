@@ -5,10 +5,8 @@
  * and graceful shutdown procedures for the web interface.
  */
 /**
- * @file web-process management system
+ * @file Web-process management system.
  */
-
-
 
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
@@ -36,7 +34,7 @@ export class WebProcessManager {
   }
 
   /**
-   * Start process management (daemon mode)
+   * Start process management (daemon mode).
    */
   async startDaemonMode(): Promise<void> {
     if (!this.config.daemon) {

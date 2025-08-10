@@ -6,10 +6,8 @@
  * Renamed from generic CLIMode to reflect actual responsibility: rendering command execution results.
  */
 /**
- * @file Interface implementation: command-execution-renderer
+ * @file Interface implementation: command-execution-renderer.
  */
-
-
 
 import { Box, Text, useApp } from 'ink';
 import type React from 'react';

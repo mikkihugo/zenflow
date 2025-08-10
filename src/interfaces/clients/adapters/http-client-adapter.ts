@@ -1,10 +1,10 @@
 /**
- * HTTP Client Adapter for UACL (Unified API Client Layer)
+ * HTTP Client Adapter for UACL (Unified API Client Layer).
  *
  * Converts existing HTTP APIClient to UACL architecture while maintaining.
- * backward compatibility and adding enterprise-grade features.
+ * Backward compatibility and adding enterprise-grade features..
  *
- * @file HTTP client adapter implementing the UACL IClient interface
+ * @file HTTP client adapter implementing the UACL IClient interface.
  * @module interfaces/clients/adapters/http
  * @version 2.0.0
  *
@@ -114,11 +114,11 @@ import type { HTTPClientCapabilities, HTTPClientConfig, OAuthCredentials } from 
  * @description Production-ready HTTP client adapter providing enterprise-grade features
  *              including authentication, retry logic, health monitoring, and comprehensive metrics.
  *              Built on Axios with additional UACL-specific enhancements for reliability and observability.
- * @property {HTTPClientConfig} config - Client configuration (read-only)
- * @property {string} name - Client identifier (read-only)
- * @property {AxiosInstance} http - Underlying Axios instance (private)
- * @property {boolean} connected - Connection status (private)
- * @property {ClientMetrics} metrics - Performance metrics (private)
+ * @property {HTTPClientConfig} config - Client configuration (read-only).
+ * @property {string} name - Client identifier (read-only).
+ * @property {AxiosInstance} http - Underlying Axios instance (private).
+ * @property {boolean} connected - Connection status (private).
+ * @property {ClientMetrics} metrics - Performance metrics (private).
  * @fires HTTPClientAdapter#connect - When client successfully connects
  * @fires HTTPClientAdapter#disconnect - When client disconnects
  * @fires HTTPClientAdapter#error - When an error occurs
@@ -249,16 +249,16 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   /**
    * Create new HTTP Client Adapter instance.
    *
-   * @param {HTTPClientConfig} config - HTTP client configuration
-   * @param {string} config.name - Unique client identifier
-   * @param {string} config.baseURL - Base URL for all HTTP requests
-   * @param {number} [config.timeout=30000] - Request timeout in milliseconds
-   * @param {AuthenticationConfig} [config.authentication] - Authentication configuration
-   * @param {RetryConfig} [config.retry] - Retry configuration
-   * @param {HealthConfig} [config.health] - Health check configuration
-   * @param {MonitoringConfig} [config.monitoring] - Monitoring configuration
-   * @param {Record<string, string>} [config.headers] - Default headers
-   * @throws {Error} If required configuration is missing or invalid
+   * @param {HTTPClientConfig} config - HTTP client configuration.
+   * @param {string} config.name - Unique client identifier.
+   * @param {string} config.baseURL - Base URL for all HTTP requests.
+   * @param {number} [config.timeout=30000] - Request timeout in milliseconds.
+   * @param {AuthenticationConfig} [config.authentication] - Authentication configuration.
+   * @param {RetryConfig} [config.retry] - Retry configuration.
+   * @param {HealthConfig} [config.health] - Health check configuration.
+   * @param {MonitoringConfig} [config.monitoring] - Monitoring configuration.
+   * @param {Record<string, string>} [config.headers] - Default headers.
+   * @throws {Error} If required configuration is missing or invalid.
    * @example
    * ```typescript
    * const client = new HTTPClientAdapter({
@@ -388,7 +388,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Get valid OAuth token (refresh if needed)
+   * Get valid OAuth token (refresh if needed).
    */
   private async getValidOAuthToken(credentials: OAuthCredentials): Promise<string | null> {
     // Check if current token is still valid.
@@ -860,7 +860,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Get underlying Axios instance (for advanced use cases)
+   * Get underlying Axios instance (for advanced use cases).
    */
   getAxiosInstance(): AxiosInstance {
     return this.http;

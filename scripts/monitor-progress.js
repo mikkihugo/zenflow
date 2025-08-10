@@ -23,7 +23,7 @@ function parseLogFiles() {
   try {
     const content = fs.readFileSync(logFile, 'utf8');
     const lines = content.trim().split('\n');
-    
+
     const metrics = [];
     let currentSession = null;
 
@@ -34,7 +34,7 @@ function parseLogFiles() {
         if (match) {
           currentSession = {
             timestamp: match[1],
-            type: 'metrics'
+            type: 'metrics',
           };
           metrics.push(currentSession);
         }
@@ -45,7 +45,7 @@ function parseLogFiles() {
       totalEntries: lines.length,
       metricsEntries: metrics.length,
       latestEntry: lines[lines.length - 1],
-      metricsData: metrics
+      metricsData: metrics,
     };
   } catch (error) {
     console.error('Error parsing log file:', error.message);
@@ -58,8 +58,8 @@ function estimateProgress() {
   const knownIterations = [
     { iteration: 1, errors: { before: 2356, after: 2319 }, cost: 1.32 },
     { iteration: 7, errors: { before: 2299, after: 2249 }, cost: 2.54 },
-    { iteration: 8, errors: { before: 2249, after: 2210 }, cost: 1.50 },
-    { iteration: 9, errors: { before: 2210, after: 2197 }, cost: 1.00 },
+    { iteration: 8, errors: { before: 2249, after: 2210 }, cost: 1.5 },
+    { iteration: 9, errors: { before: 2210, after: 2197 }, cost: 1.0 },
     { iteration: 10, errors: { before: 2197, after: 2180 }, cost: 2.15 },
     { iteration: 11, errors: { before: 2180, after: 2175 }, cost: 4.07 },
   ];
@@ -81,16 +81,16 @@ function estimateProgress() {
     remainingErrors,
     estimatedIterationsRemaining,
     estimatedCostRemaining: estimatedCostRemaining.toFixed(2),
-    knownIterations
+    knownIterations,
   };
 }
 
 function main() {
   console.log('📊 Claude-Zen TypeScript Fixing Progress Monitor\n');
-  
+
   const logData = parseLogFiles();
   const progress = estimateProgress();
-  
+
   console.log('📈 Progress Summary:');
   console.log(`   Total cost so far: $${progress.totalCost}`);
   console.log(`   Errors fixed: ${progress.totalErrorsFixed}`);
@@ -99,13 +99,15 @@ function main() {
   console.log(`   Remaining errors (last known): ${progress.remainingErrors}`);
   console.log(`   Estimated iterations remaining: ${progress.estimatedIterationsRemaining}`);
   console.log(`   Estimated remaining cost: $${progress.estimatedCostRemaining}`);
-  
+
   console.log('\n🔍 Recent Iteration Performance:');
   const recentIterations = progress.knownIterations.slice(-3);
   for (const iter of recentIterations) {
     const fixed = iter.errors.before - iter.errors.after;
     const costPerError = (iter.cost / fixed).toFixed(3);
-    console.log(`   Iteration ${iter.iteration}: ${fixed} errors fixed for $${iter.cost} ($${costPerError}/error)`);
+    console.log(
+      `   Iteration ${iter.iteration}: ${fixed} errors fixed for $${iter.cost} ($${costPerError}/error)`
+    );
   }
 
   if (logData) {
@@ -113,7 +115,7 @@ function main() {
     console.log(`   Total log entries: ${logData.totalEntries}`);
     console.log(`   Structured metrics entries: ${logData.metricsEntries}`);
     console.log(`   Latest entry: ${logData.latestEntry.slice(0, 100)}...`);
-    
+
     if (logData.metricsEntries === 0) {
       console.log('   ⚠️  No structured metrics found - logging may need fixes');
     } else {
@@ -123,15 +125,19 @@ function main() {
 
   console.log('\n💡 Recommendations:');
   if (parseFloat(progress.avgCostPerIteration) > 2.0) {
-    console.log('   ⚠️  High average cost per iteration - consider optimizing prompts or targeting simpler files');
+    console.log(
+      '   ⚠️  High average cost per iteration - consider optimizing prompts or targeting simpler files'
+    );
   }
   if (progress.remainingErrors > 1500) {
-    console.log('   📊 Large number of errors remaining - consider parallel processing or different strategy');
+    console.log(
+      '   📊 Large number of errors remaining - consider parallel processing or different strategy'
+    );
   }
   if (logData && logData.metricsEntries < 3) {
     console.log('   🔧 Structured logging needs improvement for better cost visibility');
   }
-  
+
   console.log('\n✅ Monitor script completed');
 }
 

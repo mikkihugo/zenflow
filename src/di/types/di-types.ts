@@ -9,9 +9,8 @@
  * @example
  */
 /**
- * @file TypeScript type definitions
+ * @file TypeScript type definitions.
  */
-
 
 export interface DIToken<T> {
   readonly symbol: symbol;

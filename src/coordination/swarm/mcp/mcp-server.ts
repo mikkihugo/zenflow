@@ -3,10 +3,8 @@
  * Single stdio MCP server combining coordination and swarm functionality.
  */
 /**
- * @file Coordination system: mcp-server
+ * @file Coordination system: mcp-server.
  */
-
-
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';

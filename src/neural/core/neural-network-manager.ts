@@ -1,13 +1,13 @@
-import { getLogger } from '../../config/logging-config';
-
-const logger = getLogger('neural-core-neural-network-manager');
-
 /**
  * @file Neural Network Manager for Per-Agent Neural Networks.
  *
  * Manages neural networks for individual agents with WASM integration,
  * cognitive pattern evolution, and collaborative learning capabilities.
  */
+
+import { getLogger } from '../../config/logging-config';
+
+const logger = getLogger('neural-core-neural-network-manager');
 
 // Internal neural modules
 import { CognitivePatternEvolution } from './cognitive-pattern-evolution';
@@ -552,7 +552,9 @@ class NeuralNetworkManager {
     const { layers = null, activation = 'relu', learningRate = 0.001, optimizer = 'adam' } = config;
 
     // Use template or custom layers
-    const networkConfig = layers ? { layers, activation } : (this.templates as Record<string, any>)[template];
+    const networkConfig = layers
+      ? { layers, activation }
+      : (this.templates as Record<string, any>)[template];
 
     try {
       // Create network using WASM module
@@ -703,12 +705,14 @@ class NeuralNetworkManager {
     }
 
     // Enhanced training with adaptive optimization
-    const result = network.train ? await network.train(trainingData, {
-      epochs,
-      batchSize,
-      learningRate,
-      freezeLayers,
-    }) : null;
+    const result = network.train
+      ? await network.train(trainingData, {
+          epochs,
+          batchSize,
+          learningRate,
+          freezeLayers,
+        })
+      : null;
 
     // Update performance metrics
     const metrics = this.performanceMetrics.get(agentId);
@@ -1191,8 +1195,8 @@ class NeuralNetworkManager {
       customConfig?: any;
     }>
   ) {
-    const results: Array<{ agentId: string; success: boolean; agent: any; }> = [];
-    const errors: Array<{ agentId: string; error: string; }> = [];
+    const results: Array<{ agentId: string; success: boolean; agent: any }> = [];
+    const errors: Array<{ agentId: string; error: string }> = [];
 
     for (const config of agentConfigs) {
       try {
@@ -1514,7 +1518,7 @@ class NeuralNetworkManager {
           for (const student of students) {
             await this.performKnowledgeDistillation(teacher, student, {
               agentIds: session.agentIds,
-              coordinationMatrix: []
+              coordinationMatrix: [],
             });
           }
         }
@@ -1536,7 +1540,7 @@ class NeuralNetworkManager {
    * @param {Array} agentIds - List of agent IDs.
    */
   async identifyTeacherAgents(agentIds: string[]): Promise<string[]> {
-    const agentPerformances: Array<{ agentId: string; performance: number; }> = [];
+    const agentPerformances: Array<{ agentId: string; performance: number }> = [];
 
     for (const agentId of agentIds) {
       const network = this.neuralNetworks.get(agentId);
@@ -1598,7 +1602,11 @@ class NeuralNetworkManager {
       const teacherIdx = session.agentIds.indexOf(teacherAgentId);
       const studentIdx = session.agentIds.indexOf(studentAgentId);
 
-      if (teacherIdx >= 0 && studentIdx >= 0 && session.coordinationMatrix?.[studentIdx]?.[teacherIdx] !== undefined) {
+      if (
+        teacherIdx >= 0 &&
+        studentIdx >= 0 &&
+        session.coordinationMatrix?.[studentIdx]?.[teacherIdx] !== undefined
+      ) {
         session.coordinationMatrix[studentIdx][teacherIdx] += distillationResult?.improvement || 0;
       }
     } catch (error) {
@@ -1657,14 +1665,14 @@ class NeuralNetworkManager {
         // Update coordination matrix
         await this.updateCoordinationMatrix({
           agentIds: (session as any).agentIds || [],
-          coordinationMatrix: []
+          coordinationMatrix: [],
         });
 
         // Perform neural coordination
         await this.coordinationProtocol.coordinate(session);
 
         // Apply coordination results
-        await this.applyCoordinationResults({ id: `session-${  Date.now()}` });
+        await this.applyCoordinationResults({ id: `session-${Date.now()}` });
       } catch (error) {
         logger.error('Neural coordination failed:', error);
       }
@@ -1700,7 +1708,11 @@ class NeuralNetworkManager {
         if (agentA && agentB) {
           // Calculate interaction strength
           const interactionStrength = await this.calculateInteractionStrength(agentA, agentB);
-          if (session.coordinationMatrix && session.coordinationMatrix[i] && session.coordinationMatrix[i][j] !== undefined) {
+          if (
+            session.coordinationMatrix &&
+            session.coordinationMatrix[i] &&
+            session.coordinationMatrix[i][j] !== undefined
+          ) {
             session.coordinationMatrix[i][j] = interactionStrength;
           }
         }

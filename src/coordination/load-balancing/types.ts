@@ -5,8 +5,6 @@
  * @file TypeScript type definitions for coordination
  */
 
-
-
 export interface Agent {
   id: string;
   name: string;

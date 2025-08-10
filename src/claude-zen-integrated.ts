@@ -1,7 +1,6 @@
 /**
- * @file claude-zen-integrated implementation
+ * @file Claude-zen-integrated implementation.
  */
-
 
 import { getLogger } from './config/logging-config';
 
@@ -10,7 +9,7 @@ const logger = getLogger('claude-zen-integrated');
  * Claude Code Zen - Integrated Application Entry Point.
  *
  * This file provides the CLI-compatible entry point with command-line argument support.
- * and integrates with HTTP server functionality for development and production use.
+ * And integrates with HTTP server functionality for development and production use.
  */
 
 interface IntegratedOptions {
@@ -21,13 +20,13 @@ interface IntegratedOptions {
 }
 
 /**
- * Simplified application class with CLI support (avoiding DI decorators for now)
+ * Simplified application class with CLI support (avoiding DI decorators for now).
  *
  * @example
  */
 export class ClaudeZenIntegrated {
   private options: IntegratedOptions;
-  private server?: any; // HTTP server instance.
+  private server?: { close: (callback?: (err?: Error) => void) => void }; // HTTP server instance.
   constructor(options: IntegratedOptions = {}) {
     this.options = {
       port: 3000,
@@ -89,7 +88,7 @@ export class ClaudeZenIntegrated {
       const app = express.default();
 
       // Basic health check endpoint
-      app.get('/health', (_req: any, res: any) => {
+      app.get('/health', (_req: unknown, res: { json: (data: unknown) => void }) => {
         res.json({
           status: 'healthy',
           timestamp: new Date().toISOString(),
@@ -98,7 +97,7 @@ export class ClaudeZenIntegrated {
       });
 
       // API status endpoint
-      app.get('/api/status', (_req: any, res: any) => {
+      app.get('/api/status', (_req: unknown, res: { json: (data: unknown) => void }) => {
         res.json({
           status: 'running',
           mode: this.options.dev ? 'development' : 'production',
@@ -122,7 +121,7 @@ export class ClaudeZenIntegrated {
     // Close HTTP server
     if (this.server) {
       await new Promise<void>((resolve, reject) => {
-        this.server.close((err: any) => {
+        this.server.close((err?: Error) => {
           if (err) reject(err);
           else resolve();
         });
@@ -133,6 +132,8 @@ export class ClaudeZenIntegrated {
 
 /**
  * Main entry point for CLI usage.
+ *
+ * @example
  */
 async function main() {
   // Parse command line arguments

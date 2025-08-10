@@ -4,7 +4,7 @@
  * Comprehensive schema definitions for Swagger autodoc generation.
  * Following Google API Design Guide standards.
  *
- * @file OpenAPI 3.0 compatible schemas for coordination domain
+ * @file OpenAPI 3.0 compatible schemas for coordination domain.
  */
 
 /**

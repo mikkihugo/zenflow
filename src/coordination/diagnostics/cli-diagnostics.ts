@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 /**
- * @file Coordination system: cli-diagnostics
+ * @file Coordination system: cli-diagnostics.
  */
-
-
 
 /**
  * Diagnostic CLI for ruv-swarm.
@@ -220,8 +218,6 @@ function showLoggingConfig(logger: LoggerInterface): void {
 
   logger.info('Logging configuration displayed successfully');
 }
-
-
 
 function formatReportAsMarkdown(report: any): string {
   const lines = [

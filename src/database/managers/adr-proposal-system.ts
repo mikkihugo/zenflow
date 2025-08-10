@@ -5,10 +5,8 @@
  * ADRs are never imported - they must go through proper human review process.
  */
 /**
- * @file Database layer: adr-proposal-system
+ * @file Database layer: adr-proposal-system.
  */
-
-
 
 import type { ADRDocumentEntity } from '../entities/document-entities';
 import { adrManager } from './adr-manager';
@@ -249,7 +247,7 @@ export class ADRProposalSystem {
 
   /**
    * Propose ADR for the document workflow automation system.
-   * (ADR number will be automatically assigned by the system)
+   * (ADR number will be automatically assigned by the system).
    */
   async proposeDocumentWorkflowADR(): Promise<ADRDocumentEntity> {
     return this.proposeADR({

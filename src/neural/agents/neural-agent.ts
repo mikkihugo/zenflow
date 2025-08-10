@@ -6,8 +6,6 @@
  * @file Neural network: neural-agent.
  */
 
-
-
 import { EventEmitter } from 'node:events';
 
 // Import these after class definitions to avoid circular dependency

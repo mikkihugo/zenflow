@@ -10,13 +10,11 @@
  * - Integration with external monitoring systems
  * - Custom metric aggregation and visualization
  * - Alert correlation and analysis
- * - Performance trend analysis
+ * - Performance trend analysis.
  */
 /**
  * @file Coordination system: monitoring-dashboard.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { ErrorFactory } from './errors';

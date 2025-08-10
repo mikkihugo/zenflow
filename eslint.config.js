@@ -9,10 +9,11 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default [
-  // TypeScript files configuration
+  // TypeScript files configuration (excluding .d.ts files which are handled separately)
   {
     name: 'claude-zen-typescript',
     files: ['**/*.ts', '**/*.tsx'],
+    ignores: ['**/*.d.ts'],
     languageOptions: {
       parser: typescriptParser,
       ecmaVersion: 2024,
@@ -148,6 +149,34 @@ export default [
       'jsdoc/valid-types': 'off', // TypeScript handles this
     },
   },
+  // TypeScript declaration files (.d.ts) - lighter rules without project parsing
+  {
+    name: 'claude-zen-typescript-declarations',
+    files: ['**/*.d.ts'],
+    languageOptions: {
+      parser: typescriptParser,
+      ecmaVersion: 2024,
+      sourceType: 'module',
+      // No project parsing for .d.ts files
+      parserOptions: {
+        ecmaFeatures: {
+          modules: true,
+        },
+      },
+    },
+    plugins: {
+      '@typescript-eslint': typescriptEslint,
+      jsdoc: jsdocPlugin,
+    },
+    rules: {
+      // Basic rules for .d.ts files
+      '@typescript-eslint/no-explicit-any': 'warn',
+      'jsdoc/require-description': 'warn',
+      'jsdoc/require-param': 'warn',
+      'jsdoc/require-returns': 'warn',
+      'jsdoc/require-example': 'off', // Less strict for declaration files
+    },
+  },
   // JavaScript files configuration
   {
     name: 'claude-zen-javascript',
@@ -233,16 +262,42 @@ export default [
       'no-undef': 'off',
     },
   },
-  // Ignore patterns
+  // Ignore patterns (migrated from .eslintignore)
   {
     name: 'claude-zen-ignores',
     ignores: [
+      // From .eslintignore - AI integration files
+      'scripts/ai-eslint/github-copilot-integration.js',
+      'scripts/ai-eslint/ax-dspy-integration.js',
+      'scripts/ai-eslint/simple-dspy-integration.js',
+      
+      // Node modules and dist
       'node_modules/**',
       'dist/**',
+      'build/**',
+      
+      // Cache directories
+      '.cache/**',
+      '.next/**',
+      '.nuxt/**',
+      
+      // Log files
+      'logs/**',
+      '*.log',
+      
+      // Test coverage
       'coverage/**',
+      
+      // Environment files
+      '.env',
+      '.env.local',
+      '.env.development.local',
+      '.env.test.local',
+      '.env.production.local',
+      
+      // Existing ignores
       '.hive-mind/**',
       '.swarm/**',
-      'logs/**',
       'target/**',
       'temp-js/**',
       'archive/**',
@@ -259,13 +314,17 @@ export default [
       '*.wgsl',
       '*.rs',
       '*.lock',
-      '*.log',
       '*.db',
       '*.tgz',
       '*.dump',
       'scripts/**/*.py',
       '**/*.backup',
       '*.config.js.backup',
+      
+      // Test files that aren't in TypeScript project
+      'src/__tests__/**',
+      '**/tests/**',
+      
       // Temporarily ignore problematic files
       'bin/claude-zen-pkg.ts',
       'lint-terminator*.js',

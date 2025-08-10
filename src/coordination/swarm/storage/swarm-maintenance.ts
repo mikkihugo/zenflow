@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: swarm-maintenance
+ * @file Coordination system: swarm-maintenance.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

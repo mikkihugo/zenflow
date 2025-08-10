@@ -3,10 +3,8 @@
  * Helps debug connection issues and performance problems.
  */
 /**
- * @file Coordination system: diagnostics
+ * @file Coordination system: diagnostics.
  */
-
-
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -131,7 +129,7 @@ export class ConnectionDiagnostics {
    */
   getConnectionSummary(): ConnectionSummary {
     const events = this.connectionHistory.reduce((acc: Record<string, number>, event) => {
-      acc[event["event"]] = (acc[event["event"]] || 0) + 1;
+      acc[event['event']] = (acc[event['event']] || 0) + 1;
       return acc;
     }, {});
 
@@ -420,8 +418,8 @@ export class SystemDiagnostics {
       timestamp: Date.now(),
       memory: process.memoryUsage(),
       cpu: process.cpuUsage(),
-      handles: (process as any)["_getActiveHandles"]?.().length || 0,
-      requests: (process as any)["_getActiveRequests"]?.().length || 0,
+      handles: (process as any)['_getActiveHandles']?.().length || 0,
+      requests: (process as any)['_getActiveRequests']?.().length || 0,
     };
 
     this.samples.push(sample);

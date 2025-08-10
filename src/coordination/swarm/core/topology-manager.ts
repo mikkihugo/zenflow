@@ -3,10 +3,8 @@
  * Re-exports the advanced topology manager for swarm coordination.
  */
 /**
- * @file topology management system
+ * @file Topology management system.
  */
-
-
 
 export * from '../protocols/topology/topology-manager';
 // Additional re-export for direct access

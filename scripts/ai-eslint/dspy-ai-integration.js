@@ -2,7 +2,7 @@
 
 /**
  * DSPy AI Integration for Zen AI Fixer
- * 
+ *
  * Uses the existing DSPy system for intelligent, learning-based code fixes.
  * Benefits over direct Claude API:
  * - Optimized prompts through DSPy training
@@ -45,12 +45,12 @@ export class DSPyAIIntegration {
 
       // Initialize with optimized config for code fixing
       this.dspyManager = new DSPyIntegrationManager({
-        model: 'gpt-4o-mini',        // Much cheaper than gpt-4
-        temperature: 0.1,            // More deterministic fixes
-        maxTokens: 1000,             // Reasonable limit for code fixes
+        model: 'gpt-4o-mini', // Much cheaper than gpt-4
+        temperature: 0.1, // More deterministic fixes
+        maxTokens: 1000, // Reasonable limit for code fixes
         enableUnifiedLearning: true, // Learn from every fix
-        learningInterval: 300000,    // Learn every 5 minutes
-        apiKey: process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY
+        learningInterval: 300000, // Learn every 5 minutes
+        apiKey: process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY,
       });
 
       console.log('🧠 DSPy AI Integration initialized');
@@ -58,7 +58,6 @@ export class DSPyAIIntegration {
 
       // Load existing patterns if available
       await this.loadPatternCache();
-
     } catch (error) {
       console.error('Failed to initialize DSPy:', error.message);
       throw new Error(`DSPy initialization failed: ${error.message}`);
@@ -79,7 +78,7 @@ export class DSPyAIIntegration {
     try {
       // Read file content
       const fileContent = fs.readFileSync(filePath, 'utf8');
-      
+
       // Extract errors from prompt
       const errors = this.extractErrorsFromPrompt(prompt);
       console.log(`   🔍 Analyzing ${errors.length} errors`);
@@ -93,7 +92,7 @@ export class DSPyAIIntegration {
 
       // Use DSPy error diagnosis
       const diagnosis = await this.dspyManager.coreOperations.diagnoseError(
-        errors.map(e => e.message || e).join('\n'),
+        errors.map((e) => e.message || e).join('\n'),
         fileContent,
         filePath
       );
@@ -121,24 +120,23 @@ export class DSPyAIIntegration {
         this.cachePattern(patternKey, fixes, diagnosis);
       }
 
-      console.log(`   ✅ Fixed in ${(duration/1000).toFixed(1)}s (cost: ~$0.05)`);
+      console.log(`   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$0.05)`);
 
       return {
         success: true,
         cost: 0.05,
         duration,
         method: 'DSPy',
-        confidence: diagnosis.confidence
+        confidence: diagnosis.confidence,
       };
-
     } catch (error) {
       console.error(`   ❌ DSPy error: ${error.message}`);
-      
+
       // Fallback: Return indication that we should use Claude
       return {
         success: false,
         error: error.message,
-        fallback: 'claude'
+        fallback: 'claude',
       };
     }
   }
@@ -149,16 +147,16 @@ export class DSPyAIIntegration {
   extractErrorsFromPrompt(prompt) {
     const errors = [];
     const lines = prompt.split('\n');
-    
+
     for (const line of lines) {
       if (line.includes('error TS') || line.includes('Error:')) {
         errors.push({
           message: line.trim(),
-          type: this.classifyError(line)
+          type: this.classifyError(line),
         });
       }
     }
-    
+
     return errors;
   }
 
@@ -168,7 +166,8 @@ export class DSPyAIIntegration {
   classifyError(errorLine) {
     if (errorLine.includes('Cannot find module')) return 'module-resolution';
     if (errorLine.includes('has no exported member')) return 'export-members';
-    if (errorLine.includes('Property') && errorLine.includes('does not exist')) return 'missing-properties';
+    if (errorLine.includes('Property') && errorLine.includes('does not exist'))
+      return 'missing-properties';
     if (errorLine.includes('is not assignable to')) return 'type-assignment';
     if (errorLine.includes('Duplicate identifier')) return 'duplicate-ids';
     return 'unknown';
@@ -178,7 +177,10 @@ export class DSPyAIIntegration {
    * Generate pattern key for caching
    */
   generatePatternKey(errors, filePath) {
-    const errorTypes = errors.map(e => e.type).sort().join(',');
+    const errorTypes = errors
+      .map((e) => e.type)
+      .sort()
+      .join(',');
     const fileType = path.extname(filePath);
     return `${errorTypes}-${fileType}`;
   }
@@ -207,9 +209,8 @@ export class DSPyAIIntegration {
         cost: 0.01,
         duration,
         method: 'DSPy-Pattern',
-        confidence: pattern.confidence
+        confidence: pattern.confidence,
       };
-
     } catch (error) {
       console.log(`   ⚠️ Pattern failed: ${error.message}, falling back to DSPy`);
       this.patternCache.delete(patternKey); // Remove broken pattern
@@ -240,11 +241,11 @@ export class DSPyAIIntegration {
     // Simple verification - check if file compiles
     try {
       const content = fs.readFileSync(filePath, 'utf8');
-      
+
       // Basic checks
       if (content.trim().length === 0) return false;
       if (content.includes('undefined') && !content.includes('undefined;')) return false;
-      
+
       // Could add more sophisticated verification here
       return true;
     } catch (error) {
@@ -258,27 +259,25 @@ export class DSPyAIIntegration {
   async trainFromSuccess(errors, originalContent, fixes, diagnosis) {
     const trainingExample = {
       input: {
-        error_message: errors.map(e => e.message).join('\n'),
+        error_message: errors.map((e) => e.message).join('\n'),
         code_context: originalContent,
-        file_path: 'training-example'
+        file_path: 'training-example',
       },
       output: {
         diagnosis: diagnosis.diagnosis,
         fix_suggestions: diagnosis.fixSuggestions,
-        confidence: diagnosis.confidence
+        confidence: diagnosis.confidence,
       },
-      success: true
+      success: true,
     };
 
     try {
-      await this.dspyManager.coreOperations.trainFromSuccessfulOperations(
-        'error_diagnosis',
-        [trainingExample]
-      );
-      
+      await this.dspyManager.coreOperations.trainFromSuccessfulOperations('error_diagnosis', [
+        trainingExample,
+      ]);
+
       this.successHistory.push(trainingExample);
       console.log(`   🧠 LEARNED: DSPy trained from successful fix`);
-      
     } catch (error) {
       console.warn(`   ⚠️ Training failed: ${error.message}`);
     }
@@ -291,7 +290,7 @@ export class DSPyAIIntegration {
     this.patternCache.set(patternKey, {
       transformations: this.extractTransformations(fixes),
       confidence: diagnosis.confidence,
-      created: Date.now()
+      created: Date.now(),
     });
   }
 
@@ -301,15 +300,15 @@ export class DSPyAIIntegration {
   extractTransformations(fixes) {
     // Simple pattern extraction - could be more sophisticated
     const transformations = [];
-    
+
     if (fixes.code.includes('import')) {
       transformations.push({
         type: 'add-import',
-        import: fixes.code.match(/import.*from.*;/)?.[0]
+        import: fixes.code.match(/import.*from.*;/)?.[0],
       });
     }
-    
-    return transformations.filter(t => t.import); // Only valid transformations
+
+    return transformations.filter((t) => t.import); // Only valid transformations
   }
 
   /**
@@ -350,7 +349,7 @@ export class DSPyAIIntegration {
       patternsLearned: this.patternCache.size,
       successfulFixes: this.successHistory.length,
       avgCost: 0.05, // Much lower than Claude
-      avgDuration: 5000 // Much faster than Claude
+      avgDuration: 5000, // Much faster than Claude
     };
   }
 

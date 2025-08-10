@@ -3,10 +3,8 @@
  * Consolidates error handling from the removed coordination/mcp directory.
  */
 /**
- * @file Coordination system: error-handler
+ * @file Coordination system: error-handler.
  */
-
-
 
 import { createLogger } from '../../../core/logger';
 

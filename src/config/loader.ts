@@ -1,12 +1,12 @@
-import { createLogger } from '../core/logger';
-
-const logger = createLogger('src-config-loader');
-
 /**
  * @file Configuration Loader.
  *
  * Handles loading configuration from multiple sources with proper priority.
  */
+
+import { createLogger } from '../core/logger';
+
+const logger = createLogger('src-config-loader');
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';

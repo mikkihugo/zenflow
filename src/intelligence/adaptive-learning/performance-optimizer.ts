@@ -2,16 +2,35 @@
  * Performance Optimizer.
  *
  * Optimizes agent behavior, task allocation, and resource utilization based on.
- * learned patterns to improve overall swarm performance and efficiency.
+ * Learned patterns to improve overall swarm performance and efficiency.
  */
 /**
- * @file performance-optimizer implementation
+ * @file Performance-optimizer implementation.
  */
 
-
-
 import { EventEmitter } from 'node:events';
-import type { PerformanceOptimizer as IPerformanceOptimizer } from './types';
+import type {
+  AdaptiveLearningConfig,
+  AdaptiveThreshold,
+  Agent,
+  AllocationStrategy,
+  BehaviorOptimization,
+  Bottleneck,
+  EfficiencyImprovement,
+  ImplementationPlan,
+  PerformanceOptimizer as IPerformanceOptimizer,
+  LatencyReduction,
+  MonitoringStrategy,
+  OptimizationAction,
+  Pattern,
+  PerformanceMetrics,
+  Resource,
+  ResourceAllocation,
+  ResourceStrategy,
+  SystemContext,
+  Task,
+  TaskAllocation,
+} from './types';
 
 export class PerformanceOptimizer extends EventEmitter implements IPerformanceOptimizer {
   private config: AdaptiveLearningConfig;

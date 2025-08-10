@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: logger
+ * @file Interface implementation: logger.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

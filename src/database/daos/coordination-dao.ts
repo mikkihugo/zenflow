@@ -3,9 +3,8 @@
  * This shim will be removed after migration period.
  */
 /**
- * @file Database layer: coordination-dao
+ * @file Database layer: coordination-dao.
  */
-
 
 export { CoordinationDao as CoordinationDAO } from '../dao/coordination.dao';
 

@@ -197,15 +197,15 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       statusChanges.forEach((expectedChange, index) => {
         const event = receivedEvents[index];
-        expect(event["data"]?.["agentId"]).toBe(testAgent.id);
-        expect(event["data"]?.["status"]).toBe(expectedChange.status);
+        expect(event['data']?.['agentId']).toBe(testAgent.id);
+        expect(event['data']?.['status']).toBe(expectedChange.status);
 
         if (expectedChange.workload !== undefined) {
-          expect(event["data"]?.["metrics"]?.["workload"]).toBe(expectedChange.workload);
+          expect(event['data']?.['metrics']?.['workload']).toBe(expectedChange.workload);
         }
 
         if (expectedChange.error) {
-          expect(event["data"]?.error).toBe(expectedChange.error);
+          expect(event['data']?.error).toBe(expectedChange.error);
         }
       });
 
@@ -636,7 +636,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
         if (message.type === 'heartbeat') {
           heartbeats.push({
             timestamp: Date.now(),
-            data: message["data"],
+            data: message['data'],
           });
 
           // Respond to heartbeat

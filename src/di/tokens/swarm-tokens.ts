@@ -3,10 +3,8 @@
  * Defines tokens for swarm and agent management services.
  */
 /**
- * @file swarm-tokens implementation
+ * @file Swarm-tokens implementation.
  */
-
-
 
 import { createToken } from './token-factory';
 

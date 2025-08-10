@@ -1,5 +1,5 @@
 /**
- * @file Advanced CLI Engine - Revolutionary Command-Line Interface
+ * @file Advanced CLI Engine - Revolutionary Command-Line Interface.
  *
  * Implements the most advanced AI project management and coordination platform CLI.
  * Features intelligent project scaffolding, real-time swarm monitoring, automated.

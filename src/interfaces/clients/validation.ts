@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: validation
+ * @file Interface implementation: validation.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -213,7 +212,7 @@ export class UACLValidator {
     try {
       const wsClient = await uacl.createWebSocketClient(
         'test-ws',
-        getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws') + '/ws',
+        `${getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws')  }/ws`,
         {
           enabled: false,
           priority: 1,
@@ -464,6 +463,8 @@ export class UACLValidator {
 
 /**
  * Quick validation function for easy testing.
+ *
+ * @example
  */
 export async function validateUACL(): Promise<ValidationReport> {
   const validator = new UACLValidator();
@@ -472,6 +473,8 @@ export async function validateUACL(): Promise<ValidationReport> {
 
 /**
  * Print validation report to console.
+ *
+ * @example
  */
 export async function printValidationReport(): Promise<void> {
   const validator = new UACLValidator();

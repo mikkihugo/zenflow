@@ -4,10 +4,8 @@
  * Core orchestration engine for ag2.ai-inspired multi-agent conversations.
  */
 /**
- * @file orchestrator implementation
+ * @file Orchestrator implementation.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import type { AgentId } from '../types/agent-types';

@@ -1,7 +1,6 @@
 /**
- * @file memory implementation
+ * @file Memory implementation.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

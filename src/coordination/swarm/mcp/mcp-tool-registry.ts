@@ -52,12 +52,15 @@ interface Swarm {
   agents: Map<string, Agent>;
   tasks: Map<string, Task>;
   getStatus(verbose: boolean): Promise<any>; // Placeholder, refine if needed
-  spawn(options: {
-    type: string;
-    name: string;
-    capabilities: string[];
-    enableNeuralNetwork?: boolean;
-  }, agentData?: any): Promise<Agent>;
+  spawn(
+    options: {
+      type: string;
+      name: string;
+      capabilities: string[];
+      enableNeuralNetwork?: boolean;
+    },
+    agentData?: any
+  ): Promise<Agent>;
   orchestrate(options: {
     description: string;
     priority?: string;
@@ -108,11 +111,16 @@ interface Persistence {
   createAgent(data: any): Promise<void>; // Placeholder, refine if needed
   updateAgent(agentId: string, data: any): Promise<void>; // Placeholder, refine if needed
   createTask(data: any): Promise<void>; // Placeholder, refine if needed
-  recordMetric(entityType: string, entityId: string, metricName: string, value: number): Promise<void>;
+  recordMetric(
+    entityType: string,
+    entityId: string,
+    metricName: string,
+    value: number
+  ): Promise<void>;
   getMetrics(entityType: string, entityId: string): any[]; // Placeholder, refine if needed
   getAgentNeuralNetworks(agentId: string): Array<{
     id: string;
-    architecture?: { type: string; layers: number[]; activation: string; };
+    architecture?: { type: string; layers: number[]; activation: string };
     weights?: object;
     trainingData?: any;
     performanceMetrics?: object;
@@ -121,21 +129,23 @@ interface Persistence {
   }>;
   storeNeuralNetwork(data: any): string; // Returns networkId
   updateNeuralNetwork(networkId: string, data: any): Promise<void>;
-  getPoolStats(): {
-    activeConnections: number;
-    availableReaders: number;
-    availableWorkers: number;
-    readQueueLength: number;
-    writeQueueLength: number;
-    workerQueueLength: number;
-    totalReads: number;
-    totalWrites: number;
-    totalWorkerTasks: number;
-    failedConnections: number;
-    averageReadTime: number;
-    averageWriteTime: number;
-    lastHealthCheck: string;
-  } | {};
+  getPoolStats():
+    | {
+        activeConnections: number;
+        availableReaders: number;
+        availableWorkers: number;
+        readQueueLength: number;
+        writeQueueLength: number;
+        workerQueueLength: number;
+        totalReads: number;
+        totalWrites: number;
+        totalWorkerTasks: number;
+        failedConnections: number;
+        averageReadTime: number;
+        averageWriteTime: number;
+        lastHealthCheck: string;
+      }
+    | {};
   getPersistenceStats(): {
     totalOperations: number;
     totalErrors: number;
@@ -172,7 +182,7 @@ interface McpLogger {
 
 // Minimal DAA_MCPTools interface based on usage
 interface DAA_MCPTools {
-  new(mcpTools: EnhancedMCPTools): DAA_MCPTools; // Constructor
+  new (mcpTools: EnhancedMCPTools): DAA_MCPTools; // Constructor
   daa_init: Function;
   daa_agent_create: Function;
   daa_agent_adapt: Function;
@@ -242,6 +252,7 @@ interface TaskResults {
     agent_count: number;
   };
 }
+
 // Removed SwarmPersistencePooled - using DAL Factory approach instead
 import {
   AgentError,
@@ -266,11 +277,29 @@ import { DAA_MCPTools as ImportedDAA_MCPTools } from './mcp-daa-tools';
 class EnhancedMCPTools {
   private ruvSwarm: ZenSwarm | null;
   private activeSwarms: Map<string, Swarm>;
-  private toolMetrics: Map<string, { total_calls: number; successful_calls: number; failed_calls: number; avg_execution_time_ms: number; last_error: string | null; }>;
+  private toolMetrics: Map<
+    string,
+    {
+      total_calls: number;
+      successful_calls: number;
+      failed_calls: number;
+      avg_execution_time_ms: number;
+      last_error: string | null;
+    }
+  >;
   private persistence: Persistence | null;
   private persistenceReady: boolean;
   private errorContext: ErrorContext;
-  private errorLog: Array<{ timestamp: string; tool: string; operation: string; error: { name: string; message: string; code: any; stack: string | undefined; }; context: object; suggestions: any; severity: string; recoverable: boolean; }>;
+  private errorLog: Array<{
+    timestamp: string;
+    tool: string;
+    operation: string;
+    error: { name: string; message: string; code: any; stack: string | undefined };
+    context: object;
+    suggestions: any;
+    severity: string;
+    recoverable: boolean;
+  }>;
   private maxErrorLogSize: number;
   private logger: McpLogger;
   private daaTools: ImportedDAA_MCPTools;
@@ -301,7 +330,7 @@ class EnhancedMCPTools {
       set: (key: string, value: any) => this.errorContext.data.set(key, value),
       enrichError: <T extends Error>(error: T) => error as T,
       toObject: () => Object.fromEntries(this.errorContext.data),
-      clear: () => this.errorContext.data.clear()
+      clear: () => this.errorContext.data.clear(),
     };
     this.errorLog = [];
     this.maxErrorLogSize = 1000;
@@ -516,7 +545,22 @@ class EnhancedMCPTools {
    * @param operation
    * @param params
    */
-  handleError(error: Error | ZenSwarmError | ValidationError | WasmError | ResourceError | PersistenceError | SwarmError | TaskError | AgentError | NeuralError, toolName: string, operation: string, params: Record<string, any> | null = null) {
+  handleError(
+    error:
+      | Error
+      | ZenSwarmError
+      | ValidationError
+      | WasmError
+      | ResourceError
+      | PersistenceError
+      | SwarmError
+      | TaskError
+      | AgentError
+      | NeuralError,
+    toolName: string,
+    operation: string,
+    params: Record<string, any> | null = null
+  ) {
     // Create detailed error context
     this.errorContext.set('tool', toolName);
     this.errorContext.set('operation', operation);
@@ -572,7 +616,19 @@ class EnhancedMCPTools {
    *
    * @param error
    */
-  determineSeverity(error: Error | ZenSwarmError | ValidationError | WasmError | ResourceError | PersistenceError | SwarmError | TaskError | AgentError | NeuralError): string {
+  determineSeverity(
+    error:
+      | Error
+      | ZenSwarmError
+      | ValidationError
+      | WasmError
+      | ResourceError
+      | PersistenceError
+      | SwarmError
+      | TaskError
+      | AgentError
+      | NeuralError
+  ): string {
     if (error instanceof ValidationError) {
       return 'medium';
     } else if (error instanceof WasmError || error instanceof ResourceError) {
@@ -596,7 +652,19 @@ class EnhancedMCPTools {
    *
    * @param error
    */
-  isRecoverable(error: Error | ZenSwarmError | ValidationError | WasmError | ResourceError | PersistenceError | SwarmError | TaskError | AgentError | NeuralError): boolean {
+  isRecoverable(
+    error:
+      | Error
+      | ZenSwarmError
+      | ValidationError
+      | WasmError
+      | ResourceError
+      | PersistenceError
+      | SwarmError
+      | TaskError
+      | AgentError
+      | NeuralError
+  ): boolean {
     if (error instanceof ValidationError) {
       return true; // User can fix parameters
     } else if (error instanceof ResourceError) {
@@ -685,7 +753,9 @@ class EnhancedMCPTools {
    * @param hookInstance.sessionData
    * @param hookInstance.sessionData.notifications
    */
-  async integrateHookNotifications(hookInstance: { sessionData: { notifications: Notification[] } }): Promise<boolean> {
+  async integrateHookNotifications(hookInstance: {
+    sessionData: { notifications: Notification[] };
+  }): Promise<boolean> {
     if (!hookInstance || !this.persistence) {
       this.logger.warn('⚠️ Cannot integrate hook notifications - missing components');
       return false;
@@ -724,7 +794,11 @@ class EnhancedMCPTools {
    * @param type
    * @param since
    */
-  async getCrossAgentNotifications(agentId: string | null = null, type: string | null = null, since: number | null = null): Promise<Array<Notification & { agentId: string; memoryKey: string; }>> {
+  async getCrossAgentNotifications(
+    agentId: string | null = null,
+    type: string | null = null,
+    since: number | null = null
+  ): Promise<Array<Notification & { agentId: string; memoryKey: string }>> {
     if (!this.persistence) {
       return [];
     }
@@ -770,13 +844,13 @@ class EnhancedMCPTools {
    */
   async getActiveAgentIds() {
     try {
-      const swarms = await this.persistence?.getActiveSwarms() || [];
+      const swarms = (await this.persistence?.getActiveSwarms()) || [];
       this.logger.error(`🔍 Debug: Found ${swarms.length} active swarms`);
       const agentIds: string[] = [];
 
       for (const swarm of swarms) {
         // Get ALL agents (not just active) for cross-agent notifications
-        const agents = await this.persistence?.getSwarmAgents(swarm?.id, 'all') || [];
+        const agents = (await this.persistence?.getSwarmAgents(swarm?.id, 'all')) || [];
         this.logger.error(`🔍 Debug: Swarm ${swarm?.id} has ${agents.length} total agents`);
         agentIds.push(...agents.map((a) => a.id));
       }
@@ -841,14 +915,14 @@ class EnhancedMCPTools {
             maxAgents: swarmData?.max_agents || 10,
             strategy: swarmData?.strategy || 'balanced',
             enableCognitiveDiversity: true,
-            enableNeuralAgents: true
+            enableNeuralAgents: true,
           });
           if (swarmData?.id && swarm) {
             this.activeSwarms.set(swarmData.id, swarm);
           }
 
           // Load agents for this swarm
-          const agents = await this.persistence?.getSwarmAgents(swarmData?.id || '', 'all') || [];
+          const agents = (await this.persistence?.getSwarmAgents(swarmData?.id || '', 'all')) || [];
           this.logger.error(`  └─ Loading ${agents.length} agents for swarm ${swarmData?.id}`);
 
           for (const agentData of agents) {
@@ -874,7 +948,14 @@ class EnhancedMCPTools {
   }
 
   // Enhanced swarm_init with full WASM capabilities and robust error handling
-  async swarm_init(params: { topology: string; maxAgents: number; strategy: string; enableCognitiveDiversity: boolean; enableNeuralAgents: boolean; enableForecasting: boolean; }) {
+  async swarm_init(params: {
+    topology: string;
+    maxAgents: number;
+    strategy: string;
+    enableCognitiveDiversity: boolean;
+    enableNeuralAgents: boolean;
+    enableForecasting: boolean;
+  }) {
     const startTime = performance.now();
     const toolName = 'swarm_init';
     const operationId = this.logger.startOperation('swarm_init', { params });
@@ -1031,7 +1112,12 @@ class EnhancedMCPTools {
   }
 
   // Enhanced agent_spawn with cognitive patterns and neural networks
-  async agent_spawn(params: { type: string; name: string; capabilities: string[]; swarmId?: string; }) {
+  async agent_spawn(params: {
+    type: string;
+    name: string;
+    capabilities: string[];
+    swarmId?: string;
+  }) {
     const startTime = performance.now();
     const toolName = 'agent_spawn';
     const _operationId = this.logger.startOperation('agent_spawn', { params });
@@ -1187,7 +1273,15 @@ class EnhancedMCPTools {
   }
 
   // Enhanced task_orchestrate with intelligent agent selection and error handling
-  async task_orchestrate(params: { task: string; priority?: string; strategy?: string; maxAgents?: number; swarmId?: string; requiredCapabilities?: string[]; estimatedDuration?: number; }) {
+  async task_orchestrate(params: {
+    task: string;
+    priority?: string;
+    strategy?: string;
+    maxAgents?: number;
+    swarmId?: string;
+    requiredCapabilities?: string[];
+    estimatedDuration?: number;
+  }) {
     const startTime = performance.now();
     const toolName = 'task_orchestrate';
 
@@ -1322,7 +1416,7 @@ class EnhancedMCPTools {
   }
 
   // Enhanced swarm_status with detailed WASM metrics
-  async swarm_status(params: { verbose?: boolean; swarmId?: string; }) {
+  async swarm_status(params: { verbose?: boolean; swarmId?: string }) {
     const startTime = performance.now();
 
     try {
@@ -1336,7 +1430,9 @@ class EnhancedMCPTools {
 
         const status = await swarm.getStatus(verbose);
         status.wasm_metrics = {
-          memory_usage_mb: this.ruvSwarm?.wasmLoader?.getTotalMemoryUsage() ? (this.ruvSwarm.wasmLoader.getTotalMemoryUsage() / (1024 * 1024)) : 0,
+          memory_usage_mb: this.ruvSwarm?.wasmLoader?.getTotalMemoryUsage()
+            ? this.ruvSwarm.wasmLoader.getTotalMemoryUsage() / (1024 * 1024)
+            : 0,
           loaded_modules: this.ruvSwarm?.wasmLoader?.getModuleStatus() || {},
           features: this.ruvSwarm?.features,
         };
@@ -1346,7 +1442,7 @@ class EnhancedMCPTools {
       }
       // Global status for all swarms
       const globalMetrics = await this.ruvSwarm?.getGlobalMetrics();
-      const allSwarms = await this.ruvSwarm?.getAllSwarms() || [];
+      const allSwarms = (await this.ruvSwarm?.getAllSwarms()) || [];
 
       const result = {
         active_swarms: allSwarms?.length || 0,
@@ -1368,7 +1464,7 @@ class EnhancedMCPTools {
   }
 
   // Enhanced task_status with real-time progress tracking
-  async task_status(params: { taskId?: string; }) {
+  async task_status(params: { taskId?: string }) {
     const startTime = performance.now();
 
     try {
@@ -1484,7 +1580,16 @@ class EnhancedMCPTools {
       }
 
       // Get task results from database (handle missing database gracefully)
-      let dbTaskResults: Array<{ id: number; task_id: string; agent_id: string; agent_name: string; agent_type: string; output: string; metrics: string; created_at: string; }> = [];
+      let dbTaskResults: Array<{
+        id: number;
+        task_id: string;
+        agent_id: string;
+        agent_name: string;
+        agent_type: string;
+        output: string;
+        metrics: string;
+        created_at: string;
+      }> = [];
       try {
         if (this.persistence?.db?.prepare) {
           const taskResultsQuery = this.persistence.db.prepare(`
@@ -1684,7 +1789,7 @@ class EnhancedMCPTools {
   }
 
   // Enhanced agent_list with comprehensive agent information
-  async agent_list(params: { filter?: string; swarmId?: string; }) {
+  async agent_list(params: { filter?: string; swarmId?: string }) {
     const startTime = performance.now();
 
     try {
@@ -1744,7 +1849,12 @@ class EnhancedMCPTools {
   }
 
   // Enhanced benchmark_run with comprehensive WASM performance testing
-  async benchmark_run(params: { type?: string; iterations?: number; includeNeuralBenchmarks?: boolean; includeSwarmBenchmarks?: boolean; }) {
+  async benchmark_run(params: {
+    type?: string;
+    iterations?: number;
+    includeNeuralBenchmarks?: boolean;
+    includeSwarmBenchmarks?: boolean;
+  }) {
     const startTime = performance.now();
 
     try {
@@ -1825,7 +1935,7 @@ class EnhancedMCPTools {
   }
 
   // Enhanced features_detect with full capability analysis
-  async features_detect(params: { category?: string; }) {
+  async features_detect(params: { category?: string }) {
     const startTime = performance.now();
 
     try {
@@ -1881,7 +1991,7 @@ class EnhancedMCPTools {
   }
 
   // Enhanced memory_usage with detailed WASM memory analysis
-  async memory_usage(params: { detail?: string; }) {
+  async memory_usage(params: { detail?: string }) {
     const startTime = performance.now();
 
     try {
@@ -2014,7 +2124,7 @@ class EnhancedMCPTools {
   }
 
   // Neural network specific MCP tools
-  async neural_status(params: { agentId?: string; }) {
+  async neural_status(params: { agentId?: string }) {
     const startTime = performance.now();
 
     try {
@@ -2065,7 +2175,13 @@ class EnhancedMCPTools {
     }
   }
 
-  async neural_train(params: { agentId: string; iterations?: number; learningRate?: number; modelType?: string; trainingData?: any; }) {
+  async neural_train(params: {
+    agentId: string;
+    iterations?: number;
+    learningRate?: number;
+    modelType?: string;
+    trainingData?: any;
+  }) {
     const startTime = performance.now();
 
     try {
@@ -2173,7 +2289,7 @@ class EnhancedMCPTools {
       // Load neural network from database or create new one
       let neuralNetworks: any[] = [];
       try {
-        neuralNetworks = await this.persistence?.getAgentNeuralNetworks(agentId) || [];
+        neuralNetworks = (await this.persistence?.getAgentNeuralNetworks(agentId)) || [];
       } catch (_error) {
         // Ignore error if agent doesn't have neural networks yet
       }
@@ -2574,8 +2690,31 @@ class EnhancedMCPTools {
           maxAgents: 10,
           strategy: 'balanced',
           getStatus: async () => ({ id: swarmId, status: 'active' }),
-          spawn: async () => ({ id: 'mock-agent', name: 'mock', type: 'mock', status: 'idle', cognitivePattern: 'default', capabilities: [], getMetrics: async () => ({ memoryUsage: 0 }) } as Agent),
-          orchestrate: async () => ({ id: 'mock-task', description: 'mock', status: 'pending', priority: 'normal', assignedAgents: [], result: null, error: null, createdAt: '', completedAt: '', executionTime: 0, swarmId, getStatus: async () => ({}) } as Task),
+          spawn: async () =>
+            ({
+              id: 'mock-agent',
+              name: 'mock',
+              type: 'mock',
+              status: 'idle',
+              cognitivePattern: 'default',
+              capabilities: [],
+              getMetrics: async () => ({ memoryUsage: 0 }),
+            }) as Agent,
+          orchestrate: async () =>
+            ({
+              id: 'mock-task',
+              description: 'mock',
+              status: 'pending',
+              priority: 'normal',
+              assignedAgents: [],
+              result: null,
+              error: null,
+              createdAt: '',
+              completedAt: '',
+              executionTime: 0,
+              swarmId,
+              getStatus: async () => ({}),
+            }) as Task,
           created: new Date(),
           metrics: {
             tasksCompleted: 0,
@@ -3151,7 +3290,7 @@ class EnhancedMCPTools {
 
       for (const swarm of swarmsToMonitor) {
         if (!swarm) continue;
-        
+
         const swarmMonitorData: any = {
           swarm_id: swarm?.id,
           swarm_name: swarm?.name,
@@ -3244,7 +3383,8 @@ class EnhancedMCPTools {
           (sum, swarm) => sum + swarm?.agents.size,
           0
         ),
-        wasm_memory_usage_mb: (this.ruvSwarm?.wasmLoader?.getTotalMemoryUsage() || 0) / (1024 * 1024) || 0,
+        wasm_memory_usage_mb:
+          (this.ruvSwarm?.wasmLoader?.getTotalMemoryUsage() || 0) / (1024 * 1024) || 0,
         system_uptime_ms: 0, // System uptime not tracked
         features_available: Object.keys(this.ruvSwarm?.features || {}).filter(
           (f) => this.ruvSwarm?.features?.[f]
@@ -3289,7 +3429,7 @@ class EnhancedMCPTools {
       });
     }
 
-    let metrics = this.toolMetrics.get(toolName);
+    const metrics = this.toolMetrics.get(toolName);
     if (!metrics) return;
     const executionTime = performance.now() - startTime;
 
@@ -3328,7 +3468,8 @@ class EnhancedMCPTools {
       return {
         healthy: isHealthy,
         pool_status: {
-          total_connections: (poolStats as any).activeConnections + (poolStats as any).availableReaders,
+          total_connections:
+            (poolStats as any).activeConnections + (poolStats as any).availableReaders,
           active_connections: (poolStats as any).activeConnections,
           available_readers: (poolStats as any).availableReaders,
           available_workers: (poolStats as any).availableWorkers,
@@ -3436,7 +3577,9 @@ class EnhancedMCPTools {
         },
         pool_health: {
           healthy: this.persistence.isHealthy ? this.persistence?.isHealthy() : false,
-          total_connections: ((poolStats as any).activeConnections || 0) + ((poolStats as any).availableReaders || 0),
+          total_connections:
+            ((poolStats as any).activeConnections || 0) +
+            ((poolStats as any).availableReaders || 0),
           active_connections: (poolStats as any).activeConnections || 0,
           available_readers: (poolStats as any).availableReaders || 0,
           available_workers: (poolStats as any).availableWorkers || 0,

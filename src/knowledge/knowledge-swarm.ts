@@ -2,7 +2,6 @@
  * @file Knowledge-swarm implementation.
  */
 
-
 import { createLogger } from '../core/logger';
 
 const logger = createLogger('knowledge-swarm');
@@ -24,7 +23,7 @@ import type { IRepository } from '../database/interfaces';
 // Import UACL for unified client management
 import { ClientType, uacl } from '../interfaces/clients/index';
 import type { ClientInstance } from '../interfaces/clients/registry';
-import type { KnowledgeClientConfig, KnowledgeResult, FACTResult } from './knowledge-client';
+import type { FACTResult, KnowledgeClientConfig, KnowledgeResult } from './knowledge-client';
 import { FACTIntegration } from './knowledge-client';
 
 export interface KnowledgeSwarmConfig extends KnowledgeClientConfig {
@@ -533,7 +532,9 @@ export class KnowledgeSwarm extends EventEmitter {
     const fallbackAgent = candidates[0];
     return specialized.length > 0
       ? specialized.slice(0, this.config.parallelQueries)
-      : (fallbackAgent ? [fallbackAgent] : []);
+      : fallbackAgent
+        ? [fallbackAgent]
+        : [];
   }
 
   /**

@@ -129,8 +129,8 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
       const quadraticData = Array.from({ length: 200 }, (_, i) => {
         const x = i / 100;
         return {
-          input: [x, x * x, x * x * x, Math.sin(x * Math["PI"])],
-          output: [x * x + 0.5 * x, Math.cos((x * Math["PI"]) / 2)],
+          input: [x, x * x, x * x * x, Math.sin(x * Math['PI'])],
+          output: [x * x + 0.5 * x, Math.cos((x * Math['PI']) / 2)],
         };
       });
 

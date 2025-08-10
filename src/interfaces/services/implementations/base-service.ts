@@ -5,13 +5,10 @@
  * Follows the same patterns established by the DAL and UACL systems.
  */
 /**
- * @file base service implementation
+ * @file Base service implementation.
  */
 
-
-
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../utils/logger';
 import type {
   IService,
   ServiceConfig,
@@ -32,6 +29,7 @@ import {
   ServiceOperationError,
   ServiceTimeoutError,
 } from '../core/interfaces';
+import { createLogger, type Logger } from '../utils/logger';
 
 /**
  * Abstract base service class with common functionality.

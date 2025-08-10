@@ -28,7 +28,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
     mockAgents = Array.from(
       { length: 6 },
       (_, i) =>
-        (({
+        ({
           id: `agent-${i}`,
           type: i < 2 ? 'coordinator' : 'worker',
           status: 'active',
@@ -38,8 +38,8 @@ describe('Agent Communication Protocols (London TDD)', () => {
           subscribeToChannel: vi.fn(),
           unsubscribeFromChannel: vi.fn(),
           getMessageQueue: vi.fn(),
-          processMessage: vi.fn()
-        }) as jest.Mocked<Agent>)
+          processMessage: vi.fn(),
+        }) as jest.Mocked<Agent>
     );
 
     testHelpers = new CoordinationTestHelpers();

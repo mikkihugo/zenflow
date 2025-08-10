@@ -14,8 +14,6 @@
  * @file Coordination-event adapter implementation.
  */
 
-
-
 import { EventEmitter } from 'node:events';
 import type { AgentManager } from '../../../coordination/agents/agent-manager';
 import type { ProductWorkflowEngine as Orchestrator } from '../../../coordination/orchestration/product-workflow-engine';
@@ -31,6 +29,7 @@ import type {
   EventManagerMetrics,
   EventManagerStatus,
   EventManagerType,
+  EventPriority,
   EventQueryOptions,
   EventSubscription,
   EventTransform,
@@ -38,7 +37,6 @@ import type {
 } from '../core/interfaces';
 import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces';
 import type { CoordinationEvent } from '../types';
-import type { EventPriority } from '../core/interfaces';
 import { EventPriorityMap } from '../types';
 
 /**
@@ -1696,7 +1694,7 @@ export class CoordinationEventAdapter implements IEventManager {
                   latency: health.coordinationLatency,
                   throughput: health.throughput,
                   reliability: health.reliability,
-                  resourceUsage: { cpu: 0, memory: 0, network: 0 }
+                  resourceUsage: { cpu: 0, memory: 0, network: 0 },
                 },
               },
             });

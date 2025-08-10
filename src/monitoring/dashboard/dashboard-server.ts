@@ -3,19 +3,17 @@
  * Web-based dashboard for performance monitoring and visualization.
  */
 /**
- * @file dashboard-server implementation
+ * @file Dashboard-server implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { createServer } from 'node:http';
 import * as path from 'node:path';
 import express from 'express';
 import { Server as SocketIOServer } from 'socket.io';
+import type { PerformanceInsights } from '../analytics/performance-analyzer';
 import { getConfig } from '../config';
 import { getCORSOrigins } from '../config/url-builder';
-import type { PerformanceInsights } from '../analytics/performance-analyzer';
 import type { CompositeMetrics } from '../core/metrics-collector';
 import type { OptimizationResult } from '../optimization/optimization-engine';
 
@@ -96,7 +94,7 @@ export class DashboardServer extends EventEmitter {
   }
 
   /**
-   * Setup Socket.IO for real-time communication
+   * Setup Socket.IO for real-time communication.
    */
   private setupSocketIO(): void {
     this.io.on('connection', (socket) => {

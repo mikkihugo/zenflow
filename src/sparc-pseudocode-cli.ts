@@ -1,8 +1,7 @@
 #!/usr/bin/env nodeimport { getLogger } from "./config/logging-config";
 /**
- * @file sparc-pseudocode-cli implementation
+ * @file Sparc-pseudocode-cli implementation.
  */
-
 
 const logger = getLogger('sparc-pseudocode-cli');
 

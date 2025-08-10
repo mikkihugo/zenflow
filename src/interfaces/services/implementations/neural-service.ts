@@ -5,10 +5,8 @@
  * and AI model management. Integrates with existing neural systems.
  */
 /**
- * @file neural service implementation
+ * @file Neural service implementation.
  */
-
-
 
 import type { IService } from '../core/interfaces';
 import type { NeuralServiceConfig, ServiceOperationOptions } from '../types';

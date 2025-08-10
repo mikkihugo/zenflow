@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 /**
- * @file Interface implementation: terminal-interface-router
+ * @file Interface implementation: terminal-interface-router.
  */
-
-
 
 /**
  * Terminal Interface Router - Google Standard Entry Point.
@@ -57,6 +55,8 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
 
 /**
  * Parse command line arguments.
+ *
+ * @example
  */
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -66,7 +66,7 @@ function parseArgs() {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
-    if (arg.startsWith('--')) {
+    if (arg && arg.startsWith('--')) {
       const key = arg.slice(2);
       const nextArg = args[i + 1];
 
@@ -76,10 +76,10 @@ function parseArgs() {
       } else {
         flags[key] = true;
       }
-    } else if (arg.startsWith('-')) {
+    } else if (arg && arg.startsWith('-')) {
       const key = arg.slice(1);
       flags[key] = true;
-    } else {
+    } else if (arg) {
       commands.push(arg);
     }
   }
@@ -89,6 +89,8 @@ function parseArgs() {
 
 /**
  * Handle version flag.
+ *
+ * @example
  */
 async function handleVersion() {
   try {
@@ -103,6 +105,8 @@ async function handleVersion() {
 
 /**
  * Handle help flag.
+ *
+ * @example
  */
 function handleHelp() {
   process.exit(0);
@@ -110,27 +114,29 @@ function handleHelp() {
 
 /**
  * Main terminal application entry point.
+ *
+ * @example
  */
 async function main() {
   try {
     const { commands, flags } = parseArgs();
 
     // Handle special flags first
-    if (flags.version || flags.v) {
+    if (flags['version'] || flags['v']) {
       await handleVersion();
     }
 
-    if (flags.help || flags.h) {
+    if (flags['help'] || flags['h']) {
       handleHelp();
     }
 
     // Check for web interface mode
-    if (flags.web) {
-      const { launchInterface } = await import('../../core/unified-interface-launcher.js');
+    if (flags['web']) {
+      const { launchInterface } = await import('../../core/interface-launcher.js');
       await launchInterface({
         preferredMode: 'web',
-        webPort: flags.port || 3000,
-        verbose: flags.verbose,
+        webPort: flags['port'] || 3000,
+        verbose: flags['verbose'],
       });
       return;
     }

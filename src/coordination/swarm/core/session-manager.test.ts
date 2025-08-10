@@ -2,10 +2,8 @@
  * Comprehensive test suite for Session Management System.
  */
 /**
- * @file Test suite for session-manager
+ * @file Test suite for session-manager.
  */
-
-
 
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import type {

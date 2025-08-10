@@ -8,19 +8,20 @@
  * @file Coordination system: hive-swarm-sync.
  */
 
-
-
 import { EventEmitter } from 'node:events';
 import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { HiveFACTSystemInterface } from './shared-types';
+
+// Type alias for backward compatibility  
+type HiveFACTSystem = HiveFACTSystemInterface;
 import type {
   GlobalAgentInfo,
-  SwarmInfo,
-  Task as HiveTask,
   GlobalResourceMetrics,
   HiveHealthMetrics,
+  Task as HiveTask,
+  SwarmInfo,
   SwarmPerformanceMetrics,
 } from './hive-types';
-import type { HiveFACTSystem } from './hive-fact-integration';
 
 export interface HiveRegistry {
   // Global agent registry

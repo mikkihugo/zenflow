@@ -2,9 +2,8 @@
 
 // Re-export agent functionality
 /**
- * @file agents module exports
+ * @file Agents module exports.
  */
-
 
 export * from './neural-agent';
 export { NeuralAgent as default, NeuralAgentFactory } from './neural-agent';

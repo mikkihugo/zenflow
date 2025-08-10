@@ -6,22 +6,23 @@
  * Integrates with existing DatabaseCoordinator and UnifiedWorkflowEngine.
  */
 /**
- * @file database-driven-system implementation
+ * @file Database-driven-system implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import type { DocumentManager } from '../core/workflow-engine';
-import type { ADRDocumentEntity } from '../database/entities/product-entities';
-import type { BaseDocumentEntity } from '../database/entities/product-entities';
-import type { EpicDocumentEntity } from '../database/entities/product-entities';
-import type { FeatureDocumentEntity } from '../database/entities/product-entities';
-import type { PRDDocumentEntity } from '../database/entities/product-entities';
-import type { ProjectEntity } from '../database/entities/product-entities';
-import type { TaskDocumentEntity } from '../database/entities/product-entities';
-import type { VisionDocumentEntity } from '../database/entities/product-entities';
+import type { DocumentManager } from '../database/managers/document-manager';
+import type {
+  ADRDocumentEntity,
+  BaseDocumentEntity,
+  EpicDocumentEntity,
+  FeatureDocumentEntity,
+  PRDDocumentEntity,
+  ProductProjectEntity,
+  TaskDocumentEntity,
+  VisionDocumentEntity,
+} from '../database/entities/product-entities';
+import type { DocumentType } from '../types/workflow-types';
 import type { WorkflowEngine } from '../workflows/engine';
 import { createLogger } from './logger';
 
@@ -284,7 +285,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     }
 
     const visionDoc: Omit<VisionDocumentEntity, 'id' | 'created_at' | 'updated_at' | 'checksum'> = {
-      type: 'vision',
+      type: 'vision' as const,
       title: visionSpec.title,
       content: this.generateVisionContent(visionSpec),
       status: 'draft',
@@ -292,7 +293,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
       author: 'database-driven-system',
       tags: ['vision', 'strategic'],
       project_id: context.projectId,
-      parent_document_id: undefined,
+      parent_document_id: undefined as string | undefined,
       dependencies: [],
       related_documents: [],
       version: '1.0.0',
@@ -353,34 +354,24 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
     const generatedDocs: BaseDocumentEntity[] = [];
 
-    switch (targetType) {
-      case 'adr':
-        generatedDocs.push(
-          ...(await this.generateADRsFromVision(sourceDoc as VisionDocumentEntity, context))
-        );
-        break;
-      case 'prd':
-        generatedDocs.push(
-          ...(await this.generatePRDsFromVision(sourceDoc as VisionDocumentEntity, context))
-        );
-        break;
-      case 'epic':
-        generatedDocs.push(
-          ...(await this.generateEpicsFromPRD(sourceDoc as PRDDocumentEntity, context))
-        );
-        break;
-      case 'feature':
-        generatedDocs.push(
-          ...(await this.generateFeaturesFromEpic(sourceDoc as EpicDocumentEntity, context))
-        );
-        break;
-      case 'task':
-        generatedDocs.push(
-          ...(await this.generateTasksFromFeature(sourceDoc as FeatureDocumentEntity, context))
-        );
-        break;
-      default:
-        throw new Error(`Unsupported target type: ${targetType}`);
+    if (targetType === 'prd') {
+      generatedDocs.push(
+        ...(await this.generatePRDsFromVision(sourceDoc as VisionDocumentEntity, context))
+      );
+    } else if (targetType === 'epic') {
+      generatedDocs.push(
+        ...(await this.generateEpicsFromPRD(sourceDoc as PRDDocumentEntity, context))
+      );
+    } else if (targetType === 'feature') {
+      generatedDocs.push(
+        ...(await this.generateFeaturesFromEpic(sourceDoc as EpicDocumentEntity, context))
+      );
+    } else if (targetType === 'task') {
+      generatedDocs.push(
+        ...(await this.generateTasksFromFeature(sourceDoc as FeatureDocumentEntity, context))
+      );
+    } else {
+      throw new Error(`Unsupported target type: ${targetType}`);
     }
 
     // Process all generated documents
@@ -401,10 +392,10 @@ export class DatabaseDrivenSystem extends EventEmitter {
    */
   async getWorkspaceStatus(workspaceId: string): Promise<{
     workspace: DatabaseWorkspaceContext;
-    project: ProjectEntity;
+    project: ProductProjectEntity;
     documents: {
       total: number;
-      byType: Record<DocumentType, number>;
+      byType: Record<string, number>;
       byStatus: Record<string, number>;
     };
     progress: {
@@ -438,7 +429,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
         acc[doc.type] = (acc[doc.type] || 0) + 1;
         return acc;
       },
-      {} as Record<DocumentType, number>
+      {} as Record<string, number>
     );
 
     const docsByStatus = allDocs.reduce(
@@ -538,9 +529,9 @@ export class DatabaseDrivenSystem extends EventEmitter {
     logger.debug(`Workspace loaded: ${event.workspaceId} (${event.documentCount} documents)`);
   }
 
-  private getSuggestedNextSteps(documentType: DocumentType): string[] {
-    const nextSteps = {
-      vision: ['Generate ADRs', 'Create PRDs', 'Define stakeholder requirements'],
+  private getSuggestedNextSteps(documentType: string): string[] {
+    const nextSteps: Record<string, string[]> = {
+      vision: ['Create PRDs', 'Define stakeholder requirements', 'Conduct stakeholder alignment'],
       adr: ['Review architectural implications', 'Update related PRDs', 'Validate decisions'],
       prd: ['Generate epics', 'Create user stories', 'Define acceptance criteria'],
       epic: ['Break down into features', 'Estimate effort', 'Plan timeline'],
@@ -577,91 +568,6 @@ ${spec.timeline.milestones?.map((m: any) => `- **${m.name}** (${m.date.toISOStri
 
 ---
 *Generated by Database-Driven Development System*`;
-  }
-
-  private async generateADRsFromVision(
-    vision: VisionDocumentEntity,
-    context: DatabaseWorkspaceContext
-  ): Promise<ADRDocumentEntity[]> {
-    // Extract architectural decisions from vision
-    const decisions = [
-      {
-        title: 'Database Technology',
-        context: 'Need scalable data storage',
-        decision: 'Use PostgreSQL with vector extensions',
-      },
-      {
-        title: 'API Architecture',
-        context: 'Need flexible API design',
-        decision: 'Implement RESTful API with GraphQL',
-      },
-      {
-        title: 'Authentication',
-        context: 'Need secure user management',
-        decision: 'Use OAuth 2.0 with JWT tokens',
-      },
-    ];
-
-    const adrs: ADRDocumentEntity[] = [];
-    for (const [index, decision] of decisions.entries()) {
-      const adrDoc: Omit<ADRDocumentEntity, 'id' | 'created_at' | 'updated_at' | 'checksum'> = {
-        type: 'adr',
-        title: `ADR-${String(index + 1).padStart(3, '0')}: ${decision.title}`,
-        content: `# ADR-${String(index + 1).padStart(3, '0')}: ${decision.title}
-
-## Status
-Proposed
-
-## Context
-${decision.context}
-
-## Decision
-${decision.decision}
-
-## Consequences
-- Enhanced system scalability
-- Improved maintainability
-- Better developer experience
-
----
-*Generated from vision: ${vision.title}*`,
-        status: 'draft',
-        priority: 'high',
-        author: 'database-driven-system',
-        tags: ['adr', 'architecture', 'generated'],
-        project_id: context.projectId,
-        parent_document_id: vision.id,
-        dependencies: [],
-        related_documents: [vision.id],
-        version: '1.0.0',
-        metadata: {
-          source: 'database-driven-system',
-          auto_generated: true,
-          generated_from_vision: vision.id,
-        },
-        searchable_content: '',
-        keywords: [],
-        workflow_stage: 'generated',
-        completion_percentage: 100,
-        decision_number: index + 1,
-        decision_status: 'proposed',
-        context: decision.context,
-        decision: decision.decision,
-        consequences: [
-          'Enhanced system scalability',
-          'Improved maintainability',
-          'Better developer experience',
-        ],
-        alternatives_considered: ['Alternative approaches were evaluated'],
-        source_vision_id: vision.id,
-        impacted_prds: [],
-      };
-
-      const createdADR = await this.documentService.createDocument(adrDoc);
-      adrs.push(createdADR);
-    }
-
-    return adrs;
   }
 
   private async generatePRDsFromVision(

@@ -178,7 +178,7 @@ Test content with metadata in the header.
       let processedDocument: any = null;
 
       documentSystem.on('document:processed', (event) => {
-        if (event["document"]?.["path"] === docPath) {
+        if (event['document']?.['path'] === docPath) {
           processedDocument = event;
         }
       });

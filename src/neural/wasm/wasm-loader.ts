@@ -3,10 +3,8 @@
  * TODO: Implement full WASM loading functionality.
  */
 /**
- * @file Neural network: wasm-loader
+ * @file Neural network: wasm-loader.
  */
-
-
 
 export class WasmModuleLoader {
   private loaded = false;

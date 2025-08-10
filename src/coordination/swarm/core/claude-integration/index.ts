@@ -1,7 +1,6 @@
 /**
- * @file claude-integration module exports
+ * @file Claude-integration module exports.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

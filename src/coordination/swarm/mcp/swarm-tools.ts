@@ -5,10 +5,8 @@
  * Provides essential swarm functionality for CLI and MCP integration.
  */
 /**
- * @file Coordination system: swarm-tools
+ * @file Coordination system: swarm-tools.
  */
-
-
 
 import { createLogger } from '../../../core/logger';
 

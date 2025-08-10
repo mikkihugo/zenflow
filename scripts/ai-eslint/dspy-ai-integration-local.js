@@ -2,7 +2,7 @@
 
 /**
  * LOCAL DSPy AI Integration for Zen AI Fixer
- * 
+ *
  * Uses the LOCAL Claude-Zen DSPy + GNN implementation instead of AX Framework.
  * Superior benefits:
  * - No "Invalid signature object" errors
@@ -16,12 +16,13 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 // Create simple logger fallback for script usage
 const createSimpleLogger = (prefix) => ({
   info: (...args) => console.log(`[${prefix}]`, ...args),
-  warn: (...args) => console.warn(`[${prefix}]`, ...args),  
+  warn: (...args) => console.warn(`[${prefix}]`, ...args),
   error: (...args) => console.error(`[${prefix}]`, ...args),
-  debug: (...args) => console.debug(`[${prefix}]`, ...args)
+  debug: (...args) => console.debug(`[${prefix}]`, ...args),
 });
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -35,7 +36,7 @@ export class DSPyAIIntegrationLocal {
     this.errorCache = new Map();
     this.fixHistory = [];
     this.logger = createSimpleLogger('LocalDSPy');
-    
+
     // Initialize logging
     this.initializeLogging();
   }
@@ -46,12 +47,14 @@ export class DSPyAIIntegrationLocal {
   initializeLogging() {
     try {
       // Import logtape logging system
-      import('@logtape/logtape').then(({ getLogger }) => {
-        this.logger = getLogger(['dspy-integration']);
-        this.logger.info('DSPy Local Integration logger initialized');
-      }).catch(err => {
-        console.warn('Failed to initialize structured logging:', err.message);
-      });
+      import('@logtape/logtape')
+        .then(({ getLogger }) => {
+          this.logger = getLogger(['dspy-integration']);
+          this.logger.info('DSPy Local Integration logger initialized');
+        })
+        .catch((err) => {
+          console.warn('Failed to initialize structured logging:', err.message);
+        });
     } catch (error) {
       console.warn('Logtape import failed, using simple logger');
     }
@@ -71,7 +74,6 @@ export class DSPyAIIntegrationLocal {
 
       this.isInitialized = true;
       this.logger.info('✅ LOCAL DSPy system initialized successfully');
-
     } catch (error) {
       this.logger.error('❌ Failed to initialize LOCAL DSPy system:', error);
       throw new Error(`LOCAL DSPy initialization failed: ${error.message}`);
@@ -96,7 +98,7 @@ export class DSPyAIIntegrationLocal {
     this.logger.info('LOCAL DSPy session started', {
       sessionId,
       filePath: path.basename(filePath),
-      method: 'local-dspy-simplified'
+      method: 'local-dspy-simplified',
     });
 
     try {
@@ -106,7 +108,7 @@ export class DSPyAIIntegrationLocal {
 
       // Read file content
       const fileContent = fs.readFileSync(filePath, 'utf8');
-      
+
       // Parse TypeScript errors from prompt
       const errors = this.parseTypeScriptErrors(prompt, filePath, fileContent);
       this.logger.info(`🔍 Analyzing ${errors.length} TypeScript errors (LOCAL DSPy)`);
@@ -121,10 +123,10 @@ export class DSPyAIIntegrationLocal {
       // Use LOCAL DSPy approach - fallback to Claude for now (eliminates AX Framework errors)
       this.logger.info('🧠 Running LOCAL DSPy (Claude fallback) - NO AX Framework errors!');
       const dspyAnalysis = await this.performLocalDSPyAnalysis(errors, fileContent, filePath);
-      
+
       this.logger.info('🎯 LOCAL DSPy Analysis results', {
         confidence: dspyAnalysis.confidence,
-        fixStrategy: dspyAnalysis.strategy
+        fixStrategy: dspyAnalysis.strategy,
       });
 
       // Generate and apply fixes
@@ -163,10 +165,10 @@ export class DSPyAIIntegrationLocal {
         sessionId,
         success,
         appliedFixes,
-        duration: `${(duration/1000).toFixed(1)}s`,
+        duration: `${(duration / 1000).toFixed(1)}s`,
         cost: `$${cost.toFixed(3)}`,
         confidence: dspyAnalysis.confidence,
-        method: 'local-dspy-simplified'
+        method: 'local-dspy-simplified',
       });
 
       return {
@@ -177,21 +179,20 @@ export class DSPyAIIntegrationLocal {
         method: 'LOCAL-DSPy-Simplified',
         confidence: dspyAnalysis.confidence,
         errors: errors.length,
-        approach: 'direct-claude-integration'
+        approach: 'direct-claude-integration',
       };
-
     } catch (error) {
       this.logger.error('LOCAL DSPy session failed', {
         sessionId,
         error: error.message,
-        stack: error.stack
+        stack: error.stack,
       });
 
       return {
         success: false,
         error: error.message,
         fallback: 'claude',
-        method: 'LOCAL-DSPy-Simplified'
+        method: 'LOCAL-DSPy-Simplified',
       };
     }
   }
@@ -202,24 +203,24 @@ export class DSPyAIIntegrationLocal {
   async performLocalDSPyAnalysis(errors, fileContent, filePath) {
     // This is the key benefit - NO AX Framework "Invalid signature object" errors!
     // We directly implement the DSPy concepts without external dependencies
-    
+
     this.logger.info('🎯 LOCAL DSPy: Analyzing error patterns without AX Framework');
-    
+
     const analysis = {
       confidence: 0.85, // High confidence since we eliminated AX errors
       strategy: 'local-dspy-direct',
       fixes: [],
-      reasoning: 'LOCAL DSPy implementation avoids AX Framework signature issues'
+      reasoning: 'LOCAL DSPy implementation avoids AX Framework signature issues',
     };
 
     // Simple pattern-based fixes that work reliably
     for (const error of errors) {
       if (error.category === 'module_resolution') {
         analysis.fixes.push({
-          type: 'add_import', 
+          type: 'add_import',
           description: `Add missing import for ${error.message}`,
           code: this.generateImportFix(error.message),
-          confidence: 0.9
+          confidence: 0.9,
         });
       } else if (error.category === 'type_mismatch') {
         analysis.fixes.push({
@@ -227,7 +228,7 @@ export class DSPyAIIntegrationLocal {
           description: `Fix type mismatch: ${error.message}`,
           oldCode: this.extractErrorCode(error.message),
           newCode: this.generateTypeFix(error.message),
-          confidence: 0.8
+          confidence: 0.8,
         });
       } else {
         // Generic fix approach
@@ -236,7 +237,7 @@ export class DSPyAIIntegrationLocal {
           description: `TODO: Fix ${error.category} error`,
           code: `// TODO: ${error.message}`,
           line: error.line,
-          confidence: 0.6
+          confidence: 0.6,
         });
       }
     }
@@ -267,7 +268,7 @@ export class DSPyAIIntegrationLocal {
   }
 
   /**
-   * Generate type fix 
+   * Generate type fix
    */
   generateTypeFix(errorMessage) {
     // Simple type fixes - could be enhanced
@@ -303,7 +304,7 @@ export class DSPyAIIntegrationLocal {
           file: filePath,
           category: this.categorizeError(line),
           context: this.extractErrorContext(fileContent, lineNum, column),
-          relatedErrors: []
+          relatedErrors: [],
         });
       }
     }
@@ -317,7 +318,8 @@ export class DSPyAIIntegrationLocal {
   categorizeError(errorLine) {
     if (errorLine.includes('Cannot find module')) return 'module_resolution';
     if (errorLine.includes('has no exported member')) return 'export_import';
-    if (errorLine.includes('Property') && errorLine.includes('does not exist')) return 'property_access';
+    if (errorLine.includes('Property') && errorLine.includes('does not exist'))
+      return 'property_access';
     if (errorLine.includes('is not assignable to')) return 'type_mismatch';
     if (errorLine.includes('Duplicate identifier')) return 'duplicate_declaration';
     if (errorLine.includes('Expected')) return 'syntax_error';
@@ -333,19 +335,21 @@ export class DSPyAIIntegrationLocal {
     const errorLine = lines[lineNum - 1] || '';
     const startLine = Math.max(0, lineNum - 3);
     const endLine = Math.min(lines.length, lineNum + 3);
-    
+
     const codeSnippet = lines.slice(startLine, endLine).join('\n');
-    
+
     // Extract imports and dependencies
     const imports = fileContent.match(/import.*from.*['"](.*?)['"];?/g) || [];
-    const dependencies = imports.map(imp => imp.match(/from.*['"](.*?)['"];?/)?.[1] || '').filter(Boolean);
+    const dependencies = imports
+      .map((imp) => imp.match(/from.*['"](.*?)['"];?/)?.[1] || '')
+      .filter(Boolean);
 
     return {
       codeSnippet,
       errorLine,
       imports,
       dependencies,
-      surroundingLines: { start: startLine + 1, end: endLine }
+      surroundingLines: { start: startLine + 1, end: endLine },
     };
   }
 
@@ -356,20 +360,22 @@ export class DSPyAIIntegrationLocal {
     switch (change.type) {
       case 'replace':
         return content.replace(new RegExp(this.escapeRegex(change.oldCode), 'g'), change.newCode);
-      
-      case 'insert':
+
+      case 'insert': {
         const lines = content.split('\n');
         lines.splice(change.line - 1, 0, change.code);
         return lines.join('\n');
-      
+      }
+
       case 'delete':
-        return content.split('\n')
+        return content
+          .split('\n')
           .filter((_, index) => index !== change.line - 1)
           .join('\n');
-      
+
       case 'add_import':
         return `${change.code}\n${content}`;
-      
+
       default:
         this.logger.warn('Unknown change type:', change.type);
         return content;
@@ -388,7 +394,7 @@ export class DSPyAIIntegrationLocal {
    */
   generateCacheKey(errors, filePath) {
     const errorSignature = errors
-      .map(e => `${e.category}:${e.code}`)
+      .map((e) => `${e.category}:${e.code}`)
       .sort()
       .join('|');
     const fileType = path.extname(filePath);
@@ -404,7 +410,7 @@ export class DSPyAIIntegrationLocal {
 
     try {
       let fixedContent = fileContent;
-      
+
       for (const change of cachedFix.changes) {
         fixedContent = this.applyCodeChange(fixedContent, change);
       }
@@ -416,7 +422,7 @@ export class DSPyAIIntegrationLocal {
         sessionId,
         duration: `${duration}ms`,
         cost: '$0.001',
-        confidence: cachedFix.confidence
+        confidence: cachedFix.confidence,
       });
 
       return {
@@ -425,11 +431,13 @@ export class DSPyAIIntegrationLocal {
         cost: 0.001,
         duration,
         method: 'LOCAL-DSPy-Cache',
-        confidence: cachedFix.confidence
+        confidence: cachedFix.confidence,
       };
-
     } catch (error) {
-      this.logger.warn('Cached fix failed, removing from cache', { cacheKey, error: error.message });
+      this.logger.warn('Cached fix failed, removing from cache', {
+        cacheKey,
+        error: error.message,
+      });
       this.errorCache.delete(cacheKey);
       throw error;
     }
@@ -439,13 +447,13 @@ export class DSPyAIIntegrationLocal {
    * Cache successful fix pattern for reuse
    */
   cacheFixPattern(cacheKey, fixSuggestions, gnnAnalysis) {
-    const changes = fixSuggestions.flatMap(fix => fix.codeChanges);
-    
+    const changes = fixSuggestions.flatMap((fix) => fix.codeChanges);
+
     this.errorCache.set(cacheKey, {
       changes,
       confidence: gnnAnalysis.confidence,
       timestamp: Date.now(),
-      successCount: 1
+      successCount: 1,
     });
 
     this.logger.info(`💾 Cached fix pattern: ${cacheKey}`);
@@ -459,10 +467,10 @@ export class DSPyAIIntegrationLocal {
       // Basic verification checks
       if (!fixedContent || fixedContent.trim().length === 0) return false;
       if (fixedContent.includes('undefined') && !fixedContent.includes('undefined;')) return false;
-      
+
       // TODO: Could add TypeScript compilation check here
       // const tscResult = await this.runTypeScriptCheck(filePath);
-      
+
       return true;
     } catch (error) {
       this.logger.warn('Fix verification failed:', error);
@@ -478,7 +486,7 @@ export class DSPyAIIntegrationLocal {
     const baseCost = 0.02;
     const errorMultiplier = errorCount * 0.01;
     const confidenceDiscount = confidence * 0.5; // Higher confidence = lower cost
-    
+
     return Math.max(0.01, baseCost + errorMultiplier - confidenceDiscount);
   }
 
@@ -488,29 +496,32 @@ export class DSPyAIIntegrationLocal {
   getStats() {
     return {
       method: 'LOCAL-DSPy-GNN',
-      cacheHits: Array.from(this.errorCache.values()).reduce((sum, cache) => sum + cache.successCount, 0),
+      cacheHits: Array.from(this.errorCache.values()).reduce(
+        (sum, cache) => sum + cache.successCount,
+        0
+      ),
       cachedPatterns: this.errorCache.size,
       totalFixes: this.fixHistory.length,
       avgCost: 0.02, // Much lower than AX Framework
       avgDuration: 3000, // Much faster than AX Framework
       gnnEnabled: true,
       wasmAccelerated: true,
-      externalDependencies: 0
+      externalDependencies: 0,
     };
   }
 
   /**
-   * ESLint violations fixing - use LOCAL DSPy approach 
+   * ESLint violations fixing - use LOCAL DSPy approach
    */
   async fixViolations(violations, options = {}) {
     this.logger.info(`🔧 LOCAL DSPy fixing ${violations.length} ESLint violations`);
     this.logger.info('   ✅ No AX Framework dependencies');
     this.logger.info('   ✅ No "Invalid signature object" errors');
-    
+
     // For now, return empty array to avoid complex dependencies
     // Main benefit: Eliminates AX Framework initialization errors
     this.logger.info('🎯 LOCAL DSPy ESLint: Bypassing complex dependencies for stability');
-    
+
     return [];
   }
 }

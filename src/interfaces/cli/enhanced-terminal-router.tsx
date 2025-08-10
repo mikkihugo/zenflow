@@ -10,9 +10,12 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { AdvancedCLIEngine } from '../cli/advanced-cli-engine';
 import type { CLIConfig } from '../cli/types/advanced-cli-types';
-import { CommandExecutionRenderer } from '../terminal/command-execution-renderer';
-import { InteractiveTerminalApplication } from '../terminal/interactive-terminal-application';
-import { detectMode, type TerminalMode } from '../terminal/utils/mode-detector';
+import { 
+  CommandExecutionRendererAdapter, 
+  InteractiveTerminalApplicationAdapter, 
+  ModeDetectorAdapter 
+} from './adapters/terminal-adapters';
+import type { TerminalMode } from '../shared/command-interfaces';
 
 export interface TerminalAppProps {
   commands: string[];
@@ -42,7 +45,7 @@ interface TerminalState {
  */
 export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExit }) => {
   const [state, setState] = useState<TerminalState>({
-    mode: detectMode(commands, flags),
+    mode: 'interactive', // Will be detected async to avoid circular dependency
     cliEngine: new AdvancedCLIEngine(),
     config: {
       theme: (flags['theme'] as 'dark' | 'light') || 'dark',
@@ -70,6 +73,10 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
     try {
       setState((prev) => ({ ...prev, isInitializing: true }));
 
+      // Detect mode asynchronously to avoid circular dependency
+      const detectedMode = await ModeDetectorAdapter.detectMode(commands, flags);
+      setState((prev) => ({ ...prev, mode: detectedMode }));
+
       // Initialize the advanced CLI engine
       await state.cliEngine.getCommandRegistry();
 
@@ -80,11 +87,14 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
       state.cliEngine.on('projectCreationStarted', handleProjectStart);
       state.cliEngine.on('projectCreationCompleted', handleProjectComplete);
 
-      setState((prev: TerminalState) => ({
-        ...prev,
-        isInitializing: false,
-        error: undefined,
-      }) as TerminalState);
+      setState(
+        (prev: TerminalState) =>
+          ({
+            ...prev,
+            isInitializing: false,
+            error: undefined,
+          }) as TerminalState
+      );
 
       // Auto-execute commands if in command mode
       if (state.mode === 'command' && commands.length > 0) {
@@ -122,11 +132,14 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExi
       if (command) {
         // Execute through advanced CLI engine
         const result = await state.cliEngine.executeCommand(commandName as string, args, options);
-        setState((prev: TerminalState) => ({
-          ...prev,
-          commandResult: result,
-          error: undefined,
-        }) as TerminalState);
+        setState(
+          (prev: TerminalState) =>
+            ({
+              ...prev,
+              commandResult: result,
+              error: undefined,
+            }) as TerminalState
+        );
       } else {
         // Handle traditional commands or show help
         await handleTraditionalCommand(commandName as string, args, options);

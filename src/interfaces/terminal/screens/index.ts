@@ -6,9 +6,8 @@
 
 // Re-export SwarmStatus from components for convenience
 /**
- * @file screens module exports
+ * @file Screens module exports.
  */
-
 
 export type { SwarmStatus } from '../components/index';
 // Main screens

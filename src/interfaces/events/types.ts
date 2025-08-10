@@ -2,13 +2,11 @@
  * Unified Event Layer (UEL) - Type Definitions.
  *
  * Core type definitions for event types, manager types, and enums.
- * used throughout the UEL system for type-safe event operations.
+ * Used throughout the UEL system for type-safe event operations.
  */
 /**
- * @file TypeScript type definitions for interfaces
+ * @file TypeScript type definitions for interfaces.
  */
-
-
 
 import type { EventPriority, SystemEvent } from './core/interfaces';
 

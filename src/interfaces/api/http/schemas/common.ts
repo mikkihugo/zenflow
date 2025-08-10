@@ -4,7 +4,7 @@
  * Shared schemas used across multiple API domains.
  * Following OpenAPI 3.0 standards for consistency.
  *
- * @file Common schemas for API responses and requests
+ * @file Common schemas for API responses and requests.
  */
 
 /**

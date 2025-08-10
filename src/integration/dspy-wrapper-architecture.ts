@@ -9,10 +9,8 @@
  * providing program-like functionality through structured prompting and response parsing.
  */
 /**
- * @file dspy-wrapper-architecture implementation
+ * @file Dspy-wrapper-architecture implementation.
  */
-
-
 
 import { configureLM, DummyLM, type GenerationOptions, getLM, type LMDriver } from 'dspy.ts';
 import { createLogger } from '../core/logger';

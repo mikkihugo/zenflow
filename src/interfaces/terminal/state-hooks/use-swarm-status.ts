@@ -5,15 +5,56 @@
  * Note: This is a React hook, NOT a Claude Code hook (which belongs in templates/).
  */
 /**
- * @file Interface implementation: use-swarm-status
+ * @file Interface implementation: use-swarm-status.
  */
-
-
 
 import { useEffect, useState } from 'react';
 import { createLogger } from '../../../core/logger';
 
 const logger = createLogger({ prefix: 'SwarmStatusHook' });
+
+// Missing interface definitions
+export interface SwarmMetrics {
+  totalAgents: number;
+  activeAgents: number;
+  tasksInProgress: number;
+  tasksCompleted: number;
+  totalTasks: number;
+  uptime: number;
+  performance: {
+    throughput: number;
+    errorRate: number;
+    avgLatency: number;
+  };
+}
+
+export interface SwarmAgent {
+  id: string;
+  role: 'coordinator' | 'worker' | string;
+  status: 'active' | 'idle' | 'busy';
+  capabilities: string[];
+  lastActivity: Date;
+  metrics: {
+    tasksCompleted: number;
+    averageResponseTime: number;
+    errors: number;
+    successRate: number;
+    totalTasks: number;
+  };
+  cognitivePattern: string;
+  performanceScore: number;
+}
+
+export interface SwarmTask {
+  id: string;
+  description: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'failed';
+  progress: number;
+  assignedAgents: string[];
+  priority: 'low' | 'medium' | 'high';
+  startTime?: Date;
+  estimatedDuration?: number;
+}
 
 export interface SwarmStatus {
   status: 'idle' | 'active' | 'paused' | 'error' | 'unknown';
@@ -92,17 +133,6 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>(undefined);
 
-  // Auto-refresh effect
-  useEffect(() => {
-    // Initial load
-    refreshStatus();
-
-    if (autoRefresh) {
-      const interval = setInterval(refreshStatus, refreshInterval);
-      return () => clearInterval(interval);
-    }
-  }, [autoRefresh, refreshInterval, refreshStatus]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const refreshStatus = async () => {
     try {
       setError(undefined);
@@ -124,6 +154,17 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       setIsLoading(false);
     }
   };
+
+  // Auto-refresh effect
+  useEffect(() => {
+    // Initial load
+    refreshStatus();
+
+    if (autoRefresh) {
+      const interval = setInterval(refreshStatus, refreshInterval);
+      return () => clearInterval(interval);
+    }
+  }, [autoRefresh, refreshInterval]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadMockSwarmData = async () => {
     // Simulate network delay
@@ -386,7 +427,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
 
   const updateTask = async (taskId: string, updates: Partial<SwarmTask>) => {
     try {
-      logger.debug('Updating task:', taskId, updates);
+      logger.debug('Updating task:', { taskId, updates });
 
       setSwarmState((prev) => {
         const oldTask = prev.tasks.find((t) => t.id === taskId);
@@ -430,7 +471,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
   return {
     swarmState,
     isLoading,
-    error,
+    error: error || undefined,
     refreshStatus,
     startAgent,
     stopAgent,

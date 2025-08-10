@@ -1,9 +1,17 @@
+/**
+ * @file Tests for the Database-Driven SPARC Architecture Engine.
+ *
+ * This test suite validates the database-driven architecture engine functionality,
+ * including architecture generation, storage, retrieval, and validation operations.
+ * Tests use mock database adapters to simulate database interactions.
+ */
+
 import { getLogger } from '../../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-sparc-tests-database-driven-architecture-enginetest');
 
 /**
- * Test for Database-Driven SPARC Architecture Engine
+ * Test for Database-Driven SPARC Architecture Engine.
  *
  * Tests the enhanced architecture engine with database persistence,
  * ensuring architecture designs can be generated, stored, and retrieved.
@@ -112,7 +120,9 @@ const mockLogger = {
 };
 
 /**
- * Test the database-driven architecture engine functionality
+ * Test the database-driven architecture engine functionality.
+ *
+ * @example
  */
 async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
   // Setup test environment
@@ -341,7 +351,9 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
 }
 
 /**
- * Run the test (ES module compatible)
+ * Run the test (ES module compatible).
+ *
+ * @example
  */
 async function runTest() {
   try {

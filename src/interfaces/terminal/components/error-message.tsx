@@ -5,10 +5,8 @@
  * Consolidates error display functionality from both command execution and interactive terminal interfaces.
  */
 /**
- * @file Interface implementation: error-message
+ * @file Interface implementation: error-message.
  */
-
-
 
 import { Box, Text } from 'ink';
 import type React from 'react';

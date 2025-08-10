@@ -6,10 +6,8 @@
  * Provides typed interfaces for Vision/ADR/PRD/Epic/Feature/Task storage.
  */
 /**
- * @file Database layer: document-entities
+ * @file Database layer: document-entities.
  */
-
-
 
 import type { DocumentType } from '../types/workflow-types';
 
@@ -738,6 +736,7 @@ export const DATABASE_SCHEMAS = {
  * Type guards for document entities.
  *
  * @param doc
+ * @example
  */
 export function isVisionDocument(doc: BaseDocumentEntity): doc is VisionDocumentEntity {
   return doc.type === 'vision';

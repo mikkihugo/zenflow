@@ -2,7 +2,6 @@
  * @file Coordination system: ml-predictive
  */
 
-
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('coordination-load-balancing-algorithms-ml-predictive');

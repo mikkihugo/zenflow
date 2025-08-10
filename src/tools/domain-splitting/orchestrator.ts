@@ -2,7 +2,6 @@
  * @file orchestrator implementation
  */
 
-
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('tools-domain-splitting-orchestrator');

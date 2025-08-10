@@ -1,8 +1,7 @@
 // Neural Models - Export Hub
 /**
- * @file models module exports
+ * @file Models module exports.
  */
-
 
 export * from './presets/neural-presets-complete';
 

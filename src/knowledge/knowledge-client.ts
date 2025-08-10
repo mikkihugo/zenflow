@@ -1,7 +1,6 @@
 /**
- * @file knowledge-client implementation
+ * @file Knowledge-client implementation.
  */
-
 
 import { getLogger } from '../core/logger';
 
@@ -256,12 +255,12 @@ export class FACTIntegration extends EventEmitter {
     try {
       const result = await this.executePythonCommand('get_metrics');
       return {
-        totalQueries: result?.["total_queries"] || 0,
-        cacheHitRate: result?.["cache_hit_rate"] || 0,
-        averageLatency: result?.["average_latency"] || 0,
-        costSavings: result?.["cost_savings"] || 0,
-        toolExecutions: result?.["tool_executions"] || 0,
-        errorRate: result?.["error_rate"] || 0,
+        totalQueries: result?.['total_queries'] || 0,
+        cacheHitRate: result?.['cache_hit_rate'] || 0,
+        averageLatency: result?.['average_latency'] || 0,
+        costSavings: result?.['cost_savings'] || 0,
+        toolExecutions: result?.['tool_executions'] || 0,
+        errorRate: result?.['error_rate'] || 0,
       };
     } catch (error) {
       logger.error('Failed to get FACT metrics:', error);
@@ -339,7 +338,7 @@ export class FACTIntegration extends EventEmitter {
   }
 
   /**
-   * Initialize the FACT system (install dependencies, etc.)
+   * Initialize the FACT system (install dependencies, etc.).
    */
   private async initializeFACTSystem(): Promise<void> {
     try {
@@ -439,6 +438,7 @@ let globalFACTInstance: FACTIntegration | null = null;
  * Initialize global FACT integration.
  *
  * @param config
+ * @example
  */
 export async function initializeFACT(config: FACTConfig): Promise<FACTIntegration> {
   if (globalFACTInstance) {
@@ -453,6 +453,8 @@ export async function initializeFACT(config: FACTConfig): Promise<FACTIntegratio
 
 /**
  * Get the global FACT integration instance.
+ *
+ * @example
  */
 export function getFACT(): FACTIntegration | null {
   return globalFACTInstance;
@@ -460,6 +462,8 @@ export function getFACT(): FACTIntegration | null {
 
 /**
  * Shutdown global FACT integration.
+ *
+ * @example
  */
 export async function shutdownFACT(): Promise<void> {
   if (globalFACTInstance) {

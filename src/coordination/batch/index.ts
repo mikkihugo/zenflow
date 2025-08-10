@@ -34,16 +34,17 @@ export { SwarmBatchCoordinator } from './swarm-batch';
  * @param options.batchConfig
  * @param options.swarmConfig
  * @param options.maxConcurrentFiles
+ * @example
  */
 export function createBatchSystem(options?: {
   batchConfig?: import('./batch-engine').BatchExecutionConfig;
   swarmConfig?: import('./swarm-batch').SwarmBatchConfig;
   maxConcurrentFiles?: number;
 }) {
-  const batchEngine = new BatchEngine(options?.["batchConfig"]);
+  const batchEngine = new BatchEngine(options?.['batchConfig']);
   const performanceMonitor = new BatchPerformanceMonitor();
-  const fileBatchOperator = new FileBatchOperator(options?.["maxConcurrentFiles"]);
-  const swarmBatchCoordinator = new SwarmBatchCoordinator(options?.["swarmConfig"]);
+  const fileBatchOperator = new FileBatchOperator(options?.['maxConcurrentFiles']);
+  const swarmBatchCoordinator = new SwarmBatchCoordinator(options?.['swarmConfig']);
 
   return {
     batchEngine,

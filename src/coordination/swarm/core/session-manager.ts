@@ -1,7 +1,6 @@
 /**
- * @file session management system
+ * @file Session management system.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -95,8 +94,7 @@ export class SessionManager extends EventEmitter {
       maxCheckpoints: config.maxCheckpoints === undefined ? 10 : config?.maxCheckpoints,
       compressionEnabled:
         config.compressionEnabled === undefined ? true : config?.compressionEnabled,
-      encryptionEnabled:
-        config.encryptionEnabled === undefined ? false : config?.encryptionEnabled,
+      encryptionEnabled: config.encryptionEnabled === undefined ? false : config?.encryptionEnabled,
       encryptionKey:
         config.encryptionKey === undefined ? this.generateEncryptionKey() : config?.encryptionKey,
     };

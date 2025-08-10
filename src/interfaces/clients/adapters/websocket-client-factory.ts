@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: websocket-client-factory
+ * @file Interface implementation: websocket-client-factory.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -11,7 +10,7 @@ const logger = getLogger('interfaces-clients-adapters-websocket-client-factory')
  * WebSocket Client Factory for UACL.
  *
  * Factory implementation for creating and managing WebSocket client instances.
- * following the UACL (Unified API Client Layer) architecture.
+ * Following the UACL (Unified API Client Layer) architecture.
  */
 
 import type { ClientMetrics, ClientStatus, IClient, IClientFactory } from '../core/interfaces';

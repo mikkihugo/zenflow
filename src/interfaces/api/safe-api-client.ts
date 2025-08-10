@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: safe-api-client
+ * @file Interface implementation: safe-api-client.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -11,7 +10,7 @@ const logger = getLogger('interfaces-api-safe-api-client');
  * Safe API Response Handler.
  *
  * Provides type-safe API response handling with proper union type discrimination.
- * for HTTP endpoints and external service interactions.
+ * For HTTP endpoints and external service interactions.
  */
 
 import {
@@ -415,6 +414,8 @@ interface CreateUserData {
 
 /**
  * Example function showing safe API usage patterns.
+ *
+ * @example
  */
 export async function safeAPIUsageExample(): Promise<void> {
   const apiService = new SafeAPIService('https://api.example.com', 'your-api-key');
@@ -470,6 +471,8 @@ export async function safeAPIUsageExample(): Promise<void> {
 
 /**
  * Example of handling concurrent API requests with type safety.
+ *
+ * @example
  */
 export async function safeConcurrentAPIExample(): Promise<void> {
   const apiService = new SafeAPIService('https://api.example.com');

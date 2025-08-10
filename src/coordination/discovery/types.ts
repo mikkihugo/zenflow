@@ -1,3 +1,7 @@
+/**
+ * @file Type definitions for domain discovery and relationship mapping.
+ */
+
 export interface Domain {
   name: string;
   files: string[];

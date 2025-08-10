@@ -4,14 +4,13 @@
  * This module provides access to all neural WebAssembly components:
  * - CUDA-Rust transpiler for GPU acceleration (main implementation)
  * - FACT cognitive processing engine (consolidated from src/wasm/)
- * - Unified WASM loading and management utilities
+ * - Unified WASM loading and management utilities.
  */
 
 // CUDA-Rust WASM (main neural WASM implementation)
 /**
- * @file wasm module exports.
+ * @file Wasm module exports.
  */
-
 
 export * from './binaries/wasm-bindings-loader.mjs';
 // Compatibility exports

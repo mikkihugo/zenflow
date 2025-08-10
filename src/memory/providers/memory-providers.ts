@@ -2,20 +2,20 @@
  * Memory Domain Dependency Injection Providers.
  * Implements comprehensive DI patterns for memory management.
  *
- * @file memory-providers.ts
- * @description Enhanced memory providers with DI integration for Issue #63
+ * @file Memory-providers.ts.
+ * @description Enhanced memory providers with DI integration for Issue #63.
  */
 
-import type { DALFactory } from '../database/factory';
-import type { ICoordinationRepository, IVectorRepository } from '../database/interfaces';
-import { inject, injectable } from '../di/decorators/injectable';
+import type { DALFactory } from '../../database/factory';
+import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces';
+import { inject, injectable } from '../../di/decorators/injectable';
 import {
   CORE_TOKENS,
   DATABASE_TOKENS,
   type IConfig,
   type ILogger,
   MEMORY_TOKENS,
-} from '../di/tokens/core-tokens';
+} from '../../di/tokens/core-tokens';
 
 /**
  * Interface for memory backend implementations.
@@ -73,8 +73,8 @@ export class MemoryProviderFactory {
   /**
    * Create a memory provider based on configuration.
    *
-   * @param config Memory configuration
-   * @returns Appropriate memory backend implementation
+   * @param config Memory configuration.
+   * @returns Appropriate memory backend implementation.
    */
   createProvider(config: MemoryConfig): MemoryBackend {
     this.logger.info(`Creating memory provider: ${config?.type}`);
@@ -503,7 +503,7 @@ export class JsonMemoryBackend implements MemoryBackend {
 }
 
 /**
- * In-memory backend implementation (fastest, no persistence)
+ * In-memory backend implementation (fastest, no persistence).
  *
  * @example
  */

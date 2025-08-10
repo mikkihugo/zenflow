@@ -8,9 +8,8 @@
 
 // Bindings utilities
 /**
- * @file bindings module exports
+ * @file Bindings module exports.
  */
-
 
 export const BindingsUtils = {
   /**

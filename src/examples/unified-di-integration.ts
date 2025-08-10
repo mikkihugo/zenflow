@@ -2,14 +2,13 @@
  * Unified DI Integration Example.
  *
  * Demonstrates how Database, Memory, and Swarm systems.
- * work together through the unified DAL Factory architecture.
+ * Work together through the unified DAL Factory architecture.
  */
 
 // Swarm domain
 /**
- * @file unified-di-integration implementation
+ * @file Unified-di-integration implementation.
  */
-
 
 import {
   initializeSwarmStorage,
@@ -25,6 +24,8 @@ import { initializeMemorySystem, registerMemoryProviders } from '../memory/memor
 
 /**
  * Complete system integration example.
+ *
+ * @example
  */
 export async function unifiedIntegrationExample(): Promise<void> {
   // 1. Create DI container
@@ -113,6 +114,7 @@ export async function unifiedIntegrationExample(): Promise<void> {
  * Register core services required by all domains.
  *
  * @param container
+ * @example
  */
 function registerCoreServices(container: DIContainer): void {
   // Logger service
@@ -149,9 +151,10 @@ function registerCoreServices(container: DIContainer): void {
 }
 
 /**
- * Register database services (DAL Factory)
+ * Register database services (DAL Factory).
  *
  * @param container
+ * @example
  */
 function registerDatabaseServices(container: DIContainer): void {
   // Database provider factory.
@@ -178,6 +181,8 @@ function registerDatabaseServices(container: DIContainer): void {
 
 /**
  * Example of specialized usage patterns.
+ *
+ * @example
  */
 export async function specializedUsageExamples(): Promise<void> {
   const container = new DIContainer();
@@ -220,6 +225,8 @@ export async function specializedUsageExamples(): Promise<void> {
 
 /**
  * Production deployment example.
+ *
+ * @example
  */
 export function productionDeploymentExample(): void {
   // Production-ready DI container

@@ -3,10 +3,8 @@
  * Real-time trend analysis, anomaly detection, and predictive modeling.
  */
 /**
- * @file performance-analyzer implementation
+ * @file Performance-analyzer implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { CompositeMetrics } from '../core/metrics-collector';

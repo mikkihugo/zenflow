@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: swarm-providers
+ * @file Coordination system: swarm-providers.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -11,7 +10,7 @@ const logger = getLogger('coordination-swarm-storage-swarm-providers');
  * Swarm Storage Providers for Dependency Injection.
  *
  * Provides DI registration for swarm storage components using.
- * the existing DAL Factory and repository patterns.
+ * The existing DAL Factory and repository patterns.
  */
 
 import { DIContainer } from '../di/container/di-container.js';
@@ -58,6 +57,7 @@ export const defaultBackupConfig: BackupConfig = {
  *
  * @param container
  * @param customConfig
+ * @example
  */
 export function registerSwarmProviders(
   container: DIContainer,
@@ -125,6 +125,7 @@ export function registerSwarmProviders(
  * Initialize swarm storage system with DI.
  *
  * @param container
+ * @example
  */
 export async function initializeSwarmStorage(container: DIContainer): Promise<{
   databaseManager: SwarmDatabaseManager;
@@ -154,6 +155,7 @@ export async function initializeSwarmStorage(container: DIContainer): Promise<{
  * Utility function to create a pre-configured swarm DI container.
  *
  * @param customConfig
+ * @example
  */
 export function createSwarmContainer(
   customConfig?: Parameters<typeof registerSwarmProviders>[1]

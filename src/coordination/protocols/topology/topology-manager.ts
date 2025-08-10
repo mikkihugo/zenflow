@@ -1,17 +1,15 @@
 /**
  * Advanced Dynamic Topology Management System
  * Provides intelligent, adaptive topology switching based on workload patterns
- * and performance metrics with fault tolerance and self-healing capabilities
+ * and performance metrics with fault tolerance and self-healing capabilities.
  */
 /**
- * @file topology management system.
+ * @file Topology management system.
  */
 
-
-
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../../../core/logger';
+import type { IEventBus } from '../core/event-bus';
 
 // Core types for topology management
 export type TopologyType =

@@ -1,8 +1,7 @@
 #!/usr/bin/env nodeimport { getLogger } from '../core/logger';
 /**
- * @file Test suite for test-monorepo-detection
+ * @file Test suite for test-monorepo-detection.
  */
-
 
 const logger = getLogger('src-knowledge-test-monorepo-detection');
 

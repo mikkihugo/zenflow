@@ -1,5 +1,5 @@
 /**
- * @fileoverview USL (Unified Service Layer) Types and Configuration
+ * @file USL (Unified Service Layer) Types and Configuration.
  *
  * Centralized type definitions and configuration schemas for all service types.
  * in the Claude-Zen ecosystem.
@@ -1071,6 +1071,7 @@ export class ServiceConfigFactory {
  * Type guard functions for service configurations.
  *
  * @param config
+ * @example
  */
 export function isDataServiceConfig(config: AnyServiceConfig): config is DataServiceConfig {
   return [ServiceType.DATA, ServiceType.WEB_DATA, ServiceType.DOCUMENT].includes(

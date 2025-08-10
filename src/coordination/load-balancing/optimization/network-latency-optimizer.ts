@@ -6,8 +6,6 @@
  * @file Coordination system: network-latency-optimizer
  */
 
-
-
 import type { NetworkOptimizer } from '../interfaces';
 
 export class NetworkLatencyOptimizer implements NetworkOptimizer {

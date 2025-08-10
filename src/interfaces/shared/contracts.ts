@@ -2,13 +2,11 @@
  * Shared Interface Contracts.
  *
  * Defines the contracts and abstractions that interfaces can depend on.
- * without creating cross-interface dependencies.
+ * Without creating cross-interface dependencies.
  */
 /**
- * @file Interface implementation: contracts
+ * @file Interface implementation: contracts.
  */
-
-
 
 import type {
   CommandContext,
@@ -22,7 +20,7 @@ import type {
  * Project Management Contract.
  *
  * Abstract interface for project management operations that can be.
- * implemented by different interface layers.
+ * Implemented by different interface layers..
  *
  * @example
  */
@@ -45,7 +43,7 @@ export interface ProjectSummary {
  * Command Execution Contract.
  *
  * Abstract interface for command execution that can be implemented.
- * by different command engines.
+ * By different command engines..
  *
  * @example
  */
@@ -60,7 +58,7 @@ export interface CommandExecutorContract {
  * Swarm Coordination Contract.
  *
  * Abstract interface for swarm operations that interfaces can use.
- * without depending on specific swarm implementations.
+ * Without depending on specific swarm implementations..
  *
  * @example
  */

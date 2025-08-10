@@ -2,13 +2,11 @@
  * Persistent Learning System for Ephemeral Swarms.
  *
  * While swarm instances are ephemeral (temporary), their knowledge and learnings.
- * are persistent and shared across all future swarm instances.
+ * Are persistent and shared across all future swarm instances.
  */
 /**
- * @file Coordination system: persistent-learning-system
+ * @file Coordination system: persistent-learning-system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
@@ -674,14 +672,14 @@ export class PersistentLearningSystem extends EventEmitter {
    */
   private setupEventHandlers(): void {
     this.eventBus.on('swarm:created', (data) => {
-      this.injectKnowledgeIntoSwarm(data?.["swarmId"], [...(data?.["agentTypes"] || [])]);
+      this.injectKnowledgeIntoSwarm(data?.['swarmId'], [...(data?.['agentTypes'] || [])]);
     });
 
     this.eventBus.on('swarm:completed', (data) => {
       const results =
-        (data?.["results"] as unknown as SwarmResults) ||
+        (data?.['results'] as unknown as SwarmResults) ||
         ({
-          swarmId: data?.["swarmId"],
+          swarmId: data?.['swarmId'],
           context: 'completion',
           overallSuccess: 1.0,
           efficiency: 0.8,
@@ -689,7 +687,7 @@ export class PersistentLearningSystem extends EventEmitter {
           agentResults: [],
           learnings: [],
         } as SwarmResults);
-      this.collectSwarmLearnings(data?.["swarmId"], results);
+      this.collectSwarmLearnings(data?.['swarmId'], results);
     });
   }
 

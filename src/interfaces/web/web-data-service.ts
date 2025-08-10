@@ -5,10 +5,8 @@
  * Provides data services for API endpoints with mock implementations.
  */
 /**
- * @file web-data service implementation
+ * @file Web-data service implementation.
  */
-
-
 
 import { createLogger } from '../utils/logger';
 

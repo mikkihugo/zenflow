@@ -5,10 +5,8 @@
  * and client event management for the web dashboard.
  */
 /**
- * @file web-socket management system
+ * @file Web-socket management system.
  */
-
-
 
 import type { Server as SocketIOServer } from 'socket.io';
 import { createLogger } from '../utils/logger';

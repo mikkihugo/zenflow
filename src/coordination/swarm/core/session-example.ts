@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: session-example
+ * @file Coordination system: session-example.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -11,7 +10,7 @@ const logger = getLogger('coordination-swarm-core-session-example');
  * Session Management System - Comprehensive Examples.
  *
  * This file demonstrates how to use the session management system.
- * for persistent swarm orchestration across multiple executions.
+ * For persistent swarm orchestration across multiple executions.
  */
 
 // import { DALFactory } from '../../database'; // TODO: Implement proper DI integration

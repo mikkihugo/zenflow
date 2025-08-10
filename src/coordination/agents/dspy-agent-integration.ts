@@ -2,15 +2,14 @@
  * DSPy Agent Integration with Existing Coordination System.
  *
  * Integrates DSPy neural enhancement agents into the existing swarm coordination.
- * system, with specialized prompts defining each agent's behavior and expertise.
+ * System, with specialized prompts defining each agent's behavior and expertise.
  */
 
 // Using the official dspy.ts npm package instead of custom implementation
 // import { configureLM, default as DSPy, getLM } from 'dspy.ts'; // Not used, using wrapper instead
 /**
- * @file Coordination system: dspy-agent-integration
+ * @file Coordination system: dspy-agent-integration.
  */
-
 
 import { createLogger } from '../../core/logger';
 import type { SessionMemoryStore } from '../../memory/memory';
@@ -29,7 +28,7 @@ import type { SwarmAgent, SwarmCoordinator } from '../swarm/core/swarm-coordinat
 const logger = createLogger({ prefix: 'DSPyAgentIntegration' });
 
 /**
- * DSPy Agent Types (matches agent-types.ts)
+ * DSPy Agent Types (matches agent-types.ts).
  */
 export type DSPyAgentType =
   | 'prompt-optimizer'
@@ -220,6 +219,8 @@ export class DSPyAgentIntegration {
 
   /**
    * Initialize the DSPy wrapper with configuration.
+   *
+   * @param config
    */
   async initialize(config?: DSPyConfig): Promise<void> {
     try {
@@ -416,7 +417,7 @@ export class DSPyAgentIntegration {
   }
 
   /**
-   * Answer the user's question: "Can workflows be automatically enhanced by neural?"
+   * Answer the user's question: "Can workflows be automatically enhanced by neural?".
    */
   async demonstrateNeuralWorkflowEnhancement(): Promise<{
     canEnhance: boolean;
@@ -493,6 +494,9 @@ export class DSPyAgentIntegration {
 
   /**
    * Create a DSPy program using the wrapper architecture.
+   *
+   * @param signature
+   * @param description
    * @private
    */
   private async createDSPyProgram(signature: string, description: string): Promise<DSPyProgram> {
@@ -507,6 +511,9 @@ export class DSPyAgentIntegration {
 
   /**
    * Optimize a DSPy program using the wrapper architecture.
+   *
+   * @param program
+   * @param examples
    * @private
    */
   private async optimizeProgram(

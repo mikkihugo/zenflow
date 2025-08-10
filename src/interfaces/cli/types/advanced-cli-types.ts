@@ -1,5 +1,5 @@
 /**
- * @file Advanced CLI Type Definitions
+ * @file Advanced CLI Type Definitions.
  *
  * Comprehensive type system for the advanced CLI and project management system.
  * Defines interfaces for intelligent project scaffolding, swarm coordination,

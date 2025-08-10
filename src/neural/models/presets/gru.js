@@ -96,7 +96,7 @@ class GRUModel extends NeuralModel {
     }
     if (input.shape[2] !== this.config.inputSize) {
       throw new Error(
-        `Input size mismatch: expected ${this.config.inputSize}, got ${input.shape[2]}`
+        `Input size mismatch: expected ${this.config.inputSize}, got ${input.shape[2]}`,
       );
     }
 

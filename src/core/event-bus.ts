@@ -1,11 +1,10 @@
 /**
- * @file event-bus implementation
+ * @file Event-bus implementation.
  */
 
+import { createLogger } from '../core/logger';
 
-import { getLogger } from '../core/logger';
-
-const logger = getLogger('src-core-event-bus');
+const logger = createLogger('src-core-event-bus');
 
 /**
  * Event Bus - Core event system for claude-zen
@@ -15,18 +14,46 @@ const logger = getLogger('src-core-event-bus');
 
 import { EventEmitter } from 'node:events';
 import type {
-  EventBusConfig,
-  EventListenerAny,
-  EventMap,
-  EventMetrics,
-  EventMiddleware,
+  SystemEvent,
+  EventListener,
+  EventPriority,
+  EventProcessingStrategy,
 } from '../interfaces/events/types';
 
+// Define missing types locally
+export interface EventBusConfig {
+  maxListeners: number;
+  enableMiddleware: boolean;
+  enableMetrics: boolean;
+  enableLogging: boolean;
+  logLevel: string;
+}
+
+export type EventListenerAny = (event: any) => void | Promise<void>;
+
+export interface EventMap {
+  [key: string]: SystemEvent;
+}
+
+export interface EventMetrics {
+  eventCount: number;
+  eventTypes: Record<string, number>;
+  avgProcessingTime: number;
+  errorCount: number;
+  listenerCount: number;
+}
+
+export type EventMiddleware = (
+  event: string | symbol,
+  payload: any,
+  next: () => void
+) => void;
+
 export interface IEventBus {
-  on<T extends keyof EventMap>(event: T, listener: EventListener<T>): this;
-  off<T extends keyof EventMap>(event: T, listener: EventListener<T>): this;
+  on<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this;
+  off<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this;
   emit<T extends keyof EventMap>(event: T, payload: EventMap[T]): boolean;
-  once<T extends keyof EventMap>(event: T, listener: EventListener<T>): this;
+  once<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this;
 }
 
 /**
@@ -123,7 +150,7 @@ export class EventBus extends EventEmitter implements IEventBus {
    * @param event
    * @param listener
    */
-  override on<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
+  override on<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this {
     super.on(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
     return this;
@@ -135,7 +162,7 @@ export class EventBus extends EventEmitter implements IEventBus {
    * @param event
    * @param listener
    */
-  override once<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
+  override once<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this {
     super.once(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
     return this;
@@ -147,7 +174,7 @@ export class EventBus extends EventEmitter implements IEventBus {
    * @param event
    * @param listener
    */
-  override off<T extends keyof EventMap>(event: T, listener: EventListener<T>): this {
+  override off<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this {
     super.off(event as string, listener as EventListenerAny);
     this.metrics.listenerCount = Math.max(0, this.metrics.listenerCount - 1);
     return this;

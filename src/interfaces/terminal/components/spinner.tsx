@@ -5,10 +5,8 @@
  * Supports both standard and swarm-specific animation types.
  */
 /**
- * @file Interface implementation: spinner
+ * @file Interface implementation: spinner.
  */
-
-
 
 import { Box, Text } from 'ink';
 import { useEffect, useState } from 'react';

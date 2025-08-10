@@ -1,12 +1,12 @@
 /**
- * @file Auto-Swarm Factory - Creates optimized swarms based on domain characteristics
+ * @file Auto-Swarm Factory - Creates optimized swarms based on domain characteristics.
  *
  * This is the CRITICAL component that enables zero-manual-initialization swarm creation.
  * It uses confidence scores from Progressive Confidence Builder to automatically:
  * - Select optimal topology (mesh, hierarchical, star, ring)
  * - Determine agent types and counts
  * - Configure persistent swarm settings
- * - Register with HiveSwarmCoordinator
+ * - Register with HiveSwarmCoordinator.
  */
 
 import { EventEmitter } from 'node:events';
@@ -134,7 +134,7 @@ export interface ConfidentDomain {
  * Auto-Swarm Factory - The final piece for complete automation.
  *
  * This factory analyzes confident domains and automatically creates.
- * optimized swarm configurations without manual intervention.
+ * Optimized swarm configurations without manual intervention..
  *
  * @example
  */
@@ -679,14 +679,14 @@ export class AutoSwarmFactory extends EventEmitter {
       id: 'swarm_factory_validation',
       type: 'priority',
       question:
-        `Auto-Swarm Factory will create ${configs.length} swarms with the following configurations:\n\n` +
+        `Auto-Swarm Factory will create ${configs.length} swarms with the following configurations:\n\n${ 
         summary
           .map(
             (s) =>
               `• ${s.domain}: ${s.topology} topology, ${s.totalAgentCount} agents (${s.confidence} confidence)`
           )
-          .join('\n') +
-        `\n\nTotal agents across all swarms: ${summary.reduce((sum, s) => sum + s.totalAgentCount, 0)}\n\n` +
+          .join('\n') 
+        }\n\nTotal agents across all swarms: ${summary.reduce((sum, s) => sum + s.totalAgentCount, 0)}\n\n` +
         `Approve swarm creation and proceed with initialization?`,
       context: { configs, summary },
       options: [

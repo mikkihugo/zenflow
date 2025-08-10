@@ -9,8 +9,6 @@
  * @file Interface implementation: validation.
  */
 
-
-
 import { createLogger, type Logger } from '../../core/logger';
 import { USLCompatibilityLayer } from './compatibility';
 import type { IService, ServiceLifecycleStatus } from './core/interfaces';

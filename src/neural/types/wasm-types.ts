@@ -4,10 +4,8 @@
  * Type definitions for WebAssembly neural network acceleration.
  */
 /**
- * @file TypeScript type definitions for neural
+ * @file TypeScript type definitions for neural.
  */
-
-
 
 export interface WASMNeuralConfig {
   wasmPath: string;

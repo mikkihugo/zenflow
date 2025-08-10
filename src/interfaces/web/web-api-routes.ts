@@ -5,10 +5,8 @@
  * Handles all HTTP API endpoints with proper error handling.
  */
 /**
- * @file Interface implementation: web-api-routes
+ * @file Interface implementation: web-api-routes.
  */
-
-
 
 import type { Express, Request, Response } from 'express';
 import { createLogger } from '../utils/logger';

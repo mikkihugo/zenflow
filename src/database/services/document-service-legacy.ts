@@ -9,13 +9,10 @@
  * Provides CRUD operations for all document entities with relationships.
  */
 /**
- * @file Database layer: document-service-legacy
+ * @file Database layer: document-service-legacy.
  */
 
-
-
 import { nanoid } from 'nanoid';
-import type { DocumentType } from '../types/workflow-types';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -30,6 +27,7 @@ import type {
 } from '../entities/document-entities';
 import { createDao } from '../index';
 import type { DatabaseQuery, IRepository } from '../interfaces';
+import type { DocumentType } from '../types/workflow-types';
 
 export interface DocumentCreateOptions {
   autoGenerateRelationships?: boolean;

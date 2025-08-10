@@ -3,10 +3,8 @@
  * Enables parameter-level dependency injection.
  */
 /**
- * @file inject implementation
+ * @file Inject implementation.
  */
-
-
 
 import 'reflect-metadata';
 import { getInjectionTokens, setInjectionTokens } from './injectable';
@@ -15,6 +13,7 @@ import { getInjectionTokens, setInjectionTokens } from './injectable';
  * Inject decorator for marking constructor parameters for injection.
  *
  * @param token
+ * @example
  */
 export function inject<T>(token: DIToken<T>): ParameterDecorator {
   return (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) => {
@@ -39,6 +38,7 @@ export function inject<T>(token: DIToken<T>): ParameterDecorator {
  *
  * @param constructor
  * @param parameterIndex
+ * @example
  */
 export function getInjectionToken(
   constructor: any,
@@ -53,6 +53,7 @@ export function getInjectionToken(
  *
  * @param constructor
  * @param parameterIndex
+ * @example
  */
 export function hasInjectionToken(constructor: any, parameterIndex: number): boolean {
   return getInjectionToken(constructor, parameterIndex) !== undefined;

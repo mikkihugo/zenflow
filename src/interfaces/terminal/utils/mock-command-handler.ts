@@ -5,10 +5,8 @@
  * Renamed to reflect its mock/testing nature per Google standards.
  */
 /**
- * @file Interface implementation: mock-command-handler
+ * @file Interface implementation: mock-command-handler.
  */
-
-
 
 import { createLogger } from '../../../core/logger';
 import { CommandExecutionEngine } from '../command-execution-engine';

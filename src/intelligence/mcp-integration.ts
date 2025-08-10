@@ -1,7 +1,6 @@
 /**
- * @file mcp-integration implementation
+ * @file Mcp-integration implementation.
  */
-
 
 import { ConversationFramework } from './conversation-framework/index';
 import { ConversationMCPToolsFactory } from './conversation-framework/mcp-tools';

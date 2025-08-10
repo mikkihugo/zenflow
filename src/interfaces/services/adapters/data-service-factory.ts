@@ -12,10 +12,7 @@
  * @file Interface implementation: data-service-factory.
  */
 
-
-
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../utils/logger';
 import type { IService, IServiceFactory, ServiceMetrics, ServiceStatus } from '../core/interfaces';
 import {
   ServiceConfigurationError,
@@ -24,6 +21,7 @@ import {
   ServiceOperationError,
 } from '../core/interfaces';
 import { ServiceType } from '../types';
+import { createLogger, type Logger } from '../utils/logger';
 import {
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig,

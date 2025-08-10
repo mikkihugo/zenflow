@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: singleton-container
+ * @file Coordination system: singleton-container.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -37,9 +36,9 @@ class SingletonContainer {
   /**
    * Register a singleton factory.
    *
-   * @param {string} key - Service identifier
-   * @param {Function} factory - Factory function to create instance
-   * @param {Object} options - Configuration options
+   * @param {string} key - Service identifier.
+   * @param {Function} factory - Factory function to create instance.
+   * @param {Object} options - Configuration options.
    */
   register(key: string, factory: (...args: any[]) => any, options: RegistrationOptions = {}) {
     if (typeof factory !== 'function') {
@@ -57,8 +56,8 @@ class SingletonContainer {
   /**
    * Get or create singleton instance.
    *
-   * @param {string} key - Service identifier
-   * @returns {*} Singleton instance
+   * @param {string} key - Service identifier.
+   * @returns {*} Singleton instance.
    */
   get<T = any>(key: string): T {
     if (this.isDestroying) {
@@ -97,15 +96,15 @@ class SingletonContainer {
   /**
    * Check if service is registered.
    *
-   * @param {string} key - Service identifier
-   * @returns {boolean} True if registered
+   * @param {string} key - Service identifier.
+   * @returns {boolean} True if registered.
    */
   has(key: string): boolean {
     return this.factories.has(key) || this.instances.has(key);
   }
 
   /**
-   * Clear specific instance (force recreation)
+   * Clear specific instance (force recreation).
    *
    * @param {string} key - Service identifier.
    */
@@ -144,7 +143,7 @@ class SingletonContainer {
   }
 
   /**
-   * Reset container state (for testing)
+   * Reset container state (for testing).
    */
   reset(): void {
     this.destroy();
@@ -154,7 +153,7 @@ class SingletonContainer {
   /**
    * Get container statistics.
    *
-   * @returns {Object} Container stats
+   * @returns {Object} Container stats.
    */
   getStats(): any {
     return {
@@ -172,7 +171,8 @@ let globalContainer: SingletonContainer | null = null;
 /**
  * Get or create global container.
  *
- * @returns {SingletonContainer} Global container instance
+ * @returns {SingletonContainer} Global container instance.
+ * @example
  */
 export function getContainer(): SingletonContainer {
   if (!globalContainer) {
@@ -201,7 +201,9 @@ export function getContainer(): SingletonContainer {
 }
 
 /**
- * Reset global container (for testing)
+ * Reset global container (for testing).
+ *
+ * @example
  */
 export function resetContainer(): void {
   if (globalContainer) {

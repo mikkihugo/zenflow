@@ -16,7 +16,6 @@
  * @file Database layer: interfaces.
  */
 
-
 export interface IRepository<T> {
   /** Find entity by ID */
   findById(id: string | number): Promise<T | null>;

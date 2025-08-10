@@ -1,7 +1,6 @@
 /**
- * @file monitoring module exports
+ * @file Monitoring module exports.
  */
-
 
 import { getLogger } from '../core/logger';
 
@@ -107,6 +106,7 @@ export class PerformanceMonitoringSystem {
  * Create and start a monitoring system with default configuration.
  *
  * @param config
+ * @example
  */
 export async function createMonitoringSystem(
   config?: Partial<IntegrationConfig>
@@ -123,6 +123,7 @@ export async function createMonitoringSystem(
  * @param options.dashboardPort
  * @param options.enableOptimization
  * @param options.metricsInterval
+ * @example
  */
 export async function setupClaudeZenMonitoring(
   options: { dashboardPort?: number; enableOptimization?: boolean; metricsInterval?: number } = {}

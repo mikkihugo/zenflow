@@ -3,8 +3,6 @@
  * @file Interface implementation: http-mcp-server.
  */
 
-
-
 /**
  * Claude-Zen HTTP MCP Server - Official SDK Implementation.
  *
@@ -18,16 +16,18 @@
  */
 
 import { randomUUID } from 'node:crypto';
+
 // import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
 type McpServer = any; // Placeholder type for missing MCP SDK
 // import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp';
 type StreamableHTTPServerTransport = any; // Placeholder type for missing MCP SDK
+
 import express from 'express';
 import { z } from 'zod';
 import { config, getCORSOrigins } from '../config';
 import { createLogger } from './mcp-logger';
-import { advancedToolRegistry } from './mcp-tools';
 import type { AdvancedMCPTool } from './mcp-tools';
+import { advancedToolRegistry } from './mcp-tools';
 
 const logger = createLogger('SDK-HTTP-MCP-Server');
 
@@ -36,37 +36,38 @@ const advancedMCPToolsManager = {
   searchTools(query: string) {
     const allTools = advancedToolRegistry.getAllTools();
     const filtered = allTools.filter(
-      tool => tool.name.toLowerCase().includes(query.toLowerCase()) ||
-              tool.description.toLowerCase().includes(query.toLowerCase()) ||
-              tool.metadata.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+      (tool) =>
+        tool.name.toLowerCase().includes(query.toLowerCase()) ||
+        tool.description.toLowerCase().includes(query.toLowerCase()) ||
+        tool.metadata.tags.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
     );
     return { tools: filtered };
   },
-  
+
   getToolsByCategory(category: string) {
     const tools = advancedToolRegistry.getToolsByCategory(category as any);
     return { tools };
   },
-  
+
   listAllTools() {
     const tools = advancedToolRegistry.getAllTools();
     return { tools };
   },
-  
+
   getRegistryOverview() {
     const categorySummary = advancedToolRegistry.getCategorySummary();
     const totalTools = advancedToolRegistry.getToolCount();
     return {
       totalTools,
       categories: categorySummary,
-      status: 'active'
+      status: 'active',
     };
   },
-  
+
   hasTool(name: string) {
     return advancedToolRegistry.getTool(name) !== undefined;
   },
-  
+
   async executeTool(name: string, params: any) {
     const tool = advancedToolRegistry.getTool(name);
     if (!tool) {
@@ -74,20 +75,20 @@ const advancedMCPToolsManager = {
     }
     return await tool.handler.execute(params);
   },
-  
+
   getToolCount() {
     return advancedToolRegistry.getToolCount();
   },
-  
+
   getToolStats() {
     const categorySummary = advancedToolRegistry.getCategorySummary();
     const totalTools = advancedToolRegistry.getToolCount();
     return {
       total: totalTools,
       byCategory: categorySummary,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
-  }
+  },
 };
 
 export interface MCPServerConfig {
@@ -127,7 +128,7 @@ export class HTTPMCPServer {
       },
       connect: async (transport: any) => {
         logger.info('Connected to transport');
-      }
+      },
     } as any;
 
     // Setup Express app for SDK transport
@@ -623,7 +624,7 @@ export class HTTPMCPServer {
             handleRequest: async (req: any, res: any, body?: any) => {
               res.json({ error: 'MCP SDK not available' });
             },
-            close: async () => {}
+            close: async () => {},
           } as any;
 
           // Store the transport

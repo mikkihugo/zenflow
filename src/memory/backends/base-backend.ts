@@ -5,12 +5,12 @@
  * Supports multiple backend types: sqlite, jsonb, file, memory.
  */
 /**
- * @file Memory management: base-backend
+ * @file Memory management: base-backend.
  */
 
-
-
 import { EventEmitter } from 'node:events';
+import type { MemoryConfig } from '../providers/memory-providers';
+import type { BackendCapabilities } from './factory';
 
 // Additional types needed for base backend
 export interface MemoryEntry {
@@ -277,7 +277,12 @@ export abstract class BaseMemoryBackend extends EventEmitter {
 
   // Additional methods for MemoryBackend interface compatibility
 
-  /** Concrete implementation of search for BackendInterface compatibility */
+  /**
+   * Concrete implementation of search for BackendInterface compatibility.
+   *
+   * @param pattern
+   * @param _namespace
+   */
   public async search(pattern: string, _namespace?: string): Promise<Record<string, any>> {
     // Base implementation - override in subclasses.
     const results = await this.list(pattern);

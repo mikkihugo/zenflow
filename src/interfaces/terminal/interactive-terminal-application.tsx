@@ -6,10 +6,8 @@
  * Renamed from TUIMode to reflect actual responsibility.
  */
 /**
- * @file Interface implementation: interactive-terminal-application
+ * @file Interface implementation: interactive-terminal-application.
  */
-
-
 
 import { Box, Text, useInput } from 'ink';
 import { useEffect, useState } from 'react';

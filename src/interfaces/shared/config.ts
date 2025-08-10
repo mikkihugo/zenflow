@@ -1,17 +1,19 @@
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('interfaces-shared-config');
-
 /**
- * @file Shared Interface Configuration
+ * @file Shared Interface Configuration.
  *
  * Interface-specific configuration utilities that integrate with the unified config system.
  */
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-shared-config');
 
 import { config, type InterfaceConfig } from '../config';
 
 /**
  * Get interface configuration with fallbacks.
+ *
+ * @example
  */
 export function getInterfaceConfig(): InterfaceConfig {
   return config?.getSection('interfaces').shared;

@@ -23,13 +23,13 @@ class MockWebSocket extends EventEmitter {
     this.url = url;
     // Simulate connection
     setTimeout(() => {
-      this.readyState = MockWebSocket["OPEN"];
+      this.readyState = MockWebSocket['OPEN'];
       this.emit('open');
     }, 10);
   }
 
   send = jest.fn((data: string) => {
-    if (this.readyState !== MockWebSocket["OPEN"]) {
+    if (this.readyState !== MockWebSocket['OPEN']) {
       throw new Error('WebSocket is not open');
     }
     // Simulate echo for testing
@@ -39,9 +39,9 @@ class MockWebSocket extends EventEmitter {
   });
 
   close = jest.fn(() => {
-    this.readyState = MockWebSocket["CLOSING"];
+    this.readyState = MockWebSocket['CLOSING'];
     setTimeout(() => {
-      this.readyState = MockWebSocket["CLOSED"];
+      this.readyState = MockWebSocket['CLOSED'];
       this.emit('close');
     }, 5);
   });
@@ -76,7 +76,7 @@ class SwarmCoordinator {
     this.websocket.addEventListener('open', () => {});
 
     this.websocket.addEventListener('message', (event: any) => {
-      const message = this.protocol.decode(event["data"]);
+      const message = this.protocol.decode(event['data']);
       this.handleMessage(message);
     });
 
@@ -100,14 +100,14 @@ class SwarmCoordinator {
     this.metrics.messagesReceived++;
 
     // Calculate latency
-    const latency = Date.now() - message["timestamp"];
+    const latency = Date.now() - message['timestamp'];
     this.metrics.latencySamples.push(latency);
     this.metrics.averageLatency =
       this.metrics.latencySamples.reduce((a, b) => a + b, 0) / this.metrics.latencySamples.length;
 
     // Update agent status
-    if (message["agentId"]) {
-      this.agents.set(message["agentId"], {
+    if (message['agentId']) {
+      this.agents.set(message['agentId'], {
         lastSeen: Date.now(),
         status: 'active',
       });
@@ -324,7 +324,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
       coordinator.onMessage('error', () => errorCount++);
 
       // Simulate connection drop
-      mockWebSocket.readyState = MockWebSocket["CLOSED"];
+      mockWebSocket.readyState = MockWebSocket['CLOSED'];
 
       // Try to send message
       await expect(coordinator.broadcastMessage({ type: 'test' })).rejects.toThrow(

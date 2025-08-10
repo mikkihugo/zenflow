@@ -3,10 +3,8 @@
  * Automatic performance tuning and resource optimization.
  */
 /**
- * @file optimization processing engine
+ * @file Optimization processing engine.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type {
@@ -628,7 +626,7 @@ export class OptimizationEngine extends EventEmitter {
   }
 
   /**
-   * Simulate action execution (replace with actual implementations)
+   * Simulate action execution (replace with actual implementations).
    *
    * @param action
    */

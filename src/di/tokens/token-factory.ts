@@ -3,10 +3,8 @@
  * Provides type-safe token creation for dependency injection.
  */
 /**
- * @file token-factory implementation
+ * @file Token-factory implementation.
  */
-
-
 
 import type { Constructor, DIToken } from '../types/di-types';
 

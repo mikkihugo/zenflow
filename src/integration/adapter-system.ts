@@ -1,11 +1,11 @@
-import { getLogger } from '../core/logger';
-
-const logger = getLogger('src-integration-adapter-system');
-
 /**
  * @file Adapter Pattern Implementation for Multi-Protocol Support
  * Provides protocol adaptation and legacy system integration.
  */
+
+import { getLogger } from '../core/logger';
+
+const logger = getLogger('src-integration-adapter-system');
 
 import { EventEmitter } from 'node:events';
 

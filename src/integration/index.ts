@@ -1,7 +1,6 @@
 /**
- * @file integration module exports
+ * @file Integration module exports.
  */
-
 
 import { getLogger } from '../core/logger';
 

@@ -6,9 +6,8 @@
 
 // Export types from network module
 /**
- * @file core module exports
+ * @file Core module exports.
  */
-
 
 export type {
   ActivationFunctions as ActivationFunction,

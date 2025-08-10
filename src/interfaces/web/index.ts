@@ -5,10 +5,8 @@
  * Each module has a clear, descriptive name indicating its actual purpose.
  */
 /**
- * @file web module exports
+ * @file Web module exports.
  */
-
-
 
 export { type ApiConfig, ApiRouteHandler, type SystemStatus } from './api-route-handler';
 export {

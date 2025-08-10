@@ -945,9 +945,9 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     // Extract key insights from facts
     return facts.map((f) => {
       if (typeof f.content === 'string') {
-        return f.content.substring(0, 100) + '...';
+        return `${f.content.substring(0, 100)  }...`;
       }
-      return JSON.stringify(f.content).substring(0, 100) + '...';
+      return `${JSON.stringify(f.content).substring(0, 100)  }...`;
     });
   }
 

@@ -1,7 +1,6 @@
 /**
- * @file dspy-enhanced-operations implementation
+ * @file Dspy-enhanced-operations implementation.
  */
-
 
 import { createLogger } from './logger';
 

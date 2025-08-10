@@ -3,10 +3,8 @@
  * Handles automatic error recovery and system resilience.
  */
 /**
- * @file error-recovery implementation
+ * @file Error-recovery implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 

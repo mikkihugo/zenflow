@@ -1,13 +1,13 @@
-/** 
+/**
  * @file Type definitions for workflow system
- * Core workflow types for the document-driven development system
+ * Core workflow types for the document-driven development system.
  */
 
 // Import base workflow types from the main workflow engine
 import type {
-  WorkflowStep as BaseWorkflowStep,
   WorkflowDefinition as BaseWorkflowDefinition,
   WorkflowEngineConfig as BaseWorkflowEngineConfig,
+  WorkflowStep as BaseWorkflowStep,
 } from '../workflows/engine';
 
 // Re-export base types with aliases to avoid conflicts

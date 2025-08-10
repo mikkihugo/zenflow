@@ -1,14 +1,16 @@
-import { getLogger } from '../../utils/logger';
-
-const logger = getLogger('database-mcp-database-tools');
-
 /**
  * @file Database Management MCP Tools
  * Comprehensive MCP tools for advanced database coordination and management.
  */
 
+import { getLogger } from '../../utils/logger';
+
+const logger = getLogger('database-mcp-database-tools');
+
 import { config } from '../../config';
+
 const getConfig = () => config.getAll();
+
 // Import UACL for unified client monitoring and MCP client management
 import { ClientType, uacl } from '../../interfaces/clients';
 import type { DatabaseQuery, IDataAccessObject, IRepository } from '../interfaces';
@@ -184,37 +186,44 @@ export const databaseInitTool: MCPTool = {
 
       // Initialize database coordinator using factory pattern
       databaseCoordinator = {
-        registerEngine: async (engine: DatabaseEngine) => { /* implementation */ },
+        registerEngine: async (engine: DatabaseEngine) => {
+          /* implementation */
+        },
         executeQuery: async (query: ExtendedDatabaseQuery) => ({
           status: 'completed' as const,
           result: {},
           queryId: query.id,
           engineId: 'default',
-          duration: 100
+          duration: 100,
         }),
         getStats: () => ({
           engines: { active: 1, total: 1 },
-          queries: { recent: 0, successful: 0, averageLatency: 100 }
-        })
+          queries: { recent: 0, successful: 0, averageLatency: 100 },
+        }),
       };
 
       // Initialize query optimizer using factory pattern
       queryOptimizer = {
-        optimizeQuery: async (query: ExtendedDatabaseQuery, engines: Map<string, DatabaseEngine>) => query,
-        recordExecution: (execution: any) => { /* implementation */ },
+        optimizeQuery: async (query: ExtendedDatabaseQuery, engines: Map<string, DatabaseEngine>) =>
+          query,
+        recordExecution: (execution: any) => {
+          /* implementation */
+        },
         getStats: () => ({
           totalQueries: 0,
           optimizedQueries: 0,
-          averageImprovement: 0
+          averageImprovement: 0,
         }),
         getCacheStats: () => ({
           hitRate: 0.8,
           entries: 100,
-          memoryUsage: 50
+          memoryUsage: 50,
         }),
         getPatterns: () => [],
         getRecommendations: () => [],
-        clearCache: () => { /* implementation */ }
+        clearCache: () => {
+          /* implementation */
+        },
       };
 
       // Register engines
@@ -458,7 +467,10 @@ export const databaseQueryTool: MCPTool = {
         metadata: {
           timestamp: Date.now(),
           originalQuery: query,
-          optimizedQuery: (optimizedQuery as ExtendedDatabaseQuery).id !== (query as ExtendedDatabaseQuery).id ? optimizedQuery : undefined,
+          optimizedQuery:
+            (optimizedQuery as ExtendedDatabaseQuery).id !== (query as ExtendedDatabaseQuery).id
+              ? optimizedQuery
+              : undefined,
           optimizations: parameters.__optimizations,
         },
       };
@@ -1270,7 +1282,10 @@ async function _executeQueryWithDAL(
       default:
         // Use DAO for advanced operations
         if (selectedEngine?.type === 'vector' && dao.bulkVectorOperations) {
-          result = await dao.bulkVectorOperations(query.parameters['vectors'] || [], query.operation);
+          result = await dao.bulkVectorOperations(
+            query.parameters['vectors'] || [],
+            query.operation
+          );
         } else if (selectedEngine?.type === 'graph' && dao.traverseGraph) {
           result = await dao.traverseGraph(
             query.parameters['startNode'],

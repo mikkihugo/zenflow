@@ -5,10 +5,8 @@
  * Supports all database types through consistent DAL interface.
  */
 /**
- * @file memory coordination system
+ * @file Memory coordination system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { createDao, DatabaseTypes, EntityTypes } from '../database/index';

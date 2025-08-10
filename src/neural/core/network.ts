@@ -2,17 +2,15 @@
  * Neural Network Core Implementation.
  *
  * TypeScript wrapper for WASM neural network functionality.
- * Consolidated from swarm-zen/neural-network.ts with enhanced type safety
+ * Consolidated from swarm-zen/neural-network.ts with enhanced type safety.
  */
 
 // =============================================================================
 // INTERFACES & TYPES
 // =============================================================================
 /**
- * @file Neural network: network
+ * @file Neural network: network.
  */
-
-
 
 export interface NetworkConfig {
   inputSize: number;
@@ -159,6 +157,8 @@ const wasmModule: any = null;
 
 /**
  * Initialize the WASM neural network module.
+ *
+ * @example
  */
 export async function initializeNeuralWasm(): Promise<any> {
   if (wasmModule) return wasmModule;
@@ -494,6 +494,7 @@ export class CascadeTrainer {
  * Create a neural network with the given configuration.
  *
  * @param config
+ * @example
  */
 export async function createNeuralNetwork(config: NetworkConfig): Promise<NeuralNetwork> {
   const wasm = await initializeNeuralWasm();
@@ -504,6 +505,7 @@ export async function createNeuralNetwork(config: NetworkConfig): Promise<Neural
  * Create a trainer with the given configuration.
  *
  * @param config
+ * @example
  */
 export async function createTrainer(config: TrainingConfig): Promise<NeuralTrainer> {
   const wasm = await initializeNeuralWasm();
@@ -512,6 +514,8 @@ export async function createTrainer(config: TrainingConfig): Promise<NeuralTrain
 
 /**
  * Create an agent neural manager.
+ *
+ * @example
  */
 export async function createAgentNeuralManager(): Promise<AgentNeuralManager> {
   const wasm = await initializeNeuralWasm();
@@ -524,6 +528,7 @@ export async function createAgentNeuralManager(): Promise<AgentNeuralManager> {
  * @param config
  * @param network
  * @param data
+ * @example
  */
 export async function createCascadeTrainer(
   config: CascadeConfig | null,
@@ -542,6 +547,7 @@ export async function createCascadeTrainer(
  * Validate network configuration.
  *
  * @param config
+ * @example
  */
 export function validateNetworkConfig(config: NetworkConfig): boolean {
   return (
@@ -556,6 +562,7 @@ export function validateNetworkConfig(config: NetworkConfig): boolean {
  * Validate training configuration.
  *
  * @param config
+ * @example
  */
 export function validateTrainingConfig(config: TrainingConfig): boolean {
   return (
@@ -571,6 +578,7 @@ export function validateTrainingConfig(config: TrainingConfig): boolean {
  * @param cognitivePattern
  * @param inputSize
  * @param outputSize
+ * @example
  */
 export function getRecommendedAgentConfig(
   cognitivePattern: keyof typeof COGNITIVE_PATTERNS,

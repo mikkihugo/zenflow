@@ -8,8 +8,6 @@
  * @file Interface implementation: enhanced-websocket-client.
  */
 
-
-
 import { EventEmitter } from 'node:events';
 import type {
   ClientMetrics,

@@ -2,21 +2,18 @@
  * UACL Knowledge Client Example.
  *
  * Demonstrates how to use the unified Knowledge Client Adapter.
- * with FACT integration through the UACL interface.
+ * With FACT integration through the UACL interface.
  *
  * This example shows:
  * - Creating FACT-based knowledge clients
  * - Performing various knowledge queries
  * - Using helper methods for common tasks
- * - Monitoring client health and metrics
+ * - Monitoring client health and metrics.
  */
 /**
  * @file Interface implementation: knowledge-client-example.
  */
 
-
-
-import { getConfig } from '../config';
 import {
   createFACTClient,
   type KnowledgeClientAdapter,
@@ -24,10 +21,13 @@ import {
   type KnowledgeRequest,
   type KnowledgeResponse,
 } from '../adapters/knowledge-client-adapter';
+import { getConfig } from '../config';
 import { UACLFactory } from '../factories';
 
 /**
  * Example 1: Create FACT-based Knowledge Client using convenience function.
+ *
+ * @example
  */
 export async function example1_CreateFACTClient(): Promise<void> {
   try {
@@ -75,6 +75,8 @@ export async function example1_CreateFACTClient(): Promise<void> {
 
 /**
  * Example 2: Create Knowledge Client using UACL Factory.
+ *
+ * @example
  */
 export async function example2_CreateWithFactory(): Promise<void> {
   try {
@@ -121,6 +123,8 @@ export async function example2_CreateWithFactory(): Promise<void> {
 
 /**
  * Example 3: Perform Knowledge Queries.
+ *
+ * @example
  */
 export async function example3_PerformQueries(): Promise<void> {
   try {
@@ -179,6 +183,8 @@ export async function example3_PerformQueries(): Promise<void> {
 
 /**
  * Example 4: Using Knowledge Helper Functions.
+ *
+ * @example
  */
 export async function example4_UseHelpers(): Promise<void> {
   try {
@@ -217,6 +223,8 @@ export async function example4_UseHelpers(): Promise<void> {
 
 /**
  * Example 5: Monitor Client Performance and Health.
+ *
+ * @example
  */
 export async function example5_MonitorPerformance(): Promise<void> {
   try {
@@ -265,6 +273,8 @@ export async function example5_MonitorPerformance(): Promise<void> {
 
 /**
  * Example 6: Error Handling and Resilience.
+ *
+ * @example
  */
 export async function example6_ErrorHandling(): Promise<void> {
   try {
@@ -294,6 +304,8 @@ export async function example6_ErrorHandling(): Promise<void> {
 
 /**
  * Run all examples.
+ *
+ * @example
  */
 export async function runAllExamples(): Promise<void> {
   const examples = [

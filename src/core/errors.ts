@@ -5,10 +5,8 @@
  * Includes error recovery strategies, monitoring, and resilience patterns.
  */
 /**
- * @file errors implementation
+ * @file Errors implementation.
  */
-
-
 
 import { createLogger } from './logger';
 

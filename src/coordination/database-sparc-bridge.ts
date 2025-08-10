@@ -10,10 +10,8 @@
  * 4. Results are stored back in database.
  */
 /**
- * @file Coordination system: database-sparc-bridge
+ * @file Coordination system: database-sparc-bridge.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { DatabaseDrivenSystem } from '../core/database-driven-system';

@@ -2,7 +2,6 @@
  * @file Conversation-demo implementation.
  */
 
-
 import { Logger } from '../core/logger';
 import type { AgentId, AgentType } from '../types/agent-types';
 
@@ -111,19 +110,19 @@ class DemoConversationOrchestrator {
 
   async createConversation(config: ConversationConfig): Promise<ConversationSession> {
     // Ensure there are initial participants for the initiator
-    if (config?.["initialParticipants"].length === 0) {
+    if (config?.['initialParticipants'].length === 0) {
       throw new Error('At least one initial participant is required');
     }
 
     const session: ConversationSession = {
       id: `demo-${Date.now()}`,
-      title: config?.["title"],
-      description: config?.["description"],
-      participants: [...config?.["initialParticipants"]],
-      initiator: config?.["initialParticipants"]?.[0], // Safe after length check
+      title: config?.['title'],
+      description: config?.['description'],
+      participants: [...config?.['initialParticipants']],
+      initiator: config?.['initialParticipants']?.[0], // Safe after length check
       startTime: new Date(),
       status: 'active',
-      context: config?.["context"],
+      context: config?.['context'],
       messages: [],
       outcomes: [],
       metrics: {
@@ -135,7 +134,7 @@ class DemoConversationOrchestrator {
       },
     };
 
-    config?.["initialParticipants"]?.forEach((agent) => {
+    config?.['initialParticipants']?.forEach((agent) => {
       session.metrics.participationByAgent[agent.id] = 0;
     });
 
@@ -146,22 +145,22 @@ class DemoConversationOrchestrator {
   }
 
   async sendMessage(message: ConversationMessage): Promise<void> {
-    const session = this.activeSessions.get(message["conversationId"]);
+    const session = this.activeSessions.get(message['conversationId']);
     if (!session) {
-      throw new Error(`Conversation ${message["conversationId"]} not found`);
+      throw new Error(`Conversation ${message['conversationId']} not found`);
     }
 
     if (!message.id) {
       message.id = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     }
-    if (!message["timestamp"]) {
-      message["timestamp"] = new Date();
+    if (!message['timestamp']) {
+      message['timestamp'] = new Date();
     }
 
     // Session is guaranteed to exist due to the check above
     session.messages.push(message);
     session.metrics.messageCount++;
-    session.metrics.participationByAgent[message["fromAgent"]?.id]++;
+    session.metrics.participationByAgent[message['fromAgent']?.id]++;
 
     await this.memory.updateConversation(session.id, {
       messages: session.messages,

@@ -1,14 +1,12 @@
 /**
- * Graph Database Repository Implementation (Kuzu)
+ * Graph Database Repository Implementation (Kuzu).
  *
  * Specialized repository for graph database operations including.
- * node and relationship management, traversals, and Cypher queries.
+ * Node and relationship management, traversals, and Cypher queries.
  */
 /**
- * @file Database layer: graph.dao
+ * @file Database layer: graph.dao.
  */
-
-
 
 import { BaseDao } from '../base.dao';
 import type {
@@ -24,7 +22,7 @@ import type { GraphDatabaseAdapter } from '../providers/database-providers';
 /**
  * Graph database repository implementation for Kuzu.
  *
- * @template T The entity type this repository manages
+ * @template T The entity type this repository manages.
  * @example
  */
 export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
@@ -252,10 +250,11 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
    */
 
   /**
-   * Get node degree (number of connections)
+   * Get node degree (number of connections).
    *
    * @param nodeId
    * @param direction.
+   * @param direction
    */
   async getNodeDegree(
     nodeId: string | number,

@@ -1,16 +1,18 @@
 /**
- * System Event Adapter Tests
+ * System Event Adapter Tests.
  *
  * Comprehensive test suite using Hybrid TDD approach:
  * - TDD London (70%): For event coordination, system integration, and event processing
- * - Classical TDD (30%): For event correlation algorithms, health calculations, and performance metrics
+ * - Classical TDD (30%): For event correlation algorithms, health calculations, and performance metrics.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { EventManagerTypes } from '../../core/interfaces';
+import { EventManagerTypes, type SystemLifecycleEvent } from '../../core/interfaces';
 import {
   createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter,
+  type SystemEventAdapter,
+  type SystemEventAdapterConfig,
   SystemEventHelpers,
 } from '../system-event-adapter';
 import { SystemEventManagerFactory } from '../system-event-factory';
@@ -48,7 +50,7 @@ describe('SystemEventAdapter', () => {
   describe('Lifecycle Management (London TDD)', () => {
     it('should initialize with correct configuration', () => {
       expect(adapter.name).toBe('test-system-adapter');
-      expect(adapter.type).toBe(EventManagerTypes["SYSTEM"]);
+      expect(adapter.type).toBe(EventManagerTypes['SYSTEM']);
       expect(adapter.config.name).toBe('test-system-adapter');
       expect(adapter.isRunning()).toBe(false);
     });
@@ -407,7 +409,7 @@ describe('SystemEventAdapter', () => {
 
   describe('Event Correlation Logic (Classical TDD)', () => {
     beforeEach(async () => {
-      config?.["correlation"] = {
+      config['correlation'] = {
         enabled: true,
         strategy: 'component',
         correlationTTL: 300000,
@@ -514,7 +516,7 @@ describe('SystemEventAdapter', () => {
 
   describe('Health Calculation Logic (Classical TDD)', () => {
     beforeEach(async () => {
-      config?.["healthMonitoring"] = {
+      config['healthMonitoring'] = {
         enabled: true,
         healthCheckInterval: 1000,
         componentHealthThresholds: {
@@ -605,7 +607,7 @@ describe('SystemEventAdapter', () => {
 
   describe('Performance Metrics Calculation (Classical TDD)', () => {
     beforeEach(async () => {
-      config?.["performance"] = {
+      config['performance'] = {
         enableEventCorrelation: true,
         maxConcurrentEvents: 100,
         eventTimeout: 30000,
@@ -710,12 +712,12 @@ describe('SystemEventAdapter', () => {
     it('should create startup event with correct properties', () => {
       const event = SystemEventHelpers.createStartupEvent('test-component', { version: '1.0.0' });
 
-      expect(event["source"]).toBe('test-component');
+      expect(event['source']).toBe('test-component');
       expect(event.type).toBe('system:startup');
-      expect(event["operation"]).toBe('start');
-      expect(event["status"]).toBe('success');
-      expect(event["priority"]).toBe('high');
-      expect(event["details"]).toEqual({ version: '1.0.0' });
+      expect(event['operation']).toBe('start');
+      expect(event['status']).toBe('success');
+      expect(event['priority']).toBe('high');
+      expect(event['details']).toEqual({ version: '1.0.0' });
     });
 
     it('should create shutdown event with correct properties', () => {
@@ -723,12 +725,12 @@ describe('SystemEventAdapter', () => {
         reason: 'maintenance',
       });
 
-      expect(event["source"]).toBe('test-component');
+      expect(event['source']).toBe('test-component');
       expect(event.type).toBe('system:shutdown');
-      expect(event["operation"]).toBe('stop');
-      expect(event["status"]).toBe('success');
-      expect(event["priority"]).toBe('critical');
-      expect(event["details"]).toEqual({ reason: 'maintenance' });
+      expect(event['operation']).toBe('stop');
+      expect(event['status']).toBe('success');
+      expect(event['priority']).toBe('critical');
+      expect(event['details']).toEqual({ reason: 'maintenance' });
     });
 
     it('should create health event with correct status based on score', () => {
@@ -748,13 +750,13 @@ describe('SystemEventAdapter', () => {
         context: 'test',
       });
 
-      expect(event["source"]).toBe('test-component');
+      expect(event['source']).toBe('test-component');
       expect(event.type).toBe('system:error');
-      expect(event["status"]).toBe('error');
-      expect(event["priority"]).toBe('high');
-      expect(event["details"]?.["errorCode"]).toBe('Error');
-      expect(event["details"]?.["errorMessage"]).toBe('Test error message');
-      expect(event["details"]?.["context"]).toBe('test');
+      expect(event['status']).toBe('error');
+      expect(event['priority']).toBe('high');
+      expect(event['details']?.['errorCode']).toBe('Error');
+      expect(event['details']?.['errorMessage']).toBe('Test error message');
+      expect(event['details']?.['context']).toBe('test');
     });
   });
 });
@@ -777,7 +779,7 @@ describe('SystemEventManagerFactory', () => {
 
       expect(manager).toBeDefined();
       expect(manager.name).toBe('factory-test');
-      expect(manager.type).toBe(EventManagerTypes["SYSTEM"]);
+      expect(manager.type).toBe(EventManagerTypes['SYSTEM']);
       expect(factory.has('factory-test')).toBe(true);
     });
 
@@ -844,7 +846,7 @@ describe('SystemEventManagerFactory', () => {
     it('should validate configuration during creation', async () => {
       const invalidConfig = {
         name: '', // Invalid empty name
-        type: EventManagerTypes["SYSTEM"],
+        type: EventManagerTypes['SYSTEM'],
       } as SystemEventAdapterConfig;
 
       await expect(factory.create(invalidConfig)).rejects.toThrow();

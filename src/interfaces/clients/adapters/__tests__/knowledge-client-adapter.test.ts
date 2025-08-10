@@ -1,10 +1,10 @@
 /**
- * UACL Knowledge Client Adapter Tests
+ * UACL Knowledge Client Adapter Tests.
  *
  * Tests for the Knowledge Client Adapter that converts FACT integration
  * to the UACL interface pattern. Uses hybrid TDD approach:
  * - TDD London (70%): Mock external dependencies, test interactions
- * - Classical TDD (30%): Test actual computation and data transformation
+ * - Classical TDD (30%): Test actual computation and data transformation.
  */
 
 import { ProtocolTypes } from '../../types';

@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: http-client-factory
+ * @file Interface implementation: http-client-factory.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -11,7 +10,7 @@ const logger = getLogger('interfaces-clients-factories-http-client-factory');
  * HTTP Client Factory.
  *
  * Factory implementation for creating and managing HTTP clients.
- * with UACL (Unified API Client Layer) patterns.
+ * With UACL (Unified API Client Layer) patterns.
  */
 
 import { HTTPClientAdapter } from '../adapters/http-client-adapter';

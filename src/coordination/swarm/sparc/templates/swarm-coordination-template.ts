@@ -5,10 +5,8 @@
  * Includes pre-defined requirements, architecture patterns, and implementation strategies.
  */
 /**
- * @file Coordination system: swarm-coordination-template
+ * @file Coordination system: swarm-coordination-template.
  */
-
-
 
 import { nanoid } from 'nanoid';
 

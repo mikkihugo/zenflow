@@ -2,7 +2,6 @@
  * @file Neural network: safe-neural-network.
  */
 
-
 import { Logger } from '../core/logger';
 
 const logger = new Logger('src-neural-safe-neural-network');
@@ -15,17 +14,17 @@ const logger = new Logger('src-neural-safe-neural-network');
  */
 
 import {
+  type InferenceResult,
   isInferenceResult,
   isNeuralError,
   isTrainingResult,
   isWasmError,
-  NeuralResult,
-  TrainingResult,
-  InferenceResult,
-  NeuralError,
-  WasmResult,
-  WasmSuccess,
-  WasmError,
+  type NeuralError,
+  type NeuralResult,
+  type TrainingResult,
+  type WasmError,
+  type WasmResult,
+  type WasmSuccess,
 } from '../utils/type-guards';
 
 export interface NeuralNetworkConfig {

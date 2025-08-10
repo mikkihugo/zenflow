@@ -6,8 +6,6 @@
  * @file Neural network: neural-coordination-protocol
  */
 
-
-
 export class NeuralCoordinationProtocol {
   public nodes: Map<string, any>;
   public messages: any[];

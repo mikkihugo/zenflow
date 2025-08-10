@@ -1,7 +1,6 @@
 /**
- * @file connection-state management system
+ * @file Connection-state management system.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

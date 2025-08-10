@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: logger
+ * @file Coordination system: logger.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -44,8 +43,7 @@ export class Logger {
     this.level = options?.level || loggerConfig?.level.toUpperCase();
     this.enableStderr =
       options.enableStderr === undefined ? loggerConfig?.console : options?.enableStderr;
-    this.enableFile =
-      options.enableFile === undefined ? !!loggerConfig?.file : options?.enableFile;
+    this.enableFile = options.enableFile === undefined ? !!loggerConfig?.file : options?.enableFile;
     this.formatJson =
       options.formatJson === undefined ? loggerConfig?.structured : options?.formatJson;
     this.logDir = options?.logDir || './logs';

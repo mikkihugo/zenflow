@@ -1,5 +1,5 @@
 /**
- * @file UEL (Unified Event Layer) Core Interfaces
+ * @file UEL (Unified Event Layer) Core Interfaces.
  *
  * Provides unified abstractions for all event management implementations:
  * - System, Coordination, Communication, Monitoring, and UI events
@@ -194,9 +194,9 @@ export interface SystemEvent {
 /**
  * Event listener function signature for handling events.
  *
- * @template T - Event type extending SystemEvent
- * @param event - The event to handle
- * @returns void or Promise<void> for async handlers
+ * @template T - Event type extending SystemEvent.
+ * @param event - The event to handle.
+ * @returns Void or Promise<void> for async handlers.
  * @example
  * ```typescript
  * // Synchronous listener
@@ -216,7 +216,7 @@ export type EventListener<T extends SystemEvent = SystemEvent> = (event: T) => v
 /**
  * Event subscription configuration for managing event listeners.
  *
- * @template T - Event type extending SystemEvent
+ * @template T - Event type extending SystemEvent.
  * @interface EventSubscription
  * @example
  * ```typescript
@@ -371,19 +371,19 @@ export interface IEventManager {
   /**
    * Start the event manager and begin processing events.
    *
-   * @throws {Error} If manager fails to start
+   * @throws {Error} If manager fails to start.
    */
   start(): Promise<void>;
 
   /**
    * Stop the event manager and cease processing events.
    *
-   * @throws {Error} If manager fails to stop gracefully
+   * @throws {Error} If manager fails to stop gracefully.
    */
   stop(): Promise<void>;
 
   /**
-   * Restart the event manager (stop then start)
+   * Restart the event manager (stop then start).
    *
    * @throws {Error} If restart sequence fails.
    */
@@ -392,7 +392,7 @@ export interface IEventManager {
   /**
    * Check if the event manager is currently running.
    *
-   * @returns True if manager is actively processing events
+   * @returns True if manager is actively processing events.
    */
   isRunning(): boolean;
 
@@ -400,20 +400,20 @@ export interface IEventManager {
   /**
    * Emit an event to all matching subscribers.
    *
-   * @template T - Event type extending SystemEvent
-   * @param event - The event to emit
-   * @param options - Optional emission configuration
-   * @throws {EventEmissionError} If event emission fails
+   * @template T - Event type extending SystemEvent.
+   * @param event - The event to emit.
+   * @param options - Optional emission configuration.
+   * @throws {EventEmissionError} If event emission fails.
    */
   emit<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void>;
 
   /**
    * Emit a batch of events efficiently.
    *
-   * @template T - Event type extending SystemEvent
-   * @param batch - Batch of events to emit
-   * @param options - Optional emission configuration
-   * @throws {EventEmissionError} If batch emission fails
+   * @template T - Event type extending SystemEvent.
+   * @param batch - Batch of events to emit.
+   * @param options - Optional emission configuration.
+   * @throws {EventEmissionError} If batch emission fails.
    */
   emitBatch<T extends SystemEvent>(
     batch: EventBatch<T>,
@@ -421,11 +421,11 @@ export interface IEventManager {
   ): Promise<void>;
 
   /**
-   * Emit an event with immediate processing (bypassing queues)
+   * Emit an event with immediate processing (bypassing queues).
    *
-   * @template T - Event type extending SystemEvent
-   * @param event - The event to emit immediately
-   * @throws {EventEmissionError} If immediate emission fails
+   * @template T - Event type extending SystemEvent.
+   * @param event - The event to emit immediately.
+   * @throws {EventEmissionError} If immediate emission fails.
    */
   emitImmediate<T extends SystemEvent>(event: T): Promise<void>;
 
@@ -433,12 +433,12 @@ export interface IEventManager {
   /**
    * Subscribe to one or more event types.
    *
-   * @template T - Event type extending SystemEvent
-   * @param eventTypes - Single event type or array of event types
-   * @param listener - Function to handle matching events
-   * @param options - Optional subscription configuration
-   * @returns Unique subscription ID for later unsubscription
-   * @throws {EventSubscriptionError} If subscription fails
+   * @template T - Event type extending SystemEvent.
+   * @param eventTypes - Single event type or array of event types.
+   * @param listener - Function to handle matching events.
+   * @param options - Optional subscription configuration.
+   * @returns Unique subscription ID for later unsubscription.
+   * @throws {EventSubscriptionError} If subscription fails.
    */
   subscribe<T extends SystemEvent>(
     eventTypes: string | string[],
@@ -449,16 +449,16 @@ export interface IEventManager {
   /**
    * Unsubscribe from events using subscription ID.
    *
-   * @param subscriptionId - ID returned from subscribe()
-   * @returns True if subscription was found and removed
+   * @param subscriptionId - ID returned from subscribe().
+   * @returns True if subscription was found and removed.
    */
   unsubscribe(subscriptionId: string): boolean;
 
   /**
    * Unsubscribe all listeners for an event type or all listeners.
    *
-   * @param eventType - Optional event type to filter removals
-   * @returns Number of subscriptions that were removed
+   * @param eventType - Optional event type to filter removals.
+   * @returns Number of subscriptions that were removed.
    */
   unsubscribeAll(eventType?: string): number;
 
@@ -466,33 +466,33 @@ export interface IEventManager {
   /**
    * Add a global event filter.
    *
-   * @param filter - Filter configuration
-   * @returns Unique filter ID for later removal
-   * @throws {EventFilterError} If filter is invalid
+   * @param filter - Filter configuration.
+   * @returns Unique filter ID for later removal.
+   * @throws {EventFilterError} If filter is invalid.
    */
   addFilter(filter: EventFilter): string;
 
   /**
    * Remove a previously added filter.
    *
-   * @param filterId - ID returned from addFilter()
-   * @returns True if filter was found and removed
+   * @param filterId - ID returned from addFilter().
+   * @returns True if filter was found and removed.
    */
   removeFilter(filterId: string): boolean;
 
   /**
    * Add a global event transformation.
    *
-   * @param transform - Transform configuration
-   * @returns Unique transform ID for later removal
+   * @param transform - Transform configuration.
+   * @returns Unique transform ID for later removal.
    */
   addTransform(transform: EventTransform): string;
 
   /**
    * Remove a previously added transformation.
    *
-   * @param transformId - ID returned from addTransform()
-   * @returns True if transform was found and removed
+   * @param transformId - ID returned from addTransform().
+   * @returns True if transform was found and removed.
    */
   removeTransform(transformId: string): boolean;
 
@@ -500,19 +500,19 @@ export interface IEventManager {
   /**
    * Query historical events with filtering and pagination.
    *
-   * @template T - Event type extending SystemEvent
-   * @param options - Query configuration including filters and limits
-   * @returns Array of events matching the query
-   * @throws {Error} If query execution fails
+   * @template T - Event type extending SystemEvent.
+   * @param options - Query configuration including filters and limits.
+   * @returns Array of events matching the query.
+   * @throws {Error} If query execution fails.
    */
   query<T extends SystemEvent>(options: EventQueryOptions): Promise<T[]>;
 
   /**
    * Get event history for a specific event type.
    *
-   * @param eventType - The event type to retrieve history for
-   * @param limit - Optional maximum number of events to return
-   * @returns Array of historical events in chronological order
+   * @param eventType - The event type to retrieve history for.
+   * @param limit - Optional maximum number of events to return.
+   * @returns Array of historical events in chronological order.
    */
   getEventHistory(eventType: string, limit?: number): Promise<SystemEvent[]>;
 
@@ -520,22 +520,22 @@ export interface IEventManager {
   /**
    * Perform a health check on the event manager.
    *
-   * @returns Current health status including metrics
-   * @throws {Error} If health check fails
+   * @returns Current health status including metrics.
+   * @throws {Error} If health check fails.
    */
   healthCheck(): Promise<EventManagerStatus>;
 
   /**
    * Get current performance metrics.
    *
-   * @returns Detailed performance and usage metrics
+   * @returns Detailed performance and usage metrics.
    */
   getMetrics(): Promise<EventManagerMetrics>;
 
   /**
    * Get all active subscriptions.
    *
-   * @returns Array of current event subscriptions
+   * @returns Array of current event subscriptions.
    */
   getSubscriptions(): EventSubscription[];
 
@@ -543,8 +543,8 @@ export interface IEventManager {
   /**
    * Update event manager configuration dynamically.
    *
-   * @param config - Partial configuration to merge with current settings
-   * @throws {Error} If configuration update fails
+   * @param config - Partial configuration to merge with current settings.
+   * @throws {Error} If configuration update fails.
    */
   updateConfig(config: Partial<EventManagerConfig>): void;
 
@@ -552,8 +552,8 @@ export interface IEventManager {
   /**
    * Add listener for manager lifecycle events.
    *
-   * @param event - Lifecycle event name
-   * @param handler - Function to handle the lifecycle event
+   * @param event - Lifecycle event name.
+   * @param handler - Function to handle the lifecycle event.
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
@@ -563,16 +563,16 @@ export interface IEventManager {
   /**
    * Remove listener for manager events.
    *
-   * @param event - Event name to remove listeners from
-   * @param handler - Optional specific handler to remove
+   * @param event - Event name to remove listeners from.
+   * @param handler - Optional specific handler to remove.
    */
   off(event: string, handler?: (...args: any[]) => void): void;
 
   /**
    * Add one-time listener for manager events.
    *
-   * @param event - Event name to listen for once
-   * @param handler - Function to handle the event
+   * @param event - Event name to listen for once.
+   * @param handler - Function to handle the event.
    */
   once(event: string, handler: (...args: any[]) => void): void;
 
@@ -580,7 +580,7 @@ export interface IEventManager {
   /**
    * Destroy the event manager and cleanup all resources.
    *
-   * @throws {Error} If cleanup fails
+   * @throws {Error} If cleanup fails.
    */
   destroy(): Promise<void>;
 }
@@ -588,7 +588,7 @@ export interface IEventManager {
 /**
  * Event manager factory interface for creating and managing event managers.
  *
- * @template TConfig - Configuration type extending EventManagerConfig
+ * @template TConfig - Configuration type extending EventManagerConfig.
  * @interface IEventManagerFactory
  * @example
  * ```typescript
@@ -608,18 +608,18 @@ export interface IEventManagerFactory<TConfig extends EventManagerConfig = Event
   /**
    * Create a new event manager instance.
    *
-   * @param config - Configuration for the event manager
-   * @returns Promise resolving to the created event manager
-   * @throws {Error} If manager creation fails
+   * @param config - Configuration for the event manager.
+   * @returns Promise resolving to the created event manager.
+   * @throws {Error} If manager creation fails.
    */
   create(config: TConfig): Promise<IEventManager>;
 
   /**
    * Create multiple event managers in batch.
    *
-   * @param configs - Array of configurations for event managers
-   * @returns Promise resolving to array of created event managers
-   * @throws {Error} If any manager creation fails
+   * @param configs - Array of configurations for event managers.
+   * @returns Promise resolving to array of created event managers.
+   * @throws {Error} If any manager creation fails.
    */
   createMultiple(configs: TConfig[]): Promise<IEventManager[]>;
 
@@ -627,32 +627,32 @@ export interface IEventManagerFactory<TConfig extends EventManagerConfig = Event
   /**
    * Get an event manager by name.
    *
-   * @param name - Name of the event manager
-   * @returns Event manager instance or undefined if not found
+   * @param name - Name of the event manager.
+   * @returns Event manager instance or undefined if not found.
    */
   get(name: string): IEventManager | undefined;
 
   /**
    * List all event managers managed by this factory.
    *
-   * @returns Array of all event manager instances
+   * @returns Array of all event manager instances.
    */
   list(): IEventManager[];
 
   /**
    * Check if an event manager exists.
    *
-   * @param name - Name of the event manager
-   * @returns True if manager exists
+   * @param name - Name of the event manager.
+   * @returns True if manager exists.
    */
   has(name: string): boolean;
 
   /**
    * Remove and destroy an event manager.
    *
-   * @param name - Name of the event manager to remove
-   * @returns Promise resolving to true if manager was found and removed
-   * @throws {Error} If removal fails
+   * @param name - Name of the event manager to remove.
+   * @returns Promise resolving to true if manager was found and removed.
+   * @throws {Error} If removal fails.
    */
   remove(name: string): Promise<boolean>;
 
@@ -660,28 +660,28 @@ export interface IEventManagerFactory<TConfig extends EventManagerConfig = Event
   /**
    * Perform health check on all managed event managers.
    *
-   * @returns Promise resolving to map of manager names to health status
+   * @returns Promise resolving to map of manager names to health status.
    */
   healthCheckAll(): Promise<Map<string, EventManagerStatus>>;
 
   /**
    * Get metrics for all managed event managers.
    *
-   * @returns Promise resolving to map of manager names to metrics
+   * @returns Promise resolving to map of manager names to metrics.
    */
   getMetricsAll(): Promise<Map<string, EventManagerMetrics>>;
 
   /**
    * Start all managed event managers.
    *
-   * @throws {Error} If any manager fails to start
+   * @throws {Error} If any manager fails to start.
    */
   startAll(): Promise<void>;
 
   /**
    * Stop all managed event managers.
    *
-   * @throws {Error} If any manager fails to stop
+   * @throws {Error} If any manager fails to stop.
    */
   stopAll(): Promise<void>;
 
@@ -689,21 +689,21 @@ export interface IEventManagerFactory<TConfig extends EventManagerConfig = Event
   /**
    * Shutdown the factory and all managed event managers.
    *
-   * @throws {Error} If shutdown fails
+   * @throws {Error} If shutdown fails.
    */
   shutdown(): Promise<void>;
 
   /**
    * Get count of active event managers.
    *
-   * @returns Number of currently active managers
+   * @returns Number of currently active managers.
    */
   getActiveCount(): number;
 
   /**
    * Get factory performance metrics.
    *
-   * @returns Factory metrics including manager counts and uptime
+   * @returns Factory metrics including manager counts and uptime.
    */
   getFactoryMetrics(): {
     totalManagers: number;
@@ -740,10 +740,10 @@ export interface IEventManagerRegistry {
   /**
    * Register an event manager factory for a specific type.
    *
-   * @template T - Configuration type extending EventManagerConfig
-   * @param type - Event manager type to register factory for
-   * @param factory - Factory instance to register
-   * @throws {Error} If factory registration fails
+   * @template T - Configuration type extending EventManagerConfig.
+   * @param type - Event manager type to register factory for.
+   * @param factory - Factory instance to register.
+   * @throws {Error} If factory registration fails.
    */
   registerFactory<T extends EventManagerConfig>(
     type: EventManagerType,
@@ -753,9 +753,9 @@ export interface IEventManagerRegistry {
   /**
    * Get a registered factory by type.
    *
-   * @template T - Configuration type extending EventManagerConfig
-   * @param type - Event manager type to get factory for
-   * @returns Factory instance or undefined if not registered
+   * @template T - Configuration type extending EventManagerConfig.
+   * @param type - Event manager type to get factory for.
+   * @returns Factory instance or undefined if not registered.
    */
   getFactory<T extends EventManagerConfig>(
     type: EventManagerType
@@ -764,7 +764,7 @@ export interface IEventManagerRegistry {
   /**
    * List all registered factory types.
    *
-   * @returns Array of event manager types with registered factories
+   * @returns Array of event manager types with registered factories.
    */
   listFactoryTypes(): EventManagerType[];
 
@@ -772,23 +772,23 @@ export interface IEventManagerRegistry {
   /**
    * Get all event managers from all registered factories.
    *
-   * @returns Map of manager names to event manager instances
+   * @returns Map of manager names to event manager instances.
    */
   getAllEventManagers(): Map<string, IEventManager>;
 
   /**
    * Find a specific event manager by name across all factories.
    *
-   * @param name - Name of the event manager to find
-   * @returns Event manager instance or undefined if not found
+   * @param name - Name of the event manager to find.
+   * @returns Event manager instance or undefined if not found.
    */
   findEventManager(name: string): IEventManager | undefined;
 
   /**
    * Get all event managers of a specific type.
    *
-   * @param type - Event manager type to filter by
-   * @returns Array of event managers of the specified type
+   * @param type - Event manager type to filter by.
+   * @returns Array of event managers of the specified type.
    */
   getEventManagersByType(type: EventManagerType): IEventManager[];
 
@@ -796,14 +796,14 @@ export interface IEventManagerRegistry {
   /**
    * Perform health check on all registered event managers.
    *
-   * @returns Promise resolving to map of manager names to health status
+   * @returns Promise resolving to map of manager names to health status.
    */
   healthCheckAll(): Promise<Map<string, EventManagerStatus>>;
 
   /**
    * Get aggregated metrics from all event managers.
    *
-   * @returns Promise resolving to global metrics summary
+   * @returns Promise resolving to global metrics summary.
    */
   getGlobalMetrics(): Promise<{
     totalManagers: number;
@@ -816,7 +816,7 @@ export interface IEventManagerRegistry {
   /**
    * Shutdown all event managers across all factories.
    *
-   * @throws {Error} If shutdown of any manager fails
+   * @throws {Error} If shutdown of any manager fails.
    */
   shutdownAll(): Promise<void>;
 
@@ -824,19 +824,19 @@ export interface IEventManagerRegistry {
   /**
    * Broadcast an event to all registered event managers.
    *
-   * @template T - Event type extending SystemEvent
-   * @param event - Event to broadcast
-   * @throws {EventEmissionError} If broadcast fails
+   * @template T - Event type extending SystemEvent.
+   * @param event - Event to broadcast.
+   * @throws {EventEmissionError} If broadcast fails.
    */
   broadcast<T extends SystemEvent>(event: T): Promise<void>;
 
   /**
    * Broadcast an event to all event managers of a specific type.
    *
-   * @template T - Event type extending SystemEvent
-   * @param type - Event manager type to broadcast to
-   * @param event - Event to broadcast
-   * @throws {EventEmissionError} If broadcast fails
+   * @template T - Event type extending SystemEvent.
+   * @param type - Event manager type to broadcast to.
+   * @param event - Event to broadcast.
+   * @throws {EventEmissionError} If broadcast fails.
    */
   broadcastToType<T extends SystemEvent>(type: EventManagerType, event: T): Promise<void>;
 }
@@ -892,11 +892,11 @@ export class EventError extends Error {
   /**
    * Create a new EventError.
    *
-   * @param message - Human-readable error message
-   * @param code - Machine-readable error code
-   * @param manager - Name of the event manager where error occurred
-   * @param eventId - Optional ID of the event that caused the error
-   * @param cause - Optional underlying error that caused this error
+   * @param message - Human-readable error message.
+   * @param code - Machine-readable error code.
+   * @param manager - Name of the event manager where error occurred.
+   * @param eventId - Optional ID of the event that caused the error.
+   * @param cause - Optional underlying error that caused this error.
    */
   constructor(
     message: string,
@@ -924,9 +924,9 @@ export class EventSubscriptionError extends EventError {
   /**
    * Create a new EventSubscriptionError.
    *
-   * @param manager - Name of the event manager where subscription failed
-   * @param subscriptionId - ID of the subscription that failed
-   * @param cause - Optional underlying error that caused the failure
+   * @param manager - Name of the event manager where subscription failed.
+   * @param subscriptionId - ID of the subscription that failed.
+   * @param cause - Optional underlying error that caused the failure.
    */
   constructor(manager: string, subscriptionId: string, cause?: Error) {
     super(
@@ -1085,8 +1085,8 @@ export const EventTypeGuards = {
   /**
    * Check if a value is a valid EventManagerType.
    *
-   * @param value - Value to check
-   * @returns True if value is a valid EventManagerType
+   * @param value - Value to check.
+   * @returns True if value is a valid EventManagerType.
    */
   isEventManagerType: (value: any): value is EventManagerType => {
     return Object.values(EventManagerTypes).includes(value);
@@ -1095,8 +1095,8 @@ export const EventTypeGuards = {
   /**
    * Check if a value is a valid EventPriority.
    *
-   * @param value - Value to check
-   * @returns True if value is a valid EventPriority
+   * @param value - Value to check.
+   * @returns True if value is a valid EventPriority.
    */
   isEventPriority: (value: any): value is EventPriority => {
     return ['critical', 'high', 'medium', 'low'].includes(value);
@@ -1105,8 +1105,8 @@ export const EventTypeGuards = {
   /**
    * Check if a value is a valid EventProcessingStrategy.
    *
-   * @param value - Value to check
-   * @returns True if value is a valid EventProcessingStrategy
+   * @param value - Value to check.
+   * @returns True if value is a valid EventProcessingStrategy.
    */
   isEventProcessingStrategy: (value: any): value is EventProcessingStrategy => {
     return ['immediate', 'queued', 'batched', 'throttled'].includes(value);
@@ -1115,8 +1115,8 @@ export const EventTypeGuards = {
   /**
    * Check if a value is a valid SystemEvent.
    *
-   * @param value - Value to check
-   * @returns True if value has all required SystemEvent properties
+   * @param value - Value to check.
+   * @returns True if value has all required SystemEvent properties.
    */
   isSystemEvent: (value: any): value is SystemEvent => {
     return (
@@ -1131,8 +1131,8 @@ export const EventTypeGuards = {
   /**
    * Check if a value is a valid EventManagerConfig.
    *
-   * @param value - Value to check
-   * @returns True if value has all required EventManagerConfig properties
+   * @param value - Value to check.
+   * @returns True if value has all required EventManagerConfig properties.
    */
   isEventManagerConfig: (value: any): value is EventManagerConfig => {
     return (

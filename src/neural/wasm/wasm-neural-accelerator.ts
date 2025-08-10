@@ -1,7 +1,6 @@
 /**
- * @file Neural network: wasm-neural-accelerator
+ * @file Neural network: wasm-neural-accelerator.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -32,6 +31,8 @@ import type {
  * WASM-powered neural network accelerator.
  *
  * Provides high-performance neural operations through WebAssembly.
+ *
+ * @example
  */
 export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   private config: WASMNeuralConfig;
@@ -100,6 +101,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
   /**
    * Create and configure a neural network model.
+   *
+   * @param modelId
+   * @param definition
    */
   async createModel(modelId: string, definition: WASMModelDefinition): Promise<void> {
     await this.ensureInitialized();
@@ -136,6 +140,10 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
   /**
    * Train a neural network model with provided data.
+   *
+   * @param modelId
+   * @param trainingData
+   * @param _options
    */
   async trainModel(
     modelId: string,
@@ -213,6 +221,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
   /**
    * Run prediction with a trained model.
+   *
+   * @param modelId
+   * @param _input
    */
   async predict(modelId: string, _input: WASMPredictionInput): Promise<WASMPredictionOutput> {
     await this.ensureInitialized();
@@ -275,6 +286,8 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
   /**
    * Run performance benchmarks.
+   *
+   * @param operations
    */
   async benchmark(
     operations: Array<'create' | 'train' | 'predict'> = ['train', 'predict']
@@ -389,6 +402,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
   /**
    * Optimize model for better performance.
+   *
+   * @param modelId
+   * @param _options
    */
   async optimizeModel(
     modelId: string,
@@ -529,6 +545,8 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
   /**
    * Type-safe WASM module instantiation with proper exports access.
+   *
+   * @param wasmModule
    */
   private async instantiateWasm(wasmModule: any): Promise<WASMNeuralInstance | null> {
     // xxx NEEDS_HUMAN: WASM module typing requires systems expertise
@@ -569,6 +587,8 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
   /**
    * Type-safe WASM buffer initialization.
+   *
+   * @param buffer
    */
   private async initializeWasmWithBuffer(buffer: ArrayBuffer): Promise<void> {
     // xxx NEEDS_HUMAN: WASM module typing requires systems expertise
@@ -583,6 +603,8 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
   /**
    * Convert input data to proper ArrayBuffer format for WASM.
+   *
+   * @param data
    */
   private ensureArrayBuffer(data: any): ArrayBuffer | null {
     if (!data) return null;
@@ -604,6 +626,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
   /**
    * Safe WASM function call with bracket notation and type guards.
+   *
+   * @param functionName
+   * @param {...any} args
    */
   private safeWasmCall(functionName: string, ...args: any[]): any {
     if (!this.wasmInstance || !this.wasmInstance.exports) {

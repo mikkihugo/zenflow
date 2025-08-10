@@ -9,8 +9,6 @@
  * @file Interface implementation: integration-service-helpers.
  */
 
-
-
 import type { ArchitectureDesign } from '../../../types/shared-types';
 
 import type { APIResult } from '../../types/shared-types';
@@ -1069,7 +1067,9 @@ export class IntegrationServiceUtils {
     const latencies = results.filter((r) => r.metadata?.duration).map((r) => r.metadata!.duration!);
 
     const averageLatency =
-      latencies.length > 0 ? latencies.reduce((sum, lat) => (sum || 0) + (lat || 0), 0) / latencies.length : 0;
+      latencies.length > 0
+        ? latencies.reduce((sum, lat) => (sum || 0) + (lat || 0), 0) / latencies.length
+        : 0;
 
     const successRate = totalOperations > 0 ? (successCount / totalOperations) * 100 : 0;
     const errorRate = totalOperations > 0 ? (errorCount / totalOperations) * 100 : 0;

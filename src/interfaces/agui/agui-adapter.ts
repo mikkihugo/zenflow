@@ -5,10 +5,8 @@
  * This adapter wraps it to provide the interface expected by our discovery system.
  */
 /**
- * @file agui adapter implementation
+ * @file Agui adapter implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import * as readline from 'node:readline';
@@ -186,6 +184,7 @@ export class MockAGUI implements AGUIInterface {
  * Factory function to create appropriate AGUI instance.
  *
  * @param type
+ * @example
  */
 export function createAGUI(type: 'terminal' | 'mock' = 'terminal'): AGUIInterface {
   switch (type) {

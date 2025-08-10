@@ -1,14 +1,13 @@
 /**
- * @file core module exports
+ * @file Core module exports.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-index');
 
 /**
- * 🚀 ULTIMATE ZenSwarm Implementation - FULLY INTEGRATED
+ * 🚀 ULTIMATE ZenSwarm Implementation - FULLY INTEGRATED.
  *
  * Advanced swarm orchestration with:
  * - WASM-accelerated neural networks
@@ -20,10 +19,10 @@ const logger = getLogger('coordination-swarm-core-index');
  * - Chaos engineering and fault tolerance.
  */
 
+import { AgentPool, createAgent } from '../agents/agent';
 import type { SessionCoordinationDao } from '../database';
 // import { DALFactory } from '../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../neural/wasm/wasm-loader';
-import { AgentPool, createAgent } from '../agents/agent';
 import { executeTaskWithAgent } from './agent-adapter';
 import { getContainer } from './singleton-container';
 import type {
@@ -39,11 +38,11 @@ import type {
 } from './types';
 import { formatMetrics, generateId, priorityToNumber, validateSwarmOptions } from './utils';
 
-export * from '../neural/core/neural-network';
-export * from '../neural/wasm/wasm-loader';
 // Enhanced exports with neural capabilities
 export * from '../agents/agent';
 export * from '../mcp/mcp-daa-tools';
+export * from '../neural/core/neural-network';
+export * from '../neural/wasm/wasm-loader';
 // Export the base implementation as BaseZenSwarm to avoid conflict
 export { ZenSwarm as BaseZenSwarm } from './base-swarm';
 export * from './errors';
@@ -154,7 +153,7 @@ export class Agent {
 }
 
 /**
- * 🚀 ULTIMATE ZenSwarm - The definitive swarm orchestration system
+ * 🚀 ULTIMATE ZenSwarm - The definitive swarm orchestration system.
  *
  * @example
  */
@@ -405,7 +404,7 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   /**
-   * Detect available features (neural networks, SIMD, etc.)
+   * Detect available features (neural networks, SIMD, etc.).
    *
    * @param useSIMD
    */

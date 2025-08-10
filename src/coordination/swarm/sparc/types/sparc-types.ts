@@ -7,9 +7,8 @@
 
 // Core SPARC Phase Types
 /**
- * @file TypeScript type definitions for coordination
+ * @file TypeScript type definitions for coordination.
  */
-
 
 export type SPARCPhase =
   | 'specification'

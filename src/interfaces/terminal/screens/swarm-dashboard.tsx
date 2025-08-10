@@ -8,8 +8,6 @@
  * @file Interface implementation: swarm-dashboard.
  */
 
-
-
 import { Box, Text, useInput } from 'ink';
 import { useEffect, useState } from 'react';
 import {

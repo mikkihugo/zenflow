@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: monitoring-usage-example
+ * @file Interface implementation: monitoring-usage-example.
  */
-
 
 import { getLogger } from '../../../../config/logging-config';
 
@@ -11,7 +10,7 @@ const logger = getLogger('interfaces-events-adapters-monitoring-usage-example');
  * UEL Monitoring Event Adapter Usage Example.
  *
  * This example demonstrates how to use the MonitoringEventAdapter to create.
- * a unified interface for monitoring-related events across Claude-Zen,
+ * A unified interface for monitoring-related events across Claude-Zen,
  * following the same patterns established by the system, coordination, and communication examples.
  */
 
@@ -25,6 +24,8 @@ import { MonitoringEventRegistry } from './monitoring-event-factory';
 
 /**
  * Example 1: Basic Monitoring Event Adapter Setup.
+ *
+ * @example
  */
 async function basicMonitoringExample(): Promise<void> {
   // Create monitoring event adapter with default configuration
@@ -95,6 +96,8 @@ async function basicMonitoringExample(): Promise<void> {
 
 /**
  * Example 2: Performance-Focused Monitoring Adapter.
+ *
+ * @example
  */
 async function performanceFocusedExample(): Promise<void> {
   // Create performance-focused monitoring adapter
@@ -115,8 +118,8 @@ async function performanceFocusedExample(): Promise<void> {
 
     // Subscribe to performance events
     adapter.subscribePerformanceMonitoringEvents((event) => {
-      if (event["details"]?.["performanceData"]) {
-        const perf = event["details"]?.["performanceData"];
+      if (event['details']?.['performanceData']) {
+        const perf = event['details']?.['performanceData'];
       }
     });
 
@@ -153,6 +156,8 @@ async function performanceFocusedExample(): Promise<void> {
 
 /**
  * Example 3: Health-Focused Monitoring with Correlation.
+ *
+ * @example
  */
 async function healthFocusedWithCorrelationExample(): Promise<void> {
   // Create health-focused monitoring adapter
@@ -229,6 +234,8 @@ async function healthFocusedWithCorrelationExample(): Promise<void> {
 
 /**
  * Example 4: Analytics-Focused Monitoring with Insights.
+ *
+ * @example
  */
 async function analyticsFocusedExample(): Promise<void> {
   // Create analytics-focused monitoring adapter
@@ -245,7 +252,7 @@ async function analyticsFocusedExample(): Promise<void> {
 
     // Subscribe to analytics insights
     adapter.subscribe(['monitoring:metrics'], (event) => {
-      if (event["details"]?.["insights"]) {
+      if (event['details']?.['insights']) {
       }
     });
 
@@ -297,6 +304,8 @@ async function analyticsFocusedExample(): Promise<void> {
 
 /**
  * Example 5: Alert Management with Escalation.
+ *
+ * @example
  */
 async function alertManagementExample(): Promise<void> {
   // Create alert-focused monitoring adapter
@@ -311,8 +320,8 @@ async function alertManagementExample(): Promise<void> {
 
     // Subscribe to alert escalation events
     adapter.subscribeAlertEvents((event) => {
-      const alertId = event["details"]?.["alertId"];
-      const severity = event["details"]?.["severity"];
+      const alertId = event['details']?.['alertId'];
+      const severity = event['details']?.['severity'];
     });
 
     const alertId = 'disk-space-alert';
@@ -370,6 +379,8 @@ async function alertManagementExample(): Promise<void> {
 
 /**
  * Example 6: Comprehensive Monitoring with Registry Management.
+ *
+ * @example
  */
 async function comprehensiveMonitoringExample(): Promise<void> {
   // Create comprehensive monitoring adapter
@@ -471,6 +482,8 @@ async function comprehensiveMonitoringExample(): Promise<void> {
 
 /**
  * Example 7: Helper Functions Demonstration.
+ *
+ * @example
  */
 async function helperFunctionsExample(): Promise<void> {
   const adapter = createMonitoringEventAdapter(
@@ -534,6 +547,8 @@ async function helperFunctionsExample(): Promise<void> {
 
 /**
  * Example 8: High-Throughput and Low-Latency Monitoring.
+ *
+ * @example
  */
 async function highPerformanceExample(): Promise<void> {
   // Create high-throughput adapter
@@ -605,6 +620,8 @@ async function highPerformanceExample(): Promise<void> {
 
 /**
  * Run all monitoring event adapter examples.
+ *
+ * @example
  */
 async function runAllExamples(): Promise<void> {
   try {

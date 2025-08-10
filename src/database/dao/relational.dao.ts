@@ -356,8 +356,8 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
 
     try {
       const whereClause = criteria ? this.buildWhereClause(this.mapEntityToRow(criteria)) : '';
-      const orderClause = this.buildOrderClause(options?.["sort"]);
-      const limitClause = this.buildLimitClause(options?.["limit"], options?.["offset"]);
+      const orderClause = this.buildOrderClause(options?.['sort']);
+      const limitClause = this.buildLimitClause(options?.['limit'], options?.['offset']);
 
       const sql = `
         SELECT ${this.tableName}.* 
@@ -544,11 +544,11 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
 
     try {
       const mappedEntities = entities.map((entity) => this.mapEntityToRow(entity as Partial<T>));
-      
+
       if (mappedEntities.length === 0 || !mappedEntities[0]) {
         throw new Error('No valid entities to insert');
       }
-      
+
       const columns = Object.keys(mappedEntities[0]);
       const columnsList = columns.join(', ');
 
@@ -916,8 +916,8 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     );
 
     try {
-      const orderClause = this.buildOrderClause(options?.["sort"]);
-      const limitClause = this.buildLimitClause(options?.["limit"], options?.["offset"]);
+      const orderClause = this.buildOrderClause(options?.['sort']);
+      const limitClause = this.buildLimitClause(options?.['limit'], options?.['offset']);
 
       const sql = `
         SELECT * FROM ${this.tableName} 

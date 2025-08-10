@@ -2,19 +2,17 @@
  * SPARC Swarm CLI Commands.
  *
  * CLI interface for SPARC methodology integration with swarm coordination
- * in the database-driven product flow
+ * in the database-driven product flow.
  */
 /**
  * @file Interface implementation: sparc-swarm-commands.
  */
 
-
-
 import { Command } from 'commander';
+import { createLogger } from '../../core/logger';
 import { DatabaseSPARCBridge } from '../coordination/database-sparc-bridge';
 import { SPARCSwarmCoordinator } from '../coordination/swarm/core/sparc-swarm-coordinator';
 import { DatabaseDrivenSystem } from '../core/database-driven-system';
-import { createLogger } from '../../core/logger';
 import { WorkflowEngine } from '../core/workflow-engine';
 import type {
   FeatureDocumentEntity,

@@ -1,17 +1,67 @@
 /**
- * @file Coordination system: roadmap-integration
+ * @file Coordination system: roadmap-integration.
  */
 
-
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../../config/logging-config';
+import { Priority, type ProjectDomain, type SPARCProject } from '../types/sparc-types';
 
 const logger = getLogger('coordination-swarm-sparc-integrations-roadmap-integration');
+
+// Roadmap-specific type definitions
+export interface Epic {
+  id: string;
+  title: string;
+  description: string;
+  features: string[];
+  business_value: string;
+  timeline: {
+    start_date: string;
+    end_date: string;
+  };
+  status: 'approved' | 'planned' | 'in_progress' | 'completed';
+  sparc_project_id: string;
+}
+
+export interface Feature {
+  id: string;
+  title: string;
+  description: string;
+  epic_id: string;
+  user_stories: string[];
+  status: 'backlog' | 'planned' | 'in_progress' | 'completed';
+  sparc_project_id: string;
+}
+
+export interface Roadmap {
+  id: string;
+  title: string;
+  description: string;
+  timeframe: {
+    start_quarter: string;
+    end_quarter: string;
+  };
+  items: RoadmapItem[];
+  last_updated: string;
+}
+
+export interface RoadmapItem {
+  id: string;
+  title: string;
+  description: string;
+  type: 'epic' | 'feature' | 'initiative';
+  quarter: string;
+  effort_estimate: number;
+  business_value: 'high' | 'medium' | 'low';
+  dependencies: string[];
+  status: 'planned' | 'in_progress' | 'completed';
+  sparc_project_id?: string;
+}
 
 /**
  * SPARC Roadmap and Epic Management Integration.
  *
  * Provides strategic planning integration between SPARC projects and.
- * enterprise roadmap planning systems.
+ * Enterprise roadmap planning systems.
  */
 
 import * as fs from 'node:fs/promises';
@@ -171,7 +221,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
       // Add to roadmap
       roadmap.items.push(roadmapItem);
-      roadmap["last_updated"] = new Date().toISOString();
+      roadmap['last_updated'] = new Date().toISOString();
 
       // Ensure docs directory exists
       await fs.mkdir(path.dirname(this.roadmapFile), { recursive: true });
@@ -429,8 +479,8 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
       description: strategy.description,
       type: 'epic' as const,
       quarter: timeframe.start,
-      effort_estimate: strategy["effort_estimate"],
-      business_value: strategy["business_value"],
+      effort_estimate: strategy['effort_estimate'],
+      business_value: strategy['business_value'],
       dependencies: [],
       status: 'planned' as const,
     }));

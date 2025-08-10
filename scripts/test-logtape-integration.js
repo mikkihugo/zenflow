@@ -6,15 +6,15 @@
  */
 
 import {
-  initializeLogging,
+  createAppLogger,
   createClaudeAILogger,
   createClaudeCLILogger,
   createExpressLogger,
-  createAppLogger,
-  logClaudeOperation,
+  initializeLogging,
   logClaudeMetrics,
+  logClaudeOperation,
   logErrorAnalysis,
-  logServerEvent
+  logServerEvent,
 } from '../src/utils/logging-config.js';
 
 async function testLogtapeIntegration() {
@@ -36,28 +36,28 @@ async function testLogtapeIntegration() {
     logger.info('Test info message', { test: 'data', timestamp: new Date().toISOString() });
     logger.debug('Test debug message', { detailed: true, level: 'debug' });
     logger.warn('Test warning message', { warning: 'example' });
-    
+
     // Test Express logger
-    expressLogger.info('Test Express request', { 
-      method: 'GET', 
-      url: '/test', 
+    expressLogger.info('Test Express request', {
+      method: 'GET',
+      url: '/test',
       statusCode: 200,
-      duration: 150 
+      duration: 150,
     });
 
-    // Test App logger  
+    // Test App logger
     appLogger.info('Test application event', {
       event: 'test',
-      component: 'logtape-integration-test'
+      component: 'logtape-integration-test',
     });
-    
+
     console.log('✅ Basic logging tests successful');
 
     // Test structured logging functions
     logClaudeOperation(claudeLogger, 'test_operation', {
       testData: true,
       operationId: 'test-123',
-      complexity: 'high'
+      complexity: 'high',
     });
 
     logClaudeMetrics(claudeLogger, {
@@ -66,24 +66,24 @@ async function testLogtapeIntegration() {
       duration_ms: 5000,
       num_turns: 10,
       cost_usd: 0.25,
-      exitCode: 0
+      exitCode: 0,
     });
 
     const mockErrors = [
       { line: 10, rule: 'no-unused-vars', message: 'Variable not used', severity: 'warning' },
-      { line: 25, rule: 'missing-type', message: 'Missing type annotation', severity: 'error' }
+      { line: 25, rule: 'missing-type', message: 'Missing type annotation', severity: 'error' },
     ];
 
     logErrorAnalysis(logger, 'test-file.ts', mockErrors, {
       'no-unused-vars': 1,
-      'missing-type': 1
+      'missing-type': 1,
     });
 
     // Test server event logging
     logServerEvent(appLogger, 'started', {
       port: 3000,
       host: 'localhost',
-      features: { mcp: true, api: true, dashboard: true }
+      features: { mcp: true, api: true, dashboard: true },
     });
 
     console.log('✅ Structured logging functions successful');
@@ -92,7 +92,6 @@ async function testLogtapeIntegration() {
     console.log('\n📁 Log files should be created at:');
     console.log('   - logs/claude-zen-activity.log (JSON format)');
     console.log('   - logs/ai-fixing-detailed.log (Text format)');
-
   } catch (error) {
     console.error('❌ Logtape integration test failed:', error.message);
     console.error('Stack:', error.stack);

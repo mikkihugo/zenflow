@@ -3,10 +3,8 @@
  * Cognitive decision-making system with adaptive learning.
  */
 /**
- * @file Neural network: daa-cognition
+ * @file Neural network: daa-cognition.
  */
-
-
 
 interface DAACognitionOptions {
   adaptationRate?: number;

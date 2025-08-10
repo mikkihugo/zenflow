@@ -6,8 +6,6 @@
  * @file failover management system
  */
 
-
-
 export class FailoverManager {
   private failoverStrategies: Map<string, string> = new Map();
 

@@ -1,4 +1,3 @@
-
 // Global test utilities interface (auto-generated)
 declare global {
   // London TDD utilities
@@ -7,21 +6,25 @@ declare global {
   function createMockFactory<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
   function waitForInteraction(spy: jest.Mock, timeout?: number): Promise<void>;
   function simulateProtocolHandshake(mockProtocol: jest.Mock): void;
-  
-  // Classical TDD utilities  
+
+  // Classical TDD utilities
   const testStartTime: number;
   const testStartMemory: NodeJS.MemoryUsage | undefined;
   function generateNeuralTestData(config: NeuralTestConfig): NeuralTestData[];
   function expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
   function createCoordinationMock<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
-  
+
   // Hybrid testing utilities
-  function testWithApproach(approach: 'london' | 'classical', testFn: () => void | Promise<void>): void;
+  function testWithApproach(
+    approach: 'london' | 'classical',
+    testFn: () => void | Promise<void>
+  ): void;
   function createMemoryTestScenario(type: 'sqlite' | 'lancedb' | 'json'): MemoryTestScenario;
-  
+
   // Node.js garbage collection (optional)
-  function gc?(): void;
-  
+  function gc
+  ?(): void
+
   // Custom Vitest matchers
   namespace jest {
     interface Matchers<R> {

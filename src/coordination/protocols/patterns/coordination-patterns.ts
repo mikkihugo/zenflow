@@ -1,13 +1,11 @@
 /**
  * Advanced Coordination Patterns System
  * Provides leader election algorithms, distributed consensus (Raft-like),
- * work-stealing queues, hierarchical coordination with delegation
+ * work-stealing queues, hierarchical coordination with delegation.
  */
 /**
- * @file Coordination system: coordination-patterns
+ * @file Coordination system: coordination-patterns.
  */
-
-
 
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
@@ -1033,7 +1031,7 @@ class LeaderElection extends EventEmitter {
 }
 
 /**
- * Consensus Engine Implementation (Raft-like)
+ * Consensus Engine Implementation (Raft-like).
  *
  * @example
  */

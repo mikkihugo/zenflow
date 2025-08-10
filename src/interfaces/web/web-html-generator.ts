@@ -5,10 +5,8 @@
  * Provides fallback UI with basic functionality and theming support.
  */
 /**
- * @file Interface implementation: web-html-generator
+ * @file Interface implementation: web-html-generator.
  */
-
-
 
 import type { WebConfig } from './web-config';
 

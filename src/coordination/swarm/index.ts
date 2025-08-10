@@ -1,9 +1,7 @@
 // Swarm Coordination - Core Swarm Functionality
 /**
- * @file swarm module exports
+ * @file Swarm module exports.
  */
-
-
 
 export * from './chaos-engineering/chaos-engineering';
 export { default as ChaosEngineering } from './chaos-engineering/chaos-engineering';

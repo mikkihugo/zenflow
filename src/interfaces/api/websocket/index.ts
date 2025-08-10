@@ -4,10 +4,8 @@
  * WebSocket-based real-time communication interface.
  */
 /**
- * @file websocket module exports
+ * @file Websocket module exports.
  */
-
-
 
 export * from './client';
 export { WebSocketClient as default } from './client';

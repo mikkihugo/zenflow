@@ -361,7 +361,7 @@ export class EventRegistry implements IEventManagerRegistry {
       metadata: {
         name: factory.constructor.name,
         version: '1.0.0',
-        capabilities: [],  // getSupportedEventTypes method not available on IEventManagerFactory interface
+        capabilities: [], // getSupportedEventTypes method not available on IEventManagerFactory interface
         supported: [type],
       },
       registered: new Date(),
@@ -536,7 +536,9 @@ export class EventRegistry implements IEventManagerRegistry {
     this.eventTypes[eventType] = {
       type: eventType,
       category: config?.category,
-      priority: config?.priority || (typeof EventPriorityMap['medium'] === 'number' ? EventPriorityMap['medium'] : 2),
+      priority:
+        config?.priority ||
+        (typeof EventPriorityMap['medium'] === 'number' ? EventPriorityMap['medium'] : 2),
       schema: config?.schema,
       managerTypes: config?.managerTypes,
       config: config?.options || {},

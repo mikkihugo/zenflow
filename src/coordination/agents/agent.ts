@@ -2,7 +2,6 @@
  * @file Coordination system: agent.
  */
 
-
 import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('coordination-agents-agent');
@@ -77,8 +76,8 @@ export class BaseAgent implements Agent {
         cpu: 0,
         memory: 0,
         disk: 0,
-        network: 0
-      }
+        network: 0,
+      },
     };
 
     this.state = {

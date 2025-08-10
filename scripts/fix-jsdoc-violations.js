@@ -4,14 +4,14 @@
  * Auto-Fix JSDoc Violations Script
  * Fixes systematic JSDoc ESLint violations:
  * - jsdoc/require-file-overview
- * - jsdoc/require-description-complete-sentence  
+ * - jsdoc/require-description-complete-sentence
  * - jsdoc/require-param-description
  * - jsdoc/require-returns-description
  */
 
 import fs from 'fs';
-import path from 'path';
 import { glob } from 'glob';
+import path from 'path';
 
 class JSDocFixer {
   constructor() {
@@ -21,17 +21,11 @@ class JSDocFixer {
 
   async fix() {
     console.log('🔧 Auto-Fixing JSDoc Violations...');
-    
+
     // Find all TypeScript files
     const pattern = path.join(this.baseDir, '**/*.{ts,tsx}');
     const files = await glob(pattern, {
-      ignore: [
-        '**/node_modules/**',
-        '**/dist/**',
-        '**/*.d.ts',
-        '**/__tests__/**',
-        '**/tests/**'
-      ]
+      ignore: ['**/node_modules/**', '**/dist/**', '**/*.d.ts', '**/__tests__/**', '**/tests/**'],
     });
 
     console.log(`📁 Found ${files.length} TypeScript files to check`);
@@ -43,10 +37,10 @@ class JSDocFixer {
 
     console.log(`\n✅ JSDoc fixing complete:`);
     console.log(`   📝 Fixed ${this.fixedFiles.length} files`);
-    
+
     if (this.fixedFiles.length > 0) {
       console.log(`\n📋 Fixed files:`);
-      this.fixedFiles.forEach(file => {
+      this.fixedFiles.forEach((file) => {
         const relative = path.relative(this.baseDir, file.path);
         console.log(`   • ${relative} (${file.changes.join(', ')})`);
       });
@@ -88,9 +82,9 @@ class JSDocFixer {
     // Write back if changed
     if (updatedContent !== content && changes.length > 0) {
       fs.writeFileSync(filePath, updatedContent);
-      this.fixedFiles.push({ 
-        path: filePath, 
-        changes 
+      this.fixedFiles.push({
+        path: filePath,
+        changes,
       });
     }
   }
@@ -98,10 +92,10 @@ class JSDocFixer {
   addFileOverview(content, filePath) {
     const fileName = path.basename(filePath, path.extname(filePath));
     const relativePath = path.relative(this.baseDir, filePath);
-    
+
     // Generate description based on file path and name
     const description = this.generateFileDescription(fileName, relativePath);
-    
+
     const fileOverview = `/**
  * @file ${description}
  */
@@ -111,7 +105,7 @@ class JSDocFixer {
     // Insert at the top, after any existing imports or license comments
     const lines = content.split('\n');
     let insertIndex = 0;
-    
+
     // Skip license comments and imports
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
@@ -120,7 +114,6 @@ class JSDocFixer {
       } else if (line.startsWith('//')) {
         insertIndex = i + 1;
       } else if (line === '') {
-        continue;
       } else {
         break;
       }
@@ -133,7 +126,7 @@ class JSDocFixer {
   generateFileDescription(fileName, relativePath) {
     // Smart description generation based on file name and location
     const pathParts = relativePath.split(path.sep);
-    
+
     // File type based descriptions
     if (fileName.endsWith('-adapter')) {
       return `${fileName.replace('-adapter', '')} adapter implementation`;
@@ -158,7 +151,9 @@ class JSDocFixer {
       return `${parentDir} module exports`;
     }
     if (fileName === 'types' || fileName.includes('types')) {
-      const domain = pathParts.find(part => ['core', 'interfaces', 'database', 'neural', 'coordination'].includes(part));
+      const domain = pathParts.find((part) =>
+        ['core', 'interfaces', 'database', 'neural', 'coordination'].includes(part)
+      );
       return `TypeScript type definitions${domain ? ` for ${domain}` : ''}`;
     }
 
@@ -189,12 +184,12 @@ class JSDocFixer {
       // Add periods to descriptions that don't end with punctuation
       {
         pattern: /(\* [A-Z][^.\n]*[a-zA-Z])\n(\s*\*\s*(?:@|\/|\n))/g,
-        replacement: '$1.\n$2'
+        replacement: '$1.\n$2',
       },
       // Add periods to single-line descriptions
       {
         pattern: /(\* [A-Z][^.\n]*[a-zA-Z])\n(\s*\*\/)/g,
-        replacement: '$1.\n$2'
+        replacement: '$1.\n$2',
       },
       // Fix descriptions that end with lowercase
       {
@@ -204,12 +199,12 @@ class JSDocFixer {
             return match;
           }
           return `${description}.\n`;
-        }
-      }
+        },
+      },
     ];
 
     let updatedContent = content;
-    fixes.forEach(fix => {
+    fixes.forEach((fix) => {
       updatedContent = updatedContent.replace(fix.pattern, fix.replacement);
     });
 
@@ -219,13 +214,13 @@ class JSDocFixer {
   addParameterDescriptions(content) {
     // Find JSDoc blocks with @param but no description
     const paramPattern = /(@param\s+(?:\{[^}]+\}\s+)?(\w+))(\s*\n)/g;
-    
+
     return content.replace(paramPattern, (match, paramTag, paramName, ending) => {
       // If there's already a description, don't modify
       if (match.includes(' - ') || match.includes(' ')) {
         return match;
       }
-      
+
       // Generate basic description based on parameter name
       const description = this.generateParamDescription(paramName);
       return `${paramTag} ${description}${ending}`;
@@ -235,30 +230,30 @@ class JSDocFixer {
   generateParamDescription(paramName) {
     // Generate description based on common parameter name patterns
     const patterns = {
-      'id': 'Unique identifier',
-      'name': 'Name of the item',
-      'config': 'Configuration options',
-      'options': 'Additional options',
-      'data': 'Data to process',
-      'callback': 'Callback function',
-      'error': 'Error object',
-      'result': 'Result data',
-      'value': 'Value to set',
-      'key': 'Key identifier',
-      'path': 'File or URL path',
-      'type': 'Type specification',
-      'status': 'Current status',
-      'message': 'Message content',
-      'context': 'Context object',
-      'handler': 'Event handler function',
-      'timeout': 'Timeout in milliseconds',
-      'retries': 'Number of retry attempts',
-      'logger': 'Logger instance',
-      'service': 'Service instance',
-      'manager': 'Manager instance',
-      'adapter': 'Adapter instance',
-      'engine': 'Engine instance',
-      'coordinator': 'Coordinator instance'
+      id: 'Unique identifier',
+      name: 'Name of the item',
+      config: 'Configuration options',
+      options: 'Additional options',
+      data: 'Data to process',
+      callback: 'Callback function',
+      error: 'Error object',
+      result: 'Result data',
+      value: 'Value to set',
+      key: 'Key identifier',
+      path: 'File or URL path',
+      type: 'Type specification',
+      status: 'Current status',
+      message: 'Message content',
+      context: 'Context object',
+      handler: 'Event handler function',
+      timeout: 'Timeout in milliseconds',
+      retries: 'Number of retry attempts',
+      logger: 'Logger instance',
+      service: 'Service instance',
+      manager: 'Manager instance',
+      adapter: 'Adapter instance',
+      engine: 'Engine instance',
+      coordinator: 'Coordinator instance',
     };
 
     // Check exact matches first
@@ -280,13 +275,13 @@ class JSDocFixer {
   addReturnDescriptions(content) {
     // Find @returns or @return without descriptions
     const returnPattern = /(@returns?\s*)(\n)/g;
-    
+
     return content.replace(returnPattern, (match, returnTag, ending) => {
       // If there's already a description, don't modify
       if (returnTag.includes(' - ') || returnTag.includes('{')) {
         return match;
       }
-      
+
       return `${returnTag.trim()} Promise or result${ending}`;
     });
   }
@@ -297,19 +292,18 @@ async function main() {
   try {
     const fixer = new JSDocFixer();
     await fixer.fix();
-    
+
     console.log('\n🎉 JSDoc fixing complete!');
     console.log('\n💡 Benefits:');
     console.log('   • Added file overview comments to files missing @file');
-    console.log('   • Fixed incomplete sentence descriptions');  
+    console.log('   • Fixed incomplete sentence descriptions');
     console.log('   • Added missing parameter descriptions');
     console.log('   • Added missing return value descriptions');
-    
+
     console.log('\n🔧 Next steps:');
     console.log('   1. Run ESLint to verify JSDoc violations are fixed');
     console.log('   2. Review generated descriptions and improve if needed');
     console.log('   3. Add @example blocks for complex functions');
-    
   } catch (error) {
     console.error('❌ JSDoc fixing failed:', error.message);
     process.exit(1);

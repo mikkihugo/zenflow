@@ -4,10 +4,8 @@
  * Following Google TypeScript standards with strict typing.
  */
 /**
- * @file Coordination system: manager
+ * @file Coordination system: manager.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus, ILogger } from '../di/index';

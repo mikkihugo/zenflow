@@ -8,8 +8,6 @@
  * @file Complete-system-integration implementation.
  */
 
-
-
 import {
   CORE_TOKENS,
   createContainerBuilder,

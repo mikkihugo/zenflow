@@ -181,17 +181,17 @@ describe('DI System Comprehensive Integration', () => {
 
       // Act
       container.register(
-        SWARM_TOKENS["SwarmCoordinator"],
+        SWARM_TOKENS['SwarmCoordinator'],
         new SingletonProvider(() => mockSwarmCoordinator)
       );
       container.register(
-        SWARM_TOKENS["AgentRegistry"],
+        SWARM_TOKENS['AgentRegistry'],
         new SingletonProvider(() => mockAgentRegistry)
       );
 
       // Assert
-      const coordinator = container.resolve(SWARM_TOKENS["SwarmCoordinator"]);
-      const registry = container.resolve(SWARM_TOKENS["AgentRegistry"]);
+      const coordinator = container.resolve(SWARM_TOKENS['SwarmCoordinator']);
+      const registry = container.resolve(SWARM_TOKENS['AgentRegistry']);
 
       expect(coordinator).toBe(mockSwarmCoordinator);
       expect(registry).toBe(mockAgentRegistry);
@@ -211,12 +211,12 @@ describe('DI System Comprehensive Integration', () => {
       };
 
       // Act
-      container.register(NEURAL_TOKENS["NetworkTrainer"], new SingletonProvider(() => mockTrainer));
-      container.register(NEURAL_TOKENS["DataLoader"], new SingletonProvider(() => mockDataLoader));
+      container.register(NEURAL_TOKENS['NetworkTrainer'], new SingletonProvider(() => mockTrainer));
+      container.register(NEURAL_TOKENS['DataLoader'], new SingletonProvider(() => mockDataLoader));
 
       // Assert
-      const trainer = container.resolve(NEURAL_TOKENS["NetworkTrainer"]);
-      const dataLoader = container.resolve(NEURAL_TOKENS["DataLoader"]);
+      const trainer = container.resolve(NEURAL_TOKENS['NetworkTrainer']);
+      const dataLoader = container.resolve(NEURAL_TOKENS['DataLoader']);
 
       expect(trainer).toBe(mockTrainer);
       expect(dataLoader).toBe(mockDataLoader);

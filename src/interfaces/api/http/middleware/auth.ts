@@ -1,3 +1,8 @@
+/**
+ * @file Authentication middleware and utilities for HTTP API.
+ * Provides no-op authentication for development with structure for future implementation.
+ */
+
 import { LogLevel, log } from './logging';
 
 /**
@@ -16,9 +21,10 @@ export interface User {
 }
 
 /**
- * Authentication context (for future use)
+ * Authentication context (for future use).
  *
  * @example.
+ * @example
  */
 export interface AuthContext {
   readonly user?: User;
@@ -33,10 +39,10 @@ export interface AuthContext {
  * Currently allows all requests without authentication.
  * Provides structure for future authentication implementation.
  *
- * @param req Express request object
- * @param res Express response object
+ * @param req Express request object.
+ * @param res Express response object.
  * @param _res
- * @param next Next function to continue middleware chain
+ * @param next Next function to continue middleware chain.
  */
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   // Create anonymous user context
@@ -56,7 +62,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
 
   // Log authentication status (only in development)
   if (process.env['NODE_ENV'] === 'development') {
-    log(LogLevel["DEBUG"], 'Authentication: No auth required - allowing request', req, {
+    log(LogLevel['DEBUG'], 'Authentication: No auth required - allowing request', req, {
       authStatus: 'no_auth_required',
       userType: 'anonymous',
       permissions: authContext.user?.permissions,
@@ -75,6 +81,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
  *
  * @param req
  * @param _res
+ * @param res
  * @param next
  */
 export const optionalAuthMiddleware = (req: Request, res: Response, next: NextFunction): void => {
@@ -100,7 +107,7 @@ export const optionalAuthMiddleware = (req: Request, res: Response, next: NextFu
     };
 
     if (process.env['NODE_ENV'] === 'development') {
-      log(LogLevel["DEBUG"], 'Optional auth: Token provided but not validated', req, {
+      log(LogLevel['DEBUG'], 'Optional auth: Token provided but not validated', req, {
         hasAuthHeader: !!authHeader,
         hasApiKey: !!apiKey,
         tokenType: authContext.tokenType,
@@ -172,6 +179,7 @@ export const hasRole = (req: Request, role: string): boolean => {
  * Currently always returns true since no auth is required.
  *
  * @param _req
+ * @param req
  */
 export const isAdmin = (req: Request): boolean => {
   return true; // Allow all admin operations since no auth required
@@ -197,23 +205,23 @@ export const getCurrentUser = (req: Request): User | undefined => {
  * 1. JWT Token Validation:
  *    - Verify JWT signature
  *    - Check expiration
- *    - Extract user claims
+ *    - Extract user claims.
  *
  * 2. API Key Validation:
  *    - Validate API key against database
- *    - Check key permissions and rate limits
+ *    - Check key permissions and rate limits.
  *
  * 3. OAuth Integration:
  *    - Support Google OAuth, GitHub OAuth, etc.
- *    - Validate OAuth tokens with provider
+ *    - Validate OAuth tokens with provider.
  *
  * 4. Role-Based Access Control:
  *    - Implement proper permission checking
- *    - Support hierarchical roles
+ *    - Support hierarchical roles.
  *
  * 5. Rate Limiting by User:
  *    - Different limits for authenticated vs anonymous
- *    - Per-user rate limiting
+ *    - Per-user rate limiting.
  */
 
 // Extend Express Request interface to include auth context

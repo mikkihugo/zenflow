@@ -5,10 +5,8 @@
  * Users interact with the Hive mind rather than individual swarms.
  */
 /**
- * @file Coordination system: hive-tools
+ * @file Coordination system: hive-tools.
  */
-
-
 
 import { exec } from 'node:child_process';
 import * as os from 'node:os';

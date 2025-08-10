@@ -5,10 +5,8 @@
  * consistency, and distributed storage capabilities.
  */
 /**
- * @file Coordination system: memory-systems-template
+ * @file Coordination system: memory-systems-template.
  */
-
-
 
 import { nanoid } from 'nanoid';
 

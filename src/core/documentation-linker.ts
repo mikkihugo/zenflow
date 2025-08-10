@@ -5,10 +5,8 @@
  * Integrated directly into core without plugin architecture.
  */
 /**
- * @file documentation-linker implementation
+ * @file Documentation-linker implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';

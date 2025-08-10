@@ -113,9 +113,8 @@ export type {
   VectorStats,
 } from './interfaces';
 
-// TODO: TypeScript error TS2323/TS2484 - Conflicting exports with constants below (AI unsure of safe fix - human review needed)
-// Export enums
-// export { DatabaseTypes, EntityTypes } from './interfaces';
+// Export enums from interfaces
+export { DatabaseTypes as DatabaseTypesEnum, EntityTypes as EntityTypesEnum } from './interfaces';
 // Manager implementations
 export { DocumentManager } from './managers/document-manager';
 
@@ -142,14 +141,14 @@ export type {
  * entity mapping, and CRUD operations. It handles dependency injection setup
  * automatically and provides a clean interface for database operations.
  *
- * @template T The entity type this DAO will manage
- * @param {string} entityType - The name of the entity type (e.g., 'User', 'Product')
- * @param {('postgresql'|'sqlite'|'kuzu'|'lancedb'|'mysql'|'memory'|'coordination')} databaseType - Database type to use
- * @param {any} [config] - Optional database configuration object
- * @returns {Promise<IDao<T>>} A Promise that resolves to a configured DAO instance
- * @throws {Error} When database configuration is invalid
- * @throws {Error} When database connection fails
- * @throws {Error} When dependency injection setup fails
+ * @template T The entity type this DAO will manage.
+ * @param {string} entityType - The name of the entity type (e.g., 'User', 'Product').
+ * @param {('postgresql'|'sqlite'|'kuzu'|'lancedb'|'mysql'|'memory'|'coordination')} databaseType - Database type to use.
+ * @param {any} [config] - Optional database configuration object.
+ * @returns {Promise<IDao<T>>} A Promise that resolves to a configured DAO instance.
+ * @throws {Error} When database configuration is invalid.
+ * @throws {Error} When database connection fails.
+ * @throws {Error} When dependency injection setup fails.
  * @example PostgreSQL DAO with Connection Pool
  * ```typescript
  * const userDao = await createDao<User>('User', 'postgresql', {
@@ -187,40 +186,8 @@ export type {
  * });
  * ```
  */
-export async function createDao<T>(
-  entityType: string,
-  databaseType: 'postgresql' | 'sqlite' | 'kuzu' | 'lancedb' | 'mysql' | 'memory' | 'coordination',
-  config?: any
-): Promise<IDao<T>> {
-  const { DALFactory } = await import('./factory');
-  const { DIContainer } = await import('../di/container/di-container');
-  const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
-
-  // Create basic DI container for factory dependencies
-  const container = new DIContainer();
-
-  // Register basic logger and config (would be properly configured in real app)
-  // TODO: TypeScript error TS2345 - Logger provider type mismatch (AI unsure of safe fix - human review needed)
-  container.register(CORE_TOKENS.Logger, (() => ({
-    debug: console.debug,
-    info: console.info,
-    warn: console.warn,
-    error: console.error,
-  })) as any);
-
-  // TODO: TypeScript error TS2345 - Config provider type mismatch (AI unsure of safe fix - human review needed)
-  container.register(CORE_TOKENS.Config, (() => ({})) as any);
-
-  // TODO: TypeScript error TS2345/TS18046 - DALFactory DI token type mismatch (AI unsure of safe fix - human review needed)
-  const factory = container.resolve(DALFactory as any) as any;
-
-  // TODO: TypeScript error TS18046 - factory type resolution (AI unsure of safe fix - human review needed)
-  return await (factory as any).createDao<T>({
-    databaseType,
-    entityType,
-    databaseConfig: config || getDefaultConfig(databaseType),
-  });
-}
+// Re-export from dao-factory to break circular dependency
+export { createDao } from './core/dao-factory';
 
 /**
  * Create a Manager instance for high-level entity operations.
@@ -229,14 +196,14 @@ export async function createDao<T>(
  * data validation, caching, and cross-entity relationships. They're ideal for
  * application service layers that need more than basic CRUD operations.
  *
- * @template T The entity type this manager will handle
- * @param {string} entityType - The name of the entity type
- * @param {('postgresql'|'sqlite'|'kuzu'|'lancedb'|'mysql'|'memory'|'coordination')} databaseType - Database type to use
- * @param {any} [config] - Optional database configuration
- * @returns {Promise<IManager<T>>} A Promise that resolves to a configured Manager instance
- * @throws {Error} When manager creation fails
- * @throws {Error} When underlying DAO creation fails
- * @throws {Error} When business logic validation fails
+ * @template T The entity type this manager will handle.
+ * @param {string} entityType - The name of the entity type.
+ * @param {('postgresql'|'sqlite'|'kuzu'|'lancedb'|'mysql'|'memory'|'coordination')} databaseType - Database type to use.
+ * @param {any} [config] - Optional database configuration.
+ * @returns {Promise<IManager<T>>} A Promise that resolves to a configured Manager instance.
+ * @throws {Error} When manager creation fails.
+ * @throws {Error} When underlying DAO creation fails.
+ * @throws {Error} When business logic validation fails.
  * @example Document Manager with Validation
  * ```typescript
  * const docManager = await createManager<Document>('Document', 'postgresql', dbConfig);
@@ -294,8 +261,7 @@ export async function createManager<T>(
   // TODO: TypeScript error TS2345/TS18046 - DALFactory DI token type mismatch (AI unsure of safe fix - human review needed)
   const factory = container.resolve(DALFactory as any) as any;
 
-  // TODO: TypeScript error TS18046 - factory type resolution (AI unsure of safe fix - human review needed)
-  return await (factory as any).createManager<T>({
+  return await (factory as any).createManager({
     databaseType,
     entityType,
     databaseConfig: config || getDefaultConfig(databaseType),
@@ -306,19 +272,19 @@ export async function createManager<T>(
  * Create a multi-database DAO setup with primary and secondary databases.
  *
  * This function creates a sophisticated multi-database architecture with a primary database.
- * for writes and optional secondary databases for reads, caching, or replication.
+ * For writes and optional secondary databases for reads, caching, or replication.
  * The primary database handles all write operations, while reads can be distributed.
- * across secondaries for performance and reliability.
+ * Across secondaries for performance and reliability..
  *
- * @template T The entity type for the multi-database setup
- * @param {string} entityType - The entity type name
- * @param {Object} primaryConfig - Primary database configuration
- * @param {('postgresql'|'sqlite'|'kuzu'|'lancedb'|'mysql'|'memory'|'coordination')} primaryConfig.databaseType - Primary database type
- * @param {any} [primaryConfig.config] - Primary database connection config
- * @param {Array} [secondaryConfigs] - Optional array of secondary database configurations
- * @returns {Promise<MultiDatabaseDAO<T>>} A Promise that resolves to a multi-database DAO
- * @throws {Error} When primary database configuration is invalid
- * @throws {Error} When any secondary database setup fails
+ * @template T The entity type for the multi-database setup.
+ * @param {string} entityType - The entity type name.
+ * @param {Object} primaryConfig - Primary database configuration.
+ * @param {('postgresql'|'sqlite'|'kuzu'|'lancedb'|'mysql'|'memory'|'coordination')} primaryConfig.databaseType - Primary database type.
+ * @param {any} [primaryConfig.config] - Primary database connection config.
+ * @param {Array} [secondaryConfigs] - Optional array of secondary database configurations.
+ * @returns {Promise<MultiDatabaseDAO<T>>} A Promise that resolves to a multi-database DAO.
+ * @throws {Error} When primary database configuration is invalid.
+ * @throws {Error} When any secondary database setup fails.
  * @throws {Error} When DAL factory initialization fails
  * @example Primary PostgreSQL with Redis Cache
  * ```typescript
@@ -397,7 +363,7 @@ export async function createMultiDatabaseSetup<T>(
       | 'coordination';
     config?: any;
   }>
-): Promise<MultiDatabaseDAOType<T>> {
+): Promise<import('./factory').MultiDatabaseDAO<T>> {
   const { DALFactory } = await import('./factory');
   const { DIContainer } = await import('../di/container/di-container');
   const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
@@ -430,8 +396,7 @@ export async function createMultiDatabaseSetup<T>(
     databaseConfig: sc.config || getDefaultConfig(sc.databaseType),
   }));
 
-  // TODO: TypeScript error TS18046 - factory type resolution (AI unsure of safe fix - human review needed)
-  return await (factory as any).createMultiDatabaseDAO<T>(
+  return await (factory as any).createMultiDatabaseDAO(
     entityType,
     primaryDaoConfig,
     secondaryDaoConfigs
@@ -445,9 +410,9 @@ export async function createMultiDatabaseSetup<T>(
  * including connection parameters, pool settings, and database-specific options.
  * These defaults are suitable for development and can be overridden for production.
  *
- * @param {string} databaseType - The database type to get defaults for
- * @returns {any} Default configuration object for the specified database type
- * @throws {Error} When an unknown database type is specified
+ * @param {string} databaseType - The database type to get defaults for.
+ * @returns {any} Default configuration object for the specified database type.
+ * @throws {Error} When an unknown database type is specified.
  * @example Getting PostgreSQL Defaults
  * ```typescript
  * const pgDefaults = getDefaultConfig('postgresql');
@@ -543,8 +508,8 @@ function getDefaultConfig(databaseType: string): any {
  * Predefined Entity Type Constants.
  *
  * This object provides a centralized registry of common entity types used throughout.
- * the Claude-Zen system. Using these constants ensures consistency and prevents
- * typos when creating DAOs and managers.
+ * The Claude-Zen system. Using these constants ensures consistency and prevents
+ * typos when creating DAOs and managers..
  *
  * @readonly
  * @constant
@@ -580,44 +545,15 @@ function getDefaultConfig(databaseType: string): any {
  * });
  * ```
  */
-export const EntityTypes = {
-  // Swarm coordination entities
-  SwarmAgent: 'SwarmAgent',
-  SwarmTask: 'SwarmTask',
-  SwarmExecution: 'SwarmExecution',
-
-  // Memory entities
-  MemoryEntry: 'MemoryEntry',
-  CacheItem: 'CacheItem',
-  SessionData: 'SessionData',
-
-  // Vector entities
-  VectorDocument: 'VectorDocument',
-  Embedding: 'Embedding',
-  Similarity: 'Similarity',
-
-  // Graph entities
-  GraphNode: 'GraphNode',
-  GraphRelationship: 'GraphRelationship',
-  GraphPath: 'GraphPath',
-
-  // Coordination entities
-  DistributedLock: 'DistributedLock',
-  CoordinationEvent: 'CoordinationEvent',
-  WorkflowStep: 'WorkflowStep',
-
-  // Generic entities
-  User: 'User',
-  Document: 'Document',
-  Configuration: 'Configuration',
-} as const;
+// Re-export EntityTypes from dao-factory to break circular dependency
+export { EntityTypeValues as EntityTypes } from './core/dao-factory';
 
 /**
  * Supported Database Type Constants.
  *
  * This object provides constants for all supported database types in the DAL.
  * Using these constants prevents typos and provides better IDE support with.
- * autocomplete and type checking.
+ * Autocomplete and type checking..
  *
  * @readonly
  * @constant
@@ -674,7 +610,7 @@ export const DatabaseTypes = {
  *
  * This object provides pre-configured factory methods for common application patterns,
  * eliminating boilerplate code and providing battle-tested configurations for typical.
- * scenarios in AI applications, distributed systems, and data processing.
+ * Scenarios in AI applications, distributed systems, and data processing..
  *
  * @namespace QuickSetup
  * @readonly
@@ -730,12 +666,13 @@ export const QuickSetup = {
    * Create a typical swarm coordination setup.
    */
   async swarmCoordination() {
+    const { createDao: createDaoFn } = await import('./core/dao-factory');
     return {
-      agents: await createDao('SwarmAgent', 'coordination'),
-      tasks: await createDao('SwarmTask', 'coordination'),
-      executions: await createDao('SwarmExecution', 'coordination'),
-      memory: await createDao('MemoryEntry', 'memory'),
-      vectors: await createDao('VectorDocument', 'lancedb'),
+      agents: await createDaoFn<any>('agent', 'coordination' as any, getDefaultConfig('coordination')),
+      tasks: await createDaoFn<any>('task', 'coordination' as any, getDefaultConfig('coordination')),
+      executions: await createDaoFn<any>('coordination', 'coordination' as any, getDefaultConfig('coordination')),
+      memory: await createDaoFn<any>('memory', 'memory' as any, getDefaultConfig('memory')),
+      vectors: await createDaoFn<any>('vector', 'lancedb' as any, getDefaultConfig('lancedb')),
     };
   },
 
@@ -743,11 +680,12 @@ export const QuickSetup = {
    * Create a typical AI/ML data setup.
    */
   async aimlData() {
+    const { createDao: createDaoFn } = await import('./core/dao-factory');
     return {
-      documents: await createDao('Document', 'postgresql'),
-      embeddings: await createDao('VectorDocument', 'lancedb'),
-      relationships: await createDao('GraphNode', 'kuzu'),
-      cache: await createDao('CacheItem', 'memory'),
+      documents: await createDaoFn<any>('document', 'postgresql' as any, getDefaultConfig('postgresql')),
+      embeddings: await createDaoFn<any>('vector', 'lancedb' as any, getDefaultConfig('lancedb')),
+      relationships: await createDaoFn<any>('node', 'kuzu' as any, getDefaultConfig('kuzu')),
+      cache: await createDaoFn<any>('memory', 'memory' as any, getDefaultConfig('memory')),
     };
   },
 

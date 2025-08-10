@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: system-metrics-dashboard
+ * @file Interface implementation: system-metrics-dashboard.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -11,11 +10,11 @@ const logger = getLogger('interfaces-web-system-metrics-dashboard');
 /** Real-time monitoring and analytics for Claude Zen systems */
 
 import { EventEmitter } from 'node:events';
+// Import UACL for unified client management
+import { UACLHelpers, uacl } from '../clients/index';
 import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
 import { createDAO, createRepository, DatabaseTypes, EntityTypes } from '../database/index';
 import type { IRepository } from '../database/interfaces';
-// Import UACL for unified client management
-import { UACLHelpers, uacl } from '../clients/index';
 import type MCPPerformanceMetrics from '../mcp/performance-metrics';
 import type EnhancedMemory from '../memory/memory';
 
@@ -394,7 +393,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   }
 
   /**
-   * Display console status (fallback)
+   * Display console status (fallback).
    *
    * @param status
    */

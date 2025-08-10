@@ -45,15 +45,15 @@
  */
 
 import { getLogger } from '../../config/logging-config';
-import type { ClientManager } from './manager';
 import {
-  ClientInstance,
+  type ClientInstance,
   ClientType,
-  HTTPClientConfig,
-  KnowledgeClientConfig,
-  MCPClientConfig,
-  WebSocketClientConfig,
-} from './interfaces';
+  type HTTPClientConfig,
+  type KnowledgeClientConfig,
+  type MCPClientConfig,
+  type WebSocketClientConfig,
+} from './registry';
+import { ClientManager, globalClientManager as actualGlobalClientManager, ClientManagerHelpers } from './manager';
 
 // Legacy FACT integration
 export { FACTIntegration } from '../../knowledge/knowledge-client';
@@ -106,148 +106,9 @@ export interface ClientMetrics {
   totalThroughput: number;
 }
 
-// ClientManager class definition
-export class ClientManager {
-  constructor(config?: ClientManagerConfig) {}
-  
-  getClient(id: string): ClientInstance | undefined {
-    // Implementation would be provided by actual manager
-    return undefined;
-  }
-  
-  getBestClient(type: ClientType): ClientInstance | undefined {
-    // Implementation would be provided by actual manager
-    return undefined;
-  }
-  
-  getClientsByType(type: ClientType): ClientInstance[] {
-    // Implementation would be provided by actual manager
-    return [];
-  }
-  
-  getHealthStatus(): {
-    status: 'healthy' | 'degraded' | 'critical';
-    totalClients: number;
-    healthyClients: number;
-    degradedClients: number;
-    unhealthyClients: number;
-    byType: Record<string, { healthy: number; total: number }>;
-  } {
-    return {
-      status: 'healthy',
-      totalClients: 0,
-      healthyClients: 0,
-      degradedClients: 0,
-      unhealthyClients: 0,
-      byType: {}
-    };
-  }
-  
-  getAggregatedMetrics(): ClientMetrics {
-    return {
-      total: 0,
-      connected: 0,
-      disconnected: 0,
-      error: 0,
-      totalRequests: 0,
-      totalErrors: 0,
-      averageLatency: 0,
-      totalThroughput: 0
-    };
-  }
-  
-  async shutdown(): Promise<void> {
-    // Implementation would be provided by actual manager
-  }
-  
-  async connectClient(id: string): Promise<void> {
-    // Implementation would be provided by actual manager
-  }
-  
-  async disconnectClient(id: string): Promise<void> {
-    // Implementation would be provided by actual manager
-  }
-  
-  registry = {
-    getAll: (): Array<{ id: string; config: { enabled: boolean } }> => []
-  };
-}
-
-// ClientManagerHelpers static methods
-export class ClientManagerHelpers {
-  static async initialize(config?: ClientManagerConfig): Promise<void> {
-    // Implementation would be provided by actual helpers
-  }
-  
-  static async createHTTPClient(
-    id: string,
-    baseURL: string,
-    options: Partial<HTTPClientConfig>
-  ): Promise<ClientInstance> {
-    // Implementation would be provided by actual helpers
-    return {} as ClientInstance;
-  }
-  
-  static async createWebSocketClient(
-    id: string,
-    url: string,
-    options: Partial<WebSocketClientConfig>
-  ): Promise<ClientInstance> {
-    // Implementation would be provided by actual helpers
-    return {} as ClientInstance;
-  }
-  
-  static async createKnowledgeClient(
-    id: string,
-    factRepoPath: string,
-    anthropicApiKey: string,
-    options: Partial<KnowledgeClientConfig>
-  ): Promise<ClientInstance> {
-    // Implementation would be provided by actual helpers
-    return {} as ClientInstance;
-  }
-  
-  static async createMCPClient(
-    id: string,
-    servers: MCPClientConfig['servers'],
-    options: Partial<MCPClientConfig>
-  ): Promise<ClientInstance> {
-    // Implementation would be provided by actual helpers
-    return {} as ClientInstance;
-  }
-  
-  static getSystemStatus(): {
-    health: {
-      status: 'healthy' | 'degraded' | 'critical';
-      byType: Record<string, { healthy: number; total: number }>;
-    };
-    metrics: ClientMetrics;
-    configuration: ClientManagerConfig;
-    uptime: { totalUptime: number };
-  } {
-    return {
-      health: {
-        status: 'healthy',
-        byType: {}
-      },
-      metrics: {
-        total: 0,
-        connected: 0,
-        disconnected: 0,
-        error: 0,
-        totalRequests: 0,
-        totalErrors: 0,
-        averageLatency: 0,
-        totalThroughput: 0
-      },
-      configuration: {},
-      uptime: { totalUptime: 0 }
-    };
-  }
-}
 
 // Global client manager instance
-export const globalClientManager = new ClientManager();
+export const globalClientManager = actualGlobalClientManager;
 // Core UACL components
 export {
   type BaseClientConfig,
@@ -385,7 +246,7 @@ export class UACL {
    * @param {boolean} [options.compression=true] - Enable response compression.
    * @param {boolean} [options.http2=false] - Enable HTTP/2 support.
    * @returns {Promise<ClientInstance>} Promise resolving to the created HTTP client instance.
-   * @throws {Error} If client creation fails or ID already exists
+   * @throws {Error} If client creation fails or ID already exists.
    * @description Creates, configures, and registers a new HTTP client with automatic retry logic,
    *              authentication handling, and performance monitoring.
    * @example
@@ -446,9 +307,9 @@ export class UACL {
    * @param {object} [options.heartbeat] - Heartbeat/ping configuration.
    * @param {boolean} [options.heartbeat.enabled=true] - Enable heartbeat messages.
    * @param {number} [options.heartbeat.interval=30000] - Heartbeat interval in milliseconds.
-   * @param {object} [options.messageQueue] - Message queuing for offline scenarios
-   * @returns {Promise<ClientInstance>} Promise resolving to the created WebSocket client instance
-   * @throws {Error} If client creation fails, connection fails, or ID already exists
+   * @param {object} [options.messageQueue] - Message queuing for offline scenarios.
+   * @returns {Promise<ClientInstance>} Promise resolving to the created WebSocket client instance.
+   * @throws {Error} If client creation fails, connection fails, or ID already exists.
    * @description Creates, configures, and registers a new WebSocket client with automatic reconnection,
    *              heartbeat monitoring, message queuing, and real-time event handling.
    * @example
@@ -519,8 +380,8 @@ export class UACL {
    * @param {string[]} [options.tools] - Available FACT tools to use for queries.
    * @param {object} [options.rateLimit] - Rate limiting configuration for API calls.
    * @param {object} [options.vectorConfig] - Vector search configuration.
-   * @returns {Promise<ClientInstance>} Promise resolving to the created Knowledge client instance
-   * @throws {Error} If client creation fails, FACT integration fails, or invalid configuration
+   * @returns {Promise<ClientInstance>} Promise resolving to the created Knowledge client instance.
+   * @throws {Error} If client creation fails, FACT integration fails, or invalid configuration.
    * @description Creates, configures, and registers a new Knowledge client with FACT integration,
    *              semantic search capabilities, query caching, and intelligent tool selection.
    * @example
@@ -846,7 +707,7 @@ export class UACL {
    * console.log(`Health Checks: ${status.configuration.enableHealthChecks ? 'Enabled' : 'Disabled'}`);
    * ```
    */
-  getSystemStatus(): ReturnType<typeof ClientManagerHelpers.getSystemStatus> {
+  getSystemStatus(): ReturnType<typeof ClientManagerHelpers['getSystemStatus']> {
     return ClientManagerHelpers.getSystemStatus();
   }
 
@@ -1068,8 +929,8 @@ export const UACLHelpers = {
    * @returns {ClientInstance} [returns.http] - HTTP client instance (if httpBaseURL provided).
    * @returns {ClientInstance} [returns.websocket] - WebSocket client instance (if websocketURL provided).
    * @returns {ClientInstance} [returns.knowledge] - Knowledge client instance (if FACT config provided).
-   * @returns {ClientInstance} [returns.mcp] - MCP client instance (if mcpServers provided)
-   * @throws {Error} If client setup fails or required dependencies are missing
+   * @returns {ClientInstance} [returns.mcp] - MCP client instance (if mcpServers provided).
+   * @throws {Error} If client setup fails or required dependencies are missing.
    * @description Creates a standard set of clients based on provided configuration,
    *              automatically connects them, and returns the instances for immediate use.
    *              Perfect for application bootstrap and common client setup patterns.

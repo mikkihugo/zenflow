@@ -2,13 +2,11 @@
  * System Event Manager Factory.
  *
  * Factory implementation for creating SystemEventAdapter instances.
- * following the UEL factory pattern and integrating with the main UELFactory.
+ * Following the UEL factory pattern and integrating with the main UELFactory.
  */
 /**
- * @file Interface implementation: system-event-factory
+ * @file Interface implementation: system-event-factory.
  */
-
-
 
 import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
 import { createLogger } from '../../../core/logger';
@@ -324,6 +322,7 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
  *
  * @param name
  * @param overrides
+ * @example
  */
 export async function createSystemEventManager(
   name: string,
@@ -339,6 +338,7 @@ export async function createSystemEventManager(
  * Create system event manager for core system integration.
  *
  * @param name
+ * @example
  */
 export async function createCoreSystemEventManager(
   name: string = 'core-system-events'
@@ -367,6 +367,7 @@ export async function createCoreSystemEventManager(
  * Create system event manager for application coordination.
  *
  * @param name
+ * @example
  */
 export async function createApplicationCoordinatorEventManager(
   name: string = 'app-coordinator-events'
@@ -395,6 +396,7 @@ export async function createApplicationCoordinatorEventManager(
  * Create system event manager for error recovery integration.
  *
  * @param name
+ * @example
  */
 export async function createErrorRecoveryEventManager(
   name: string = 'error-recovery-events'
@@ -436,6 +438,7 @@ export async function createErrorRecoveryEventManager(
  * Create comprehensive system event manager for full system monitoring.
  *
  * @param name
+ * @example
  */
 export async function createComprehensiveSystemEventManager(
   name: string = 'comprehensive-system-events'

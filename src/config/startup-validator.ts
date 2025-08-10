@@ -1,7 +1,3 @@
-import { getLogger } from './logging-config';
-
-const logger = getLogger('src-config-startup-validator');
-
 /**
  * @file Startup Configuration Validator.
  *
@@ -9,7 +5,11 @@ const logger = getLogger('src-config-startup-validator');
  * Fails fast if configuration is invalid for deployment.
  */
 
-import process from 'node:process';
+import { getLogger } from './logging-config';
+
+const logger = getLogger('src-config-startup-validator');
+
+import * as process from 'node:process';
 import { configHealthChecker } from './health-checker';
 import { configManager } from './manager';
 import type { ValidationResult } from './types';
@@ -396,6 +396,8 @@ async function outputValidationResults(
 export async function validateAndExit(options: StartupValidationOptions = {}): Promise<never> {
   const result = await runStartupValidation(options);
   process.exit(result?.exitCode);
+  // TypeScript requires this for never return type, though it's unreachable
+  return new Promise(() => {}) as Promise<never>;
 }
 
 /**
@@ -418,11 +420,11 @@ export async function cli(): Promise<void> {
   };
 
   // Parse skip validation flags
-  if (args.includes('--skip-structure')) options?.["skipValidation"]!.push('structure');
-  if (args.includes('--skip-security')) options?.["skipValidation"]!.push('security');
-  if (args.includes('--skip-performance')) options?.["skipValidation"]!.push('performance');
-  if (args.includes('--skip-ports')) options?.["skipValidation"]!.push('ports');
-  if (args.includes('--skip-environment')) options?.["skipValidation"]!.push('environment');
+  if (args.includes('--skip-structure')) options?.['skipValidation']!.push('structure');
+  if (args.includes('--skip-security')) options?.['skipValidation']!.push('security');
+  if (args.includes('--skip-performance')) options?.['skipValidation']!.push('performance');
+  if (args.includes('--skip-ports')) options?.['skipValidation']!.push('ports');
+  if (args.includes('--skip-environment')) options?.['skipValidation']!.push('environment');
 
   // Show help
   if (args.includes('--help') || args.includes('-h')) {

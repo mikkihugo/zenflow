@@ -1,5 +1,5 @@
 /**
- * @file Swarm CLI Command - Direct MCP Integration
+ * @file Swarm CLI Command - Direct MCP Integration.
  *
  * Simple, direct swarm commands using meow CLI parsing and MCP tool calls.
  * Replaces the complex terminal interface system with straightforward command execution.
@@ -88,6 +88,7 @@ Examples
  *
  * @param toolName
  * @param params
+ * @example
  */
 async function callMcpTool(
   toolName: string,
@@ -193,6 +194,7 @@ async function callMcpTool(
  *
  * @param data
  * @param format
+ * @example
  */
 function _formatOutput(data: any, format: string): string {
   switch (format) {
@@ -214,6 +216,8 @@ function _formatOutput(data: any, format: string): string {
 
 /**
  * Execute swarm command.
+ *
+ * @example
  */
 export async function executeSwarmCommand(): Promise<void> {
   const startTime = performance.now();
@@ -319,6 +323,7 @@ export async function executeSwarmCommand(): Promise<void> {
  * Get MCP tool name for a command.
  *
  * @param command
+ * @example
  */
 function _getMcpToolName(command: string): string {
   const toolMap: Record<string, string> = {

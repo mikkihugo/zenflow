@@ -2,7 +2,6 @@
  * @file Project-context-analyzer implementation.
  */
 
-
 import { Logger } from '../core/logger';
 
 const logger = new Logger('src-knowledge-project-context-analyzer');
@@ -142,7 +141,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         medium: 0.2, // 20%+ usage
       },
     };
-    this.knowledgeSwarm = new KnowledgeSwarm(config?.["swarmConfig"]);
+    this.knowledgeSwarm = new KnowledgeSwarm(config?.['swarmConfig']);
   }
 
   /**
@@ -384,10 +383,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
           // Parse YAML to get packages - simplified for now
           const packagesMatch = pnpmWorkspace.match(/packages:\s*\n((?:\s+-\s+.*\n?)*)/);
           if (packagesMatch) {
-            context.monorepo.packages = packagesMatch?.[1]
-              ?.split('\n')
-              .map((line) => line.trim().replace(/^-\s*/, ''))
-              .filter(Boolean) || [];
+            context.monorepo.packages =
+              packagesMatch?.[1]
+                ?.split('\n')
+                .map((line) => line.trim().replace(/^-\s*/, ''))
+                .filter(Boolean) || [];
           }
           break;
         }
@@ -420,46 +420,46 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Analyze Bazel workspace structure for comprehensive monorepo understanding.
-   * 
+   *
    * @param context - Project context to populate with Bazel information.
    */
   private async analyzeBazelWorkspace(context: ProjectContext): Promise<void> {
     try {
       // Parse WORKSPACE file for external dependencies and version info
       const workspaceContent = await this.parseBazelWorkspace(context.rootPath);
-      
+
       // Try Bazel query first for accurate dependency graph, fallback to BUILD parsing
       let targets: any[] = [];
       let dependencies: Record<string, Record<string, number>> = {};
-      
+
       try {
         // Use bazel query for ground truth dependency analysis
         const queryResults = await this.runBazelQuery(context.rootPath);
         targets = queryResults.targets;
         dependencies = queryResults.dependencies;
-        
+
         logger.info('🎯 Using Bazel query for accurate dependency analysis', {
-          targetsFound: targets.length
+          targetsFound: targets.length,
         });
       } catch (queryError) {
         logger.warn('Bazel query failed, falling back to BUILD file parsing:', queryError);
-        
+
         // Fallback: Discover all BUILD files and parse targets manually
         targets = await this.discoverBazelTargets(context.rootPath);
         dependencies = await this.analyzeBazelDependencies(context.rootPath, targets);
       }
-      
+
       // Extract packages from targets (directory-based)
       const packages = this.extractBazelPackages(targets);
-      
+
       // Analyze .bzl files for custom rules and macros
       const bzlAnalysis = await this.analyzeBzlFiles(context.rootPath);
-      
+
       // Update context with Bazel information
       context.monorepo.version = workspaceContent.workspaceName || 'unknown';
       context.monorepo.packages = packages;
       context.monorepo.workspaces = packages;
-      
+
       // Store Bazel-specific metadata for GNN domain analysis
       (context.monorepo as any).bazelMetadata = {
         workspaceName: workspaceContent.workspaceName || undefined,
@@ -474,18 +474,17 @@ export class ProjectContextAnalyzer extends EventEmitter {
         queryUsed: targets.length > 0 && dependencies && Object.keys(dependencies).length > 0,
         // Bzlmod (MODULE.bazel) support
         bzlmodEnabled: workspaceContent.bzlmodEnabled || undefined,
-        moduleInfo: workspaceContent.moduleInfo || undefined
+        moduleInfo: workspaceContent.moduleInfo || undefined,
       };
-      
+
       logger.info('Bazel workspace analyzed', {
         packages: packages.length,
         targets: targets.length,
         externalDeps: workspaceContent.externalDeps.length,
         bzlFiles: bzlAnalysis.bzlFiles.length,
         customRules: bzlAnalysis.customRules.length,
-        queryUsed: (context.monorepo as any).bazelMetadata.queryUsed
+        queryUsed: (context.monorepo as any).bazelMetadata.queryUsed,
       });
-      
     } catch (error) {
       logger.error('Failed to analyze Bazel workspace:', error);
       // Fallback to basic package discovery
@@ -517,11 +516,13 @@ export class ProjectContextAnalyzer extends EventEmitter {
       languages: [] as string[],
       toolchains: [] as string[],
       bzlmodEnabled: false,
-      moduleInfo: undefined as {
-        name: string;
-        version?: string;
-        dependencies: Array<{ name: string; version: string; repo_name?: string }>;
-      } | undefined
+      moduleInfo: undefined as
+        | {
+            name: string;
+            version?: string;
+            dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+          }
+        | undefined,
     };
 
     // First check for modern MODULE.bazel (Bzlmod)
@@ -529,15 +530,14 @@ export class ProjectContextAnalyzer extends EventEmitter {
       const moduleContent = await readFile(path.join(rootPath, 'MODULE.bazel'), 'utf-8');
       result.bzlmodEnabled = true;
       result.moduleInfo = this.parseModuleBazel(moduleContent);
-      
+
       logger.info('📦 Found MODULE.bazel - using Bzlmod module system', {
         moduleName: result.moduleInfo.name,
-        dependencies: result.moduleInfo.dependencies.length
+        dependencies: result.moduleInfo.dependencies.length,
       });
-      
+
       // Extract language/toolchain info from module dependencies
       this.extractLanguagesFromModuleDeps(result.moduleInfo.dependencies, result);
-      
     } catch {
       // MODULE.bazel not found, continue with legacy WORKSPACE parsing
     }
@@ -545,67 +545,123 @@ export class ProjectContextAnalyzer extends EventEmitter {
     // Parse legacy WORKSPACE file (still needed even with Bzlmod sometimes)
     const workspaceFiles = ['WORKSPACE', 'WORKSPACE.bazel'];
     let workspaceContent = '';
-    
+
     for (const file of workspaceFiles) {
       try {
         workspaceContent = await readFile(path.join(rootPath, file), 'utf-8');
         break;
-      } catch {
-        continue;
-      }
+      } catch {}
     }
-    
+
     if (!workspaceContent && !result.bzlmodEnabled) {
-      return result;
+      const finalResult: {
+        workspaceName?: string;
+        externalDeps: Array<{ name: string; type: string; version?: string }>;
+        languages: string[];
+        toolchains: string[];
+        bzlmodEnabled?: boolean;
+        moduleInfo?: {
+          name: string;
+          version?: string;
+          dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+        };
+      } = {
+        externalDeps: result.externalDeps,
+        languages: result.languages,
+        toolchains: result.toolchains,
+      };
+
+      if (result.workspaceName) {
+        finalResult.workspaceName = result.workspaceName;
+      }
+      if (result.bzlmodEnabled) {
+        finalResult.bzlmodEnabled = result.bzlmodEnabled;
+      }
+      if (result.moduleInfo) {
+        finalResult.moduleInfo = result.moduleInfo;
+      }
+
+      return finalResult;
     }
-    
+
     // Extract workspace name
     const workspaceMatch = workspaceContent.match(/workspace\s*\(\s*name\s*=\s*"([^"]+)"/);
     result.workspaceName = workspaceMatch?.[1];
-    
+
     // Extract external dependencies
     const depPatterns = [
       /http_archive\s*\(\s*name\s*=\s*"([^"]+)"/g,
       /git_repository\s*\(\s*name\s*=\s*"([^"]+)"/g,
       /maven_jar\s*\(\s*name\s*=\s*"([^"]+)"/g,
-      /rules_\w+\s*\(\s*name\s*=\s*"([^"]+)"/g
+      /rules_\w+\s*\(\s*name\s*=\s*"([^"]+)"/g,
     ];
-    
+
     for (const pattern of depPatterns) {
       let match;
       while ((match = pattern.exec(workspaceContent)) !== null) {
-        const type = match[0].includes('http_archive') ? 'http_archive' :
-                    match[0].includes('git_repository') ? 'git_repository' :
-                    match[0].includes('maven_jar') ? 'maven_jar' : 'rules';
+        const type = match[0].includes('http_archive')
+          ? 'http_archive'
+          : match[0].includes('git_repository')
+            ? 'git_repository'
+            : match[0].includes('maven_jar')
+              ? 'maven_jar'
+              : 'rules';
         result.externalDeps.push({ name: match[1], type });
       }
     }
-    
+
     // Detect languages from rules
     const languageRules = {
-      'rules_go': 'go',
-      'rules_python': 'python',
-      'rules_java': 'java',
-      'rules_kotlin': 'kotlin',
-      'rules_scala': 'scala',
-      'rules_rust': 'rust',
-      'rules_nodejs': 'javascript',
-      'rules_typescript': 'typescript',
-      'rules_cc': 'cpp'
+      rules_go: 'go',
+      rules_python: 'python',
+      rules_java: 'java',
+      rules_kotlin: 'kotlin',
+      rules_scala: 'scala',
+      rules_rust: 'rust',
+      rules_nodejs: 'javascript',
+      rules_typescript: 'typescript',
+      rules_cc: 'cpp',
     };
-    
+
     for (const [rule, lang] of Object.entries(languageRules)) {
       if (workspaceContent.includes(rule)) {
         result.languages.push(lang);
       }
     }
-    
+
     // Detect toolchains
     if (workspaceContent.includes('rules_docker')) result.toolchains.push('docker');
     if (workspaceContent.includes('rules_k8s')) result.toolchains.push('kubernetes');
     if (workspaceContent.includes('rules_proto')) result.toolchains.push('protobuf');
-    
-    return result;
+
+    const finalResult: {
+      workspaceName?: string;
+      externalDeps: Array<{ name: string; type: string; version?: string }>;
+      languages: string[];
+      toolchains: string[];
+      bzlmodEnabled?: boolean;
+      moduleInfo?: {
+        name: string;
+        version?: string;
+        dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+      };
+    } = {
+      externalDeps: result.externalDeps,
+      languages: result.languages,
+      toolchains: result.toolchains,
+    };
+
+    if (result.workspaceName) {
+      finalResult.workspaceName = result.workspaceName;
+    }
+    if (result.bzlmodEnabled) {
+      finalResult.bzlmodEnabled = result.bzlmodEnabled;
+    }
+    if (result.moduleInfo) {
+      finalResult.moduleInfo = result.moduleInfo;
+    }
+
+    return finalResult;
   }
 
   /**
@@ -613,14 +669,16 @@ export class ProjectContextAnalyzer extends EventEmitter {
    *
    * @param rootPath
    */
-  private async discoverBazelTargets(rootPath: string): Promise<Array<{
-    package: string;
-    name: string;
-    type: string;
-    visibility?: string[];
-    deps?: string[];
-    srcs?: string[];
-  }>> {
+  private async discoverBazelTargets(rootPath: string): Promise<
+    Array<{
+      package: string;
+      name: string;
+      type: string;
+      visibility?: string[];
+      deps?: string[];
+      srcs?: string[];
+    }>
+  > {
     const targets: Array<{
       package: string;
       name: string;
@@ -629,12 +687,14 @@ export class ProjectContextAnalyzer extends EventEmitter {
       deps?: string[];
       srcs?: string[];
     }> = [];
-    
+
     try {
       // Use find command to locate all BUILD files
-      const { stdout } = await execAsync(`find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`);
+      const { stdout } = await execAsync(
+        `find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`
+      );
       const buildFiles = stdout.trim().split('\n').filter(Boolean);
-      
+
       for (const buildFile of buildFiles) {
         const packagePath = path.relative(rootPath, path.dirname(buildFile));
         const buildContent = await readFile(buildFile, 'utf-8');
@@ -644,7 +704,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     } catch (error) {
       logger.warn('Error discovering Bazel targets:', error);
     }
-    
+
     return targets;
   }
 
@@ -654,7 +714,10 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param content
    * @param packagePath
    */
-  private parseBazelBuildFile(content: string, packagePath: string): Array<{
+  private parseBazelBuildFile(
+    content: string,
+    packagePath: string
+  ): Array<{
     package: string;
     name: string;
     type: string;
@@ -670,7 +733,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       deps?: string[];
       srcs?: string[];
     }> = [];
-    
+
     // Common Bazel rule patterns
     const rulePatterns = [
       // Language-specific rules
@@ -680,25 +743,25 @@ export class ProjectContextAnalyzer extends EventEmitter {
       /(go_library|go_binary|go_test)\s*\(/g,
       /(ts_library|ts_config|nodejs_binary)\s*\(/g,
       // Generic rules
-      /(genrule|filegroup|config_setting)\s*\(/g
+      /(genrule|filegroup|config_setting)\s*\(/g,
     ];
-    
+
     for (const pattern of rulePatterns) {
       let match;
       while ((match = pattern.exec(content)) !== null) {
         const ruleType = match[1];
         const ruleStart = match.index + match[0].length;
-        
+
         // Extract the rule block (simplified parsing)
         const ruleBlock = this.extractBazelRuleBlock(content, ruleStart);
         const target = this.parseTargetAttributes(ruleBlock, ruleType, packagePath);
-        
+
         if (target.name) {
           targets.push(target);
         }
       }
     }
-    
+
     return targets;
   }
 
@@ -711,17 +774,17 @@ export class ProjectContextAnalyzer extends EventEmitter {
   private extractBazelRuleBlock(content: string, startPos: number): string {
     let depth = 0;
     let i = startPos;
-    
+
     // Find the opening parenthesis and track depth
     while (i < content.length) {
       const char = content[i];
       if (char === '(') depth++;
       else if (char === ')') depth--;
-      
+
       if (depth === 0) break;
       i++;
     }
-    
+
     return content.substring(startPos, i);
   }
 
@@ -732,7 +795,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param ruleType
    * @param packagePath
    */
-  private parseTargetAttributes(ruleBlock: string, ruleType: string, packagePath: string): {
+  private parseTargetAttributes(
+    ruleBlock: string,
+    ruleType: string,
+    packagePath: string
+  ): {
     package: string;
     name: string;
     type: string;
@@ -740,46 +807,59 @@ export class ProjectContextAnalyzer extends EventEmitter {
     deps?: string[];
     srcs?: string[];
   } {
-    const target = {
+    const target: {
+      package: string;
+      name: string;
+      type: string;
+      visibility?: string[];
+      deps?: string[];
+      srcs?: string[];
+    } = {
       package: packagePath,
       name: '',
       type: ruleType,
-      visibility: undefined,
-      deps: undefined,
-      srcs: undefined
     };
-    
+
     // Extract name
     const nameMatch = ruleBlock.match(/name\s*=\s*"([^"]+)"/);
     target.name = nameMatch?.[1] || '';
-    
+
     // Extract deps
     const depsMatch = ruleBlock.match(/deps\s*=\s*\[(.*?)\]/s);
-    if (depsMatch) {
-      target.deps = depsMatch?.[1]
+    if (depsMatch && depsMatch[1]) {
+      const deps = depsMatch[1]
         .split(',')
-        .map(dep => dep.trim().replace(/['"]/g, ''))
-        .filter(dep => dep && dep.startsWith('//')) || undefined;
+        .map((dep) => dep.trim().replace(/['"]/g, ''))
+        .filter((dep) => dep && dep.startsWith('//'));
+      if (deps.length > 0) {
+        target.deps = deps;
+      }
     }
-    
+
     // Extract srcs
     const srcsMatch = ruleBlock.match(/srcs\s*=\s*\[(.*?)\]/s);
-    if (srcsMatch) {
-      target.srcs = srcsMatch?.[1]
+    if (srcsMatch && srcsMatch[1]) {
+      const srcs = srcsMatch[1]
         .split(',')
-        .map(src => src.trim().replace(/['"]/g, ''))
-        .filter(Boolean) || undefined;
+        .map((src) => src.trim().replace(/['"]/g, ''))
+        .filter(Boolean);
+      if (srcs.length > 0) {
+        target.srcs = srcs;
+      }
     }
-    
+
     // Extract visibility
     const visibilityMatch = ruleBlock.match(/visibility\s*=\s*\[(.*?)\]/s);
-    if (visibilityMatch) {
-      target.visibility = visibilityMatch?.[1]
+    if (visibilityMatch && visibilityMatch[1]) {
+      const visibility = visibilityMatch[1]
         .split(',')
-        .map(vis => vis.trim().replace(/['"]/g, ''))
-        .filter(Boolean) || undefined;
+        .map((vis) => vis.trim().replace(/['"]/g, ''))
+        .filter(Boolean);
+      if (visibility.length > 0) {
+        target.visibility = visibility;
+      }
     }
-    
+
     return target;
   }
 
@@ -788,15 +868,17 @@ export class ProjectContextAnalyzer extends EventEmitter {
    *
    * @param targets
    */
-  private extractBazelPackages(targets: Array<{ package: string; name: string; type: string }>): string[] {
+  private extractBazelPackages(
+    targets: Array<{ package: string; name: string; type: string }>
+  ): string[] {
     const packages = new Set<string>();
-    
+
     for (const target of targets) {
       if (target.package && target.package !== '.') {
         packages.add(target.package);
       }
     }
-    
+
     return Array.from(packages);
   }
 
@@ -806,34 +888,37 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param rootPath
    * @param targets
    */
-  private async analyzeBazelDependencies(rootPath: string, targets: Array<{
-    package: string;
-    name: string;
-    type: string;
-    deps?: string[];
-  }>): Promise<Record<string, Record<string, number>>> {
+  private async analyzeBazelDependencies(
+    rootPath: string,
+    targets: Array<{
+      package: string;
+      name: string;
+      type: string;
+      deps?: string[];
+    }>
+  ): Promise<Record<string, Record<string, number>>> {
     const dependencies: Record<string, Record<string, number>> = {};
-    
+
     for (const target of targets) {
       if (!target.deps || target.deps.length === 0) continue;
-      
+
       const sourcePackage = target.package || 'root';
-      
+
       for (const dep of target.deps) {
         // Parse Bazel target label (//package:target)
         const depMatch = dep.match(/^\/\/([^:]+):/);
         const targetPackage = depMatch?.[1] || '';
-        
+
         if (targetPackage && targetPackage !== sourcePackage) {
           if (!dependencies[sourcePackage]) {
             dependencies[sourcePackage] = {};
           }
-          dependencies[sourcePackage][targetPackage] = 
+          dependencies[sourcePackage][targetPackage] =
             (dependencies[sourcePackage][targetPackage] || 0) + 1;
         }
       }
     }
-    
+
     return dependencies;
   }
 
@@ -844,14 +929,16 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private async discoverBazelPackagesBasic(rootPath: string): Promise<string[]> {
     try {
-      const { stdout } = await execAsync(`find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`);
+      const { stdout } = await execAsync(
+        `find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`
+      );
       const buildFiles = stdout.trim().split('\n').filter(Boolean);
-      
+
       const packages = buildFiles
-        .map(file => path.relative(rootPath, path.dirname(file)))
-        .filter(pkg => pkg !== '.')
+        .map((file) => path.relative(rootPath, path.dirname(file)))
+        .filter((pkg) => pkg !== '.')
         .sort();
-      
+
       return [...new Set(packages)];
     } catch (error) {
       logger.warn('Basic Bazel package discovery failed:', error);
@@ -879,34 +966,33 @@ export class ProjectContextAnalyzer extends EventEmitter {
     try {
       // Check if bazel binary exists
       await execAsync('which bazel', { cwd: rootPath });
-      
+
       logger.info('🔍 Running Bazel query for accurate dependency analysis...');
-      
+
       // Get all targets in the workspace
       const { stdout: targetsOutput } = await execAsync(
         'bazel query "//..." --output=build 2>/dev/null',
         { cwd: rootPath, timeout: 30000 } // 30 second timeout
       );
-      
+
       // Get dependency information
       const { stdout: depsOutput } = await execAsync(
         'bazel query "deps(//...)" --output=graph 2>/dev/null',
         { cwd: rootPath, timeout: 30000 } // 30 second timeout
       );
-      
+
       // Parse targets from build output
       const targets = this.parseBazelQueryTargets(targetsOutput);
-      
+
       // Parse dependencies from graph output
       const dependencies = this.parseBazelQueryDependencies(depsOutput);
-      
+
       logger.info('✅ Bazel query completed successfully', {
         targets: targets.length,
-        dependencyRelations: Object.keys(dependencies).length
+        dependencyRelations: Object.keys(dependencies).length,
       });
-      
+
       return { targets, dependencies };
-      
     } catch (error) {
       logger.debug('Bazel query failed:', error);
       throw new Error(`Bazel query execution failed: ${error}`);
@@ -934,26 +1020,24 @@ export class ProjectContextAnalyzer extends EventEmitter {
       deps?: string[];
       srcs?: string[];
     }> = [];
-    
+
     // Split into rule blocks
     const ruleBlocks = buildOutput.split(/(?=^[a-z_]+\s*\()/gm).filter(Boolean);
-    
+
     for (const block of ruleBlocks) {
       try {
         const target = this.parseTargetAttributes(block, '', '');
         if (target.name) {
           // Extract package from target label
           const packageMatch = block.match(/^# (\/\/[^:]+)/);
-          const packagePath = packageMatch ? packageMatch[1].replace('//', '') : '';
+          const packagePath =
+            packageMatch && packageMatch[1] ? packageMatch[1].replace('//', '') : '';
           target.package = packagePath;
           targets.push(target);
         }
-      } catch (error) {
-        // Skip malformed blocks
-        continue;
-      }
+      } catch (error) {}
     }
-    
+
     return targets;
   }
 
@@ -964,16 +1048,16 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private parseBazelQueryDependencies(graphOutput: string): Record<string, Record<string, number>> {
     const dependencies: Record<string, Record<string, number>> = {};
-    
+
     // Parse DOT graph format
-    const lines = graphOutput.split('\n').filter(line => line.includes('->'));
-    
+    const lines = graphOutput.split('\n').filter((line) => line.includes('->'));
+
     for (const line of lines) {
       const match = line.match(/^\s*"([^"]+)"\s*->\s*"([^"]+)"/);
       if (match) {
         const source = this.extractPackageFromTarget(match[1] || '');
         const target = this.extractPackageFromTarget(match[2] || '');
-        
+
         if (source && target && source !== target) {
           if (!dependencies[source]) {
             dependencies[source] = {};
@@ -982,7 +1066,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         }
       }
     }
-    
+
     return dependencies;
   }
 
@@ -993,7 +1077,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private extractPackageFromTarget(targetLabel: string): string {
     // Handle various Bazel target formats: //package:target, @repo//package:target, etc.
-    const match = targetLabel.match(/(?:@[^\/]+)?\/\/([^:]+)/);
+    const match = targetLabel.match(/(?:@[^/]+)?\/\/([^:]+)/);
     return match?.[1] || '';
   }
 
@@ -1033,36 +1117,36 @@ export class ProjectContextAnalyzer extends EventEmitter {
         file: string;
         usedRules: string[];
         parameters: string[];
-      }>
+      }>,
     };
 
     try {
       // Find all .bzl files
       const { stdout } = await execAsync(`find "${rootPath}" -name "*.bzl" 2>/dev/null`);
       const bzlFiles = stdout.trim().split('\n').filter(Boolean);
-      result.bzlFiles = bzlFiles.map(file => path.relative(rootPath, file));
+      result.bzlFiles = bzlFiles.map((file) => path.relative(rootPath, file));
 
       // Analyze each .bzl file
       for (const bzlFile of bzlFiles) {
         try {
           const content = await readFile(bzlFile, 'utf-8');
           const relativePath = path.relative(rootPath, bzlFile);
-          
+
           // Extract custom rules
           const ruleMatches = content.matchAll(/^([a-z_]+)\s*=\s*rule\s*\(/gm);
           for (const match of ruleMatches) {
             const ruleName = match[1];
             const ruleBlock = this.extractStarlarkFunctionBlock(content, match.index || 0);
             const parameters = this.extractStarlarkParameters(ruleBlock);
-            
+
             result.customRules.push({
               name: ruleName || '',
               file: relativePath,
               type: 'rule',
-              parameters
+              parameters,
             });
           }
-          
+
           // Extract macros (functions that call other rules)
           const macroMatches = content.matchAll(/^def\s+([a-z_]+)\s*\(/gm);
           for (const match of macroMatches) {
@@ -1070,26 +1154,24 @@ export class ProjectContextAnalyzer extends EventEmitter {
             const macroBlock = this.extractStarlarkFunctionBlock(content, match.index || 0);
             const parameters = this.extractStarlarkParameters(macroBlock);
             const usedRules = this.extractUsedRules(macroBlock);
-            
+
             result.macros.push({
               name: macroName || '',
               file: relativePath,
               usedRules,
-              parameters
+              parameters,
             });
           }
-          
         } catch (error) {
           logger.debug(`Failed to analyze .bzl file ${bzlFile}:`, error);
         }
       }
-      
+
       logger.info('📜 Starlark (.bzl) analysis complete', {
         bzlFiles: result.bzlFiles.length,
         customRules: result.customRules.length,
-        macros: result.macros.length
+        macros: result.macros.length,
       });
-      
     } catch (error) {
       logger.warn('Failed to analyze .bzl files:', error);
     }
@@ -1108,18 +1190,18 @@ export class ProjectContextAnalyzer extends EventEmitter {
     const result: string[] = [];
     let indentLevel = 0;
     let inFunction = false;
-    
+
     for (const line of lines) {
       const trimmed = line.trim();
       if (!trimmed && !inFunction) continue;
-      
+
       if (!inFunction && (trimmed.includes('=') || trimmed.startsWith('def'))) {
         inFunction = true;
         indentLevel = line.length - line.trimStart().length;
         result.push(line);
         continue;
       }
-      
+
       if (inFunction) {
         const lineIndent = line.length - line.trimStart().length;
         if (trimmed && lineIndent <= indentLevel && !line.startsWith(' ')) {
@@ -1128,7 +1210,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         result.push(line);
       }
     }
-    
+
     return result.join('\n');
   }
 
@@ -1140,11 +1222,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
   private extractStarlarkParameters(functionBlock: string): string[] {
     const paramMatch = functionBlock.match(/\(([^)]*)\)/s);
     if (!paramMatch?.[1]) return [];
-    
+
     return paramMatch[1]
       .split(',')
-      .map(param => param.trim().split(/[=:]/)[0].trim())
-      .filter(param => param && param !== 'ctx');
+      .map((param) => param.trim().split(/[=:]/)[0]?.trim() || '')
+      .filter((param) => param && param !== 'ctx');
   }
 
   /**
@@ -1155,7 +1237,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   private extractUsedRules(macroBlock: string): string[] {
     const rulePattern = /([a-z_]+)\s*\(/g;
     const rules = new Set<string>();
-    
+
     let match;
     while ((match = rulePattern.exec(macroBlock)) !== null) {
       const ruleName = match[1];
@@ -1164,7 +1246,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         rules.add(ruleName);
       }
     }
-    
+
     return Array.from(rules);
   }
 
@@ -1178,27 +1260,39 @@ export class ProjectContextAnalyzer extends EventEmitter {
     version?: string;
     dependencies: Array<{ name: string; version: string; repo_name?: string }>;
   } {
-    const result = {
+    const result: {
+      name: string;
+      version?: string;
+      dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+    } = {
       name: '',
-      version: undefined,
-      dependencies: [] as Array<{ name: string; version: string; repo_name?: string }>
+      dependencies: [],
     };
 
     // Extract module name
-    const moduleMatch = moduleContent.match(/module\s*\(\s*name\s*=\s*"([^"]+)"(?:\s*,\s*version\s*=\s*"([^"]+)")?/);
+    const moduleMatch = moduleContent.match(
+      /module\s*\(\s*name\s*=\s*"([^"]+)"(?:\s*,\s*version\s*=\s*"([^"]+)")?/
+    );
     if (moduleMatch) {
       result.name = moduleMatch[1] || '';
-      result.version = moduleMatch[2] || undefined;
+      if (moduleMatch[2]) {
+        result.version = moduleMatch[2];
+      }
     }
 
     // Extract bazel_dep dependencies
-    const depMatches = moduleContent.matchAll(/bazel_dep\s*\(\s*name\s*=\s*"([^"]+)"\s*,\s*version\s*=\s*"([^"]+)"(?:\s*,\s*repo_name\s*=\s*"([^"]+)")?/g);
+    const depMatches = moduleContent.matchAll(
+      /bazel_dep\s*\(\s*name\s*=\s*"([^"]+)"\s*,\s*version\s*=\s*"([^"]+)"(?:\s*,\s*repo_name\s*=\s*"([^"]+)")?/g
+    );
     for (const match of depMatches) {
-      result.dependencies.push({
+      const dep: { name: string; version: string; repo_name?: string } = {
         name: match[1] || '',
         version: match[2] || '',
-        repo_name: match[3] || undefined
-      });
+      };
+      if (match[3]) {
+        dep.repo_name = match[3];
+      }
+      result.dependencies.push(dep);
     }
 
     return result;
@@ -1217,26 +1311,26 @@ export class ProjectContextAnalyzer extends EventEmitter {
     result: { languages: string[]; toolchains: string[] }
   ): void {
     const moduleLanguageMap: Record<string, string> = {
-      'rules_java': 'java',
-      'rules_python': 'python',
-      'rules_go': 'go',
-      'rules_kotlin': 'kotlin',
-      'rules_scala': 'scala',
-      'rules_rust': 'rust',
-      'rules_nodejs': 'javascript',
-      'rules_typescript': 'typescript',
-      'rules_cc': 'cpp',
-      'rules_swift': 'swift',
-      'rules_dotnet': 'csharp'
+      rules_java: 'java',
+      rules_python: 'python',
+      rules_go: 'go',
+      rules_kotlin: 'kotlin',
+      rules_scala: 'scala',
+      rules_rust: 'rust',
+      rules_nodejs: 'javascript',
+      rules_typescript: 'typescript',
+      rules_cc: 'cpp',
+      rules_swift: 'swift',
+      rules_dotnet: 'csharp',
     };
 
     const moduleToolchainMap: Record<string, string> = {
-      'rules_docker': 'docker',
-      'rules_k8s': 'kubernetes',
-      'rules_proto': 'protobuf',
-      'rules_oci': 'containers',
-      'gazelle': 'code-generation',
-      'buildtools': 'build-tools'
+      rules_docker: 'docker',
+      rules_k8s: 'kubernetes',
+      rules_proto: 'protobuf',
+      rules_oci: 'containers',
+      gazelle: 'code-generation',
+      buildtools: 'build-tools',
     };
 
     for (const dep of dependencies) {
@@ -1581,12 +1675,15 @@ export class ProjectContextAnalyzer extends EventEmitter {
           const trimmed = line.trim();
           if (trimmed && !trimmed.startsWith('#')) {
             const [name, version] = trimmed.split(/[>=<~!]/);
-            context.dependencies.push({
-              name: name.trim(),
-              version: version ? version.trim() : 'unknown',
-              type: 'runtime',
-              ecosystem: 'pip',
-            });
+            const depName = name?.trim();
+            if (depName) {
+              context.dependencies.push({
+                name: depName,
+                version: version ? version.trim() : 'unknown',
+                type: 'runtime',
+                ecosystem: 'pip',
+              });
+            }
           }
         });
       } catch {
@@ -1690,12 +1787,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
   private createFrameworkMission(framework: DetectedFramework): KnowledgeGatheringMission {
     const priority = framework.usage === 'primary' ? 'high' : 'medium';
 
-    return {
+    const mission: KnowledgeGatheringMission = {
       id: `framework-${framework.name}-${Date.now()}`,
       priority,
       type: 'framework',
       target: framework.name,
-      version: framework.version || undefined,
       context: [framework.usage, 'best-practices'],
       requiredInfo: [
         'Latest features',
@@ -1706,6 +1802,12 @@ export class ProjectContextAnalyzer extends EventEmitter {
       ],
       status: 'pending',
     };
+
+    if (framework.version) {
+      mission.version = framework.version;
+    }
+
+    return mission;
   }
 
   /**

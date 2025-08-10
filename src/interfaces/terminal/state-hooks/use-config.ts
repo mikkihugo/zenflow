@@ -5,10 +5,8 @@
  * Note: This is a React hook, NOT a Claude Code hook (which belongs in templates/).
  */
 /**
- * @file Interface implementation: use-config
+ * @file Interface implementation: use-config.
  */
-
-
 
 import { useEffect, useState } from 'react';
 import { createLogger } from '../../../core/logger';

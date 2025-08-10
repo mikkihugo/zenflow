@@ -9,13 +9,13 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { 
-  initializeLogging, 
-  createClaudeAILogger, 
+import {
+  createClaudeAILogger,
   createClaudeCLILogger,
-  logClaudeOperation,
+  initializeLogging,
   logClaudeMetrics,
-  logErrorAnalysis
+  logClaudeOperation,
+  logErrorAnalysis,
 } from '../../src/utils/logging-config.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -39,18 +39,23 @@ export class GeminiAIIntegration {
    */
   async initializeLogging() {
     if (this.initialized) return;
-    
+
     try {
       await initializeLogging();
       this.logger = createClaudeAILogger(); // Reuse existing logger
       this.geminiLogger = createClaudeCLILogger(); // For gemini operations
       this.initialized = true;
-      
+
       this.logger.info('Gemini AI Integration initialized with structured logging');
     } catch (error) {
       console.error('Failed to initialize logging:', error.message);
       // Fallback to console logging
-      this.logger = { info: console.log, debug: console.log, warn: console.warn, error: console.error };
+      this.logger = {
+        info: console.log,
+        debug: console.log,
+        warn: console.warn,
+        error: console.error,
+      };
       this.geminiLogger = this.logger;
     }
   }
@@ -60,15 +65,15 @@ export class GeminiAIIntegration {
    */
   async fixViolations(violations, options = {}) {
     await this.initializeLogging();
-    
+
     this.logger.info(`🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`);
-    console.log(`🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`);    
-    
+    console.log(`🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`);
+
     // Log operation start with structured data
     if (this.logger && this.initialized) {
       logClaudeOperation(this.logger, 'gemini_fix_violations_start', {
         totalViolations: violations.length,
-        options
+        options,
       });
     }
     console.log(`   🔧 Starting violation fixing - ${violations.length} total violations`);
@@ -94,19 +99,29 @@ export class GeminiAIIntegration {
       try {
         // Log detailed error analysis with structured data
         if (this.logger && this.initialized) {
-          logErrorAnalysis(this.logger, filePath, fileViolations, this.categorizeViolations(fileViolations));
+          logErrorAnalysis(
+            this.logger,
+            filePath,
+            fileViolations,
+            this.categorizeViolations(fileViolations)
+          );
         }
-        console.log(`   📊 Analysis: ${fileViolations.length} violations in ${path.basename(filePath)}`);
-        
+        console.log(
+          `   📊 Analysis: ${fileViolations.length} violations in ${path.basename(filePath)}`
+        );
+
         const fixed = await this.fixFileViolations(filePath, fileViolations, dryRun);
         if (fixed) {
           this.fixedCount += fileViolations.length;
           console.log(`   ✅ Fixed ${fileViolations.length} violations successfully`);
-          this.logger.info(`Fixed ${fileViolations.length} violations in ${path.basename(filePath)}`, {
-            filePath,
-            violationCount: fileViolations.length,
-            violationTypes: fileViolations.map(v => v.rule)
-          });
+          this.logger.info(
+            `Fixed ${fileViolations.length} violations in ${path.basename(filePath)}`,
+            {
+              filePath,
+              violationCount: fileViolations.length,
+              violationTypes: fileViolations.map((v) => v.rule),
+            }
+          );
         } else {
           this.skippedCount += fileViolations.length;
           console.log(`   ⏭️  Skipped (no changes needed)`);
@@ -121,9 +136,9 @@ export class GeminiAIIntegration {
           filePath,
           error: error.message,
           violationCount: fileViolations.length,
-          violationTypes: fileViolations.map(v => v.rule)
+          violationTypes: fileViolations.map((v) => v.rule),
         });
-        
+
         const todoMarked = this.markAsTodo(filePath, fileViolations, error.message);
         if (todoMarked) {
           this.todoCount += fileViolations.length;
@@ -139,7 +154,7 @@ export class GeminiAIIntegration {
       fixed: this.fixedCount,
       skipped: this.skippedCount,
       failed: this.failedCount,
-      todo: this.todoCount
+      todo: this.todoCount,
     };
 
     console.log(`\n🎊 File-based AI Fixing Complete:`);
@@ -279,7 +294,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
 
     console.log(`   🤖 Calling NATIVE Gemini CLI to fix: ${filePath}`);
     console.log(`   📋 Full instruction: "${instruction.slice(0, 200)}..."`);
-    
+
     // Log Gemini operation start with structured data including full prompt
     if (this.geminiLogger && this.initialized) {
       logClaudeOperation(this.geminiLogger, 'gemini_cli_start', {
@@ -288,7 +303,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
         instructionLength: instruction.length,
         command: 'file_fix',
         fullPrompt: prompt,
-        fullInstruction: instruction
+        fullInstruction: instruction,
       });
     }
     console.log(`   🔧 Starting Gemini CLI with prompt length: ${prompt.length} chars`);
@@ -298,16 +313,18 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
         'gemini',
         [
           '-y', // yolo mode - automatically accept all actions
-          '-m', 'gemini-2.5-flash', // model
-          '-p', instruction // prompt
+          '-m',
+          'gemini-2.5-flash', // model
+          '-p',
+          instruction, // prompt
         ],
         {
           stdio: ['pipe', 'pipe', 'pipe'],
           cwd: REPO_ROOT, // Ensure repo root for file access
           env: {
             ...process.env,
-            GOOGLE_CLOUD_PROJECT: 'singularity-460212' // From existing script
-          }
+            GOOGLE_CLOUD_PROJECT: 'singularity-460212', // From existing script
+          },
         }
       );
 
@@ -316,17 +333,17 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
       if (!fs.existsSync(logsDir)) {
         fs.mkdirSync(logsDir, { recursive: true });
       }
-      
+
       const sessionId = `gemini-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const fileName = path.basename(filePath);
-      
+
       // Log session start with structured data
       if (this.geminiLogger && this.initialized) {
         logClaudeOperation(this.geminiLogger, 'gemini_session_start', {
           sessionId,
           fileName,
           filePath,
-          timeoutMinutes: 5 // Fixed 5 minute timeout for Gemini
+          timeoutMinutes: 5, // Fixed 5 minute timeout for Gemini
         });
       }
       console.log(`   📊 Gemini CLI session started: ${sessionId} for ${fileName}`);
@@ -338,10 +355,10 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
       // Dynamic inactivity timeout based on complexity - resets on any output
       const resetTimeout = () => {
         if (timeoutHandle) clearTimeout(timeoutHandle);
-        
+
         // Fixed 5 minute timeout for Gemini operations
         const totalTimeout = 300000; // 5 minutes
-        
+
         timeoutHandle = setTimeout(() => {
           console.log(`   ⏰ Gemini CLI timeout (5 minutes)`);
           gemini.kill('SIGTERM');
@@ -360,7 +377,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
             sessionId,
             chunkLength: chunk.length,
             fileName,
-            rawContent: chunk.trim()
+            rawContent: chunk.trim(),
           });
         }
         console.log(`   📥 Gemini stdout: ${chunk.length} chars received (session: ${sessionId})`);
@@ -373,14 +390,14 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
       gemini.stderr.on('data', (data) => {
         const chunk = data.toString();
         stderr += chunk;
-        
+
         // Log stderr received with structured data
         resetTimeout(); // Reset timeout on stderr
         if (this.geminiLogger && this.initialized) {
           logClaudeOperation(this.geminiLogger, 'gemini_stderr_received', {
             sessionId,
             stderrContent: chunk.trim(),
-            fileName
+            fileName,
           });
         }
         console.log(`   📢 Gemini stderr: ${chunk.trim()}`);
@@ -399,31 +416,33 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
           stdoutLength: stdout.length,
           stderrLength: stderr.length,
           geminiOutput: stdout.trim() || 'No output',
-          geminiErrors: stderr.trim() || 'No errors'
+          geminiErrors: stderr.trim() || 'No errors',
         };
 
         // Log Gemini metrics with structured data
         if (this.geminiLogger && this.initialized) {
           logClaudeMetrics(this.geminiLogger, metrics);
-          
+
           // Also log Gemini's final output separately for easy analysis
           logClaudeOperation(this.geminiLogger, 'gemini_final_output', {
             sessionId,
             fileName,
             output: stdout.trim(),
-            errors: stderr.trim()
+            errors: stderr.trim(),
           });
         }
         console.log(`   📊 Gemini session complete - Exit code: ${code}`);
-        
+
         if (stdout.length > 0) {
-          console.log(`   📤 Gemini output: "${stdout.slice(0, 200)}${stdout.length > 200 ? '...' : ''}"`);
+          console.log(
+            `   📤 Gemini output: "${stdout.slice(0, 200)}${stdout.length > 200 ? '...' : ''}"`
+          );
         }
-        
+
         if (stderr.length > 0) {
           console.log(`   ⚠️  Gemini stderr: ${stderr.trim()}`);
         }
-        
+
         // Log session completion with structured data
         if (this.geminiLogger && this.initialized) {
           logClaudeOperation(this.geminiLogger, 'gemini_session_complete', {
@@ -431,10 +450,12 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
             fileName,
             exitCode: code,
             stdoutLength: stdout.length,
-            stderrLength: stderr.length
+            stderrLength: stderr.length,
           });
         }
-        console.log(`   🏁 Gemini CLI session completed - Session: ${sessionId}, Exit code: ${code}`);
+        console.log(
+          `   🏁 Gemini CLI session completed - Session: ${sessionId}, Exit code: ${code}`
+        );
 
         if (code === 0) {
           // Gemini completed successfully
@@ -619,7 +640,7 @@ Read the file, apply the fix, and write it back.`;
    */
   categorizeViolations(violations) {
     const categories = {};
-    violations.forEach(violation => {
+    violations.forEach((violation) => {
       const category = violation.rule || 'unknown';
       categories[category] = (categories[category] || 0) + 1;
     });
@@ -635,18 +656,18 @@ Read the file, apply the fix, and write it back.`;
         filePath,
         violationCount: violations.length,
         reason,
-        violationTypes: violations.map(v => v.rule)
+        violationTypes: violations.map((v) => v.rule),
       });
     }
-    
+
     // Add to TODO items for tracking
     this.todoItems.push({
       filePath,
       violations,
       reason,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    
+
     return true; // Successfully marked as TODO
   }
 
@@ -662,17 +683,13 @@ Read the file, apply the fix, and write it back.`;
    */
   static async testGeminiAvailability() {
     return new Promise((resolve) => {
-      const gemini = spawn(
-        'gemini',
-        ['--version'],
-        {
-          stdio: 'pipe',
-          env: {
-            ...process.env,
-            GOOGLE_CLOUD_PROJECT: 'singularity-460212'
-          }
-        }
-      );
+      const gemini = spawn('gemini', ['--version'], {
+        stdio: 'pipe',
+        env: {
+          ...process.env,
+          GOOGLE_CLOUD_PROJECT: 'singularity-460212',
+        },
+      });
 
       gemini.on('close', (code) => {
         resolve(code === 0);

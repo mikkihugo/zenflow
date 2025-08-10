@@ -136,7 +136,7 @@ describe('HTTP Auth Middleware - Allow/Deny Matrix', () => {
     await runMiddleware(req, res);
 
     // Normalization is allowed (e.g., lower-case copy), but original keys should remain readable
-    expect(req.headers.authorization ?? req.headers["Authorization"]).toBeDefined();
+    expect(req.headers.authorization ?? req.headers['Authorization']).toBeDefined();
     expect(req.headers['x-api-key'] ?? req.headers['X-API-KEY']).toBeDefined();
   });
 });

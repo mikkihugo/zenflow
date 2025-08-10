@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * @file Test suite for test-sparc-cli
+ * @file Test suite for test-sparc-cli.
  */
-
 
 /**
  * Test CLI commands for SPARC Template Engine.

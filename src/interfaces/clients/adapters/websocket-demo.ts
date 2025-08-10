@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: websocket-demo
+ * @file Interface implementation: websocket-demo.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -11,7 +10,7 @@ const logger = getLogger('interfaces-clients-adapters-websocket-demo');
  * WebSocket Client Adapter Demo.
  *
  * Demonstrates how to use the UACL WebSocket client adapters.
- * and showcases the migration from legacy to UACL patterns.
+ * And showcases the migration from legacy to UACL patterns.
  */
 
 // Legacy WebSocket client for comparison
@@ -30,6 +29,8 @@ import {
 
 /**
  * Example 1: Basic UACL WebSocket Client Usage.
+ *
+ * @example
  */
 export async function basicUACLWebSocketExample() {
   // Create a WebSocket client using UACL configuration
@@ -87,6 +88,8 @@ export async function basicUACLWebSocketExample() {
 
 /**
  * Example 2: Enhanced WebSocket Client with Legacy Compatibility.
+ *
+ * @example
  */
 export async function enhancedWebSocketExample() {
   // Create using legacy constructor pattern (backward compatibility)
@@ -130,13 +133,15 @@ export async function enhancedWebSocketExample() {
 
 /**
  * Example 3: WebSocket Client Factory Usage.
+ *
+ * @example
  */
 export async function webSocketFactoryExample() {
   const factory = new WebSocketClientFactory();
 
   // Create multiple clients with different configurations
   const configs: WebSocketClientConfig[] = [
-    WebSocketClientPresets["HighPerformance"]('wss://echo.websocket.org'),
+    WebSocketClientPresets['HighPerformance']('wss://echo.websocket.org'),
     WebSocketClientPresets.Robust('wss://echo.websocket.org'),
     WebSocketClientPresets.Simple('wss://echo.websocket.org'),
   ];
@@ -164,15 +169,17 @@ export async function webSocketFactoryExample() {
 
 /**
  * Example 4: Load Balanced WebSocket Clients.
+ *
+ * @example
  */
 export async function loadBalancedWebSocketExample() {
   const factory = new WebSocketClientFactory();
 
   // Create load-balanced client with multiple endpoints
   const configs = [
-    { ...WebSocketClientPresets["HighPerformance"]('wss://echo.websocket.org'), name: 'echo-1' },
+    { ...WebSocketClientPresets['HighPerformance']('wss://echo.websocket.org'), name: 'echo-1' },
     {
-      ...WebSocketClientPresets["HighPerformance"]('wss://ws.postman-echo.com/raw'),
+      ...WebSocketClientPresets['HighPerformance']('wss://ws.postman-echo.com/raw'),
       name: 'postman-1',
     },
   ];
@@ -202,16 +209,20 @@ export async function loadBalancedWebSocketExample() {
 
 /**
  * Example 5: Failover WebSocket Client.
+ *
+ * @example
  */
 export async function failoverWebSocketExample() {
   const factory = new WebSocketClientFactory();
 
   try {
     // Create failover client with primary and fallback endpoints
-    const primaryConfig = WebSocketClientPresets["HighPerformance"]('wss://invalid-url.example.com');
+    const primaryConfig = WebSocketClientPresets['HighPerformance'](
+      'wss://invalid-url.example.com'
+    );
     const fallbackConfigs = [
-      WebSocketClientPresets["HighPerformance"]('wss://echo.websocket.org'),
-      WebSocketClientPresets["HighPerformance"]('wss://ws.postman-echo.com/raw'),
+      WebSocketClientPresets['HighPerformance']('wss://echo.websocket.org'),
+      WebSocketClientPresets['HighPerformance']('wss://ws.postman-echo.com/raw'),
     ];
 
     // This will fail on primary but succeed on fallback
@@ -227,6 +238,8 @@ export async function failoverWebSocketExample() {
 
 /**
  * Example 6: WebSocket Health Monitoring.
+ *
+ * @example
  */
 export async function webSocketHealthMonitoringExample() {
   const monitor = new WebSocketHealthMonitor();
@@ -260,6 +273,8 @@ export async function webSocketHealthMonitoringExample() {
 
 /**
  * Example 7: Migration from Legacy to UACL.
+ *
+ * @example
  */
 export async function migrationExample() {
   const legacyClient = new LegacyWebSocketClient('wss://echo.websocket.org', {
@@ -315,6 +330,8 @@ export async function migrationExample() {
 
 /**
  * Run all examples.
+ *
+ * @example
  */
 export async function runAllWebSocketExamples() {
   const examples = [

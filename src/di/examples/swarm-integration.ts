@@ -3,10 +3,8 @@
  * Demonstrates how to migrate existing services to use DI patterns.
  */
 /**
- * @file swarm-integration implementation
+ * @file Swarm-integration implementation.
  */
-
-
 
 import {
   CORE_TOKENS,

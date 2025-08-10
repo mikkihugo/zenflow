@@ -3,10 +3,8 @@
  * TODO: Implement Data Accessibility and Analysis service functionality.
  */
 /**
- * @file daa service implementation
+ * @file Daa service implementation.
  */
-
-
 
 export class DaaService {
   private initialized = false;

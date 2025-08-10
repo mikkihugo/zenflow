@@ -4,10 +4,8 @@
  * Enhanced to implement the adaptive learning interface.
  */
 /**
- * @file pattern-recognition processing engine
+ * @file Pattern-recognition processing engine.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type {

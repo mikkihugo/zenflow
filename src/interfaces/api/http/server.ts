@@ -1,16 +1,14 @@
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('interfaces-api-http-server');
-
 /**
- * REST API Server - Express with Schema-driven Development.
+ * @file REST API Server - Express with Schema-driven Development.
  *
  * Main Express server implementing Google API Design Guide standards.
  * Features automatic OpenAPI 3 documentation and request validation.
  * Clean separation: REST API layer independent from business domains.
- *
- * @file Main REST API server with domain endpoints
  */
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-api-http-server');
 
 import cors from 'cors';
 // Core dependencies
@@ -354,7 +352,7 @@ export class APIServer {
 
   /**
    * Setup coordination domain routes.
-   * Uses modular route handlers from v1/coordination.ts
+   * Uses modular route handlers from v1/coordination.ts.
    */
   private setupCoordinationRoutes(): void {
     this.app.use('/api/v1/coordination', createCoordinationRoutes());
@@ -362,7 +360,7 @@ export class APIServer {
 
   /**
    * Setup neural network domain routes.
-   * Uses modular route handlers from v1/neural.ts
+   * Uses modular route handlers from v1/neural.ts.
    */
   private setupNeuralRoutes(): void {
     this.app.use('/api/v1/neural', createNeuralRoutes());
@@ -370,7 +368,7 @@ export class APIServer {
 
   /**
    * Setup memory domain routes.
-   * Uses modular route handlers from v1/memory.ts
+   * Uses modular route handlers from v1/memory.ts.
    */
   private setupMemoryRoutes(): void {
     this.app.use('/api/v1/memory', createMemoryRoutes());
@@ -378,7 +376,7 @@ export class APIServer {
 
   /**
    * Setup database domain routes.
-   * Uses modular route handlers from v1/database.ts
+   * Uses modular route handlers from v1/database.ts.
    */
   private setupDatabaseRoutes(): void {
     this.app.use('/api/v1/database', createDatabaseRoutes());

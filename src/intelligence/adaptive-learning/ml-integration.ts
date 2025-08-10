@@ -1,7 +1,6 @@
 /**
- * @file ml-integration implementation
+ * @file Ml-integration implementation.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

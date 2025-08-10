@@ -9,7 +9,6 @@
  * @file Types module exports.
  */
 
-
 export type {
   ActivationFunction,
   NetworkConfig,
@@ -34,24 +33,25 @@ export type {
   GlobalAgentInfo,
 } from './agent-types';
 // Primary exports from shared-types (these are the main Agent interface)
-export type {
-  SwarmAgent as Agent,
-  SwarmConfig as SwarmConfiguration,
-  ZenSwarm as SwarmType,
-} from './shared-types';
 // Re-export shared types selectively to avoid conflicts
 export type {
-  ZenSwarm,
+  SwarmAgent as Agent,
   SwarmAgent,
+  SwarmConfig as SwarmConfiguration,
   SwarmConfig,
-  TaskStatus
+  TaskStatus,
+  ZenSwarm as SwarmType,
+  ZenSwarm,
 } from './shared-types';
 
 // Type guards and utilities
 export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
-  return (obj &&
-  typeof obj.id === 'string' &&
-  typeof obj["topology"] === 'string' && Array.isArray(obj["agents"]));
+  return (
+    obj &&
+    typeof obj.id === 'string' &&
+    typeof obj['topology'] === 'string' &&
+    Array.isArray(obj['agents'])
+  );
 }
 
 export function isSwarmAgent(obj: any): obj is import('./shared-types').SwarmAgent {
@@ -64,9 +64,12 @@ export function isSwarmAgent(obj: any): obj is import('./shared-types').SwarmAge
 }
 
 export function isSystemEvent(obj: any): obj is import('./shared-types').SystemEvent {
-  return (obj &&
-  typeof obj.id === 'string' &&
-  typeof obj.type === 'string' && typeof obj["source"] === 'string');
+  return (
+    obj &&
+    typeof obj.id === 'string' &&
+    typeof obj.type === 'string' &&
+    typeof obj['source'] === 'string'
+  );
 }
 
 // Export additional type guards from utils for system-wide availability
@@ -78,14 +81,13 @@ export {
   isPositiveNumber,
   isValidNumber,
 } from '../utils/type-guards';
-
-export * from './workflow-types';
+export * from './client-types';
+export * from './conversation-types';
+export * from './events-types';
+export * from './knowledge-types';
 export * from './mcp-types';
 export * from './neural-types';
-export * from './knowledge-types';
-export * from './client-types';
-export * from './events-types';
-export * from './services-types';
 export * from './protocol-types';
-export * from './conversation-types';
+export * from './services-types';
 export * from './singletons';
+export * from './workflow-types';

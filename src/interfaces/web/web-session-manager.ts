@@ -5,10 +5,8 @@
  * Provides clean separation of session concerns from server logic.
  */
 /**
- * @file web-session management system
+ * @file Web-session management system.
  */
-
-
 
 import type { NextFunction, Request, Response } from 'express';
 import { createLogger } from '../utils/logger';

@@ -1,7 +1,6 @@
 /**
- * @file engine implementation
+ * @file Engine implementation.
  */
-
 
 import { createLogger } from '../core/logger';
 

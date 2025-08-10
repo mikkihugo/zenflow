@@ -1,13 +1,11 @@
 /**
  * Conversation MCP Tools.
  *
- * MCP tools for managing ag2.ai-inspired multi-agent conversations
+ * MCP tools for managing ag2.ai-inspired multi-agent conversations.
  */
 /**
- * @file mcp-tools implementation
+ * @file Mcp-tools implementation.
  */
-
-
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { ConversationMemoryFactory } from './memory';
@@ -526,7 +524,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
   /**
    * Static method for backward compatibility.
    *
-   * @deprecated Use instance method getTools() instead
+   * @deprecated Use instance method getTools() instead.
    */
   static getToolsStatic(): Tool[] {
     // Return a basic tool set without orchestrator dependency

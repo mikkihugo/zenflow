@@ -2,7 +2,6 @@
  * @file Mcp-client adapter implementation.
  */
 
-
 import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-clients-adapters-mcp-client-adapter');
@@ -108,7 +107,7 @@ export interface MCPToolResult {
 export class MCPClientAdapter extends EventEmitter implements IClient {
   readonly config: ClientConfig;
   readonly name: string;
-  
+
   private _mcpConfig: MCPClientConfig;
 
   private _isConnected = false;
@@ -188,7 +187,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
     const [command, ...args] = this._mcpConfig.command;
 
     this._process = spawn(command, args, {
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe'],
     });
 
     // Handle process events
@@ -670,7 +669,9 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
           break;
         case 'basic':
           if (this._mcpConfig.authentication.username && this._mcpConfig.authentication.password) {
-            const credentials = btoa(`${this._mcpConfig.authentication.username}:${this._mcpConfig.authentication.password}`);
+            const credentials = btoa(
+              `${this._mcpConfig.authentication.username}:${this._mcpConfig.authentication.password}`
+            );
             headers['Authorization'] = `Basic ${credentials}`;
           }
           break;

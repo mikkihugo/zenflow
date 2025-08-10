@@ -2,13 +2,11 @@
  * Coordination Service Implementation.
  *
  * Service implementation for swarm coordination, orchestration, and.
- * multi-agent management. Integrates with existing coordination systems.
+ * Multi-agent management. Integrates with existing coordination systems.
  */
 /**
- * @file coordination service implementation
+ * @file Coordination service implementation.
  */
-
-
 
 import type { IService } from '../core/interfaces';
 import type { CoordinationServiceConfig, ServiceOperationOptions } from '../types';

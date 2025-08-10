@@ -2,8 +2,8 @@
  * Document Processor - Unified Document Processing System.
  *
  * Clean, focused document processor that consolidates DocumentDrivenSystem and DatabaseDrivenSystem.
- * into a single, coherent document processing system. Handles Vision → PRDs → Epics → Features → Tasks → Code.
- * ADRs are independent architectural governance documents that constrain and guide implementation.
+ * Into a single, coherent document processing system. Handles Vision → PRDs → Epics → Features → Tasks → Code.
+ * ADRs are independent architectural governance documents that constrain and guide implementation..
  *
  * @example
  * ```typescript
@@ -17,10 +17,8 @@
  * ```
  */
 /**
- * @file document-processor implementation
+ * @file Document-processor implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
@@ -674,7 +672,7 @@ ${content}
    */
   private getSuggestedNextSteps(documentType: DocumentType): string[] {
     const nextSteps = {
-      vision: ['Generate ADRs', 'Create PRDs', 'Define stakeholder requirements'],
+      vision: ['Create PRDs', 'Define stakeholder requirements', 'Conduct stakeholder alignment'],
       adr: ['Review architectural implications', 'Update related PRDs', 'Validate decisions'],
       prd: ['Generate epics', 'Create user stories', 'Define acceptance criteria'],
       epic: ['Break down into features', 'Estimate effort', 'Plan timeline'],

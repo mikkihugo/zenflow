@@ -3,10 +3,8 @@
  * Ensures only one instance of a service exists throughout the application lifetime.
  */
 /**
- * @file singleton-provider implementation
+ * @file Singleton-provider implementation.
  */
-
-
 
 import type { Provider } from '../types/di-types';
 

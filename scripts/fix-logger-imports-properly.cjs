@@ -12,9 +12,9 @@ function calculateCorrectLoggerPath(filePath) {
   // Get relative path from src root
   const relativePath = path.relative('src', filePath);
   const depth = relativePath.split('/').length - 1; // -1 because file itself doesn't count
-  
+
   if (depth === 0) {
-    return './core/logger';  // Same level as core
+    return './core/logger'; // Same level as core
   } else if (depth === 1) {
     return '../core/logger'; // One level deep
   } else {
@@ -25,7 +25,10 @@ function calculateCorrectLoggerPath(filePath) {
 function getAllTSFiles() {
   try {
     const result = execSync('find src -name "*.ts" -o -name "*.tsx"', { encoding: 'utf8' });
-    return result.trim().split('\n').filter(file => file && !file.includes('node_modules'));
+    return result
+      .trim()
+      .split('\n')
+      .filter((file) => file && !file.includes('node_modules'));
   } catch (error) {
     console.error('Error finding TypeScript files:', error.message);
     return [];
@@ -36,7 +39,7 @@ function fixLoggerImport(filePath) {
   try {
     let content = fs.readFileSync(filePath, 'utf8');
     const correctPath = calculateCorrectLoggerPath(filePath);
-    
+
     // All possible wrong logger import patterns
     const loggerPatterns = [
       /from ['"]\.\.\/\.\.\/core\/logger['"];?/g,
@@ -48,10 +51,10 @@ function fixLoggerImport(filePath) {
       /import ['"]\.\.\/core\/logger['"];?/g,
       /import ['"]\.\.\/\.\.\/\.\.\/core\/logger['"];?/g,
     ];
-    
+
     let fixed = false;
     let fixCount = 0;
-    
+
     for (const pattern of loggerPatterns) {
       if (pattern.test(content)) {
         const matches = content.match(pattern);
@@ -69,13 +72,13 @@ function fixLoggerImport(filePath) {
         }
       }
     }
-    
+
     if (fixed) {
       fs.writeFileSync(filePath, content);
       console.log(`✅ ${path.relative('.', filePath)}: ${fixCount} fixes → ${correctPath}`);
       return fixCount;
     }
-    
+
     return 0;
   } catch (error) {
     console.log(`❌ ${path.relative('.', filePath)}: ${error.message}`);
@@ -86,13 +89,13 @@ function fixLoggerImport(filePath) {
 async function main() {
   console.log('🔧 SMART LOGGER IMPORT FIXER');
   console.log('⚡ Calculating correct paths based on file depth...\n');
-  
+
   const allFiles = getAllTSFiles();
   console.log(`📊 Scanning ${allFiles.length} TypeScript files\n`);
-  
+
   let totalFiles = 0;
   let totalFixes = 0;
-  
+
   for (const file of allFiles) {
     const fixes = fixLoggerImport(file);
     if (fixes > 0) {
@@ -100,7 +103,7 @@ async function main() {
       totalFixes += fixes;
     }
   }
-  
+
   console.log(`\n🎉 SMART LOGGER FIXES COMPLETE:`);
   console.log(`   📁 Files fixed: ${totalFiles}`);
   console.log(`   🔧 Total fixes: ${totalFixes}`);

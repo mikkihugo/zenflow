@@ -8,10 +8,8 @@
  * - Predictive performance optimization.
  */
 /**
- * @file Coordination system: dspy-swarm-intelligence
+ * @file Coordination system: dspy-swarm-intelligence.
  */
-
-
 
 import { createLogger } from '../../core/logger';
 import type { DSPyWrapper } from '../neural/dspy-wrapper';

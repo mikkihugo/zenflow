@@ -5,10 +5,8 @@
  * Supports both standard and swarm-specific display modes.
  */
 /**
- * @file Interface implementation: header
+ * @file Interface implementation: header.
  */
-
-
 
 import { Box, Text } from 'ink';
 import type React from 'react';

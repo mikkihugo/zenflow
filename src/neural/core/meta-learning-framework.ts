@@ -3,10 +3,8 @@
  * Learning to learn - adaptive learning strategies.
  */
 /**
- * @file Neural network: meta-learning-framework
+ * @file Neural network: meta-learning-framework.
  */
-
-
 
 interface MetaLearningOptions {
   maxStrategies?: number;

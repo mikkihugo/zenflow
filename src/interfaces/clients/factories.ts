@@ -9,11 +9,9 @@
  * @file Interface implementation: factories.
  */
 
-
-
 import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
-import { injectable } from '../../di/decorators/injectable';
 import { inject } from '../../di/decorators/inject';
+import { injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   ClientConfig,

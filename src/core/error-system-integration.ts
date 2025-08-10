@@ -2,13 +2,11 @@
  * Error System Integration.
  *
  * Central integration point for all error handling, recovery, monitoring,
- * and resilience systems in Claude-Zen
+ * and resilience systems in Claude-Zen.
  */
 /**
- * @file error-system-integration implementation.
+ * @file Error-system-integration implementation.
  */
-
-
 
 import { mcpErrorHandler } from '../coordination/swarm/mcp/error-handler';
 import { errorMonitor } from './error-monitoring';

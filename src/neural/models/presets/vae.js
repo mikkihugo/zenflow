@@ -122,7 +122,7 @@ class VAEModel extends NeuralModel {
     const logVar = this.linearTransform(
       h,
       this.encoder.logVarLayer.weight,
-      this.encoder.logVarLayer.bias
+      this.encoder.logVarLayer.bias,
     );
 
     // Reparameterization trick

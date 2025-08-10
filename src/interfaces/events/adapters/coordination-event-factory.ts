@@ -2,19 +2,17 @@
  * Coordination Event Manager Factory.
  *
  * Factory implementation for creating CoordinationEventAdapter instances.
- * following the UEL factory pattern and integrating with the main UELFactory.
+ * Following the UEL factory pattern and integrating with the main UELFactory.
  *
  * This factory specializes in creating coordination event managers for:
  * - Swarm coordination and lifecycle management
  * - Agent management and health monitoring
  * - Task distribution and execution tracking
- * - Inter-swarm communication and protocol management
+ * - Inter-swarm communication and protocol management.
  */
 /**
  * @file Interface implementation: coordination-event-factory.
  */
-
-
 
 import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
 import { createLogger } from '../../../core/logger';
@@ -358,6 +356,7 @@ export class CoordinationEventManagerFactory
  *
  * @param name
  * @param overrides
+ * @example
  */
 export async function createCoordinationEventManager(
   name: string,
@@ -373,6 +372,7 @@ export async function createCoordinationEventManager(
  * Create coordination event manager for swarm coordination only.
  *
  * @param name
+ * @example
  */
 export async function createSwarmCoordinationEventManager(
   name: string = 'swarm-coordination-events'
@@ -422,6 +422,7 @@ export async function createSwarmCoordinationEventManager(
  * Create coordination event manager for agent management only.
  *
  * @param name
+ * @example
  */
 export async function createAgentManagementEventManager(
   name: string = 'agent-management-events'
@@ -467,6 +468,7 @@ export async function createAgentManagementEventManager(
  * Create coordination event manager for task orchestration only.
  *
  * @param name
+ * @example
  */
 export async function createTaskOrchestrationEventManager(
   name: string = 'task-orchestration-events'
@@ -512,6 +514,7 @@ export async function createTaskOrchestrationEventManager(
  * Create coordination event manager for protocol management only.
  *
  * @param name
+ * @example
  */
 export async function createProtocolManagementEventManager(
   name: string = 'protocol-management-events'
@@ -549,6 +552,7 @@ export async function createProtocolManagementEventManager(
  * Create comprehensive coordination event manager for full coordination monitoring.
  *
  * @param name
+ * @example
  */
 export async function createComprehensiveCoordinationEventManager(
   name: string = 'comprehensive-coordination-events'
@@ -643,6 +647,7 @@ export async function createComprehensiveCoordinationEventManager(
  * Create high-performance coordination event manager for production workloads.
  *
  * @param name
+ * @example
  */
 export async function createHighPerformanceCoordinationEventManager(
   name: string = 'high-performance-coordination-events'
@@ -730,6 +735,7 @@ export async function createHighPerformanceCoordinationEventManager(
  * Create development coordination event manager with enhanced debugging.
  *
  * @param name
+ * @example
  */
 export async function createDevelopmentCoordinationEventManager(
   name: string = 'development-coordination-events'

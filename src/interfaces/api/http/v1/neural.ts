@@ -5,13 +5,13 @@
  * Moved from neural/api.ts to unified API layer.
  * Following Google API Design Guide standards.
  *
- * @file Neural network domain API routes
+ * @file Neural network domain API routes.
  */
 
 import { type Request, type Response, Router } from 'express';
-import { NeuralDomainAPI } from '../neural/api';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
+import { NeuralDomainAPI } from '../neural/api';
 
 /**
  * Create neural network routes.

@@ -3,10 +3,8 @@
  * Optimizes query performance, connection pooling, caching, and data compression.
  */
 /**
- * @file data-optimizer implementation
+ * @file Data-optimizer implementation.
  */
-
-
 
 import { createLogger } from '../../core/logger';
 import type { DataOptimizer } from '../interfaces/optimization-interfaces';
@@ -37,6 +35,61 @@ export interface DatabaseMetrics {
   cacheEfficiency: number;
   storageUtilization: number;
   compressionRatio: number;
+}
+
+export interface DatabaseQuery {
+  sql: string;
+  estimatedCost: number;
+  parameters?: any[];
+  metadata?: Record<string, any>;
+}
+
+export interface QueryOptimization {
+  queryTime: number;
+  indexOptimization: string[];
+  queryPlanImprovement: number;
+  cacheUtilization: number;
+}
+
+export interface Connection {
+  id: string;
+  status: 'active' | 'idle' | 'closed';
+  lastUsed: number;
+  createdAt: number;
+}
+
+export interface PoolConfig {
+  minConnections: number;
+  maxConnections: number;
+  connectionTimeout: number;
+  idleTimeout: number;
+  healthCheckInterval: number;
+}
+
+export interface CacheLayer {
+  type: 'memory' | 'redis' | 'hybrid';
+  size: number;
+  config: Record<string, any>;
+}
+
+export interface CacheOptimization {
+  hitRatio: number;
+  responseTime: number;
+  memoryEfficiency: number;
+  invalidationStrategy: string;
+}
+
+export interface StorageLayer {
+  type: 'disk' | 'ssd' | 'cloud';
+  capacity: number;
+  config: Record<string, any>;
+}
+
+export interface CompressionResult {
+  compressionRatio: number;
+  decompressionSpeed: number;
+  algorithm: string;
+  storageReduction: number;
 }
 
 export class DataPerformanceOptimizer implements DataOptimizer {

@@ -7,23 +7,22 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { config } from '../../../config';
+import { config, getMCPServerURL } from '../../../config';
+import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage';
 import type {
   ArchitecturalValidation,
   ArchitectureDesign,
 } from '../../../coordination/swarm/sparc/types/sparc-types';
-import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage';
+import type { ConnectionConfig } from '../../../integration/adapter-system';
 import {
   MCPAdapter,
   ProtocolManager,
   RESTAdapter,
   WebSocketAdapter,
 } from '../../../integration/adapter-system';
-import type { ConnectionConfig } from '../../../integration/adapter-system';
+import { createLogger, type ILogger } from '../../../utils/logger';
 import type { APIResult } from '../../../utils/type-guards';
 import { SafeAPIClient, SafeAPIService } from '../../api/safe-api-client';
-import { createLogger, type ILogger } from '../../../utils/logger';
-import { getMCPServerURL } from '../../../config';
 import type {
   IService,
   ServiceConfig,
@@ -37,33 +36,40 @@ import type {
   ServiceRetryConfig,
   ServiceStatus,
 } from '../core/interfaces';
-import {
-  ServiceEnvironment,
-  ServicePriority,
-  ServiceType,
-} from '../types';
 import type { IntegrationServiceConfig } from '../types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
 
 // ============================================
 // Service-Specific Error Classes
 // ============================================
 
 class ServiceDependencyError extends Error {
-  constructor(public serviceName: string, message: string) {
+  constructor(
+    public serviceName: string,
+    message: string
+  ) {
     super(message);
     this.name = 'ServiceDependencyError';
   }
 }
 
 class ServiceOperationError extends Error {
-  constructor(public serviceName: string, public operation: string, public originalError: Error) {
+  constructor(
+    public serviceName: string,
+    public operation: string,
+    public originalError: Error
+  ) {
     super(`${serviceName}: ${operation} failed - ${originalError.message}`);
     this.name = 'ServiceOperationError';
   }
 }
 
 class ServiceTimeoutError extends Error {
-  constructor(public serviceName: string, public operation: string, public timeout: number) {
+  constructor(
+    public serviceName: string,
+    public operation: string,
+    public timeout: number
+  ) {
     super(`${serviceName}: ${operation} timed out after ${timeout}ms`);
     this.name = 'ServiceTimeoutError';
   }
@@ -74,10 +80,11 @@ class ServiceTimeoutError extends Error {
  *
  * @example
  */
-export interface IntegrationServiceAdapterConfig extends Omit<IntegrationServiceConfig, 'name' | 'type'> {
+export interface IntegrationServiceAdapterConfig
+  extends Omit<IntegrationServiceConfig, 'name' | 'type'> {
   /** Service name */
   name?: string;
-  /** Service type */  
+  /** Service type */
   type?: string;
   /** Architecture Storage Service integration settings */
   architectureStorage?: {
@@ -413,7 +420,7 @@ export class IntegrationServiceAdapter implements IService {
           'health-check',
         ],
         ...config?.retry,
-},
+      },
       cache: {
         enabled: true,
         strategy: 'memory',
@@ -1001,7 +1008,7 @@ export class IntegrationServiceAdapter implements IService {
     try {
       const errors: string[] = [];
       const typedConfig = config as IntegrationServiceAdapterConfig & ServiceConfig;
-      
+
       // Basic validation
       if (!typedConfig?.name || !typedConfig?.type) {
         errors.push('Configuration missing required fields: name or type');
@@ -1050,17 +1057,28 @@ export class IntegrationServiceAdapter implements IService {
       }
 
       // Validate performance configuration
-      if (typedConfig?.performance?.maxConcurrency && typedConfig?.performance?.maxConcurrency < 1) {
+      if (
+        typedConfig?.performance?.maxConcurrency &&
+        typedConfig?.performance?.maxConcurrency < 1
+      ) {
         errors.push('Max concurrency must be at least 1');
       }
 
       // Validate retry configuration
-      if (typedConfig?.retry?.enabled && typedConfig?.retry?.maxAttempts && typedConfig?.retry?.maxAttempts < 1) {
+      if (
+        typedConfig?.retry?.enabled &&
+        typedConfig?.retry?.maxAttempts &&
+        typedConfig?.retry?.maxAttempts < 1
+      ) {
         errors.push('Retry max attempts must be at least 1');
       }
 
       // Validate cache configuration
-      if (typedConfig?.cache?.enabled && typedConfig?.cache?.maxSize && typedConfig?.cache?.maxSize < 1) {
+      if (
+        typedConfig?.cache?.enabled &&
+        typedConfig?.cache?.maxSize &&
+        typedConfig?.cache?.maxSize < 1
+      ) {
         errors.push('Cache max size must be at least 1');
       }
 
@@ -1184,11 +1202,11 @@ export class IntegrationServiceAdapter implements IService {
         success: true as const,
         timestamp: new Date(),
       };
-      
+
       const protocolInfo = this.extractProtocol(params);
       const endpointInfo = this.extractEndpoint(params);
       const dataSizeInfo = this.estimateDataSize(result);
-      
+
       const operationMetrics: IntegrationOperationMetrics = {
         ...baseMetrics,
         ...(protocolInfo && { protocol: protocolInfo }),
@@ -1490,42 +1508,42 @@ export class IntegrationServiceAdapter implements IService {
       // Safe API Service operations
       case 'api-get': {
         const result = await this.safeAPIGet<T>(params?.endpoint, params?.options);
-        return result.success ? result.data as T : result as any;
+        return result.success ? (result.data as T) : (result as any);
       }
 
       case 'api-post': {
         const result = await this.safeAPIPost<T>(params?.endpoint, params?.data, params?.options);
-        return result.success ? result.data as T : result as any;
+        return result.success ? (result.data as T) : (result as any);
       }
 
       case 'api-put': {
         const result = await this.safeAPIPut<T>(params?.endpoint, params?.data, params?.options);
-        return result.success ? result.data as T : result as any;
+        return result.success ? (result.data as T) : (result as any);
       }
 
       case 'api-delete': {
         const result = await this.safeAPIDelete<T>(params?.endpoint, params?.options);
-        return result.success ? result.data as T : result as any;
+        return result.success ? (result.data as T) : (result as any);
       }
 
       case 'api-create-resource': {
         const result = await this.createResource<T>(params?.endpoint, params?.data);
-        return result.success ? result.data as T : result as any;
+        return result.success ? (result.data as T) : (result as any);
       }
 
       case 'api-get-resource': {
         const result = await this.getResource<T>(params?.endpoint, params?.id);
-        return result.success ? result.data as T : result as any;
+        return result.success ? (result.data as T) : (result as any);
       }
 
       case 'api-list-resources': {
         const result = await this.listResources<T>(params?.endpoint, params?.queryParams);
-        return result.success ? result.data as T : result as any;
+        return result.success ? (result.data as T) : (result as any);
       }
 
       case 'api-update-resource': {
         const result = await this.updateResource<T>(params?.endpoint, params?.id, params?.data);
-        return result.success ? result.data as T : result as any;
+        return result.success ? (result.data as T) : (result as any);
       }
 
       case 'api-delete-resource':
@@ -2297,8 +2315,12 @@ export class IntegrationServiceAdapter implements IService {
       return false;
     }
 
-    // Don't retry certain types of errors  
-    if (error.name === 'ServiceTimeoutError' && 'timeout' in error && (error as any).timeout < 5000) {
+    // Don't retry certain types of errors
+    if (
+      error.name === 'ServiceTimeoutError' &&
+      'timeout' in error &&
+      (error as any).timeout < 5000
+    ) {
       return false; // Don't retry short timeouts
     }
 

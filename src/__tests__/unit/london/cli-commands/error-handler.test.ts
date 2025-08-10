@@ -261,8 +261,8 @@ describe('ErrorHandler - TDD London', () => {
       // Assert - verify metrics tracking behavior
       const metrics = errorHandler.getMetrics();
       expect(metrics.totalErrors).toBe(3);
-      expect(metrics.errorsByType["ValidationError"]).toBe(2);
-      expect(metrics.errorsByType["NetworkError"]).toBe(1);
+      expect(metrics.errorsByType['ValidationError']).toBe(2);
+      expect(metrics.errorsByType['NetworkError']).toBe(1);
       expect(metrics.averageHandlingTime).toBeGreaterThan(0);
     });
 

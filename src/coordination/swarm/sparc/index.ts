@@ -1,7 +1,6 @@
 /**
- * @file sparc module exports
+ * @file Sparc module exports.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

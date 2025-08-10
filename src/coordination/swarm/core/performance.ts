@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: performance
+ * @file Coordination system: performance.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -13,7 +12,7 @@ const logger = getLogger('coordination-swarm-core-performance');
  */
 
 import { promises as fs } from 'node:fs';
-import { ZenSwarm } from './index';
+import { ZenSwarm } from './base-swarm';
 
 interface PerformanceSuggestion {
   category: string;
@@ -90,7 +89,7 @@ class PerformanceCLI {
       analysis.performance.swarm = swarmMetrics;
 
       // 4. Neural Network Performance
-      if (rs.features["neural_networks"]) {
+      if (rs.features['neural_networks']) {
         const neuralMetrics = {
           inferenceSpeed: Math.random() * 100 + 200,
           trainingSpeed: Math.random() * 50 + 25,
@@ -124,7 +123,7 @@ class PerformanceCLI {
       }
 
       // WASM bottlenecks
-      if (wasmMetrics["loadTime"] > 60) {
+      if (wasmMetrics['loadTime'] > 60) {
         analysis.bottlenecks.push({
           type: 'wasm_loading',
           severity: 'medium',
@@ -161,7 +160,7 @@ class PerformanceCLI {
         });
       }
 
-      if (rs.features["neural_networks"] && analysis.performance.neural?.accuracy < 90) {
+      if (rs.features['neural_networks'] && analysis.performance.neural?.accuracy < 90) {
         analysis.recommendations.push({
           category: 'neural_optimization',
           priority: 'medium',

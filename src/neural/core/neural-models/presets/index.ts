@@ -3,10 +3,8 @@
  * Collection of predefined neural network configurations.
  */
 /**
- * @file presets module exports
+ * @file Presets module exports.
  */
-
-
 
 export interface NeuralPreset {
   id: string;
@@ -82,6 +80,7 @@ export const NEURAL_PRESETS: NeuralPresetMap = {
  *
  * @param category
  * @param presetName
+ * @example
  */
 export function getPreset(category: string, presetName?: string): NeuralPreset | undefined {
   if (presetName) {
@@ -102,6 +101,7 @@ export function getPreset(category: string, presetName?: string): NeuralPreset |
  * Get recommended preset for use case.
  *
  * @param useCase
+ * @example
  */
 export function getRecommendedPreset(useCase: string): NeuralPreset {
   const presets = Object.values(NEURAL_PRESETS);
@@ -114,6 +114,7 @@ export function getRecommendedPreset(useCase: string): NeuralPreset {
  * Search presets by use case.
  *
  * @param useCase
+ * @example
  */
 export function searchPresetsByUseCase(useCase: string): NeuralPreset[] {
   const presets = Object.values(NEURAL_PRESETS);
@@ -124,6 +125,7 @@ export function searchPresetsByUseCase(useCase: string): NeuralPreset[] {
  * Get presets by category.
  *
  * @param category
+ * @example
  */
 export function getCategoryPresets(category: string): NeuralPreset[] {
   const presets = Object.values(NEURAL_PRESETS);
@@ -134,6 +136,7 @@ export function getCategoryPresets(category: string): NeuralPreset[] {
  * Validate preset configuration.
  *
  * @param config
+ * @example
  */
 export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
   const required: Array<keyof NeuralPreset> = ['id', 'architecture', 'layers'];

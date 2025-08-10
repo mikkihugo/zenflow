@@ -5,9 +5,8 @@
 
 // Neural Network Performance Optimization Interface
 /**
- * @file Interface implementation: optimization-interfaces
+ * @file Interface implementation: optimization-interfaces.
  */
-
 
 export interface NeuralOptimizer {
   optimizeTrainingSpeed(network: NeuralNetwork): Promise<OptimizationResult>;

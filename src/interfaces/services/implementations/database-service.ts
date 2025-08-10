@@ -5,10 +5,8 @@
  * and data persistence.
  */
 /**
- * @file database service implementation
+ * @file Database service implementation.
  */
-
-
 
 import type { IService } from '../core/interfaces';
 import type { DatabaseServiceConfig, ServiceOperationOptions } from '../types';

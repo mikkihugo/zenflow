@@ -4,10 +4,8 @@
  * Simple stub implementation for compatibility with existing test files.
  */
 /**
- * @file unified-memory-system implementation
+ * @file Unified-memory-system implementation.
  */
-
-
 
 export interface MemoryConfig {
   backend?: string;

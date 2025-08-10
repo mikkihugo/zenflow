@@ -2,18 +2,17 @@
  * @file Memory-migration-example implementation.
  */
 
-
+import type { SessionMemoryStore } from '../memory';
 import {
   extractErrorMessage,
   isMemoryError,
   isMemoryNotFound,
   isMemorySuccess,
-  MemoryResult,
-  MemoryError,
-  MemoryNotFound,
-  MemorySuccess,
+  type MemoryError,
+  type MemoryNotFound,
+  type MemoryResult,
+  type MemorySuccess,
 } from '../utils/type-guards';
-import { SessionMemoryStore } from '../memory';
 
 // ============================================
 // BEFORE: Unsafe Memory Operations

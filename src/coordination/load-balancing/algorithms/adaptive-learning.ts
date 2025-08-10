@@ -6,8 +6,6 @@
  * @file Coordination system: adaptive-learning
  */
 
-
-
 import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 

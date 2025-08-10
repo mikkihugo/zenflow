@@ -3,10 +3,8 @@
  * Provides centralized logging configuration and utilities.
  */
 /**
- * @file Coordination system: logging-config
+ * @file Coordination system: logging-config.
  */
-
-
 
 import { Logger } from './logger';
 

@@ -6,12 +6,11 @@
  * Architectural Contract:
  * - All external modules MUST import WASM capabilities only via this gateway
  * - Direct imports of deep wasm internals (src/neural/wasm/(src|binaries|fact-core)) are blocked by dependency-cruiser
- * - Provides stable surface while underlying loaders evolve
+ * - Provides stable surface while underlying loaders evolve.
  */
 /**
  * @file Neural network: gateway.
  */
-
 
 import { WasmModuleLoader } from './wasm-loader';
 import { WasmMemoryOptimizer } from './wasm-memory-optimizer';
@@ -71,7 +70,11 @@ class NeuralWasmGatewayImpl {
     this.metrics.lastUpdated = Date.now();
   }
 
-  /** Execute a WASM-backed task (stub until real dispatch added) */
+  /**
+   * Execute a WASM-backed task (stub until real dispatch added).
+   *
+   * @param ctx
+   */
   async execute<T = unknown>(ctx: WasmExecutionContext): Promise<WasmExecutionResult<T>> {
     const start = performance.now?.() ?? Date.now();
     try {

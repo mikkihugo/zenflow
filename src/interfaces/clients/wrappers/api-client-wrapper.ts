@@ -11,15 +11,8 @@
  * @file Interface implementation: api-client-wrapper.
  */
 
-
-
-import type {
-  Agent,
-  HealthStatus,
-  PerformanceMetrics,
-  SwarmConfig,
-  Task,
-} from '../coordination/schemas';
+import { HTTPClientAdapter } from '../adapters/http-client-adapter';
+import type { HTTPClientConfig } from '../adapters/http-types';
 import type {
   NeuralNetwork,
   PredictionRequest,
@@ -27,8 +20,13 @@ import type {
   TrainingRequest,
 } from '../api/http/schemas/neural';
 import { getMCPServerURL } from '../config/url-builder';
-import { HTTPClientAdapter } from '../adapters/http-client-adapter';
-import type { HTTPClientConfig } from '../adapters/http-types';
+import type {
+  Agent,
+  HealthStatus,
+  PerformanceMetrics,
+  SwarmConfig,
+  Task,
+} from '../coordination/schemas';
 
 /**
  * Legacy API Client Configuration (maintained for compatibility).

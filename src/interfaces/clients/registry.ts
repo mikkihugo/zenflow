@@ -4,13 +4,13 @@
  * Central registry for all client types in the Unified Adaptive Client Layer.
  * Provides type-safe registration, discovery, and configuration management.
  *
- * @file Centralized client type management system
+ * @file Centralized client type management system.
  */
 
 import { EventEmitter } from 'node:events';
-import type { FACTIntegration } from '../knowledge/knowledge-client';
 import type { APIClient } from '../api/http/client';
 import type { WebSocketClient } from '../api/websocket/client';
+import type { FACTIntegration } from '../knowledge/knowledge-client';
 import type { ExternalMCPClient } from '../mcp/external-mcp-client';
 
 /**
@@ -160,9 +160,10 @@ export interface RegistryEvents {
  * - Type-safe registration and discovery
  * - Health monitoring and metrics
  * - Configuration validation
- * - Event-driven status updates
+ * - Event-driven status updates.
  *
  * @example.
+ * @example
  */
 export class ClientRegistry extends EventEmitter {
   private clients = new Map<string, ClientInstance>();
@@ -290,9 +291,10 @@ export class ClientRegistry extends EventEmitter {
   }
 
   /**
-   * Get client by priority (highest priority first)
+   * Get client by priority (highest priority first).
    *
    * @param type.
+   * @param type
    */
   getByPriority(type?: ClientType): ClientInstance[] {
     return this.getAll((client) => !type || client.type === type).sort(
@@ -525,9 +527,10 @@ export const ClientRegistryHelpers = {
   },
 
   /**
-   * Get the best available client for a type (highest priority, healthy)
+   * Get the best available client for a type (highest priority, healthy).
    *
    * @param type.
+   * @param type
    */
   getBestClient(type: ClientType): ClientInstance | undefined {
     const clients = globalClientRegistry.getByPriority(type);
@@ -535,9 +538,10 @@ export const ClientRegistryHelpers = {
   },
 
   /**
-   * Get load-balanced client (round-robin among healthy clients)
+   * Get load-balanced client (round-robin among healthy clients).
    *
    * @param type.
+   * @param type
    */
   getLoadBalancedClient(type: ClientType): ClientInstance | undefined {
     const healthy = globalClientRegistry.getHealthy(type);

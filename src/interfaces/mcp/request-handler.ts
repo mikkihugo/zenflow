@@ -5,10 +5,8 @@
  * Implements the Model Context Protocol specification for tool calls.
  */
 /**
- * @file Interface implementation: request-handler
+ * @file Interface implementation: request-handler.
  */
-
-
 
 import { createLogger } from './mcp-logger';
 

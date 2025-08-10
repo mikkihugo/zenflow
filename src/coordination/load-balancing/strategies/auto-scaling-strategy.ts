@@ -6,8 +6,6 @@
  * @file Coordination system: auto-scaling-strategy
  */
 
-
-
 import { EventEmitter } from 'node:events';
 import type { AutoScaler } from '../interfaces';
 

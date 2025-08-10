@@ -16,6 +16,14 @@ import {
 } from '../ml-integration';
 import { PatternRecognitionEngine } from '../pattern-recognition-engine';
 import { PerformanceOptimizer } from '../performance-optimizer';
+import type {
+  AdaptiveLearningConfig,
+  Agent,
+  ExecutionData,
+  SuccessPattern,
+  SystemContext,
+  Task,
+} from '../types';
 
 // ============================================
 // Test Helpers and Fixtures
@@ -210,7 +218,8 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
     let mockEmit: jest.MockedFunction<any>;
 
     beforeEach(() => {
-      coordinator = new LearningCoordinator(createTestConfig(), createTestContext());
+      const mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() };
+      coordinator = new LearningCoordinator(createTestConfig(), createTestContext(), mockLogger);
       mockEmit = jest.spyOn(coordinator, 'emit').mockImplementation(() => true);
     });
 
@@ -497,7 +506,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
       const ensemble = new EnsembleModels();
       const mockEmit = jest.spyOn(ensemble, 'emit');
 
-      const mockModel = { predict: jest.fn().mockResolvedValue([0.5] as any) };
+      const mockModel = { predict: jest.fn().mockResolvedValue([0.5]) };
       ensemble.addModel(mockModel, 1.0);
 
       expect(mockEmit).toHaveBeenCalledWith(
@@ -801,9 +810,9 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       const ensemble = new EnsembleModels();
 
       // Add models with known weights
-      const model1 = { predict: jest.fn().mockResolvedValue([0.8] as any) };
-      const model2 = { predict: jest.fn().mockResolvedValue([0.4] as any) };
-      const model3 = { predict: jest.fn().mockResolvedValue([0.6] as any) };
+      const model1 = { predict: jest.fn().mockResolvedValue([0.8]) };
+      const model2 = { predict: jest.fn().mockResolvedValue([0.4]) };
+      const model3 = { predict: jest.fn().mockResolvedValue([0.6]) };
 
       ensemble.addModel(model1, 0.5); // 50% weight
       ensemble.addModel(model2, 0.3); // 30% weight
@@ -835,7 +844,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       const weightValues = Array.from(weights.values());
 
       // Higher performing model should have higher weight
-      expect(weightValues[0]).toBeGreaterThan(weightValues[1]);
+      expect(weightValues[0]!).toBeGreaterThan(weightValues[1]!);
 
       // Weights should sum to 1 (normalized)
       const weightSum = weightValues.reduce((sum, w) => sum + (w ?? 0), 0);
@@ -855,7 +864,8 @@ describe('Adaptive Learning System - Integration Tests', () => {
     const context = createTestContext();
 
     const patternEngine = new PatternRecognitionEngine(config, context);
-    const coordinator = new LearningCoordinator(config, context);
+    const mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() };
+    const coordinator = new LearningCoordinator(config, context, mockLogger);
     const optimizer = new PerformanceOptimizer(config, context);
 
     // Simulate execution data showing improvement over time

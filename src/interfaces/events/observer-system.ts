@@ -1,11 +1,11 @@
-import { getLogger } from '../../config/logging-config';
-
-const logger = getLogger('interfaces-events-observer-system');
-
 /**
  * @file Observer Pattern Implementation for Real-Time Event System
  * Provides type-safe event handling with priority management and error recovery.
  */
+
+import { getLogger } from '../../config/logging-config';
+
+const logger = getLogger('interfaces-events-observer-system');
 
 import { EventEmitter } from 'node:events';
 

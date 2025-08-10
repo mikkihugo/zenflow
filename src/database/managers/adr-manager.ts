@@ -5,10 +5,8 @@
  * relationship tracking, and decision lifecycle management.
  */
 /**
- * @file adr management system
+ * @file Adr management system.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import type { ADRDocumentEntity, ProjectEntity } from '../entities/document-entities';
@@ -286,7 +284,7 @@ export class ADRManager {
   }
 
   /**
-   * Get ADR by number (e.g., 1, 15, 142)
+   * Get ADR by number (e.g., 1, 15, 142).
    *
    * @param number
    */
@@ -296,7 +294,7 @@ export class ADRManager {
   }
 
   /**
-   * Get ADR by ID string (e.g., "ADR-001", "ADR-015", "ADR-142")
+   * Get ADR by ID string (e.g., "ADR-001", "ADR-015", "ADR-142").
    *
    * @param adrId
    */

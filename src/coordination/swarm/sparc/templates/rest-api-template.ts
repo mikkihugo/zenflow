@@ -5,10 +5,8 @@
  * validation, rate limiting, and comprehensive error handling.
  */
 /**
- * @file Coordination system: rest-api-template
+ * @file Coordination system: rest-api-template.
  */
-
-
 
 import { nanoid } from 'nanoid';
 

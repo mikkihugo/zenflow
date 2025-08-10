@@ -5,10 +5,8 @@
  * fault tolerance, and efficient coordination across all agents and Claude Code instances.
  */
 /**
- * @file Coordination system: swarm-synchronization
+ * @file Coordination system: swarm-synchronization.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';

@@ -5,10 +5,8 @@
  * enabling external access to architecture generation and validation.
  */
 /**
- * @file Coordination system: architecture-tools
+ * @file Coordination system: architecture-tools.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import { ArchitectureStorageService } from '../database/architecture-storage';

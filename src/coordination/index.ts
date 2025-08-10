@@ -6,9 +6,8 @@
 
 // Export diagnostics
 /**
- * @file coordination module exports
+ * @file Coordination module exports.
  */
-
 
 export * from './diagnostics';
 

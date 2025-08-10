@@ -2,16 +2,14 @@
  * SPARC Specification Phase Engine.
  *
  * Handles the first phase of SPARC methodology - gathering and analyzing.
- * detailed requirements, constraints, and acceptance criteria.
+ * Detailed requirements, constraints, and acceptance criteria.
  *
  * TEMPLATE INTEGRATION: Now supports template-based specification generation.
- * using the TemplateEngine for domain-specific requirements and patterns.
+ * Using the TemplateEngine for domain-specific requirements and patterns.
  */
 /**
- * @file specification processing engine
+ * @file Specification processing engine.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import { TemplateEngine } from '../core/template-engine';

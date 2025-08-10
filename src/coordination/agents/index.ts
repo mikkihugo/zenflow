@@ -2,9 +2,8 @@
 
 // Re-export agent functionality
 /**
- * @file agents module exports
+ * @file Agents module exports.
  */
-
 
 export * from './agent';
 export { AgentManager } from './agent-manager';

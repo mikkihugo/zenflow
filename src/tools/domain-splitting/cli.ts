@@ -2,8 +2,14 @@
  * @file cli implementation
  */
 
-
-#!/usr/bin/env tsximport { getLogger } from '../config/logging-config";
+#
+!/usr/bin / env;
+tsximport;
+{
+  getLogger;
+}
+from;
+'../config/logging-config";
 const logger = getLogger('tools-domain-splitting-cli');
 
 /**

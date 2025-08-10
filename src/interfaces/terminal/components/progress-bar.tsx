@@ -5,10 +5,8 @@
  * Supports both standard and swarm-specific progress displays.
  */
 /**
- * @file Interface implementation: progress-bar
+ * @file Interface implementation: progress-bar.
  */
-
-
 
 import { Box, Text } from 'ink';
 import type React from 'react';

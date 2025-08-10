@@ -2,13 +2,11 @@
  * SPARC Completion Phase Engine.
  *
  * Handles the fifth and final phase of SPARC methodology - generating.
- * production-ready code, tests, documentation, and deployment artifacts.
+ * Production-ready code, tests, documentation, and deployment artifacts.
  */
 /**
- * @file completion processing engine
+ * @file Completion processing engine.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import type {

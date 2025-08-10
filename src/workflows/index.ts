@@ -6,9 +6,8 @@
 
 // Re-export workflow types
 /**
- * @file workflows module exports
+ * @file Workflows module exports.
  */
-
 
 export type {
   WorkflowContext,

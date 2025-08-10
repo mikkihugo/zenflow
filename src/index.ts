@@ -1,5 +1,5 @@
 /**
- * Claude Code Flow - Main Entry Point.
+ * @file Claude Code Flow - Main Entry Point.
  *
  * Central export hub for all system components following clean architecture principles.
  * Organized by domain with clear separation of concerns.

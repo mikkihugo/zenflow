@@ -8,8 +8,6 @@
  * @file error-monitoring implementation
  */
 
-
-
 import {
   type BaseClaudeZenError,
   type ErrorContext,

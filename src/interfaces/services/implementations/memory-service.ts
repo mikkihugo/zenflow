@@ -2,13 +2,11 @@
  * Memory Service Implementation.
  *
  * Service implementation for memory management, caching, and session.
- * storage operations.
+ * Storage operations.
  */
 /**
- * @file memory service implementation
+ * @file Memory service implementation.
  */
-
-
 
 import type { IService } from '../core/interfaces';
 import type { MemoryServiceConfig, ServiceOperationOptions } from '../types';

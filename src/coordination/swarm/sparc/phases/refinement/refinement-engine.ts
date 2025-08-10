@@ -5,10 +5,8 @@
  * iterative improvement, and quality enhancement.
  */
 /**
- * @file refinement processing engine
+ * @file Refinement processing engine.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import type {

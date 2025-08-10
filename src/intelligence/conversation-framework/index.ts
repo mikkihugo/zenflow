@@ -1,14 +1,12 @@
 /**
- * Conversation Framework - ag2.ai Integration
+ * Conversation Framework - ag2.ai Integration.
  *
  * Multi-agent conversation capabilities inspired by ag2.ai (AutoGen)
- * for enhanced agent collaboration and structured dialogue
+ * for enhanced agent collaboration and structured dialogue.
  */
 /**
- * @file conversation-framework module exports
+ * @file Conversation-framework module exports.
  */
-
-
 
 import type { ConversationMCPTools, ConversationMemory, ConversationOrchestrator } from './types';
 
@@ -176,7 +174,7 @@ export class ConversationFramework {
 }
 
 /**
- * ag2.ai Integration Summary
+ * Ag2.ai Integration Summary.
  *
  * This conversation framework brings ag2.ai's key concepts to claude-code-zen:
  *
@@ -186,13 +184,13 @@ export class ConversationFramework {
  * 4. **Teachable Interactions**: Agents learn from conversation outcomes
  * 5. **Group Chat Coordination**: Support for multi-participant discussions
  * 6. **Conversation Memory**: Persistent context and history
- * 7. **MCP Integration**: Seamless tool integration for external access
+ * 7. **MCP Integration**: Seamless tool integration for external access.
  *
  * Key differences from ag2.ai:
  * - Uses claude-code-zen's existing 147+ agent types
  * - Integrates with existing memory and coordination systems
  * - Provides MCP tools for external integration
  * - Supports domain-driven conversation patterns
- * - Built for the claude-code-zen architecture and requirements
+ * - Built for the claude-code-zen architecture and requirements.
  */
 export default ConversationFramework;

@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: api
+ * @file Coordination system: api.
  */
-
 
 import type {
   Agent,

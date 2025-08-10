@@ -1,7 +1,6 @@
 /**
- * @file Neural network: neural
+ * @file Neural network: neural.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

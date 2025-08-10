@@ -3,10 +3,8 @@
  * Comprehensive system-wide performance monitoring.
  */
 /**
- * @file metrics-collector implementation
+ * @file Metrics-collector implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import * as fs from 'node:fs/promises';
@@ -411,7 +409,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Get I/O statistics (simplified)
+   * Get I/O statistics (simplified).
    */
   private async getIoStats(): Promise<any> {
     // This would read from /proc/diskstats on Linux or similar on other platforms
@@ -437,7 +435,7 @@ export class MetricsCollector extends EventEmitter {
   }
 
   /**
-   * Get network statistics (simplified)
+   * Get network statistics (simplified).
    */
   private async getNetworkStats(): Promise<any> {
     // This would read from /proc/net/dev on Linux or similar on other platforms

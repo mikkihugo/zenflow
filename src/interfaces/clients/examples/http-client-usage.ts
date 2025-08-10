@@ -2,13 +2,11 @@
  * HTTP Client Usage Examples.
  *
  * Demonstrates how to use the UACL HTTP Client Adapter and Factory.
- * for various use cases and scenarios.
+ * For various use cases and scenarios.
  */
 /**
- * @file Interface implementation: http-client-usage
+ * @file Interface implementation: http-client-usage.
  */
-
-
 
 import {
   createHTTPClient,
@@ -24,6 +22,8 @@ import {
 
 /**
  * Example 1: Basic HTTP client creation.
+ *
+ * @example
  */
 async function basicUsage() {
   // Create a simple HTTP client
@@ -62,6 +62,8 @@ async function basicUsage() {
 
 /**
  * Example 2: Bearer token authentication.
+ *
+ * @example
  */
 async function bearerTokenAuth() {
   const client = await createHTTPClient({
@@ -86,6 +88,8 @@ async function bearerTokenAuth() {
 
 /**
  * Example 3: API key authentication.
+ *
+ * @example
  */
 async function apiKeyAuth() {
   const client = await createHTTPClient({
@@ -107,6 +111,8 @@ async function apiKeyAuth() {
 
 /**
  * Example 4: OAuth authentication with token refresh.
+ *
+ * @example
  */
 async function oauthAuth() {
   const client = await createHTTPClient({
@@ -138,6 +144,8 @@ async function oauthAuth() {
 
 /**
  * Example 5: Advanced retry configuration.
+ *
+ * @example
  */
 async function retryConfiguration() {
   const client = await createHTTPClient({
@@ -171,6 +179,8 @@ async function retryConfiguration() {
 
 /**
  * Example 6: Monitoring and health checks.
+ *
+ * @example
  */
 async function monitoringExample() {
   const client = await createHTTPClient({
@@ -226,6 +236,8 @@ async function monitoringExample() {
 
 /**
  * Example 7: Using the HTTP Client Factory.
+ *
+ * @example
  */
 async function factoryUsage() {
   const factory = new HTTPClientFactory();
@@ -274,6 +286,8 @@ async function factoryUsage() {
 
 /**
  * Example 8: Using configuration presets.
+ *
+ * @example
  */
 async function presetUsage() {
   // Development preset with relaxed timeouts
@@ -317,6 +331,8 @@ async function presetUsage() {
 
 /**
  * Example 9: Load-balanced HTTP clients.
+ *
+ * @example
  */
 async function loadBalancingExample() {
   // Create load-balanced clients across multiple endpoints
@@ -345,6 +361,8 @@ async function loadBalancingExample() {
 
 /**
  * Example 10: Backward compatibility with existing APIClient.
+ *
+ * @example
  */
 async function backwardCompatibility() {
   // Import the compatible API client
@@ -381,6 +399,8 @@ async function backwardCompatibility() {
 
 /**
  * Example 11: Comprehensive error handling.
+ *
+ * @example
  */
 async function errorHandlingExample() {
   const client = await createHTTPClient({
@@ -424,6 +444,8 @@ async function errorHandlingExample() {
 
 /**
  * Run all examples.
+ *
+ * @example
  */
 async function runAllExamples() {
   const examples = [

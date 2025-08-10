@@ -2,17 +2,15 @@
  * Adaptive Learning Types.
  *
  * Core interfaces and types for the adaptive learning system that learns.
- * from swarm execution patterns to optimize performance and predict failures.
+ * From swarm execution patterns to optimize performance and predict failures.
  */
 
 // ============================================
 // Core Pattern Recognition Types
 // ============================================
 /**
- * @file TypeScript type definitions
+ * @file TypeScript type definitions.
  */
-
-
 
 export interface ExecutionData {
   id: string;

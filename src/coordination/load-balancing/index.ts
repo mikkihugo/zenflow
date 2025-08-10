@@ -6,8 +6,6 @@
  * @file load-balancing module exports
  */
 
-
-
 export { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning';
 export { LeastConnectionsAlgorithm } from './algorithms/least-connections';
 export { MLPredictiveAlgorithm } from './algorithms/ml-predictive';

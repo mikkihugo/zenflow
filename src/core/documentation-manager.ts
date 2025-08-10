@@ -2,7 +2,7 @@
  * Documentation Manager - Documentation Indexing and Linking.
  *
  * Clean, focused documentation manager that handles documentation indexing and linking.
- * without bloated "unified" architecture.
+ * Without bloated "unified" architecture..
  *
  * @example
  * ```typescript
@@ -16,10 +16,8 @@
  * ```
  */
 /**
- * @file documentation management system
+ * @file Documentation management system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { MemorySystem } from '../memory/memory-system';
@@ -70,9 +68,9 @@ export class DocumentationManager extends EventEmitter {
     super();
     this.memory = memory;
     this.config = {
-      autoLink: config?.["autoLink"] !== false,
-      scanPaths: config?.["scanPaths"] || ['./docs', './src'],
-      maxDepth: config?.["maxDepth"] || 10,
+      autoLink: config?.['autoLink'] !== false,
+      scanPaths: config?.['scanPaths'] || ['./docs', './src'],
+      maxDepth: config?.['maxDepth'] || 10,
     };
     this.stats = {
       indexedDocuments: 0,

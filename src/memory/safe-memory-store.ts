@@ -2,7 +2,6 @@
  * @file Memory management: safe-memory-store
  */
 
-
 import { getLogger } from '../core/logger';
 
 const logger = getLogger('src-memory-safe-memory-store');

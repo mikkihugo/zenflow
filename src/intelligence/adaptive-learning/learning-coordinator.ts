@@ -2,13 +2,11 @@
  * Learning Coordinator.
  *
  * Coordinates learning across multiple agents in the swarm, manages knowledge.
- * sharing, tracks expertise evolution, and identifies best practices and anti-patterns.
+ * Sharing, tracks expertise evolution, and identifies best practices and anti-patterns.
  */
 /**
- * @file learning coordination system
+ * @file Learning coordination system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { ILogger } from '../di/index';

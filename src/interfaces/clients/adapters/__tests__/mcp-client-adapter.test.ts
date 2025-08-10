@@ -6,7 +6,12 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { createMCPConfigFromLegacy, MCPClientAdapter, MCPClientFactory } from '../mcp-client-adapter.js';
+import {
+  createMCPConfigFromLegacy,
+  MCPClientAdapter,
+  MCPClientFactory,
+  type MCPClientConfig,
+} from '../mcp-client-adapter.js';
 
 // Mock child_process for testing
 jest.mock('node:child_process', () => ({
@@ -419,8 +424,8 @@ describe('MCPClientAdapter', () => {
 
       adapter = new MCPClientAdapter(config);
 
-      await expect(adapter.put('/test', {})).rejects.toThrow('PUT not supported');
-      await expect(adapter.delete('/test')).rejects.toThrow('DELETE not supported');
+      await expect(adapter.put()).rejects.toThrow('PUT not supported');
+      await expect(adapter.delete()).rejects.toThrow('DELETE not supported');
     });
   });
 });

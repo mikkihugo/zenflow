@@ -5,10 +5,8 @@
  * Supports multiple backend types with configuration-driven instantiation.
  */
 /**
- * @file Memory management: factory
+ * @file Memory management: factory.
  */
-
-
 
 import type { BackendInterface } from '../core/memory-system';
 import type { MemoryConfig } from '../providers/memory-providers';
@@ -33,6 +31,8 @@ const backendRegistry = new Map<MemoryBackendType, () => Promise<typeof BaseMemo
  * Memory Backend Factory Class.
  *
  * Provides centralized creation and management of memory storage backends.
+ *
+ * @example
  */
 export class MemoryBackendFactory {
   private static instance: MemoryBackendFactory;
@@ -60,6 +60,10 @@ export class MemoryBackendFactory {
 
   /**
    * Create a memory backend instance.
+   *
+   * @param type
+   * @param config
+   * @param instanceId
    */
   public async createBackend(
     type: MemoryBackendType,
@@ -96,6 +100,8 @@ export class MemoryBackendFactory {
 
   /**
    * Get existing backend instance.
+   *
+   * @param instanceId
    */
   public getBackend(instanceId: string): BaseMemoryBackend | null {
     return this.backends.get(instanceId) || null;
@@ -114,6 +120,8 @@ export class MemoryBackendFactory {
 
   /**
    * Close and cleanup a backend instance.
+   *
+   * @param instanceId
    */
   public async closeBackend(instanceId: string): Promise<boolean> {
     const backend = this.backends.get(instanceId);
@@ -136,6 +144,8 @@ export class MemoryBackendFactory {
 
   /**
    * Get backend capabilities.
+   *
+   * @param type
    */
   public async getBackendCapabilities(type: MemoryBackendType): Promise<BackendCapabilities> {
     const BackendClass = await this.getBackendClass(type);
@@ -145,6 +155,9 @@ export class MemoryBackendFactory {
 
   /**
    * Register a custom backend type.
+   *
+   * @param type
+   * @param loader
    */
   public registerBackend(
     type: MemoryBackendType,
@@ -155,6 +168,8 @@ export class MemoryBackendFactory {
 
   /**
    * Check if backend type is supported.
+   *
+   * @param type
    */
   public isBackendSupported(type: MemoryBackendType): boolean {
     return backendRegistry.has(type);
@@ -169,6 +184,8 @@ export class MemoryBackendFactory {
 
   /**
    * Create backend with auto-detection based on config.
+   *
+   * @param config
    */
   public async createAutoBackend(config: Partial<MemoryConfig> = {}): Promise<BaseMemoryBackend> {
     const type = this.detectOptimalBackend(config);
@@ -177,6 +194,9 @@ export class MemoryBackendFactory {
 
   /**
    * Static method for compatibility with existing code.
+   *
+   * @param type
+   * @param config
    */
   public static async createBackend(
     type: MemoryBackendType,

@@ -23,6 +23,7 @@ export const defaultCoreConfig: ClaudeZenCoreConfig = {
  * Initialize the core system.
  *
  * @param config
+ * @example
  */
 export async function initializeCore(config: Partial<ClaudeZenCoreConfig> = {}): Promise<void> {
   const finalConfig = { ...defaultCoreConfig, ...config };

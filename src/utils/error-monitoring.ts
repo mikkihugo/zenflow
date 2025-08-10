@@ -3,10 +3,8 @@
  * Comprehensive error tracking, analysis, and reporting for Claude-Zen.
  */
 /**
- * @file error-monitoring implementation
+ * @file Error-monitoring implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { ILogger } from '../core/interfaces/base-interfaces';
@@ -264,8 +262,8 @@ export class ErrorMonitoring extends EventEmitter {
       const errorType = key.split(':')[1] || 'unknown';
       topErrors.push({
         error: errorType,
-        count: data?.["count"],
-        component: data?.["component"],
+        count: data?.['count'],
+        component: data?.['component'],
       });
     }
 

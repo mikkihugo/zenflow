@@ -1,5 +1,5 @@
 /**
- * @fileoverview Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
+ * @file Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
  */
 
 import { getLogger } from '../config/logging-config';
@@ -1732,7 +1732,7 @@ ${this.sessionData.learnings
   }
 
   /**
-   * 🔧 CRITICAL FIX: Store notification in database for cross-agent access
+   * 🔧 CRITICAL FIX: Store notification in database for cross-agent access.
    *
    * @param notification
    */
@@ -1761,7 +1761,7 @@ ${this.sessionData.learnings
   }
 
   /**
-   * 🔧 CRITICAL FIX: Retrieve notifications from database for cross-agent access
+   * 🔧 CRITICAL FIX: Retrieve notifications from database for cross-agent access.
    *
    * @param agentId
    * @param type
@@ -1790,7 +1790,7 @@ ${this.sessionData.learnings
   }
 
   /**
-   * 🔧 CRITICAL FIX: Enhanced agent completion with database coordination
+   * 🔧 CRITICAL FIX: Enhanced agent completion with database coordination.
    *
    * @param args
    */
@@ -1845,7 +1845,7 @@ ${this.sessionData.learnings
   }
 
   /**
-   * 🔧 CRITICAL FIX: Cross-agent memory retrieval for coordinated decisions
+   * 🔧 CRITICAL FIX: Cross-agent memory retrieval for coordinated decisions.
    *
    * @param key
    * @param agentId
@@ -1872,7 +1872,7 @@ ${this.sessionData.learnings
   }
 
   /**
-   * 🔧 CRITICAL FIX: Cross-agent memory storage for coordinated decisions
+   * 🔧 CRITICAL FIX: Cross-agent memory storage for coordinated decisions.
    *
    * @param key
    * @param value

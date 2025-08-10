@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 /**
- * @file Test suite for test-external-servers
+ * @file Test suite for test-external-servers.
  */
-
-
 
 /**
  * External MCP Server Connection Test.
@@ -17,6 +15,8 @@ const logger = createLogger('MCP-Test');
 
 /**
  * Test external MCP server connections.
+ *
+ * @example
  */
 async function testExternalMCPServers(): Promise<void> {
   logger.info('Starting external MCP server connection tests...');
@@ -111,6 +111,8 @@ async function testExternalMCPServers(): Promise<void> {
 
 /**
  * Validate configuration files.
+ *
+ * @example
  */
 function validateConfigurationFiles(): void {
   import('node:fs')
@@ -156,6 +158,8 @@ function validateConfigurationFiles(): void {
 
 /**
  * Main test function.
+ *
+ * @example
  */
 async function main(): Promise<void> {
   // Validate configuration files first

@@ -3,10 +3,8 @@
  * Provides comprehensive performance tracking and alerting.
  */
 /**
- * @file real-time-monitor implementation
+ * @file Real-time-monitor implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { performance } from 'node:perf_hooks';

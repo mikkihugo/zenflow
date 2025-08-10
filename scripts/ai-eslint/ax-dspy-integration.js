@@ -2,7 +2,7 @@
 
 /**
  * Ax DSPy Integration for Zen AI Fixer
- * 
+ *
  * Uses the ax-llm/ax framework (official DSPy for TypeScript) with cloud APIs.
  * Benefits over direct Claude API:
  * - Optimized prompts through DSPy methodology
@@ -52,7 +52,7 @@ export class AxDSPyIntegration {
       // Configure language model - prefer GitHub Models (free) over OpenAI
       const githubToken = process.env.GITHUB_TOKEN;
       const openaiKey = process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY;
-      
+
       if (githubToken) {
         // Use GitHub Models (free access to various models)
         this.llm = new AxAIOpenAI({
@@ -60,7 +60,7 @@ export class AxDSPyIntegration {
           baseURL: 'https://models.inference.ai.azure.com',
           model: 'gpt-4o-mini',
           temperature: 0.1,
-          maxTokens: 1000
+          maxTokens: 1000,
         });
         console.log('   🐙 Using GitHub Models (free) with gpt-4o-mini');
       } else if (openaiKey) {
@@ -69,7 +69,7 @@ export class AxDSPyIntegration {
           apiKey: openaiKey,
           model: 'gpt-4o-mini',
           temperature: 0.1,
-          maxTokens: 1000
+          maxTokens: 1000,
         });
         console.log('   🤖 Using OpenAI with gpt-4o-mini');
       } else {
@@ -82,7 +82,7 @@ export class AxDSPyIntegration {
         this.llm
       );
 
-      // Create code fixing DSPy program with correct ax signature  
+      // Create code fixing DSPy program with correct ax signature
       this.codeFixingProgram = ax(
         'codeInput:string "Original TypeScript code", errorAnalysis:string "Error analysis", repairStrategy:string "Repair strategy" -> fixedCode:string "Fixed TypeScript code", explanation:string "Explanation of changes"',
         this.llm
@@ -93,7 +93,6 @@ export class AxDSPyIntegration {
 
       // Load existing patterns
       await this.loadPatternCache();
-
     } catch (error) {
       console.error('Failed to initialize Ax DSPy:', error.message);
       throw new Error(`Ax DSPy initialization failed: ${error.message}`);
@@ -114,7 +113,7 @@ export class AxDSPyIntegration {
     try {
       // Read file content
       const fileContent = fs.readFileSync(filePath, 'utf8');
-      
+
       // Extract errors from prompt
       const errors = this.extractErrorsFromPrompt(prompt);
       console.log(`   🔍 Processing ${errors.length} errors`);
@@ -127,10 +126,10 @@ export class AxDSPyIntegration {
       }
 
       // Step 1: Diagnose errors using DSPy
-      const errorText = errors.map(e => e.message || e).join('\n');
+      const errorText = errors.map((e) => e.message || e).join('\n');
       const diagnosisResult = await this.errorDiagnosisProgram({
         errorMessages: errorText,
-        fileContent: this.truncateFileContext(fileContent)
+        fileContent: this.truncateFileContext(fileContent),
       });
 
       console.log(`   🎯 Confidence: ${((diagnosisResult.confidence || 0.7) * 100).toFixed(1)}%`);
@@ -140,7 +139,7 @@ export class AxDSPyIntegration {
       const fixingResult = await this.codeFixingProgram({
         codeInput: fileContent,
         errorAnalysis: diagnosisResult.analysis || '',
-        repairStrategy: diagnosisResult.strategy || ''
+        repairStrategy: diagnosisResult.strategy || '',
       });
 
       // Apply the fix
@@ -160,8 +159,8 @@ export class AxDSPyIntegration {
       this.totalCost += cost;
       this.updateAverageTime(duration);
 
-      console.log(`   ✅ Fixed in ${(duration/1000).toFixed(1)}s (cost: ~$${cost.toFixed(3)})`);
-      
+      console.log(`   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(3)})`);
+
       // Save patterns periodically
       if (this.successCount % 3 === 0) {
         await this.savePatternCache();
@@ -173,16 +172,15 @@ export class AxDSPyIntegration {
         duration,
         method: 'Ax-DSPy',
         confidence: diagnosisResult.confidence || 0.7,
-        explanation: fixingResult.explanation || ''
+        explanation: fixingResult.explanation || '',
       };
-
     } catch (error) {
       console.error(`   ❌ Ax DSPy error: ${error.message}`);
-      
+
       return {
         success: false,
         error: error.message,
-        fallback: 'claude'
+        fallback: 'claude',
       };
     }
   }
@@ -193,16 +191,16 @@ export class AxDSPyIntegration {
   extractErrorsFromPrompt(prompt) {
     const errors = [];
     const lines = prompt.split('\n');
-    
+
     for (const line of lines) {
       if (line.includes('error TS') || line.includes('Error:')) {
         errors.push({
           message: line.trim(),
-          type: this.classifyError(line)
+          type: this.classifyError(line),
         });
       }
     }
-    
+
     return errors;
   }
 
@@ -217,11 +215,11 @@ export class AxDSPyIntegration {
       'type-assignment': ['is not assignable to', 'Type mismatch'],
       'duplicate-ids': ['Duplicate identifier', 'already declared'],
       'optional-properties': ['exactOptionalPropertyTypes', 'undefined'],
-      'import-errors': ['Cannot resolve', 'import error']
+      'import-errors': ['Cannot resolve', 'import error'],
     };
 
     for (const [type, keywords] of Object.entries(patterns)) {
-      if (keywords.some(keyword => errorLine.includes(keyword))) {
+      if (keywords.some((keyword) => errorLine.includes(keyword))) {
         return type;
       }
     }
@@ -232,7 +230,10 @@ export class AxDSPyIntegration {
    * Generate pattern key for caching
    */
   generatePatternKey(errors, fileExtension) {
-    const errorTypes = errors.map(e => e.type).sort().join(',');
+    const errorTypes = errors
+      .map((e) => e.type)
+      .sort()
+      .join(',');
     const errorCount = Math.min(errors.length, 10);
     return `${errorTypes}-${fileExtension}-${errorCount}`;
   }
@@ -247,7 +248,7 @@ export class AxDSPyIntegration {
       confidence: diagnosisResult.confidence || 0.7,
       sampleFix: fixingResult.explanation || '',
       created: Date.now(),
-      usageCount: 0
+      usageCount: 0,
     });
   }
 
@@ -263,7 +264,7 @@ export class AxDSPyIntegration {
       const fixingResult = await this.codeFixingProgram({
         codeInput: fileContent,
         errorAnalysis: pattern.diagnosis,
-        repairStrategy: pattern.fixStrategy
+        repairStrategy: pattern.fixStrategy,
       });
 
       fs.writeFileSync(filePath, fixingResult.fixedCode);
@@ -273,7 +274,9 @@ export class AxDSPyIntegration {
       this.totalCost += cost;
       this.updateAverageTime(duration);
 
-      console.log(`   ⚡ Pattern applied in ${(duration/1000).toFixed(1)}s (cost: $${cost.toFixed(3)}) - Used ${pattern.usageCount}x`);
+      console.log(
+        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (cost: $${cost.toFixed(3)}) - Used ${pattern.usageCount}x`
+      );
 
       return {
         success: true,
@@ -281,9 +284,8 @@ export class AxDSPyIntegration {
         duration,
         method: 'Ax-DSPy-Pattern',
         confidence: pattern.confidence,
-        explanation: fixingResult.explanation || pattern.sampleFix
+        explanation: fixingResult.explanation || pattern.sampleFix,
       };
-
     } catch (error) {
       console.log(`   ⚠️ Pattern failed: ${error.message}, removing from cache`);
       this.patternCache.delete(patternKey);
@@ -296,20 +298,20 @@ export class AxDSPyIntegration {
    */
   truncateFileContext(content, maxChars = 1500) {
     if (content.length <= maxChars) return content;
-    
+
     // Try to keep imports and the first part of the file
     const lines = content.split('\n');
-    const importLines = lines.filter(line => line.trim().startsWith('import'));
-    const otherLines = lines.filter(line => !line.trim().startsWith('import'));
-    
+    const importLines = lines.filter((line) => line.trim().startsWith('import'));
+    const otherLines = lines.filter((line) => !line.trim().startsWith('import'));
+
     let result = importLines.join('\n') + '\n\n';
-    let remaining = maxChars - result.length;
-    
+    const remaining = maxChars - result.length;
+
     for (const line of otherLines) {
       if (result.length + line.length + 1 > maxChars) break;
       result += line + '\n';
     }
-    
+
     return result;
   }
 
@@ -320,18 +322,20 @@ export class AxDSPyIntegration {
     // Rough estimate: gpt-4o-mini is ~$0.000150/1K input tokens, ~$0.000600/1K output tokens
     const inputTokens = Math.ceil(textLength / 4); // ~4 chars per token
     const outputTokens = 500; // Estimate for code generation
-    return ((inputTokens * 0.000150) + (outputTokens * 0.000600)) / 1000;
+    return (inputTokens * 0.00015 + outputTokens * 0.0006) / 1000;
   }
 
   /**
    * Basic validation of fixed code
    */
   validateFix(fixedCode) {
-    return fixedCode && 
-           fixedCode.trim().length > 0 && 
-           !fixedCode.includes('undefined') &&
-           !fixedCode.includes('FIXME') &&
-           !fixedCode.includes('TODO');
+    return (
+      fixedCode &&
+      fixedCode.trim().length > 0 &&
+      !fixedCode.includes('undefined') &&
+      !fixedCode.includes('FIXME') &&
+      !fixedCode.includes('TODO')
+    );
   }
 
   /**
@@ -385,8 +389,11 @@ export class AxDSPyIntegration {
       totalCost: this.totalCost,
       avgCost: this.successCount > 0 ? this.totalCost / this.successCount : 0,
       avgExecutionTime: this.avgExecutionTime,
-      cacheHitRate: this.successCount > 0 ? 
-        (Array.from(this.patternCache.values()).reduce((sum, p) => sum + p.usageCount, 0) / this.successCount) : 0
+      cacheHitRate:
+        this.successCount > 0
+          ? Array.from(this.patternCache.values()).reduce((sum, p) => sum + p.usageCount, 0) /
+            this.successCount
+          : 0,
     };
   }
 
@@ -400,7 +407,7 @@ export class AxDSPyIntegration {
     console.log(`   🧠 Patterns Learned: ${stats.patternsLearned}`);
     console.log(`   💰 Total Cost: $${stats.totalCost.toFixed(3)}`);
     console.log(`   📈 Avg Cost/Fix: $${stats.avgCost.toFixed(3)}`);
-    console.log(`   ⚡ Avg Execution: ${(stats.avgExecutionTime/1000).toFixed(1)}s`);
+    console.log(`   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`);
     console.log(`   🔄 Cache Hit Rate: ${(stats.cacheHitRate * 100).toFixed(1)}%`);
   }
 

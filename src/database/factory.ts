@@ -114,8 +114,8 @@ import type {
  * Configuration interface for repository and DAO creation.
  *
  * This interface defines all the configuration options needed to create.
- * repository or DAO instances. It supports database connection configuration,
- * entity schema definition, and repository-specific customization options.
+ * Repository or DAO instances. It supports database connection configuration,
+ * entity schema definition, and repository-specific customization options..
  *
  * @interface RepositoryConfig
  * @since 1.0.0
@@ -183,10 +183,10 @@ export interface RepositoryConfig {
  * Union type for all possible repository implementations.
  *
  * This type represents the different repository interfaces that can be returned.
- * by the factory based on the database type. Each database type has specialized
- * methods beyond the base repository interface.
+ * By the factory based on the database type. Each database type has specialized
+ * methods beyond the base repository interface..
  *
- * @template T The entity type the repository manages
+ * @template T The entity type the repository manages.
  * @since 1.0.0
  * @example Type Usage in Factory Methods
  * ```typescript
@@ -278,7 +278,7 @@ export interface EntityTypeRegistry {
  * Main Factory Class for Data Access Layer Instance Creation.
  *
  * The DALFactory is the central component responsible for creating, caching, and managing.
- * all database access layer instances. It handles dependency injection, connection pooling,
+ * All database access layer instances. It handles dependency injection, connection pooling,
  * schema validation, and provides both repository and DAO pattern implementations.
  *
  * Features:
@@ -287,7 +287,7 @@ export interface EntityTypeRegistry {
  * - Multi-database coordination support
  * - Entity schema registry management
  * - Database adapter lifecycle management
- * - Transaction and error handling support
+ * - Transaction and error handling support.
  *
  * @class DALFactory
  * @injectable.
@@ -353,12 +353,12 @@ export class DALFactory {
    * query building, and database-specific optimizations. Repositories handle the persistence
    * layer with minimal business logic.
    *
-   * @template T The entity type this repository will manage
-   * @param {RepositoryConfig} config - Repository configuration including database type and entity schema
-   * @returns {Promise<RepositoryType<T>>} A promise that resolves to a typed repository instance
-   * @throws {Error} When repository creation fails due to invalid configuration
-   * @throws {Error} When database connection cannot be established
-   * @throws {Error} When entity schema validation fails
+   * @template T The entity type this repository will manage.
+   * @param {RepositoryConfig} config - Repository configuration including database type and entity schema.
+   * @returns {Promise<RepositoryType<T>>} A promise that resolves to a typed repository instance.
+   * @throws {Error} When repository creation fails due to invalid configuration.
+   * @throws {Error} When database connection cannot be established.
+   * @throws {Error} When entity schema validation fails.
    * @example PostgreSQL Repository Creation
    * ```typescript
    * const userRepository = await factory.createRepository<User>({
@@ -406,11 +406,13 @@ export class DALFactory {
     const cacheKey = this.generateCacheKey(config);
 
     if (this.repositoryCache.has(cacheKey)) {
-      this["_logger"]?.debug(`Returning cached repository: ${cacheKey}`);
+      this['_logger']?.debug(`Returning cached repository: ${cacheKey}`);
       return this.repositoryCache.get(cacheKey);
     }
 
-    this["_logger"]?.info(`Creating new repository: ${config?.["entityType"]} (${config?.["databaseType"]})`);
+    this['_logger']?.info(
+      `Creating new repository: ${config?.['entityType']} (${config?.['databaseType']})`
+    );
 
     try {
       // Get or create database adapter
@@ -424,7 +426,7 @@ export class DALFactory {
 
       return repository;
     } catch (error) {
-      this["_logger"]?.error(`Failed to create repository: ${error}`);
+      this['_logger']?.error(`Failed to create repository: ${error}`);
       throw new Error(
         `Repository creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -438,12 +440,12 @@ export class DALFactory {
    * validation, caching, and transaction management. DAOs provide a higher-level
    * interface suitable for application service layers.
    *
-   * @template T The entity type this DAO will manage
-   * @param {RepositoryConfig} config - DAO configuration including database type and business rules
-   * @returns {Promise<IDataAccessObject<T>>} A promise that resolves to a configured DAO instance
-   * @throws {Error} When DAO creation fails due to repository issues
-   * @throws {Error} When business logic validation fails
-   * @throws {Error} When transaction setup fails
+   * @template T The entity type this DAO will manage.
+   * @param {RepositoryConfig} config - DAO configuration including database type and business rules.
+   * @returns {Promise<IDataAccessObject<T>>} A promise that resolves to a configured DAO instance.
+   * @throws {Error} When DAO creation fails due to repository issues.
+   * @throws {Error} When business logic validation fails.
+   * @throws {Error} When transaction setup fails.
    * @example User DAO with Validation
    * ```typescript
    * const userDAO = await factory.createDAO<User>({
@@ -495,11 +497,13 @@ export class DALFactory {
     const cacheKey = this.generateCacheKey(config, 'dao');
 
     if (this.daoCache.has(cacheKey)) {
-      this["_logger"]?.debug(`Returning cached DAO: ${cacheKey}`);
+      this['_logger']?.debug(`Returning cached DAO: ${cacheKey}`);
       return this.daoCache.get(cacheKey);
     }
 
-    this["_logger"]?.info(`Creating new DAO: ${config?.["entityType"]} (${config?.["databaseType"]})`);
+    this['_logger']?.info(
+      `Creating new DAO: ${config?.['entityType']} (${config?.['databaseType']})`
+    );
 
     try {
       // Get repository first
@@ -516,7 +520,7 @@ export class DALFactory {
 
       return dao;
     } catch (error) {
-      this["_logger"]?.error(`Failed to create DAO: ${error}`);
+      this['_logger']?.error(`Failed to create DAO: ${error}`);
       throw new Error(
         `DAO creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -530,16 +534,16 @@ export class DALFactory {
    * table mapping, indexing strategies, and database type preferences. This enables
    * automatic table creation, validation, and optimized query generation.
    *
-   * @param {string} entityType - The unique name for this entity type
-   * @param {Object} config - Entity configuration object
-   * @param {Record<string, any>} config.schema - Entity field definitions with types and constraints
-   * @param {string} config.primaryKey - Name of the primary key field
-   * @param {string} [config.tableName] - Custom table name (defaults to entityType)
-   * @param {string} [config.databaseType] - Preferred database type for this entity
-   * @param {Array} [config.indexes] - Index definitions for performance optimization
-   * @throws {Error} When entity type is already registered
-   * @throws {Error} When schema validation fails
-   * @throws {Error} When primary key is not defined in schema
+   * @param {string} entityType - The unique name for this entity type.
+   * @param {Object} config - Entity configuration object.
+   * @param {Record<string, any>} config.schema - Entity field definitions with types and constraints.
+   * @param {string} config.primaryKey - Name of the primary key field.
+   * @param {string} [config.tableName] - Custom table name (defaults to entityType).
+   * @param {string} [config.databaseType] - Preferred database type for this entity.
+   * @param {Array} [config.indexes] - Index definitions for performance optimization.
+   * @throws {Error} When entity type is already registered.
+   * @throws {Error} When schema validation fails.
+   * @throws {Error} When primary key is not defined in schema.
    * @example User Entity Registration
    * ```typescript
    * factory.registerEntityType('User', {
@@ -614,7 +618,7 @@ export class DALFactory {
       }>;
     }
   ): void {
-    this["_logger"]?.debug(`Registering entity type: ${entityType}`);
+    this['_logger']?.debug(`Registering entity type: ${entityType}`);
     this.entityRegistry[entityType] = config;
   }
 
@@ -625,8 +629,8 @@ export class DALFactory {
    * table mapping, indexes, and database preferences. Returns undefined if the
    * entity type is not registered.
    *
-   * @param {string} entityType - The entity type name to look up
-   * @returns {EntityTypeRegistry[string] | undefined} Entity configuration or undefined
+   * @param {string} entityType - The entity type name to look up.
+   * @returns {EntityTypeRegistry[string] | undefined} Entity configuration or undefined.
    * @example Getting Entity Configuration
    * ```typescript
    * const userConfig = factory.getEntityConfig('User');
@@ -663,16 +667,16 @@ export class DALFactory {
    * Create Kuzu Graph Database Repository with Optimized Configuration.
    *
    * Creates a specialized graph repository for Kuzu database with pre-configured.
-   * settings optimized for graph traversal queries, relationship management,
-   * and network analysis operations.
+   * Settings optimized for graph traversal queries, relationship management,
+   * and network analysis operations..
    *
-   * @template T The entity type representing graph nodes
-   * @param {string} entityType - The entity type name for graph nodes
-   * @param {string} [tableName] - Optional custom table name (defaults to entityType)
-   * @returns {Promise<IGraphRepository<T>>} A promise that resolves to a graph repository instance
-   * @throws {Error} When Kuzu database configuration is invalid
-   * @throws {Error} When graph repository creation fails
-   * @throws {Error} When database connection cannot be established
+   * @template T The entity type representing graph nodes.
+   * @param {string} entityType - The entity type name for graph nodes.
+   * @param {string} [tableName] - Optional custom table name (defaults to entityType).
+   * @returns {Promise<IGraphRepository<T>>} A promise that resolves to a graph repository instance.
+   * @throws {Error} When Kuzu database configuration is invalid.
+   * @throws {Error} When graph repository creation fails.
+   * @throws {Error} When database connection cannot be established.
    * @example Social Network Graph Repository
    * ```typescript
    * interface Person {
@@ -748,16 +752,16 @@ export class DALFactory {
    * Create LanceDB Vector Database Repository for Similarity Search.
    *
    * Creates a specialized vector repository for LanceDB with optimized configuration.
-   * for vector similarity search, embedding storage, and high-dimensional data operations.
-   * Supports various distance metrics and indexing strategies for performance.
+   * For vector similarity search, embedding storage, and high-dimensional data operations.
+   * Supports various distance metrics and indexing strategies for performance..
    *
-   * @template T The entity type representing vector documents
-   * @param {string} entityType - The entity type name for vector documents
-   * @param {number} [vectorDimension=384] - Vector dimension (default: 384 for sentence transformers)
-   * @returns {Promise<IVectorRepository<T>>} A promise that resolves to a vector repository instance
-   * @throws {Error} When LanceDB configuration is invalid
-   * @throws {Error} When vector dimension is invalid (must be > 0)
-   * @throws {Error} When database connection fails
+   * @template T The entity type representing vector documents.
+   * @param {string} entityType - The entity type name for vector documents.
+   * @param {number} [vectorDimension=384] - Vector dimension (default: 384 for sentence transformers).
+   * @returns {Promise<IVectorRepository<T>>} A promise that resolves to a vector repository instance.
+   * @throws {Error} When LanceDB configuration is invalid.
+   * @throws {Error} When vector dimension is invalid (must be > 0).
+   * @throws {Error} When database connection fails.
    * @example Document Embedding Repository
    * ```typescript
    * interface DocumentEmbedding {
@@ -848,14 +852,14 @@ export class DALFactory {
    *
    * Creates a specialized repository for coordination operations in distributed systems,
    * including distributed locking, leader election, task scheduling, and inter-service.
-   * communication. Uses SQLite by default for reliable local coordination.
+   * Communication. Uses SQLite by default for reliable local coordination..
    *
-   * @template T The entity type representing coordination objects
-   * @param {string} entityType - The entity type name for coordination objects
-   * @returns {Promise<ICoordinationRepository<T>>} A promise that resolves to a coordination repository
-   * @throws {Error} When coordination database setup fails
-   * @throws {Error} When distributed locking initialization fails
-   * @throws {Error} When coordination schema creation fails
+   * @template T The entity type representing coordination objects.
+   * @param {string} entityType - The entity type name for coordination objects.
+   * @returns {Promise<ICoordinationRepository<T>>} A promise that resolves to a coordination repository.
+   * @throws {Error} When coordination database setup fails.
+   * @throws {Error} When distributed locking initialization fails.
+   * @throws {Error} When coordination schema creation fails.
    * @example Distributed Lock Repository
    * ```typescript
    * interface DistributedLock {
@@ -946,12 +950,12 @@ export class DALFactory {
    * and temporary data management. Uses SQLite's in-memory mode with configurable
    * TTL (Time To Live) and size limits for memory management.
    *
-   * @template T The entity type for memory-stored objects
-   * @param {string} entityType - The entity type name for memory objects
-   * @returns {Promise<IMemoryRepository<T>>} A promise that resolves to a memory repository
-   * @throws {Error} When in-memory database initialization fails
-   * @throws {Error} When memory limits configuration is invalid
-   * @throws {Error} When TTL configuration is invalid
+   * @template T The entity type for memory-stored objects.
+   * @param {string} entityType - The entity type name for memory objects.
+   * @returns {Promise<IMemoryRepository<T>>} A promise that resolves to a memory repository.
+   * @throws {Error} When in-memory database initialization fails.
+   * @throws {Error} When memory limits configuration is invalid.
+   * @throws {Error} When TTL configuration is invalid.
    * @example Session Cache Repository
    * ```typescript
    * interface UserSession {
@@ -1044,18 +1048,18 @@ export class DALFactory {
    * Create Multi-Database DAO for Distributed Data Operations.
    *
    * Creates a sophisticated multi-database DAO that can coordinate operations across.
-   * different database types and instances. The primary database handles writes and
+   * Different database types and instances. The primary database handles writes and
    * authoritative reads, while secondary databases provide read scaling, caching,
-   * specialized queries, and data redundancy.
+   * specialized queries, and data redundancy..
    *
-   * @template T The entity type for multi-database operations
-   * @param {string} entityType - The entity type name
-   * @param {RepositoryConfig} primaryConfig - Primary database configuration (handles writes)
-   * @param {RepositoryConfig[]} [secondaryConfigs] - Optional secondary database configurations
-   * @returns {Promise<MultiDatabaseDAO<T>>} A promise that resolves to a multi-database DAO
-   * @throws {Error} When primary database configuration is invalid
-   * @throws {Error} When any secondary database setup fails
-   * @throws {Error} When multi-database coordination setup fails
+   * @template T The entity type for multi-database operations.
+   * @param {string} entityType - The entity type name.
+   * @param {RepositoryConfig} primaryConfig - Primary database configuration (handles writes).
+   * @param {RepositoryConfig[]} [secondaryConfigs] - Optional secondary database configurations.
+   * @returns {Promise<MultiDatabaseDAO<T>>} A promise that resolves to a multi-database DAO.
+   * @throws {Error} When primary database configuration is invalid.
+   * @throws {Error} When any secondary database setup fails.
+   * @throws {Error} When multi-database coordination setup fails.
    * @example Primary PostgreSQL with Vector Search Secondary
    * ```typescript
    * interface Product {
@@ -1149,7 +1153,7 @@ export class DALFactory {
     primaryConfig: RepositoryConfig,
     secondaryConfigs?: RepositoryConfig[]
   ): Promise<MultiDatabaseDAO<T>> {
-    this["_logger"]?.info(`Creating multi-database DAO for: ${entityType}`);
+    this['_logger']?.info(`Creating multi-database DAO for: ${entityType}`);
 
     const primaryDAO = await this.createDAO<T>(primaryConfig);
     const secondaryDAOs: IDataAccessObject<T>[] = [];
@@ -1161,14 +1165,14 @@ export class DALFactory {
       }
     }
 
-    return new MultiDatabaseDAO<T>(primaryDAO, secondaryDAOs, this["_logger"]);
+    return new MultiDatabaseDAO<T>(primaryDAO, secondaryDAOs, this['_logger']);
   }
 
   /**
    * Clear all caches.
    */
   clearCaches(): void {
-    this["_logger"]?.info('Clearing DAL factory caches');
+    this['_logger']?.info('Clearing DAL factory caches');
     this.repositoryCache.clear();
     this.daoCache.clear();
     this.adapterCache.clear();
@@ -1194,8 +1198,8 @@ export class DALFactory {
    */
 
   private async getOrCreateAdapter(config: RepositoryConfig): Promise<DatabaseAdapter> {
-    if (config?.["existingAdapter"]) {
-      return config?.["existingAdapter"];
+    if (config?.['existingAdapter']) {
+      return config?.['existingAdapter'];
     }
 
     const adapterCacheKey = this.generateAdapterCacheKey(config);
@@ -1204,12 +1208,12 @@ export class DALFactory {
       return this.adapterCache.get(adapterCacheKey)!;
     }
 
-    if (!config?.["databaseConfig"]) {
+    if (!config?.['databaseConfig']) {
       throw new Error('Database configuration required when creating new adapter');
     }
 
     // Fixed: Await the adapter creation and connect properly
-    const adapter = await this.databaseProviderFactory.createAdapter(config?.["databaseConfig"]);
+    const adapter = await this.databaseProviderFactory.createAdapter(config?.['databaseConfig']);
     // TODO: TypeScript error TS2339 - Property 'connect' does not exist on type 'DatabaseAdapter' (AI unsure of safe fix - human review needed)
     // Note: DatabaseAdapter interface may need to include connect method or adapter creation should handle connection
 
@@ -1229,17 +1233,17 @@ export class DALFactory {
     const { MemoryDao } = await import('./dao/memory.dao');
     const { CoordinationDao } = await import('./dao/coordination.dao');
 
-    const tableName = config?.["tableName"] || config?.["entityType"];
-    const entitySchema = config?.["schema"] || this.entityRegistry[config?.["entityType"]]?.schema;
+    const tableName = config?.['tableName'] || config?.['entityType'];
+    const entitySchema = config?.['schema'] || this.entityRegistry[config?.['entityType']]?.schema;
 
     // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected and only accessible within the class declaration (AI unsure of safe fix - human review needed)
     // Note: Need to use factory methods or public constructors instead of protected BaseDao constructors
-    switch (config?.["databaseType"]) {
+    switch (config?.['databaseType']) {
       case 'kuzu':
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
         return new GraphDao<T>(
           adapter,
-          this["_logger"],
+          this['_logger'],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1248,7 +1252,7 @@ export class DALFactory {
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
         return new VectorDao<T>(
           adapter,
-          this["_logger"],
+          this['_logger'],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1258,7 +1262,7 @@ export class DALFactory {
         return new MemoryDao<T>(
           // TODO: TypeScript error TS2345 - Argument of type 'DatabaseAdapter' is not assignable to parameter of type 'IMemoryRepository<T>' (AI unsure of safe fix - human review needed)
           adapter,
-          this["_logger"],
+          this['_logger'],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1268,7 +1272,7 @@ export class DALFactory {
         return new CoordinationDao<T>(
           // TODO: TypeScript error TS2345 - Argument of type 'DatabaseAdapter' is not assignable to parameter of type 'ICoordinationRepository<T>' (AI unsure of safe fix - human review needed)
           adapter,
-          this["_logger"],
+          this['_logger'],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1277,7 +1281,7 @@ export class DALFactory {
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
         return new RelationalDao<T>(
           adapter,
-          this["_logger"],
+          this['_logger'],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1297,19 +1301,19 @@ export class DALFactory {
 
     // TODO: TypeScript errors with DAO instantiation - these constructors expect different parameter types than what's being passed
     // These need proper interface implementation and constructor signature fixes
-    switch (config?.["databaseType"]) {
+    switch (config?.['databaseType']) {
       case 'kuzu':
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
-        return new GraphDao<T>(repository as IGraphRepository<T>, adapter, this["_logger"]);
+        return new GraphDao<T>(repository as IGraphRepository<T>, adapter, this['_logger']);
 
       case 'lancedb':
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
-        return new VectorDao<T>(repository as IVectorRepository<T>, adapter, this["_logger"]);
+        return new VectorDao<T>(repository as IVectorRepository<T>, adapter, this['_logger']);
 
       case 'memory':
         // TODO: TypeScript error TS2739 - Type 'MemoryDao<T>' is missing properties from type 'IDataAccessObject<T>' (AI unsure of safe fix - human review needed)
         // TODO: TypeScript error TS2345 - Argument of type 'IMemoryRepository<T>' is not assignable to parameter of type 'DatabaseAdapter' (AI unsure of safe fix - human review needed)
-        return new MemoryDao<T>(repository as IMemoryRepository<T>, adapter, this["_logger"]);
+        return new MemoryDao<T>(repository as IMemoryRepository<T>, adapter, this['_logger']);
 
       case 'coordination':
         // TODO: TypeScript error TS2739 - Type 'CoordinationDao<T>' is missing properties from type 'IDataAccessObject<T>' (AI unsure of safe fix - human review needed)
@@ -1317,35 +1321,35 @@ export class DALFactory {
         return new CoordinationDao<T>(
           repository as ICoordinationRepository<T>,
           adapter,
-          this["_logger"]
+          this['_logger']
         );
       default:
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
-        return new RelationalDao<T>(repository, adapter, this["_logger"]);
+        return new RelationalDao<T>(repository, adapter, this['_logger']);
     }
   }
 
   private generateCacheKey(config: RepositoryConfig, type: 'repo' | 'dao' = 'repo'): string {
     const parts = [
       type,
-      config?.["databaseType"],
-      config?.["entityType"],
-      config?.["tableName"] || config?.["entityType"],
-      JSON.stringify(config?.["options"] || {}),
+      config?.['databaseType'],
+      config?.['entityType'],
+      config?.['tableName'] || config?.['entityType'],
+      JSON.stringify(config?.['options'] || {}),
     ];
     return parts.join(':');
   }
 
   private generateAdapterCacheKey(config: RepositoryConfig): string {
-    if (config?.["existingAdapter"]) {
+    if (config?.['existingAdapter']) {
       return `existing:${Date.now()}`;
     }
 
     return [
-      config?.["databaseType"],
-      config?.["databaseConfig"]?.host || 'localhost',
-      config?.["databaseConfig"]?.database || 'default',
-      config?.["databaseConfig"]?.port || 'default',
+      config?.['databaseType'],
+      config?.['databaseConfig']?.host || 'localhost',
+      config?.['databaseConfig']?.database || 'default',
+      config?.['databaseConfig']?.port || 'default',
     ].join(':');
   }
 

@@ -2,10 +2,8 @@
  * Simple test for architecture CLI functionality.
  */
 /**
- * @file Test suite for test-cli
+ * @file Test suite for test-cli.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
@@ -93,9 +91,7 @@ async function testCLIFunctionality() {
   if (architecture.components) {
     architecture.components.forEach((comp, i) => {});
   }
-  const validation = await engine.validateArchitecturalConsistency(
-    architecture.systemArchitecture
-  );
+  const validation = await engine.validateArchitecturalConsistency(architecture.systemArchitecture);
 }
 
 testCLIFunctionality().catch(console.error);

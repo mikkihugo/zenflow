@@ -2,17 +2,15 @@
  * Shared Types Module.
  *
  * Contains interfaces and types that are shared across multiple domains
- * to prevent circular dependencies and maintain clean architecture
+ * to prevent circular dependencies and maintain clean architecture.
  */
 
 // ============================================
 // Core Swarm Types (moved from coordination)
 // ============================================
 /**
- * @file TypeScript type definitions
+ * @file TypeScript type definitions.
  */
-
-
 
 export interface ZenSwarm {
   id: string;
@@ -50,10 +48,10 @@ export interface SwarmConfig {
 export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star';
 export type SwarmStatus = 'initializing' | 'active' | 'paused' | 'stopped' | 'error';
 export type AgentStatus = 'initializing' | 'idle' | 'busy' | 'error' | 'offline' | 'terminated';
-export type AgentType = 
-  | 'researcher' 
-  | 'coder' 
-  | 'analyst' 
+export type AgentType =
+  | 'researcher'
+  | 'coder'
+  | 'analyst'
   | 'requirements-engineer'
   | 'design-architect'
   | 'task-planner'
@@ -142,7 +140,13 @@ export interface Task {
 }
 
 export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
-export type TaskType = 'analysis' | 'generation' | 'review' | 'coordination' | 'research' | 'testing';
+export type TaskType =
+  | 'analysis'
+  | 'generation'
+  | 'review'
+  | 'coordination'
+  | 'research'
+  | 'testing';
 
 // ============================================
 // Configuration Types

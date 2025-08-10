@@ -5,10 +5,8 @@
  * middleware management, and web interface coordination.
  */
 /**
- * @file web service implementation
+ * @file Web service implementation.
  */
-
-
 
 import type { IService } from '../core/interfaces';
 import type { ServiceOperationOptions, WebServiceConfig } from '../types';

@@ -3,10 +3,8 @@
  * Orchestrates optimization across all system domains.
  */
 /**
- * @file performance-optimizer implementation
+ * @file Performance-optimizer implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type {

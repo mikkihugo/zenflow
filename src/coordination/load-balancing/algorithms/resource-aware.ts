@@ -6,8 +6,6 @@
  * @file Coordination system: resource-aware
  */
 
-
-
 import type { LoadBalancingAlgorithm } from '../interfaces';
 import type { Agent, LoadMetrics, ResourceConstraint, RoutingResult, Task } from '../types';
 

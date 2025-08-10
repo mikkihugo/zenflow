@@ -2,7 +2,6 @@
  * @file Coordination system: health-checker
  */
 
-
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('coordination-load-balancing-routing-health-checker');

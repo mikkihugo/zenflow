@@ -2,8 +2,9 @@
  * @file Test suite for test-domain-discovery
  */
 
-
-#!/usr/bin/env node
+#
+!/usr/bin / env;
+node;
 
 /**
  * Test script for Domain Discovery Bridge.
@@ -21,9 +22,9 @@
  * ```
  */
 
+import { createLogger } from '../../core/logger';
 import { DocumentProcessor } from '../core/document-processor';
 import { EventBus } from '../core/event-bus';
-import { createLogger } from '../../core/logger';
 import { MemorySystem } from '../core/memory-system';
 import { WorkflowEngine } from '../core/workflow-engine';
 import { IntelligenceCoordinationSystem } from '../knowledge/intelligence-coordination-system';

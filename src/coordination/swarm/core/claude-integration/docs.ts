@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: docs
+ * @file Coordination system: docs.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -9,7 +8,7 @@ const logger = getLogger('coordination-swarm-core-claude-integration-docs');
 
 /**
  * Documentation generation module for Claude Code integration.
- * Generates claude.md and .claude/commands/ documentation
+ * Generates claude.md and .claude/commands/ documentation.
  */
 
 import { promises as fs } from 'node:fs';
@@ -67,7 +66,7 @@ class ClaudeDocsGenerator {
   }
 
   /**
-   * Generate main claude.md configuration file with protection
+   * Generate main claude.md configuration file with protection.
    *
    * @param options
    */
@@ -1125,7 +1124,7 @@ ${config?.details}
   }
 
   /**
-   * Generate settings.json with hook configurations
+   * Generate settings.json with hook configurations.
    */
   async generateSettingsJson() {
     const settings = {
@@ -1211,9 +1210,10 @@ ${config?.details}
   }
 
   /**
-   * Clean up old backup files (keep last 5)
+   * Clean up old backup files (keep last 5).
    *
    * @param filePath.
+   * @param filePath
    */
   async cleanupOldBackups(filePath: string) {
     const dir = path.dirname(filePath);
@@ -1242,7 +1242,7 @@ ${config?.details}
   }
 
   /**
-   * Prompt user for action when CLAUDE.md exists
+   * Prompt user for action when CLAUDE.md exists.
    *
    * @param _filePath
    */
@@ -1277,7 +1277,7 @@ ${config?.details}
   }
 
   /**
-   * Merge Claude Zen content with existing CLAUDE.md
+   * Merge Claude Zen content with existing CLAUDE.md.
    *
    * @param filePath
    * @param noBackup
@@ -1309,7 +1309,7 @@ ${config?.details}
   }
 
   /**
-   * Get the Claude Zen specific content (full content from generateClaudeMd)
+   * Get the Claude Zen specific content (full content from generateClaudeMd).
    */
   getClaudeZenContent() {
     // Return the complete Claude Zen configuration content

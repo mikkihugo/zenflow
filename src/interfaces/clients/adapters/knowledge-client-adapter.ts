@@ -3,29 +3,20 @@
  *
  * Converts the existing FACTIntegration to implement the UACL IClient interface,
  * providing standardized access to external knowledge gathering through the.
- * unified API client layer architecture.
+ * Unified API client layer architecture.
  *
  * Features:
  * - Unified FACT integration with UACL interface
  * - Standardized caching and query logic
  * - Monitoring and metrics capabilities
  * - Factory pattern implementation
- * - Multiple knowledge provider support
+ * - Multiple knowledge provider support.
  */
 /**
- * @file knowledge-client adapter implementation
+ * @file Knowledge-client adapter implementation.
  */
 
-
-
 import { EventEmitter } from 'node:events';
-// Import existing FACT integration.
-import {
-  type FACTConfig,
-  FACTIntegration,
-  type FACTQuery,
-  type FACTResult,
-} from '../knowledge/knowledge-client';
 import type {
   ClientConfig,
   ClientMetadata,
@@ -38,6 +29,13 @@ import type {
   KnowledgeStats,
   SemanticSearchOptions,
 } from '../interfaces';
+// Import existing FACT integration.
+import {
+  type FACTConfig,
+  FACTIntegration,
+  type FACTQuery,
+  type FACTResult,
+} from '../knowledge/knowledge-client';
 import type { ProtocolType } from '../types';
 import { ClientStatuses, ProtocolTypes } from '../types';
 
@@ -680,6 +678,7 @@ export class KnowledgeClientFactory implements IClientFactory {
  * @param factRepoPath
  * @param anthropicApiKey
  * @param options
+ * @example
  */
 export async function createFACTClient(
   factRepoPath: string,
@@ -721,6 +720,7 @@ export async function createFACTClient(
  *
  * @param url
  * @param options
+ * @example
  */
 export async function createCustomKnowledgeClient(
   url: string,

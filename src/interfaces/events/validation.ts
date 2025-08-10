@@ -4,7 +4,7 @@
  * Comprehensive validation framework for ensuring UEL integration quality,
  * event type safety, and system health across all components.
  *
- * @file Validation Framework Implementation
+ * @file Validation Framework Implementation.
  */
 
 import type { ILogger } from '../core/interfaces/base-interfaces';

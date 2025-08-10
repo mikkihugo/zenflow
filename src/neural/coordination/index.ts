@@ -2,9 +2,8 @@
 
 // Re-export coordination functionality
 /**
- * @file coordination module exports
+ * @file Coordination module exports.
  */
-
 
 export * from './neural-coordination-protocol';
 export { NeuralCoordinationProtocol as default } from './neural-coordination-protocol';

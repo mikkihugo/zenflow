@@ -2,13 +2,11 @@
  * WebSocket Coordinator - Real-time updates and broadcasting.
  *
  * Handles WebSocket connections, sessions, and real-time data broadcasting.
- * for the web dashboard interface.
+ * For the web dashboard interface.
  */
 /**
- * @file web-socket coordination system
+ * @file Web-socket coordination system.
  */
-
-
 
 import type { Server as SocketIOServer } from 'socket.io';
 import { createLogger } from '../utils/logger';

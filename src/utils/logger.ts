@@ -1,11 +1,11 @@
+/**
+ * @file Utility logger implementation
+ * Provides simple logging functionality for the application.
+ */
+
 import { createLogger } from '../core/logger';
 
 const logger = createLogger('src-utils-logger');
-
-/**
- * @fileoverview Utility logger implementation
- * Provides simple logging functionality for the application.
- */
 
 import { config } from '../config';
 
@@ -117,8 +117,8 @@ class Logger implements ILogger {
   }
 }
 
-export function createLogger(prefix?: string): ILogger {
+export function createUtilsLogger(prefix?: string): ILogger {
   return new Logger(prefix);
 }
 
-export const defaultLogger = createLogger('claude-zen');
+export const defaultLogger = createUtilsLogger('claude-zen');

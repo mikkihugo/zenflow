@@ -3,10 +3,8 @@
  * Uses a factory function to create instances.
  */
 /**
- * @file factory-provider implementation
+ * @file Factory-provider implementation.
  */
-
-
 
 import type { FactoryProvider as IFactoryProvider } from '../types/di-types';
 

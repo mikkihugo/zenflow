@@ -93,7 +93,7 @@ class TestRunner {
   }
 
   async runTestSuite(suite) {
-    if (suite.requiresBrowser && process.env["CI"]) {
+    if (suite.requiresBrowser && process.env['CI']) {
       this.results.push({
         ...suite,
         success: true,

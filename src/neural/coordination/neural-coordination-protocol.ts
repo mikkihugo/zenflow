@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: neural-coordination-protocol
+ * @file Coordination system: neural-coordination-protocol.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -681,10 +680,11 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Build star topology (one central node connected to all others)
+   * Build star topology (one central node connected to all others).
    *
    * @param graph
    * @param agentIds.
+   * @param agentIds
    */
   private buildStarTopology(graph: Map<string, Set<string>>, agentIds: string[]): void {
     if (agentIds.length === 0) {
@@ -701,10 +701,11 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Build mesh topology (all nodes connected to all others)
+   * Build mesh topology (all nodes connected to all others).
    *
    * @param graph
    * @param agentIds.
+   * @param agentIds
    */
   private buildMeshTopology(graph: Map<string, Set<string>>, agentIds: string[]): void {
     for (let i = 0; i < agentIds.length; i++) {
@@ -718,10 +719,11 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Build ring topology (each node connected to neighbors in a ring)
+   * Build ring topology (each node connected to neighbors in a ring).
    *
    * @param graph
    * @param agentIds.
+   * @param agentIds
    */
   private buildRingTopology(graph: Map<string, Set<string>>, agentIds: string[]): void {
     for (let i = 0; i < agentIds.length; i++) {
@@ -735,11 +737,12 @@ export class NeuralCoordinationProtocol {
   }
 
   /**
-   * Build neighborhood topology (each node connected to nearby nodes)
+   * Build neighborhood topology (each node connected to nearby nodes).
    *
    * @param graph
    * @param agentIds
    * @param radius.
+   * @param radius
    */
   private buildNeighborhoodTopology(
     graph: Map<string, Set<string>>,

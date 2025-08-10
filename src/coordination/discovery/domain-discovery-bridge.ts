@@ -35,8 +35,6 @@
  * @file Coordination system: domain-discovery-bridge.
  */
 
-
-
 import { EventEmitter } from 'node:events';
 import { basename } from 'node:path';
 import type { Document, DocumentProcessor, DocumentType } from '../../core/document-processor';
@@ -51,7 +49,7 @@ import type {
   DomainAnalysisEngine,
 } from '../../tools/domain-splitting/analyzers/domain-analyzer';
 import { NeuralDomainMapper } from './neural-domain-mapper';
-import type { Domain, DependencyGraph } from './types';
+import type { DependencyGraph, Domain } from './types';
 
 const logger = createLogger({ prefix: 'DomainDiscoveryBridge' });
 
@@ -209,7 +207,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Initialize neural domain mapper for enhanced domain analysis with Bazel support
     this.neuralDomainMapper = new NeuralDomainMapper();
-    
+
     this.setupEventListeners();
   }
 
@@ -332,7 +330,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
       options: relevanceAnalysis.map((analysis, index) => ({
         id: documents[index]?.path || '',
         label: `${documents[index]?.type?.toUpperCase() || 'UNKNOWN'}: ${basename(documents[index]?.path || '')}`,
-        preview: `${documents[index]?.content.substring(0, 200) ?? ''  }...`,
+        preview: `${documents[index]?.content.substring(0, 200) ?? ''}...`,
         metadata: {
           suggestedRelevance: analysis.suggestedRelevance,
           concepts: analysis.concepts.slice(0, 5),
@@ -379,7 +377,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
       options: mappings.map((mapping) => ({
         id: `${mapping.documentPath}:${mapping.domainIds.join(',')}`,
         label: `${basename(mapping.documentPath)} → ${mapping.domainIds.join(', ')}`,
-        preview: `Confidence: ${mapping.confidenceScores.map((s) => `${(s * 100).toFixed(0)  }%`).join(', ')}`,
+        preview: `Confidence: ${mapping.confidenceScores.map((s) => `${(s * 100).toFixed(0)}%`).join(', ')}`,
         metadata: {
           concepts: mapping.matchedConcepts,
           documentType: mapping.documentType,
@@ -624,7 +622,11 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
         Object.entries(domainAnalysis.categories).forEach(([category, files]) => {
           if ((files as string[]).length > 0) {
-            const categoryRelevance = this.calculateCategoryRelevance(concepts, category, files as string[]);
+            const categoryRelevance = this.calculateCategoryRelevance(
+              concepts,
+              category,
+              files as string[]
+            );
             if (categoryRelevance > 0.3) {
               categoryScores.set(category, categoryRelevance);
             }
@@ -710,8 +712,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Enhanced neural analysis with Bazel integration
     const domainArray = await this.enhanceDomainsWithNeuralAnalysis(
-      Array.from(domains.values()), 
-      domainAnalysis, 
+      Array.from(domains.values()),
+      domainAnalysis,
       monorepoInfo
     );
 
@@ -720,18 +722,17 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
   /**
    * Enhance domains using GNN analysis with Bazel metadata integration.
-   * 
-   * @param domains - Initial discovered domains
-   * @param domainAnalysis - Code domain analysis
-   * @param monorepoInfo - Monorepo information (potentially with Bazel metadata)
-   * @returns Enhanced domains with neural relationship insights
+   *
+   * @param domains - Initial discovered domains.
+   * @param domainAnalysis - Code domain analysis.
+   * @param monorepoInfo - Monorepo information (potentially with Bazel metadata).
+   * @returns Enhanced domains with neural relationship insights.
    */
   private async enhanceDomainsWithNeuralAnalysis(
     domains: DiscoveredDomain[],
     domainAnalysis: DomainAnalysis,
     monorepoInfo: MonorepoInfo | null
   ): Promise<DiscoveredDomain[]> {
-    
     if (!this.config.useNeuralAnalysis || domains.length < 2) {
       // Fall back to simple concept-based relationships
       for (const domain of domains) {
@@ -743,22 +744,23 @@ export class DomainDiscoveryBridge extends EventEmitter {
     try {
       logger.info('🧠 Performing GNN-enhanced domain analysis', {
         domainCount: domains.length,
-        hasBazelMetadata: !!(monorepoInfo?.type === 'bazel' && (monorepoInfo as any).bazelMetadata)
+        hasBazelMetadata: !!(monorepoInfo?.type === 'bazel' && (monorepoInfo as any).bazelMetadata),
       });
 
       // Convert discovered domains to neural format
-      const neuralDomains: Domain[] = domains.map(domain => ({
+      const neuralDomains: Domain[] = domains.map((domain) => ({
         name: domain.name,
         files: domain.codeFiles,
         dependencies: this.extractDomainDependencies(domain, domainAnalysis),
-        confidenceScore: domain.confidence
+        confidenceScore: domain.confidence,
       }));
 
       // Build dependency graph from domain analysis
       const dependencyGraph = this.buildDomainDependencyGraph(neuralDomains, domainAnalysis);
 
       // Get Bazel metadata if available
-      const bazelMetadata = (monorepoInfo?.type === 'bazel') ? (monorepoInfo as any).bazelMetadata : null;
+      const bazelMetadata =
+        monorepoInfo?.type === 'bazel' ? (monorepoInfo as any).bazelMetadata : null;
 
       // Perform neural domain relationship analysis
       const relationshipMap = await this.neuralDomainMapper.mapDomainRelationships(
@@ -768,19 +770,24 @@ export class DomainDiscoveryBridge extends EventEmitter {
       );
 
       // Apply neural insights to enhance domains
-      const enhancedDomains = this.applyNeuralInsightsToDemons(domains, relationshipMap, bazelMetadata);
+      const enhancedDomains = this.applyNeuralInsightsToDemons(
+        domains,
+        relationshipMap,
+        bazelMetadata
+      );
 
       logger.info('✅ Neural domain enhancement complete', {
         relationships: relationshipMap.relationships.length,
-        avgCohesion: relationshipMap.cohesionScores.reduce((sum, score) => sum + score.score, 0) / relationshipMap.cohesionScores.length,
-        bazelEnhanced: !!bazelMetadata
+        avgCohesion:
+          relationshipMap.cohesionScores.reduce((sum, score) => sum + score.score, 0) /
+          relationshipMap.cohesionScores.length,
+        bazelEnhanced: !!bazelMetadata,
       });
 
       return enhancedDomains;
-
     } catch (error) {
       logger.warn('⚠️  Neural domain analysis failed, falling back to basic analysis:', error);
-      
+
       // Fallback to concept-based relationships
       for (const domain of domains) {
         domain.relatedDomains = this.findRelatedDomains(domain, domains);
@@ -791,16 +798,22 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
   /**
    * Extract dependencies for a domain from domain analysis.
+   *
+   * @param domain
+   * @param domainAnalysis
    */
-  private extractDomainDependencies(domain: DiscoveredDomain, domainAnalysis: DomainAnalysis): string[] {
+  private extractDomainDependencies(
+    domain: DiscoveredDomain,
+    domainAnalysis: DomainAnalysis
+  ): string[] {
     const dependencies: string[] = [];
-    
+
     // Check coupling analysis for dependencies
     for (const coupledGroup of domainAnalysis.coupling.tightlyCoupledGroups) {
-      const hasFiles = coupledGroup.files.some(file => domain.codeFiles.includes(file));
+      const hasFiles = coupledGroup.files.some((file) => domain.codeFiles.includes(file));
       if (hasFiles) {
         // Add other domains that share files in this coupled group
-        const relatedFiles = coupledGroup.files.filter(file => !domain.codeFiles.includes(file));
+        const relatedFiles = coupledGroup.files.filter((file) => !domain.codeFiles.includes(file));
         dependencies.push(...relatedFiles);
       }
     }
@@ -810,13 +823,19 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
   /**
    * Build dependency graph for neural analysis.
+   *
+   * @param domains
+   * @param domainAnalysis
    */
-  private buildDomainDependencyGraph(domains: Domain[], domainAnalysis: DomainAnalysis): DependencyGraph {
+  private buildDomainDependencyGraph(
+    domains: Domain[],
+    domainAnalysis: DomainAnalysis
+  ): DependencyGraph {
     const dependencyGraph: DependencyGraph = {};
 
     for (const domain of domains) {
       dependencyGraph[domain.name] = {};
-      
+
       // Analyze relationships based on shared files and concepts
       for (const otherDomain of domains) {
         if (domain.name === otherDomain.name) continue;
@@ -824,16 +843,16 @@ export class DomainDiscoveryBridge extends EventEmitter {
         let relationshipStrength = 0;
 
         // Check file coupling
-        const sharedDependencies = domain.dependencies.filter(dep => 
-          otherDomain.files.some(file => file.includes(dep) || dep.includes(file))
+        const sharedDependencies = domain.dependencies.filter((dep) =>
+          otherDomain.files.some((file) => file.includes(dep) || dep.includes(file))
         );
         relationshipStrength += sharedDependencies.length;
 
         // Check coupling groups
         for (const coupledGroup of domainAnalysis.coupling.tightlyCoupledGroups) {
-          const domainHasFiles = coupledGroup.files.some(file => domain.files.includes(file));
-          const otherHasFiles = coupledGroup.files.some(file => otherDomain.files.includes(file));
-          
+          const domainHasFiles = coupledGroup.files.some((file) => domain.files.includes(file));
+          const otherHasFiles = coupledGroup.files.some((file) => otherDomain.files.includes(file));
+
           if (domainHasFiles && otherHasFiles) {
             relationshipStrength += Math.round(coupledGroup.couplingScore * 10);
           }
@@ -850,13 +869,16 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
   /**
    * Apply neural insights to enhance domain objects.
+   *
+   * @param domains
+   * @param relationshipMap
+   * @param bazelMetadata
    */
   private applyNeuralInsightsToDemons(
     domains: DiscoveredDomain[],
     relationshipMap: any,
     bazelMetadata: any
   ): DiscoveredDomain[] {
-    
     // Create domain name to index mapping
     const domainIndexMap = new Map(domains.map((d, i) => [d.name, i]));
 
@@ -875,7 +897,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     for (const relationship of relationshipMap.relationships) {
       const sourceDomain = domains[relationship.source];
       const targetDomain = domains[relationship.target];
-      
+
       if (sourceDomain && targetDomain) {
         // Add bidirectional relationships
         if (!sourceDomain.relatedDomains.includes(targetDomain.name)) {
@@ -888,7 +910,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
         // Apply Bazel-specific insights
         if (bazelMetadata && (relationship as any).bazelInsights) {
           const bazelInsights = (relationship as any).bazelInsights;
-          
+
           // Add Bazel target information to domain descriptions
           if (bazelInsights.targetTypes?.length > 0) {
             sourceDomain.description += ` (Bazel: ${bazelInsights.targetTypes.join(', ')})`;
@@ -914,7 +936,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
       logger.info('📊 Applied Bazel enhancements to domains', {
         totalTargets: enhancements.totalTargets,
         languages: enhancements.languages,
-        workspaceName: enhancements.workspaceName
+        workspaceName: enhancements.workspaceName,
       });
     }
 

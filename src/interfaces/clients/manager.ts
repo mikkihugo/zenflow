@@ -4,15 +4,14 @@
  * Manages the complete lifecycle of all client types in the system.
  * Provides factories, health monitoring, metrics collection, and recovery.
  *
- * @file Centralized client lifecycle management
+ * @file Centralized client lifecycle management.
  */
 
 import { EventEmitter } from 'node:events';
-import { FACTIntegration } from '../knowledge/knowledge-client';
-
 // Import actual client implementations
 import { createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';
+import { FACTIntegration } from '../knowledge/knowledge-client';
 import { ExternalMCPClient } from '../mcp/external-mcp-client';
 import {
   type ClientConfig,
@@ -339,9 +338,10 @@ class MCPClientFactory implements ClientFactory {
  * - Health monitoring and auto-recovery
  * - Metrics collection and analysis
  * - Configuration validation
- * - Error handling and logging
+ * - Error handling and logging.
  *
  * @example.
+ * @example
  */
 export class ClientManager extends EventEmitter {
   public readonly registry: ClientRegistry;

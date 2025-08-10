@@ -1,9 +1,5 @@
-import { getLogger } from '../../config/logging-config';
-
-const logger = getLogger('interfaces-services-index');
-
 /**
- * USL (Unified Service Layer) - Main Exports.
+ * @file USL (Unified Service Layer) - Main Exports.
  *
  * Central export point for all USL functionality including:
  * - Service registry and factory management
@@ -12,42 +8,42 @@ const logger = getLogger('interfaces-services-index');
  * - Global instances and initialization
  * - Convenience functions for common service operations.
  *
- * @file Main USL exports following the same successful patterns as DAL and UACL.
+ * Main USL exports following the same successful patterns as DAL and UACL.
  */
 
-import { getMCPServerURL, getWebDashboardURL } from '../../config/url-builder';
-import type { IService, ServiceMetrics, ServiceStatus, ServiceCapability } from './core/interfaces';
-import { ServiceType } from './types';
+import { getLogger } from '../../config/logging-config';
 
+const logger = getLogger('interfaces-services-index');
+
+// Note: url-builder module not found, removing import
+import {
+  createDefaultIntegrationServiceAdapterConfig,
+  globalDataServiceFactory,
+} from './adapters';
+import type { CompatibilityConfig } from './compatibility';
+import { USLCompatibilityLayer } from './compatibility';
+import type { IService, ServiceCapability, ServiceMetrics, ServiceStatus } from './core/interfaces';
 // Additional imports for missing types
 import { ServiceDependencyError } from './core/interfaces';
-
 // Import factory and service management globals
-import { 
-  globalUSLFactory, 
-  globalServiceRegistry, 
-  globalServiceCapabilityRegistry 
+import {
+  globalServiceCapabilityRegistry,
+  globalServiceRegistry,
+  globalUSLFactory,
 } from './factories';
-import { ServiceConfigFactory, type AnyServiceConfig } from './types';
-import { 
-  globalDataServiceFactory, 
-  createIntegrationServiceAdapter,
-  createDefaultIntegrationServiceAdapterConfig
-} from './adapters';
-import type { 
-  ServiceManagerConfig,
-  ServiceRegistryConfig 
-} from './registry';
-import type { CompatibilityConfig } from './compatibility';
-import type { 
-  ValidationConfig, 
-  ValidationResult, 
-  SystemHealthValidation 
-} from './validation';
 import type { ServiceManager } from './manager';
-import type { EnhancedServiceRegistry } from './registry';
-import type { USLCompatibilityLayer } from './compatibility';
-import type { USLValidationFramework } from './validation';
+import type {
+  EnhancedServiceRegistry,
+  ServiceRegistryConfig,
+} from './registry';
+import type { ServiceManagerConfig } from './manager';
+import { type AnyServiceConfig, ServiceConfigFactory, ServiceType } from './types';
+import type {
+  SystemHealthValidation,
+  USLValidationFramework,
+  ValidationConfig,
+  ValidationResult,
+} from './validation';
 
 // Data service adapters (enhanced implementations)
 // Integration service adapters (enhanced implementations)
@@ -59,7 +55,6 @@ export {
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig,
   createDefaultIntegrationServiceAdapterConfig,
-  createIntegrationServiceAdapter,
   type DataAggregationOptions,
   type DataOperationResult,
   DataServiceAdapter,
@@ -82,13 +77,35 @@ export {
 } from './adapters';
 export {
   type CompatibilityConfig,
-  compat,
   initializeCompatibility,
   type LegacyServicePattern,
   MigrationUtils,
-  // Backward Compatibility Layer
-  USLCompatibilityLayer,
 } from './compatibility';
+
+/**
+ * Global compatibility layer instance with USL integration.
+ */
+let _compat: USLCompatibilityLayer | undefined;
+let _usl: USL | undefined;
+
+// Initialize after class definition
+function initializeGlobals() {
+  if (!_compat) {
+    _compat = new USLCompatibilityLayer();
+  }
+  if (!_usl) {
+    _usl = USL.getInstance();
+    // Set the USL instance to break circular dependency
+    _compat.setUSLInstance(_usl);
+  }
+  return { compat: _compat, usl: _usl };
+}
+
+// Getter for compat
+export const compat = (() => {
+  const globals = initializeGlobals();
+  return globals.compat;
+})();
 // Core USL components
 export {
   // Core interfaces
@@ -323,10 +340,7 @@ export class USL {
    * });
    * ```
    */
-  async createDataService(
-    name: string,
-    options: Partial<any> = {}
-  ): Promise<IService> {
+  async createDataService(name: string, options: Partial<any> = {}): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -365,10 +379,7 @@ export class USL {
    * });
    * ```
    */
-  async createWebDataService(
-    name: string,
-    options: Partial<any> = {}
-  ): Promise<any> {
+  async createWebDataService(name: string, options: Partial<any> = {}): Promise<any> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -560,10 +571,7 @@ export class USL {
    * });
    * ```
    */
-  async createCoordinationService(
-    name: string,
-    options: Partial<any> = {}
-  ): Promise<IService> {
+  async createCoordinationService(name: string, options: Partial<any> = {}): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -619,10 +627,7 @@ export class USL {
    * });
    * ```
    */
-  async createNeuralService(
-    name: string,
-    options: Partial<any> = {}
-  ): Promise<IService> {
+  async createNeuralService(name: string, options: Partial<any> = {}): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -641,10 +646,7 @@ export class USL {
    * @param name
    * @param options
    */
-  async createMemoryService(
-    name: string,
-    options: Partial<any> = {}
-  ): Promise<IService> {
+  async createMemoryService(name: string, options: Partial<any> = {}): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -663,10 +665,7 @@ export class USL {
    * @param name
    * @param options
    */
-  async createDatabaseService(
-    name: string,
-    options: Partial<any> = {}
-  ): Promise<IService> {
+  async createDatabaseService(name: string, options: Partial<any> = {}): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -685,10 +684,7 @@ export class USL {
    * @param name
    * @param options
    */
-  async createIntegrationService(
-    name: string,
-    options: Partial<any> = {}
-  ): Promise<IService> {
+  async createIntegrationService(name: string, options: Partial<any> = {}): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -708,15 +704,14 @@ export class USL {
    * @param options.
    * @param options
    */
-  async createIntegrationServiceAdapter(
-    name: string,
-    options: Partial<any> = {}
-  ): Promise<any> {
+  async createIntegrationServiceAdapter(name: string, options: Partial<any> = {}): Promise<any> {
     if (!this.initialized) {
       await this.initialize();
     }
 
     const config = createDefaultIntegrationServiceAdapterConfig(name, options);
+    // Dynamic import for createIntegrationServiceAdapter
+    const { createIntegrationServiceAdapter } = await import('./adapters');
     const adapter = createIntegrationServiceAdapter(config);
     await (adapter as any).initialize();
 
@@ -852,7 +847,7 @@ export class USL {
     }
 
     const {
-      baseURL = getMCPServerURL(),
+      baseURL = 'http://localhost:3001',  // Default MCP server URL
       databaseType = 'postgresql',
       supportedProtocols = ['http', 'websocket', 'mcp-http', 'mcp-stdio'],
       ...adapterOptions
@@ -905,10 +900,7 @@ export class USL {
    * @param name
    * @param options
    */
-  async createMonitoringService(
-    name: string,
-    options: Partial<any> = {}
-  ): Promise<IService> {
+  async createMonitoringService(name: string, options: Partial<any> = {}): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -1198,6 +1190,16 @@ export class USL {
 }
 
 /**
+ * Get the global USL instance.
+ *
+ * @example
+ */
+function getUSLInstance(): USL {
+  const globals = initializeGlobals();
+  return globals.usl;
+}
+
+/**
  * Global USL instance for convenience.
  *
  * @constant {USL}
@@ -1211,7 +1213,7 @@ export class USL {
  * const dataService = await usl.createDataService('my-data');
  * ```
  */
-export const usl = USL.getInstance();
+export const usl = getUSLInstance();
 
 /**
  * Initialize USL with default configuration.
@@ -1746,7 +1748,7 @@ export const USLHelpers = {
       // Initialize complete USL system
       const system = await USLHelpers.initializeCompleteUSL({
         enableValidationFramework: true,
-        validationConfig: config,
+        validationConfig: config ?? undefined,
       });
 
       if (!system.validation || !system.serviceManager || !system.registry) {
@@ -1950,13 +1952,13 @@ export const createIntegrationService = usl.createIntegrationService.bind(usl);
 /**
  * Create an integration service adapter with enhanced capabilities.
  *
- * @function createIntegrationServiceAdapter
+ * @function createIntegrationServiceAdapterBound
  * @param {string} name Service name identifier.
  * @param {Partial<IntegrationServiceAdapterConfig>} options Adapter configuration options.
  * @returns {Promise<IntegrationServiceAdapter>} Promise resolving to integration adapter.
- * @example createIntegrationServiceAdapter('integration', { safeAPI: { enabled: true } })
+ * @example createIntegrationServiceAdapterBound('integration', { safeAPI: { enabled: true } })
  */
-export const createIntegrationServiceAdapter = usl.createIntegrationServiceAdapter.bind(usl);
+export const createIntegrationServiceAdapterBound = usl.createIntegrationServiceAdapter.bind(usl);
 
 /**
  * Create an architecture storage service for system metadata.

@@ -134,7 +134,7 @@ export async function run(testFile) {
 
     if (results.failed > 0) {
       results.errors.forEach((_error) => {
-        if (process.env["VERBOSE"]) {
+        if (process.env['VERBOSE']) {
         }
       });
     }

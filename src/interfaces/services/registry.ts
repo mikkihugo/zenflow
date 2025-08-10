@@ -3,13 +3,11 @@
  *
  * Advanced service registry providing comprehensive service management,
  * health monitoring, lifecycle orchestration, and service discovery.
- * following the same patterns as UACL Agent 6.
+ * Following the same patterns as UACL Agent 6.
  */
 /**
- * @file Interface implementation: registry
+ * @file Interface implementation: registry.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { createLogger, type Logger } from '../utils/logger';

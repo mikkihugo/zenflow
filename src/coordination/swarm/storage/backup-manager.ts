@@ -2,13 +2,11 @@
  * Swarm Backup & Recovery System.
  *
  * Provides automated daily backups and disaster recovery.
- * for hundreds of swarms with simple tar-based storage.
+ * For hundreds of swarms with simple tar-based storage.
  */
 /**
- * @file backup management system
+ * @file Backup management system.
  */
-
-
 
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';

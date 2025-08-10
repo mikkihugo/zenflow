@@ -9,9 +9,8 @@
 
 // HTTP MCP Server (for Claude Desktop)
 /**
- * @file mcp module exports
+ * @file Mcp module exports.
  */
-
 
 export * from './http-mcp-server';
 // Default export

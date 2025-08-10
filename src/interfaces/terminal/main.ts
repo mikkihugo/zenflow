@@ -1,18 +1,21 @@
-#!/usr/bin/env nodeimport { getLogger } from '../config/logging-config";
-const logger = getLogger('interfaces-terminal-main');
-
+#!/usr/bin/env node
 /**
- * @file Main Terminal Interface Entry Point
+ * @file Main Terminal Interface Entry Point.
  *
  * This is the main entry point for the Claude-Zen terminal interface.
  * It gets called by the CLI binary and launches the appropriate terminal interface.
  */
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-terminal-main');
 
 import type { getLogger } from '../../core/logger';
 import { detectModeWithReason, launchTerminalInterface } from './index';
 
 /**
  * Main entry point for terminal interface.
+ *
+ * @example
  */
 async function main() {
   try {
@@ -84,6 +87,7 @@ interface TerminalFlags {
  * Parse command line flags into typed object.
  *
  * @param args
+ * @example
  */
 function parseFlags(args: string[]): TerminalFlags {
   const flags: TerminalFlags = {};

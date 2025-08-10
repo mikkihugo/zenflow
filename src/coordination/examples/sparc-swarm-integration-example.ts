@@ -2,23 +2,21 @@
  * SPARC-Swarm Integration Example.
  *
  * Demonstrates the complete integration of SPARC methodology with swarm coordination.
- * in the database-driven product flow system.
+ * In the database-driven product flow system.
  */
 /**
- * @file Coordination system: sparc-swarm-integration-example
+ * @file Coordination system: sparc-swarm-integration-example.
  */
 
-
-
-import { DatabaseDrivenSystem } from '../core/database-driven-system';
 import { createLogger } from '../../core/logger';
+import { DatabaseDrivenSystem } from '../core/database-driven-system';
 import { WorkflowEngine } from '../core/workflow-engine';
 import type { FeatureDocumentEntity } from '../database/entities/product-entities';
 import { DocumentManager } from '../database/managers/document-manager';
-import type { DocumentType } from '../types/workflow-types';
 import { DatabaseSPARCBridge } from '../database-sparc-bridge';
 import { SPARCSwarmCoordinator } from '../swarm/core/sparc-swarm-coordinator';
 import { TaskCoordinator } from '../task-coordinator';
+import type { DocumentType } from '../types/workflow-types';
 
 const logger = createLogger('SPARCSwarmIntegrationExample');
 

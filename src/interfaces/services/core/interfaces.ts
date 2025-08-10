@@ -1,5 +1,5 @@
 /**
- * @fileoverview USL (Unified Service Layer) Core Interfaces
+ * @file USL (Unified Service Layer) Core Interfaces.
  *
  * Provides unified abstractions for all service implementations across Claude-Zen:
  * - Data services, web services, coordination services, neural services
@@ -13,7 +13,7 @@
  * Service authentication configuration.
  *
  * @interface ServiceAuthConfig
- * @description Configuration for various authentication methods supported by services
+ * @description Configuration for various authentication methods supported by services.
  * @example
  * ```typescript
  * // API Key authentication
@@ -308,7 +308,7 @@ export interface ServiceEvent {
  *
  * @interface IService
  * @description Base interface that all USL services must implement for consistent lifecycle management,
- * monitoring, configuration, and operation execution across all service types
+ * monitoring, configuration, and operation execution across all service types.
  * @example
  * ```typescript
  * class MyCustomService implements IService {
@@ -379,54 +379,54 @@ export interface IService {
   /**
    * Initialize the service with optional configuration override.
    *
-   * @param config Optional configuration override
-   * @returns Promise that resolves when initialization is complete
-   * @throws {ServiceInitializationError} When initialization fails
+   * @param config Optional configuration override.
+   * @returns Promise that resolves when initialization is complete.
+   * @throws {ServiceInitializationError} When initialization fails.
    */
   initialize(config?: Partial<ServiceConfig>): Promise<void>;
 
   /**
    * Start the service and begin processing.
    *
-   * @returns Promise that resolves when service is started
-   * @throws {ServiceOperationError} When startup fails
+   * @returns Promise that resolves when service is started.
+   * @throws {ServiceOperationError} When startup fails.
    */
   start(): Promise<void>;
 
   /**
    * Stop the service gracefully.
    *
-   * @returns Promise that resolves when service is stopped
-   * @throws {ServiceOperationError} When shutdown fails
+   * @returns Promise that resolves when service is stopped.
+   * @throws {ServiceOperationError} When shutdown fails.
    */
   stop(): Promise<void>;
 
   /**
    * Destroy the service and clean up resources.
    *
-   * @returns Promise that resolves when destruction is complete
-   * @throws {ServiceOperationError} When destruction fails
+   * @returns Promise that resolves when destruction is complete.
+   * @throws {ServiceOperationError} When destruction fails.
    */
   destroy(): Promise<void>;
 
   /**
    * Get current service status and health information.
    *
-   * @returns Promise resolving to service status
+   * @returns Promise resolving to service status.
    */
   getStatus(): Promise<ServiceStatus>;
 
   /**
    * Get service performance metrics.
    *
-   * @returns Promise resolving to service metrics
+   * @returns Promise resolving to service metrics.
    */
   getMetrics(): Promise<ServiceMetrics>;
 
   /**
    * Perform health check on the service.
    *
-   * @returns Promise resolving to true if service is healthy
+   * @returns Promise resolving to true if service is healthy.
    */
   healthCheck(): Promise<boolean>;
 
@@ -441,12 +441,12 @@ export interface IService {
   /**
    * Execute a service-specific operation.
    *
-   * @template T The expected return type
-   * @param operation Operation name to execute
-   * @param params Operation parameters
-   * @param options Operation execution options
-   * @returns Promise resolving to operation response with result or error
-   * @throws {ServiceOperationError} When operation execution fails
+   * @template T The expected return type.
+   * @param operation Operation name to execute.
+   * @param params Operation parameters.
+   * @param options Operation execution options.
+   * @returns Promise resolving to operation response with result or error.
+   * @throws {ServiceOperationError} When operation execution fails.
    * @example
    * ```typescript
    * // Execute a query operation on a data service
@@ -477,8 +477,8 @@ export interface IService {
   /**
    * Register an event handler for service events.
    *
-   * @param event Event type to listen for
-   * @param handler Function to call when event occurs
+   * @param event Event type to listen for.
+   * @param handler Function to call when event occurs.
    * @example service.on('started', (event) => console.log('Service started'));
    */
   on(event: ServiceEventType, handler: (event: ServiceEvent) => void): void;
@@ -486,8 +486,8 @@ export interface IService {
   /**
    * Remove an event handler.
    *
-   * @param event Event type to stop listening for
-   * @param handler Specific handler to remove (optional)
+   * @param event Event type to stop listening for.
+   * @param handler Specific handler to remove (optional).
    * @example service.off('started', myHandler);
    */
   off(event: ServiceEventType, handler?: (event: ServiceEvent) => void): void;
@@ -495,9 +495,9 @@ export interface IService {
   /**
    * Emit a service event.
    *
-   * @param event Event type to emit
-   * @param data Optional event data
-   * @param error Optional error object
+   * @param event Event type to emit.
+   * @param data Optional event data.
+   * @param error Optional error object.
    * @example service.emit('error', null, new Error('Something went wrong'));
    */
   emit(event: ServiceEventType, data?: any, error?: Error): void;
@@ -512,9 +512,9 @@ export interface IService {
  * Service factory interface for creating and managing service instances.
  *
  * @interface IServiceFactory
- * @template TConfig Service configuration type
+ * @template TConfig Service configuration type.
  * @description Factory interface for creating, managing, and coordinating service instances
- * with support for batch operations, health monitoring, and lifecycle management
+ * with support for batch operations, health monitoring, and lifecycle management.
  * @example
  * ```typescript
  * class DataServiceFactory implements IServiceFactory<DataServiceConfig> {
@@ -549,50 +549,50 @@ export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> 
   /**
    * Create a single service instance.
    *
-   * @param config Service configuration
-   * @returns Promise resolving to created service
-   * @throws {ServiceInitializationError} When service creation fails
+   * @param config Service configuration.
+   * @returns Promise resolving to created service.
+   * @throws {ServiceInitializationError} When service creation fails.
    */
   create(config: TConfig): Promise<IService>;
 
   /**
    * Create multiple service instances.
    *
-   * @param configs Array of service configurations
-   * @returns Promise resolving to array of created services
-   * @throws {ServiceInitializationError} When any service creation fails
+   * @param configs Array of service configurations.
+   * @returns Promise resolving to array of created services.
+   * @throws {ServiceInitializationError} When any service creation fails.
    */
   createMultiple(configs: TConfig[]): Promise<IService[]>;
 
   /**
    * Get a service instance by name.
    *
-   * @param name Service name identifier
-   * @returns Service instance or undefined if not found
+   * @param name Service name identifier.
+   * @returns Service instance or undefined if not found.
    */
   get(name: string): IService | undefined;
 
   /**
    * List all managed service instances.
    *
-   * @returns Array of all service instances
+   * @returns Array of all service instances.
    */
   list(): IService[];
 
   /**
    * Check if a service with the given name exists.
    *
-   * @param name Service name to check
-   * @returns True if service exists
+   * @param name Service name to check.
+   * @returns True if service exists.
    */
   has(name: string): boolean;
 
   /**
    * Remove and destroy a service instance.
    *
-   * @param name Service name to remove
-   * @returns Promise resolving to true if removed successfully
-   * @throws {ServiceOperationError} When removal fails
+   * @param name Service name to remove.
+   * @returns Promise resolving to true if removed successfully.
+   * @throws {ServiceOperationError} When removal fails.
    */
   remove(name: string): Promise<boolean>;
 

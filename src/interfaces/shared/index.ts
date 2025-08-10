@@ -2,19 +2,18 @@
  * Shared Interface Abstractions.
  *
  * This module provides shared types, contracts, and configurations.
- * that interfaces can depend on without creating cross-interface dependencies.
+ * That interfaces can depend on without creating cross-interface dependencies.
  *
  * Usage:
  * - Interfaces import from here instead of each other
  * - Provides common abstractions and contracts
- * - Maintains interface isolation
+ * - Maintains interface isolation.
  */
 
 // Export configuration utilities
 /**
- * @file shared module exports.
+ * @file Shared module exports.
  */
-
 
 export * from './config';
 export type {

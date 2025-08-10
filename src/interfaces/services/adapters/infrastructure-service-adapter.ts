@@ -27,7 +27,6 @@ import {
   IntegratedPatternSystem,
   type IntegrationConfig,
 } from '../../../core/pattern-integration';
-import { createLogger, type Logger } from '../utils/logger';
 import type {
   IService,
   ServiceDependencyConfig,
@@ -39,29 +38,27 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../core/interfaces';
-import {
-  ServiceEnvironment,
-  ServicePriority,
-  ServiceType,
-} from '../types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+import { createLogger, type Logger } from '../utils/logger';
 
 // Define ServiceError locally if not available in types
 class ServiceError extends Error {
   public readonly code: string;
-  
+
   constructor(code: string, message: string) {
     super(message);
     this.name = 'ServiceError';
     this.code = code;
   }
 }
+
 import type { InfrastructureServiceConfig } from '../types';
 
 // Error classes for infrastructure service operations
 class ServiceDependencyError extends Error {
   public readonly serviceName: string;
   public readonly code = 'SERVICE_DEPENDENCY_ERROR';
-  
+
   constructor(serviceName: string, message: string) {
     super(message);
     this.name = 'ServiceDependencyError';
@@ -74,7 +71,7 @@ class ServiceOperationError extends Error {
   public readonly operation: string;
   public readonly code = 'SERVICE_OPERATION_ERROR';
   public readonly cause: Error;
-  
+
   constructor(serviceName: string, operation: string, cause: Error) {
     super(`Operation '${operation}' failed in service '${serviceName}': ${cause.message}`);
     this.name = 'ServiceOperationError';
@@ -89,7 +86,7 @@ class ServiceTimeoutError extends Error {
   public readonly operation: string;
   public readonly timeout: number;
   public readonly code = 'SERVICE_TIMEOUT_ERROR';
-  
+
   constructor(serviceName: string, operation: string, timeout: number) {
     super(`Operation '${operation}' timed out after ${timeout}ms in service '${serviceName}'`);
     this.name = 'ServiceTimeoutError';
@@ -737,10 +734,12 @@ export class InfrastructureServiceAdapter implements IService {
         resourceOptimizationRatio: this.calculateResourceOptimization(),
         configManagementEffectiveness: this.calculateConfigEffectiveness(),
         systemHealthScore: this.performanceStats.avgSystemHealth,
-        resourceUtilization: (this.performanceStats.resourceUtilization.cpu + 
-                             this.performanceStats.resourceUtilization.memory + 
-                             this.performanceStats.resourceUtilization.network + 
-                             this.performanceStats.resourceUtilization.storage) / 4,
+        resourceUtilization:
+          (this.performanceStats.resourceUtilization.cpu +
+            this.performanceStats.resourceUtilization.memory +
+            this.performanceStats.resourceUtilization.network +
+            this.performanceStats.resourceUtilization.storage) /
+          4,
         eventProcessingRate: this.calculateEventProcessingRate(),
         circuitBreakerActivations: Array.from(this.circuitBreakers.values()).filter((cb) => cb.open)
           .length,

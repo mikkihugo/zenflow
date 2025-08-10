@@ -5,12 +5,18 @@
  * training algorithms, and model management.
  */
 /**
- * @file Coordination system: neural-networks-template
+ * @file Coordination system: neural-networks-template.
  */
 
-
-
 import { nanoid } from 'nanoid';
+import type {
+  SPARCTemplate,
+  TemplateMetadata,
+  ProjectSpecification,
+  DetailedSpecification,
+  PseudocodeStructure,
+  ArchitectureDesign,
+} from '../types/sparc-types.js';
 
 export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
   id: 'neural-networks-template',

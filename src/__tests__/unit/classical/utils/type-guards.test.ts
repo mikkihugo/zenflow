@@ -6,8 +6,19 @@
  */
 
 import {
-// Utility functions
-extractData, extractErrorMessage, hasProperty, isInferenceResult, isMemoryError, isMemoryNotFound, isMemorySuccess, isNeuralError, isQueryError, isQuerySuccess, isTrainingResult, safePropertyAccess
+  // Utility functions
+  extractData,
+  extractErrorMessage,
+  hasProperty,
+  isInferenceResult,
+  isMemoryError,
+  isMemoryNotFound,
+  isMemorySuccess,
+  isNeuralError,
+  isQueryError,
+  isQuerySuccess,
+  isTrainingResult,
+  safePropertyAccess,
 } from '../../../../utils/type-guards';
 
 describe('Type Guards - Classical TDD', () => {

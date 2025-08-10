@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: coordination-usage-example
+ * @file Interface implementation: coordination-usage-example.
  */
-
 
 import { getLogger } from '../../../../config/logging-config';
 
@@ -11,7 +10,7 @@ const logger = getLogger('interfaces-events-adapters-coordination-usage-example'
  * Coordination Event Adapter Usage Example.
  *
  * Demonstrates practical usage of the CoordinationEventAdapter.
- * in various scenarios within the Claude-Zen system.
+ * In various scenarios within the Claude-Zen system.
  */
 
 import {
@@ -26,7 +25,9 @@ import {
  * Example 1: Basic Coordination Event Management.
  *
  * Shows how to set up basic coordination event monitoring.
- * for swarm, agent, and task events.
+ * For swarm, agent, and task events.
+ *
+ * @example
  */
 export async function basicCoordinationExample(): Promise<void> {
   // Create coordination event manager
@@ -35,19 +36,19 @@ export async function basicCoordinationExample(): Promise<void> {
 
   // Subscribe to different types of coordination events
   coordinator.subscribeSwarmLifecycleEvents((event) => {
-    if (event["details"]?.["topology"]) {
+    if (event['details']?.['topology']) {
     }
-    if (event["details"]?.["agentCount"]) {
+    if (event['details']?.['agentCount']) {
     }
   });
 
   coordinator.subscribeAgentManagementEvents((event) => {
-    if (event["details"]?.["swarmId"]) {
+    if (event['details']?.['swarmId']) {
     }
   });
 
   coordinator.subscribeTaskOrchestrationEvents((event) => {
-    if (event["details"]?.["assignedTo"]) {
+    if (event['details']?.['assignedTo']) {
     }
   });
 
@@ -66,6 +67,8 @@ export async function basicCoordinationExample(): Promise<void> {
  *
  * Shows comprehensive coordination monitoring with health tracking,
  * performance metrics, and event correlation.
+ *
+ * @example
  */
 export async function advancedCoordinationExample(): Promise<void> {
   // Create comprehensive coordination manager
@@ -77,8 +80,8 @@ export async function advancedCoordinationExample(): Promise<void> {
     ['coordination:swarm', 'coordination:agent', 'coordination:task'],
     async (event) => {
       // Check if this is part of a correlation
-      if (event["correlationId"]) {
-        const correlation = coordinator.getCoordinationCorrelatedEvents(event["correlationId"]);
+      if (event['correlationId']) {
+        const correlation = coordinator.getCoordinationCorrelatedEvents(event['correlationId']);
         if (correlation) {
         }
       }
@@ -111,7 +114,9 @@ export async function advancedCoordinationExample(): Promise<void> {
  * Example 3: High-Performance Coordination.
  *
  * Shows how to use the high-performance configuration.
- * for production workloads with minimal overhead.
+ * For production workloads with minimal overhead.
+ *
+ * @example
  */
 export async function highPerformanceCoordinationExample(): Promise<void> {
   // Create high-performance coordinator
@@ -128,7 +133,7 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
       eventCount++;
 
       // Only log critical events to minimize overhead
-      if (event["priority"] === 'high' || event["operation"] === 'fail') {
+      if (event['priority'] === 'high' || event['operation'] === 'fail') {
       }
     }
   );
@@ -163,7 +168,9 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
  * Example 4: Custom Coordination Configuration.
  *
  * Shows how to create a custom coordination manager.
- * with specific configuration for particular use cases.
+ * With specific configuration for particular use cases.
+ *
+ * @example
  */
 export async function customCoordinationExample(): Promise<void> {
   // Create custom configuration for research-focused coordination
@@ -230,7 +237,7 @@ export async function customCoordinationExample(): Promise<void> {
 
   // Set up research-specific monitoring
   coordinator.subscribeSwarmLifecycleEvents((event) => {
-    if (event["details"]?.["topology"]) {
+    if (event['details']?.['topology']) {
     }
   });
 
@@ -252,6 +259,7 @@ export async function customCoordinationExample(): Promise<void> {
  * Helper function to simulate basic swarm lifecycle.
  *
  * @param coordinator
+ * @example
  */
 async function simulateSwarmLifecycle(coordinator: CoordinationEventAdapter): Promise<void> {
   // Initialize swarm
@@ -293,6 +301,7 @@ async function simulateSwarmLifecycle(coordinator: CoordinationEventAdapter): Pr
  * Helper function to simulate complex coordination workflow.
  *
  * @param coordinator
+ * @example
  */
 async function simulateComplexCoordinationWorkflow(
   coordinator: CoordinationEventAdapter
@@ -348,6 +357,7 @@ async function simulateComplexCoordinationWorkflow(
  * Helper function to simulate research coordination.
  *
  * @param coordinator
+ * @example
  */
 async function simulateResearchCoordination(coordinator: CoordinationEventAdapter): Promise<void> {
   const researchSession = `research-${Date.now()}`;
@@ -387,6 +397,8 @@ async function simulateResearchCoordination(coordinator: CoordinationEventAdapte
 
 /**
  * Main function to run all examples.
+ *
+ * @example
  */
 export async function runCoordinationExamples(): Promise<void> {
   try {

@@ -1,12 +1,11 @@
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('interfaces-api-http-di-database-container');
 /**
+ * @file Simplified DI container configuration for database domain
  * Database Domain DI Container Setup - Simplified.
  * Configures dependency injection for database operations.
- *
- * @file Simplified DI container configuration for database domain
  */
+import { getLogger } from '../../../../config/logging-config';
+
+const logger = getLogger('interfaces-api-http-di-database-container');
 
 /**
  * Request interface for database query operations.
@@ -563,7 +562,7 @@ class SimplifiedDatabaseController {
 
             if (operation.type === 'query') {
               result = await tx.query(operation.sql, operation.params);
-              transactionResults?.push({
+              transactionResults.push({
                 type: 'query',
                 sql: operation.sql,
                 params: operation.params,
@@ -573,7 +572,7 @@ class SimplifiedDatabaseController {
               });
             } else if (operation.type === 'execute') {
               result = await tx.execute(operation.sql, operation.params);
-              transactionResults?.push({
+              transactionResults.push({
                 type: 'execute',
                 sql: operation.sql,
                 params: operation.params,
@@ -593,7 +592,7 @@ class SimplifiedDatabaseController {
               error: error instanceof Error ? error.message : 'Unknown error',
             };
 
-            transactionResults?.push(errorResult);
+            transactionResults.push(errorResult);
 
             if (!request.continueOnError) {
               throw error;
@@ -608,8 +607,8 @@ class SimplifiedDatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      const totalRows = results?.reduce((sum, r) => sum + (r.rowCount || r.affectedRows || 0), 0);
-      const successfulOps = results?.filter((r) => r.success).length;
+      const totalRows = results.reduce((sum: number, r: any) => sum + (r.rowCount || r.affectedRows || 0), 0);
+      const successfulOps = results.filter((r: any) => r.success).length;
 
       this.logger.debug(
         `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`
@@ -727,13 +726,13 @@ class SimplifiedDatabaseController {
         for (const statement of request.statements) {
           try {
             // In a real implementation, this would validate syntax
-            validationResults?.push({
+            validationResults.push({
               statement: `${statement.substring(0, 100)}...`,
               valid: true,
               issues: [],
             });
           } catch (error) {
-            validationResults?.push({
+            validationResults.push({
               statement: `${statement.substring(0, 100)}...`,
               valid: false,
               issues: [error instanceof Error ? error.message : 'Validation error'],
@@ -751,7 +750,7 @@ class SimplifiedDatabaseController {
             description: request.description,
             validationResults,
             totalStatements: request.statements.length,
-            validStatements: validationResults?.filter((r) => r.valid).length,
+            validStatements: validationResults.filter((r: any) => r.valid).length,
           },
           metadata: {
             rowCount: 0,
@@ -769,14 +768,14 @@ class SimplifiedDatabaseController {
         for (const statement of request.statements) {
           try {
             const result = await tx.execute(statement);
-            migrationResults?.push({
+            migrationResults.push({
               statement: `${statement.substring(0, 100)}...`,
               success: true,
               affectedRows: result?.affectedRows,
               executionTime: result?.executionTime,
             });
           } catch (error) {
-            migrationResults?.push({
+            migrationResults.push({
               statement: `${statement.substring(0, 100)}...`,
               success: false,
               error: error instanceof Error ? error.message : 'Execution error',
@@ -804,7 +803,7 @@ class SimplifiedDatabaseController {
           successfulStatements: results.length,
         },
         metadata: {
-          rowCount: results?.reduce((sum, r) => sum + (r.affectedRows || 0), 0),
+          rowCount: results.reduce((sum: number, r: any) => sum + (r.affectedRows || 0), 0),
           executionTime,
           timestamp: Date.now(),
           adapter: this.config.type,
@@ -909,9 +908,10 @@ class SimplifiedDatabaseController {
   }
 
   /**
-   * Check if SQL statement is a query (SELECT)
+   * Check if SQL statement is a query (SELECT).
    *
    * @param sql.
+   * @param sql
    */
   private isQueryStatement(sql: string): boolean {
     const trimmedSql = sql.trim().toLowerCase();
@@ -955,6 +955,8 @@ let databaseController: SimplifiedDatabaseController | undefined;
 
 /**
  * Get database controller instance.
+ *
+ * @example
  */
 export function getDatabaseController(): SimplifiedDatabaseController {
   if (!databaseController) {
@@ -964,7 +966,9 @@ export function getDatabaseController(): SimplifiedDatabaseController {
 }
 
 /**
- * Reset database controller (useful for testing)
+ * Reset database controller (useful for testing).
+ *
+ * @example
  */
 export function resetDatabaseContainer(): void {
   databaseController = undefined;
@@ -972,6 +976,8 @@ export function resetDatabaseContainer(): void {
 
 /**
  * Health check for database container.
+ *
+ * @example
  */
 export async function checkDatabaseContainerHealth(): Promise<{
   status: 'healthy' | 'unhealthy';

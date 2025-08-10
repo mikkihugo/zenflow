@@ -5,10 +5,8 @@
  * swarm management, task operations, and command execution.
  */
 /**
- * @file Interface implementation: api-route-handler
+ * @file Interface implementation: api-route-handler.
  */
-
-
 
 import type { Express, Request, Response } from 'express';
 import { createLogger } from '../utils/logger';

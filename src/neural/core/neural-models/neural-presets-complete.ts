@@ -3,10 +3,8 @@
  * Complete collection of neural network presets and utilities.
  */
 /**
- * @file Neural network: neural-presets-complete
+ * @file Neural network: neural-presets-complete.
  */
-
-
 
 export interface Preset {
   id: string;
@@ -20,6 +18,9 @@ export interface Preset {
   activation?: string;
   [k: string]: any; // Allow extension for legacy dynamic fields
 }
+
+// Define CompletePreset type
+export type CompletePreset = Preset;
 
 export type CompletePresetMap = Record<string, CompletePreset>;
 
@@ -108,6 +109,7 @@ export class CognitivePatternSelector {
    * Register a custom pattern.
    *
    * @param pattern
+   * @param pattern.id
    */
   registerPattern(pattern: { id: string; [k: string]: any }) {
     this.patterns.set(pattern.id, pattern);
@@ -118,7 +120,7 @@ export class CognitivePatternSelector {
     const custom = Array.from(this.patterns.values());
 
     return [...presets, ...custom].filter((pattern: any) => {
-      const reqArch = requirements.architecture;
+      const reqArch = requirements['architecture'];
       if (reqArch && pattern['architecture'] !== reqArch) {
         return false;
       }
@@ -145,7 +147,7 @@ export class CognitivePatternSelector {
     let score = 0.5; // Base score
 
     // Architecture match
-    if (requirements.architecture === pattern['architecture']) {
+    if (requirements['architecture'] === pattern['architecture']) {
       score += 0.3;
     }
 
@@ -156,9 +158,9 @@ export class CognitivePatternSelector {
         ? Array(pattern['layers']).fill(0)
         : undefined;
 
-    if (requirements.complexity === 'high' && patternLayers && patternLayers.length > 4) {
+    if (requirements['complexity'] === 'high' && patternLayers && patternLayers.length > 4) {
       score += 0.2;
-    } else if (requirements.complexity === 'low' && patternLayers && patternLayers.length <= 3) {
+    } else if (requirements['complexity'] === 'low' && patternLayers && patternLayers.length <= 3) {
       score += 0.2;
     }
 
@@ -170,11 +172,12 @@ export class CognitivePatternSelector {
    *
    * @param modelType
    * @param presetName
+   * @param _presetName
    * @param taskContext
    */
   selectPatternsForPreset(modelType: string, _presetName: string, taskContext: any = {}) {
     // Return appropriate cognitive patterns based on model type and context
-    const patterns = [];
+    const patterns: string[] = [];
 
     if (modelType === 'transformer' || modelType === 'attention') {
       patterns.push('attention', 'abstract');
@@ -203,9 +206,14 @@ export class CognitivePatternSelector {
    *
    * @param useCase
    * @param requirements
+   * @param _requirements
    */
   getPresetRecommendations(useCase: string, _requirements: any = {}) {
-    const recommendations = [];
+    const recommendations: Array<{
+      preset: string;
+      score: number;
+      reason: string;
+    }> = [];
 
     // Basic matching logic
     if (useCase.toLowerCase().includes('text') || useCase.toLowerCase().includes('nlp')) {
@@ -283,6 +291,8 @@ export class NeuralAdaptationEngine {
    *
    * @param networkConfig
    * @param performanceData
+   * @param performanceData.accuracy
+   * @param performanceData.loss
    */
   adapt(
     networkConfig: any,
@@ -341,7 +351,12 @@ export class NeuralAdaptationEngine {
     _config: any,
     performance: { accuracy?: number; loss?: number; [k: string]: any }
   ) {
-    const adaptations = [];
+    const adaptations: Array<{
+      parameter: string;
+      change: string;
+      factor?: number;
+      reason: string;
+    }> = [];
 
     // Learning rate adaptation
     if (performance.loss && performance.loss > 0.5) {
@@ -447,7 +462,11 @@ export class NeuralAdaptationEngine {
     }
 
     const recent = agentAdaptations.slice(-5);
-    const recommendations = [];
+    const recommendations: Array<{
+      type: string;
+      action: string;
+      reason: string;
+    }> = [];
 
     // Analyze recent adaptations for patterns
     const avgImprovement =

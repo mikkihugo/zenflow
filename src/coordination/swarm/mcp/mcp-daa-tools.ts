@@ -3,10 +3,8 @@
  * Exposes DAA capabilities through the MCP interface.
  */
 /**
- * @file Coordination system: mcp-daa-tools
+ * @file Coordination system: mcp-daa-tools.
  */
-
-
 
 import { DaaService } from '../core/daa-service';
 

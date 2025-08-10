@@ -2,13 +2,11 @@
  * Generic Service Implementation.
  *
  * A basic service implementation that can be used for simple services.
- * or as a fallback when no specific service implementation is available.
+ * Or as a fallback when no specific service implementation is available.
  */
 /**
- * @file generic service implementation
+ * @file Generic service implementation.
  */
-
-
 
 import type { ServiceConfig, ServiceOperationOptions } from '../core/interfaces';
 import { BaseService } from './base-service';

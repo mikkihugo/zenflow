@@ -2,13 +2,11 @@
  * SPARC Pseudocode Phase Engine.
  *
  * Handles the second phase of SPARC methodology - generating algorithmic.
- * pseudocode with complexity analysis and optimization strategies.
+ * Pseudocode with complexity analysis and optimization strategies.
  */
 /**
- * @file pseudocode processing engine
+ * @file Pseudocode processing engine.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import type {
@@ -313,9 +311,10 @@ END
   }
 
   /**
-   * Extract input parameters from requirement as ParameterDefinition[]
+   * Extract input parameters from requirement as ParameterDefinition[].
    *
    * @param requirement.
+   * @param requirement
    */
   private async extractInputParameterDefinitions(requirement: any): Promise<ParameterDefinition[]> {
     const inputs = requirement.inputs || ['input'];
@@ -328,9 +327,10 @@ END
   }
 
   /**
-   * Extract output definitions from requirement as ReturnDefinition[]
+   * Extract output definitions from requirement as ReturnDefinition[].
    *
    * @param requirement.
+   * @param requirement
    */
   private async extractOutputDefinitions(requirement: any): Promise<ReturnDefinition[]> {
     const outputs = requirement.outputs || ['result'];

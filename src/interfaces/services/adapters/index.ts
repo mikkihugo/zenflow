@@ -105,18 +105,17 @@ export * from './integration-service-helpers';
 
 // Integration with global service registry
 import { globalServiceRegistry } from '../factories';
-import { ServiceType, IServiceFactory, ServiceConfig } from '../types';
+import { type IServiceFactory, type ServiceConfig, ServiceType } from '../types';
+import { CoordinationServiceAdapter } from './coordination-service-adapter';
 import { coordinationServiceFactory } from './coordination-service-factory';
-import { globalDataServiceFactory } from './data-service-factory';
-import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
-import { integrationServiceFactory } from './integration-service-factory';
-
 // Additional imports for default export
 import { DataServiceAdapter } from './data-service-adapter';
+import { globalDataServiceFactory } from './data-service-factory';
 import { DataServiceHelper, DataServiceUtils } from './data-service-helpers';
-import { CoordinationServiceAdapter } from './coordination-service-adapter';
-import { IntegrationServiceAdapter } from './integration-service-adapter';
 import { InfrastructureServiceAdapter } from './infrastructure-service-adapter';
+import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
+import { IntegrationServiceAdapter } from './integration-service-adapter';
+import { integrationServiceFactory } from './integration-service-factory';
 
 /**
  * Register data service factory with global registry.
@@ -139,9 +138,18 @@ import { InfrastructureServiceAdapter } from './infrastructure-service-adapter';
  */
 export function registerDataServiceFactory(): void {
   // Register the specialized data service factory for DATA, WEB_DATA, and DOCUMENT types
-  globalServiceRegistry.registerFactory(ServiceType.DATA, globalDataServiceFactory as IServiceFactory<ServiceConfig>);
-  globalServiceRegistry.registerFactory(ServiceType.WEB_DATA, globalDataServiceFactory as IServiceFactory<ServiceConfig>);
-  globalServiceRegistry.registerFactory(ServiceType.DOCUMENT, globalDataServiceFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(
+    ServiceType.DATA,
+    globalDataServiceFactory as IServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.WEB_DATA,
+    globalDataServiceFactory as IServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.DOCUMENT,
+    globalDataServiceFactory as IServiceFactory<ServiceConfig>
+  );
 }
 
 /**
@@ -165,9 +173,18 @@ export function registerDataServiceFactory(): void {
  */
 export function registerCoordinationServiceFactory(): void {
   // Register the specialized coordination service factory for COORDINATION, DAA, and SESSION_RECOVERY types
-  globalServiceRegistry.registerFactory(ServiceType.COORDINATION, coordinationServiceFactory as IServiceFactory<ServiceConfig>);
-  globalServiceRegistry.registerFactory(ServiceType.DAA, coordinationServiceFactory as IServiceFactory<ServiceConfig>);
-  globalServiceRegistry.registerFactory(ServiceType.SESSION_RECOVERY, coordinationServiceFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(
+    ServiceType.COORDINATION,
+    coordinationServiceFactory as IServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.DAA,
+    coordinationServiceFactory as IServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.SESSION_RECOVERY,
+    coordinationServiceFactory as IServiceFactory<ServiceConfig>
+  );
 }
 
 /**
@@ -195,8 +212,14 @@ export function registerCoordinationServiceFactory(): void {
  */
 export function registerIntegrationServiceFactory(): void {
   // Register the specialized integration service factory for API, SAFE_API, and ARCHITECTURE_STORAGE types
-  globalServiceRegistry.registerFactory(ServiceType.API, integrationServiceFactory as IServiceFactory<ServiceConfig>);
-  globalServiceRegistry.registerFactory(ServiceType.SAFE_API, integrationServiceFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(
+    ServiceType.API,
+    integrationServiceFactory as IServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.SAFE_API,
+    integrationServiceFactory as IServiceFactory<ServiceConfig>
+  );
   globalServiceRegistry.registerFactory(
     ServiceType.ARCHITECTURE_STORAGE,
     integrationServiceFactory as IServiceFactory<ServiceConfig>
@@ -229,9 +252,18 @@ export function registerIntegrationServiceFactory(): void {
 export function registerInfrastructureServiceFactory(): void {
   // Register the specialized infrastructure service factory for INFRASTRUCTURE, SYSTEM, and MONITORING types
   const infrastructureFactory = getInfrastructureServiceFactory();
-  globalServiceRegistry.registerFactory(ServiceType.INFRASTRUCTURE, infrastructureFactory as IServiceFactory<ServiceConfig>);
-  globalServiceRegistry.registerFactory(ServiceType.SYSTEM, infrastructureFactory as IServiceFactory<ServiceConfig>);
-  globalServiceRegistry.registerFactory(ServiceType.MONITORING, infrastructureFactory as IServiceFactory<ServiceConfig>);
+  globalServiceRegistry.registerFactory(
+    ServiceType.INFRASTRUCTURE,
+    infrastructureFactory as IServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.SYSTEM,
+    infrastructureFactory as IServiceFactory<ServiceConfig>
+  );
+  globalServiceRegistry.registerFactory(
+    ServiceType.MONITORING,
+    infrastructureFactory as IServiceFactory<ServiceConfig>
+  );
 }
 
 /**

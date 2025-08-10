@@ -9,8 +9,6 @@
  * @file Interface implementation: coordination-service-helpers.
  */
 
-
-
 import type { SessionState } from '../../../coordination/swarm/core/session-manager';
 import type { SwarmAgent } from '../../../coordination/swarm/core/swarm-coordinator';
 import type { AgentType } from '../../../types/agent-types';
@@ -901,7 +899,7 @@ function findRoundRobinAgent(
   if (availableAgents.length === 0) return null;
 
   // Simple round-robin: return first agent with minimum task count
-  const taskCounts_ = availableAgents.map((agent) => agent.id ? taskCounts[agent.id] : 0);
+  const taskCounts_ = availableAgents.map((agent) => (agent.id ? taskCounts[agent.id] : 0));
   const minTasks = Math.min(...taskCounts_);
   return availableAgents.find((agent) => agent.id && taskCounts[agent.id] === minTasks) || null;
 }
@@ -1031,4 +1029,3 @@ function analyzeCoordinationMetrics(swarmMetrics: any): {
     optimalTopology: 'mesh', // This would be determined by performance analysis
   };
 }
-

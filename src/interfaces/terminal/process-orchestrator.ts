@@ -3,15 +3,13 @@
  * Handles terminal sessions, command execution, and process lifecycle.
  */
 /**
- * @file Interface implementation: process-orchestrator
+ * @file Interface implementation: process-orchestrator.
  */
-
-
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../core/event-bus';
 import type { ILogger } from '../../core/logger';
+import type { IEventBus } from '../core/event-bus';
 
 export interface TerminalConfig {
   shell?: string;
@@ -195,8 +193,8 @@ export class TerminalManager extends EventEmitter {
             success: false,
             stdout,
             stderr:
-              stderr +
-              `
+              `${stderr 
+              }
       Process error: ${error.message}`,
             exitCode: -1,
             duration,

@@ -3,10 +3,8 @@
  * TODO: Implement advanced command generation functionality.
  */
 /**
- * @file Coordination system: advanced-commands
+ * @file Coordination system: advanced-commands.
  */
-
-
 
 interface CommandConfig {
   [key: string]: unknown;

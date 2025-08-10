@@ -1,9 +1,16 @@
 /**
- * @file template processing engine
+ * @file Template processing engine.
  */
 
-
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../../config/logging-config';
+import type {
+  ArchitectureDesign,
+  DetailedSpecification,
+  ProjectDomain,
+  ProjectSpecification,
+  PseudocodeStructure,
+  SPARCTemplate,
+} from '../types/sparc-types';
 
 const logger = getLogger('coordination-swarm-sparc-core-template-engine');
 

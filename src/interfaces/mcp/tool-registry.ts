@@ -1,13 +1,13 @@
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('interfaces-mcp-tool-registry');
-
 /**
- * @file MCP Tools Registry
+ * @file MCP Tools Registry.
  *
  * Central registry for MCP tools from claude-zen.
  * Integrates with existing HTTP and Stdio MCP servers.
  */
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-mcp-tool-registry');
 
 import type { DocumentService } from '../services/document-service';
 import coordinationTools from './tools/coordination-tools';
@@ -17,26 +17,10 @@ import monitoringTools from './tools/monitoring-tools';
 import orchestrationTools from './tools/orchestration-tools';
 import { createSPARCIntegrationTools } from './tools/sparc-integration-tools';
 import systemTools from './tools/system-tools';
+import type { MCPTool } from './types';
 
-/**
- * MCP Tool interface.
- *
- * @example
- */
-export interface MCPTool {
-  name: string;
-  description: string;
-  inputSchema: any;
-  handler: (params: any) => Promise<any>;
-  category: string;
-  version: string;
-  priority: number;
-  metadata: {
-    tags: string[];
-    examples: any[];
-  };
-  permissions: Array<{ type: string; resource: string }>;
-}
+// Re-export for backward compatibility
+export type { MCPTool } from './types';
 
 /**
  * Simple tool registry.
@@ -79,7 +63,7 @@ class ToolRegistry {
   }
 }
 
-export const toolRegistry = new SimpleToolRegistry();
+export const toolRegistry = new ToolRegistry();
 
 /**
  * MCP Tools Manager.
@@ -346,6 +330,7 @@ export const mcpToolsManager = new MCPToolsManager();
  * Initialize the MCP tools manager with database services for SPARC integration.
  *
  * @param documentService
+ * @example
  */
 export function initializeWithDatabaseServices(documentService: DocumentService): MCPToolsManager {
   // Create new instance with database services for SPARC tools

@@ -6,8 +6,6 @@
  * @file Coordination system: resource-monitor
  */
 
-
-
 import type { LoadMetrics } from '../types';
 
 export class ResourceMonitor implements ResourceMonitor {

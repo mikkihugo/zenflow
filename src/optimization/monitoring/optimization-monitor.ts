@@ -3,12 +3,11 @@
  * Real-time monitoring and alerting for optimization processes.
  */
 /**
- * @file optimization-monitor implementation
+ * @file Optimization-monitor implementation.
  */
 
-
-
 import { EventEmitter } from 'node:events';
+import type { PerformanceMetrics, OptimizationResult } from '../interfaces/optimization-interfaces.js';
 
 export interface OptimizationAlert {
   id: string;

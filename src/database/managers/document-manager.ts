@@ -1,16 +1,15 @@
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('database-managers-document-manager');
-
 /**
- * @fileoverview Document Manager - Pure DAL Implementation
+ * @file Document Manager - Pure DAL Implementation.
  *
  * Complete rewrite using unified DAL patterns only.
  * Replaces file-based operations with database entities.
  */
 
+import { getLogger } from '../../core/logger';
+
+const logger = getLogger('database-managers-document-manager');
+
 import { nanoid } from 'nanoid';
-import type { DocumentType } from '../types/workflow-types';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -23,8 +22,9 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../entities/document-entities';
-import { createDao, EntityTypes } from '../index';
+import { createDao, EntityTypes } from '../core/dao-factory';
 import type { IRepository } from '../interfaces';
+import type { DocumentType } from '../../types/workflow-types';
 
 export interface DocumentCreateOptions {
   autoGenerateRelationships?: boolean;
@@ -333,7 +333,16 @@ export class DocumentManager {
     let relevanceScores: number[] = [];
 
     // Get all documents with filters applied
-    const baseFilters: unknown = {} as Record<string, unknown>;
+    const baseFilters: {
+      type?: DocumentType | DocumentType[];
+      projectId?: string;
+      status?: string | string[];
+      priority?: string | string[];
+      author?: string;
+      tags?: string[];
+      parentDocumentId?: string;
+      workflowStage?: string;
+    } = {};
     if (searchOptions?.projectId) baseFilters.projectId = searchOptions?.projectId;
     if (searchOptions?.documentTypes) baseFilters.type = searchOptions?.documentTypes;
     if (searchOptions?.status) baseFilters.status = searchOptions?.status;
@@ -735,7 +744,7 @@ export class DocumentManager {
       throw new Error(`Invalid transition from ${existing.current_stage} to ${nextStage}`);
     }
 
-    const updatedState = {
+    const updatedState: Partial<DocumentWorkflowStateEntity> = {
       current_stage: nextStage,
       stages_completed: [...existing.stages_completed, existing.current_stage],
       next_stages: workflowDefinition.getNextStages(nextStage),
@@ -1024,7 +1033,7 @@ export class DocumentManager {
       default_workflow: new DefaultWorkflowDefinition(),
     };
 
-    return definitions[workflowName] || definitions['default_workflow'];
+    return definitions[workflowName] || definitions['default_workflow']!;
   }
 
   /**
@@ -1167,7 +1176,7 @@ export class DocumentManager {
       // TODO: TypeScript error TS2379 - optional property types issue (AI unsure of safe fix - human review needed)
       const { documents: potentialParents } = await this.queryDocuments({
         type: parentTypes,
-        projectId: document.project_id || undefined,
+        projectId: document.project_id,
       });
 
       // Create relationships based on content similarity and recency
@@ -1209,7 +1218,7 @@ export class DocumentManager {
     // Find documents with similar keywords
     // TODO: TypeScript error TS2379 - optional property types issue (AI unsure of safe fix - human review needed)
     const { documents: similarDocuments } = await this.queryDocuments({
-      projectId: document.project_id || undefined,
+      projectId: document.project_id,
     });
 
     for (const other of similarDocuments) {
@@ -1271,7 +1280,7 @@ export class DocumentManager {
       // TODO: TypeScript error TS2379 - optional property types issue (AI unsure of safe fix - human review needed)
       const { documents: existingDocs } = await this.queryDocuments({
         type: rule.targetType,
-        projectId: document.project_id || undefined,
+        projectId: document.project_id,
       });
 
       // Check if documents were generated from this source

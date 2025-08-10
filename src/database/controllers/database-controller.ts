@@ -1751,13 +1751,13 @@ export class DatabaseController {
       // Check if adapter supports these methods before calling
       let schema: any;
       let connectionStats: ConnectionStats;
-      
+
       if ('getSchema' in this.adapter) {
         schema = await (this.adapter as any).getSchema();
       } else {
         schema = { tables: [], views: [], version: '1.0' };
       }
-      
+
       if ('getConnectionStats' in this.adapter) {
         connectionStats = await (this.adapter as any).getConnectionStats();
       } else {

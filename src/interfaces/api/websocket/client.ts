@@ -3,10 +3,8 @@
  * Provides high-performance, standards-compliant WebSocket connectivity.
  */
 /**
- * @file Interface implementation: client
+ * @file Interface implementation: client.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 
@@ -19,7 +17,7 @@ interface WebSocketClientOptions {
   timeout?: number;
 }
 
-/** Native WebSocket Client using Node.js 22 built-in WebSocket
+/** Native WebSocket Client using Node.js 22 built-in WebSocket.
  *
  * Features:
  * - Auto-reconnection with exponential backoff
@@ -74,10 +72,10 @@ export class WebSocketClient extends EventEmitter {
 
         this.ws.onmessage = (event) => {
           try {
-            const data = JSON.parse(event["data"]);
+            const data = JSON.parse(event['data']);
             this.emit('message', data);
           } catch {
-            this.emit('message', event["data"]);
+            this.emit('message', event['data']);
           }
         };
 
@@ -85,7 +83,7 @@ export class WebSocketClient extends EventEmitter {
           clearTimeout(timeout);
           this.isConnected = false;
           this.stopHeartbeat();
-          this.emit('disconnected', event["code"], event["reason"]);
+          this.emit('disconnected', event['code'], event['reason']);
 
           if (
             this.options.reconnect &&

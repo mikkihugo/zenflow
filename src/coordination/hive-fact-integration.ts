@@ -8,9 +8,12 @@
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '@core/logger';
-import type { UniversalFact, HiveFACTConfig } from './hive-types';
 import type { FACTSearchQuery, FACTStorageStats } from '../knowledge/types/fact-types';
-import { HiveSwarmCoordinator } from './hive-swarm-sync';
+import type { HiveSwarmCoordinatorInterface } from './shared-types';
+
+// Type alias for backward compatibility
+type HiveSwarmCoordinator = HiveSwarmCoordinatorInterface;
+import type { HiveFACTConfig, UniversalFact } from './hive-types';
 
 // import { FACTExternalOrchestrator } from './mcp/tools/fact-external-integration'; // TODO: Migrate to unified MCP
 
@@ -316,7 +319,7 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Build query based on fact type.
-   * xxx NEEDS_HUMAN: Currently unused - will be used when FACT orchestrator is implemented.
+   * Xxx NEEDS_HUMAN: Currently unused - will be used when FACT orchestrator is implemented..
    *
    * @param type
    * @param subject

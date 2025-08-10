@@ -30,7 +30,7 @@ describe('Swarm Topology Management (London TDD)', () => {
     mockAgents = Array.from(
       { length: 5 },
       (_, i) =>
-        (({
+        ({
           id: `agent-${i}`,
           type: 'coordinator',
           status: 'active',
@@ -40,8 +40,8 @@ describe('Swarm Topology Management (London TDD)', () => {
           sendMessage: vi.fn(),
           receiveMessage: vi.fn(),
           getMetrics: vi.fn(),
-          updateStatus: vi.fn()
-        }) as jest.Mocked<Agent>)
+          updateStatus: vi.fn(),
+        }) as jest.Mocked<Agent>
     );
 
     testHelpers = new CoordinationTestHelpers();

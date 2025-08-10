@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: sparc-template-commands
+ * @file Interface implementation: sparc-template-commands.
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -165,6 +164,7 @@ export function createSPARCTemplateCommands(): Command {
  * Format specification as Markdown.
  *
  * @param specification
+ * @example
  */
 function formatSpecificationAsMarkdown(specification: any): string {
   let markdown = `# SPARC Specification: ${specification.id}\n\n`;

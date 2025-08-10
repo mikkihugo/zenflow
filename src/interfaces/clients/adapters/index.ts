@@ -6,9 +6,8 @@
 
 // Core MCP adapter and factory
 /**
- * @file adapters module exports
+ * @file Adapters module exports.
  */
-
 
 export * from './mcp-client-adapter.js';
 // Demonstrations and examples

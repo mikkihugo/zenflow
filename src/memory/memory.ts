@@ -1,14 +1,15 @@
-import { getLogger } from '../core/logger';
-
-const logger = getLogger('src-memory-memory');
-
 /**
  * @file Session-based memory storage with pluggable backends.
  */
 
+import { createLogger } from '../core/logger';
+
+const logger = createLogger('src-memory-memory');
+
 import { EventEmitter } from 'node:events';
 import type { IMemoryStore } from '../core/interfaces/base-interfaces';
-import type { BackendInterface, JSONValue, MemoryStats, StoreOptions } from '../memory/interfaces';
+import type { BackendInterface, MemoryStats } from '../core/interfaces/base-interfaces';
+import type { JSONValue, StoreOptions } from './backends/base-backend';
 import { MemoryBackendFactory as BackendFactory } from './backends/factory';
 
 interface BackendConfig {
@@ -68,12 +69,12 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     super();
 
     this.options = {
-      backendConfig: options?.["backendConfig"],
-      enableCache: options?.["enableCache"] ?? true,
-      cacheSize: options?.["cacheSize"] ?? 1000,
-      cacheTTL: options?.["cacheTTL"] ?? 300000, // 5 minutes
-      enableVectorStorage: options?.["enableVectorStorage"] ?? false,
-      vectorDimensions: options?.["vectorDimensions"] ?? 512,
+      backendConfig: options?.['backendConfig'],
+      enableCache: options?.['enableCache'] ?? true,
+      cacheSize: options?.['cacheSize'] ?? 1000,
+      cacheTTL: options?.['cacheTTL'] ?? 300000, // 5 minutes
+      enableVectorStorage: options?.['enableVectorStorage'] ?? false,
+      vectorDimensions: options?.['vectorDimensions'] ?? 512,
     };
 
     // Backend will be created during initialization

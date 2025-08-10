@@ -2,7 +2,6 @@
  * @file Neural network: neural-core.
  */
 
-
 import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('neural-core-neural-core');
@@ -749,7 +748,7 @@ export class NeuralCLI {
    */
   private getArg(args: string[], flag: string): string | null {
     const index = args.indexOf(flag);
-    return index !== -1 && index + 1 < args.length ? args[index + 1] ?? null : null;
+    return index !== -1 && index + 1 < args.length ? (args[index + 1] ?? null) : null;
   }
 }
 

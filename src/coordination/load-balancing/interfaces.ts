@@ -5,8 +5,6 @@
  * @file Coordination system: interfaces
  */
 
-
-
 import type {
   Agent,
   CapacityMetrics,

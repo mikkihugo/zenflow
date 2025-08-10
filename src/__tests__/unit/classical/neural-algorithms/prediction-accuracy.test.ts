@@ -35,14 +35,14 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
+        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
+        outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         randomSeed: 101,
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS["RPROP"],
+        algorithm: TRAINING_ALGORITHMS['RPROP'],
         maxEpochs: 500,
         targetError: 0.01,
       };
@@ -93,14 +93,14 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
+        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
+        outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         randomSeed: 202,
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS["RPROP"],
+        algorithm: TRAINING_ALGORITHMS['RPROP'],
         maxEpochs: 300,
         targetError: 0.01,
       };
@@ -150,14 +150,14 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
+        outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         randomSeed: 303,
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS["RPROP"],
+        algorithm: TRAINING_ALGORITHMS['RPROP'],
         maxEpochs: 1000,
         targetError: 0.01,
       };
@@ -212,15 +212,15 @@ describe('Prediction Accuracy - Classical TDD', () => {
       const networkConfig: NetworkConfig = {
         inputSize: 1,
         hiddenLayers: [
-          { size: 6, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
-          { size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
+          { size: 6, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+          { size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
         ],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS["LINEAR"],
+        outputActivation: ACTIVATION_FUNCTIONS['LINEAR'],
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS["RPROP"],
+        algorithm: TRAINING_ALGORITHMS['RPROP'],
         maxEpochs: 800,
         targetError: 0.05,
       };
@@ -279,15 +279,15 @@ describe('Prediction Accuracy - Classical TDD', () => {
       const networkConfig: NetworkConfig = {
         inputSize: 1,
         hiddenLayers: [
-          { size: 10, activation: ACTIVATION_FUNCTIONS["TANH"] },
-          { size: 8, activation: ACTIVATION_FUNCTIONS["TANH"] },
+          { size: 10, activation: ACTIVATION_FUNCTIONS['TANH'] },
+          { size: 8, activation: ACTIVATION_FUNCTIONS['TANH'] },
         ],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS["LINEAR"],
+        outputActivation: ACTIVATION_FUNCTIONS['LINEAR'],
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS["RPROP"],
+        algorithm: TRAINING_ALGORITHMS['RPROP'],
         maxEpochs: 1200,
         targetError: 0.1,
       };
@@ -299,8 +299,8 @@ describe('Prediction Accuracy - Classical TDD', () => {
       };
 
       for (let i = 0; i <= 16; i++) {
-        const x = (i / 16) * 2 * Math["PI"];
-        const normalizedX = x / (2 * Math["PI"]); // Normalize to [0,1]
+        const x = (i / 16) * 2 * Math['PI'];
+        const normalizedX = x / (2 * Math['PI']); // Normalize to [0,1]
         const y = Math.cos(x);
         cosineData?.inputs?.push([normalizedX]);
         cosineData?.outputs?.push([y]);
@@ -338,13 +338,13 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 8, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
+        hiddenLayers: [{ size: 8, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
         outputSize: 2,
-        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
+        outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS["RPROP"],
+        algorithm: TRAINING_ALGORITHMS['RPROP'],
         maxEpochs: 600,
         targetError: 0.1,
       };
@@ -438,15 +438,15 @@ describe('Prediction Accuracy - Classical TDD', () => {
       const networkConfig: NetworkConfig = {
         inputSize: 2,
         hiddenLayers: [
-          { size: 12, activation: ACTIVATION_FUNCTIONS["TANH"] },
-          { size: 8, activation: ACTIVATION_FUNCTIONS["TANH"] },
+          { size: 12, activation: ACTIVATION_FUNCTIONS['TANH'] },
+          { size: 8, activation: ACTIVATION_FUNCTIONS['TANH'] },
         ],
         outputSize: 2,
-        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
+        outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS["RPROP"],
+        algorithm: TRAINING_ALGORITHMS['RPROP'],
         maxEpochs: 1000,
         targetError: 0.15,
       };
@@ -460,7 +460,7 @@ describe('Prediction Accuracy - Classical TDD', () => {
       // Inner circle (radius < 0.3) - Class 0
       // Outer ring (0.5 < radius < 0.8) - Class 1
       for (let i = 0; i < 60; i++) {
-        const angle = (i / 60) * 2 * Math["PI"];
+        const angle = (i / 60) * 2 * Math['PI'];
 
         // Inner circle points
         const innerRadius = 0.1 + Math.random() * 0.2; // radius 0.1-0.3
@@ -519,13 +519,13 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 1,
-        hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
+        hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS["LINEAR"],
+        outputActivation: ACTIVATION_FUNCTIONS['LINEAR'],
       };
 
       const trainingConfig: TrainingConfig = {
-        algorithm: TRAINING_ALGORITHMS["RPROP"],
+        algorithm: TRAINING_ALGORITHMS['RPROP'],
         maxEpochs: 400,
         targetError: 0.05,
       };
@@ -579,9 +579,9 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
+        outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         randomSeed: 999, // Fixed seed for reproducibility
       };
 

@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: architecture-commands
+ * @file Coordination system: architecture-commands.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

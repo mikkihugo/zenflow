@@ -9,18 +9,18 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { DocumentManager } from '../database/managers/document-manager';
 import type { BaseDocumentEntity } from '../database/entities/product-entities';
+import type { DocumentManager } from '../database/managers/document-manager';
 import type { MemorySystemFactory } from '../memory/index';
 import type {
-  WorkflowStep,
-  WorkflowDefinition,
-  WorkflowContext,
-  WorkflowState,
-  WorkflowEngineConfig,
   DocumentContent,
   StepExecutionResult,
+  WorkflowContext,
   WorkflowData,
+  WorkflowDefinition,
+  WorkflowEngineConfig,
+  WorkflowState,
+  WorkflowStep,
 } from '../types/workflow-types';
 import { createLogger } from './logger';
 
@@ -497,7 +497,10 @@ export class WorkflowEngine extends EventEmitter {
       for (const trigger of extendedDefinition.triggers) {
         if (trigger.event === event) {
           // Check document type
-          if (extendedDefinition.documentTypes && !extendedDefinition.documentTypes.includes(document.type)) {
+          if (
+            extendedDefinition.documentTypes &&
+            !extendedDefinition.documentTypes.includes(document.type)
+          ) {
             continue;
           }
 

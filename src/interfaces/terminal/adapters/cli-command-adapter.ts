@@ -2,14 +2,12 @@
  * CLI Command Adapter for Terminal Interface.
  *
  * This adapter provides terminal interface access to CLI functionality.
- * without creating cross-interface dependencies. It implements the
+ * Without creating cross-interface dependencies. It implements the
  * CommandExecutorContract using shared abstractions.
  */
 /**
- * @file cli-command adapter implementation
+ * @file Cli-command adapter implementation.
  */
-
-
 
 import type {
   CommandContext,
@@ -22,7 +20,7 @@ import type {
  * CLI Command Adapter.
  *
  * Adapts CLI functionality for use in terminal interface while.
- * maintaining interface isolation through shared contracts.
+ * Maintaining interface isolation through shared contracts..
  *
  * @example
  */

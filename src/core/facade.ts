@@ -4,6 +4,26 @@
  */
 
 import { EventEmitter } from 'node:events';
+import type { SwarmTopology } from '../types/event-types';
+import type { EventMap as AllSystemEvents } from '../types/event-types';
+import type { ISystemEventManager } from '../interfaces/events/factories';
+import type { MCPCommandQueue } from '../interfaces/mcp/command-system';
+
+// Re-export types for convenience
+export type { SwarmTopology } from '../types/event-types';
+
+// Define missing CoordinationResult interface
+export interface CoordinationResult {
+  success: boolean;
+  operationId: string;
+  timestamp: Date;
+  metadata?: Record<string, any>;
+  warnings?: string[];
+  errors?: string[];
+}
+
+// Type alias for compatibility
+export type SystemEventManager = ISystemEventManager;
 
 // Service interface definitions for dependency injection
 export interface ISwarmService {
@@ -108,8 +128,8 @@ export interface ProjectResult {
   timestamp: Date;
   interfaces: Record<string, any>;
   metrics: OperationMetrics;
-  errors?: string[];
-  warnings?: string[];
+  errors?: string[] | undefined;
+  warnings?: string[] | undefined;
 }
 
 export interface DocumentProcessingResult {
@@ -480,7 +500,7 @@ export interface IMetricsCollector {
   endOperation(operationType: string, operationId: string, status: 'success' | 'error'): void;
   getOperationMetrics(operationId: string): OperationMetrics;
   getSystemMetrics(): SystemMetrics;
-  recordEvent(event: AllSystemEvents): void;
+  recordEvent(event: keyof AllSystemEvents): void;
 }
 
 /**
@@ -497,7 +517,7 @@ export class ClaudeZenFacade extends EventEmitter {
     private databaseService: IDatabaseService,
     private interfaceService: IInterfaceService,
     private workflowService: IWorkflowService,
-    private eventManager: SystemEventManager,
+    private eventManager: ISystemEventManager,
     private commandQueue: MCPCommandQueue,
     private logger: ILogger,
     private metrics: IMetricsCollector
@@ -1352,7 +1372,7 @@ export class ClaudeZenFacade extends EventEmitter {
         });
       }
 
-      if (status.errors.length) {
+      if (status.errors && status.errors.length > 0) {
         status.errors.forEach((error) => {
           alerts.push({
             id: `error-${component}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,

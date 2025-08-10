@@ -5,10 +5,8 @@
  * expertise evolution tracking, best practice emergence, and anti-pattern detection.
  */
 /**
- * @file knowledge-evolution implementation
+ * @file Knowledge-evolution implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { AgentBehavior } from './behavioral-optimization';
@@ -1453,7 +1451,10 @@ export class KnowledgeEvolution extends EventEmitter {
     const metadataKeys = new Set([...Object.keys(p1.metadata), ...Object.keys(p2.metadata)]);
     let matchingKeys = 0;
     metadataKeys?.forEach((key) => {
-      if ((p1.metadata as any)[key as keyof typeof obj] === (p2.metadata as any)[key as keyof typeof obj]) {
+      if (
+        (p1.metadata as any)[key as keyof typeof obj] ===
+        (p2.metadata as any)[key as keyof typeof obj]
+      ) {
         matchingKeys++;
       }
     });

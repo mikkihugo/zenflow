@@ -11,7 +11,7 @@ const config = {
   environment: {
     nodeEnv: 'test',
     testMode: true,
-    logLevel: process.env["CI"] ? 'error' : 'info',
+    logLevel: process.env['CI'] ? 'error' : 'info',
     timeout: {
       suite: 60000, // 60 seconds per suite
       test: 30000, // 30 seconds per test
@@ -261,7 +261,7 @@ if (platformConfig) {
 }
 
 // Apply CI overrides
-if (process.env["CI"]) {
+if (process.env['CI']) {
   config.environment.timeout.suite *= 2; // Double timeouts in CI
   config.environment.timeout.test *= 2;
   config.environment.retries.flaky = 0; // No retries in CI

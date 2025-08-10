@@ -1,5 +1,5 @@
 /**
- * @file TypeScript Wrapper for DSPy Integration
+ * @file TypeScript Wrapper for DSPy Integration.
  *
  * Provides a type-safe, unified interface to the ruvnet dspy.ts package
  * with proper error handling, validation, and consistent API patterns.
@@ -34,6 +34,8 @@ const logger = createLogger({ prefix: 'DSPyWrapper' });
 /**
  * Type-safe wrapper implementation for the dspy.ts package
  * Provides consistent API across all DSPy integrations in claude-code-zen.
+ *
+ * @example
  */
 export class DSPyWrapperImpl implements DSPyWrapper {
   private dspyInstance: any = null;
@@ -55,6 +57,8 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
   /**
    * Configure the DSPy language model with proper error handling.
+   *
+   * @param config
    */
   async configure(config: DSPyConfig): Promise<void> {
     try {
@@ -132,6 +136,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
   /**
    * Create a new DSPy program with type safety and validation.
+   *
+   * @param signature
+   * @param description
    */
   async createProgram(signature: string, description: string): Promise<DSPyProgram> {
     this.ensureInitialized();
@@ -191,6 +198,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
   /**
    * Execute a program with comprehensive error handling and result validation.
+   *
+   * @param program
+   * @param input
    */
   async execute(program: DSPyProgram, input: Record<string, any>): Promise<DSPyExecutionResult> {
     this.ensureInitialized();
@@ -266,6 +276,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
   /**
    * Add training examples to a program with validation.
+   *
+   * @param program
+   * @param examples
    */
   async addExamples(program: DSPyProgram, examples: DSPyExample[]): Promise<void> {
     this.ensureInitialized();
@@ -327,6 +340,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
   /**
    * Optimize a program with comprehensive configuration and result handling.
+   *
+   * @param program
+   * @param config
    */
   async optimize(
     program: DSPyProgram,
@@ -481,6 +497,8 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
 /**
  * Internal wrapper class for DSPy programs with enhanced metadata tracking.
+ *
+ * @example
  */
 class DSPyProgramWrapper implements DSPyProgram {
   public readonly id: string;
@@ -550,6 +568,9 @@ class DSPyProgramWrapper implements DSPyProgram {
 
 /**
  * Create a new DSPy wrapper with configuration.
+ *
+ * @param config
+ * @example
  */
 export async function createDSPyWrapper(config: DSPyConfig): Promise<DSPyWrapper> {
   const wrapper = new DSPyWrapperImpl();
@@ -559,13 +580,15 @@ export async function createDSPyWrapper(config: DSPyConfig): Promise<DSPyWrapper
 
 /**
  * Create a DSPy wrapper with default configuration.
+ *
+ * @example
  */
 export async function createDefaultDSPyWrapper(): Promise<DSPyWrapper> {
   return createDSPyWrapper(DEFAULT_DSPY_CONFIG);
 }
 
 /**
- * Get a singleton DSPy wrapper instance (lazy initialization)
+ * Get a singleton DSPy wrapper instance (lazy initialization).
  */
 let singletonWrapper: DSPyWrapper | null = null;
 export async function getSingletonDSPyWrapper(config?: DSPyConfig): Promise<DSPyWrapper> {

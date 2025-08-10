@@ -3,8 +3,8 @@
  * Structured logging setup with @logtape/logtape including Express integration
  */
 
-import { configure, getLogger, getConsoleSink } from '@logtape/logtape';
 import { getFileSink } from '@logtape/file';
+import { configure, getConsoleSink, getLogger } from '@logtape/logtape';
 import fs from 'fs';
 import path from 'path';
 
@@ -23,55 +23,55 @@ export async function initializeLogging() {
       console: getConsoleSink(),
       file: getFileSink('logs/claude-zen-activity.log'),
       aiFixingFile: getFileSink('logs/ai-fixing-detailed.log'),
-      httpFile: getFileSink('logs/http-requests.log')
+      httpFile: getFileSink('logs/http-requests.log'),
     },
     loggers: [
       {
         category: 'claude-ai-integration',
         lowestLevel: 'debug',
-        sinks: ['console', 'file', 'aiFixingFile']
+        sinks: ['console', 'file', 'aiFixingFile'],
       },
       {
-        category: 'zen-fixer', 
+        category: 'zen-fixer',
         lowestLevel: 'debug',
-        sinks: ['console', 'file']
+        sinks: ['console', 'file'],
       },
       {
         category: 'typescript-errors',
         lowestLevel: 'info',
-        sinks: ['console', 'file']
+        sinks: ['console', 'file'],
       },
       {
         category: 'claude-cli',
         lowestLevel: 'debug',
-        sinks: ['console', 'aiFixingFile']
+        sinks: ['console', 'aiFixingFile'],
       },
       {
         category: 'express',
         lowestLevel: 'info',
-        sinks: ['console', 'httpFile']
+        sinks: ['console', 'httpFile'],
       },
       {
         category: 'http',
         lowestLevel: 'info',
-        sinks: ['console', 'httpFile']
+        sinks: ['console', 'httpFile'],
       },
       {
         category: 'mcp-server',
         lowestLevel: 'info',
-        sinks: ['console', 'httpFile']
+        sinks: ['console', 'httpFile'],
       },
       {
         category: 'web-server',
         lowestLevel: 'info',
-        sinks: ['console', 'httpFile']
+        sinks: ['console', 'httpFile'],
       },
       {
         category: 'app',
-        lowestLevel: 'info', 
-        sinks: ['console', 'file']
-      }
-    ]
+        lowestLevel: 'info',
+        sinks: ['console', 'file'],
+      },
+    ],
   });
 }
 
@@ -121,7 +121,7 @@ export function logClaudeOperation(logger, operation, data = {}) {
   logger.info(`Claude ${operation}`, {
     operation,
     timestamp: new Date().toISOString(),
-    ...data
+    ...data,
   });
 }
 
@@ -133,9 +133,9 @@ export function logTypeScriptResults(logger, before, after, duration) {
     errorsBefore: before,
     errorsAfter: after,
     errorsReduced: before - after,
-    reductionPercentage: ((before - after) / before * 100).toFixed(1),
+    reductionPercentage: (((before - after) / before) * 100).toFixed(1),
     durationMs: duration,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -147,13 +147,13 @@ export function logErrorAnalysis(logger, filePath, errors, categories) {
     filePath,
     totalErrors: errors.length,
     categories,
-    errorDetails: errors.map(e => ({
+    errorDetails: errors.map((e) => ({
       line: e.line,
       rule: e.rule || e.code,
       message: e.message,
-      severity: e.severity
+      severity: e.severity,
     })),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -163,7 +163,7 @@ export function logErrorAnalysis(logger, filePath, errors, categories) {
 export function logClaudeMetrics(logger, metrics) {
   logger.info('Claude CLI performance metrics', {
     ...metrics,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -172,11 +172,11 @@ export function logClaudeMetrics(logger, metrics) {
  */
 export function createExpressLoggingMiddleware() {
   const logger = createExpressLogger();
-  
+
   return (req, res, next) => {
     const startTime = Date.now();
     const requestId = `req-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     // Log incoming request
     logger.info('HTTP request started', {
       requestId,
@@ -188,7 +188,7 @@ export function createExpressLoggingMiddleware() {
       contentType: req.get('Content-Type'),
       contentLength: req.get('Content-Length'),
       ip: req.ip,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // Store request ID for other middlewares
@@ -197,9 +197,9 @@ export function createExpressLoggingMiddleware() {
 
     // Override res.json to log responses
     const originalJson = res.json;
-    res.json = function(data) {
+    res.json = function (data) {
       const duration = Date.now() - startTime;
-      
+
       logger.info('HTTP response sent', {
         requestId,
         method: req.method,
@@ -207,23 +207,23 @@ export function createExpressLoggingMiddleware() {
         statusCode: res.statusCode,
         duration,
         responseSize: JSON.stringify(data).length,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      
+
       return originalJson.call(this, data);
     };
 
     // Log response when finished
     res.on('finish', () => {
       const duration = Date.now() - startTime;
-      
+
       logger.info('HTTP request completed', {
         requestId,
         method: req.method,
         url: req.url,
         statusCode: res.statusCode,
         duration,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     });
 
@@ -236,7 +236,7 @@ export function createExpressLoggingMiddleware() {
  */
 export function createExpressErrorLoggingMiddleware() {
   const logger = createExpressLogger();
-  
+
   return (err, req, res, next) => {
     logger.error('HTTP request error', {
       requestId: req.requestId,
@@ -245,9 +245,9 @@ export function createExpressErrorLoggingMiddleware() {
       error: err.message,
       stack: err.stack,
       statusCode: res.statusCode,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    
+
     next(err);
   };
 }
@@ -259,7 +259,7 @@ export function logServerEvent(logger, event, details = {}) {
   logger.info(`Server ${event}`, {
     event,
     ...details,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -267,7 +267,7 @@ export default {
   initializeLogging,
   createClaudeAILogger,
   createZenFixerLogger,
-  createTypeScriptLogger,  
+  createTypeScriptLogger,
   createClaudeCLILogger,
   createExpressLogger,
   createHTTPLogger,
@@ -280,5 +280,5 @@ export default {
   logClaudeMetrics,
   createExpressLoggingMiddleware,
   createExpressErrorLoggingMiddleware,
-  logServerEvent
+  logServerEvent,
 };

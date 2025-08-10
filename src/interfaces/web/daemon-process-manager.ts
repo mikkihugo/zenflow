@@ -2,13 +2,11 @@
  * Daemon Process Manager - Background process management.
  *
  * Handles daemon mode operations, process lifecycle, and PID management.
- * for the web interface server.
+ * For the web interface server.
  */
 /**
- * @file daemon-process management system
+ * @file Daemon-process management system.
  */
-
-
 
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';

@@ -2,13 +2,11 @@
  * Unified Data Access Layer (DAL) - Base Repository Implementation.
  *
  * Provides the base implementation for all repository types, with adapter pattern.
- * to support different underlying database technologies.
+ * To support different underlying database technologies.
  */
 /**
- * @file Database layer: base.dao
+ * @file Database layer: base.dao.
  */
-
-
 
 import type {
   CustomQuery,
@@ -38,7 +36,8 @@ interface DatabaseAdapter {
 /**
  * Base repository implementation that adapts to different database types.
  *
- * @template T The entity type this repository manages
+ * @template T The entity type this repository manages.
+ * @example
  */
 export abstract class BaseDao<T> implements IRepository<T> {
   protected constructor(
@@ -56,6 +55,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Find entity by ID.
+   *
+   * @param id
    */
   async findById(id: string | number): Promise<T | null> {
     this.logger.debug(`Finding entity by ID: ${id} in table: ${this.tableName}`);
@@ -79,6 +80,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Find entities by criteria.
+   *
+   * @param criteria
+   * @param options
    */
   async findBy(criteria: Partial<T>, options?: QueryOptions): Promise<T[]> {
     this.logger.debug(`Finding entities by criteria in table: ${this.tableName}`, {
@@ -101,6 +105,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Find all entities.
+   *
+   * @param options
    */
   async findAll(options?: QueryOptions): Promise<T[]> {
     this.logger.debug(`Finding all entities in table: ${this.tableName}`, { options });
@@ -120,6 +126,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Create a new entity.
+   *
+   * @param entity
    */
   async create(entity: Omit<T, 'id'>): Promise<T> {
     this.logger.debug(`Creating new entity in table: ${this.tableName}`, { entity });
@@ -151,6 +159,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Update an existing entity.
+   *
+   * @param id
+   * @param updates
    */
   async update(id: string | number, updates: Partial<T>): Promise<T> {
     this.logger.debug(`Updating entity ${id} in table: ${this.tableName}`, { updates });
@@ -174,6 +185,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Delete an entity by ID.
+   *
+   * @param id
    */
   async delete(id: string | number): Promise<boolean> {
     this.logger.debug(`Deleting entity ${id} from table: ${this.tableName}`);
@@ -191,6 +204,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Count entities matching criteria.
+   *
+   * @param criteria
    */
   async count(criteria?: Partial<T>): Promise<number> {
     this.logger.debug(`Counting entities in table: ${this.tableName}`, { criteria });
@@ -208,6 +223,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Check if entity exists.
+   *
+   * @param id
    */
   async exists(id: string | number): Promise<boolean> {
     this.logger.debug(`Checking if entity ${id} exists in table: ${this.tableName}`);
@@ -223,6 +240,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Execute custom query specific to the underlying database.
+   *
+   * @param query
    */
   async executeCustomQuery<R = any>(query: CustomQuery): Promise<R> {
     this.logger.debug(`Executing custom query: ${query.type}`);
@@ -252,6 +271,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   /**
    * Query building methods.
+   *
+   * @param id
    */
   protected buildFindByIdQuery(id: string | number): { sql: string; params: any[] } {
     return {
@@ -266,8 +287,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
   ): { sql: string; params: any[] } {
     const mappedCriteria = this.mapEntityToRow(criteria);
     const whereClause = this.buildWhereClause(mappedCriteria);
-    const orderClause = this.buildOrderClause(options?.["sort"]);
-    const limitClause = this.buildLimitClause(options?.["limit"], options?.["offset"]);
+    const orderClause = this.buildOrderClause(options?.['sort']);
+    const limitClause = this.buildLimitClause(options?.['limit'], options?.['offset']);
 
     const sql =
       `SELECT * FROM ${this.tableName} ${whereClause} ${orderClause} ${limitClause}`.trim();
@@ -277,8 +298,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
   }
 
   protected buildFindAllQuery(options?: QueryOptions): { sql: string; params: any[] } {
-    const orderClause = this.buildOrderClause(options?.["sort"]);
-    const limitClause = this.buildLimitClause(options?.["limit"], options?.["offset"]);
+    const orderClause = this.buildOrderClause(options?.['sort']);
+    const limitClause = this.buildLimitClause(options?.['limit'], options?.['offset']);
 
     const sql = `SELECT * FROM ${this.tableName} ${orderClause} ${limitClause}`.trim();
 
@@ -374,7 +395,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 /**
  * Base Data Access Object implementation that wraps a repository.
  *
- * @template T The entity type
+ * @template T The entity type.
+ * @example
  */
 export abstract class BaseManager<T> implements IDataAccessObject<T> {
   protected constructor(
@@ -392,6 +414,8 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
 
   /**
    * Execute transaction with multiple operations.
+   *
+   * @param operations
    */
   async executeTransaction<R>(operations: TransactionOperation[]): Promise<R> {
     this.logger.debug(`Executing transaction with ${operations.length} operations`);

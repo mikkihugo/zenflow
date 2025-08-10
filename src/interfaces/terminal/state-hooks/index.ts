@@ -7,9 +7,8 @@
 
 // Core React state hooks
 /**
- * @file state-hooks module exports
+ * @file State-hooks module exports.
  */
-
 
 export * from './use-config';
 // Re-export key hooks for convenience

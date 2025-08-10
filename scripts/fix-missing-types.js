@@ -42,9 +42,9 @@ const TYPE_TEMPLATES = {
   status: 'pending' | 'running' | 'completed' | 'failed';
   metadata?: Record<string, unknown>;
   timestamp: Date;
-}`
+}`,
   },
-  
+
   neural: {
     interfaces: ['NeuralError'],
     template: (name) => `export class ${name} extends Error {
@@ -56,9 +56,9 @@ const TYPE_TEMPLATES = {
     super(message);
     this.name = '${name}';
   }
-}`
+}`,
   },
-  
+
   knowledge: {
     interfaces: ['KnowledgeResult', 'FACTKnowledgeEntry'],
     template: (name) => `export interface ${name} {
@@ -66,9 +66,9 @@ const TYPE_TEMPLATES = {
   content: string;
   score: number;
   metadata: Record<string, unknown>;
-}`
+}`,
   },
-  
+
   services: {
     interfaces: ['ServiceOperationError', 'ServiceTimeoutError', 'ServiceConfigFactory'],
     template: (name) => {
@@ -88,32 +88,32 @@ const TYPE_TEMPLATES = {
   create<T>(config: unknown): T;
   validate(config: unknown): boolean;
 }`;
-    }
+    },
   },
-  
+
   client: {
     interfaces: ['ClientManagerHelpers'],
     template: (name) => `export interface ${name} {
   validateConnection(endpoint: string): Promise<boolean>;
   retryWithBackoff<T>(fn: () => Promise<T>, maxRetries: number): Promise<T>;
   parseResponse<T>(response: unknown): T;
-}`
+}`,
   },
-  
+
   events: {
     interfaces: ['EventManagerConfig', 'EventManagerTypes'],
     template: (name) => `export interface ${name} {
   maxListeners: number;
   errorHandling: 'throw' | 'log' | 'ignore';
   enableMetrics: boolean;
-}`
+}`,
   },
-  
+
   protocol: {
     interfaces: ['ProtocolType'],
-    template: (name) => `export type ${name} = 'http' | 'websocket' | 'mcp' | 'stdio';`
+    template: (name) => `export type ${name} = 'http' | 'websocket' | 'mcp' | 'stdio';`,
   },
-  
+
   conversation: {
     interfaces: ['ConversationSession'],
     template: (name) => `export interface ${name} {
@@ -125,9 +125,9 @@ const TYPE_TEMPLATES = {
     timestamp: Date;
   }>;
   metadata: Record<string, unknown>;
-}`
+}`,
   },
-  
+
   agent: {
     interfaces: ['GlobalAgentInfo'],
     template: (name) => `export interface ${name} {
@@ -140,9 +140,9 @@ const TYPE_TEMPLATES = {
     averageResponseTime: number;
     errorRate: number;
   };
-}`
+}`,
   },
-  
+
   mcp: {
     interfaces: ['advancedMCPToolsManager'],
     template: (name) => `export interface ${name} {
@@ -150,16 +150,12 @@ const TYPE_TEMPLATES = {
   getTool(name: string): MCPTool | undefined;
   listTools(): MCPTool[];
   executeTool(name: string, args: unknown): Promise<unknown>;
-}`
-  }
+}`,
+  },
 };
 
 // Singleton instances (variables, not types)
-const SINGLETON_INSTANCES = [
-  'globalClientManager',
-  'globalUSLFactory', 
-  'globalServiceRegistry'
-];
+const SINGLETON_INSTANCES = ['globalClientManager', 'globalUSLFactory', 'globalServiceRegistry'];
 
 class MissingTypesGenerator {
   constructor() {
@@ -170,7 +166,7 @@ class MissingTypesGenerator {
 
   async generate() {
     console.log('🔧 Auto-Generating Missing Type Definitions...');
-    
+
     // Ensure types directory exists
     if (!fs.existsSync(this.typesDir)) {
       fs.mkdirSync(this.typesDir, { recursive: true });
@@ -178,7 +174,7 @@ class MissingTypesGenerator {
 
     // Group types by category
     const typesByCategory = this.groupTypesByCategory();
-    
+
     // Generate type files by category
     for (const [category, types] of Object.entries(typesByCategory)) {
       await this.generateCategoryFile(category, types);
@@ -191,24 +187,24 @@ class MissingTypesGenerator {
     await this.updateTypesIndex();
 
     console.log(`✅ Generated ${this.generatedFiles.length} type definition files:`);
-    this.generatedFiles.forEach(file => console.log(`   📁 ${file}`));
+    this.generatedFiles.forEach((file) => console.log(`   📁 ${file}`));
   }
 
   groupTypesByCategory() {
     const groups = {};
-    
+
     MISSING_TYPES.forEach(({ name, category }) => {
       if (!groups[category]) groups[category] = [];
       groups[category].push(name);
     });
-    
+
     return groups;
   }
 
   async generateCategoryFile(category, typeNames) {
     const fileName = `${category}-types.ts`;
     const filePath = path.join(this.typesDir, fileName);
-    
+
     const template = TYPE_TEMPLATES[category];
     if (!template) {
       console.warn(`⚠️  No template for category: ${category}`);
@@ -228,21 +224,21 @@ class MissingTypesGenerator {
     }
 
     // Generate each type
-    typeNames.forEach(typeName => {
+    typeNames.forEach((typeName) => {
       if (SINGLETON_INSTANCES.includes(typeName)) {
         return; // Skip singletons, they go in a separate file
       }
-      
+
       content += template.template(typeName);
       content += '\n\n';
     });
 
     // Add exports
-    const exportableTypes = typeNames.filter(name => !SINGLETON_INSTANCES.includes(name));
+    const exportableTypes = typeNames.filter((name) => !SINGLETON_INSTANCES.includes(name));
     if (exportableTypes.length > 0) {
       content += `// Convenience exports\n`;
       content += `export type {\n`;
-      exportableTypes.forEach(typeName => {
+      exportableTypes.forEach((typeName) => {
         content += `  ${typeName},\n`;
       });
       content += `};\n`;
@@ -256,8 +252,8 @@ class MissingTypesGenerator {
   async generateSingletonsFile() {
     const fileName = 'singletons.ts';
     const filePath = path.join(this.typesDir, fileName);
-    
-    let content = `/** 
+
+    const content = `/** 
  * @file Global singleton instances
  * Generated by fix-missing-types.js - DO NOT EDIT MANUALLY
  */
@@ -297,16 +293,14 @@ export {
 
   async updateTypesIndex() {
     const indexPath = path.join(this.typesDir, 'index.ts');
-    const existingContent = fs.existsSync(indexPath) 
-      ? fs.readFileSync(indexPath, 'utf8') 
-      : '';
+    const existingContent = fs.existsSync(indexPath) ? fs.readFileSync(indexPath, 'utf8') : '';
 
     // Add exports for new files
     let newExports = '';
-    this.generatedFiles.forEach(fileName => {
+    this.generatedFiles.forEach((fileName) => {
       const baseName = fileName.replace('.ts', '');
       const exportLine = `export * from './${baseName}';`;
-      
+
       if (!existingContent.includes(exportLine)) {
         newExports += exportLine + '\n';
       }
@@ -325,13 +319,12 @@ async function main() {
   try {
     const generator = new MissingTypesGenerator();
     await generator.generate();
-    
+
     console.log('\n🎉 Missing types generation complete!');
     console.log('\n💡 Next steps:');
     console.log('   1. Review generated types in src/types/');
     console.log('   2. Replace placeholder implementations with actual logic');
     console.log('   3. Run TypeScript compilation to verify fixes');
-    
   } catch (error) {
     console.error('❌ Type generation failed:', error.message);
     process.exit(1);

@@ -1,7 +1,6 @@
 /**
- * @file Coordination system: performance-tracker
+ * @file Coordination system: performance-tracker.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

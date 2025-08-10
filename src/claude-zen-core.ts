@@ -1,7 +1,6 @@
 /**
- * @file claude-zen-core implementation
+ * @file Claude-zen-core implementation.
  */
-
 
 import { getLogger } from './config/logging-config';
 
@@ -386,6 +385,8 @@ export class ClaudeZenCore {
 
 /**
  * Application entry point.
+ *
+ * @example
  */
 async function main() {
   const app = new ClaudeZenCore();

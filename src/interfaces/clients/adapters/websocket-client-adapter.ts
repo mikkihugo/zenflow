@@ -1,15 +1,19 @@
+/**
+ * @file WebSocket client adapter implementing the UACL IClient interface for real-time communication.
+ */
+
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('interfaces-clients-adapters-websocket-client-adapter');
 
 /**
- * WebSocket Client Adapter for UACL (Unified API Client Layer)
+ * WebSocket Client Adapter for UACL (Unified API Client Layer).
  *
  * Enterprise-grade WebSocket client implementing UACL patterns for real-time communication.
  * Provides reliable, event-driven connectivity with automatic reconnection, message queuing,
  * and comprehensive monitoring capabilities.
  *
- * @file WebSocket client adapter implementing the UACL IClient interface for real-time communication
+ * @file WebSocket client adapter implementing the UACL IClient interface for real-time communication.
  * @module interfaces/clients/adapters/websocket
  * @version 2.0.0
  *
@@ -298,13 +302,13 @@ export interface WebSocketMessage<T = any> {
  * @description Enterprise-grade WebSocket client providing real-time communication capabilities
  *              with automatic reconnection, message queuing, heartbeat monitoring, and comprehensive
  *              observability features. Implements the UACL IClient interface for unified client management.
- * @property {WebSocketClientConfig} config - WebSocket client configuration (read-only)
- * @property {string} name - Client identifier (read-only)
- * @property {WebSocket|null} ws - Underlying WebSocket connection (private)
- * @property {string[]} messageQueue - Queued messages for offline scenarios (private)
- * @property {boolean} isConnected - Connection status (private)
- * @property {string} connectionId - Unique connection identifier (private)
- * @property {ClientMetrics} metrics - Performance metrics (private)
+ * @property {WebSocketClientConfig} config - WebSocket client configuration (read-only).
+ * @property {string} name - Client identifier (read-only).
+ * @property {WebSocket|null} ws - Underlying WebSocket connection (private).
+ * @property {string[]} messageQueue - Queued messages for offline scenarios (private).
+ * @property {boolean} isConnected - Connection status (private).
+ * @property {string} connectionId - Unique connection identifier (private).
+ * @property {ClientMetrics} metrics - Performance metrics (private).
  * @fires WebSocketClientAdapter#connect - When WebSocket successfully connects
  * @fires WebSocketClientAdapter#disconnect - When WebSocket disconnects
  * @fires WebSocketClientAdapter#message - When a message is received
@@ -451,16 +455,16 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   /**
    * Create new WebSocket Client Adapter instance.
    *
-   * @param {WebSocketClientConfig} config - WebSocket client configuration
-   * @param {string} config.name - Unique client identifier
-   * @param {string} config.url - WebSocket server URL (ws:// or wss://)
-   * @param {string[]} [config.protocols] - WebSocket subprotocols to negotiate
-   * @param {WebSocketAuthenticationConfig} [config.authentication] - Authentication config
-   * @param {WebSocketRetryConfig} [config.retry] - Retry and reconnection config
-   * @param {object} [config.heartbeat] - Heartbeat/ping configuration
-   * @param {object} [config.messageQueue] - Message queuing configuration
-   * @param {number} [config.timeout=30000] - Connection timeout in milliseconds
-   * @throws {Error} If required configuration is missing or invalid
+   * @param {WebSocketClientConfig} config - WebSocket client configuration.
+   * @param {string} config.name - Unique client identifier.
+   * @param {string} config.url - WebSocket server URL (ws:// or wss://).
+   * @param {string[]} [config.protocols] - WebSocket subprotocols to negotiate.
+   * @param {WebSocketAuthenticationConfig} [config.authentication] - Authentication config.
+   * @param {WebSocketRetryConfig} [config.retry] - Retry and reconnection config.
+   * @param {object} [config.heartbeat] - Heartbeat/ping configuration.
+   * @param {object} [config.messageQueue] - Message queuing configuration.
+   * @param {number} [config.timeout=30000] - Connection timeout in milliseconds.
+   * @throws {Error} If required configuration is missing or invalid.
    * @example
    * ```typescript
    * const wsClient = new WebSocketClientAdapter({
@@ -514,7 +518,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Connect to WebSocket server (UACL interface)
+   * Connect to WebSocket server (UACL interface).
    */
   async connect(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -583,7 +587,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Disconnect from WebSocket server (UACL interface)
+   * Disconnect from WebSocket server (UACL interface).
    */
   async disconnect(): Promise<void> {
     return new Promise((resolve) => {
@@ -609,14 +613,14 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Check if client is connected (UACL interface)
+   * Check if client is connected (UACL interface).
    */
   isConnected(): boolean {
     return this._isConnected && this.ws?.readyState === WebSocket.OPEN;
   }
 
   /**
-   * Health check (UACL interface)
+   * Health check (UACL interface).
    */
   async healthCheck(): Promise<ClientStatus> {
     const responseTime = await this.measurePingTime();
@@ -638,7 +642,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Get client metrics (UACL interface)
+   * Get client metrics (UACL interface).
    */
   async getMetrics(): Promise<ClientMetrics> {
     return {
@@ -656,7 +660,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Generic POST request (UACL interface)
+   * Generic POST request (UACL interface).
    */
   async post<T = any>(
     endpoint: string,
@@ -667,7 +671,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Generic PUT request (UACL interface)
+   * Generic PUT request (UACL interface).
    */
   async put<T = any>(
     endpoint: string,
@@ -678,14 +682,14 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Generic DELETE request (UACL interface)
+   * Generic DELETE request (UACL interface).
    */
   async delete<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
     return this.sendRequest('DELETE', endpoint, undefined, options);
   }
 
   /**
-   * Update client configuration (UACL interface)
+   * Update client configuration (UACL interface).
    */
   updateConfig(config: Partial<WebSocketClientConfig>): void {
     Object.assign(this.config, config);
@@ -693,7 +697,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Event handler registration (UACL interface)
+   * Event handler registration (UACL interface).
    */
   on(
     event: 'connect' | 'disconnect' | 'error' | 'retry' | string,
@@ -703,7 +707,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Event handler removal (UACL interface)
+   * Event handler removal (UACL interface).
    */
   off(event: string, handler?: (...args: any[]) => void): void {
     if (handler) {
@@ -714,7 +718,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   }
 
   /**
-   * Cleanup and destroy client (UACL interface)
+   * Cleanup and destroy client (UACL interface).
    */
   async destroy(): Promise<void> {
     await this.disconnect();
@@ -728,7 +732,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   // =============================================================================
 
   /**
-   * Send raw message (legacy method for backward compatibility)
+   * Send raw message (legacy method for backward compatibility).
    */
   send(data: any): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);

@@ -1,9 +1,8 @@
 /**
- * @file sparc processing engine
+ * @file Sparc processing engine.
  */
 
-
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-sparc-core-sparc-engine');
 
@@ -21,12 +20,12 @@ const logger = getLogger('coordination-swarm-sparc-core-sparc-engine');
  */
 
 import { nanoid } from 'nanoid';
-import { DocumentDrivenSystem } from '../core/document-driven-system';
-import { MemorySystem } from '../core/memory-system';
-import { WorkflowEngine } from '../core/workflow-engine';
+import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
+import { MemorySystem } from '../../../../core/memory-system';
+import { WorkflowEngine } from '../../../../core/workflow-engine';
 // Real implementations - no more mocks!
-import { TaskAPI } from '../api';
-import { TaskCoordinator } from '../task-coordinator';
+import { TaskAPI } from '../../../../interfaces/api/http/v1/database';
+import { TaskCoordinator } from '../../../task-coordinator';
 import { ProjectManagementIntegration } from '../integrations/project-management-integration';
 import { SPARCSwarmCoordinator } from '../integrations/swarm-coordination-integration';
 import { ArchitecturePhaseEngine } from '../phases/architecture/architecture-engine';
@@ -34,7 +33,26 @@ import { CompletionPhaseEngine } from '../phases/completion/completion-engine';
 import { PseudocodePhaseEngine } from '../phases/pseudocode/pseudocode-engine';
 import { RefinementPhaseEngine } from '../phases/refinement/refinement-engine';
 import { SpecificationPhaseEngine } from '../phases/specification/specification-engine';
-import type { SPARCEngine } from '../types/sparc-types';
+import type {
+  ArchitectureDesign,
+  ArtifactReference,
+  ArtifactSet,
+  CompletionValidation,
+  DetailedSpecification,
+  ImplementationArtifacts,
+  PhaseDefinition,
+  PhaseMetrics,
+  PhaseProgress,
+  PhaseResult,
+  ProjectDomain,
+  ProjectSpecification,
+  PseudocodeStructure,
+  RefinementFeedback,
+  RefinementResult,
+  SPARCEngine,
+  SPARCPhase,
+  SPARCProject,
+} from '../types/sparc-types';
 
 export class SPARCEngineCore implements SPARCEngine {
   private readonly phaseDefinitions: Map<SPARCPhase, PhaseDefinition>;

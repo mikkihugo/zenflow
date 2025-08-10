@@ -1,5 +1,5 @@
 /**
- * @file Advanced CLI Commands Integration
+ * @file Advanced CLI Commands Integration.
  *
  * Provides advanced CLI command implementations that integrate with the existing.
  * command execution system. Uses shared abstractions to avoid cross-interface dependencies.
@@ -12,8 +12,8 @@ import { CliCommandAdapter } from './adapters/cli-command-adapter';
  * Advanced CLI Commands Handler.
  *
  * Implements the advanced CLI commands while maintaining compatibility.
- * with the existing terminal interface system. Uses adapter pattern
- * to avoid cross-interface dependencies.
+ * With the existing terminal interface system. Uses adapter pattern
+ * to avoid cross-interface dependencies..
  *
  * @example
  */

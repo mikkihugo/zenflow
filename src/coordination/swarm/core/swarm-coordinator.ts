@@ -3,10 +3,8 @@
  * Central coordination for swarm operations and agent management.
  */
 /**
- * @file swarm coordination system
+ * @file Swarm coordination system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import type { AgentType } from '../types/agent-types';

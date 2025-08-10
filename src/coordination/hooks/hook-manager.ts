@@ -2,10 +2,8 @@
  * Hook Manager - Manages hook lifecycle and execution.
  */
 /**
- * @file hook management system
+ * @file Hook management system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from '../../core/logger';

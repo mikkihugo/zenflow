@@ -2,17 +2,15 @@
  * Coordination Repository Implementation.
  *
  * Specialized repository for coordination operations including.
- * distributed locking, pub/sub messaging, and change notifications.
+ * Distributed locking, pub/sub messaging, and change notifications.
  */
 /**
- * @file Database layer: coordination.dao
+ * @file Database layer: coordination.dao.
  */
 
-
-
 import { EventEmitter } from 'node:events';
-import type { DatabaseAdapter, ILogger } from '../core/interfaces/base-interfaces';
 import { BaseDao } from '../base.dao';
+import type { DatabaseAdapter, ILogger } from '../core/interfaces/base-interfaces';
 import type {
   CoordinationChange,
   CoordinationEvent,

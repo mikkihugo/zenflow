@@ -17,21 +17,37 @@ const logger = getLogger('interfaces-events-adapters-monitoring-event-adapter');
 // These would be actual monitoring components in production
 interface PerformanceAnalyzer {
   healthCheck?(): Promise<{ responseTime?: number; errorRate?: number; healthScore?: number }>;
-  getMetrics?(): Promise<{ averageLatency?: number; requestCount: number; errorCount: number; performance?: { healthScore?: number } }>;
+  getMetrics?(): Promise<{
+    averageLatency?: number;
+    requestCount: number;
+    errorCount: number;
+    performance?: { healthScore?: number };
+  }>;
   [key: string]: any;
 }
 
 interface MetricsCollector {
   healthCheck?(): Promise<{ responseTime?: number; errorRate?: number; healthScore?: number }>;
-  getMetrics?(): Promise<{ averageLatency?: number; requestCount: number; errorCount: number; performance?: { healthScore?: number } }>;
+  getMetrics?(): Promise<{
+    averageLatency?: number;
+    requestCount: number;
+    errorCount: number;
+    performance?: { healthScore?: number };
+  }>;
   [key: string]: any;
 }
 
 interface RealTimePerformanceMonitor {
   healthCheck?(): Promise<{ responseTime?: number; errorRate?: number; healthScore?: number }>;
-  getMetrics?(): Promise<{ averageLatency?: number; requestCount: number; errorCount: number; performance?: { healthScore?: number } }>;
+  getMetrics?(): Promise<{
+    averageLatency?: number;
+    requestCount: number;
+    errorCount: number;
+    performance?: { healthScore?: number };
+  }>;
   [key: string]: any;
 }
+
 import type {
   EventBatch,
   EventEmissionOptions,

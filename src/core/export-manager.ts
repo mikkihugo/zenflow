@@ -5,10 +5,8 @@
  * Supports JSON, YAML, CSV, XML, and custom formats.
  */
 /**
- * @file export management system
+ * @file Export management system.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { mkdir, writeFile } from 'node:fs/promises';

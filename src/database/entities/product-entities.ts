@@ -4,13 +4,11 @@
  * MISSION ACCOMPLISHED: Renamed from document-entities.ts to product-entities.ts
  * - Clean Product Flow naming throughout (no generic "document" terminology)
  * - Proper SPARC integration in Features and Tasks
- * - Clear separation: Product Flow = WHAT, SPARC = HOW
+ * - Clear separation: Product Flow = WHAT, SPARC = HOW.
  */
 /**
- * @file Database layer: product-entities
+ * @file Database layer: product-entities.
  */
-
-
 
 import type { DocumentType } from '../types/workflow-types';
 
@@ -824,6 +822,7 @@ export const PRODUCT_DATABASE_SCHEMAS = {
  * Type guards for Product Flow entities.
  *
  * @param doc
+ * @example
  */
 export function isVisionDocument(doc: BaseProductEntity): doc is VisionDocumentEntity {
   return doc.type === 'vision';

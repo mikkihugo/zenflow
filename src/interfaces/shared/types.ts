@@ -1,5 +1,6 @@
 /**
- * @fileoverview Contains shared, simple data types used across multiple interfaces.
+ * @file Contains shared, simple data types used across multiple interfaces.
+ * @file Contains shared, simple data types used across multiple interfaces.
  *
  * This file is for plain data structures (like `type` or `interface` definitions
  * with only properties) that need to be passed between different parts of the.
@@ -11,6 +12,8 @@
 
 /**
  * Represents the overall health and status of a system component.
+ *
+ * @example
  */
 export interface ComponentStatus {
   name: string;
@@ -21,6 +24,8 @@ export interface ComponentStatus {
 /**
  * Configuration for a web server instance.
  * Used by both the `web` and `terminal` (e.g., for a local dashboard) interfaces.
+ *
+ * @example
  */
 export interface WebServerConfig {
   port: number;
@@ -31,6 +36,8 @@ export interface WebServerConfig {
 
 /**
  * Configuration for user sessions.
+ *
+ * @example
  */
 export interface SessionConfig {
   secret: string;
@@ -39,6 +46,8 @@ export interface SessionConfig {
 
 /**
  * A shared configuration object for web-based interfaces.
+ *
+ * @example
  */
 export interface WebConfig {
   server: WebServerConfig;

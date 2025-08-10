@@ -3,17 +3,15 @@
  *
  * Factory functions and helper utilities for creating and managing
  * coordination service adapter instances with proper configuration.
- * and dependency injection.
+ * And dependency injection.
  */
 /**
- * @file Interface implementation: coordination-service-factory
+ * @file Interface implementation: coordination-service-factory.
  */
 
-
-
-import { createLogger, type Logger } from '../utils/logger';
 import type { IServiceFactory } from '../core/interfaces';
 import { ServicePriority, ServiceType } from '../types';
+import { createLogger, type Logger } from '../utils/logger';
 import {
   type CoordinationServiceAdapter,
   type CoordinationServiceAdapterConfig,
@@ -296,6 +294,7 @@ export class CoordinationServiceFactory
  * @param options.topology
  * @param options.enableLearning
  * @param options.autoSpawn
+ * @example
  */
 export function createAgentCoordinationConfig(
   name: string,
@@ -346,6 +345,7 @@ export function createAgentCoordinationConfig(
  * @param options.maxSessions
  * @param options.checkpointInterval
  * @param options.autoRecovery
+ * @example
  */
 export function createSessionCoordinationConfig(
   name: string,
@@ -390,6 +390,7 @@ export function createSessionCoordinationConfig(
  * @param options.enableMetaLearning
  * @param options.enableCognitive
  * @param options.analysisInterval
+ * @example
  */
 export function createDAACoordinationConfig(
   name: string,
@@ -432,6 +433,7 @@ export function createDAACoordinationConfig(
  * @param options.maxConcurrency
  * @param options.requestTimeout
  * @param options.cacheSize
+ * @example
  */
 export function createHighPerformanceCoordinationConfig(
   name: string,

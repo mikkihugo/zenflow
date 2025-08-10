@@ -4,7 +4,7 @@
  * Comprehensive request/response logging following Google standards.
  * Provides structured logging with performance metrics and tracing.
  *
- * @file Express logging middleware with performance monitoring
+ * @file Express logging middleware with performance monitoring.
  */
 
 import type { NextFunction, Request, Response } from 'express';

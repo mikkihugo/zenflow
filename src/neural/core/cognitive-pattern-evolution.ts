@@ -3,10 +3,8 @@
  * Advanced neural pattern recognition and evolution system.
  */
 /**
- * @file Neural network: cognitive-pattern-evolution
+ * @file Neural network: cognitive-pattern-evolution.
  */
-
-
 
 export class CognitivePatternEvolution {
   private patterns: Map<string, any>;
@@ -162,6 +160,7 @@ export class CognitivePatternEvolution {
    *
    * @param agentIds
    * @param session
+   * @param _session
    */
   async enableCrossAgentEvolution(agentIds: string[], _session: any) {
     for (const agentId of agentIds) {
@@ -219,6 +218,7 @@ export class CognitivePatternEvolution {
    * Restore cognitive history for an agent.
    *
    * @param agentId
+   * @param _agentId
    * @param history
    */
   async restoreHistory(_agentId: string, history: any) {

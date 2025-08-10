@@ -1,7 +1,6 @@
 /**
- * @file Interface implementation: mcp-logger
+ * @file Interface implementation: mcp-logger.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

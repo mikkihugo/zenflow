@@ -6,9 +6,8 @@
 
 // DSPy types and utilities (complete export)
 /**
- * @file types module exports
+ * @file Types module exports.
  */
-
 
 export type {
   DSPyConfig,

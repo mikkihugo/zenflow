@@ -3,13 +3,11 @@
  *
  * A DSPy-powered swarm where each agent is a DSPy program that learns and optimizes.
  * This creates an intelligent swarm where agents improve their performance over time.
- * through DSPy's optimization capabilities.
+ * Through DSPy's optimization capabilities.
  */
 /**
- * @file dspy-swarm coordination system
+ * @file Dspy-swarm coordination system.
  */
-
-
 
 import { createLogger } from '../../core/logger';
 import type { DSPyProgram, DSPyWrapper } from '../neural/dspy-wrapper';

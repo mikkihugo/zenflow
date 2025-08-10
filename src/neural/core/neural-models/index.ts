@@ -3,10 +3,8 @@
  * Central registry for neural network models and presets.
  */
 /**
- * @file neural-models module exports
+ * @file Neural-models module exports.
  */
-
-
 
 export const MODEL_PRESETS = {
   CLASSIFICATION: {
@@ -49,6 +47,7 @@ export const MODEL_PRESETS = {
  *
  * @param modelType
  * @param config
+ * @example
  */
 export function createNeuralModel(modelType, config = {}) {
   // If modelType is string, look for preset
@@ -76,6 +75,8 @@ export function createNeuralModel(modelType, config = {}) {
 
 /**
  * Get available model presets.
+ *
+ * @example
  */
 export function getAvailablePresets() {
   return Object.keys(MODEL_PRESETS);
@@ -85,6 +86,7 @@ export function getAvailablePresets() {
  * Validate model configuration.
  *
  * @param config
+ * @example
  */
 export function validateModelConfig(config) {
   const required = ['architecture', 'layers'];

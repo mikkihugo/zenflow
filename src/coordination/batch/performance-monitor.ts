@@ -96,7 +96,7 @@ export class BatchPerformanceMonitor {
   }
 
   /**
-   * Record performance metrics for sequential execution (for comparison)
+   * Record performance metrics for sequential execution (for comparison).
    *
    * @param operationCount
    * @param executionTime
@@ -104,6 +104,7 @@ export class BatchPerformanceMonitor {
    * @param resourceUsage.
    * @param resourceUsage.memory
    * @param resourceUsage.cpu
+   * @param resourceUsage
    */
   recordSequentialExecution(
     operationCount: number,

@@ -2,10 +2,8 @@
  * Utility functions for ZenSwarm.
  */
 /**
- * @file Coordination system: utils
+ * @file Coordination system: utils.
  */
-
-
 
 import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from './types';
 
@@ -13,6 +11,7 @@ import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from '.
  * Generate a unique ID for agents, tasks, and messages.
  *
  * @param prefix
+ * @example
  */
 export function generateId(prefix: string = ''): string {
   const timestamp = Date.now().toString(36);
@@ -24,6 +23,7 @@ export function generateId(prefix: string = ''): string {
  * Create a default cognitive profile based on agent type.
  *
  * @param type
+ * @example
  */
 export function getDefaultCognitiveProfile(type: AgentType): CognitiveProfile {
   // Default profiles for known types - using Partial<Record> for flexibility
@@ -128,6 +128,7 @@ export function getDefaultCognitiveProfile(type: AgentType): CognitiveProfile {
  *
  * @param profile1
  * @param profile2
+ * @example
  */
 export function calculateCognitiveDiversity(
   profile1: CognitiveProfile,
@@ -150,6 +151,7 @@ export function calculateCognitiveDiversity(
  * @param agentCount
  * @param taskComplexity
  * @param coordinationNeeds
+ * @example
  */
 export function recommendTopology(
   agentCount: number,
@@ -179,6 +181,7 @@ export function recommendTopology(
  * Convert task priority to numeric value for sorting.
  *
  * @param priority
+ * @example
  */
 export function priorityToNumber(priority: TaskPriority): number {
   const priorityMap: Record<TaskPriority, number> = {
@@ -199,6 +202,7 @@ export function priorityToNumber(priority: TaskPriority): number {
  * @param metrics.failedTasks
  * @param metrics.averageCompletionTime
  * @param metrics.throughput
+ * @example
  */
 export function formatMetrics(metrics: {
   totalTasks: number;
@@ -227,6 +231,7 @@ Swarm Metrics:
  * Validate swarm options.
  *
  * @param options
+ * @example
  */
 export function validateSwarmOptions(options: any): string[] {
   const errors: string[] = [];
@@ -261,6 +266,7 @@ export function validateSwarmOptions(options: any): string[] {
  * Deep clone an object.
  *
  * @param obj
+ * @example
  */
 export function deepClone<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') {
@@ -307,6 +313,7 @@ export function deepClone<T>(obj: T): T {
  * @param fn
  * @param maxRetries
  * @param initialDelay
+ * @example
  */
 export async function retryWithBackoff<T>(
   fn: () => Promise<T>,

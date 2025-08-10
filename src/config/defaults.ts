@@ -1,5 +1,5 @@
 /**
- * @file defaults implementation
+ * @file Defaults implementation.
  */
 
 import type { SystemConfiguration } from './types.js';
@@ -440,7 +440,7 @@ export const PORT_ALLOCATION_BY_ENV = {
 } as const;
 
 /**
- * URL Builder Configuration and Utilities (consolidated from url-builder.ts)
+ * URL Builder Configuration and Utilities (consolidated from url-builder.ts).
  */
 
 export interface URLBuilderConfig {
@@ -459,6 +459,8 @@ export class URLBuilder {
 
   /**
    * Build HTTP MCP server URL.
+   *
+   * @param overrides
    */
   getMCPServerURL(overrides: Partial<URLBuilderConfig> = {}): string {
     const protocol = overrides.protocol || this.getProtocol();
@@ -471,6 +473,8 @@ export class URLBuilder {
 
   /**
    * Build web dashboard URL.
+   *
+   * @param overrides
    */
   getWebDashboardURL(overrides: Partial<URLBuilderConfig> = {}): string {
     const protocol = overrides.protocol || this.getProtocol();
@@ -483,6 +487,8 @@ export class URLBuilder {
 
   /**
    * Build monitoring dashboard URL.
+   *
+   * @param overrides
    */
   getMonitoringDashboardURL(overrides: Partial<URLBuilderConfig> = {}): string {
     const protocol = overrides.protocol || this.getProtocol();
@@ -519,6 +525,9 @@ export class URLBuilder {
 
   /**
    * Get service base URL.
+   *
+   * @param service
+   * @param overrides
    */
   getServiceBaseURL(
     service: 'mcp' | 'web' | 'monitoring',
@@ -538,6 +547,11 @@ export class URLBuilder {
 
   /**
    * Build a URL from components.
+   *
+   * @param protocol
+   * @param host
+   * @param port
+   * @param path
    */
   private buildURL(protocol: string, host: string, port: number, path: string): string {
     const shouldOmitPort =
@@ -568,6 +582,8 @@ export class URLBuilder {
 
   /**
    * Update configuration.
+   *
+   * @param config
    */
   updateConfig(config: SystemConfiguration): void {
     this.config = config;
@@ -581,6 +597,8 @@ export const defaultURLBuilder = new URLBuilder();
 
 /**
  * Create URL builder with custom configuration.
+ *
+ * @param config
  */
 export const createURLBuilder = (config: SystemConfiguration): URLBuilder => {
   return new URLBuilder(config);
@@ -588,6 +606,8 @@ export const createURLBuilder = (config: SystemConfiguration): URLBuilder => {
 
 /**
  * Convenience functions using default builder.
+ *
+ * @param overrides
  */
 export const getMCPServerURL = (overrides?: Partial<URLBuilderConfig>) =>
   defaultURLBuilder.getMCPServerURL(overrides);

@@ -2,18 +2,15 @@
  * USL Compatibility Layer - Backward Compatibility and Migration Support.
  *
  * Provides seamless backward compatibility for existing service usage patterns.
- * while enabling gradual migration to the enhanced USL system.
+ * While enabling gradual migration to the enhanced USL system.
  * Ensures zero breaking changes during transition.
  */
 /**
- * @file Interface implementation: compatibility
+ * @file Interface implementation: compatibility.
  */
-
-
 
 import { createLogger, type Logger } from '../utils/logger';
 import type { IService } from './core/interfaces';
-import { usl } from './index';
 import { ServiceManager } from './manager';
 import { type AnyServiceConfig, ServicePriority, ServiceType } from './types';
 
@@ -58,6 +55,7 @@ export class USLCompatibilityLayer {
   private serviceManager: ServiceManager;
   private logger: Logger;
   private config: CompatibilityConfig;
+  private uslInstance?: any; // USL instance for fallback operations
   private migrationLog: Array<{
     timestamp: Date;
     type: 'warning' | 'info' | 'migration';
@@ -88,6 +86,16 @@ export class USLCompatibilityLayer {
     this.logger.info('USL Compatibility Layer initialized');
   }
 
+  /**
+   * Set the USL instance for fallback operations.
+   * This avoids circular dependency issues.
+   *
+   * @param uslInstance
+   */
+  setUSLInstance(uslInstance: any): void {
+    this.uslInstance = uslInstance;
+  }
+
   // ============================================
   // Legacy Service Creation Methods (Deprecated but Supported)
   // ============================================
@@ -95,7 +103,7 @@ export class USLCompatibilityLayer {
   /**
    * @param name
    * @param options
-   * @deprecated Use serviceManager.createWebDataService() instead
+   * @deprecated Use serviceManager.createWebDataService() instead.
    */
   async createWebDataService(name: string, options?: any): Promise<IService> {
     this.logLegacyUsage('createWebDataService', 'serviceManager.createWebDataService()');
@@ -105,14 +113,17 @@ export class USLCompatibilityLayer {
     }
 
     // Legacy fallback
-    return await usl.createWebDataService(name, options);
+    if (!this.uslInstance) {
+      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+    }
+    return await this.uslInstance.createWebDataService(name, options);
   }
 
   /**
    * @param name
    * @param dbType
    * @param options
-   * @deprecated Use serviceManager.createDocumentService() instead
+   * @deprecated Use serviceManager.createDocumentService() instead.
    */
   async createDocumentService(name: string, dbType?: string, options?: any): Promise<IService> {
     this.logLegacyUsage('createDocumentService', 'serviceManager.createDocumentService()');
@@ -126,13 +137,16 @@ export class USLCompatibilityLayer {
     }
 
     // Legacy fallback
-    return await usl.createDocumentService(name, dbType as any, options);
+    if (!this.uslInstance) {
+      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+    }
+    return await this.uslInstance.createDocumentService(name, dbType as any, options);
   }
 
   /**
    * @param name
    * @param options
-   * @deprecated Use serviceManager.createDaaService() instead
+   * @deprecated Use serviceManager.createDaaService() instead.
    */
   async createDAAService(name: string, options?: any): Promise<IService> {
     this.logLegacyUsage('createDAAService', 'serviceManager.createDaaService()');
@@ -142,13 +156,16 @@ export class USLCompatibilityLayer {
     }
 
     // Legacy fallback - map to coordination service
-    return await usl.createCoordinationService(name, { type: ServiceType.DAA, ...options });
+    if (!this.uslInstance) {
+      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+    }
+    return await this.uslInstance.createCoordinationService(name, { type: ServiceType.DAA, ...options });
   }
 
   /**
    * @param name
    * @param options
-   * @deprecated Use serviceManager.createSessionRecoveryService() instead
+   * @deprecated Use serviceManager.createSessionRecoveryService() instead.
    */
   async createSessionRecoveryService(name: string, options?: any): Promise<IService> {
     this.logLegacyUsage(
@@ -161,7 +178,10 @@ export class USLCompatibilityLayer {
     }
 
     // Legacy fallback
-    return await usl.createCoordinationService(name, {
+    if (!this.uslInstance) {
+      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+    }
+    return await this.uslInstance.createCoordinationService(name, {
       type: ServiceType.SESSION_RECOVERY,
       ...options,
     });
@@ -171,7 +191,7 @@ export class USLCompatibilityLayer {
    * @param name
    * @param dbType
    * @param options
-   * @deprecated Use serviceManager.createArchitectureStorageService() instead
+   * @deprecated Use serviceManager.createArchitectureStorageService() instead.
    */
   async createArchitectureStorageService(
     name: string,
@@ -192,14 +212,17 @@ export class USLCompatibilityLayer {
     }
 
     // Legacy fallback
-    return await usl.createArchitectureStorageService(name, dbType as any, options);
+    if (!this.uslInstance) {
+      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+    }
+    return await this.uslInstance.createArchitectureStorageService(name, dbType as any, options);
   }
 
   /**
    * @param name
    * @param baseURL
    * @param options
-   * @deprecated Use serviceManager.createSafeAPIService() instead
+   * @deprecated Use serviceManager.createSafeAPIService() instead.
    */
   async createSafeAPIService(name: string, baseURL: string, options?: any): Promise<IService> {
     this.logLegacyUsage('createSafeAPIService', 'serviceManager.createSafeAPIService()');
@@ -209,7 +232,10 @@ export class USLCompatibilityLayer {
     }
 
     // Legacy fallback
-    return await usl.createSafeAPIService(name, baseURL, options);
+    if (!this.uslInstance) {
+      throw new Error('USL instance not set. Call setUSLInstance() before using compatibility layer.');
+    }
+    return await this.uslInstance.createSafeAPIService(name, baseURL, options);
   }
 
   // ============================================
@@ -218,7 +244,7 @@ export class USLCompatibilityLayer {
 
   /**
    * @param name
-   * @deprecated Use serviceManager.getService() instead
+   * @deprecated Use serviceManager.getService() instead.
    */
   getService(name: string): IService | undefined {
     this.logLegacyUsage('getService', 'serviceManager.getService()');
@@ -226,7 +252,7 @@ export class USLCompatibilityLayer {
   }
 
   /**
-   * @deprecated Use serviceManager.getAllServices() instead
+   * @deprecated Use serviceManager.getAllServices() instead.
    */
   getAllServices(): Map<string, IService> {
     this.logLegacyUsage('getAllServices', 'serviceManager.getAllServices()');
@@ -234,7 +260,7 @@ export class USLCompatibilityLayer {
   }
 
   /**
-   * @deprecated Use serviceManager.startAllServices() instead
+   * @deprecated Use serviceManager.startAllServices() instead.
    */
   async startAll(): Promise<void> {
     this.logLegacyUsage('startAll', 'serviceManager.startAllServices()');
@@ -242,7 +268,7 @@ export class USLCompatibilityLayer {
   }
 
   /**
-   * @deprecated Use serviceManager.stopAllServices() instead
+   * @deprecated Use serviceManager.stopAllServices() instead.
    */
   async stopAll(): Promise<void> {
     this.logLegacyUsage('stopAll', 'serviceManager.stopAllServices()');
@@ -250,7 +276,7 @@ export class USLCompatibilityLayer {
   }
 
   /**
-   * @deprecated Use serviceManager.getSystemHealth() instead
+   * @deprecated Use serviceManager.getSystemHealth() instead.
    */
   async getSystemStatus(): Promise<any> {
     this.logLegacyUsage('getSystemStatus', 'serviceManager.getSystemHealth()');
@@ -925,6 +951,7 @@ export class USLCompatibilityLayer {
 
 /**
  * Global compatibility layer instance.
+ * Note: USL instance must be set via setUSLInstance() before using.
  */
 export const compat = new USLCompatibilityLayer();
 
@@ -932,11 +959,16 @@ export const compat = new USLCompatibilityLayer();
  * Initialize compatibility layer with USL.
  *
  * @param config
+ * @param uslInstance
  */
 export const initializeCompatibility = async (
-  config?: Partial<CompatibilityConfig>
+  config?: Partial<CompatibilityConfig>,
+  uslInstance?: any
 ): Promise<void> => {
   const compatLayer = new USLCompatibilityLayer(config);
+  if (uslInstance) {
+    compatLayer.setUSLInstance(uslInstance);
+  }
   await compatLayer.initialize();
 };
 

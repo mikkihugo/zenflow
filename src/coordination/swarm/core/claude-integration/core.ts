@@ -1,7 +1,23 @@
 /**
- * @file Coordination system: core
+ * @file Coordination system: core.
+ * 
+ * ⚠️  CORE CLAUDE INTEGRATION - NEVER REMOVE ⚠️.
+ * 
+ * This module is ACTIVELY USED in the test suite and integration system:
+ * - src/__tests__/swarm-zen/claude-integration-comprehensive.test.js - 9+ dynamic imports of ClaudeIntegrationCore
+ * - src/__tests__/swarm-zen/full-coverage-runner.js - Loads this module for coverage testing
+ * - src/__tests__/swarm-zen/integration-features-coverage.test.js - Dynamic import testing.
+ * 
+ * Static analysis misses usage because:
+ * 1. Dynamic imports: await import('../src/claude-integration/core.js')
+ * 2. Test file integration patterns
+ * 3. Coverage runner module loading.
+ * 
+ * This is the core Claude Code CLI integration module that handles MCP server setup
+ * and basic integration functionality.
+ * @usage CRITICAL - Core Claude integration used extensively in test infrastructure
+ * @dynamicallyImportedBy src/__tests__/swarm-zen/claude-integration-comprehensive.test.js, src/__tests__/swarm-zen/full-coverage-runner.js
  */
-
 
 import { getLogger } from '../config/logging-config';
 
@@ -104,10 +120,11 @@ class ClaudeIntegrationCore {
   }
 
   /**
-   * Invoke Claude with a prompt (supports both secure and legacy modes)
+   * Invoke Claude with a prompt (supports both secure and legacy modes).
    *
    * @param prompt
    * @param options.
+   * @param options
    */
   async invokeClaudeWithPrompt(prompt: string, options: ClaudeInvokeOptions = {}) {
     if (!prompt || !prompt.trim()) {

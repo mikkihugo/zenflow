@@ -2,7 +2,7 @@
  * Memory System - Multi-Backend Memory Management.
  *
  * Clean, focused memory system with support for multiple backends.
- * without bloated "unified" architecture. Supports LanceDB, SQLite, and JSON backends.
+ * Without bloated "unified" architecture. Supports LanceDB, SQLite, and JSON backends..
  *
  * @example
  * ```typescript
@@ -17,10 +17,8 @@
  * ```
  */
 /**
- * @file memory-system implementation
+ * @file Memory-system implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from './logger';

@@ -9,10 +9,8 @@
  * Architecture: Protocol-based organization, not implementation-based.
  */
 /**
- * @file api module exports
+ * @file Api module exports.
  */
-
-
 
 import { getWebDashboardURL } from '../config/url-builder';
 
@@ -128,7 +126,7 @@ export class APIClientFactory {
 // Default configuration
 export const DEFAULT_API_CONFIG: APIInterfaceConfig = {
   baseUrl: getWebDashboardURL(),
-  websocketUrl: getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws') + '/ws',
+  websocketUrl: `${getWebDashboardURL({ protocol: 'ws' as any }).replace(/^https?/, 'ws')  }/ws`,
   timeout: 5000,
   retries: 3,
   reconnect: true,

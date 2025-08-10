@@ -2,18 +2,16 @@
  * USL Infrastructure Service Factory.
  *
  * Factory for creating and managing infrastructure service adapter instances.
- * with unified configuration, dependency injection, and lifecycle management.
+ * With unified configuration, dependency injection, and lifecycle management.
  * Follows the exact same patterns as other USL service factories.
  */
 /**
- * @file Interface implementation: infrastructure-service-factory
+ * @file Interface implementation: infrastructure-service-factory.
  */
 
-
-
 import { EventEmitter } from 'node:events';
-import { createLogger, type Logger } from '../utils/logger';
 import type { ServiceLifecycleStatus } from '../core/interfaces';
+import { createLogger, type Logger } from '../utils/logger';
 import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
@@ -129,7 +127,7 @@ interface ServiceRegistryEntry {
  * Infrastructure Service Factory.
  *
  * Provides centralized creation, management, and lifecycle handling for.
- * infrastructure service adapter instances. Includes service discovery,
+ * Infrastructure service adapter instances. Includes service discovery,
  * health monitoring, resource management, and event coordination.
  *
  * Features:
@@ -140,9 +138,10 @@ interface ServiceRegistryEntry {
  * - Resource usage tracking
  * - Event coordination across services
  * - Configuration management
- * - Dependency injection
+ * - Dependency injection.
  *
  * @example.
+ * @example
  */
 export class InfrastructureServiceFactory extends EventEmitter {
   private config: InfrastructureServiceFactoryConfig;
@@ -834,6 +833,7 @@ let globalInfrastructureServiceFactory: InfrastructureServiceFactory | undefined
  * Get or create the global infrastructure service factory instance.
  *
  * @param config
+ * @example
  */
 export function getInfrastructureServiceFactory(
   config?: InfrastructureServiceFactoryConfig
@@ -848,6 +848,7 @@ export function getInfrastructureServiceFactory(
  * Create a new infrastructure service factory instance.
  *
  * @param config
+ * @example
  */
 export function createInfrastructureServiceFactory(
   config?: InfrastructureServiceFactoryConfig
@@ -860,6 +861,7 @@ export function createInfrastructureServiceFactory(
  *
  * @param name
  * @param options
+ * @example
  */
 export async function createInfrastructureService(
   name?: string,

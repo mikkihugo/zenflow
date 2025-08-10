@@ -1,7 +1,6 @@
 /**
- * @file test-pseudocode processing engine
+ * @file Test-pseudocode processing engine.
  */
-
 
 import { getLogger } from './config/logging-config';
 

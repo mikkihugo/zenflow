@@ -2,13 +2,11 @@
  * Vector Database Repository Implementation (LanceDB).
  *
  * Specialized repository for vector database operations including.
- * similarity search, vector insertion, indexing, and clustering.
+ * Similarity search, vector insertion, indexing, and clustering.
  */
 /**
- * @file Database layer: vector.dao
+ * @file Database layer: vector.dao.
  */
-
-
 
 import { BaseDao } from '../base.dao';
 import type {

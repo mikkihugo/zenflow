@@ -5,10 +5,8 @@
  * Supports both standard and swarm-specific status displays.
  */
 /**
- * @file Interface implementation: status-badge
+ * @file Interface implementation: status-badge.
  */
-
-
 
 import { Box, Text } from 'ink';
 import type React from 'react';

@@ -1,7 +1,6 @@
 /**
- * @file Test suite for security-tests
+ * @file Test suite for security-tests.
  */
-
 
 import { getLogger } from '../config/logging-config';
 

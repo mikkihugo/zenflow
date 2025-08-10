@@ -2,13 +2,12 @@
  * @file Wasm-binding-interface implementation.
  */
 
-
-import { createLogger } from '../core/logger';
 import type {
   NeuralConfig,
   NeuralNetworkInterface,
   WasmNeuralBinding,
 } from '../core/interfaces/base-interfaces';
+import { createLogger } from '../core/logger';
 
 const logger = createLogger('src-bindings-wasm-binding-interface');
 

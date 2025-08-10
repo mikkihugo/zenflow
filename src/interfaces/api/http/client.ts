@@ -5,7 +5,7 @@
  * Auto-generated types from OpenAPI schemas for type safety.
  * Following Google API client library standards.
  *
- * @file TypeScript API client with full type safety
+ * @file TypeScript API client with full type safety.
  */
 
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';

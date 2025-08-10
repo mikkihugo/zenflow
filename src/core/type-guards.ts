@@ -10,9 +10,8 @@
  * @param error
  */
 /**
- * @file type-guards implementation
+ * @file Type-guards implementation.
  */
-
 
 export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
@@ -31,6 +30,7 @@ export function getErrorMessage(error: unknown): string {
  * Check if value is a string.
  *
  * @param value
+ * @example
  */
 export function isString(value: unknown): value is string {
   return typeof value === 'string';
@@ -40,6 +40,7 @@ export function isString(value: unknown): value is string {
  * Check if value is a number.
  *
  * @param value
+ * @example
  */
 export function isNumber(value: unknown): value is number {
   return typeof value === 'number' && !Number.isNaN(value);
@@ -49,15 +50,18 @@ export function isNumber(value: unknown): value is number {
  * Check if value is a boolean.
  *
  * @param value
+ * @example
  */
 export function isBoolean(value: unknown): value is boolean {
   return typeof value === 'boolean';
 }
 
 /**
- * Check if value is an object (not null)
+ * Check if value is an object (not null).
  *
  * @param value.
+ * @param value
+ * @example
  */
 export function isObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -67,6 +71,7 @@ export function isObject(value: unknown): value is Record<string, unknown> {
  * Check if value is an array.
  *
  * @param value
+ * @example
  */
 export function isArray(value: unknown): value is unknown[] {
   return Array.isArray(value);
@@ -76,15 +81,18 @@ export function isArray(value: unknown): value is unknown[] {
  * Check if value is null or undefined.
  *
  * @param value
+ * @example
  */
 export function isNullOrUndefined(value: unknown): value is null | undefined {
   return value === null || value === undefined;
 }
 
 /**
- * Check if value is defined (not null or undefined)
+ * Check if value is defined (not null or undefined).
  *
  * @param value.
+ * @param value
+ * @example
  */
 export function isDefined<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined;
@@ -95,6 +103,7 @@ export function isDefined<T>(value: T | null | undefined): value is T {
  *
  * @param value
  * @param message
+ * @example
  */
 export function assertDefined<T>(
   value: T | null | undefined,
@@ -110,6 +119,7 @@ export function assertDefined<T>(
  *
  * @param obj
  * @param prop
+ * @example
  */
 export function hasProperty<K extends string>(obj: unknown, prop: K): obj is Record<K, unknown> {
   return isObject(obj) && prop in obj;
@@ -119,6 +129,7 @@ export function hasProperty<K extends string>(obj: unknown, prop: K): obj is Rec
  * Safe JSON parse with error handling.
  *
  * @param json
+ * @example
  */
 export function safeJsonParse(json: string): unknown {
   try {
@@ -132,6 +143,7 @@ export function safeJsonParse(json: string): unknown {
  * Safe JSON stringify with error handling.
  *
  * @param value
+ * @example
  */
 export function safeJsonStringify(value: unknown): string {
   try {

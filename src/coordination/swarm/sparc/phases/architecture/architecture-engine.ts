@@ -5,10 +5,8 @@
  * component relationships, and deployment strategies.
  */
 /**
- * @file architecture processing engine
+ * @file Architecture processing engine.
  */
-
-
 
 import { nanoid } from 'nanoid';
 import type {

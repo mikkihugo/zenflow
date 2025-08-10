@@ -1,13 +1,13 @@
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('coordination-swarm-core-session-integration');
-
 /**
  * @file Session Integration Layer.
  *
  * Integrates the SessionManager with the existing ZenSwarm system,
  * providing seamless session persistence for swarm operations.
  */
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('coordination-swarm-core-session-integration');
 
 // Node.js modules
 import { EventEmitter } from 'node:events';
@@ -27,7 +27,7 @@ import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './
  * Enhanced ZenSwarm with session management capabilities.
  *
  * Provides persistent session support for swarm operations, allowing.
- * recovery from failures and resumption of long-running tasks.
+ * Recovery from failures and resumption of long-running tasks..
  *
  * @example
  */
@@ -122,7 +122,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
    * Initialize swarm with session support.
    *
    * Sets up the base swarm infrastructure and initializes the session.
-   * management layer for persistent operation tracking.
+   * Management layer for persistent operation tracking..
    *
    * @throws Error if initialization fails.
    * @example

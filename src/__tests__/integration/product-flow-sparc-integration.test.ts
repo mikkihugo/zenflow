@@ -113,12 +113,12 @@ describe('Product Flow + SPARC Integration', () => {
       };
 
       // Validate SPARC integration structure
-      expect(feature["sparc_implementation"]).toBeDefined();
-      expect(feature["sparc_implementation"]?.["use_sparc_methodology"]).toBe(true);
-      expect(feature["sparc_implementation"]?.["current_sparc_phase"]).toBe('specification');
+      expect(feature['sparc_implementation']).toBeDefined();
+      expect(feature['sparc_implementation']?.['use_sparc_methodology']).toBe(true);
+      expect(feature['sparc_implementation']?.['current_sparc_phase']).toBe('specification');
 
       // Validate all SPARC phases are defined
-      const sparcPhases = feature["sparc_implementation"]?.["sparc_phases"];
+      const sparcPhases = feature['sparc_implementation']?.['sparc_phases'];
       expect(sparcPhases?.specification).toBeDefined();
       expect(sparcPhases?.pseudocode).toBeDefined();
       expect(sparcPhases?.architecture).toBeDefined();
@@ -183,10 +183,12 @@ describe('Product Flow + SPARC Integration', () => {
       };
 
       // Validate SPARC task integration
-      expect(task["sparc_implementation_details"]).toBeDefined();
-      expect(task["sparc_implementation_details"]?.["sparc_phase_assignment"]).toBe('completion');
-      expect(task["sparc_implementation_details"]?.["sparc_deliverable_type"]).toBe('production_code');
-      expect(task["sparc_implementation_details"]?.["sparc_quality_gates"]).toHaveLength(2);
+      expect(task['sparc_implementation_details']).toBeDefined();
+      expect(task['sparc_implementation_details']?.['sparc_phase_assignment']).toBe('completion');
+      expect(task['sparc_implementation_details']?.['sparc_deliverable_type']).toBe(
+        'production_code'
+      );
+      expect(task['sparc_implementation_details']?.['sparc_quality_gates']).toHaveLength(2);
     });
   });
 
@@ -263,7 +265,7 @@ describe('Product Flow + SPARC Integration', () => {
 
       // Check that API feature got SPARC project
       const apiFeature = workflow.productFlow.documents.features.find(
-        (f) => f["feature_type"] === 'api'
+        (f) => f['feature_type'] === 'api'
       );
       if (apiFeature) {
         expect(workflow.sparcIntegration.sparcProjects.has(apiFeature.id)).toBe(true);

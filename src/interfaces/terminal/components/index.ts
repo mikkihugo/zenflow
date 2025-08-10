@@ -2,13 +2,11 @@
  * Unified Terminal Components - Index.
  *
  * Exports all consolidated terminal components that merge functionality.
- * from both command execution and interactive terminal interfaces.
+ * From both command execution and interactive terminal interfaces.
  */
 /**
- * @file components module exports
+ * @file Components module exports.
  */
-
-
 
 export * from './error-message';
 export {
@@ -101,7 +99,7 @@ export interface Theme {
 }
 
 // Default unified theme
-export const defaultUnifiedTheme: UnifiedTheme = {
+export const defaultUnifiedTheme: Theme = {
   colors: {
     primary: '#00D7FF',
     secondary: '#6C7B7F',

@@ -7,10 +7,8 @@
 
 // ==================== CLEAN ARCHITECTURE SYSTEMS ====================
 /**
- * @file core module exports
+ * @file Core module exports.
  */
-
-
 
 export type {
   WorkflowDefinition,

@@ -3,28 +3,26 @@
  * Consolidates all Express servers into one with organized routes.
  */
 
-import express from 'express';
-import { createServer } from 'http';
-import { Server as SocketIOServer } from 'socket.io';
-import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
 import { randomUUID } from 'crypto';
+import express from 'express';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import { createServer } from 'http';
 import path from 'path';
-
-// LogTape integration
-import { 
-  initializeLogging, 
-  createExpressLoggingMiddleware, 
-  createExpressErrorLoggingMiddleware,
-  createAppLogger,
-  logServerEvent
-} from '../utils/logging-config.js';
-
+import type { Server as SocketIOServer } from 'socket.io';
 // Configuration system
 import { config } from '../config';
 import type { SystemConfiguration } from '../config/types';
+// LogTape integration
+import {
+  createAppLogger,
+  createExpressErrorLoggingMiddleware,
+  createExpressLoggingMiddleware,
+  initializeLogging,
+  logServerEvent,
+} from '../utils/logging-config.js';
 
 // Route handlers (to be created)
 // import { mcpRoutes } from './routes/mcp-routes.js';
@@ -69,7 +67,7 @@ export class UnifiedClaudeZenServer {
   private buildServerConfig(): ServerConfig {
     // Get the full system configuration
     const systemConfig = config.getAll();
-    
+
     // Default fallback configuration if system config is not available
     const defaultConfig: ServerConfig = {
       port: 3000,
@@ -96,8 +94,14 @@ export class UnifiedClaudeZenServer {
 
     // Transform SystemConfiguration to ServerConfig
     return {
-      port: systemConfig.interfaces?.web?.port || systemConfig.interfaces?.mcp?.http?.port || defaultConfig.port,
-      host: systemConfig.interfaces?.web?.host || systemConfig.interfaces?.mcp?.http?.host || defaultConfig.host,
+      port:
+        systemConfig.interfaces?.web?.port ||
+        systemConfig.interfaces?.mcp?.http?.port ||
+        defaultConfig.port,
+      host:
+        systemConfig.interfaces?.web?.host ||
+        systemConfig.interfaces?.mcp?.http?.host ||
+        defaultConfig.host,
       features: {
         mcp: true, // MCP always enabled for this unified server
         api: true, // API always enabled
@@ -119,24 +123,26 @@ export class UnifiedClaudeZenServer {
     // Initialize logging first
     if (this.config.middleware.logging) {
       await initializeLogging();
-      logServerEvent(logger, 'initializing', { 
+      logServerEvent(logger, 'initializing', {
         port: this.config.port,
-        features: this.config.features 
+        features: this.config.features,
       });
     }
 
     // Apply security middleware
     if (this.config.middleware.helmet) {
-      this.app.use(helmet({
-        contentSecurityPolicy: {
-          directives: {
-            defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'"],
-            scriptSrc: ["'self'", "'unsafe-inline'"],
-            imgSrc: ["'self'", "data:", "https:"]
-          }
-        }
-      }));
+      this.app.use(
+        helmet({
+          contentSecurityPolicy: {
+            directives: {
+              defaultSrc: ["'self'"],
+              styleSrc: ["'self'", "'unsafe-inline'"],
+              scriptSrc: ["'self'", "'unsafe-inline'"],
+              imgSrc: ["'self'", 'data:', 'https:'],
+            },
+          },
+        })
+      );
     }
 
     // Apply performance middleware
@@ -146,23 +152,27 @@ export class UnifiedClaudeZenServer {
 
     // Apply CORS
     if (this.config.middleware.cors) {
-      this.app.use(cors({
-        origin: this.getAllowedOrigins(),
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID']
-      }));
+      this.app.use(
+        cors({
+          origin: this.getAllowedOrigins(),
+          credentials: true,
+          methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+          allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID'],
+        })
+      );
     }
 
     // Apply rate limiting
     if (this.config.middleware.rateLimit) {
-      this.app.use(rateLimit({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 1000, // Limit each IP to 1000 requests per windowMs
-        message: 'Too many requests from this IP',
-        standardHeaders: true,
-        legacyHeaders: false,
-      }));
+      this.app.use(
+        rateLimit({
+          windowMs: 15 * 60 * 1000, // 15 minutes
+          max: 1000, // Limit each IP to 1000 requests per windowMs
+          message: 'Too many requests from this IP',
+          standardHeaders: true,
+          legacyHeaders: false,
+        })
+      );
     }
 
     // Request parsing middleware
@@ -185,7 +195,7 @@ export class UnifiedClaudeZenServer {
         timestamp: new Date().toISOString(),
         server: 'unified-claude-zen-server',
         features: this.config.features,
-        uptime: process.uptime()
+        uptime: process.uptime(),
       });
     });
 
@@ -202,7 +212,7 @@ export class UnifiedClaudeZenServer {
           ...(this.config.features.dashboard && { dashboard: '/dashboard' }),
           ...(this.config.features.monitoring && { monitoring: '/monitoring' }),
         },
-        features: this.config.features
+        features: this.config.features,
       });
     });
 
@@ -220,42 +230,46 @@ export class UnifiedClaudeZenServer {
     }
 
     // Global error handler
-    this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-      logger.error('Unhandled server error', {
-        error: err.message,
-        stack: err.stack,
-        url: req.url,
-        method: req.method
-      });
+    this.app.use(
+      (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        logger.error('Unhandled server error', {
+          error: err.message,
+          stack: err.stack,
+          url: req.url,
+          method: req.method,
+        });
 
-      res.status(err.status || 500).json({
-        error: 'Internal server error',
-        message: process.env['NODE_ENV'] === 'production' ? 'Something went wrong' : err.message,
-        timestamp: new Date().toISOString()
-      });
-    });
+        res.status(err.status || 500).json({
+          error: 'Internal server error',
+          message: process.env['NODE_ENV'] === 'production' ? 'Something went wrong' : err.message,
+          timestamp: new Date().toISOString(),
+        });
+      }
+    );
 
     // 404 handler
     this.app.use('*', (req, res) => {
       res.status(404).json({
         error: 'Not found',
         message: `Route ${req.originalUrl} not found`,
-        availableEndpoints: Object.keys(this.config.features).filter(f => this.config.features[f as keyof typeof this.config.features])
+        availableEndpoints: Object.keys(this.config.features).filter(
+          (f) => this.config.features[f as keyof typeof this.config.features]
+        ),
       });
     });
   }
 
   private async setupRoutes(): Promise<void> {
     // Temporarily create placeholder routes until we migrate the real ones
-    
+
     if (this.config.features.mcp) {
       // MCP Protocol routes (from http-mcp-server.ts)
       this.app.use('/mcp', (req, res, next) => {
         // Placeholder - will be replaced with actual MCP routes
-        res.json({ 
-          service: 'MCP Protocol', 
+        res.json({
+          service: 'MCP Protocol',
           status: 'active',
-          message: 'MCP routes will be migrated here from http-mcp-server.ts'
+          message: 'MCP routes will be migrated here from http-mcp-server.ts',
         });
       });
     }
@@ -264,10 +278,10 @@ export class UnifiedClaudeZenServer {
       // REST API routes (from api/http/server.ts)
       this.app.use('/api/v1', (req, res, next) => {
         // Placeholder - will be replaced with actual API routes
-        res.json({ 
-          service: 'REST API', 
+        res.json({
+          service: 'REST API',
           status: 'active',
-          message: 'API routes will be migrated here from api/http/server.ts'
+          message: 'API routes will be migrated here from api/http/server.ts',
         });
       });
     }
@@ -276,10 +290,10 @@ export class UnifiedClaudeZenServer {
       // Web dashboard routes (from web-interface-server.ts)
       this.app.use('/dashboard', (req, res, next) => {
         // Placeholder - will be replaced with actual web routes
-        res.json({ 
-          service: 'Web Dashboard', 
+        res.json({
+          service: 'Web Dashboard',
           status: 'active',
-          message: 'Dashboard routes will be migrated here from web-interface-server.ts'
+          message: 'Dashboard routes will be migrated here from web-interface-server.ts',
         });
       });
     }
@@ -288,10 +302,10 @@ export class UnifiedClaudeZenServer {
       // Monitoring dashboard routes (from dashboard-server.ts)
       this.app.use('/monitoring', (req, res, next) => {
         // Placeholder - will be replaced with actual monitoring routes
-        res.json({ 
-          service: 'Monitoring Dashboard', 
+        res.json({
+          service: 'Monitoring Dashboard',
           status: 'active',
-          message: 'Monitoring routes will be migrated here from dashboard-server.ts'
+          message: 'Monitoring routes will be migrated here from dashboard-server.ts',
         });
       });
     }
@@ -303,7 +317,7 @@ export class UnifiedClaudeZenServer {
     this.io.on('connection', (socket) => {
       logger.info('WebSocket client connected', {
         socketId: socket.id,
-        clientIP: socket.handshake.address
+        clientIP: socket.handshake.address,
       });
 
       // Namespace for different services
@@ -311,14 +325,14 @@ export class UnifiedClaudeZenServer {
         socket.join(`service:${service}`);
         logger.debug('Client joined service namespace', {
           socketId: socket.id,
-          service
+          service,
         });
       });
 
       socket.on('disconnect', (reason) => {
         logger.info('WebSocket client disconnected', {
           socketId: socket.id,
-          reason
+          reason,
         });
       });
     });
@@ -339,31 +353,37 @@ export class UnifiedClaudeZenServer {
     await this.initialize();
 
     return new Promise((resolve, reject) => {
-      this.server.listen(this.config.port, this.config.host, () => {
-        logServerEvent(logger, 'started', {
-          port: this.config.port,
-          host: this.config.host,
-          features: this.config.features,
-          pid: process.pid
-        });
+      this.server
+        .listen(this.config.port, this.config.host, () => {
+          logServerEvent(logger, 'started', {
+            port: this.config.port,
+            host: this.config.host,
+            features: this.config.features,
+            pid: process.pid,
+          });
 
-        console.log(`🚀 Unified Claude-Zen Server started:`);
-        console.log(`   📍 Address: http://${this.config.host}:${this.config.port}`);
-        console.log(`   🔧 Features: ${Object.keys(this.config.features).filter(f => this.config.features[f as keyof typeof this.config.features]).join(', ')}`);
-        console.log(`   💡 Health: http://${this.config.host}:${this.config.port}/health`);
-        
-        resolve();
-      }).on('error', (err) => {
-        logger.error('Server failed to start', { error: err.message, stack: err.stack });
-        reject(err);
-      });
+          console.log(`🚀 Unified Claude-Zen Server started:`);
+          console.log(`   📍 Address: http://${this.config.host}:${this.config.port}`);
+          console.log(
+            `   🔧 Features: ${Object.keys(this.config.features)
+              .filter((f) => this.config.features[f as keyof typeof this.config.features])
+              .join(', ')}`
+          );
+          console.log(`   💡 Health: http://${this.config.host}:${this.config.port}/health`);
+
+          resolve();
+        })
+        .on('error', (err) => {
+          logger.error('Server failed to start', { error: err.message, stack: err.stack });
+          reject(err);
+        });
     });
   }
 
   async stop(): Promise<void> {
     return new Promise((resolve) => {
       logServerEvent(logger, 'stopping', { port: this.config.port });
-      
+
       this.server.close(() => {
         logServerEvent(logger, 'stopped', { port: this.config.port });
         console.log('🛑 Unified Claude-Zen Server stopped');
@@ -392,7 +412,7 @@ export const unifiedServer = new UnifiedClaudeZenServer();
 // Backward compatibility exports
 export { UnifiedClaudeZenServer as HTTPMCPServer };
 export { UnifiedClaudeZenServer as WebInterfaceServer };
-export { UnifiedClaudeZenServer as APIServer };  
+export { UnifiedClaudeZenServer as APIServer };
 export { UnifiedClaudeZenServer as DashboardServer };
 
 export default UnifiedClaudeZenServer;

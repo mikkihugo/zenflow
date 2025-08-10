@@ -3,10 +3,8 @@
  * Optimizes neural network training, inference, and memory usage.
  */
 /**
- * @file Neural network: neural-optimizer
+ * @file Neural network: neural-optimizer.
  */
-
-
 
 import type { NeuralOptimizer } from '../interfaces/optimization-interfaces';
 
@@ -31,6 +29,54 @@ export interface InferenceOptimizationResult {
   throughputIncrease: number;
   batchProcessingEnabled: boolean;
   wasmAcceleration: boolean;
+}
+
+export interface OptimizationResult {
+  success: boolean;
+  improvement: number;
+  beforeMetrics: any;
+  afterMetrics: any;
+  executionTime: number;
+  error?: string;
+}
+
+export interface NeuralNetwork {
+  id: string;
+  layers: number[];
+  memory?: number;
+}
+
+export interface NetworkTrainer {
+  batchSize: number;
+  network: NeuralNetwork;
+}
+
+export interface BatchConfig {
+  batchSize: number;
+  parallelism: number;
+  memoryLimit: number;
+  processingMode: 'sequential' | 'parallel' | 'adaptive';
+}
+
+export interface ComputeUnit {
+  type: 'GPU' | 'CPU' | 'TPU';
+  memory: number;
+  cores?: number;
+  name?: string;
+}
+
+export interface AccelerationResult {
+  accelerationType: 'GPU' | 'WASM' | 'CPU';
+  speedImprovement: number;
+  resourceUtilization: number;
+  fallbackStrategy: string;
+}
+
+export interface MemoryOptimization {
+  memoryReduction: number;
+  compressionRatio: number;
+  garbageCollectionImprovement: number;
+  poolingStrategy: string;
 }
 
 export class NeuralNetworkOptimizer implements NeuralOptimizer {
@@ -486,9 +532,10 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
   }
 
   /**
-   * Helper methods (mock implementations)
+   * Helper methods (mock implementations).
    *
    * @param network.
+   * @param network
    */
   private calculateNetworkComplexity(network: NeuralNetwork): number {
     return network.layers.reduce((sum, layer) => sum + layer, 0);

@@ -2,7 +2,6 @@
  * @file domain-splitter implementation
  */
 
-
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('tools-domain-splitting-splitters-domain-splitter');

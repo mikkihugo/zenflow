@@ -13,8 +13,8 @@ import { type ChildProcess, execSync, spawn } from 'child_process';
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import path from 'path';
-import type { logger } from './core/logger';
 import { getConsoleReplacementLogger } from './config/logging-config';
+import type { logger } from './core/logger';
 
 // Import existing coordination infrastructure (will be dynamically imported)
 // import { SwarmCoordinator } from './coordination/swarm/core/swarm-coordinator.js';

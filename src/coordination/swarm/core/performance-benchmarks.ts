@@ -2,7 +2,6 @@
  * @file Coordination system: performance-benchmarks.
  */
 
-
 import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-performance-benchmarks');
@@ -16,7 +15,7 @@ const logger = getLogger('coordination-swarm-core-performance-benchmarks');
 
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
 // import { getClaudeFlow } from './claude-flow-enhanced';
-import { ZenSwarm } from './index';
+import { ZenSwarm } from './base-swarm';
 
 interface Recommendation {
   category: string;
@@ -472,7 +471,8 @@ class PerformanceBenchmarks {
       const createTime = performance.now() - createStartTime;
 
       if (results.workflowExecution) results.workflowExecution.creationTime = createTime;
-      if (results.workflowExecution) results.workflowExecution.parallelizationRate = workflow.metrics.parallelizationRate;
+      if (results.workflowExecution)
+        results.workflowExecution.parallelizationRate = workflow.metrics.parallelizationRate;
 
       // Test workflow execution (simulated)
       const execStartTime = performance.now();

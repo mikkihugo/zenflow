@@ -14,8 +14,6 @@
  * @file Collective-intelligence coordination system.
  */
 
-
-
 import { EventEmitter } from 'node:events';
 import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 import type { WASMPerformanceMetrics } from '../neural/types/wasm-types';
@@ -1257,7 +1255,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
     // Distributed Learning -> Intelligence Coordination
     this.distributedLearning.on('model:converged', async (data) => {
-      await this.intelligenceCoordination.distributeModel(data?.["model"]);
+      await this.intelligenceCoordination.distributeModel(data?.['model']);
       this.emit('collective-learning:progress', data);
     });
 
@@ -1283,7 +1281,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
       content: knowledge,
       timestamp: new Date(),
       source: 'collective',
-      quality: 0.8
+      quality: 0.8,
     };
     this.knowledgeBase.set(entry.id, entry);
   }
@@ -1295,7 +1293,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
       type: 'solution-derived',
       content: data,
       confidence: 0.9,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
@@ -1311,7 +1309,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
       knowledge,
       quality: 0.85,
       consensus: 0.9,
-      isValid: true
+      isValid: true,
     };
   }
 
@@ -1321,7 +1319,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
     return {
       patterns: [],
       insights: [],
-      emergenceLevel: 0.7
+      emergenceLevel: 0.7,
     };
   }
 
@@ -1356,7 +1354,7 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
       decision,
       qualityScore: 0.9,
       confidence: 0.85,
-      reasoning: 'Well-validated decision'
+      reasoning: 'Well-validated decision',
     };
   }
 
@@ -1949,138 +1947,162 @@ export interface CollectiveIntelligenceMetrics {
 
 // System implementation classes - converted from interfaces to actual classes
 class KnowledgeExchangeSystem {
-  constructor(private config: KnowledgeExchangeConfig, private logger: ILogger, private eventBus: IEventBus) {}
-  
+  constructor(
+    private config: KnowledgeExchangeConfig,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   async getMetrics(): Promise<any> {
     return { exchangeRate: 0.8, validationScore: 0.9 };
   }
-  
+
   async broadcastKnowledge(knowledge: any): Promise<void> {
     this.logger.info('Broadcasting knowledge', { knowledge });
   }
-  
+
   async shutdown(): Promise<void> {
     this.logger.info('Knowledge exchange system shutdown');
   }
-  
+
   on(event: string, handler: Function): void {
     this.eventBus.on(event, handler);
   }
-  
+
   emit(event: string, data: any): void {
     this.eventBus.emit(event, data);
   }
 }
 
 class DistributedLearningSystem {
-  constructor(private config: DistributedLearningConfig, private logger: ILogger, private eventBus: IEventBus) {}
-  
+  constructor(
+    private config: DistributedLearningConfig,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   async getMetrics(): Promise<any> {
     return { convergenceRate: 0.85, modelAccuracy: 0.92 };
   }
-  
+
   async shutdown(): Promise<void> {
     this.logger.info('Distributed learning system shutdown');
   }
-  
+
   on(event: string, handler: Function): void {
     this.eventBus.on(event, handler);
   }
-  
+
   emit(event: string, data: any): void {
     this.eventBus.emit(event, data);
   }
 }
 
 class CollaborativeProblemSolvingSystem {
-  constructor(private config: CollaborativeSolvingConfig, private logger: ILogger, private eventBus: IEventBus) {}
-  
+  constructor(
+    private config: CollaborativeSolvingConfig,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   async getMetrics(): Promise<any> {
     return { solutionQuality: 0.88, collaborationEfficiency: 0.75 };
   }
-  
+
   async shutdown(): Promise<void> {
     this.logger.info('Collaborative problem solving system shutdown');
   }
-  
+
   on(event: string, handler: Function): void {
     this.eventBus.on(event, handler);
   }
-  
+
   emit(event: string, data: any): void {
     this.eventBus.emit(event, data);
   }
 }
 
 class IntelligenceCoordinationSystem {
-  constructor(private config: IntelligenceCoordinationConfig, private logger: ILogger, private eventBus: IEventBus) {}
-  
+  constructor(
+    private config: IntelligenceCoordinationConfig,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   async getMetrics(): Promise<any> {
     return { coordinationEfficiency: 0.82, resourceUtilization: 0.76 };
   }
-  
+
   async distributeModel(model: any): Promise<void> {
     this.logger.info('Distributing model', { model });
   }
-  
+
   async shutdown(): Promise<void> {
     this.logger.info('Intelligence coordination system shutdown');
   }
-  
+
   on(event: string, handler: Function): void {
     this.eventBus.on(event, handler);
   }
-  
+
   emit(event: string, data: any): void {
     this.eventBus.emit(event, data);
   }
 }
 
 class KnowledgeQualityManagementSystem {
-  constructor(private config: QualityManagementConfig, private logger: ILogger, private eventBus: IEventBus) {}
-  
+  constructor(
+    private config: QualityManagementConfig,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   async getMetrics(): Promise<any> {
     return { qualityScore: 0.91, validationAccuracy: 0.94 };
   }
-  
+
   async validateKnowledge(data: any): Promise<any> {
     this.logger.info('Validating knowledge', { data });
-    return { 
-      isValid: true, 
+    return {
+      isValid: true,
       knowledge: data,
       quality: 0.9,
-      consensus: 0.85
+      consensus: 0.85,
     };
   }
-  
+
   async shutdown(): Promise<void> {
     this.logger.info('Knowledge quality management system shutdown');
   }
-  
+
   on(event: string, handler: Function): void {
     this.eventBus.on(event, handler);
   }
-  
+
   emit(event: string, data: any): void {
     this.eventBus.emit(event, data);
   }
 }
 
 class PerformanceOptimizationSystem {
-  constructor(private config: PerformanceOptimizationConfig, private logger: ILogger, private eventBus: IEventBus) {}
-  
+  constructor(
+    private config: PerformanceOptimizationConfig,
+    private logger: ILogger,
+    private eventBus: IEventBus
+  ) {}
+
   async getMetrics(): Promise<any> {
     return { optimizationLevel: 0.87, systemPerformance: 0.83 };
   }
-  
+
   async shutdown(): Promise<void> {
     this.logger.info('Performance optimization system shutdown');
   }
-  
+
   on(event: string, handler: Function): void {
     this.eventBus.on(event, handler);
   }
-  
+
   emit(event: string, data: any): void {
     this.eventBus.emit(event, data);
   }

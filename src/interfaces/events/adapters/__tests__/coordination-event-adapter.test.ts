@@ -1,5 +1,5 @@
 /**
- * CoordinationEventAdapter Tests
+ * CoordinationEventAdapter Tests.
  *
  * Comprehensive hybrid TDD test suite for the CoordinationEventAdapter
  * following the 70% London + 30% Classical testing strategy.
@@ -7,12 +7,12 @@
  * London TDD (Mockist) Tests:
  * - Event subscription and emission patterns
  * - Component interaction verification
- * - Factory integration testing
+ * - Factory integration testing.
  *
  * Classical TDD (Detroit) Tests:
  * - Event correlation algorithms
  * - Performance metric calculations
- * - Health monitoring computations
+ * - Health monitoring computations.
  */
 
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';

@@ -5,13 +5,11 @@
  * - Vision → ADRs → PRDs → Epics → Features → Tasks → Code
  * - Background swarm assistance (hidden but available)
  * - Maestro integration where it adds value to document workflow
- * - Respects existing document structure and process
+ * - Respects existing document structure and process.
  */
 /**
- * @file document-driven-system implementation.
+ * @file Document-driven-system implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
@@ -184,10 +182,11 @@ export class DocumentDrivenSystem extends EventEmitter {
   }
 
   /**
-   * Process ADR (Architecture Decision Record)
+   * Process ADR (Architecture Decision Record).
    *
    * @param workspaceId
    * @param doc.
+   * @param doc
    */
   private async processADR(workspaceId: string, doc: VisionaryDocument): Promise<void> {
     logger.info('📐 Processing ADR document');

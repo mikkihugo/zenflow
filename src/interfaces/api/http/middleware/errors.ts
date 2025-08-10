@@ -1,15 +1,15 @@
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('interfaces-api-http-middleware-errors');
-
 /**
  * Error Handling Middleware.
  *
  * Standardized error handling following Google API Design Guide.
  * Provides consistent error responses across all API endpoints.
  *
- * @file Express error handling middleware
+ * @file Express error handling middleware.
  */
+
+import { getLogger } from '../config/logging-config';
+
+const logger = getLogger('interfaces-api-http-middleware-errors');
 
 import type { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 

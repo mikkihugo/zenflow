@@ -1,7 +1,6 @@
 /**
- * @file Test suite for test-sparc-mcp-tools
+ * @file Test suite for test-sparc-mcp-tools.
  */
-
 
 import { getLogger } from './config/logging-config';
 

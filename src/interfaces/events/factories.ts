@@ -9,8 +9,6 @@
  * @file Interface implementation: factories.
  */
 
-
-
 import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
 import { inject, injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS } from '../../di/tokens/core-tokens';
@@ -810,7 +808,9 @@ export class UELFactory {
       case EventManagerTypes.INTERFACE: {
         // xxx NEEDS_HUMAN: InterfaceEventManagerFactory not implemented yet
         // Using a stub factory for now
-        const InterfaceEventManagerFactory = class implements IEventManagerFactory<EventManagerConfig> {
+        const InterfaceEventManagerFactory = class
+          implements IEventManagerFactory<EventManagerConfig>
+        {
           constructor(_logger?: ILogger, _config?: IConfig) {}
           async create(_config: EventManagerConfig): Promise<IEventManager> {
             throw new Error('InterfaceEventManagerFactory not implemented');
@@ -823,7 +823,9 @@ export class UELFactory {
       case EventManagerTypes.NEURAL: {
         // xxx NEEDS_HUMAN: NeuralEventManagerFactory not implemented yet
         // Using a stub factory for now
-        const NeuralEventManagerFactory = class implements IEventManagerFactory<EventManagerConfig> {
+        const NeuralEventManagerFactory = class
+          implements IEventManagerFactory<EventManagerConfig>
+        {
           constructor(_logger?: ILogger, _config?: IConfig) {}
           async create(_config: EventManagerConfig): Promise<IEventManager> {
             throw new Error('NeuralEventManagerFactory not implemented');
@@ -836,7 +838,9 @@ export class UELFactory {
       case EventManagerTypes.DATABASE: {
         // xxx NEEDS_HUMAN: DatabaseEventManagerFactory not implemented yet
         // Using a stub factory for now
-        const DatabaseEventManagerFactory = class implements IEventManagerFactory<EventManagerConfig> {
+        const DatabaseEventManagerFactory = class
+          implements IEventManagerFactory<EventManagerConfig>
+        {
           constructor(_logger?: ILogger, _config?: IConfig) {}
           async create(_config: EventManagerConfig): Promise<IEventManager> {
             throw new Error('DatabaseEventManagerFactory not implemented');
@@ -849,7 +853,9 @@ export class UELFactory {
       case EventManagerTypes.MEMORY: {
         // xxx NEEDS_HUMAN: MemoryEventManagerFactory not implemented yet
         // Using a stub factory for now
-        const MemoryEventManagerFactory = class implements IEventManagerFactory<EventManagerConfig> {
+        const MemoryEventManagerFactory = class
+          implements IEventManagerFactory<EventManagerConfig>
+        {
           constructor(_logger?: ILogger, _config?: IConfig) {}
           async create(_config: EventManagerConfig): Promise<IEventManager> {
             throw new Error('MemoryEventManagerFactory not implemented');
@@ -862,7 +868,9 @@ export class UELFactory {
       case EventManagerTypes.WORKFLOW: {
         // xxx NEEDS_HUMAN: WorkflowEventManagerFactory not implemented yet
         // Using a stub factory for now
-        const WorkflowEventManagerFactory = class implements IEventManagerFactory<EventManagerConfig> {
+        const WorkflowEventManagerFactory = class
+          implements IEventManagerFactory<EventManagerConfig>
+        {
           constructor(_logger?: ILogger, _config?: IConfig) {}
           async create(_config: EventManagerConfig): Promise<IEventManager> {
             throw new Error('WorkflowEventManagerFactory not implemented');
@@ -874,7 +882,9 @@ export class UELFactory {
       default: {
         // xxx NEEDS_HUMAN: CustomEventManagerFactory not implemented yet
         // Using a stub factory for now
-        const CustomEventManagerFactory = class implements IEventManagerFactory<EventManagerConfig> {
+        const CustomEventManagerFactory = class
+          implements IEventManagerFactory<EventManagerConfig>
+        {
           constructor(_logger?: ILogger, _config?: IConfig) {}
           async create(_config: EventManagerConfig): Promise<IEventManager> {
             throw new Error('CustomEventManagerFactory not implemented');
@@ -1144,22 +1154,20 @@ export async function createEventManager<T extends EventManagerType>(
       info: console.info,
       warn: console.warn,
       error: console.error,
-    })
+    }),
   });
 
   container.register(CORE_TOKENS.Config, {
     type: 'singleton' as const,
-    create: () => ({})
+    create: () => ({}),
   });
 
   // Register UELFactory
   const uelToken = { symbol: Symbol('UELFactory'), name: 'UELFactory' };
   container.register(uelToken, {
     type: 'singleton' as const,
-    create: (container) => new UELFactory(
-      container.resolve(CORE_TOKENS.Logger),
-      container.resolve(CORE_TOKENS.Config)
-    )
+    create: (container) =>
+      new UELFactory(container.resolve(CORE_TOKENS.Logger), container.resolve(CORE_TOKENS.Config)),
   });
 
   const factory = container.resolve(uelToken) as UELFactory;

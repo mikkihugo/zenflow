@@ -1,11 +1,11 @@
-import { Logger } from '../core/logger';
-
-const logger = new Logger('src-core-pattern-integration');
-
 /**
  * @file Pattern Integration Layer
  * Integrates all design patterns with existing swarm coordination system.
  */
+
+import { Logger } from '../core/logger';
+
+const logger = new Logger('src-core-pattern-integration');
 
 import { EventEmitter } from 'node:events';
 import {
@@ -852,9 +852,12 @@ export class IntegratedPatternSystem extends EventEmitter {
       // Register logger provider with proper typing
       container.register(CORE_TOKENS.Logger, () => console as any);
       // Register config provider with proper typing
-      container.register(CORE_TOKENS.Config, () => ({} as any));
+      container.register(CORE_TOKENS.Config, () => ({}) as any);
       // Register DAL factory with proper arguments and typing
-      container.register(DATABASE_TOKENS?.DALFactory, () => new (DALFactory as any)(container, logger, {} as any));
+      container.register(
+        DATABASE_TOKENS?.DALFactory,
+        () => new (DALFactory as any)(container, logger, {} as any)
+      );
 
       const _dalFactory = container.resolve(DATABASE_TOKENS?.DALFactory);
 
@@ -1079,7 +1082,8 @@ export class ConfigurationFactory {
     if (config?.swarm) config.swarm.maxAgents = 100;
     if (config?.events) config.events.enableDatabasePersistence = true;
     if (config?.commands) config.commands.maxConcurrentCommands = 10;
-    if (config?.protocols) config.protocols.enabledAdapters = ['mcp-http', 'mcp-stdio', 'websocket', 'rest'];
+    if (config?.protocols)
+      config.protocols.enabledAdapters = ['mcp-http', 'mcp-stdio', 'websocket', 'rest'];
 
     return config;
   }

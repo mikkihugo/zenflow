@@ -4,7 +4,7 @@
  * Implements intelligent rate limiting with different limits for different operation types.
  * Database operations are resource-intensive and require careful throttling.
  *
- * @file Database-specific rate limiting middleware
+ * @file Database-specific rate limiting middleware.
  */
 
 import type { NextFunction, Request, Response } from 'express';
@@ -78,6 +78,7 @@ export const DATABASE_RATE_LIMITS = {
  *
  * @param config
  * @param operationType
+ * @example
  */
 function createRateLimiter(
   config: RateLimitConfig,

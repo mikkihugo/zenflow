@@ -1,5 +1,5 @@
 /**
- * @file DSPy Types and Configurations
+ * @file DSPy Types and Configurations.
  *
  * Comprehensive type definitions, constants, error classes, and type guards.
  * for DSPy integration in the neural system.
@@ -14,6 +14,8 @@
 
 /**
  * Configuration interface for DSPy language model setup.
+ *
+ * @example
  */
 export interface DSPyConfig {
   model?: string;
@@ -29,6 +31,8 @@ export interface DSPyConfig {
 
 /**
  * Training example structure for DSPy programs.
+ *
+ * @example
  */
 export interface DSPyExample {
   input: Record<string, any>;
@@ -42,6 +46,8 @@ export interface DSPyExample {
 
 /**
  * Result from DSPy program execution.
+ *
+ * @example
  */
 export interface DSPyExecutionResult {
   success: boolean;
@@ -59,6 +65,8 @@ export interface DSPyExecutionResult {
 
 /**
  * Configuration for DSPy program optimization.
+ *
+ * @example
  */
 export interface DSPyOptimizationConfig {
   strategy: 'bootstrap' | 'mipro' | 'copro' | 'auto' | 'custom';
@@ -72,6 +80,8 @@ export interface DSPyOptimizationConfig {
 
 /**
  * Result from DSPy program optimization.
+ *
+ * @example
  */
 export interface DSPyOptimizationResult {
   success: boolean;
@@ -88,6 +98,8 @@ export interface DSPyOptimizationResult {
 
 /**
  * DSPy program interface with execution capabilities.
+ *
+ * @example
  */
 export interface DSPyProgram {
   id?: string;
@@ -99,6 +111,8 @@ export interface DSPyProgram {
 
 /**
  * Metadata for DSPy program tracking.
+ *
+ * @example
  */
 export interface DSPyProgramMetadata {
   signature: string;
@@ -112,6 +126,8 @@ export interface DSPyProgramMetadata {
 
 /**
  * Main DSPy wrapper interface.
+ *
+ * @example
  */
 export interface DSPyWrapper {
   configure(config: DSPyConfig): Promise<void>;
@@ -185,6 +201,8 @@ const DSPY_LIMITS = {
 
 /**
  * Base error class for DSPy-related errors.
+ *
+ * @example
  */
 class DSPyBaseError extends Error {
   public readonly code: string;
@@ -205,6 +223,8 @@ class DSPyBaseError extends Error {
 
 /**
  * Error thrown when DSPy API calls fail.
+ *
+ * @example
  */
 class DSPyAPIError extends DSPyBaseError {
   constructor(message: string, context?: Record<string, any>) {
@@ -214,6 +234,8 @@ class DSPyAPIError extends DSPyBaseError {
 
 /**
  * Error thrown when DSPy configuration is invalid.
+ *
+ * @example
  */
 class DSPyConfigurationError extends DSPyBaseError {
   constructor(message: string, context?: Record<string, any>) {
@@ -223,6 +245,8 @@ class DSPyConfigurationError extends DSPyBaseError {
 
 /**
  * Error thrown during DSPy program execution.
+ *
+ * @example
  */
 class DSPyExecutionError extends DSPyBaseError {
   constructor(message: string, context?: Record<string, any>) {
@@ -232,6 +256,8 @@ class DSPyExecutionError extends DSPyBaseError {
 
 /**
  * Error thrown during DSPy program optimization.
+ *
+ * @example
  */
 class DSPyOptimizationError extends DSPyBaseError {
   constructor(message: string, context?: Record<string, any>) {
@@ -245,66 +271,95 @@ class DSPyOptimizationError extends DSPyBaseError {
 
 /**
  * Type guard to check if an object is a valid DSPyConfig.
+ *
+ * @param obj
+ * @example
  */
 function isDSPyConfig(obj: any): obj is DSPyConfig {
-  return (obj &&
-  typeof obj === 'object' &&
-  (obj["model"] === undefined || (typeof obj["model"] === 'string' && obj["model"].length > 0)) &&
-  (obj["temperature"] === undefined ||
-    (typeof obj["temperature"] === 'number' && obj["temperature"] >= 0 && obj["temperature"] <= 2)) &&
-  (obj["maxTokens"] === undefined || (typeof obj["maxTokens"] === 'number' && obj["maxTokens"] > 0)) &&
-  (obj["apiKey"] === undefined || typeof obj["apiKey"] === 'string') &&
-  (obj["baseURL"] === undefined || typeof obj["baseURL"] === 'string') &&
-  (obj["modelParams"] === undefined ||
-    (typeof obj["modelParams"] === 'object' && obj["modelParams"] !== null)) &&
-  (obj["timeout"] === undefined || (typeof obj["timeout"] === 'number' && obj["timeout"] > 0)) &&
-  (obj["retryCount"] === undefined || (typeof obj["retryCount"] === 'number' && obj["retryCount"] >= 0)) && (obj["enableLogging"] === undefined || typeof obj["enableLogging"] === 'boolean'));
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    (obj['model'] === undefined || (typeof obj['model'] === 'string' && obj['model'].length > 0)) &&
+    (obj['temperature'] === undefined ||
+      (typeof obj['temperature'] === 'number' &&
+        obj['temperature'] >= 0 &&
+        obj['temperature'] <= 2)) &&
+    (obj['maxTokens'] === undefined ||
+      (typeof obj['maxTokens'] === 'number' && obj['maxTokens'] > 0)) &&
+    (obj['apiKey'] === undefined || typeof obj['apiKey'] === 'string') &&
+    (obj['baseURL'] === undefined || typeof obj['baseURL'] === 'string') &&
+    (obj['modelParams'] === undefined ||
+      (typeof obj['modelParams'] === 'object' && obj['modelParams'] !== null)) &&
+    (obj['timeout'] === undefined || (typeof obj['timeout'] === 'number' && obj['timeout'] > 0)) &&
+    (obj['retryCount'] === undefined ||
+      (typeof obj['retryCount'] === 'number' && obj['retryCount'] >= 0)) &&
+    (obj['enableLogging'] === undefined || typeof obj['enableLogging'] === 'boolean')
+  );
 }
 
 /**
  * Type guard to check if an object is a valid DSPyProgram.
+ *
+ * @param obj
+ * @example
  */
 function isDSPyProgram(obj: any): obj is DSPyProgram {
-  return (obj &&
-  typeof obj === 'object' &&
-  typeof obj["signature"] === 'string' &&
-  obj["signature"].length > 0 &&
-  typeof obj.description === 'string' &&
-  obj.description.length > 0 && typeof obj["forward"] === 'function');
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    typeof obj['signature'] === 'string' &&
+    obj['signature'].length > 0 &&
+    typeof obj.description === 'string' &&
+    obj.description.length > 0 &&
+    typeof obj['forward'] === 'function'
+  );
 }
 
 /**
  * Type guard to check if an object is a valid DSPyExample.
+ *
+ * @param obj
+ * @example
  */
 function isDSPyExample(obj: any): obj is DSPyExample {
-  return (obj &&
-  typeof obj === 'object' &&
-  obj["input"] &&
-  typeof obj["input"] === 'object' &&
-  obj["input"] !== null &&
-  obj["output"] &&
-  typeof obj["output"] === 'object' && obj["output"] !== null);
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    obj['input'] &&
+    typeof obj['input'] === 'object' &&
+    obj['input'] !== null &&
+    obj['output'] &&
+    typeof obj['output'] === 'object' &&
+    obj['output'] !== null
+  );
 }
 
 /**
  * Type guard to check if an object is a valid DSPyOptimizationConfig.
+ *
+ * @param obj
+ * @example
  */
 function isDSPyOptimizationConfig(obj: any): obj is DSPyOptimizationConfig {
   const validStrategies = ['bootstrap', 'mipro', 'copro', 'auto', 'custom'];
-  return (obj &&
-  typeof obj === 'object' &&
-  validStrategies.includes(obj["strategy"]) &&
-  typeof obj["maxIterations"] === 'number' &&
-  obj["maxIterations"] > 0 &&
-  (obj["minExamples"] === undefined ||
-    (typeof obj["minExamples"] === 'number' && obj["minExamples"] > 0)) &&
-  (obj["evaluationMetric"] === undefined || typeof obj["evaluationMetric"] === 'string') &&
-  (obj["validationSplit"] === undefined ||
-    (typeof obj["validationSplit"] === 'number' &&
-      obj["validationSplit"] > 0 &&
-      obj["validationSplit"] < 1)) &&
-  (obj["earlyStoppingPatience"] === undefined ||
-    (typeof obj["earlyStoppingPatience"] === 'number' && obj["earlyStoppingPatience"] > 0)) && (obj["strategyParams"] === undefined || (typeof obj["strategyParams"] === 'object' && obj["strategyParams"] !== null)));
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    validStrategies.includes(obj['strategy']) &&
+    typeof obj['maxIterations'] === 'number' &&
+    obj['maxIterations'] > 0 &&
+    (obj['minExamples'] === undefined ||
+      (typeof obj['minExamples'] === 'number' && obj['minExamples'] > 0)) &&
+    (obj['evaluationMetric'] === undefined || typeof obj['evaluationMetric'] === 'string') &&
+    (obj['validationSplit'] === undefined ||
+      (typeof obj['validationSplit'] === 'number' &&
+        obj['validationSplit'] > 0 &&
+        obj['validationSplit'] < 1)) &&
+    (obj['earlyStoppingPatience'] === undefined ||
+      (typeof obj['earlyStoppingPatience'] === 'number' && obj['earlyStoppingPatience'] > 0)) &&
+    (obj['strategyParams'] === undefined ||
+      (typeof obj['strategyParams'] === 'object' && obj['strategyParams'] !== null))
+  );
 }
 
 // =============================================================================
@@ -313,6 +368,9 @@ function isDSPyOptimizationConfig(obj: any): obj is DSPyOptimizationConfig {
 
 /**
  * Validates and normalizes a DSPy configuration.
+ *
+ * @param config
+ * @example
  */
 function validateDSPyConfig(config: Partial<DSPyConfig>): DSPyConfig {
   if (!config || typeof config !== 'object') {
@@ -332,13 +390,16 @@ function validateDSPyConfig(config: Partial<DSPyConfig>): DSPyConfig {
 
 /**
  * Validates a DSPy program signature format.
+ *
+ * @param signature
+ * @example
  */
 function validateSignature(signature: string): boolean {
   if (!signature || typeof signature !== 'string') {
     return false;
   }
 
-  if (signature.length > DSPY_LIMITS["MAX_SIGNATURE_LENGTH"]) {
+  if (signature.length > DSPY_LIMITS['MAX_SIGNATURE_LENGTH']) {
     return false;
   }
 
@@ -351,6 +412,11 @@ function validateSignature(signature: string): boolean {
 
 /**
  * Creates a validation error with detailed context.
+ *
+ * @param field
+ * @param value
+ * @param expected
+ * @example
  */
 function createValidationError(
   field: string,
@@ -366,13 +432,16 @@ function createValidationError(
 
 /**
  * Sanitizes input for DSPy operations.
+ *
+ * @param input
+ * @example
  */
 function sanitizeInput(input: Record<string, any>): Record<string, any> {
   const sanitized: Record<string, any> = {};
 
   for (const [key, value] of Object.entries(input)) {
-    if (typeof value === 'string' && value.length > DSPY_LIMITS["MAX_INPUT_SIZE"]) {
-      sanitized[key] = value.substring(0, DSPY_LIMITS["MAX_INPUT_SIZE"]);
+    if (typeof value === 'string' && value.length > DSPY_LIMITS['MAX_INPUT_SIZE']) {
+      sanitized[key] = value.substring(0, DSPY_LIMITS['MAX_INPUT_SIZE']);
     } else {
       sanitized[key] = value;
     }
@@ -387,6 +456,8 @@ function sanitizeInput(input: Record<string, any>): Record<string, any> {
 
 /**
  * Performance metrics for DSPy operations.
+ *
+ * @example
  */
 export interface DSPyPerformanceMetrics {
   executionTime: number;
@@ -399,6 +470,8 @@ export interface DSPyPerformanceMetrics {
 
 /**
  * Health check result for DSPy systems.
+ *
+ * @example
  */
 export interface DSPyHealthCheck {
   healthy: boolean;
@@ -419,6 +492,8 @@ export interface DSPyHealthCheck {
 
 /**
  * DSPy System Statistics.
+ *
+ * @example
  */
 export interface DSPySystemStats {
   totalPrograms: number;

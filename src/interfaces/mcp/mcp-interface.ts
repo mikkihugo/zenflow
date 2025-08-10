@@ -5,10 +5,8 @@
  * Handles communication with Claude Code via MCP protocol.
  */
 /**
- * @file Interface implementation: mcp-interface
+ * @file Interface implementation: mcp-interface.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { createLogger } from './mcp-logger';
@@ -170,6 +168,7 @@ export class MCPInterface extends EventEmitter {
  * Create and configure MCP interface instance.
  *
  * @param config
+ * @example
  */
 export function createMCPInterface(config?: MCPInterfaceConfig): MCPInterface {
   return new MCPInterface(config);

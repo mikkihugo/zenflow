@@ -20,7 +20,7 @@ import type {
 } from './core/interfaces';
 
 import { EventManagerTypes } from './core/interfaces';
-import { UEL } from './index';
+// Remove circular dependency - import UEL from specific source instead
 import type { EventManager } from './manager';
 import type { MonitoringEvent, SystemLifecycleEvent } from './types';
 
@@ -58,7 +58,7 @@ export class UELEnhancedEventBus extends EventEmitter {
       this.initializeUELIntegration({
         eventManager: options.uelIntegration.eventManager,
         managerType: options.uelIntegration.managerType,
-        managerName: options.uelIntegration.managerName
+        managerName: options.uelIntegration.managerName,
       });
     }
   }
@@ -339,6 +339,8 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
     healthMonitoring?: boolean;
   }): Promise<void> {
     try {
+      // Import UEL directly to avoid circular dependency
+      const { UEL } = await import('./core/uel-singleton');
       this.uelSystem = UEL.getInstance();
 
       await this.uelSystem.initialize({

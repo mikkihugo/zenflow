@@ -3,10 +3,8 @@
  * Connects monitoring system with existing Claude-Zen components.
  */
 /**
- * @file system-integration implementation
+ * @file System-integration implementation.
  */
-
-
 
 import { EventEmitter } from 'node:events';
 import { PerformanceAnalyzer, type PerformanceInsights } from '../analytics/performance-analyzer';

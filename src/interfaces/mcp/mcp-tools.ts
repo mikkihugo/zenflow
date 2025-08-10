@@ -5,9 +5,9 @@
  * Extends the existing MCP infrastructure with enhanced capabilities.
  */
 
+import * as fs from 'fs';
 import type { MCPTool, MCPToolResult } from '../../coordination/swarm/mcp/types';
 import { MemoryCoordinator } from '../../memory/core/memory-coordinator';
-import * as fs from 'fs';
 
 // This is a placeholder for the actual memoryCoordinator instance.
 // In a real application, this would be initialized and managed by the DI container.
@@ -182,10 +182,10 @@ class StoreDiscoveryPatternHandler extends AdvancedToolHandler {
       // A real implementation would get this from the DI container
       if (!memoryCoordinator) {
         memoryCoordinator = new MemoryCoordinator({
-            enabled: true,
-            consensus: { quorum: 0.5, timeout: 5000, strategy: 'majority' },
-            distributed: { replication: 1, consistency: 'strong', partitioning: 'hash' },
-            optimization: { autoCompaction: true, cacheEviction: 'lru', memoryThreshold: 0.8 }
+          enabled: true,
+          consensus: { quorum: 0.5, timeout: 5000, strategy: 'majority' },
+          distributed: { replication: 1, consistency: 'strong', partitioning: 'hash' },
+          optimization: { autoCompaction: true, cacheEviction: 'lru', memoryThreshold: 0.8 },
         });
       }
 
@@ -216,9 +216,7 @@ export const memoryStoreDiscoveryPatternTool: AdvancedMCPTool = {
   description: 'Store a discovery pattern in memory for future use.',
   category: 'memory-neural',
   version: '1.0.0',
-  permissions: [
-    { type: 'write', resource: 'memory:discovery_patterns' },
-  ],
+  permissions: [{ type: 'write', resource: 'memory:discovery_patterns' }],
   priority: 'medium',
   inputSchema: {
     type: 'object',
@@ -293,9 +291,7 @@ export const memoryRetrieveDiscoveryPatternTool: AdvancedMCPTool = {
   description: 'Retrieve a discovery pattern from memory.',
   category: 'memory-neural',
   version: '1.0.0',
-  permissions: [
-    { type: 'read', resource: 'memory:discovery_patterns' },
-  ],
+  permissions: [{ type: 'read', resource: 'memory:discovery_patterns' }],
   priority: 'medium',
   inputSchema: {
     type: 'object',
@@ -336,16 +332,15 @@ class FindSimilarDiscoveryPatternsHandler extends AdvancedToolHandler {
       // This is a placeholder for getting all patterns.
       // A real implementation would need a way to list all stored patterns.
       const allPatternsRaw = await memoryCoordinator.coordinate({
-          type: 'read',
-          sessionId: 'discovery_patterns',
-          target: '*' // Assuming a wildcard to get all patterns
+        type: 'read',
+        sessionId: 'discovery_patterns',
+        target: '*', // Assuming a wildcard to get all patterns
       });
 
       // Assuming allPatternsRaw.metadata contains the data
       const allPatterns = allPatternsRaw.metadata?.data || [];
 
-
-      const similarPatterns = allPatterns.filter(p => {
+      const similarPatterns = allPatterns.filter((p) => {
         const jaccardIndex = this.calculateJaccardIndex(pattern.files, p.files);
         return jaccardIndex >= similarityThreshold;
       });
@@ -360,7 +355,7 @@ class FindSimilarDiscoveryPatternsHandler extends AdvancedToolHandler {
   }
 
   private calculateJaccardIndex(set1: string[], set2: string[]): number {
-    const intersection = new Set(set1.filter(x => new Set(set2).has(x)));
+    const intersection = new Set(set1.filter((x) => new Set(set2).has(x)));
     const union = new Set([...set1, ...set2]);
     return intersection.size / union.size;
   }
@@ -371,9 +366,7 @@ export const memoryFindSimilarDiscoveryPatternsTool: AdvancedMCPTool = {
   description: 'Find similar discovery patterns in memory.',
   category: 'memory-neural',
   version: '1.0.0',
-  permissions: [
-    { type: 'read', resource: 'memory:discovery_patterns' },
-  ],
+  permissions: [{ type: 'read', resource: 'memory:discovery_patterns' }],
   priority: 'medium',
   inputSchema: {
     type: 'object',
@@ -451,9 +444,7 @@ export const memoryLogSwarmOperationTool: AdvancedMCPTool = {
   description: 'Log a swarm operation for continuous learning.',
   category: 'memory-neural',
   version: '1.0.0',
-  permissions: [
-    { type: 'write', resource: 'memory:swarm_operations' },
-  ],
+  permissions: [{ type: 'write', resource: 'memory:swarm_operations' }],
   priority: 'medium',
   inputSchema: {
     type: 'object',
@@ -497,10 +488,7 @@ advancedToolRegistry.registerTool(memoryLogSwarmOperationTool);
 
 class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
-    this.validateParams(
-      params,
-      memoryUpdateDiscoveryPatternFromSwarmOperationTool.inputSchema
-    );
+    this.validateParams(params, memoryUpdateDiscoveryPatternFromSwarmOperationTool.inputSchema);
     try {
       if (!memoryCoordinator) {
         throw new Error('Memory coordinator not initialized. Run memory_init first.');
@@ -524,18 +512,10 @@ class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandle
 
       // Update the discovery pattern based on the swarm operation
       if (outcome === 'success') {
-        existingPattern.confidenceScore = Math.min(
-          1,
-          existingPattern.confidenceScore + 0.1
-        );
-        existingPattern.files = [
-          ...new Set([...existingPattern.files, ...filesModified]),
-        ];
+        existingPattern.confidenceScore = Math.min(1, existingPattern.confidenceScore + 0.1);
+        existingPattern.files = [...new Set([...existingPattern.files, ...filesModified])];
       } else {
-        existingPattern.confidenceScore = Math.max(
-          0,
-          existingPattern.confidenceScore - 0.1
-        );
+        existingPattern.confidenceScore = Math.max(0, existingPattern.confidenceScore - 0.1);
       }
 
       // Store the updated discovery pattern
@@ -563,9 +543,7 @@ export const memoryUpdateDiscoveryPatternFromSwarmOperationTool: AdvancedMCPTool
   description: 'Update a discovery pattern based on a swarm operation.',
   category: 'memory-neural',
   version: '1.0.0',
-  permissions: [
-    { type: 'write', resource: 'memory:discovery_patterns' },
-  ],
+  permissions: [{ type: 'write', resource: 'memory:discovery_patterns' }],
   priority: 'medium',
   inputSchema: {
     type: 'object',
@@ -605,9 +583,7 @@ export const memoryUpdateDiscoveryPatternFromSwarmOperationTool: AdvancedMCPTool
   },
 };
 
-advancedToolRegistry.registerTool(
-  memoryUpdateDiscoveryPatternFromSwarmOperationTool
-);
+advancedToolRegistry.registerTool(memoryUpdateDiscoveryPatternFromSwarmOperationTool);
 
 class ExportDiscoveryPatternsHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
@@ -622,9 +598,9 @@ class ExportDiscoveryPatternsHandler extends AdvancedToolHandler {
       // This is a placeholder for getting all patterns.
       // A real implementation would need a way to list all stored patterns.
       const allPatternsRaw = await memoryCoordinator.coordinate({
-          type: 'read',
-          sessionId: 'discovery_patterns',
-          target: '*' // Assuming a wildcard to get all patterns
+        type: 'read',
+        sessionId: 'discovery_patterns',
+        target: '*', // Assuming a wildcard to get all patterns
       });
 
       const allPatterns = allPatternsRaw.metadata?.data || [];

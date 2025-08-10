@@ -1,5 +1,5 @@
 /**
- * @fileoverview Command Execution Engine - Pure TypeScript command processing
+ * @file Command Execution Engine - Pure TypeScript command processing.
  *
  * Handles command execution logic without React dependencies.
  * Separates business logic from UI rendering concerns following Google standards.
@@ -572,21 +572,29 @@ export class CommandExecutionEngine {
 
       // Try to use the enhanced DiscoverCommand class for full functionality
       try {
-        const { DiscoverCommand } = await import('../cli/commands/discover');
-        const discoverCommand = new DiscoverCommand();
+        const { CLICommandRegistry } = await import('./adapters/cli-adapters');
+        const registry = CLICommandRegistry.getInstance();
 
         logger.info('🚀 Using enhanced Progressive Confidence Building System');
-        await discoverCommand.execute(projectPath, options);
+        const result = await registry.executeCommand('discover', {
+          args: [projectPath],
+          flags: options
+        });
 
-        return {
+        return result.success ? {
           success: true,
-          message: 'Progressive confidence building completed successfully',
+          message: result.message || 'Progressive confidence building completed successfully',
           data: {
             enhanced: true,
             projectPath,
             options,
-            note: 'Used full DiscoverCommand implementation',
+            note: 'Used CLI command adapter',
+            ...result.data
           },
+        } : {
+          success: false,
+          error: result.error || 'Discovery command failed',
+          message: result.message || 'Failed to execute discover command'
         };
       } catch (enhancedError) {
         logger.warn('Enhanced discover failed, using fallback implementation:', enhancedError);
