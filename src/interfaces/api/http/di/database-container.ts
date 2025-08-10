@@ -563,7 +563,7 @@ class SimplifiedDatabaseController {
 
             if (operation.type === 'query') {
               result = await tx.query(operation.sql, operation.params);
-              transactionResults.push({
+              transactionResults?.push({
                 type: 'query',
                 sql: operation.sql,
                 params: operation.params,
@@ -573,7 +573,7 @@ class SimplifiedDatabaseController {
               });
             } else if (operation.type === 'execute') {
               result = await tx.execute(operation.sql, operation.params);
-              transactionResults.push({
+              transactionResults?.push({
                 type: 'execute',
                 sql: operation.sql,
                 params: operation.params,
@@ -593,7 +593,7 @@ class SimplifiedDatabaseController {
               error: error instanceof Error ? error.message : 'Unknown error',
             };
 
-            transactionResults.push(errorResult);
+            transactionResults?.push(errorResult);
 
             if (!request.continueOnError) {
               throw error;
@@ -727,13 +727,13 @@ class SimplifiedDatabaseController {
         for (const statement of request.statements) {
           try {
             // In a real implementation, this would validate syntax
-            validationResults.push({
+            validationResults?.push({
               statement: `${statement.substring(0, 100)}...`,
               valid: true,
               issues: [],
             });
           } catch (error) {
-            validationResults.push({
+            validationResults?.push({
               statement: `${statement.substring(0, 100)}...`,
               valid: false,
               issues: [error instanceof Error ? error.message : 'Validation error'],
@@ -751,7 +751,7 @@ class SimplifiedDatabaseController {
             description: request.description,
             validationResults,
             totalStatements: request.statements.length,
-            validStatements: validationResults.filter((r) => r.valid).length,
+            validStatements: validationResults?.filter((r) => r.valid).length,
           },
           metadata: {
             rowCount: 0,
@@ -769,14 +769,14 @@ class SimplifiedDatabaseController {
         for (const statement of request.statements) {
           try {
             const result = await tx.execute(statement);
-            migrationResults.push({
+            migrationResults?.push({
               statement: `${statement.substring(0, 100)}...`,
               success: true,
               affectedRows: result?.affectedRows,
               executionTime: result?.executionTime,
             });
           } catch (error) {
-            migrationResults.push({
+            migrationResults?.push({
               statement: `${statement.substring(0, 100)}...`,
               success: false,
               error: error instanceof Error ? error.message : 'Execution error',

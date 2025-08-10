@@ -142,7 +142,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         medium: 0.2, // 20%+ usage
       },
     };
-    this.knowledgeSwarm = new KnowledgeSwarm(config?.swarmConfig);
+    this.knowledgeSwarm = new KnowledgeSwarm(config?.["swarmConfig"]);
   }
 
   /**

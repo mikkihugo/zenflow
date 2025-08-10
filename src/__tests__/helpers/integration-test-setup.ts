@@ -7,12 +7,6 @@
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type {
-  DatabaseTestHelper,
-  FileSystemTestHelper,
-  IntegrationTestConfig,
-  NetworkTestHelper,
-} from './types';
 
 export class IntegrationTestSetup {
   private config: IntegrationTestConfig;

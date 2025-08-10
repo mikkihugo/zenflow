@@ -20,14 +20,6 @@ import { MEMORY_SYSTEMS_TEMPLATE } from '../templates/memory-systems-template';
 import { NEURAL_NETWORKS_TEMPLATE } from '../templates/neural-networks-template';
 import { REST_API_TEMPLATE } from '../templates/rest-api-template';
 import { SWARM_COORDINATION_TEMPLATE } from '../templates/swarm-coordination-template';
-import type {
-  ArchitectureDesign,
-  DetailedSpecification,
-  ProjectDomain,
-  ProjectSpecification,
-  PseudocodeStructure,
-  SPARCTemplate,
-} from '../types/sparc-types';
 
 export interface TemplateApplicationResult {
   specification: DetailedSpecification;

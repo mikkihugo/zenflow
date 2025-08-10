@@ -12,9 +12,8 @@
 
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
-import type React from 'react';
 import { useState } from 'react';
-import { Header, InteractiveFooter, StatusBadge, type SwarmStatus } from '../components/index';
+import { Header, InteractiveFooter, StatusBadge } from '../components/index';
 
 export interface MenuItem {
   label: string;
@@ -23,7 +22,7 @@ export interface MenuItem {
   disabled?: boolean;
 }
 
-export interface MainMenuProps {
+export interface MenuProps {
   title?: string;
   items?: MenuItem[];
   swarmStatus?: SwarmStatus;
@@ -47,7 +46,7 @@ export interface MainMenuProps {
  * @param root0.showHeader
  * @param root0.showFooter
  */
-export const MainMenu: React.FC<MainMenuProps> = ({
+export const Menu: React.FC<MainMenuProps> = ({
   title = 'Claude Code Zen',
   items,
   swarmStatus,
@@ -195,7 +194,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
  * @param _handlers.onViewLogs
  * @param _handlers.onSettings
  */
-export const createDefaultMenuItems = (_handlers: {
+export const createDefaultMenuItems = (handlers: {
   onStartSwarm?: () => void;
   onViewStatus?: () => void;
   onViewLogs?: () => void;

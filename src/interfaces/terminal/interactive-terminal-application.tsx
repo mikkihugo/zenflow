@@ -12,18 +12,9 @@
 
 
 import { Box, Text, useInput } from 'ink';
-import type React from 'react';
 import { useEffect, useState } from 'react';
-import { ErrorMessage, SwarmSpinner, type SwarmStatus } from './components/index';
-import {
-  MainMenu,
-  type ScreenType,
-  ScreenUtils,
-  type SwarmAgent,
-  SwarmDashboard,
-  type SwarmMetrics,
-  type SwarmTask,
-} from './screens/index';
+import { ErrorMessage, SwarmSpinner } from './components/index';
+import { MainMenu, ScreenUtils, SwarmDashboard } from './screens/index';
 
 export interface TUIModeProps {
   flags: Record<string, any>;
@@ -236,7 +227,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
   }, [initializeTUI, updateState]);
 
   // Global keyboard shortcuts
-  useInput((_input, key) => {
+  useInput((input, key) => {
     if (key.escape && state.currentScreen !== 'main-menu') {
       navigateToScreen('main-menu');
     }

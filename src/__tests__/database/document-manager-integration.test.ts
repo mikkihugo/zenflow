@@ -6,15 +6,6 @@
  */
 
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/core';
-import type {
-  BaseDocumentEntity,
-  DocumentRelationshipEntity,
-  DocumentWorkflowStateEntity,
-  EpicDocumentEntity,
-  FeatureDocumentEntity,
-  PRDDocumentEntity,
-  ProjectEntity,
-} from '../../database/entities/document-entities';
 import { DocumentManager } from '../../database/managers/document-manager';
 
 describe('DocumentManager Integration Tests', () => {
@@ -111,12 +102,12 @@ describe('DocumentManager Integration Tests', () => {
       // Find relationship to PRD
       const prdRelationship = (epicWithRelationships as any).relationships.find(
         (rel: DocumentRelationshipEntity) =>
-          rel.target_document_id === prd.id && rel.relationship_type === 'derives_from'
+          rel["target_document_id"] === prd.id && rel["relationship_type"] === 'derives_from'
       );
 
       expect(prdRelationship).toBeDefined();
-      expect(prdRelationship.metadata.auto_generated).toBe(true);
-      expect(prdRelationship.metadata.generation_method).toBe('type_hierarchy');
+      expect(prdRelationship.metadata["auto_generated"]).toBe(true);
+      expect(prdRelationship.metadata["generation_method"]).toBe('type_hierarchy');
     });
 
     test('should create semantic relationships based on content analysis', async () => {
@@ -164,11 +155,11 @@ describe('DocumentManager Integration Tests', () => {
       const relationships = (doc1WithRel as any).relationships as DocumentRelationshipEntity[];
 
       const semanticRel = relationships.find(
-        (rel) => rel.target_document_id === doc2.id && rel.relationship_type === 'relates_to'
+        (rel) => rel["target_document_id"] === doc2.id && rel["relationship_type"] === 'relates_to'
       );
 
       expect(semanticRel).toBeDefined();
-      expect(semanticRel?.metadata.generation_method).toBe('keyword_analysis');
+      expect(semanticRel?.metadata["generation_method"]).toBe('keyword_analysis');
       expect(semanticRel?.strength).toBeGreaterThan(0.3);
     });
 
@@ -218,11 +209,11 @@ describe('DocumentManager Integration Tests', () => {
   });
 
   describe('Advanced Document Search', () => {
-    let _searchDocuments: BaseDocumentEntity[];
+    let searchDocuments: BaseDocumentEntity[];
 
     beforeEach(async () => {
       // Create test documents for search
-      _searchDocuments = await Promise.all([
+      searchDocuments = await Promise.all([
         documentManager.createDocument(
           {
             type: 'prd',
@@ -385,8 +376,8 @@ describe('DocumentManager Integration Tests', () => {
         expect(['prd', 'feature']).toContain(doc.type);
         expect(['approved', 'in_progress']).toContain(doc.status);
         expect(['high', 'medium']).toContain(doc.priority);
-        expect(doc.created_at.getTime()).toBeGreaterThanOrEqual(yesterday.getTime());
-        expect(doc.created_at.getTime()).toBeLessThanOrEqual(tomorrow.getTime());
+        expect(doc["created_at"]?.getTime()).toBeGreaterThanOrEqual(yesterday.getTime());
+        expect(doc["created_at"]?.getTime()).toBeLessThanOrEqual(tomorrow.getTime());
       });
     });
 
@@ -464,7 +455,7 @@ describe('DocumentManager Integration Tests', () => {
 
       const autoCreatedEpic = documents.find(
         (doc) =>
-          doc.metadata?.source_document_id === prd.id && doc.metadata?.auto_generated === true
+          doc.metadata?.["source_document_id"] === prd.id && doc.metadata?.["auto_generated"] === true
       );
 
       expect(autoCreatedEpic).toBeDefined();
@@ -514,7 +505,7 @@ describe('DocumentManager Integration Tests', () => {
 
       const autoCreatedTask = documents.find(
         (doc) =>
-          doc.metadata?.source_document_id === feature.id && doc.metadata?.auto_generated === true
+          doc.metadata?.["source_document_id"] === feature.id && doc.metadata?.["auto_generated"] === true
       );
 
       expect(autoCreatedTask).toBeDefined();
@@ -543,12 +534,12 @@ describe('DocumentManager Integration Tests', () => {
 
       // Valid transition: draft -> review
       const workflow1 = await documentManager.advanceDocumentWorkflow(document.id, 'review');
-      expect(workflow1.current_stage).toBe('review');
-      expect(workflow1.stages_completed).toContain('draft');
+      expect(workflow1["current_stage"]).toBe('review');
+      expect(workflow1["stages_completed"]).toContain('draft');
 
       // Valid transition: review -> approved
       const workflow2 = await documentManager.advanceDocumentWorkflow(document.id, 'approved');
-      expect(workflow2.current_stage).toBe('approved');
+      expect(workflow2["current_stage"]).toBe('approved');
 
       // Invalid transition: should throw error
       await expect(documentManager.advanceDocumentWorkflow(document.id, 'draft')).rejects.toThrow(
@@ -594,10 +585,10 @@ describe('DocumentManager Integration Tests', () => {
       });
       const workflow = (workflowState as any).workflowState as DocumentWorkflowStateEntity;
 
-      expect(workflow.generated_artifacts).toBeDefined();
-      expect(workflow.generated_artifacts.length).toBeGreaterThan(0);
+      expect(workflow["generated_artifacts"]).toBeDefined();
+      expect(workflow["generated_artifacts"].length).toBeGreaterThan(0);
       expect(
-        workflow.generated_artifacts.some((artifact) => artifact.includes('summary_report'))
+        workflow["generated_artifacts"]?.some((artifact) => artifact.includes('summary_report'))
       ).toBe(true);
     });
   });
@@ -605,7 +596,7 @@ describe('DocumentManager Integration Tests', () => {
   describe('Complex Integration Scenarios', () => {
     test('should handle complete document lifecycle with relationships and workflows', async () => {
       // 1. Create vision document
-      const _vision = await documentManager.createDocument(
+      const vision = await documentManager.createDocument(
         {
           type: 'vision',
           title: 'Product Vision 2024',
@@ -664,7 +655,7 @@ describe('DocumentManager Integration Tests', () => {
         projectId: testProject.id,
       });
 
-      const autoEpic = epics.find((epic) => epic.metadata?.source_document_id === prd.id);
+      const autoEpic = epics.find((epic) => epic.metadata?.["source_document_id"] === prd.id);
       expect(autoEpic).toBeDefined();
 
       // 5. Create feature manually and verify relationships
@@ -705,7 +696,7 @@ describe('DocumentManager Integration Tests', () => {
 
       // Should have relationships to PRD or Epic
       const hasUpstreamRelationship = relationships.some(
-        (rel) => rel.target_document_id === prd.id || rel.target_document_id === autoEpic?.id
+        (rel) => rel["target_document_id"] === prd.id || rel["target_document_id"] === autoEpic?.id
       );
       expect(hasUpstreamRelationship).toBe(true);
 
@@ -776,7 +767,7 @@ describe('DocumentManager Integration Tests', () => {
       });
       const workflow = (workflowState as any).workflowState as DocumentWorkflowStateEntity;
 
-      expect(workflow.current_stage).toBe('approved');
+      expect(workflow["current_stage"]).toBe('approved');
 
       // Check for auto-created tasks
       const { documents: tasks } = await documentManager.queryDocuments({
@@ -785,7 +776,7 @@ describe('DocumentManager Integration Tests', () => {
       });
 
       const securityTasks = tasks.filter(
-        (task) => task.metadata?.source_document_id === feature.id
+        (task) => task.metadata?.["source_document_id"] === feature.id
       );
 
       expect(securityTasks.length).toBeGreaterThan(0);

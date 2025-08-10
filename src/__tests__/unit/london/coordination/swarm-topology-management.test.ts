@@ -1,12 +1,4 @@
-/**
- * Swarm Topology Management Test Suite
- * London TDD approach - testing interactions and protocols
- */
-
-import type { Agent } from '../../../../coordination/agents/agent';
-import type { MessageBroker } from '../../../../coordination/swarm/core/message-broker';
 import { SwarmTopologyManager } from '../../../../coordination/swarm/core/topology-manager';
-import type { TopologyOptimizer } from '../../../../coordination/swarm/core/topology-optimizer';
 import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers';
 
 describe('Swarm Topology Management (London TDD)', () => {
@@ -38,7 +30,7 @@ describe('Swarm Topology Management (London TDD)', () => {
     mockAgents = Array.from(
       { length: 5 },
       (_, i) =>
-        ({
+        (({
           id: `agent-${i}`,
           type: 'coordinator',
           status: 'active',
@@ -48,8 +40,8 @@ describe('Swarm Topology Management (London TDD)', () => {
           sendMessage: vi.fn(),
           receiveMessage: vi.fn(),
           getMetrics: vi.fn(),
-          updateStatus: vi.fn(),
-        }) as jest.Mocked<Agent>
+          updateStatus: vi.fn()
+        }) as jest.Mocked<Agent>)
     );
 
     testHelpers = new CoordinationTestHelpers();
@@ -483,8 +475,8 @@ describe('Swarm Topology Management (London TDD)', () => {
       // Test hierarchical load balancing
       await topologyManager.initializeTopology('hierarchical', mockAgents);
 
-      const _coordinatorLoad = { 'agent-0': 0.95, 'agent-1': 0.4 };
-      const _workerLoad = { 'agent-2': 0.3, 'agent-3': 0.8, 'agent-4': 0.7 };
+      const coordinatorLoad = { 'agent-0': 0.95, 'agent-1': 0.4 };
+      const workerLoad = { 'agent-2': 0.3, 'agent-3': 0.8, 'agent-4': 0.7 };
 
       mockTopologyOptimizer.recommendOptimizations.mockResolvedValue({
         actions: [

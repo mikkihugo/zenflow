@@ -14,7 +14,7 @@ import { ProgressiveConfidenceBuilder } from './progressive-confidence-builder';
 const logger = createLogger({ prefix: 'ProgressiveConfidenceDemo' });
 
 // Mock AGUI interface for demo
-class DemoAGUI {
+class _DemoAGUI {
   async askQuestion(question: any): Promise<string> {
     logger.info('AGUI Question:', {
       type: question.type,
@@ -90,10 +90,10 @@ async function runDemo() {
   // Listen to progress events
   confidenceBuilder.on('progress', (event) => {
     logger.info('📊 Progress Event:', {
-      iteration: event.iteration,
-      confidence: `${(event.confidence * 100).toFixed(1)}%`,
-      domains: event.domainCount,
-      metrics: Object.entries(event.metrics)
+      iteration: event["iteration"],
+      confidence: `${(event["confidence"] * 100).toFixed(1)}%`,
+      domains: event["domainCount"],
+      metrics: Object.entries(event["metrics"])
         .map(([key, value]) => `${key}: ${(value * 100).toFixed(1)}%`)
         .join(', '),
     });

@@ -14,7 +14,7 @@ describe('Domain Splitting - Classical TDD', () => {
 
   beforeEach(async () => {
     // Create temporary test directory
-    tempDir = path.join(__dirname, '../../../../..', 'tmp', 'domain-test');
+    tempDir = path.join(_dirname, '../../../../..', 'tmp', 'domain-test');
     await fs.ensureDir(tempDir);
 
     analyzer = new DomainAnalysisEngine();

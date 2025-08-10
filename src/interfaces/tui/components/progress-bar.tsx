@@ -3,7 +3,6 @@
  */
 
 import { Box, Text } from 'ink';
-import type React from 'react';
 
 export interface ProgressBarProps {
   current: number;

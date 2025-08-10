@@ -37,7 +37,7 @@ class WASMMatrixOps {
         for (let k = 0; k < aCols; k++) {
           sum += a[i * aCols + k] * b[k * bCols + j];
         }
-        result[i * bCols + j] = sum;
+        result?.[i * bCols + j] = sum;
       }
     }
 
@@ -50,7 +50,7 @@ class WASMMatrixOps {
 
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
-        result[j * rows + i] = matrix[i * cols + j];
+        result?.[j * rows + i] = matrix[i * cols + j];
       }
     }
 
@@ -129,7 +129,7 @@ class WASMMatrixOps {
           for (let l = 0; l < n; l++) {
             sum += batchA[aOffset + i * n + l] * batchB[bOffset + l * k + j];
           }
-          result[resultOffset + i * k + j] = sum;
+          result?.[resultOffset + i * k + j] = sum;
         }
       }
     }
@@ -150,7 +150,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const a = [1, 2, 3, 4, 5, 6];
       const b = [7, 8, 9, 10, 11, 12];
 
-      const result = wasmOps.matrixMultiply(a, 2, 3, b, 3, 2);
+      const result = wasmOps["matrixMultiply"](a, 2, 3, b, 3, 2);
 
       // Expected: [[1*7+2*9+3*11, 1*8+2*10+3*12], [4*7+5*9+6*11, 4*8+5*10+6*12]]
       //         = [[58, 64], [139, 154]]
@@ -161,7 +161,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const matrix = [1, 2, 3, 4];
       const identity = [1, 0, 0, 1];
 
-      const result = wasmOps.matrixMultiply(matrix, 2, 2, identity, 2, 2);
+      const result = wasmOps["matrixMultiply"](matrix, 2, 2, identity, 2, 2);
 
       expect(result).toEqual(matrix);
     });
@@ -171,7 +171,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const b = [5, 6, 7]; // 3x1
 
       expect(() => {
-        wasmOps.matrixMultiply(a, 2, 2, b, 3, 1);
+        wasmOps["matrixMultiply"](a, 2, 2, b, 3, 1);
       }).toThrow('Invalid matrix dimensions');
     });
   });
@@ -180,7 +180,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
     it('should transpose a 3x2 matrix correctly', () => {
       const matrix = [1, 2, 3, 4, 5, 6];
 
-      const result = wasmOps.transpose(matrix, 3, 2);
+      const result = wasmOps["transpose"](matrix, 3, 2);
 
       expect(result).toEqual([1, 3, 5, 2, 4, 6]);
     });
@@ -188,7 +188,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
     it('should handle square matrix transpose', () => {
       const matrix = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-      const result = wasmOps.transpose(matrix, 3, 3);
+      const result = wasmOps["transpose"](matrix, 3, 3);
 
       expect(result).toEqual([1, 4, 7, 2, 5, 8, 3, 6, 9]);
     });
@@ -199,7 +199,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const input = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
       const kernel = [1, 0, -1, 2, 0, -2, 1, 0, -1]; // Sobel X filter
 
-      const result = wasmOps.convolve2D(input, 4, 4, kernel, 3);
+      const result = wasmOps["convolve2D"](input, 4, 4, kernel, 3);
 
       // Sobel edge detection in X direction
       expect(result.length).toBe(4); // 2x2 output
@@ -211,7 +211,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const input = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
       const kernel = [1, 1, 1, 1]; // Simple averaging kernel
 
-      const result = wasmOps.convolve2D(input, 4, 4, kernel, 2, 2);
+      const result = wasmOps["convolve2D"](input, 4, 4, kernel, 2, 2);
 
       // With stride 2, output should be 2x2
       expect(result.length).toBe(4);
@@ -225,7 +225,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const a = [1, 2, 3];
       const b = [4, 5, 6];
 
-      const result = wasmOps.dotProduct(a, b);
+      const result = wasmOps["dotProduct"](a, b);
 
       expect(result).toBe(32); // 1*4 + 2*5 + 3*6
     });
@@ -234,7 +234,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const a = [1, 2, 3];
       const b = [0, 0, 0];
 
-      const result = wasmOps.dotProduct(a, b);
+      const result = wasmOps["dotProduct"](a, b);
 
       expect(result).toBe(0);
     });
@@ -244,7 +244,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const b = [4, 5];
 
       expect(() => {
-        wasmOps.dotProduct(a, b);
+        wasmOps["dotProduct"](a, b);
       }).toThrow('same length');
     });
   });
@@ -273,7 +273,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
         2, // 2*Identity
       ];
 
-      const result = wasmOps.batchMatMul(batchA, batchB, 2, 2, 2, 2);
+      const result = wasmOps["batchMatMul"](batchA, batchB, 2, 2, 2, 2);
 
       // First batch: A * I = A
       expect(result?.slice(0, 4)).toEqual([1, 2, 3, 4]);
@@ -290,7 +290,7 @@ describe('WASM Matrix Operations - Classical TDD', () => {
       const b = new Array(size * size).fill(2);
 
       const startTime = performance.now();
-      const result = wasmOps.matrixMultiply(a, size, size, b, size, size);
+      const result = wasmOps["matrixMultiply"](a, size, size, b, size, size);
       const duration = performance.now() - startTime;
 
       // All elements should be size * 2 (sum of row * column)

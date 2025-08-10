@@ -9,16 +9,7 @@
 
 
 import { createLogger } from '../../core/logger';
-import type {
-  CacheStrategy,
-  CoordinationLayer,
-  LatencyReduction,
-  Protocol,
-  RoutingOptimization,
-  ScalingStrategy,
-  SwarmOptimizer,
-  SwarmTopology,
-} from '../interfaces/optimization-interfaces';
+import type { SwarmOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface SwarmOptimizationConfig {
   maxAgents: number;

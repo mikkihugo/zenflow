@@ -41,7 +41,9 @@ export interface FACTSearchQuery {
   type?: string;
   domains?: string[];
   maxResults?: number;
+  limit?: number; // Alias for maxResults for compatibility
   minConfidence?: number;
+  timeout?: number;
   timeRange?: {
     start: number;
     end: number;

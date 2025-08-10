@@ -531,7 +531,7 @@ export class EphemeralSwarmManager extends EventEmitter {
    * @param data
    */
   private handleTaskCompletion(data: any): void {
-    const swarm = this.activeSwarms.get(data?.swarmId);
+    const swarm = this.activeSwarms.get(data?.["swarmId"]);
     if (swarm) {
       swarm.lastActivity = new Date();
       swarm.performance.tasksCompleted++;
@@ -542,7 +542,7 @@ export class EphemeralSwarmManager extends EventEmitter {
       );
 
       if (allStepsCompleted) {
-        this.scheduleSwarmCleanup(data?.swarmId, 'all_tasks_completed');
+        this.scheduleSwarmCleanup(data?.["swarmId"], 'all_tasks_completed');
       }
     }
   }
@@ -553,9 +553,9 @@ export class EphemeralSwarmManager extends EventEmitter {
    * @param data
    */
   private handleAgentIdle(data: any): void {
-    const swarm = this.activeSwarms.get(data?.swarmId);
+    const swarm = this.activeSwarms.get(data?.["swarmId"]);
     if (swarm) {
-      const agent = swarm.agents.find((a) => a.id === data?.agentId);
+      const agent = swarm.agents.find((a) => a.id === data?.["agentId"]);
       if (agent) {
         agent.status = 'idle';
         agent.lastActivity = new Date();

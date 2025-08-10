@@ -4,13 +4,11 @@
  */
 
 import {
-  type AllSystemEvents,
   DatabaseObserver,
   EventBuilder,
   LoggerObserver,
   MetricsObserver,
   SystemEventManager,
-  type SystemObserver,
   WebSocketObserver,
 } from '../../interfaces/events/observer-system';
 

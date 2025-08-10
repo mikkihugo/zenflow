@@ -222,34 +222,34 @@ export enum SystemEvents {
 }
 
 export interface EventMap extends Record<string, unknown> {
-  [SystemEvents.AGENT_SPAWNED]: { agentId: string; profile: AgentProfile; sessionId: string };
-  [SystemEvents.AGENT_TERMINATED]: { agentId: string; reason: string };
-  [SystemEvents.AGENT_ERROR]: { agentId: string; error: Error };
-  [SystemEvents.AGENT_IDLE]: { agentId: string };
-  [SystemEvents.AGENT_ACTIVE]: { agentId: string; taskId: string };
+  [SystemEvents["AGENT_SPAWNED"]]: { agentId: string; profile: AgentProfile; sessionId: string };
+  [SystemEvents["AGENT_TERMINATED"]]: { agentId: string; reason: string };
+  [SystemEvents["AGENT_ERROR"]]: { agentId: string; error: Error };
+  [SystemEvents["AGENT_IDLE"]]: { agentId: string };
+  [SystemEvents["AGENT_ACTIVE"]]: { agentId: string; taskId: string };
 
-  [SystemEvents.TASK_CREATED]: { task: Task };
-  [SystemEvents.TASK_ASSIGNED]: { taskId: string; agentId: string };
-  [SystemEvents.TASK_STARTED]: { taskId: string; agentId: string };
-  [SystemEvents.TASK_COMPLETED]: { taskId: string; result: unknown };
-  [SystemEvents.TASK_FAILED]: { taskId: string; error: Error };
-  [SystemEvents.TASK_CANCELLED]: { taskId: string; reason: string };
+  [SystemEvents["TASK_CREATED"]]: { task: Task };
+  [SystemEvents["TASK_ASSIGNED"]]: { taskId: string; agentId: string };
+  [SystemEvents["TASK_STARTED"]]: { taskId: string; agentId: string };
+  [SystemEvents["TASK_COMPLETED"]]: { taskId: string; result: unknown };
+  [SystemEvents["TASK_FAILED"]]: { taskId: string; error: Error };
+  [SystemEvents["TASK_CANCELLED"]]: { taskId: string; reason: string };
 
-  [SystemEvents.MEMORY_CREATED]: { entry: MemoryEntry };
-  [SystemEvents.MEMORY_UPDATED]: { entry: MemoryEntry; previousVersion: number };
-  [SystemEvents.MEMORY_DELETED]: { entryId: string };
-  [SystemEvents.MEMORY_SYNCED]: { entries: MemoryEntry[] };
+  [SystemEvents["MEMORY_CREATED"]]: { entry: MemoryEntry };
+  [SystemEvents["MEMORY_UPDATED"]]: { entry: MemoryEntry; previousVersion: number };
+  [SystemEvents["MEMORY_DELETED"]]: { entryId: string };
+  [SystemEvents["MEMORY_SYNCED"]]: { entries: MemoryEntry[] };
 
-  [SystemEvents.SYSTEM_READY]: { timestamp: Date };
-  [SystemEvents.SYSTEM_SHUTDOWN]: { reason: string };
-  [SystemEvents.SYSTEM_ERROR]: { error: Error; component: string };
-  [SystemEvents.SYSTEM_HEALTHCHECK]: { status: HealthStatus };
+  [SystemEvents["SYSTEM_READY"]]: { timestamp: Date };
+  [SystemEvents["SYSTEM_SHUTDOWN"]]: { reason: string };
+  [SystemEvents["SYSTEM_ERROR"]]: { error: Error; component: string };
+  [SystemEvents["SYSTEM_HEALTHCHECK"]]: { status: HealthStatus };
 
-  [SystemEvents.RESOURCE_ACQUIRED]: { resourceId: string; agentId: string };
-  [SystemEvents.RESOURCE_RELEASED]: { resourceId: string; agentId: string };
-  [SystemEvents.DEADLOCK_DETECTED]: { agents: string[]; resources: string[] };
-  [SystemEvents.MESSAGE_SENT]: { from: string; to: string; message: Message };
-  [SystemEvents.MESSAGE_RECEIVED]: { from: string; to: string; message: Message };
+  [SystemEvents["RESOURCE_ACQUIRED"]]: { resourceId: string; agentId: string };
+  [SystemEvents["RESOURCE_RELEASED"]]: { resourceId: string; agentId: string };
+  [SystemEvents["DEADLOCK_DETECTED"]]: { agents: string[]; resources: string[] };
+  [SystemEvents["MESSAGE_SENT"]]: { from: string; to: string; message: Message };
+  [SystemEvents["MESSAGE_RECEIVED"]]: { from: string; to: string; message: Message };
 
   // Additional events
   'metrics:collected': OrchestratorMetrics;

@@ -4,16 +4,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
 import { KnowledgeAwareDiscovery } from '../../coordination/discovery/knowledge-enhanced-discovery';
-import type { HiveFACTSystem, UniversalFact } from '../../coordination/hive-fact-integration';
-import {
-  HiveKnowledgeBridge,
-  type KnowledgeRequest,
-  type KnowledgeResponse,
-} from '../../coordination/hive-knowledge-bridge';
-import { SwarmKnowledgeSync, type SwarmLearning } from '../../coordination/swarm/knowledge-sync';
-import type { SessionMemoryStore } from '../../memory/stores/session-memory-store';
+import { HiveKnowledgeBridge } from '../../coordination/hive-knowledge-bridge';
+import { SwarmKnowledgeSync } from '../../coordination/swarm/knowledge-sync';
 
 // Mock implementations
 class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {

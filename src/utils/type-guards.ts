@@ -530,15 +530,12 @@ export function isNeuralNetworkConfig(obj: any): obj is {
   activationFunctions: string[];
   learningRate: number;
 } {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    Array.isArray(obj.layers) &&
-    obj.layers.every((layer: any) => typeof layer === 'number') &&
-    Array.isArray(obj.activationFunctions) &&
-    obj.activationFunctions.every((fn: any) => typeof fn === 'string') &&
-    typeof obj.learningRate === 'number'
-  );
+  return (typeof obj === 'object' &&
+  obj !== null &&
+  Array.isArray(obj["layers"]) &&
+  obj["layers"]?.["every"]((layer: any) => typeof layer === 'number') &&
+  Array.isArray(obj["activationFunctions"]) &&
+  obj["activationFunctions"]?.["every"]((fn: any) => typeof fn === 'string') && typeof obj["learningRate"] === 'number');
 }
 
 /**

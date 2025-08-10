@@ -791,8 +791,8 @@ describe('Integration & Advanced Features Coverage', () => {
 
     describe('GHCoordinator', () => {
       test('should initialize with default options', async () => {
-        process.env.GITHUB_OWNER = 'test-owner';
-        process.env.GITHUB_REPO = 'test-repo';
+        process.env["GITHUB_OWNER"] = 'test-owner';
+        process.env["GITHUB_REPO"] = 'test-repo';
 
         const coordinator = new GHCoordinator();
 

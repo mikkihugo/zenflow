@@ -9,7 +9,6 @@
 
 
 import type { CapacityManager } from '../interfaces';
-import type { CapacityMetrics, LoadMetrics, ResourceConstraint } from '../types';
 import { CapacityPredictor } from './capacity-predictor';
 import { ResourceMonitor } from './resource-monitor';
 

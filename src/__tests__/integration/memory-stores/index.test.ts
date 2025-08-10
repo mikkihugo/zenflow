@@ -8,13 +8,6 @@
 
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 
-// Import all memory store test modules
-import './sqlite-persistence.test';
-import './lancedb-vector-operations.test';
-import './session-management.test';
-import './cache-performance.test';
-import './data-integrity.test';
-
 // Test configuration and utilities
 interface TestSuiteMetrics {
   totalTests: number;
@@ -146,7 +139,7 @@ describe('Memory Stores Integration Test Suite', () => {
       };
 
       // Verify comprehensive coverage
-      Object.entries(coverageAreas).forEach(([_area, coverage]) => {
+      Object.entries(coverageAreas).forEach(([area, coverage]) => {
         expect(coverage.london).toHaveLength(2);
         expect(coverage.classical).toHaveLength(2);
       });

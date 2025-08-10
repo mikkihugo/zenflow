@@ -1,11 +1,3 @@
-/**
- * @file End-to-end test for CLI discover command with auto-swarms
- *
- * Tests the complete integration pipeline from discover.ts
- */
-
-import { jest } from '@jest/globals';
-
 describe('CLI Discover Auto-Swarm Integration', () => {
   let mockMemoryStore: any;
   let mockAgui: any;

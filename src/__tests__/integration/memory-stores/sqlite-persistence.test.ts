@@ -178,7 +178,7 @@ describe('SQLite Persistence Integration Tests', () => {
 
     // Clean up test database file
     try {
-      await access(dbPath, constants.F_OK);
+      await access(dbPath, constants["F_OK"]);
       await unlink(dbPath);
     } catch {
       // File doesn't exist, ignore

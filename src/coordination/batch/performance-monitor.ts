@@ -5,7 +5,6 @@
  */
 
 import { createLogger } from '../../core/logger';
-import type { BatchExecutionSummary } from './batch-engine';
 
 const logger = createLogger({ prefix: 'BatchPerformanceMonitor' });
 

@@ -476,7 +476,7 @@ export function createToolBatch(
     const options: Partial<Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>> = {};
 
     if (tool.dependencies !== undefined) {
-      options.dependencies = tool.dependencies;
+      options?.dependencies = tool.dependencies;
     }
 
     return createBatchOperation(

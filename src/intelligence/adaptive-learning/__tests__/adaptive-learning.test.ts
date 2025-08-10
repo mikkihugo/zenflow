@@ -16,14 +16,6 @@ import {
 } from '../ml-integration';
 import { PatternRecognitionEngine } from '../pattern-recognition-engine';
 import { PerformanceOptimizer } from '../performance-optimizer';
-import type {
-  AdaptiveLearningConfig,
-  Agent,
-  ExecutionData,
-  SuccessPattern,
-  SystemContext,
-  Task,
-} from '../types';
 
 // ============================================
 // Test Helpers and Fixtures
@@ -327,7 +319,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
         },
       ];
 
-      const _practices = coordinator.emergeBestPractices(successes);
+      const practices = coordinator.emergeBestPractices(successes);
 
       expect(mockEmit).toHaveBeenCalledWith(
         'bestPracticeIdentified',
@@ -543,7 +535,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
 
     test('Q-learning update should follow correct mathematical formula', () => {
       // Classical TDD: Test actual Q-learning math
-      const _initialQ = rlEngine.getQValue('state1', 'action1');
+      const initialQ = rlEngine.getQValue('state1', 'action1');
 
       // Set up known values for deterministic testing
       rlEngine.updateQValue('state2', 'bestAction', 5.0, 'state3'); // Set max next Q = 5.0
@@ -754,7 +746,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
         windowSize: 50,
       });
 
-      const _initialAccuracy = onlineLearner.getAccuracy();
+      const initialAccuracy = onlineLearner.getAccuracy();
 
       // Stream data that should cause performance degradation
       const goodData = {
@@ -788,7 +780,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
         await onlineLearner.processStream({ ...goodData, id: `good_${i}` } as ExecutionData);
       }
 
-      const _midAccuracy = onlineLearner.getAccuracy();
+      const midAccuracy = onlineLearner.getAccuracy();
 
       // Stream bad data to trigger adaptation
       for (let i = 0; i < 50; i++) {

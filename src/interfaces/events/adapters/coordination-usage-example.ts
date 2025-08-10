@@ -16,7 +16,6 @@ const logger = getLogger('interfaces-events-adapters-coordination-usage-example'
 
 import {
   CoordinationEventAdapter,
-  type CoordinationEventAdapterConfig,
   CoordinationEventHelpers,
   createComprehensiveCoordinationEventManager,
   createCoordinationEventManager,
@@ -36,19 +35,19 @@ export async function basicCoordinationExample(): Promise<void> {
 
   // Subscribe to different types of coordination events
   coordinator.subscribeSwarmLifecycleEvents((event) => {
-    if (event.details?.topology) {
+    if (event["details"]?.["topology"]) {
     }
-    if (event.details?.agentCount) {
+    if (event["details"]?.["agentCount"]) {
     }
   });
 
   coordinator.subscribeAgentManagementEvents((event) => {
-    if (event.details?.swarmId) {
+    if (event["details"]?.["swarmId"]) {
     }
   });
 
   coordinator.subscribeTaskOrchestrationEvents((event) => {
-    if (event.details?.assignedTo) {
+    if (event["details"]?.["assignedTo"]) {
     }
   });
 
@@ -56,7 +55,7 @@ export async function basicCoordinationExample(): Promise<void> {
   await simulateSwarmLifecycle(coordinator);
 
   // Check final status
-  const _status = await coordinator.healthCheck();
+  const status = await coordinator.healthCheck();
 
   await coordinator.stop();
   await coordinator.destroy();
@@ -78,8 +77,8 @@ export async function advancedCoordinationExample(): Promise<void> {
     ['coordination:swarm', 'coordination:agent', 'coordination:task'],
     async (event) => {
       // Check if this is part of a correlation
-      if (event.correlationId) {
-        const correlation = coordinator.getCoordinationCorrelatedEvents(event.correlationId);
+      if (event["correlationId"]) {
+        const correlation = coordinator.getCoordinationCorrelatedEvents(event["correlationId"]);
         if (correlation) {
         }
       }
@@ -94,7 +93,7 @@ export async function advancedCoordinationExample(): Promise<void> {
     );
 
     if (unhealthyComponents.length > 0) {
-      unhealthyComponents.forEach(([_component, _health]) => {});
+      unhealthyComponents.forEach(([component, health]) => {});
     }
   }, 30000); // Check every 30 seconds
 
@@ -102,7 +101,7 @@ export async function advancedCoordinationExample(): Promise<void> {
   await simulateComplexCoordinationWorkflow(coordinator);
 
   // Get final metrics
-  const _metrics = await coordinator.getMetrics();
+  const metrics = await coordinator.getMetrics();
 
   await coordinator.stop();
   await coordinator.destroy();
@@ -129,7 +128,7 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
       eventCount++;
 
       // Only log critical events to minimize overhead
-      if (event.priority === 'high' || event.operation === 'fail') {
+      if (event["priority"] === 'high' || event["operation"] === 'fail') {
       }
     }
   );
@@ -152,9 +151,9 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
   await Promise.all(promises);
 
   const duration = Date.now() - startTime;
-  const _throughput = eventCount / (duration / 1000);
+  const throughput = eventCount / (duration / 1000);
 
-  const _finalMetrics = await coordinator.getMetrics();
+  const finalMetrics = await coordinator.getMetrics();
 
   await coordinator.stop();
   await coordinator.destroy();
@@ -231,11 +230,11 @@ export async function customCoordinationExample(): Promise<void> {
 
   // Set up research-specific monitoring
   coordinator.subscribeSwarmLifecycleEvents((event) => {
-    if (event.details?.topology) {
+    if (event["details"]?.["topology"]) {
     }
   });
 
-  coordinator.subscribeAgentManagementEvents((_event) => {});
+  coordinator.subscribeAgentManagementEvents((event) => {});
 
   // Simulate research coordination
   await simulateResearchCoordination(coordinator);
@@ -243,7 +242,7 @@ export async function customCoordinationExample(): Promise<void> {
   // Get research-specific insights
   const correlations = coordinator.getActiveCoordinationCorrelations();
 
-  correlations.forEach((_correlation) => {});
+  correlations.forEach((correlation) => {});
 
   await coordinator.stop();
   await coordinator.destroy();

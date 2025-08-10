@@ -6,14 +6,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import {
-  ACTIVATION_FUNCTIONS,
-  createNeuralNetwork,
-  initializeNeuralWasm,
-  type NetworkConfig,
-  type NeuralNetwork,
-  type TrainingDataConfig,
-} from '../../../../../ruv-FANN-zen/ruv-swarm-zen/npm/src/neural-network';
+import { ACTIVATION_FUNCTIONS, createNeuralNetwork, initializeNeuralWasm } from '../../../../../ruv-FANN-zen/ruv-swarm-zen/npm/src/neural-network';
 
 describe('ruv-FANN Integration - Classical TDD', () => {
   let wasmModule: any;
@@ -22,7 +15,7 @@ describe('ruv-FANN Integration - Classical TDD', () => {
     // Initialize WASM module for each test
     try {
       wasmModule = await initializeNeuralWasm();
-    } catch (_error) {
+    } catch (error) {
       console.warn('WASM module not available, skipping integration tests');
     }
   });
@@ -52,9 +45,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
         return;
       }
 
-      expect(wasmModule.WasmNeuralNetwork).toBeDefined();
-      expect(wasmModule.WasmTrainer).toBeDefined();
-      expect(wasmModule.AgentNeuralNetworkManager).toBeDefined();
+      expect(wasmModule["WasmNeuralNetwork"]).toBeDefined();
+      expect(wasmModule["WasmTrainer"]).toBeDefined();
+      expect(wasmModule["AgentNeuralNetworkManager"]).toBeDefined();
     });
   });
 
@@ -68,9 +61,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(config);
@@ -90,9 +83,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
       }
 
       const activations = [
-        ACTIVATION_FUNCTIONS.TANH,
-        ACTIVATION_FUNCTIONS.RELU,
-        ACTIVATION_FUNCTIONS.SIGMOID,
+        ACTIVATION_FUNCTIONS["TANH"],
+        ACTIVATION_FUNCTIONS["RELU"],
+        ACTIVATION_FUNCTIONS["SIGMOID"],
       ];
 
       for (const activation of activations) {
@@ -100,7 +93,7 @@ describe('ruv-FANN Integration - Classical TDD', () => {
           inputSize: 2,
           hiddenLayers: [{ size: 3, activation }],
           outputSize: 1,
-          outputActivation: ACTIVATION_FUNCTIONS.LINEAR,
+          outputActivation: ACTIVATION_FUNCTIONS["LINEAR"],
         };
 
         const network = await createNeuralNetwork(config);
@@ -125,11 +118,11 @@ describe('ruv-FANN Integration - Classical TDD', () => {
       const validConfig: NetworkConfig = {
         inputSize: 3,
         hiddenLayers: [
-          { size: 5, activation: ACTIVATION_FUNCTIONS.SIGMOID },
-          { size: 3, activation: ACTIVATION_FUNCTIONS.TANH },
+          { size: 5, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
+          { size: 3, activation: ACTIVATION_FUNCTIONS["TANH"] },
         ],
         outputSize: 2,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(validConfig);
@@ -151,9 +144,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         randomSeed: 12345, // Fixed seed for consistency
       };
 
@@ -179,9 +172,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(config);
@@ -214,9 +207,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 5, activation: ACTIVATION_FUNCTIONS.TANH }],
+        hiddenLayers: [{ size: 5, activation: ACTIVATION_FUNCTIONS["TANH"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(config);
@@ -243,9 +236,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(config);
@@ -279,9 +272,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network1 = await createNeuralNetwork(config);
@@ -310,9 +303,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(config);
@@ -347,9 +340,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
       for (let i = 0; i < 10; i++) {
         const config: NetworkConfig = {
           inputSize: 5,
-          hiddenLayers: [{ size: 10, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+          hiddenLayers: [{ size: 10, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
           outputSize: 3,
-          outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+          outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
         };
 
         networks.push(await createNeuralNetwork(config));
@@ -379,11 +372,11 @@ describe('ruv-FANN Integration - Classical TDD', () => {
       const config: NetworkConfig = {
         inputSize: 10,
         hiddenLayers: [
-          { size: 20, activation: ACTIVATION_FUNCTIONS.SIGMOID },
-          { size: 15, activation: ACTIVATION_FUNCTIONS.TANH },
+          { size: 20, activation: ACTIVATION_FUNCTIONS["SIGMOID"] },
+          { size: 15, activation: ACTIVATION_FUNCTIONS["TANH"] },
         ],
         outputSize: 5,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(config);
@@ -407,9 +400,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 3,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(config);
@@ -433,9 +426,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS["SIGMOID"] }],
         outputSize: 1,
-        outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
+        outputActivation: ACTIVATION_FUNCTIONS["SIGMOID"],
       };
 
       const network = await createNeuralNetwork(config);

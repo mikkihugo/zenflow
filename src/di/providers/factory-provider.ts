@@ -8,7 +8,7 @@
 
 
 
-import type { DIContainer, FactoryProvider as IFactoryProvider } from '../types/di-types';
+import type { FactoryProvider as IFactoryProvider } from '../types/di-types';
 
 export class FactoryProvider<T> implements IFactoryProvider<T> {
   readonly type = 'transient' as const;

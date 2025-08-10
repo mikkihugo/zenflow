@@ -34,26 +34,7 @@ import { CompletionPhaseEngine } from '../phases/completion/completion-engine';
 import { PseudocodePhaseEngine } from '../phases/pseudocode/pseudocode-engine';
 import { RefinementPhaseEngine } from '../phases/refinement/refinement-engine';
 import { SpecificationPhaseEngine } from '../phases/specification/specification-engine';
-import type {
-  ArchitectureDesign,
-  ArtifactReference,
-  ArtifactSet,
-  CompletionValidation,
-  DetailedSpecification,
-  ImplementationArtifacts,
-  PhaseDefinition,
-  PhaseMetrics,
-  PhaseProgress,
-  PhaseResult,
-  ProjectDomain,
-  ProjectSpecification,
-  PseudocodeStructure,
-  RefinementFeedback,
-  RefinementResult,
-  SPARCEngine,
-  SPARCPhase,
-  SPARCProject,
-} from '../types/sparc-types';
+import type { SPARCEngine } from '../types/sparc-types';
 
 export class SPARCEngineCore implements SPARCEngine {
   private readonly phaseDefinitions: Map<SPARCPhase, PhaseDefinition>;

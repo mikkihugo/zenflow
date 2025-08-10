@@ -260,7 +260,7 @@ export class HealthMonitor extends EventEmitter {
       if (result?.status === 'fulfilled') {
         const { score, status, details, metrics } = result?.value;
 
-        results[checkName] = {
+        results?.[checkName] = {
           score,
           status,
           details,
@@ -280,7 +280,7 @@ export class HealthMonitor extends EventEmitter {
         check.lastRun = new Date().toISOString();
         check.runCount++;
       } else {
-        results[checkName] = {
+        results?.[checkName] = {
           score: 0,
           status: 'error',
           details: (result as PromiseRejectedResult).reason?.message ?? 'Unknown error',

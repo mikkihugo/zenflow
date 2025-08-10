@@ -11,7 +11,7 @@
  *
  * @example
  */
-export interface AdvancedCLISystem {
+export interface CLISystem {
   // Intelligent project management
   createIntelligentProject(config: ProjectConfig): Promise<ProjectCreationResult>;
   manageProjectLifecycle(project: Project): Promise<LifecycleResult>;
@@ -587,7 +587,7 @@ export interface TestCoverage {
  *
  * @example
  */
-export interface AdvancedCommand {
+export interface Command {
   readonly name: string;
   readonly category: CommandCategory;
   readonly description: string;

@@ -1,26 +1,10 @@
-/**
- * Enhanced Hook System Tests - London TDD
- * Tests for the enhanced hooks system using London (mockist) TDD approach
- */
-
-import type { jest } from '@jest/globals';
-import type {
-  HookContext,
-  HookTrigger,
-  Operation,
-} from '../../../../../coordination/hooks/enhanced-hook-system';
-import {
-  type BashSafetyValidator,
-  DefaultEnhancedHookManager,
-  type HookPerformanceTracker,
-  type IntelligentAgentAssignor,
-} from '../../../../../coordination/hooks/index';
+import { DefaultEnhancedHookManager } from '../../../../../coordination/hooks/index';
 
 describe('Enhanced Hook System - London TDD', () => {
   let hookManager: DefaultEnhancedHookManager;
   let mockSafetyValidator: jest.Mocked<BashSafetyValidator>;
   let mockAgentAssignor: jest.Mocked<IntelligentAgentAssignor>;
-  let _mockPerformanceTracker: jest.Mocked<HookPerformanceTracker>;
+  let mockPerformanceTracker: jest.Mocked<HookPerformanceTracker>;
 
   beforeEach(() => {
     // Mock dependencies
@@ -38,7 +22,7 @@ describe('Enhanced Hook System - London TDD', () => {
       balanceWorkload: vi.fn(),
     } as any;
 
-    _mockPerformanceTracker = {
+    mockPerformanceTracker = {
       trackOperation: vi.fn(),
       generatePerformanceReport: vi.fn(),
       getMetrics: vi.fn(),

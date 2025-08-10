@@ -309,7 +309,7 @@ export interface RateLimitInfo {
 }
 
 // OpenAPI 3.0 Schema definitions for common types
-export const CommonSchemas = {
+export const Schemas = {
   PaginationParams: {
     type: 'object',
     properties: {

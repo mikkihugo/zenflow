@@ -1,10 +1,3 @@
-/**
- * @file Tests for BatchPerformanceMonitor
- * Validates performance monitoring and comparison capabilities
- */
-
-import type { BatchExecutionSummary } from '../../../../coordination/batch/batch-engine';
-import type { PerformanceMetrics } from '../../../../coordination/batch/performance-monitor';
 import { BatchPerformanceMonitor } from '../../../../coordination/batch/performance-monitor';
 
 describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {

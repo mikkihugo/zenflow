@@ -8,7 +8,6 @@ import {
   batchPerformanceTool,
   projectInitBatchTool,
 } from '../../../../coordination/swarm/mcp/batch-tools';
-import type { MCPToolResult } from '../../../../coordination/swarm/mcp/types';
 
 describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
   describe('🚀 Batch Execute Tool - Core Claude-zen Pattern', () => {

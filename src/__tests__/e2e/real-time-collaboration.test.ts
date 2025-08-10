@@ -140,7 +140,7 @@ Test document for real-time collaboration.
     });
 
     it('should handle concurrent document edits with conflict resolution', async () => {
-      const _sessionId = `concurrent-session-${Date.now()}`;
+      const sessionId = `concurrent-session-${Date.now()}`;
       const workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
 
       const conflictResults: any[] = [];
@@ -214,7 +214,7 @@ This is version 2 of the document.
       );
 
       // Trigger some system activity
-      const _workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
+      const workspaceId = await documentSystem.loadWorkspace(TEST_PROJECT_PATH);
 
       // Wait for metrics updates
       await new Promise((resolve) => setTimeout(resolve, 3000));

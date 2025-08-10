@@ -652,7 +652,7 @@ Test workflow ${i} for concurrent execution testing.
           } else {
             performanceMetrics.httpErrors++;
           }
-        } catch (_error) {
+        } catch (error) {
           performanceMetrics.httpErrors++;
         }
 
@@ -678,7 +678,7 @@ Test workflow ${i} for concurrent execution testing.
           } else {
             performanceMetrics.stdioErrors++;
           }
-        } catch (_error) {
+        } catch (error) {
           performanceMetrics.stdioErrors++;
         }
 

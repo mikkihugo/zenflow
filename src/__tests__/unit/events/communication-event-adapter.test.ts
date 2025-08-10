@@ -15,12 +15,6 @@ import {
   createDefaultCommunicationEventAdapterConfig,
 } from '../../../interfaces/events/adapters/communication-event-adapter';
 import { CommunicationEventFactory } from '../../../interfaces/events/adapters/communication-event-factory';
-import type {
-  EventManagerMetrics,
-  EventManagerStatus,
-  EventPriority,
-} from '../../../interfaces/events/core/interfaces';
-import type { CommunicationEvent } from '../../../interfaces/events/types';
 
 describe('CommunicationEventAdapter', () => {
   describe('🏗️ Constructor and Configuration (Classical TDD)', () => {
@@ -134,7 +128,7 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should handle start errors gracefully', async () => {
-      const _mockInitializeCommunicationIntegrations = jest
+      const mockInitializeCommunicationIntegrations = jest
         .spyOn(adapter as any, 'initializeCommunicationIntegrations')
         .mockRejectedValue(new Error('Initialization failed'));
 
@@ -177,7 +171,7 @@ describe('CommunicationEventAdapter', () => {
       });
 
       // Mock WebSocket client wrapping
-      const _mockWrapWebSocketClients = jest
+      const mockWrapWebSocketClients = jest
         .spyOn(adapter as any, 'wrapWebSocketClients')
         .mockImplementation(async () => {
           const wrappedComponent = {
@@ -327,7 +321,7 @@ describe('CommunicationEventAdapter', () => {
       });
 
       // Mock MCP server wrapping
-      const _mockWrapMCPServers = jest
+      const mockWrapMCPServers = jest
         .spyOn(adapter as any, 'wrapMCPServers')
         .mockImplementation(async () => {
           const wrappedComponent = {
@@ -474,7 +468,7 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       // Mock HTTP communication wrapping
-      const _mockWrapHTTPCommunication = jest
+      const mockWrapHTTPCommunication = jest
         .spyOn(adapter as any, 'wrapHTTPCommunication')
         .mockImplementation(async () => {
           const wrappedComponent = {
@@ -586,7 +580,7 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       // Mock protocol communication wrapping
-      const _mockWrapProtocolCommunication = jest
+      const mockWrapProtocolCommunication = jest
         .spyOn(adapter as any, 'wrapProtocolCommunication')
         .mockImplementation(async () => {
           ['http', 'https', 'ws', 'wss', 'stdio'].forEach((protocolType) => {

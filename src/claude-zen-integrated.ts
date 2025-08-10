@@ -52,15 +52,15 @@ export class ClaudeZenIntegrated {
       if (arg === '--port' && i + 1 < args.length) {
         const nextArg = args[i + 1];
         if (nextArg !== undefined) {
-          options.port = parseInt(nextArg, 10);
+          options?.port = parseInt(nextArg, 10);
         }
         i++; // Skip next argument
       } else if (arg === '--daemon') {
-        options.daemon = true;
+        options?.daemon = true;
       } else if (arg === '--dev') {
-        options.dev = true;
+        options?.dev = true;
       } else if (arg === '--verbose' || arg === '-v') {
-        options.verbose = true;
+        options?.verbose = true;
       } else if (arg === '--help' || arg === '-h') {
         process.exit(0);
       }

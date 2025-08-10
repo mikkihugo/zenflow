@@ -118,14 +118,14 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
     // Listen for events
     bridge.on('initialized', () => {});
 
-    bridge.on('discovery:complete', (_results) => {});
+    bridge.on('discovery:complete', (results) => {});
 
     await bridge.initialize();
-    const _workspaceId = await documentProcessor.loadWorkspace(projectPath);
+    const workspaceId = await documentProcessor.loadWorkspace(projectPath);
 
     const domains = await bridge.discoverDomains();
 
-    domains.forEach((domain, _index) => {
+    domains.forEach((domain, index) => {
       if (domain.relatedDomains.length > 0) {
       }
     });
@@ -134,9 +134,9 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
     const mappings = bridge.getDocumentMappings();
     if (mappings.size > 0) {
       let mappingIndex = 0;
-      mappings.forEach((mapping, _docPath) => {
+      mappings.forEach((mapping, docPath) => {
         if (mappingIndex < 5) {
-          mapping.domainIds.forEach((_domainId, _i) => {});
+          mapping.domainIds.forEach((domainId, i) => {});
           mappingIndex++;
         }
       });
@@ -151,7 +151,7 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
       }
     }
     const stats = await documentProcessor.getStats();
-    Object.entries(stats.byType).forEach(([_type, count]) => {
+    Object.entries(stats.byType).forEach(([type, count]) => {
       if (count > 0) {
       }
     });

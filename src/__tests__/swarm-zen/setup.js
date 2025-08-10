@@ -3,10 +3,10 @@
  */
 
 // Set test environment
-process.env.NODE_ENV = 'test';
+process.env["NODE_ENV"] = 'test';
 
 // Suppress console logs during tests unless DEBUG is set
-if (!process.env.DEBUG) {
+if (!process.env["DEBUG"]) {
   global.console = {
     ...console,
     log: jest.fn(),
@@ -139,6 +139,6 @@ process.on('unhandledRejection', (error) => {
 });
 
 // Increase timeout for CI environments
-if (process.env.CI) {
+if (process.env["CI"]) {
   jest.setTimeout(60000);
 }

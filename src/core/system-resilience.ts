@@ -920,19 +920,19 @@ export class SystemResilienceOrchestrator {
     let wrappedOperation = operation;
 
     // Apply timeout if specified
-    if (options?.timeoutMs) {
+    if (options?.["timeoutMs"]) {
       const timeoutOperation = wrappedOperation;
       wrappedOperation = () =>
         TimeoutManager.withTimeout(
           timeoutOperation,
-          options?.timeoutMs!,
-          options?.operationName || 'resilient_operation'
+          options?.["timeoutMs"]!,
+          options?.["operationName"] || 'resilient_operation'
         );
     }
 
     // Apply error boundary if specified
-    if (options?.errorBoundary) {
-      const errorBoundary = this.errorBoundaries.get(options?.errorBoundary);
+    if (options?.["errorBoundary"]) {
+      const errorBoundary = this.errorBoundaries.get(options?.["errorBoundary"]);
       if (errorBoundary) {
         const boundaryOperation = wrappedOperation;
         wrappedOperation = () => errorBoundary.execute(boundaryOperation);
@@ -940,8 +940,8 @@ export class SystemResilienceOrchestrator {
     }
 
     // Apply bulkhead if specified
-    if (options?.bulkhead) {
-      const bulkhead = this.bulkheads.get(options?.bulkhead);
+    if (options?.["bulkhead"]) {
+      const bulkhead = this.bulkheads.get(options?.["bulkhead"]);
       if (bulkhead) {
         return await bulkhead.execute(wrappedOperation);
       }

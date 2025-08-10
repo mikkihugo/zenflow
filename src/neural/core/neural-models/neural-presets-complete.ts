@@ -8,7 +8,7 @@
 
 
 
-export interface CompletePreset {
+export interface Preset {
   id: string;
   architecture: string;
   layers?: number[] | number; // Some presets use numeric layer count instead of array

@@ -12,7 +12,6 @@
 
 import { useEffect, useState } from 'react';
 import { createLogger } from '../../../core/logger';
-import type { SwarmAgent, SwarmMetrics, SwarmTask } from '../screens/index';
 
 const logger = createLogger({ prefix: 'SwarmStatusHook' });
 
@@ -228,7 +227,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
               avgLatency: 120 + Math.random() * 80,
             },
           },
-          agents: activeAgents.map((agentId, _index) => ({
+          agents: activeAgents.map((agentId, index) => ({
             id: agentId,
             role: 'worker' as const,
             status: 'active' as const,

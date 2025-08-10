@@ -406,11 +406,11 @@ export class DALFactory {
     const cacheKey = this.generateCacheKey(config);
 
     if (this.repositoryCache.has(cacheKey)) {
-      this._logger.debug(`Returning cached repository: ${cacheKey}`);
+      this["_logger"]?.debug(`Returning cached repository: ${cacheKey}`);
       return this.repositoryCache.get(cacheKey);
     }
 
-    this._logger.info(`Creating new repository: ${config?.entityType} (${config?.databaseType})`);
+    this["_logger"]?.info(`Creating new repository: ${config?.["entityType"]} (${config?.["databaseType"]})`);
 
     try {
       // Get or create database adapter
@@ -424,7 +424,7 @@ export class DALFactory {
 
       return repository;
     } catch (error) {
-      this._logger.error(`Failed to create repository: ${error}`);
+      this["_logger"]?.error(`Failed to create repository: ${error}`);
       throw new Error(
         `Repository creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -495,11 +495,11 @@ export class DALFactory {
     const cacheKey = this.generateCacheKey(config, 'dao');
 
     if (this.daoCache.has(cacheKey)) {
-      this._logger.debug(`Returning cached DAO: ${cacheKey}`);
+      this["_logger"]?.debug(`Returning cached DAO: ${cacheKey}`);
       return this.daoCache.get(cacheKey);
     }
 
-    this._logger.info(`Creating new DAO: ${config?.entityType} (${config?.databaseType})`);
+    this["_logger"]?.info(`Creating new DAO: ${config?.["entityType"]} (${config?.["databaseType"]})`);
 
     try {
       // Get repository first
@@ -516,7 +516,7 @@ export class DALFactory {
 
       return dao;
     } catch (error) {
-      this._logger.error(`Failed to create DAO: ${error}`);
+      this["_logger"]?.error(`Failed to create DAO: ${error}`);
       throw new Error(
         `DAO creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
@@ -614,7 +614,7 @@ export class DALFactory {
       }>;
     }
   ): void {
-    this._logger.debug(`Registering entity type: ${entityType}`);
+    this["_logger"]?.debug(`Registering entity type: ${entityType}`);
     this.entityRegistry[entityType] = config;
   }
 
@@ -1149,7 +1149,7 @@ export class DALFactory {
     primaryConfig: RepositoryConfig,
     secondaryConfigs?: RepositoryConfig[]
   ): Promise<MultiDatabaseDAO<T>> {
-    this._logger.info(`Creating multi-database DAO for: ${entityType}`);
+    this["_logger"]?.info(`Creating multi-database DAO for: ${entityType}`);
 
     const primaryDAO = await this.createDAO<T>(primaryConfig);
     const secondaryDAOs: IDataAccessObject<T>[] = [];
@@ -1161,14 +1161,14 @@ export class DALFactory {
       }
     }
 
-    return new MultiDatabaseDAO<T>(primaryDAO, secondaryDAOs, this._logger);
+    return new MultiDatabaseDAO<T>(primaryDAO, secondaryDAOs, this["_logger"]);
   }
 
   /**
    * Clear all caches.
    */
   clearCaches(): void {
-    this._logger.info('Clearing DAL factory caches');
+    this["_logger"]?.info('Clearing DAL factory caches');
     this.repositoryCache.clear();
     this.daoCache.clear();
     this.adapterCache.clear();
@@ -1194,8 +1194,8 @@ export class DALFactory {
    */
 
   private async getOrCreateAdapter(config: RepositoryConfig): Promise<DatabaseAdapter> {
-    if (config?.existingAdapter) {
-      return config?.existingAdapter;
+    if (config?.["existingAdapter"]) {
+      return config?.["existingAdapter"];
     }
 
     const adapterCacheKey = this.generateAdapterCacheKey(config);
@@ -1204,12 +1204,12 @@ export class DALFactory {
       return this.adapterCache.get(adapterCacheKey)!;
     }
 
-    if (!config?.databaseConfig) {
+    if (!config?.["databaseConfig"]) {
       throw new Error('Database configuration required when creating new adapter');
     }
 
     // Fixed: Await the adapter creation and connect properly
-    const adapter = await this.databaseProviderFactory.createAdapter(config?.databaseConfig);
+    const adapter = await this.databaseProviderFactory.createAdapter(config?.["databaseConfig"]);
     // TODO: TypeScript error TS2339 - Property 'connect' does not exist on type 'DatabaseAdapter' (AI unsure of safe fix - human review needed)
     // Note: DatabaseAdapter interface may need to include connect method or adapter creation should handle connection
 
@@ -1229,17 +1229,17 @@ export class DALFactory {
     const { MemoryDao } = await import('./dao/memory.dao');
     const { CoordinationDao } = await import('./dao/coordination.dao');
 
-    const tableName = config?.tableName || config?.entityType;
-    const entitySchema = config?.schema || this.entityRegistry[config?.entityType]?.schema;
+    const tableName = config?.["tableName"] || config?.["entityType"];
+    const entitySchema = config?.["schema"] || this.entityRegistry[config?.["entityType"]]?.schema;
 
     // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected and only accessible within the class declaration (AI unsure of safe fix - human review needed)
     // Note: Need to use factory methods or public constructors instead of protected BaseDao constructors
-    switch (config?.databaseType) {
+    switch (config?.["databaseType"]) {
       case 'kuzu':
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
         return new GraphDao<T>(
           adapter,
-          this._logger,
+          this["_logger"],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1248,7 +1248,7 @@ export class DALFactory {
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
         return new VectorDao<T>(
           adapter,
-          this._logger,
+          this["_logger"],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1258,7 +1258,7 @@ export class DALFactory {
         return new MemoryDao<T>(
           // TODO: TypeScript error TS2345 - Argument of type 'DatabaseAdapter' is not assignable to parameter of type 'IMemoryRepository<T>' (AI unsure of safe fix - human review needed)
           adapter,
-          this._logger,
+          this["_logger"],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1268,7 +1268,7 @@ export class DALFactory {
         return new CoordinationDao<T>(
           // TODO: TypeScript error TS2345 - Argument of type 'DatabaseAdapter' is not assignable to parameter of type 'ICoordinationRepository<T>' (AI unsure of safe fix - human review needed)
           adapter,
-          this._logger,
+          this["_logger"],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1277,7 +1277,7 @@ export class DALFactory {
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
         return new RelationalDao<T>(
           adapter,
-          this._logger,
+          this["_logger"],
           tableName,
           entitySchema
         ) as any as RepositoryType<T>;
@@ -1297,19 +1297,19 @@ export class DALFactory {
 
     // TODO: TypeScript errors with DAO instantiation - these constructors expect different parameter types than what's being passed
     // These need proper interface implementation and constructor signature fixes
-    switch (config?.databaseType) {
+    switch (config?.["databaseType"]) {
       case 'kuzu':
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
-        return new GraphDao<T>(repository as IGraphRepository<T>, adapter, this._logger);
+        return new GraphDao<T>(repository as IGraphRepository<T>, adapter, this["_logger"]);
 
       case 'lancedb':
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
-        return new VectorDao<T>(repository as IVectorRepository<T>, adapter, this._logger);
+        return new VectorDao<T>(repository as IVectorRepository<T>, adapter, this["_logger"]);
 
       case 'memory':
         // TODO: TypeScript error TS2739 - Type 'MemoryDao<T>' is missing properties from type 'IDataAccessObject<T>' (AI unsure of safe fix - human review needed)
         // TODO: TypeScript error TS2345 - Argument of type 'IMemoryRepository<T>' is not assignable to parameter of type 'DatabaseAdapter' (AI unsure of safe fix - human review needed)
-        return new MemoryDao<T>(repository as IMemoryRepository<T>, adapter, this._logger);
+        return new MemoryDao<T>(repository as IMemoryRepository<T>, adapter, this["_logger"]);
 
       case 'coordination':
         // TODO: TypeScript error TS2739 - Type 'CoordinationDao<T>' is missing properties from type 'IDataAccessObject<T>' (AI unsure of safe fix - human review needed)
@@ -1317,35 +1317,35 @@ export class DALFactory {
         return new CoordinationDao<T>(
           repository as ICoordinationRepository<T>,
           adapter,
-          this._logger
+          this["_logger"]
         );
       default:
         // TODO: TypeScript error TS2674 - Constructor of class 'BaseDao<T>' is protected (AI unsure of safe fix - human review needed)
-        return new RelationalDao<T>(repository, adapter, this._logger);
+        return new RelationalDao<T>(repository, adapter, this["_logger"]);
     }
   }
 
   private generateCacheKey(config: RepositoryConfig, type: 'repo' | 'dao' = 'repo'): string {
     const parts = [
       type,
-      config?.databaseType,
-      config?.entityType,
-      config?.tableName || config?.entityType,
-      JSON.stringify(config?.options || {}),
+      config?.["databaseType"],
+      config?.["entityType"],
+      config?.["tableName"] || config?.["entityType"],
+      JSON.stringify(config?.["options"] || {}),
     ];
     return parts.join(':');
   }
 
   private generateAdapterCacheKey(config: RepositoryConfig): string {
-    if (config?.existingAdapter) {
+    if (config?.["existingAdapter"]) {
       return `existing:${Date.now()}`;
     }
 
     return [
-      config?.databaseType,
-      config?.databaseConfig?.host || 'localhost',
-      config?.databaseConfig?.database || 'default',
-      config?.databaseConfig?.port || 'default',
+      config?.["databaseType"],
+      config?.["databaseConfig"]?.host || 'localhost',
+      config?.["databaseConfig"]?.database || 'default',
+      config?.["databaseConfig"]?.port || 'default',
     ].join(':');
   }
 

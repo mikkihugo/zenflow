@@ -6,12 +6,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import {
-  createMCPConfigFromLegacy,
-  MCPClientAdapter,
-  type MCPClientConfig,
-  MCPClientFactory,
-} from '../mcp-client-adapter.js';
+import { createMCPConfigFromLegacy, MCPClientAdapter, MCPClientFactory } from '../mcp-client-adapter.js';
 
 // Mock child_process for testing
 jest.mock('node:child_process', () => ({
@@ -32,7 +27,7 @@ describe('MCPClientAdapter', () => {
     // Mock process
     mockProcess = new EventEmitter();
     mockProcess.stdin = {
-      write: jest.fn((_data, callback) => {
+      write: jest.fn((data, callback) => {
         if (callback) callback();
       }),
     };

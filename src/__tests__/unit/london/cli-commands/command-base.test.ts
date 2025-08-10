@@ -1,19 +1,4 @@
-/**
- * BaseCommand Tests - TDD London School
- *
- * Tests the behavior and interactions of the BaseCommand abstract class
- * using mocks for dependencies and focusing on command lifecycle,
- * validation behavior, and hook interactions.
- */
-
-import type { jest } from '@jest/globals';
-import { BaseCommand, type CommandHooks } from '../../../../cli/core/base-command';
-import type {
-  CommandConfig,
-  CommandContext,
-  CommandResult,
-  CommandValidationResult,
-} from '../../../../cli/types/index';
+import { BaseCommand } from '../../../../cli/core/base-command';
 
 // Concrete implementation for testing
 class TestCommand extends BaseCommand {
@@ -447,7 +432,7 @@ describe('BaseCommand - TDD London', () => {
       expect(config1).not.toBe(config2);
 
       // Modify copy and verify original is unaffected
-      config1.name = 'modified';
+      config1?.name = 'modified';
       expect(command.getConfig().name).toBe('test-command');
     });
 

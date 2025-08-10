@@ -9,7 +9,6 @@
 import { jest } from '@jest/globals';
 import { BaseCommand } from '../../../../cli/core/base-command';
 import { CommandRegistry } from '../../../../cli/core/command-registry';
-import type { CommandContext, CommandMetadata, CommandResult } from '../../../../cli/types/index';
 
 // Mock BaseCommand for testing
 class MockCommand extends BaseCommand {

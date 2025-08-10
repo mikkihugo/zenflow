@@ -49,12 +49,9 @@ export type {
 
 // Type guards and utilities
 export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
-  return (
-    obj &&
-    typeof obj.id === 'string' &&
-    typeof obj.topology === 'string' &&
-    Array.isArray(obj.agents)
-  );
+  return (obj &&
+  typeof obj.id === 'string' &&
+  typeof obj["topology"] === 'string' && Array.isArray(obj["agents"]));
 }
 
 export function isSwarmAgent(obj: any): obj is import('./shared-types').SwarmAgent {
@@ -67,12 +64,9 @@ export function isSwarmAgent(obj: any): obj is import('./shared-types').SwarmAge
 }
 
 export function isSystemEvent(obj: any): obj is import('./shared-types').SystemEvent {
-  return (
-    obj &&
-    typeof obj.id === 'string' &&
-    typeof obj.type === 'string' &&
-    typeof obj.source === 'string'
-  );
+  return (obj &&
+  typeof obj.id === 'string' &&
+  typeof obj.type === 'string' && typeof obj["source"] === 'string');
 }
 
 // Export additional type guards from utils for system-wide availability

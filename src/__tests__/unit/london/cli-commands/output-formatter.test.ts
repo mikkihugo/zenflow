@@ -314,7 +314,7 @@ describe('OutputFormatter - TDD London', () => {
     it('should handle circular references gracefully', () => {
       // Arrange
       const circularData: any = { prop: 'value' };
-      circularData.self = circularData;
+      circularData?.self = circularData;
 
       const safeJsonRenderer: FormatRenderer = {
         render: vi.fn().mockImplementation((data) => {

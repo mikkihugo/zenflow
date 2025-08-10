@@ -9,7 +9,6 @@
 
 import { nanoid } from 'nanoid';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
-import type { PseudocodeStructure } from '../types/sparc-types';
 
 // Simple mock database
 class MockDB {
@@ -92,9 +91,9 @@ async function testCLIFunctionality() {
   const architecture = await engine.designArchitecture(samplePseudocode);
 
   if (architecture.components) {
-    architecture.components.forEach((_comp, _i) => {});
+    architecture.components.forEach((comp, i) => {});
   }
-  const _validation = await engine.validateArchitecturalConsistency(
+  const validation = await engine.validateArchitecturalConsistency(
     architecture.systemArchitecture
   );
 }

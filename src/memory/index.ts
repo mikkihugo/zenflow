@@ -94,19 +94,19 @@ export class MemorySystemFactory {
     const { MemoryBackendFactory } = await import('./backends/factory');
 
     // Initialize components
-    const coordinator = config?.coordination
-      ? new MemoryCoordinator(config?.coordination)
+    const coordinator = config?.["coordination"]
+      ? new MemoryCoordinator(config?.["coordination"])
       : undefined;
-    const optimizer = config?.optimization
-      ? new PerformanceOptimizer(config?.optimization)
+    const optimizer = config?.["optimization"]
+      ? new PerformanceOptimizer(config?.["optimization"])
       : undefined;
-    const monitor = config?.monitoring ? new MemoryMonitor(config?.monitoring) : undefined;
+    const monitor = config?.["monitoring"] ? new MemoryMonitor(config?.["monitoring"]) : undefined;
     const recoveryManager = new RecoveryStrategyManager();
 
     // Initialize backends
     const backends = new Map();
-    if (config?.backends) {
-      for (const backendConfig of config?.backends) {
+    if (config?.["backends"]) {
+      for (const backendConfig of config?.["backends"]) {
         const backend = await MemoryBackendFactory.createBackend(
           backendConfig?.type as any,
           backendConfig?.config

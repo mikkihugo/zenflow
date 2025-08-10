@@ -410,7 +410,7 @@ export class DAA_MCPTools {
       };
 
       if (detailed) {
-        result.detailed_metrics = learningStatus.detailedMetrics;
+        result?.detailed_metrics = learningStatus.detailedMetrics;
       }
 
       if (this.mcpTools?.recordToolMetrics) {

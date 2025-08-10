@@ -36,11 +36,11 @@ async function basicMonitoringExample(): Promise<void> {
     await adapter.start();
 
     // Subscribe to different types of monitoring events
-    const metricsSubscription = adapter.subscribeMetricsEvents((_event) => {});
+    const metricsSubscription = adapter.subscribeMetricsEvents((event) => {});
 
-    const healthSubscription = adapter.subscribeHealthMonitoringEvents((_event) => {});
+    const healthSubscription = adapter.subscribeHealthMonitoringEvents((event) => {});
 
-    const alertSubscription = adapter.subscribeAlertEvents((_event) => {});
+    const alertSubscription = adapter.subscribeAlertEvents((event) => {});
 
     // Emit various monitoring events
     await adapter.emitPerformanceMonitoringEvent({
@@ -81,8 +81,8 @@ async function basicMonitoringExample(): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Check adapter health and metrics
-    const _healthStatus = await adapter.healthCheck();
-    const _metrics = await adapter.getMetrics();
+    const healthStatus = await adapter.healthCheck();
+    const metrics = await adapter.getMetrics();
 
     // Clean up subscriptions
     adapter.unsubscribe(metricsSubscription);
@@ -115,8 +115,8 @@ async function performanceFocusedExample(): Promise<void> {
 
     // Subscribe to performance events
     adapter.subscribePerformanceMonitoringEvents((event) => {
-      if (event.details?.performanceData) {
-        const _perf = event.details.performanceData;
+      if (event["details"]?.["performanceData"]) {
+        const perf = event["details"]?.["performanceData"];
       }
     });
 
@@ -145,7 +145,7 @@ async function performanceFocusedExample(): Promise<void> {
 
     // Get performance insights
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const _insights = adapter.getPerformanceInsights('api-gateway');
+    const insights = adapter.getPerformanceInsights('api-gateway');
   } finally {
     await adapter.destroy();
   }
@@ -170,7 +170,7 @@ async function healthFocusedWithCorrelationExample(): Promise<void> {
     await adapter.start();
 
     // Subscribe to correlated health events
-    adapter.subscribe(['monitoring:health', 'monitoring:alert'], (_event) => {});
+    adapter.subscribe(['monitoring:health', 'monitoring:alert'], (event) => {});
 
     const correlationId = 'health-correlation-example';
 
@@ -221,7 +221,7 @@ async function healthFocusedWithCorrelationExample(): Promise<void> {
     }
 
     // Get overall health status
-    const _healthStatus = await adapter.getMonitoringHealthStatus();
+    const healthStatus = await adapter.getMonitoringHealthStatus();
   } finally {
     await adapter.destroy();
   }
@@ -245,7 +245,7 @@ async function analyticsFocusedExample(): Promise<void> {
 
     // Subscribe to analytics insights
     adapter.subscribe(['monitoring:metrics'], (event) => {
-      if (event.details?.insights) {
+      if (event["details"]?.["insights"]) {
       }
     });
 
@@ -289,7 +289,7 @@ async function analyticsFocusedExample(): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Get analytics insights
-    const _insights = adapter.getPerformanceInsights();
+    const insights = adapter.getPerformanceInsights();
   } finally {
     await adapter.destroy();
   }
@@ -311,8 +311,8 @@ async function alertManagementExample(): Promise<void> {
 
     // Subscribe to alert escalation events
     adapter.subscribeAlertEvents((event) => {
-      const _alertId = event.details?.alertId;
-      const _severity = event.details?.severity;
+      const alertId = event["details"]?.["alertId"];
+      const severity = event["details"]?.["severity"];
     });
 
     const alertId = 'disk-space-alert';
@@ -362,7 +362,7 @@ async function alertManagementExample(): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Check alert data
-    const _alertData = adapter.getAlertData(alertId);
+    const alertData = adapter.getAlertData(alertId);
   } finally {
     await adapter.destroy();
   }
@@ -378,9 +378,9 @@ async function comprehensiveMonitoringExample(): Promise<void> {
   try {
     // Register with monitoring registry for lifecycle management
     await MonitoringEventRegistry.register('main-monitor', adapter, {
-      onStart: async (_adapter) => {},
-      onStop: async (_adapter) => {},
-      onError: async (_adapter, _error) => {},
+      onStart: async (adapter) => {},
+      onStop: async (adapter) => {},
+      onError: async (adapter, error) => {},
     });
 
     await adapter.start();
@@ -388,7 +388,7 @@ async function comprehensiveMonitoringExample(): Promise<void> {
     // Subscribe to all monitoring event types
     const allEventsSubscription = adapter.subscribe(
       ['monitoring:metrics', 'monitoring:health', 'monitoring:alert', 'monitoring:performance'],
-      (_event) => {}
+      (event) => {}
     );
 
     // Emit comprehensive monitoring scenario
@@ -455,8 +455,8 @@ async function comprehensiveMonitoringExample(): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Get comprehensive status
-    const _healthStatus = await MonitoringEventRegistry.getHealthStatus();
-    const _metrics = await MonitoringEventRegistry.getMetrics();
+    const healthStatus = await MonitoringEventRegistry.getHealthStatus();
+    const metrics = await MonitoringEventRegistry.getMetrics();
 
     // Check correlation completion
     const correlation = adapter.getMonitoringCorrelatedEvents(scenarioId);
@@ -483,7 +483,7 @@ async function helperFunctionsExample(): Promise<void> {
     // Subscribe to see helper-generated events
     adapter.subscribe(
       ['monitoring:metrics', 'monitoring:health', 'monitoring:alert'],
-      (_event) => {}
+      (event) => {}
     );
 
     // Use helper functions to create events
@@ -590,14 +590,14 @@ async function highPerformanceExample(): Promise<void> {
     await Promise.all([...throughputPromises, ...latencyPromises]);
 
     const endTime = Date.now();
-    const _duration = endTime - startTime;
+    const duration = endTime - startTime;
 
     // Allow processing time
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Get performance metrics
-    const _throughputMetrics = await throughputAdapter.getMetrics();
-    const _latencyMetrics = await latencyAdapter.getMetrics();
+    const throughputMetrics = await throughputAdapter.getMetrics();
+    const latencyMetrics = await latencyAdapter.getMetrics();
   } finally {
     await Promise.all([throughputAdapter.destroy(), latencyAdapter.destroy()]);
   }

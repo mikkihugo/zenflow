@@ -304,7 +304,7 @@ describe('Performance Optimization System', () => {
         { name: 'module2', size: 2 * 1024 * 1024, compilationTime: 200, instantiated: true },
       ];
 
-      const result = await wasmOptimizer.optimizeWasmModuleLoading(mockModules);
+      const result = await wasmOptimizer["optimizeWasmModuleLoading"](mockModules);
 
       expect(result).toBeDefined();
       expect(result?.loadTime).toBeGreaterThanOrEqual(0);
@@ -319,7 +319,7 @@ describe('Performance Optimization System', () => {
         { path: '/wasm/module2.wasm', size: 2 * 1024 * 1024, optimized: true },
       ];
 
-      const result = await wasmOptimizer.implementStreamingCompilation(mockWasmFiles);
+      const result = await wasmOptimizer["implementStreamingCompilation"](mockWasmFiles);
 
       expect(result).toBeDefined();
       expect(result?.compilationTime).toBeGreaterThanOrEqual(0);
@@ -335,7 +335,7 @@ describe('Performance Optimization System', () => {
         memoryShared: false,
       };
 
-      const result = await wasmOptimizer.optimizeMemorySharing(mockBridge);
+      const result = await wasmOptimizer["optimizeMemorySharing"](mockBridge);
 
       expect(result).toBeDefined();
       expect(result?.memoryReduction).toBeGreaterThanOrEqual(0);
@@ -350,7 +350,7 @@ describe('Performance Optimization System', () => {
         { name: 'kernel2', operations: ['dot_product'], simdOptimized: false },
       ];
 
-      const result = await wasmOptimizer.enableSIMDAcceleration(mockKernels);
+      const result = await wasmOptimizer["enableSIMDAcceleration"](mockKernels);
 
       expect(result).toBeDefined();
       expect(typeof result?.simdSupport).toBe('boolean');
@@ -448,7 +448,7 @@ describe('Performance Optimization System', () => {
         { name: 'module1', size: 1024 * 1024, compilationTime: 100, instantiated: false },
       ];
 
-      const result = await wasmOptimizer.optimizeWasmModuleLoading(mockModules);
+      const result = await wasmOptimizer["optimizeWasmModuleLoading"](mockModules);
 
       // Validate against target: <100ms module loading
       expect(result?.loadTime).toBeDefined();

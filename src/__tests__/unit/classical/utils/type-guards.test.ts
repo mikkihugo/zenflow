@@ -6,29 +6,8 @@
  */
 
 import {
-  // Database type guards
-  type DatabaseResult,
-  // Utility functions
-  extractData,
-  extractErrorMessage,
-  hasProperty,
-  type InferenceResult,
-  isInferenceResult,
-  isMemoryError,
-  isMemoryNotFound,
-  isMemorySuccess,
-  isNeuralError,
-  isQueryError,
-  isQuerySuccess,
-  isTrainingResult,
-  type MemoryError,
-  type MemoryNotFound,
-  type MemorySuccess,
-  type NeuralError,
-  type QueryError,
-  type QuerySuccess,
-  safePropertyAccess,
-  type TrainingResult,
+// Utility functions
+extractData, extractErrorMessage, hasProperty, isInferenceResult, isMemoryError, isMemoryNotFound, isMemorySuccess, isNeuralError, isQueryError, isQuerySuccess, isTrainingResult, safePropertyAccess
 } from '../../../../utils/type-guards';
 
 describe('Type Guards - Classical TDD', () => {

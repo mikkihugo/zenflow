@@ -69,8 +69,8 @@ export class NeuralCoordinationProtocol {
     // Update node stats
     const node = this.nodes.get(fromNode);
     if (node) {
-      node.messageCount++;
-      node.lastSync = new Date();
+      node?.messageCount++;
+      node?.lastSync = new Date();
     }
 
     // Cleanup old messages
@@ -94,8 +94,8 @@ export class NeuralCoordinationProtocol {
     }
 
     // Mock synchronization
-    node.lastSync = new Date();
-    node.status = 'synced';
+    node?.lastSync = new Date();
+    node?.status = 'synced';
 
     // Broadcast sync to other nodes
     const syncMessage = {

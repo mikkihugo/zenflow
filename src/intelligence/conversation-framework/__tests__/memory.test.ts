@@ -1,13 +1,4 @@
-/**
- * Conversation Memory Tests - Classical TDD.
- *
- * Tests for conversation memory using Classical School TDD (state-based testing)
- * Focus on actual storage and retrieval behavior.
- */
-
-import type { AgentId } from '../../../types/agent-types';
 import { ConversationMemoryImpl } from '../memory';
-import type { ConversationSession, ConversationStatus } from '../types';
 
 describe('ConversationMemoryImpl - Classical TDD', () => {
   let memory: ConversationMemoryImpl;

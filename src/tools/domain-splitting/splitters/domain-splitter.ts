@@ -13,8 +13,6 @@ const logger = getLogger('tools-domain-splitting-splitters-domain-splitter');
 
 import * as path from 'node:path';
 import * as fs from 'fs-extra';
-import type { ProgressReport } from '../types/analysis-types';
-import type { SplittingResult, SubDomainPlan, ValidationReport } from '../types/domain-types';
 
 export interface DomainSplitter {
   executeSplitting(plan: SubDomainPlan[]): Promise<SplittingResult>;

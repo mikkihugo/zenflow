@@ -6,10 +6,6 @@
  */
 
 import { PseudocodePhaseEngine } from '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine';
-import type {
-  DetailedSpecification,
-  FunctionalRequirement,
-} from '../../coordination/swarm/sparc/types/sparc-types';
 
 describe('SPARC Pseudocode Engine Integration Tests', () => {
   let pseudocodeEngine: PseudocodePhaseEngine;

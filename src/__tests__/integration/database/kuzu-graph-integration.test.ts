@@ -4,11 +4,7 @@
  */
 
 import { DatabaseController } from '../../../database/controllers/database-controller';
-import type { DatabaseConfig } from '../../../database/providers/database-providers';
-import {
-  type DatabaseProviderFactory,
-  KuzuAdapter,
-} from '../../../database/providers/database-providers';
+import { KuzuAdapter } from '../../../database/providers/database-providers';
 
 // Mock logger
 const mockLogger = {
@@ -19,7 +15,7 @@ const mockLogger = {
 };
 
 // Mock config
-const _mockConfig = {
+const mockConfig = {
   get: vi.fn(),
   set: vi.fn(),
   has: vi.fn(),

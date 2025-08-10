@@ -30,8 +30,8 @@ describe('Database Adapter Interface Consistency', () => {
     };
 
     // Verify interface requirements are documented
-    expect(interfaceRequirements.DatabaseAdapter).toHaveLength(8);
-    expect(interfaceRequirements.GraphDatabaseAdapter).toHaveLength(3);
-    expect(interfaceRequirements.VectorDatabaseAdapter).toHaveLength(3);
+    expect(interfaceRequirements["DatabaseAdapter"]).toHaveLength(8);
+    expect(interfaceRequirements["GraphDatabaseAdapter"]).toHaveLength(3);
+    expect(interfaceRequirements["VectorDatabaseAdapter"]).toHaveLength(3);
   });
 });

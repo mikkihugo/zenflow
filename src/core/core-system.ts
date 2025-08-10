@@ -229,24 +229,24 @@ export class System extends EventEmitter {
   private setupEventHandlers(): void {
     // Document processor events
     this.documentProcessor.on('document:created', async (event) => {
-      logger.info(`Document created: ${event.type} - ${event.path}`);
+      logger.info(`Document created: ${event.type} - ${event["path"]}`);
 
       // Trigger workflows if enabled
       if (this.config.documents?.enableWorkflows !== false) {
-        await this.workflowEngine.processDocumentEvent('document:created', event.document);
+        await this.workflowEngine.processDocumentEvent('document:created', event["document"]);
       }
 
       // Update documentation index
-      await this.documentationManager.indexDocument(event.document);
+      await this.documentationManager.indexDocument(event["document"]);
     });
 
     // Workflow engine events
     this.workflowEngine.on('workflow:completed', async (event) => {
-      logger.info(`Workflow completed: ${event.workflowId}`);
+      logger.info(`Workflow completed: ${event["workflowId"]}`);
 
       // Auto-export if configured
       if (this.config.export?.defaultFormat) {
-        const workflowData = await this.memorySystem.retrieve(`workflow:${event.workflowId}`);
+        const workflowData = await this.memorySystem.retrieve(`workflow:${event["workflowId"]}`);
         if (workflowData) {
           await this.exportManager.exportData(workflowData, this.config.export.defaultFormat);
         }
@@ -255,7 +255,7 @@ export class System extends EventEmitter {
 
     // Memory system events
     this.memorySystem.on('stored', (event) => {
-      logger.debug(`Memory stored: ${event.key}`);
+      logger.debug(`Memory stored: ${event["key"]}`);
     });
 
     logger.info('Event handlers configured');

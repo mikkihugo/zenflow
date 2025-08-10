@@ -8,16 +8,7 @@
 
 
 
-import type {
-  AccelerationResult,
-  BatchConfig,
-  ComputeUnit,
-  MemoryOptimization,
-  NetworkTrainer,
-  NeuralNetwork,
-  NeuralOptimizer,
-  OptimizationResult,
-} from '../interfaces/optimization-interfaces';
+import type { NeuralOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface NeuralOptimizationConfig {
   enableGPUAcceleration: boolean;

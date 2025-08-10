@@ -19,13 +19,6 @@
 
 import { describe, expect, it } from '@jest/globals';
 
-// Import all MCP protocol test suites
-import './protocol-message-validation.test';
-import './tool-registration-discovery.test';
-import './request-response-handling.test';
-import './error-scenarios.test';
-import './streaming-support.test';
-
 describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
   describe('📋 Test Suite Overview', () => {
     it('should provide comprehensive MCP protocol coverage', () => {

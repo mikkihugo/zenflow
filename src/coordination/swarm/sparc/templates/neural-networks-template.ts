@@ -11,14 +11,6 @@
 
 
 import { nanoid } from 'nanoid';
-import type {
-  ArchitectureDesign,
-  DetailedSpecification,
-  ProjectSpecification,
-  PseudocodeStructure,
-  SPARCTemplate,
-  TemplateMetadata,
-} from '../types/sparc-types';
 
 export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
   id: 'neural-networks-template',

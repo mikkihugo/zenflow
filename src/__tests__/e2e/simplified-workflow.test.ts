@@ -21,7 +21,7 @@ describe('Simplified E2E Workflow Tests', () => {
   afterAll(async () => {
     try {
       await fsHelper.deleteDirectory(TEST_PROJECT_PATH);
-    } catch (_error) {
+    } catch (error) {
       // Ignore cleanup errors
     }
   });
@@ -178,7 +178,7 @@ Test content with metadata in the header.
       let processedDocument: any = null;
 
       documentSystem.on('document:processed', (event) => {
-        if (event.document.path === docPath) {
+        if (event["document"]?.["path"] === docPath) {
           processedDocument = event;
         }
       });
@@ -371,7 +371,7 @@ Optimize document processing pipeline for maximum throughput.
       let processedCount = 0;
       const processingTimes: number[] = [];
 
-      documentSystem.on('document:processed', (_event) => {
+      documentSystem.on('document:processed', (event) => {
         processedCount++;
         processingTimes.push(Date.now() - startTime);
       });

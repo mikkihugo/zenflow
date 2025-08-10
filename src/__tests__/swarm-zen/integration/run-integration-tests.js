@@ -53,11 +53,11 @@ class IntegrationTestRunner {
     };
 
     this.config = {
-      parallel: process.env.PARALLEL_TESTS === 'true',
-      verbose: process.env.VERBOSE === 'true',
-      bail: process.env.BAIL_ON_FAILURE === 'true',
-      coverage: process.env.COVERAGE === 'true',
-      environment: process.env.NODE_ENV || 'test',
+      parallel: process.env["PARALLEL_TESTS"] === 'true',
+      verbose: process.env["VERBOSE"] === 'true',
+      bail: process.env["BAIL_ON_FAILURE"] === 'true',
+      coverage: process.env["COVERAGE"] === 'true',
+      environment: process.env["NODE_ENV"] || 'test',
     };
   }
 
@@ -98,9 +98,9 @@ class IntegrationTestRunner {
     }
 
     // Set test environment variables
-    process.env.NODE_ENV = 'test';
-    process.env.RUV_SWARM_TEST_MODE = 'true';
-    process.env.RUV_SWARM_LOG_LEVEL = this.config.verbose ? 'debug' : 'error';
+    process.env["NODE_ENV"] = 'test';
+    process.env["RUV_SWARM_TEST_MODE"] = 'true';
+    process.env["RUV_SWARM_LOG_LEVEL"] = this.config.verbose ? 'debug' : 'error';
   }
 
   async runSequential() {

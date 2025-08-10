@@ -14,12 +14,7 @@ const logger = getLogger('interfaces-clients-adapters-mcp-client-demo');
  * and provides examples of both stdio and HTTP protocol usage.
  */
 
-import {
-  createMCPConfigFromLegacy,
-  MCPClientAdapter,
-  type MCPClientConfig,
-  MCPClientFactory,
-} from './mcp-client-adapter.js';
+import { createMCPConfigFromLegacy, MCPClientAdapter, MCPClientFactory } from './mcp-client-adapter.js';
 
 /**
  * Example: Convert existing external MCP client setup to UACL.
@@ -70,10 +65,10 @@ export async function demonstrateMCPClientConversion() {
     // Connect clients
     await httpClient.connect();
     await stdioClient.connect();
-    const _httpHealth = await httpClient.healthCheck();
-    const _stdioHealth = await stdioClient.healthCheck();
-    const _httpMetrics = await httpClient.getMetrics();
-    const _stdioMetrics = await stdioClient.getMetrics();
+    const httpHealth = await httpClient.healthCheck();
+    const stdioHealth = await stdioClient.healthCheck();
+    const httpMetrics = await httpClient.getMetrics();
+    const stdioMetrics = await stdioClient.getMetrics();
 
     // Get available tools (GET request)
     const httpTools = await httpClient.get('/tools');
@@ -83,7 +78,7 @@ export async function demonstrateMCPClientConversion() {
     if (Array.isArray(httpTools.data) && httpTools.data.length > 0) {
       const toolName = httpTools.data[0]?.name;
 
-      const _result = await httpClient.post(toolName, {
+      const result = await httpClient.post(toolName, {
         query: 'test research query',
       });
     }
@@ -91,7 +86,7 @@ export async function demonstrateMCPClientConversion() {
     if (Array.isArray(stdioTools.data) && stdioTools.data.length > 0) {
       const toolName = stdioTools.data[0]?.name;
 
-      const _result = await stdioClient.post(toolName, {
+      const result = await stdioClient.post(toolName, {
         path: './test-file.txt',
       });
     }
@@ -99,18 +94,18 @@ export async function demonstrateMCPClientConversion() {
     // Bulk health check
     const allHealth = await factory.healthCheckAll();
 
-    for (const [_name, _health] of allHealth) {
+    for (const [name, health] of allHealth) {
     }
 
     // Bulk metrics
     const allMetrics = await factory.getMetricsAll();
 
-    for (const [_name, _metrics] of allMetrics) {
+    for (const [name, metrics] of allMetrics) {
     }
     httpClient.updateConfig({ timeout: 45000 });
-    httpClient.on('connect', (_data) => {});
+    httpClient.on('connect', (data) => {});
 
-    stdioClient.on('disconnect', (_data) => {});
+    stdioClient.on('disconnect', (data) => {});
     await httpClient.disconnect();
     await stdioClient.disconnect();
     await factory.shutdown();
@@ -165,8 +160,8 @@ export async function migrateLegacyMCPClient() {
     for (const { name, client } of clients) {
       try {
         await client.connect();
-        const _health = await client.healthCheck();
-      } catch (_error) {}
+        const health = await client.healthCheck();
+      } catch (error) {}
     }
     for (const { client } of clients) {
       await client.disconnect();
@@ -217,8 +212,8 @@ export async function demonstrateProtocolPatterns() {
   };
 
   try {
-    const _stdioClient = await factory.create(stdioConfig);
-    const _httpClient = await factory.create(httpConfig);
+    const stdioClient = await factory.create(stdioConfig);
+    const httpClient = await factory.create(httpConfig);
   } catch (error) {
     logger.error('❌ Protocol pattern error:', error);
   } finally {

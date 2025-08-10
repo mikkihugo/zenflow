@@ -359,7 +359,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
   getAllFiles(): Record<string, string> {
     const result: Record<string, string> = {};
     for (const [path, content] of this.files.entries()) {
-      result[path] = content;
+      result?.[path] = content;
     }
     return result;
   }

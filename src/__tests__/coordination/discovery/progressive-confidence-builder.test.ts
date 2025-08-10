@@ -1,12 +1,4 @@
-/**
- * @file Tests for Progressive Confidence Builder
- */
-
-import type { DomainDiscoveryBridge } from '@coordination/discovery/domain-discovery-bridge';
 import { ProgressiveConfidenceBuilder } from '@coordination/discovery/progressive-confidence-builder';
-import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
-import type { jest } from '@jest/globals';
-import type { SessionMemoryStore } from '@memory/memory';
 
 // Mock HiveFACT
 vi.mock('@coordination/hive-fact-integration', () => ({

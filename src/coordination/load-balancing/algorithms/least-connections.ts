@@ -9,7 +9,6 @@
 
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
-import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 
 interface ConnectionState {
   agentId: string;

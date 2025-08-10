@@ -8,8 +8,7 @@
  * - Verify the conversation between components
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type { MCPError, MCPNotification, MCPRequest, MCPResponse } from '../../../../utils/types';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 

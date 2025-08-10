@@ -573,7 +573,7 @@ export interface AvailabilitySlot {
   type: SlotType;
 }
 
-export interface BasicDevelopmentStage {
+export interface DevelopmentStage {
   stageId: string;
   name: string;
   duration: number;
@@ -920,7 +920,7 @@ export interface PerformanceCharacteristics {
   latency: number;
 }
 
-export interface MaintainabilityMetrics {
+export interface tainabilityMetrics {
   codeQuality: number;
   documentation: number;
   testCoverage: number;
@@ -4188,7 +4188,7 @@ export interface QualityCheck {
   action: string;
 }
 
-export interface CompletenessCheck {
+export interface nessCheck {
   required: string[];
   optional: string[];
   coverage: number;

@@ -8,12 +8,6 @@
 import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
 import { sparcMCPTools } from '../../coordination/swarm/sparc/integrations/mcp-sparc-tools';
 import { SpecificationPhaseEngine } from '../../coordination/swarm/sparc/phases/specification/specification-engine';
-import type {
-  ProjectDomain,
-  ProjectSpecification,
-  SPARCPhase,
-  SPARCProject,
-} from '../../coordination/swarm/sparc/types/sparc-types';
 
 describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
   let sparcEngine: SPARCEngineCore;

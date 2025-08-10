@@ -8,7 +8,6 @@ import {
   OUR_AGENT_CATEGORIES,
   performGapAnalysis,
 } from '../../../coordination/agents/gap-analysis';
-import type { AgentType } from '../../../types/agent-types';
 
 describe('Agent System Gap Analysis', () => {
   describe('New Agent Types', () => {
@@ -201,7 +200,7 @@ describe('Agent System Gap Analysis', () => {
     });
 
     test('should have reasonable agent distribution', () => {
-      for (const [_category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) {
+      for (const [category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) {
         // Each category should have at least 1 agent
         expect(agents.length).toBeGreaterThan(0);
 

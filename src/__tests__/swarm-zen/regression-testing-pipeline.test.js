@@ -15,10 +15,10 @@ class RegressionTestingPipeline {
     this.pipelineResults = {
       timestamp: new Date().toISOString(),
       buildInfo: {
-        commit: process.env.GITHUB_SHA || 'local',
-        branch: process.env.GITHUB_REF_NAME || 'local',
-        buildNumber: process.env.GITHUB_RUN_NUMBER || '0',
-        environment: process.env.NODE_ENV || 'test',
+        commit: process.env["GITHUB_SHA"] || 'local',
+        branch: process.env["GITHUB_REF_NAME"] || 'local',
+        buildNumber: process.env["GITHUB_RUN_NUMBER"] || '0',
+        environment: process.env["NODE_ENV"] || 'test',
       },
       baseline: null,
       currentResults: null,
@@ -133,8 +133,8 @@ class RegressionTestingPipeline {
       }
 
       // Set environment variables
-      process.env.NODE_ENV = 'test';
-      process.env.RUV_SWARM_TEST_MODE = 'regression';
+      process.env["NODE_ENV"] = 'test';
+      process.env["RUV_SWARM_TEST_MODE"] = 'regression';
 
       setupResult.data = {
         nodeVersion,

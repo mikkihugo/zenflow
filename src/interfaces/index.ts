@@ -78,7 +78,7 @@ export const InterfaceUtils = {
   },
 
   validateConfig(config: InterfaceConfig): boolean {
-    return ['terminal', 'web', 'mcp', 'api', 'advanced-cli'].includes(config?.mode);
+    return ['terminal', 'web', 'mcp', 'api', 'advanced-cli'].includes(config?.["mode"]);
   },
 
   isAdvancedCLIEnabled(): boolean {
@@ -92,7 +92,7 @@ export const InterfaceUtils = {
     const hasAdvancedCommand = args.some((arg) => advancedCommands.includes(arg));
     const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
-    return hasAdvancedCommand || hasAIFlag || flags.CLAUDE_ADVANCED_CLI === 'true';
+    return hasAdvancedCommand || hasAIFlag || flags["CLAUDE_ADVANCED_CLI"] === 'true';
   },
 };
 

@@ -8,8 +8,7 @@
  * - Focus on interaction patterns between components
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import type { MCPRequest, MCPResponse, MCPTool } from '../../../../utils/types';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 

@@ -8,7 +8,7 @@
 
 
 
-import type { DIContainer, Provider } from '../types/di-types';
+import type { Provider } from '../types/di-types';
 
 export class TransientProvider<T> implements Provider<T> {
   readonly type = 'transient' as const;

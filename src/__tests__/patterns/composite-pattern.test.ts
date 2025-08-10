@@ -3,19 +3,7 @@
  * Hybrid TDD approach: London TDD for hierarchy management, Classical TDD for task execution algorithms
  */
 
-import {
-  type Agent,
-  type AgentCapability,
-  type AgentComponent,
-  AgentFactory,
-  type AgentGroup,
-  type AgentStatus,
-  type CompositeStatus,
-  type HierarchicalAgentGroup,
-  type LoadBalancingStrategy,
-  type TaskDefinition,
-  type TaskResult,
-} from '../../coordination/agents/composite-system';
+import { AgentFactory } from '../../coordination/agents/composite-system';
 
 // Mock task executor for testing
 const createMockTaskExecutor = (delay: number = 50, shouldSucceed: boolean = true) =>

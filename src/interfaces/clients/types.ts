@@ -178,8 +178,8 @@ export const ClientStatuses = {
 /**
  * Default client configurations by type.
  */
-export const DefaultClientConfigs = {
-  [ClientTypes.HTTP]: {
+export const ClientConfigs = {
+  [ClientTypes["HTTP"]]: {
     timeout: 30000,
     retry: {
       maxRetries: 3,
@@ -193,7 +193,7 @@ export const DefaultClientConfigs = {
     },
   },
 
-  [ClientTypes.WEBSOCKET]: {
+  [ClientTypes["WEBSOCKET"]]: {
     timeout: 5000,
     retry: {
       maxRetries: 5,
@@ -207,7 +207,7 @@ export const DefaultClientConfigs = {
     },
   },
 
-  [ClientTypes.KNOWLEDGE]: {
+  [ClientTypes["KNOWLEDGE"]]: {
     timeout: 15000,
     retry: {
       maxRetries: 2,
@@ -221,7 +221,7 @@ export const DefaultClientConfigs = {
     },
   },
 
-  [ClientTypes.MCP]: {
+  [ClientTypes["MCP"]]: {
     timeout: 10000,
     retry: {
       maxRetries: 3,
@@ -235,7 +235,7 @@ export const DefaultClientConfigs = {
     },
   },
 
-  [ClientTypes.GENERIC]: {
+  [ClientTypes["GENERIC"]]: {
     timeout: 30000,
     retry: {
       maxRetries: 3,
@@ -250,15 +250,15 @@ export const DefaultClientConfigs = {
  * Protocol to client type mapping.
  */
 export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
-  http: ClientTypes.HTTP,
-  https: ClientTypes.HTTP,
-  ws: ClientTypes.WEBSOCKET,
-  wss: ClientTypes.WEBSOCKET,
-  tcp: ClientTypes.GENERIC,
-  udp: ClientTypes.GENERIC,
-  stdio: ClientTypes.MCP,
-  ipc: ClientTypes.GENERIC,
-  custom: ClientTypes.GENERIC,
+  http: ClientTypes["HTTP"],
+  https: ClientTypes["HTTP"],
+  ws: ClientTypes["WEBSOCKET"],
+  wss: ClientTypes["WEBSOCKET"],
+  tcp: ClientTypes["GENERIC"],
+  udp: ClientTypes["GENERIC"],
+  stdio: ClientTypes["MCP"],
+  ipc: ClientTypes["GENERIC"],
+  custom: ClientTypes["GENERIC"],
 } as const;
 
 /**

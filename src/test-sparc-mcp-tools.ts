@@ -30,7 +30,7 @@ async function testSPARCMCPTools() {
         tool.name.startsWith('sparc_validate_pseudocode') ||
         tool.name.startsWith('sparc_generate_algorithms_only')
     );
-    pseudocodeTools.forEach((_tool) => {});
+    pseudocodeTools.forEach((tool) => {});
 
     // Test pseudocode generation tool
     const generateTool = tools.find((tool) => tool.name === 'sparc_generate_pseudocode');

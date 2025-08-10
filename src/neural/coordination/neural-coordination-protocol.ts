@@ -870,7 +870,7 @@ export class NeuralCoordinationProtocol {
           coordinationSession,
           coordinationResult
         );
-        coordinationResult.consensus = consensusResult;
+        coordinationResult?.consensus = consensusResult;
       }
 
       // Store coordination results

@@ -4,14 +4,12 @@
  */
 
 import {
-  type CoordinationContext,
   HierarchicalStrategy,
   MeshStrategy,
   RingStrategy,
   StarStrategy,
   StrategyFactory,
   SwarmCoordinator,
-  type SwarmTopology,
 } from '../../coordination/swarm/core/strategy';
 
 // Mock agent type for testing

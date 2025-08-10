@@ -9,17 +9,7 @@
 
 
 import { createLogger } from '../../core/logger';
-import type {
-  CacheLayer,
-  CacheOptimization,
-  CompressionResult,
-  Connection,
-  DatabaseQuery,
-  DataOptimizer,
-  PoolConfig,
-  QueryOptimization,
-  StorageLayer,
-} from '../interfaces/optimization-interfaces';
+import type { DataOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface DataOptimizationConfig {
   enableQueryOptimization: boolean;

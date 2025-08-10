@@ -1,12 +1,3 @@
-/**
- * @file Monitoring MCP Tools
- *
- * Real-time monitoring, performance analytics, health assessment,
- * and intelligent alerting systems.
- */
-
-import type { MCPTool } from '../tool-registry';
-
 const monitoringTools: MCPTool[] = [
   {
     name: 'swarm_status',

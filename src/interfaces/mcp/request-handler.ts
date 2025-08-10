@@ -101,35 +101,35 @@ export class MCPRequestHandler {
 
       switch (request.method) {
         case 'initialize':
-          response.result = await this.handleInitialize(request.params);
+          response?.result = await this.handleInitialize(request.params);
           break;
 
         case 'notifications/initialized':
-          response.result = await this.handleInitialized(request.params);
+          response?.result = await this.handleInitialized(request.params);
           break;
 
         case 'tools/list':
-          response.result = await this.handleToolsList();
+          response?.result = await this.handleToolsList();
           break;
 
         case 'tools/call':
-          response.result = await this.handleToolCall(request.params);
+          response?.result = await this.handleToolCall(request.params);
           break;
 
         case 'resources/list':
-          response.result = await this.handleResourcesList();
+          response?.result = await this.handleResourcesList();
           break;
 
         case 'resources/read':
-          response.result = await this.handleResourceRead(request.params);
+          response?.result = await this.handleResourceRead(request.params);
           break;
 
         case 'ping':
-          response.result = await this.handlePing();
+          response?.result = await this.handlePing();
           break;
 
         default:
-          response.error = {
+          response?.error = {
             code: -32601,
             message: 'Method not found',
             data: {
@@ -149,7 +149,7 @@ export class MCPRequestHandler {
     } catch (error) {
       logger.error(`Request processing error for ${request.method}:`, error);
 
-      response.error = {
+      response?.error = {
         code: -32603,
         message: 'Internal error',
         data: error instanceof Error ? error.message : String(error),

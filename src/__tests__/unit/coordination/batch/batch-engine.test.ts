@@ -1,9 +1,3 @@
-/**
- * @file Tests for BatchEngine - Claude-zen Concurrent Execution
- * Validates the "1 MESSAGE = ALL OPERATIONS" principle and performance improvements
- */
-
-import type { BatchOperation } from '../../../../coordination/batch/batch-engine';
 import {
   BatchEngine,
   createBatchOperation,

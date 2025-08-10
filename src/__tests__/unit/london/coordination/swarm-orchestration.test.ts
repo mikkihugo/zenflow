@@ -1,12 +1,4 @@
-/**
- * Advanced Swarm Orchestration Test Suite
- * London TDD approach - testing complex multi-agent coordination patterns
- */
-
-import type { AgentManager } from '../../../../coordination/agents/agent-manager';
-import type { LoadBalancingManager } from '../../../../coordination/load-balancing/load-balancing-manager';
 import { SwarmOrchestrator } from '../../../../coordination/orchestrator';
-import type { TaskDistributionEngine } from '../../../../coordination/protocols/distribution/task-distribution-engine';
 import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers';
 import { MockBuilder } from '../../../helpers/mock-builder';
 
@@ -254,7 +246,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
       mockAgentManager.getAllActiveAgents.mockResolvedValue(agents);
 
       // Mock condition evaluation
-      mockTaskDistributionEngine.evaluateConditions.mockImplementation(async (task, _context) => {
+      mockTaskDistributionEngine.evaluateConditions.mockImplementation(async (task, context) => {
         if (task.id === 'simple-processing') {
           return { shouldExecute: false, reason: 'complexity is high' };
         }
@@ -573,7 +565,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       // Mock task execution with circuit breaker logic
       mockTaskDistributionEngine.executeWithCircuitBreaker.mockImplementation(
-        async (task, _agent, _circuitBreakerConfig) => {
+        async (task, agent, circuitBreakerConfig) => {
           if (task.serviceEndpoint === 'unstable-service') {
             // Simulate circuit breaker opening
             return {

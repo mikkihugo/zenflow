@@ -7,16 +7,6 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { jest } from '@jest/globals';
-
-// Import the components we're testing
-import type {
-  CommandConfig,
-  CommandContext,
-  CommandMetadata,
-  CommandRegistry,
-  CommandResult,
-} from '../../../../cli/types/index';
 
 // Mock the full CLI command system integration
 interface CLICommandSystem {
@@ -361,7 +351,7 @@ describe('CLI Commands Integration - TDD London', () => {
       mockParser.parse.mockReturnValue(parseResult);
       mockRegistry.execute.mockResolvedValue(commandResult);
 
-      const _executionResult: ExecutionResult = {
+      const executionResult: ExecutionResult = {
         success: true,
         exitCode: 0,
         output: 'Deployed successfully',
@@ -434,7 +424,7 @@ describe('CLI Commands Integration - TDD London', () => {
       // Act
       try {
         await cliSystem.execute(input);
-      } catch (_thrownError) {
+      } catch (thrownError) {
         // Expected to throw, but error handler should have been called
       }
 
@@ -588,7 +578,7 @@ describe('CLI Commands Integration - TDD London', () => {
       // Act
       try {
         await cliSystem.execute(input);
-      } catch (_e) {
+      } catch (e) {
         // Expected to throw
       }
 

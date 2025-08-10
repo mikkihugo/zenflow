@@ -40,10 +40,10 @@ export function createBatchSystem(options?: {
   swarmConfig?: import('./swarm-batch').SwarmBatchConfig;
   maxConcurrentFiles?: number;
 }) {
-  const batchEngine = new BatchEngine(options?.batchConfig);
+  const batchEngine = new BatchEngine(options?.["batchConfig"]);
   const performanceMonitor = new BatchPerformanceMonitor();
-  const fileBatchOperator = new FileBatchOperator(options?.maxConcurrentFiles);
-  const swarmBatchCoordinator = new SwarmBatchCoordinator(options?.swarmConfig);
+  const fileBatchOperator = new FileBatchOperator(options?.["maxConcurrentFiles"]);
+  const swarmBatchCoordinator = new SwarmBatchCoordinator(options?.["swarmConfig"]);
 
   return {
     batchEngine,

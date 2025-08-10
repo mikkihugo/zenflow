@@ -18,7 +18,6 @@ const logger = getLogger('comprehensive-sparc-test');
  */
 
 import { writeFile } from 'node:fs/promises';
-import type { Priority, RiskLevel } from './coordination/swarm/sparc/types/sparc-types';
 
 async function runComprehensiveTest() {
   const results = {
@@ -31,16 +30,16 @@ async function runComprehensiveTest() {
 
   try {
     const coreTest = await testCoreEngine();
-    results.coreEngine = coreTest.success;
+    results?.coreEngine = coreTest.success;
     const cliTest = await testCLIIntegration();
-    results.cliIntegration = cliTest.success;
+    results?.cliIntegration = cliTest.success;
     const mcpTest = await testMCPIntegration();
-    results.mcpIntegration = mcpTest.success;
+    results?.mcpIntegration = mcpTest.success;
     const e2eTest = await testEndToEndFlow();
-    results.endToEndFlow = e2eTest.success;
+    results?.endToEndFlow = e2eTest.success;
 
     // Overall assessment
-    results.overallSuccess = Object.values(results)
+    results?.overallSuccess = Object.values(results)
       .slice(0, -1)
       .every((r) => r);
 

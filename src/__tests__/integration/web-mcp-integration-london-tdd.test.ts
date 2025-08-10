@@ -8,7 +8,7 @@
  * - Focus on protocol translation and error handling
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
@@ -508,7 +508,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       };
 
       const protocolIntegrator = {
-        bridge: (sourceRequest: any, _sourceProtocol: string, targetProtocol: string) => {
+        bridge: (sourceRequest: any, sourceProtocol: string, targetProtocol: string) => {
           const translated = mockProtocolBridge.translateRequest(sourceRequest, targetProtocol);
           const isValid = mockProtocolBridge.validateTranslation(sourceRequest, translated);
 

@@ -8,14 +8,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import {
-  type CoordinationEvent,
-  EventManagerTypes,
-  type SystemLifecycleEvent,
-  UEL,
-  UELHelpers,
-  UELSystemIntegration,
-} from '../index';
+import { EventManagerTypes, UEL, UELHelpers, UELSystemIntegration } from '../index';
 
 /**
  * Example: Complete UEL System Integration.
@@ -23,7 +16,7 @@ import {
  *
  * @example
  */
-export class CompleteUELIntegrationExample {
+export class UELIntegrationExample {
   private logger = {
     info: (_msg: string, ..._args: any[]) => {},
     warn: (msg: string, ...args: any[]) => console.warn(`⚠️  ${msg}`, ...args),
@@ -91,11 +84,11 @@ export class CompleteUELIntegrationExample {
 
     // Subscribe to events
     const systemSubscription = systemManager.subscribe(['system:*'], (event) => {
-      this.logger.info(`System event received: ${event.type}`, event.details);
+      this.logger.info(`System event received: ${event.type}`, event["details"]);
     });
 
     const coordSubscription = coordManager.subscribe(['coordination:*'], (event) => {
-      this.logger.info(`Coordination event received: ${event.type}`, event.details);
+      this.logger.info(`Coordination event received: ${event.type}`, event["details"]);
     });
 
     // Emit events
@@ -409,7 +402,7 @@ export class CompleteUELIntegrationExample {
     // Create enhanced systems with custom configurations
     const enhancedEventBus = UELSystemIntegration.factory.createEnhancedEventBus({
       enableUEL: true,
-      managerType: EventManagerTypes.SYSTEM,
+      managerType: EventManagerTypes["SYSTEM"],
       managerName: 'advanced-event-bus',
       maxListeners: 200,
     });
