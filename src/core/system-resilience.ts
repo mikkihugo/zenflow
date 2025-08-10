@@ -18,24 +18,91 @@ const logger = createLogger({ prefix: 'SystemResilience' });
 // Resource Management and Cleanup
 // ===============================
 
+/**
+ * Represents a managed system resource with cleanup capabilities.
+ * 
+ * @interface ResourceHandle
+ * @example
+ * ```typescript
+ * const handle: ResourceHandle = {
+ *   id: 'mem_12345',
+ *   type: 'memory',
+ *   allocated: Date.now(),
+ *   size: 1024,
+ *   cleanup: async () => { return Promise.resolve(); },
+ *   owner: 'agent-worker'
+ * };
+ * ```
+ */
 export interface ResourceHandle {
+  /** Unique identifier for the resource. */
   id: string;
+  /** Type of resource being managed. */
   type: 'memory' | 'file' | 'network' | 'wasm' | 'agent' | 'database';
-  allocated: number; // timestamp
-  size?: number; // in bytes
+  /** Timestamp when resource was allocated. */
+  allocated: number;
+  /** Size of resource in bytes (optional). */
+  size?: number;
+  /** Cleanup function to release the resource. */
   cleanup: () => Promise<void>;
-  owner: string; // component or operation that owns this resource
+  /** Component or operation that owns this resource. */
+  owner: string;
 }
 
+/**
+ * System resource limits configuration.
+ * 
+ * @interface ResourceLimits
+ * @example
+ * ```typescript
+ * const limits: ResourceLimits = {
+ *   maxMemoryMB: 512,
+ *   maxFileHandles: 1000,
+ *   maxNetworkConnections: 100,
+ *   maxWASMInstances: 10,
+ *   maxAgents: 50,
+ *   maxDatabaseConnections: 20
+ * };
+ * ```
+ */
 export interface ResourceLimits {
+  /** Maximum memory usage in megabytes. */
   maxMemoryMB: number;
+  /** Maximum number of file handles. */
   maxFileHandles: number;
+  /** Maximum number of network connections. */
   maxNetworkConnections: number;
+  /** Maximum number of WASM instances. */
   maxWASMInstances: number;
+  /** Maximum number of agents. */
   maxAgents: number;
+  /** Maximum number of database connections. */
   maxDatabaseConnections: number;
 }
 
+/**
+ * Manages system resources with automatic cleanup and limit enforcement.
+ * 
+ * Tracks resource allocation, enforces limits, and provides cleanup mechanisms
+ * to prevent resource leaks and system exhaustion.
+ * 
+ * @class ResourceManager
+ * @example
+ * ```typescript
+ * const manager = new ResourceManager({ maxMemoryMB: 1024 });
+ * 
+ * // Allocate a resource
+ * const resourceId = await manager.allocateResource(
+ *   'memory', 
+ *   'my-component', 
+ *   1024 * 1024,
+ *   async () => { await cleanup(); }
+ * );
+ * 
+ * // Release the resource
+ * await manager.releaseResource(resourceId);
+ * ```
+ */
 export class ResourceManager {
   private resources: Map<string, ResourceHandle> = new Map();
   private resourcesByType: Map<string, Set<string>> = new Map();
@@ -43,6 +110,11 @@ export class ResourceManager {
   private limits: ResourceLimits;
   private cleanupInterval: NodeJS.Timeout | null = null;
 
+  /**
+   * Creates a new ResourceManager instance.
+   * 
+   * @param limits - Partial resource limits configuration.
+   */
   constructor(limits: Partial<ResourceLimits> = {}) {
     this.limits = {
       maxMemoryMB: 512,
@@ -62,6 +134,27 @@ export class ResourceManager {
     this.startCleanupMonitoring();
   }
 
+  /**
+   * Allocates a new system resource with tracking and limits enforcement.
+   * 
+   * @param type - Type of resource to allocate.
+   * @param owner - Component or operation that owns the resource.
+   * @param size - Size of resource in bytes (optional).
+   * @param cleanup - Cleanup function to release the resource (optional).
+   * @returns Promise resolving to unique resource identifier.
+   * @throws {SystemError} When resource limits would be exceeded.
+   * @example
+   * ```typescript
+   * const resourceId = await manager.allocateResource(
+   *   'memory',
+   *   'worker-agent',
+   *   1024 * 1024, // 1MB
+   *   async () => {
+   *     // Custom cleanup logic
+   *   }
+   * );
+   * ```
+   */
   public async allocateResource(
     type: ResourceHandle['type'],
     owner: string,
@@ -96,6 +189,16 @@ export class ResourceManager {
     return resourceId;
   }
 
+  /**
+   * Releases a previously allocated resource and performs cleanup.
+   * 
+   * @param resourceId - Unique identifier of resource to release.
+   * @throws {SystemError} When resource cleanup fails.
+   * @example
+   * ```typescript
+   * await manager.releaseResource('memory_12345_abc');
+   * ```
+   */
   public async releaseResource(resourceId: string): Promise<void> {
     const resource = this.resources.get(resourceId);
     if (!resource) {
@@ -129,6 +232,15 @@ export class ResourceManager {
     }
   }
 
+  /**
+   * Releases all resources owned by a specific component or operation.
+   * 
+   * @param owner - Owner identifier to release resources for.
+   * @example
+   * ```typescript
+   * await manager.releaseResourcesByOwner('worker-agent-123');
+   * ```
+   */
   public async releaseResourcesByOwner(owner: string): Promise<void> {
     const ownerResources = this.resourcesByOwner.get(owner);
     if (!ownerResources || ownerResources.size === 0) {
@@ -146,6 +258,14 @@ export class ResourceManager {
     await Promise.allSettled(releasePromises);
   }
 
+  /**
+   * Enforces resource limits before allocation.
+   * 
+   * @private
+   * @param type - Type of resource to check limits for.
+   * @param size - Size of resource in bytes (optional).
+   * @throws {SystemError} When resource limits would be exceeded.
+   */
   private async enforceResourceLimits(type: ResourceHandle['type'], size?: number): Promise<void> {
     const currentCount = this.resourcesByType.get(type)?.size ?? 0;
 
@@ -269,6 +389,17 @@ export class ResourceManager {
     ); // Every 5 minutes
   }
 
+  /**
+   * Gets current resource usage statistics.
+   * 
+   * @returns Object containing resource statistics.
+   * @example
+   * ```typescript
+   * const stats = manager.getResourceStats();
+   * console.log(`Total resources: ${stats.totalResources}`);
+   * console.log(`Memory usage: ${stats.memoryUsageMB}MB`);
+   * ```
+   */
   public getResourceStats(): {
     totalResources: number;
     resourcesByType: Record<string, number>;
@@ -296,6 +427,17 @@ export class ResourceManager {
     };
   }
 
+  /**
+   * Performs emergency cleanup of all resources.
+   * 
+   * Used during system shutdown or emergency situations.
+   * Attempts to release all resources regardless of individual failures.
+   * 
+   * @example
+   * ```typescript
+   * await manager.emergencyCleanup();
+   * ```
+   */
   public async emergencyCleanup(): Promise<void> {
     logger.warn('Emergency resource cleanup initiated');
 
@@ -310,6 +452,14 @@ export class ResourceManager {
     logger.info('Emergency resource cleanup completed');
   }
 
+  /**
+   * Stops the resource manager and cleanup monitoring.
+   * 
+   * @example
+   * ```typescript
+   * manager.stop();
+   * ```
+   */
   public stop(): void {
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval);
@@ -322,26 +472,87 @@ export class ResourceManager {
 // Bulkhead Pattern Implementation
 // ===============================
 
+/**
+ * Configuration for bulkhead pattern implementation.
+ * 
+ * @interface BulkheadConfig
+ * @example
+ * ```typescript
+ * const config: BulkheadConfig = {
+ *   name: 'API Requests',
+ *   maxConcurrentExecutions: 10,
+ *   queueSize: 50,
+ *   timeoutMs: 30000,
+ *   priority: 5
+ * };
+ * ```
+ */
 export interface BulkheadConfig {
+  /** Name of the bulkhead for identification. */
   name: string;
+  /** Maximum number of concurrent executions allowed. */
   maxConcurrentExecutions: number;
+  /** Maximum size of the operation queue. */
   queueSize: number;
+  /** Timeout in milliseconds for operations. */
   timeoutMs: number;
-  priority: number; // Higher numbers = higher priority
+  /** Priority level (higher numbers = higher priority). */
+  priority: number;
 }
 
+/**
+ * Performance metrics for a bulkhead instance.
+ * 
+ * @interface BulkheadMetrics
+ * @example
+ * ```typescript
+ * const metrics = bulkhead.getMetrics();
+ * console.log(`Success rate: ${metrics.successfulExecutions / metrics.totalExecutions}`);
+ * ```
+ */
 export interface BulkheadMetrics {
+  /** Name of the bulkhead. */
   name: string;
+  /** Current number of executing operations. */
   currentExecutions: number;
+  /** Number of operations in queue. */
   queuedExecutions: number;
+  /** Total operations processed. */
   totalExecutions: number;
+  /** Number of successful executions. */
   successfulExecutions: number;
+  /** Number of failed executions. */
   failedExecutions: number;
+  /** Number of timed-out executions. */
   timeoutExecutions: number;
+  /** Average execution time in milliseconds. */
   averageExecutionTime: number;
+  /** Maximum execution time recorded. */
   maxExecutionTime: number;
 }
 
+/**
+ * Bulkhead pattern implementation for isolating system resources.
+ * 
+ * Prevents cascading failures by limiting concurrent executions and
+ * providing queuing with timeout and priority support.
+ * 
+ * @class Bulkhead
+ * @example
+ * ```typescript
+ * const bulkhead = new Bulkhead({
+ *   name: 'Database Operations',
+ *   maxConcurrentExecutions: 5,
+ *   queueSize: 20,
+ *   timeoutMs: 30000,
+ *   priority: 7
+ * });
+ * 
+ * const result = await bulkhead.execute(async () => {
+ *   return await database.query('SELECT * FROM users');
+ * }, 8); // higher priority
+ * ```
+ */
 export class Bulkhead {
   private currentExecutions: number = 0;
   private queue: Array<{
@@ -358,8 +569,29 @@ export class Bulkhead {
   private timeoutExecutions: number = 0;
   private executionTimes: number[] = [];
 
+  /**
+   * Creates a new Bulkhead instance.
+   * 
+   * @param config - Bulkhead configuration.
+   */
   constructor(private config: BulkheadConfig) {}
 
+  /**
+   * Executes an operation within the bulkhead's constraints.
+   * 
+   * @template T
+   * @param operation - Async operation to execute.
+   * @param priority - Operation priority (defaults to bulkhead priority).
+   * @returns Promise resolving to operation result.
+   * @throws {SystemError} When queue is full or operation fails.
+   * @example
+   * ```typescript
+   * const result = await bulkhead.execute(
+   *   async () => await expensiveOperation(),
+   *   10 // high priority
+   * );
+   * ```
+   */
   public async execute<T>(
     operation: () => Promise<T>,
     priority: number = this.config.priority
@@ -470,6 +702,16 @@ export class Bulkhead {
     }
   }
 
+  /**
+   * Gets current bulkhead performance metrics.
+   * 
+   * @returns Bulkhead performance metrics.
+   * @example
+   * ```typescript
+   * const metrics = bulkhead.getMetrics();
+   * console.log(`Queue utilization: ${metrics.queuedExecutions}/${config.queueSize}`);
+   * ```
+   */
   public getMetrics(): BulkheadMetrics {
     const avgExecutionTime =
       this.executionTimes.length > 0
@@ -491,6 +733,16 @@ export class Bulkhead {
     };
   }
 
+  /**
+   * Drains the bulkhead by waiting for all operations to complete.
+   * 
+   * @returns Promise that resolves when all operations are finished.
+   * @example
+   * ```typescript
+   * await bulkhead.drain();
+   * console.log('All operations completed');
+   * ```
+   */
   public async drain(): Promise<void> {
     // Wait for all current executions to complete and clear queue
     while (this.currentExecutions > 0 || this.queue.length > 0) {
@@ -503,9 +755,44 @@ export class Bulkhead {
 // Timeout Management
 // ===============================
 
+/**
+ * Manages operation timeouts with automatic cleanup.
+ * 
+ * Provides timeout functionality for async operations with automatic
+ * cleanup and tracking of active timeouts.
+ * 
+ * @class TimeoutManager
+ * @example
+ * ```typescript
+ * // Execute operation with timeout
+ * const result = await TimeoutManager.withTimeout(
+ *   async () => await longRunningOperation(),
+ *   5000, // 5 second timeout
+ *   'data-processing'
+ * );
+ * ```
+ */
 export class TimeoutManager {
   private static timeouts: Map<string, NodeJS.Timeout> = new Map();
 
+  /**
+   * Executes an operation with a timeout.
+   * 
+   * @template T
+   * @param operation - Async operation to execute.
+   * @param timeoutMs - Timeout in milliseconds.
+   * @param operationName - Name for debugging (optional).
+   * @returns Promise resolving to operation result.
+   * @throws {TimeoutError} When operation exceeds timeout.
+   * @example
+   * ```typescript
+   * const data = await TimeoutManager.withTimeout(
+   *   () => fetch('/api/data'),
+   *   10000,
+   *   'api-fetch'
+   * );
+   * ```
+   */
   public static async withTimeout<T>(
     operation: () => Promise<T>,
     timeoutMs: number,
@@ -547,6 +834,16 @@ export class TimeoutManager {
     }
   }
 
+  /**
+   * Clears all active timeouts.
+   * 
+   * Used during emergency shutdown to prevent timeout callbacks.
+   * 
+   * @example
+   * ```typescript
+   * TimeoutManager.clearAllTimeouts();
+   * ```
+   */
   public static clearAllTimeouts(): void {
     for (const [_id, timeout] of TimeoutManager.timeouts.entries()) {
       clearTimeout(timeout);
@@ -554,6 +851,16 @@ export class TimeoutManager {
     TimeoutManager.timeouts.clear();
   }
 
+  /**
+   * Gets the number of active timeouts.
+   * 
+   * @returns Number of currently active timeouts.
+   * @example
+   * ```typescript
+   * const activeCount = TimeoutManager.getActiveTimeouts();
+   * console.log(`${activeCount} operations are timing out`);
+   * ```
+   */
   public static getActiveTimeouts(): number {
     return TimeoutManager.timeouts.size;
   }
@@ -563,21 +870,93 @@ export class TimeoutManager {
 // Error Boundary Implementation
 // ===============================
 
+/**
+ * Configuration for error boundary implementation.
+ * 
+ * @interface ErrorBoundaryConfig
+ * @example
+ * ```typescript
+ * const config: ErrorBoundaryConfig = {
+ *   name: 'API Service',
+ *   maxErrors: 5,
+ *   windowMs: 60000, // 1 minute
+ *   onBreach: async (errors) => {
+ *     console.error('Service breached:', errors.length);
+ *   },
+ *   recovery: async () => {
+ *     return await healthCheck();
+ *   }
+ * };
+ * ```
+ */
 export interface ErrorBoundaryConfig {
+  /** Name of the error boundary for identification. */
   name: string;
+  /** Maximum errors allowed within the time window. */
   maxErrors: number;
+  /** Time window in milliseconds for error counting. */
   windowMs: number;
+  /** Callback when error boundary is breached. */
   onBreach: (errors: Error[]) => Promise<void>;
+  /** Recovery function to attempt boundary reset. */
   recovery: () => Promise<boolean>;
 }
 
+/**
+ * Error boundary implementation for containing and recovering from failures.
+ * 
+ * Tracks errors within a time window and triggers breach handling and
+ * recovery procedures when error thresholds are exceeded.
+ * 
+ * @class ErrorBoundary
+ * @example
+ * ```typescript
+ * const boundary = new ErrorBoundary({
+ *   name: 'Database Service',
+ *   maxErrors: 3,
+ *   windowMs: 30000,
+ *   onBreach: async (errors) => {
+ *     await notifyAdmins('Database service failing');
+ *   },
+ *   recovery: async () => {
+ *     return await reconnectDatabase();
+ *   }
+ * });
+ * 
+ * try {
+ *   await boundary.execute(() => database.query('SELECT 1'));
+ * } catch (error) {
+ *   // Error is tracked and boundary state updated
+ * }
+ * ```
+ */
 export class ErrorBoundary {
   private errors: Array<{ error: Error; timestamp: number }> = [];
   private breached: boolean = false;
   private recoveryAttempts: number = 0;
 
+  /**
+   * Creates a new ErrorBoundary instance.
+   * 
+   * @param config - Error boundary configuration.
+   */
   constructor(private config: ErrorBoundaryConfig) {}
 
+  /**
+   * Executes an operation within the error boundary.
+   * 
+   * @template T
+   * @param operation - Async operation to execute.
+   * @returns Promise resolving to operation result.
+   * @throws {SystemError} When boundary is breached.
+   * @throws Original error from operation.
+   * @example
+   * ```typescript
+   * const result = await boundary.execute(async () => {
+   *   return await riskyOperation();
+   * });
+   * ```
+   */
   public async execute<T>(operation: () => Promise<T>): Promise<T> {
     if (this.breached) {
       throw new SystemError(
@@ -624,6 +1003,18 @@ export class ErrorBoundary {
     }
   }
 
+  /**
+   * Attempts to recover the error boundary from breached state.
+   * 
+   * @returns Promise resolving to true if recovery succeeded.
+   * @example
+   * ```typescript
+   * if (boundary.getStatus().breached) {
+   *   const recovered = await boundary.attemptRecovery();
+   *   console.log(`Recovery ${recovered ? 'succeeded' : 'failed'}`);
+   * }
+   * ```
+   */
   public async attemptRecovery(): Promise<boolean> {
     if (!this.breached) {
       return true; // Already recovered
@@ -656,6 +1047,18 @@ export class ErrorBoundary {
     }
   }
 
+  /**
+   * Gets current error boundary status.
+   * 
+   * @returns Error boundary status information.
+   * @example
+   * ```typescript
+   * const status = boundary.getStatus();
+   * if (status.breached) {
+   *   console.log(`Boundary breached with ${status.errorCount} errors`);
+   * }
+   * ```
+   */
   public getStatus(): {
     name: string;
     breached: boolean;
@@ -672,6 +1075,17 @@ export class ErrorBoundary {
     };
   }
 
+  /**
+   * Resets the error boundary to initial state.
+   * 
+   * Clears all error history and resets breach status.
+   * 
+   * @example
+   * ```typescript
+   * boundary.reset();
+   * console.log('Boundary reset to clean state');
+   * ```
+   */
   public reset(): void {
     this.errors = [];
     this.breached = false;
@@ -685,17 +1099,73 @@ export class ErrorBoundary {
 // Emergency Shutdown System
 // ===============================
 
+/**
+ * Emergency shutdown procedure definition.
+ * 
+ * @interface EmergencyProcedure
+ * @example
+ * ```typescript
+ * const procedure: EmergencyProcedure = {
+ *   name: 'cleanup-database',
+ *   priority: 1, // executes first
+ *   timeoutMs: 5000,
+ *   procedure: async () => {
+ *     await database.close();
+ *   }
+ * };
+ * ```
+ */
 export interface EmergencyProcedure {
+  /** Name of the emergency procedure. */
   name: string;
-  priority: number; // Lower numbers execute first
+  /** Priority (lower numbers execute first). */
+  priority: number;
+  /** Async procedure to execute during shutdown. */
   procedure: () => Promise<void>;
+  /** Timeout for procedure execution. */
   timeoutMs: number;
 }
 
+/**
+ * Emergency shutdown system with ordered procedure execution.
+ * 
+ * Manages emergency shutdown procedures with prioritized execution
+ * and timeout handling for graceful system termination.
+ * 
+ * @class EmergencyShutdownSystem
+ * @example
+ * ```typescript
+ * const shutdown = new EmergencyShutdownSystem();
+ * 
+ * shutdown.addProcedure({
+ *   name: 'save-state',
+ *   priority: 1,
+ *   timeoutMs: 3000,
+ *   procedure: async () => await saveApplicationState()
+ * });
+ * 
+ * // Initiate emergency shutdown
+ * await shutdown.initiateEmergencyShutdown('Critical system error');
+ * ```
+ */
 export class EmergencyShutdownSystem {
   private procedures: EmergencyProcedure[] = [];
   private shutdownInProgress: boolean = false;
 
+  /**
+   * Adds an emergency procedure to the shutdown sequence.
+   * 
+   * @param procedure - Emergency procedure to add.
+   * @example
+   * ```typescript
+   * shutdown.addProcedure({
+   *   name: 'close-connections',
+   *   priority: 2,
+   *   timeoutMs: 2000,
+   *   procedure: async () => await closeAllConnections()
+   * });
+   * ```
+   */
   public addProcedure(procedure: EmergencyProcedure): void {
     this.procedures.push(procedure);
     this.procedures.sort((a, b) => a.priority - b.priority);
@@ -746,12 +1216,43 @@ export class EmergencyShutdownSystem {
 // System Resilience Orchestrator
 // ===============================
 
+/**
+ * Main orchestrator for system resilience patterns.
+ * 
+ * Coordinates resource management, bulkheads, error boundaries, and
+ * emergency shutdown procedures for comprehensive system resilience.
+ * 
+ * @class SystemResilienceOrchestrator
+ * @example
+ * ```typescript
+ * const orchestrator = new SystemResilienceOrchestrator({
+ *   maxMemoryMB: 1024,
+ *   maxAgents: 100
+ * });
+ * 
+ * // Execute operation with resilience patterns
+ * const result = await orchestrator.executeWithResilience(
+ *   async () => await complexOperation(),
+ *   {
+ *     bulkhead: 'api',
+ *     errorBoundary: 'service',
+ *     timeoutMs: 30000,
+ *     operationName: 'user-request'
+ *   }
+ * );
+ * ```
+ */
 export class SystemResilienceOrchestrator {
   private resourceManager: ResourceManager;
   private bulkheads: Map<string, Bulkhead> = new Map();
   private errorBoundaries: Map<string, ErrorBoundary> = new Map();
   public emergencyShutdown: EmergencyShutdownSystem;
 
+  /**
+   * Creates a new SystemResilienceOrchestrator instance.
+   * 
+   * @param resourceLimits - Optional resource limits configuration.
+   */
   constructor(resourceLimits?: Partial<ResourceLimits>) {
     this.resourceManager = new ResourceManager(resourceLimits);
     this.emergencyShutdown = new EmergencyShutdownSystem();
@@ -894,18 +1395,78 @@ export class SystemResilienceOrchestrator {
     });
   }
 
+  /**
+   * Gets a bulkhead by name.
+   * 
+   * @param name - Name of the bulkhead to retrieve.
+   * @returns Bulkhead instance or undefined if not found.
+   * @example
+   * ```typescript
+   * const apiBulkhead = orchestrator.getBulkhead('api');
+   * if (apiBulkhead) {
+   *   const metrics = apiBulkhead.getMetrics();
+   * }
+   * ```
+   */
   public getBulkhead(name: string): Bulkhead | undefined {
     return this.bulkheads.get(name);
   }
 
+  /**
+   * Gets an error boundary by name.
+   * 
+   * @param name - Name of the error boundary to retrieve.
+   * @returns ErrorBoundary instance or undefined if not found.
+   * @example
+   * ```typescript
+   * const dbBoundary = orchestrator.getErrorBoundary('database');
+   * if (dbBoundary) {
+   *   const status = dbBoundary.getStatus();
+   * }
+   * ```
+   */
   public getErrorBoundary(name: string): ErrorBoundary | undefined {
     return this.errorBoundaries.get(name);
   }
 
+  /**
+   * Gets the resource manager instance.
+   * 
+   * @returns ResourceManager instance.
+   * @example
+   * ```typescript
+   * const manager = orchestrator.getResourceManager();
+   * const stats = manager.getResourceStats();
+   * ```
+   */
   public getResourceManager(): ResourceManager {
     return this.resourceManager;
   }
 
+  /**
+   * Executes an operation with comprehensive resilience patterns.
+   * 
+   * @template T
+   * @param operation - Async operation to execute.
+   * @param options.bulkhead - Name of bulkhead to use for execution isolation.
+   * @param options.errorBoundary - Name of error boundary to use for failure handling.
+   * @param options.timeoutMs - Timeout in milliseconds for the operation.
+   * @param options.operationName - Name of the operation for debugging and logging.
+   * @param options - Resilience options (bulkhead, error boundary, timeout, etc.).
+   * @returns Promise resolving to operation result.
+   * @example
+   * ```typescript
+   * const result = await orchestrator.executeWithResilience(
+   *   async () => await apiCall(),
+   *   {
+   *     bulkhead: 'api',
+   *     errorBoundary: 'external-service',
+   *     timeoutMs: 10000,
+   *     operationName: 'user-data-fetch'
+   *   }
+   * );
+   * ```
+   */
   public async executeWithResilience<T>(
     operation: () => Promise<T>,
     options: {
@@ -918,19 +1479,19 @@ export class SystemResilienceOrchestrator {
     let wrappedOperation = operation;
 
     // Apply timeout if specified
-    if (options?.['timeoutMs']) {
+    if (options?.timeoutMs) {
       const timeoutOperation = wrappedOperation;
       wrappedOperation = () =>
         TimeoutManager.withTimeout(
           timeoutOperation,
-          options?.['timeoutMs']!,
-          options?.['operationName'] || 'resilient_operation'
+          options.timeoutMs!,
+          options.operationName || 'resilient_operation'
         );
     }
 
     // Apply error boundary if specified
-    if (options?.['errorBoundary']) {
-      const errorBoundary = this.errorBoundaries.get(options?.['errorBoundary']);
+    if (options?.errorBoundary) {
+      const errorBoundary = this.errorBoundaries.get(options.errorBoundary);
       if (errorBoundary) {
         const boundaryOperation = wrappedOperation;
         wrappedOperation = () => errorBoundary.execute(boundaryOperation);
@@ -938,8 +1499,8 @@ export class SystemResilienceOrchestrator {
     }
 
     // Apply bulkhead if specified
-    if (options?.['bulkhead']) {
-      const bulkhead = this.bulkheads.get(options?.['bulkhead']);
+    if (options?.bulkhead) {
+      const bulkhead = this.bulkheads.get(options.bulkhead);
       if (bulkhead) {
         return await bulkhead.execute(wrappedOperation);
       }
@@ -948,6 +1509,17 @@ export class SystemResilienceOrchestrator {
     return await wrappedOperation();
   }
 
+  /**
+   * Gets comprehensive system resilience status.
+   * 
+   * @returns System status including all resilience components.
+   * @example
+   * ```typescript
+   * const status = orchestrator.getSystemStatus();
+   * console.log(`Active timeouts: ${status.activeTimeouts}`);
+   * console.log(`Total resources: ${status.resources.totalResources}`);
+   * ```
+   */
   public getSystemStatus(): {
     bulkheads: Record<string, BulkheadMetrics>;
     errorBoundaries: Record<string, any>;
@@ -974,6 +1546,15 @@ export class SystemResilienceOrchestrator {
     };
   }
 
+  /**
+   * Initiates emergency shutdown of the entire system.
+   * 
+   * @param reason - Reason for emergency shutdown.
+   * @example
+   * ```typescript
+   * await orchestrator.initiateEmergencyShutdown('Critical memory leak detected');
+   * ```
+   */
   public async initiateEmergencyShutdown(reason: string): Promise<void> {
     await this.emergencyShutdown.initiateEmergencyShutdown(reason);
   }
