@@ -16,6 +16,8 @@ import {getLogger} from '../config/logging-config';
 import type {BaseDocumentEntity} from '../database/entities/product-entities';
 import type {DocumentManager} from '../database/managers/document-manager';
 import type {MemorySystemFactory} from '../memory/index';
+import type {WorkflowGateRequest, WorkflowGateResult} from '../coordination/workflows/workflow-gate-request';
+import type {WorkflowHumanGate, WorkflowGatesManager} from '../coordination/orchestration/workflow-gates';
 
 const logger = getLogger('WorkflowEngine');
 
@@ -30,6 +32,13 @@ export interface WorkflowStep {
   readonly timeout?: number;
   readonly retries?: number;
   readonly onError?: 'stop' | 'continue' | 'skip';
+  readonly gateConfig?: {
+    readonly enabled: boolean;
+    readonly gateType?: 'approval' | 'checkpoint' | 'review' | 'decision';
+    readonly businessImpact?: 'low' | 'medium' | 'high' | 'critical';
+    readonly stakeholders?: string[];
+    readonly autoApproval?: boolean;
+  };
 }
 
 export interface WorkflowDefinition {
@@ -53,6 +62,14 @@ export interface WorkflowState {
   readonly startTime: string;
   endTime?: string;
   error?: string;
+  // Gate-aware execution state
+  pendingGates?: Map<string, WorkflowGateRequest>;
+  gateResults?: Map<string, WorkflowGateResult>;
+  pausedForGate?: {
+    stepIndex: number;
+    gateId: string;
+    pausedAt: string;
+  };
 }
 
 export interface WorkflowEngineConfig {
@@ -110,11 +127,13 @@ export class WorkflowEngine extends EventEmitter {
   // Optional advanced capabilities
   public readonly memory?: MemorySystemFactory;
   private readonly documentManager?: DocumentManager;
+  private readonly gatesManager?: WorkflowGatesManager;
 
   constructor(
     config: WorkflowEngineConfig = {},
     documentManager?: DocumentManager,
-    memoryFactory?: MemorySystemFactory
+    memoryFactory?: MemorySystemFactory,
+    gatesManager?: WorkflowGatesManager
   ) {
     super();
     
@@ -128,6 +147,7 @@ export class WorkflowEngine extends EventEmitter {
     
     this.documentManager = documentManager;
     this.memory = memoryFactory;
+    this.gatesManager = gatesManager;
   }
 
   // --------------------------------------------------------------------------
@@ -401,6 +421,35 @@ export class WorkflowEngine extends EventEmitter {
 
   private async executeStep(step: WorkflowStep, workflow: WorkflowState): Promise<StepExecutionResult> {
     const startTime = Date.now();
+    
+    // Check if step requires gate approval
+    if (step.gateConfig?.enabled && this.gatesManager) {
+      const gateResult = await this.executeGateForStep(step, workflow);
+      if (!gateResult.success) {
+        return {
+          success: false,
+          error: gateResult.error?.message || 'Gate approval failed',
+          duration: Date.now() - startTime,
+        };
+      }
+      
+      if (!gateResult.approved) {
+        // Pause workflow until gate is approved
+        workflow.status = 'paused';
+        workflow.pausedForGate = {
+          stepIndex: workflow.currentStep,
+          gateId: gateResult.gateId,
+          pausedAt: new Date().toISOString()
+        };
+        
+        return {
+          success: true,
+          output: { gateId: gateResult.gateId, status: 'pending_approval' },
+          duration: Date.now() - startTime,
+        };
+      }
+    }
+
     const handler = this.stepHandlers.get(step.type);
 
     if (!handler) {
@@ -493,6 +542,214 @@ export class WorkflowEngine extends EventEmitter {
       return transformation(data);
     }
     return data;
+  }
+
+  // --------------------------------------------------------------------------
+  // GATE INTEGRATION METHODS
+  // --------------------------------------------------------------------------
+
+  /**
+   * Execute gate for workflow step
+   */
+  private async executeGateForStep(step: WorkflowStep, workflow: WorkflowState): Promise<WorkflowGateResult> {
+    if (!this.gatesManager || !step.gateConfig) {
+      return {
+        success: false,
+        gateId: '',
+        approved: false,
+        processingTime: 0,
+        escalationLevel: 0,
+        error: new Error('Gate manager not available'),
+        correlationId: ''
+      };
+    }
+
+    try {
+      const gateId = `workflow-${workflow.id}-step-${workflow.currentStep}`;
+      
+      // Create gate request from step configuration
+      const gateRequest: WorkflowGateRequest = {
+        // ValidationQuestion base properties
+        id: gateId,
+        type: 'checkpoint',
+        question: `Approve execution of step: ${step.name || step.type}?`,
+        context: {
+          workflowId: workflow.id,
+          stepName: step.name || step.type,
+          stepType: step.type,
+          stepParams: step.params || {}
+        },
+        confidence: 0.8,
+        priority: step.gateConfig.businessImpact === 'critical' ? 'critical' : 'medium',
+        validationReason: `Workflow step gate: ${step.name || step.type}`,
+        expectedImpact: step.gateConfig.businessImpact === 'high' ? 0.7 : 0.4,
+        
+        // WorkflowGateRequest specific properties
+        workflowContext: {
+          workflowId: workflow.id,
+          stepName: step.name || step.type,
+          businessImpact: step.gateConfig.businessImpact || 'medium',
+          decisionScope: 'task',
+          stakeholders: step.gateConfig.stakeholders || ['workflow-manager'],
+          dependencies: [],
+          riskFactors: []
+        },
+        gateType: step.gateConfig.gateType || 'checkpoint',
+        timeoutConfig: {
+          initialTimeout: step.timeout || 300000, // 5 minutes
+          escalationTimeouts: [600000, 1200000], // 10, 20 minutes
+          maxTotalTimeout: 1800000 // 30 minutes
+        },
+        integrationConfig: {
+          correlationId: `${workflow.id}-${workflow.currentStep}`,
+          domainValidation: true,
+          enableMetrics: true
+        }
+      };
+
+      // Initialize pending gates map if not exists
+      if (!workflow.pendingGates) {
+        workflow.pendingGates = new Map();
+      }
+      workflow.pendingGates.set(gateId, gateRequest);
+
+      // For auto-approval steps, return immediately approved
+      if (step.gateConfig.autoApproval) {
+        return {
+          success: true,
+          gateId,
+          approved: true,
+          processingTime: 10,
+          escalationLevel: 0,
+          decisionMaker: 'auto-approval',
+          correlationId: gateRequest.integrationConfig?.correlationId || ''
+        };
+      }
+
+      // Simulate gate processing (in real implementation, this would go through AGUI)
+      const approved = await this.simulateGateDecision(step, workflow);
+      
+      return {
+        success: true,
+        gateId,
+        approved,
+        processingTime: 100,
+        escalationLevel: 0,
+        decisionMaker: approved ? 'stakeholder' : 'rejected',
+        correlationId: gateRequest.integrationConfig?.correlationId || ''
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        gateId: '',
+        approved: false,
+        processingTime: 0,
+        escalationLevel: 0,
+        error: error instanceof Error ? error : new Error(String(error)),
+        correlationId: ''
+      };
+    }
+  }
+
+  /**
+   * Simulate gate decision for testing purposes
+   */
+  private async simulateGateDecision(step: WorkflowStep, workflow: WorkflowState): Promise<boolean> {
+    // Simple simulation logic - in production this would be handled by AGUI
+    const businessImpact = step.gateConfig?.businessImpact || 'medium';
+    
+    // Critical and high impact steps require more consideration
+    if (businessImpact === 'critical') {
+      return Math.random() > 0.3; // 70% approval rate for critical
+    } else if (businessImpact === 'high') {
+      return Math.random() > 0.2; // 80% approval rate for high
+    } else {
+      return Math.random() > 0.1; // 90% approval rate for medium/low
+    }
+  }
+
+  /**
+   * Resume workflow after gate approval
+   */
+  async resumeWorkflowAfterGate(workflowId: string, gateId: string, approved: boolean): Promise<{success: boolean; error?: string}> {
+    const workflow = this.activeWorkflows.get(workflowId);
+    if (!workflow) {
+      return {success: false, error: 'Workflow not found'};
+    }
+
+    if (!workflow.pausedForGate || workflow.pausedForGate.gateId !== gateId) {
+      return {success: false, error: 'Workflow not paused for this gate'};
+    }
+
+    // Initialize gate results map if not exists
+    if (!workflow.gateResults) {
+      workflow.gateResults = new Map();
+    }
+
+    // Record gate result
+    const gateResult: WorkflowGateResult = {
+      success: true,
+      gateId,
+      approved,
+      processingTime: Date.now() - new Date(workflow.pausedForGate.pausedAt).getTime(),
+      escalationLevel: 0,
+      decisionMaker: 'external',
+      correlationId: `${workflowId}-${gateId}`
+    };
+    
+    workflow.gateResults.set(gateId, gateResult);
+
+    if (!approved) {
+      // Gate rejected, fail the workflow
+      workflow.status = 'failed';
+      workflow.error = `Gate rejected: ${gateId}`;
+      workflow.endTime = new Date().toISOString();
+      
+      this.activeWorkflows.delete(workflowId);
+      this.emit('workflow:failed', {workflowId, reason: 'gate_rejected', gateId});
+      
+      return {success: true};
+    }
+
+    // Gate approved, resume workflow
+    workflow.status = 'running';
+    delete workflow.pausedForGate;
+
+    // Resume execution from the paused step
+    this.executeWorkflowAsync(workflow).catch(error => {
+      logger.error(`Workflow ${workflowId} failed after gate resume:`, error);
+    });
+
+    this.emit('workflow:resumed', {workflowId, gateId});
+    
+    return {success: true};
+  }
+
+  /**
+   * Get workflow gate status
+   */
+  getWorkflowGateStatus(workflowId: string): {
+    hasPendingGates: boolean;
+    pendingGates: WorkflowGateRequest[];
+    gateResults: WorkflowGateResult[];
+    pausedForGate?: {stepIndex: number; gateId: string; pausedAt: string};
+  } {
+    const workflow = this.activeWorkflows.get(workflowId);
+    if (!workflow) {
+      return {
+        hasPendingGates: false,
+        pendingGates: [],
+        gateResults: [],
+      };
+    }
+
+    return {
+      hasPendingGates: Boolean(workflow.pendingGates && workflow.pendingGates.size > 0),
+      pendingGates: workflow.pendingGates ? Array.from(workflow.pendingGates.values()) : [],
+      gateResults: workflow.gateResults ? Array.from(workflow.gateResults.values()) : [],
+      pausedForGate: workflow.pausedForGate
+    };
   }
 }
 

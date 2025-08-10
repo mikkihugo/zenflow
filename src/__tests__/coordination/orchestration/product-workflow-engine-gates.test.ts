@@ -9,7 +9,7 @@
  * - Gate timeout and escalation handling
  */
 
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EventEmitter } from 'events';
 import { ProductWorkflowEngine, type ProductWorkflowState } from '../../../coordination/orchestration/product-workflow-engine';
 import { WorkflowAGUIAdapter } from '../../../interfaces/agui/workflow-agui-adapter';
@@ -21,21 +21,21 @@ import { GateEscalationLevel } from '../../../coordination/workflows/workflow-ga
 
 // Mock implementations
 const mockMemorySystem: Partial<MemorySystem> = {
-  initialize: jest.fn().mockResolvedValue(undefined),
-  store: jest.fn().mockResolvedValue(undefined),
-  search: jest.fn().mockResolvedValue({}),
-  retrieve: jest.fn().mockResolvedValue(null)
+  initialize: vi.fn().mockResolvedValue(undefined),
+  store: vi.fn().mockResolvedValue(undefined),
+  search: vi.fn().mockResolvedValue({}),
+  retrieve: vi.fn().mockResolvedValue(null)
 };
 
 const mockDocumentService: Partial<DocumentManager> = {
-  initialize: jest.fn().mockResolvedValue(undefined)
+  initialize: vi.fn().mockResolvedValue(undefined)
 };
 
 describe('ProductWorkflowEngine with Gates Integration', () => {
   let engine: ProductWorkflowEngine;
   let eventBus: TypeSafeEventBus;
   let aguiAdapter: WorkflowAGUIAdapter;
-  let mockProcessWorkflowGate: jest.Mock;
+  let mockProcessWorkflowGate: any;
 
   beforeEach(async () => {
     // Create event bus
@@ -63,7 +63,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     });
 
     // Mock the processWorkflowGate method
-    mockProcessWorkflowGate = jest.fn();
+    mockProcessWorkflowGate = vi.fn();
     aguiAdapter.processWorkflowGate = mockProcessWorkflowGate;
 
     // Create engine with mocked dependencies
