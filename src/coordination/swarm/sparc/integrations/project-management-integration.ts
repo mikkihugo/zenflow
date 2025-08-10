@@ -342,9 +342,9 @@ Related: SPARC-${project.id}
     visionDocument: { path: string; content: string }
   ): Promise<any> {
     const workflows = [
-      'vision-to-adrs',
+      // Note: ADRs are NOT auto-generated from vision. They are independent architectural governance.
       'vision-to-prds',
-      'prd-to-epics',
+      'prd-to-epics', 
       'epic-to-features',
       'feature-to-tasks',
     ];

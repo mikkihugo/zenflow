@@ -2,7 +2,8 @@
  * Document Processor - Unified Document Processing System.
  *
  * Clean, focused document processor that consolidates DocumentDrivenSystem and DatabaseDrivenSystem.
- * into a single, coherent document processing system. Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code.
+ * into a single, coherent document processing system. Handles Vision → PRDs → Epics → Features → Tasks → Code.
+ * ADRs are independent architectural governance documents that constrain and guide implementation.
  *
  * @example
  * ```typescript

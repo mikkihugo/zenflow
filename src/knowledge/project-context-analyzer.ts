@@ -1,5 +1,5 @@
 /**
- * @file project-context-analyzer implementation
+ * @file Project-context-analyzer implementation.
  */
 
 
@@ -11,11 +11,11 @@ const logger = new Logger('src-knowledge-project-context-analyzer');
  * Hive-Controlled FACT System for Claude-Zen.
  *
  * The Hive Mind intelligently determines what external knowledge to gather.
- * based on:
+ * Based on:
  * - Project dependencies (package.json, Cargo.toml, etc.)
  * - Code analysis (imports, APIs used, frameworks detected)
  * - Development context (current tasks, error patterns)
- * - Team expertise gaps (learning needs, documentation requests)
+ * - Team expertise gaps (learning needs, documentation requests).
  *
  * Architecture:
  * - Hive analyzes project and determines knowledge needs
@@ -421,7 +421,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   /**
    * Analyze Bazel workspace structure for comprehensive monorepo understanding.
    * 
-   * @param context - Project context to populate with Bazel information
+   * @param context - Project context to populate with Bazel information.
    */
   private async analyzeBazelWorkspace(context: ProjectContext): Promise<void> {
     try {
@@ -496,6 +496,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
   /**
    * Parse WORKSPACE file for external dependencies and configuration.
    * Also supports modern MODULE.bazel files (Bzlmod).
+   *
+   * @param rootPath
    */
   private async parseBazelWorkspace(rootPath: string): Promise<{
     workspaceName?: string;
@@ -608,6 +610,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Discover all BUILD files and parse targets.
+   *
+   * @param rootPath
    */
   private async discoverBazelTargets(rootPath: string): Promise<Array<{
     package: string;
@@ -646,6 +650,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Parse a BUILD file to extract targets.
+   *
+   * @param content
+   * @param packagePath
    */
   private parseBazelBuildFile(content: string, packagePath: string): Array<{
     package: string;
@@ -697,6 +704,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Extract a Bazel rule block from content starting at a position.
+   *
+   * @param content
+   * @param startPos
    */
   private extractBazelRuleBlock(content: string, startPos: number): string {
     let depth = 0;
@@ -717,6 +727,10 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Parse target attributes from a rule block.
+   *
+   * @param ruleBlock
+   * @param ruleType
+   * @param packagePath
    */
   private parseTargetAttributes(ruleBlock: string, ruleType: string, packagePath: string): {
     package: string;
@@ -771,6 +785,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Extract unique packages from targets.
+   *
+   * @param targets
    */
   private extractBazelPackages(targets: Array<{ package: string; name: string; type: string }>): string[] {
     const packages = new Set<string>();
@@ -786,6 +802,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Analyze target dependencies for domain mapping.
+   *
+   * @param rootPath
+   * @param targets
    */
   private async analyzeBazelDependencies(rootPath: string, targets: Array<{
     package: string;
@@ -820,6 +839,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Fallback basic package discovery for Bazel workspaces.
+   *
+   * @param rootPath
    */
   private async discoverBazelPackagesBasic(rootPath: string): Promise<string[]> {
     try {
@@ -841,6 +862,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
   /**
    * Run Bazel query for accurate dependency analysis.
    * This provides the ground truth dependency graph compared to BUILD file parsing.
+   *
+   * @param rootPath
    */
   private async runBazelQuery(rootPath: string): Promise<{
     targets: Array<{
@@ -892,6 +915,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Parse targets from Bazel query --output=build.
+   *
+   * @param buildOutput
    */
   private parseBazelQueryTargets(buildOutput: string): Array<{
     package: string;
@@ -934,6 +959,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Parse dependencies from Bazel query --output=graph.
+   *
+   * @param graphOutput
    */
   private parseBazelQueryDependencies(graphOutput: string): Record<string, Record<string, number>> {
     const dependencies: Record<string, Record<string, number>> = {};
@@ -961,6 +988,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Extract package name from Bazel target label.
+   *
+   * @param targetLabel
    */
   private extractPackageFromTarget(targetLabel: string): string {
     // Handle various Bazel target formats: //package:target, @repo//package:target, etc.
@@ -971,6 +1000,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
   /**
    * Analyze .bzl files for custom rules and macros.
    * This provides insights into custom build logic and architectural patterns.
+   *
+   * @param rootPath
    */
   private async analyzeBzlFiles(rootPath: string): Promise<{
     bzlFiles: string[];
@@ -1068,6 +1099,9 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Extract Starlark function block starting from a position.
+   *
+   * @param content
+   * @param startIndex
    */
   private extractStarlarkFunctionBlock(content: string, startIndex: number): string {
     const lines = content.substring(startIndex).split('\n');
@@ -1100,6 +1134,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Extract parameters from Starlark function definition.
+   *
+   * @param functionBlock
    */
   private extractStarlarkParameters(functionBlock: string): string[] {
     const paramMatch = functionBlock.match(/\(([^)]*)\)/s);
@@ -1113,6 +1149,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Extract rules used within a Starlark macro.
+   *
+   * @param macroBlock
    */
   private extractUsedRules(macroBlock: string): string[] {
     const rulePattern = /([a-z_]+)\s*\(/g;
@@ -1132,6 +1170,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Parse MODULE.bazel file for Bzlmod module system.
+   *
+   * @param moduleContent
    */
   private parseModuleBazel(moduleContent: string): {
     name: string;
@@ -1166,6 +1206,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
   /**
    * Extract language and toolchain information from Bzlmod dependencies.
+   *
+   * @param dependencies
+   * @param result
+   * @param result.languages
+   * @param result.toolchains
    */
   private extractLanguagesFromModuleDeps(
     dependencies: Array<{ name: string; version: string; repo_name?: string }>,
@@ -1489,7 +1534,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Analyze Cargo.toml for Rust dependencies
+   * Analyze Cargo.toml for Rust dependencies.
    *
    * @param context
    */
@@ -1522,7 +1567,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Analyze requirements.txt for Python dependencies
+   * Analyze requirements.txt for Python dependencies.
    *
    * @param context
    */
@@ -1579,7 +1624,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   }
 
   /**
-   * Analyze current development context (TODOs, issues, etc.)
+   * Analyze current development context (TODOs, issues, etc.).
    *
    * @param context
    */

@@ -3,7 +3,8 @@
  * @file Unified Workflow Engine - Database-Driven Architecture.
  *
  * PURE DATABASE-DRIVEN workflow engine - NO FILE OPERATIONS
- * Handles Vision → ADRs → PRDs → Epics → Features → Tasks → Code.
+ * Handles Vision → PRDs → Epics → Features → Tasks → Code.
+ * ADRs are independent architectural governance documents, not part of linear workflow.
  * Uses DocumentService for all document operations.
  */
 
@@ -32,41 +33,9 @@ const DOCUMENT_WORKFLOWS: (WorkflowDefinition & {
   documentTypes?: string[];
   triggers?: Array<{ event: string; condition?: string }>;
 })[] = [
-  {
-    name: 'vision-to-adrs',
-    description: 'Process vision document and generate architecture decision records',
-    version: '1.0.0',
-    documentTypes: ['vision'],
-    triggers: [
-      { event: 'document:created', condition: 'documentType === "vision"' },
-      { event: 'document:updated', condition: 'documentType === "vision"' },
-    ],
-    steps: [
-      {
-        type: 'extract-requirements',
-        name: 'Extract architectural requirements from vision',
-        params: { outputKey: 'architectural_requirements' },
-      },
-      {
-        type: 'identify-decisions',
-        name: 'Identify key architectural decisions needed',
-        params: { outputKey: 'decision_points' },
-      },
-      {
-        type: 'generate-adrs',
-        name: 'Generate ADR documents',
-        params: {
-          outputKey: 'generated_adrs',
-          templatePath: 'templates/adr-template.md',
-        },
-      },
-      {
-        type: 'save-documents',
-        name: 'Save generated ADRs to workspace',
-        params: { documentType: 'adr' },
-      },
-    ],
-  },
+  // Note: ADRs are NOT auto-generated from vision documents.
+  // ADRs are independent architectural governance documents created by architects
+  // when specific technical decisions need to be documented and enforced.
   {
     name: 'vision-to-prds',
     description: 'Process vision document and generate product requirements documents',
