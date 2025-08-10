@@ -318,7 +318,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     const document = await this.documentService.createDocument(visionDoc, {
       autoGenerateRelationships: options?.autoGenerateRelationships !== false,
       generateSearchIndex: options?.generateSearchIndex !== false,
-      ...(options?.startWorkflows !== false && { startWorkflow: 'vision-to-adrs' }),
+      ...(options?.startWorkflows !== false && { startWorkflow: 'vision-to-prds' }),
     });
 
     await this.processDocumentEntity(workspaceId, document, options);

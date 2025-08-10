@@ -1376,12 +1376,8 @@ export class DocumentManager {
         sourceType: 'feature' as DocumentType,
         targetType: 'task' as DocumentType,
       },
-      {
-        name: 'vision_to_adr',
-        sourceType: 'vision' as DocumentType,
-        targetType: 'adr' as DocumentType,
-        condition: (doc) => doc.metadata?.technical_decisions === true,
-      },
+      // Note: vision_to_adr relationship removed - ADRs are independent architectural governance
+      // ADRs may reference visions but are not auto-generated from them
     ];
 
     return rules.filter((rule) => rule.sourceType === documentType);

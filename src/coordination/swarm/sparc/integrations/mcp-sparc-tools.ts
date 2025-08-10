@@ -843,7 +843,7 @@ export class SPARCMCPTools {
           },
         },
         integration: {
-          vision_workflow: results?.workflowResults?.['vision-to-adrs'] ? 'executed' : 'failed',
+          adr_governance: 'independent', // ADRs are independent architectural governance, not workflow-generated
           prd_workflow: results?.workflowResults?.['vision-to-prds'] ? 'executed' : 'failed',
           epic_workflow: results?.workflowResults?.['prd-to-epics'] ? 'executed' : 'failed',
           feature_workflow: results?.workflowResults?.['epic-to-features'] ? 'executed' : 'failed',

@@ -1117,7 +1117,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
     project: SPARCProject
   ): Promise<void> {
     const workflows = [
-      'vision-to-adrs', // Generate ADRs from vision documents
+      // ADRs are independent architectural governance, not auto-generated from vision
       'vision-to-prds', // Create PRDs from requirements
       'prd-to-epics', // Break down PRDs into epics
       'epic-to-features', // Decompose epics into features
