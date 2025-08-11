@@ -5,8 +5,8 @@
  */
 
 // Import the configManager instance for use in convenience functions
-import { configManager } from './manager';
-import type { SystemConfiguration } from './types';
+import { configManager } from './manager.ts';
+import type { SystemConfiguration } from './types.ts';
 
 // Constants and defaults
 export {
@@ -25,7 +25,15 @@ export {
   URLBuilder,
   type URLBuilderConfig,
   VALIDATION_RULES,
-} from './defaults';
+} from './defaults.ts';
+// Repository configuration
+export {
+  createRepoConfig,
+  defaultRepoConfig,
+  logRepoConfigStatus,
+  type RepoConfig,
+  validateRepoConfig,
+} from './default-repo-config.ts';
 // Health checking and monitoring
 export {
   ConfigHealthChecker,
@@ -33,20 +41,20 @@ export {
   createConfigHealthEndpoint,
   createDeploymentReadinessEndpoint,
   initializeConfigHealthChecker,
-} from './health-checker';
-export { ConfigurationLoader } from './loader';
+} from './health-checker.ts';
+export { ConfigurationLoader } from './loader.ts';
 // Core exports
-export { ConfigurationManager, configManager } from './manager';
+export { ConfigurationManager, configManager } from './manager.ts';
 export type {
   StartupValidationOptions,
   StartupValidationResult,
-} from './startup-validator';
+} from './startup-validator.ts';
 // Startup validation
 export {
   cli as runStartupValidationCLI,
   runStartupValidation,
   validateAndExit,
-} from './startup-validator';
+} from './startup-validator.ts';
 // Types
 export type {
   ConfigChangeEvent,
@@ -66,9 +74,9 @@ export type {
   TerminalConfig,
   ValidationResult,
   WebConfig,
-} from './types';
+} from './types.ts';
 // Validation system
-export { ConfigValidator } from './validator';
+export { ConfigValidator } from './validator.ts';
 
 // Convenience functions
 export const config = {
@@ -161,7 +169,7 @@ export const config = {
    * Get configuration health report.
    */
   async getHealthReport() {
-    const { configHealthChecker } = await import('./health-checker');
+    const { configHealthChecker } = await import('./health-checker.ts');
     return configHealthChecker?.getHealthReport();
   },
 
@@ -169,7 +177,7 @@ export const config = {
    * Check if configuration is production ready.
    */
   async isProductionReady() {
-    const { configHealthChecker } = await import('./health-checker');
+    const { configHealthChecker } = await import('./health-checker.ts');
     const deployment = await configHealthChecker?.validateForProduction();
     return deployment.deploymentReady;
   },
@@ -178,7 +186,7 @@ export const config = {
    * Check for port conflicts.
    */
   async checkPorts() {
-    const { configHealthChecker } = await import('./health-checker');
+    const { configHealthChecker } = await import('./health-checker.ts');
     return configHealthChecker?.checkPortConflicts();
   },
 
@@ -188,13 +196,13 @@ export const config = {
    * @param options
    */
   async validateStartup(options?: any) {
-    const { runStartupValidation } = await import('./startup-validator');
+    const { runStartupValidation } = await import('./startup-validator.ts');
     return runStartupValidation(options);
   },
 };
 
 // Legacy compatibility with old config manager
-import type { ConfigurationManager } from './manager';
+import type { ConfigurationManager } from './manager.ts';
 export type ConfigManager = ConfigurationManager;
 
 // Default export for convenience

@@ -6,9 +6,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { configManager } from './manager';
-import type { ConfigHealthReport, SystemConfiguration, ValidationResult } from './types';
-import { ConfigValidator } from './validator';
+import { configManager } from './manager.ts';
+import type { ConfigHealthReport, SystemConfiguration, ValidationResult } from './types.ts';
+import { ConfigValidator } from './validator.ts';
+import { logRepoConfigStatus } from './default-repo-config.ts';
 
 /**
  * Configuration health checker with monitoring capabilities.
@@ -183,15 +184,30 @@ export class ConfigHealthChecker extends EventEmitter {
     recommendations: string[];
   }> {
     const config = configManager?.getConfig();
-    const conflicts: Array<{ port: number; services: string[]; severity: 'error' | 'warning' }> =
-      [];
+    const conflicts: Array<{
+      port: number;
+      services: string[];
+      severity: 'error' | 'warning';
+    }> = [];
     const recommendations: string[] = [];
 
     // Collect all port configurations
     const portMappings = [
-      { name: 'MCP HTTP', port: config?.interfaces?.mcp?.http?.port, critical: true },
-      { name: 'Web Dashboard', port: config?.interfaces?.web?.port, critical: true },
-      { name: 'Monitoring', port: config?.monitoring?.dashboard?.port, critical: false },
+      {
+        name: 'MCP HTTP',
+        port: config?.interfaces?.mcp?.http?.port,
+        critical: true,
+      },
+      {
+        name: 'Web Dashboard',
+        port: config?.interfaces?.web?.port,
+        critical: true,
+      },
+      {
+        name: 'Monitoring',
+        port: config?.monitoring?.dashboard?.port,
+        critical: false,
+      },
     ].filter((mapping) => typeof mapping.port === 'number');
 
     // Group by port
@@ -333,6 +349,16 @@ export class ConfigHealthChecker extends EventEmitter {
 
       this.emit('health:checked', currentReport);
       this.lastHealthReport = currentReport;
+      
+      // Log detailed repo config status for diagnostics (wired up!)
+      if (currentReport?.configuration) {
+        try {
+          logRepoConfigStatus(currentReport.configuration as any);
+        } catch (error) {
+          // Silently continue if logging fails - don't break health checks
+          console.debug('Config status logging failed:', error);
+        }
+      }
     } catch (error) {
       this.emit('error', error);
     }
