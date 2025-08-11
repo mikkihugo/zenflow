@@ -16,8 +16,8 @@ class SystematicFixRunner {
   }
 
   async runAllFixes() {
-    console.log('🚀 Running All Systematic Fix Scripts...');
-    console.log('=====================================');
+    // console.log('🚀 Running All Systematic Fix Scripts...');
+    // console.log('=====================================');
 
     // Define fix scripts in order of execution
     const fixScripts = [
@@ -48,20 +48,20 @@ class SystematicFixRunner {
       },
     ];
 
-    console.log(`\n📋 Planned fixes (${fixScripts.length} scripts):`);
+    // console.log(`\n📋 Planned fixes (${fixScripts.length} scripts):`);
     fixScripts.forEach((fix, i) => {
-      console.log(`   ${i + 1}. ${fix.name}`);
-      console.log(`      ${fix.description}`);
+      // console.log(`   ${i + 1}. ${fix.name}`);
+      // console.log(`      ${fix.description}`);
     });
 
-    console.log(`\n⏱️  Starting systematic fixes...`);
+    // console.log(`\n⏱️  Starting systematic fixes...`);
 
     // Run each fix script
     for (let i = 0; i < fixScripts.length; i++) {
       const fix = fixScripts[i];
-      console.log(`\n${'='.repeat(60)}`);
-      console.log(`📦 Running ${i + 1}/${fixScripts.length}: ${fix.name}`);
-      console.log(`${'='.repeat(60)}`);
+      // console.log(`\n${'='.repeat(60)}`);
+      // console.log(`📦 Running ${i + 1}/${fixScripts.length}: ${fix.name}`);
+      // console.log(`${'='.repeat(60)}`);
 
       const result = await this.runScript(fix.script);
       this.results.push({
@@ -73,9 +73,9 @@ class SystematicFixRunner {
       });
 
       if (result.success) {
-        console.log(`✅ ${fix.name} completed successfully`);
+        // console.log(`✅ ${fix.name} completed successfully`);
       } else {
-        console.log(`❌ ${fix.name} failed: ${result.error}`);
+        // console.log(`❌ ${fix.name} failed: ${result.error}`);
         // Continue with other fixes even if one fails
       }
     }
@@ -138,65 +138,65 @@ class SystematicFixRunner {
   }
 
   async generateReport() {
-    console.log(`\n${'='.repeat(60)}`);
-    console.log(`🎯 SYSTEMATIC FIXES COMPLETE - FINAL REPORT`);
-    console.log(`${'='.repeat(60)}`);
+    // console.log(`\n${'='.repeat(60)}`);
+    // console.log(`🎯 SYSTEMATIC FIXES COMPLETE - FINAL REPORT`);
+    // console.log(`${'='.repeat(60)}`);
 
     const successful = this.results.filter((r) => r.success);
     const failed = this.results.filter((r) => !r.success);
 
-    console.log(`\n📊 Summary:`);
-    console.log(`   ✅ Successful: ${successful.length}/${this.results.length} scripts`);
-    console.log(`   ❌ Failed: ${failed.length}/${this.results.length} scripts`);
-    console.log(
-      `   ⏱️  Total time: ${this.formatDuration(this.results.reduce((sum, r) => sum + r.duration, 0))}`
-    );
+    // console.log(`\n📊 Summary:`);
+    // console.log(`   ✅ Successful: ${successful.length}/${this.results.length} scripts`);
+    // console.log(`   ❌ Failed: ${failed.length}/${this.results.length} scripts`);
+    // console.log(
+    `   ⏱️  Total time: ${this.formatDuration(this.results.reduce((sum, r) => sum + r.duration, 0))}`;
+    )
 
     if (successful.length > 0) {
-      console.log(`\n✅ Successful fixes:`);
+      // console.log(`\n✅ Successful fixes:`);
       successful.forEach((result) => {
-        console.log(`   • ${result.name} (${this.formatDuration(result.duration)})`);
+        // console.log(`   • ${result.name} (${this.formatDuration(result.duration)})`);
       });
     }
 
     if (failed.length > 0) {
-      console.log(`\n❌ Failed fixes:`);
+      // console.log(`\n❌ Failed fixes:`);
       failed.forEach((result) => {
-        console.log(`   • ${result.name}: ${result.error}`);
+        // console.log(`   • ${result.name}: ${result.error}`);
       });
     }
 
-    console.log(`\n🎉 Systematic fixes completed!`);
-    console.log(`\n💡 Next steps:`);
-    console.log(`   1. Run TypeScript compilation to see error reduction:`);
-    console.log(`      npm run build`);
-    console.log(`   2. Run ESLint to see violation reduction:`);
-    console.log(`      npm run lint`);
-    console.log(`   3. Run Phase 1 AI fixer for remaining errors:`);
-    console.log(`      node scripts/ai-eslint/zen-ai-fixer-complete.js --phase=compile`);
-    console.log(`   4. Run Phase 2 AI fixer for remaining ESLint issues:`);
-    console.log(`      node scripts/ai-eslint/zen-ai-fixer-complete.js --phase=eslint`);
+    // console.log(`\n🎉 Systematic fixes completed!`);
+    // console.log(`\n💡 Next steps:`);
+    // console.log(`   1. Run TypeScript compilation to see error reduction:`);
+    // console.log(`      npm run build`);
+    // console.log(`   2. Run ESLint to see violation reduction:`);
+    // console.log(`      npm run lint`);
+    // console.log(`   3. Run Phase 1 AI fixer for remaining errors:`);
+    // console.log(`      node scripts/ai-eslint/zen-ai-fixer-complete.js --phase=compile`);
+    // console.log(`   4. Run Phase 2 AI fixer for remaining ESLint issues:`);
+    // console.log(`      node scripts/ai-eslint/zen-ai-fixer-complete.js --phase=eslint`);
 
     // Check if we should recommend running build/lint
     if (successful.length >= 2) {
-      console.log(`\n🔍 Checking build status...`);
+      // console.log(`\n🔍 Checking build status...`);
       await this.checkBuildStatus();
     }
   }
 
   async checkBuildStatus() {
-    console.log(`Running quick TypeScript check...`);
+    // console.log(`Running quick TypeScript check...`);
 
     const buildResult = await this.runCommand('npm', ['run', 'build']);
 
     if (buildResult.success) {
-      console.log(`🎉 BUILD SUCCESS! All TypeScript errors may be fixed!`);
+      // console.log(`🎉 BUILD SUCCESS! All TypeScript errors may be fixed!`);
     } else {
       // Count remaining errors
       const errorMatches = buildResult.output.match(/error TS\d+/g);
       const errorCount = errorMatches ? errorMatches.length : 'unknown';
-      console.log(`📊 Build still has ~${errorCount} TypeScript errors`);
-      console.log(`   This is likely a significant reduction from the original 3,500+ errors`);
+      // console.log(`📊 Build still has ~${errorCount} TypeScript errors`);
+      // console.log(`   This is likely a significant reduction from the original 3,500+ errors`);
     }
   }
 
@@ -237,14 +237,14 @@ class SystematicFixRunner {
 // Main execution
 async function main() {
   try {
-    console.log(`🧘 Claude Code Zen - Systematic Fix Runner`);
-    console.log(`🎯 Goal: Bulk fix systematic TypeScript/ESLint issues`);
-    console.log(`📈 Expected: Reduce 3,500+ TypeScript errors to manageable number\n`);
+    // console.log(`🧘 Claude Code Zen - Systematic Fix Runner`);
+    // console.log(`🎯 Goal: Bulk fix systematic TypeScript/ESLint issues`);
+    // console.log(`📈 Expected: Reduce 3,500+ TypeScript errors to manageable number\n`);
 
     const runner = new SystematicFixRunner();
     await runner.runAllFixes();
   } catch (error) {
-    console.error('❌ Systematic fix runner failed:', error.message);
+    // console.error('❌ Systematic fix runner failed:', error.message);
     process.exit(1);
   }
 }

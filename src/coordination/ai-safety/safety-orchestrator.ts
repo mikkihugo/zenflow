@@ -10,7 +10,7 @@ import {
   AIDeceptionDetector,
   type AIInteractionData,
   type DeceptionAlert,
-} from './ai-deception-detector';
+} from './ai-deception-detector.ts';
 
 // Simple console logger to avoid circular dependencies
 const logger = {

@@ -21,8 +21,8 @@ import {
   KnowledgeHelpers,
   type KnowledgeRequest,
   type KnowledgeResponse,
-} from '../adapters/knowledge-client-adapter';
-import { UACLFactory } from '../factories';
+} from '../adapters/knowledge-client-adapter.ts';
+import { UACLFactory } from '../factories.ts';
 
 /**
  * Example 1: Create FACT-based Knowledge Client using convenience function.

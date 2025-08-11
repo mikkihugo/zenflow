@@ -9,8 +9,8 @@
  */
 
 import { nanoid } from 'nanoid';
-import type { ADRDocumentEntity, ProjectEntity } from '../entities/document-entities';
-import { documentManager } from './document-manager';
+import type { ADRDocumentEntity, ProjectEntity } from '../entities/document-entities.ts';
+import { documentManager } from './document-manager.ts';
 
 export interface ADRCreateOptions {
   title: string;

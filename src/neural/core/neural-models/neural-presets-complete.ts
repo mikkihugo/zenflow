@@ -526,7 +526,7 @@ export class NeuralAdaptationEngine {
 
       insights.commonPatterns = Object.entries(adaptationTypes)
         .map(([type, count]) => ({ type, count }))
-        .sort((a, b) => (b.count as number) - (a.count as number));
+        .sort((a, b) => (b.count) - (a.count));
     }
 
     return insights;

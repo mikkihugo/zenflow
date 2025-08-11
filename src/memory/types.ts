@@ -1,6 +1,6 @@
 /**
  * @fileoverview Memory Domain Types - Single Source of Truth
- * 
+ *
  * All memory-related types, interfaces, and configurations.
  * Following Google TypeScript style guide and domain architecture standard.
  */
@@ -10,13 +10,10 @@ export type {
   IMemoryStore,
   MemoryStats,
   StoreOptions,
-} from '../core/interfaces/base-interfaces';
+} from '../core/interfaces/base-interfaces.ts';
 
 // Re-export memory backend types
-export type {
-  BackendInterface,
-  JSONValue,
-} from './core/memory-system';
+export type { BackendInterface, JSONValue } from './core/memory-system.ts';
 
 // Memory configuration types
 export interface MemoryConfig {
@@ -309,7 +306,10 @@ export class MemoryError extends Error {
 }
 
 export class MemoryConnectionError extends MemoryError {
-  constructor(message: string, public readonly backend: string) {
+  constructor(
+    message: string,
+    public readonly backend: string
+  ) {
     super(message, 'MEMORY_CONNECTION_ERROR');
     this.name = 'MemoryConnectionError';
   }
@@ -350,7 +350,9 @@ export interface MemoryBackendFactory {
 export interface MemorySystemFactory {
   createMemoryStore(config: MemoryConfig): Promise<IMemoryStore>;
   createSessionStore(options: SessionMemoryStoreOptions): Promise<SessionMemoryStore>;
-  createVectorStore(config: MemoryConfig & {vectorDimensions: number}): Promise<VectorMemoryStore>;
+  createVectorStore(
+    config: MemoryConfig & { vectorDimensions: number }
+  ): Promise<VectorMemoryStore>;
 }
 
 // Additional specialized store interfaces
@@ -358,7 +360,7 @@ export interface SessionMemoryStore extends IMemoryStore {
   getSession(sessionId: string): Promise<SessionState | null>;
   updateSession(sessionId: string, updates: Partial<SessionState['data']>): Promise<void>;
   deleteSession(sessionId: string): Promise<boolean>;
-  listSessions(options?: {limit?: number; offset?: number}): Promise<readonly SessionState[]>;
+  listSessions(options?: { limit?: number; offset?: number }): Promise<readonly SessionState[]>;
 }
 
 export interface VectorMemoryStore {

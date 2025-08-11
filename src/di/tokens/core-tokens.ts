@@ -6,7 +6,7 @@
  * @file Core-tokens implementation.
  */
 
-import { createToken } from './token-factory';
+import { createToken } from './token-factory.ts';
 
 // Core infrastructure interfaces (to be implemented)
 export interface ILogger {

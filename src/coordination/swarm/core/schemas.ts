@@ -2,7 +2,7 @@
  * @file Coordination system: schemas.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-core-schemas');
 
@@ -11,7 +11,7 @@ const logger = getLogger('coordination-swarm-core-schemas');
  * Provides comprehensive validation for all 25+ MCP tools.
  */
 
-import { ValidationError } from './errors';
+import { ValidationError } from './errors.ts';
 
 /**
  * Base validator class.

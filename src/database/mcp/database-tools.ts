@@ -3,7 +3,7 @@
  * Comprehensive MCP tools for advanced database coordination and management.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('database-mcp-database-tools');
 
@@ -13,9 +13,9 @@ const getConfig = () => config.getAll();
 
 // Import UACL for unified client monitoring and MCP client management
 import { ClientType, uacl } from '../../interfaces/clients';
-import type { DatabaseQuery, IDataAccessObject, IRepository } from '../interfaces';
+import type { DatabaseQuery, IDataAccessObject, IRepository } from '../interfaces.ts';
 // Import database types
-import { DatabaseTypes, EntityTypes } from '../interfaces';
+import { DatabaseTypes, EntityTypes } from '../interfaces.ts';
 
 // Extended DatabaseQuery interface to match actual usage
 interface ExtendedDatabaseQuery {
@@ -428,13 +428,13 @@ export const databaseQueryTool: MCPTool = {
         optimizedQuery = await queryOptimizer.optimizeQuery(query, registeredEngines);
 
         // Handle cache hit
-        if ((optimizedQuery as ExtendedDatabaseQuery).operation === 'cache_hit') {
+        if ((optimizedQuery).operation === 'cache_hit') {
           return {
             success: true,
             data: {
-              result: (optimizedQuery as ExtendedDatabaseQuery).parameters['cached'],
+              result: (optimizedQuery).parameters['cached'],
               source: 'cache',
-              queryId: (query as ExtendedDatabaseQuery).id,
+              queryId: (query).id,
               executionTime: 0,
             },
             metadata: {
@@ -468,7 +468,7 @@ export const databaseQueryTool: MCPTool = {
           timestamp: Date.now(),
           originalQuery: query,
           optimizedQuery:
-            (optimizedQuery as ExtendedDatabaseQuery).id !== (query as ExtendedDatabaseQuery).id
+            (optimizedQuery).id !== (query).id
               ? optimizedQuery
               : undefined,
           optimizations: parameters.__optimizations,

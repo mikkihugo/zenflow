@@ -9,7 +9,7 @@
  */
 
 import type { DocumentService } from '../services/document-service';
-import type { MCPTool } from '../types';
+import type { MCPTool } from '../types.ts';
 
 export function createSPARCIntegrationTools(_documentService: DocumentService): MCPTool[] {
   return [
@@ -278,7 +278,7 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
 
           // Import the pseudocode engine dynamically
           const { PseudocodePhaseEngine } = await import(
-            '../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+            '../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
           );
 
           const engine = new PseudocodePhaseEngine();
@@ -380,7 +380,7 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
 
           // Import the pseudocode engine dynamically
           const { PseudocodePhaseEngine } = await import(
-            '../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+            '../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
           );
 
           const engine = new PseudocodePhaseEngine();
@@ -490,7 +490,7 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
 
           // Import the pseudocode engine dynamically
           const { PseudocodePhaseEngine } = await import(
-            '../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+            '../../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
           );
 
           const engine = new PseudocodePhaseEngine();

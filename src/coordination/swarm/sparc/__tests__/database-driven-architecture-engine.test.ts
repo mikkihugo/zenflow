@@ -6,7 +6,7 @@
  * Tests use mock database adapters to simulate database interactions.
  */
 
-import { getLogger } from '../../../../config/logging-config';
+import { getLogger } from '../../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-sparc-tests-database-driven-architecture-enginetest');
 
@@ -18,8 +18,8 @@ const logger = getLogger('coordination-swarm-sparc-tests-database-driven-archite
  */
 
 import { nanoid } from 'nanoid';
-import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
-import type { PseudocodeStructure } from '../types/sparc-types';
+import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine.ts';
+import type { PseudocodeStructure } from '../types/sparc-types.ts';
 
 // Mock database adapter for testing
 class MockDatabaseAdapter {

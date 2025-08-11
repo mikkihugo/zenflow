@@ -12,15 +12,21 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../config/logging-config';
-import { getLogger } from '../../../config/logging-config';
-import { DaaService } from '../../../coordination/swarm/core/daa-service';
-import { SessionEnabledSwarm } from '../../../coordination/swarm/core/session-integration';
-import type { SessionConfig, SessionState } from '../../../coordination/swarm/core/session-manager';
-import type { SwarmAgent, SwarmMetrics } from '../../../coordination/swarm/core/swarm-coordinator';
-import { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator';
-import type { SwarmOptions, SwarmTopology } from '../../../coordination/swarm/core/types';
-import type { AgentType } from '../../../types/agent-types';
+import type { Logger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config.ts';
+import { DaaService } from '../../../coordination/swarm/core/daa-service.ts';
+import { SessionEnabledSwarm } from '../../../coordination/swarm/core/session-integration.ts';
+import type {
+  SessionConfig,
+  SessionState,
+} from '../../../coordination/swarm/core/session-manager.ts';
+import type {
+  SwarmAgent,
+  SwarmMetrics,
+} from '../../../coordination/swarm/core/swarm-coordinator.ts';
+import { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator.ts';
+import type { SwarmOptions, SwarmTopology } from '../../../coordination/swarm/core/types.ts';
+import type { AgentType } from '../../../types/agent-types.ts';
 import type {
   IService,
   ServiceConfig,
@@ -32,15 +38,15 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '../core/interfaces';
+} from '../core/interfaces.ts';
 import {
   ServiceDependencyError,
   ServiceError,
   ServiceOperationError,
   ServiceTimeoutError,
-} from '../core/interfaces';
-import type { CoordinationServiceConfig } from '../types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+} from '../core/interfaces.ts';
+import type { CoordinationServiceConfig } from '../types.ts';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../types.ts';
 
 /**
  * Coordination service adapter configuration extending USL CoordinationServiceConfig.

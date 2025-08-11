@@ -2,7 +2,7 @@
  * @file Coordination system: singleton-container.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-core-singleton-container');
 /**

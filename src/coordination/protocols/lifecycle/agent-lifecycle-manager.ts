@@ -9,8 +9,8 @@
 
 import { type ChildProcess, type SpawnOptions, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus';
-import type { ILogger } from '../../../core/interfaces/base-interfaces';
+import type { ILogger } from '../../../core/interfaces/base-interfaces.ts';
+import type { EventBusInterface as IEventBus } from '../../core/event-bus.ts';
 
 // Core lifecycle types.
 export interface AgentLifecycleConfig {

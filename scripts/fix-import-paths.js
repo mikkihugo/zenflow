@@ -43,7 +43,7 @@ class ImportPathFixer {
   }
 
   async fix() {
-    console.log('🔧 Auto-Fixing Import Path Resolution...');
+    // console.log('🔧 Auto-Fixing Import Path Resolution...');
 
     // Find all TypeScript files
     const pattern = path.join(this.baseDir, '**/*.{ts,tsx}');
@@ -51,7 +51,7 @@ class ImportPathFixer {
       ignore: ['**/node_modules/**', '**/dist/**', '**/*.d.ts', '**/__tests__/**', '**/tests/**'],
     });
 
-    console.log(`📁 Found ${files.length} TypeScript files to check`);
+    // console.log(`📁 Found ${files.length} TypeScript files to check`);
 
     // Process each file
     for (const filePath of files) {
@@ -61,15 +61,15 @@ class ImportPathFixer {
     // Create missing entity exports
     await this.createMissingEntityExports();
 
-    console.log(`\n✅ Import path fixing complete:`);
-    console.log(`   📝 Fixed imports in ${this.fixedFiles.length} files`);
-    console.log(`   📦 Created ${this.createdFiles.length} missing exports`);
+    // console.log(`\n✅ Import path fixing complete:`);
+    // console.log(`   📝 Fixed imports in ${this.fixedFiles.length} files`);
+    // console.log(`   📦 Created ${this.createdFiles.length} missing exports`);
 
     if (this.fixedFiles.length > 0) {
-      console.log(`\n📋 Fixed files:`);
+      // console.log(`\n📋 Fixed files:`);
       this.fixedFiles.forEach((file) => {
         const relative = path.relative(this.baseDir, file.path);
-        console.log(`   • ${relative} (${file.changes} changes)`);
+        // console.log(`   • ${relative} (${file.changes} changes)`);
       });
     }
   }
@@ -204,7 +204,7 @@ export * from '${relativePath}';
 
       fs.writeFileSync(fullMissingPath, content);
       this.createdFiles.push(mapping.missingPath);
-      console.log(`   ✅ Created ${mapping.missingPath}`);
+      // console.log(`   ✅ Created ${mapping.missingPath}`);
     }
   }
 
@@ -236,7 +236,7 @@ class FileLocationFinder {
 
 // Interactive mode for unknown imports
 async function findMissingImports() {
-  console.log('🔍 Scanning for missing imports...');
+  // console.log('🔍 Scanning for missing imports...');
 
   // Run TypeScript compiler to get import errors
   const { spawn } = await import('child_process');
@@ -274,13 +274,13 @@ async function main() {
     const fixer = new ImportPathFixer();
     await fixer.fix();
 
-    console.log('\n🎉 Import path fixing complete!');
-    console.log('\n💡 Next steps:');
-    console.log('   1. Run TypeScript compilation to verify fixes');
-    console.log('   2. Check for any remaining TS2307 errors');
-    console.log('   3. Update imports in remaining files manually if needed');
+    // console.log('\n🎉 Import path fixing complete!');
+    // console.log('\n💡 Next steps:');
+    // console.log('   1. Run TypeScript compilation to verify fixes');
+    // console.log('   2. Check for any remaining TS2307 errors');
+    // console.log('   3. Update imports in remaining files manually if needed');
   } catch (error) {
-    console.error('❌ Import path fixing failed:', error.message);
+    // console.error('❌ Import path fixing failed:', error.message);
     process.exit(1);
   }
 }

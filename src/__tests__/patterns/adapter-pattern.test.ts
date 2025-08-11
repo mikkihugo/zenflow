@@ -14,7 +14,7 @@ import {
   type ProtocolResponse,
   RESTAdapter,
   WebSocketAdapter,
-} from '../../integration/adapter-system';
+} from '../../integration/adapter-system.ts';
 
 // Mock implementations for testing
 const createMockWebSocket = () => ({

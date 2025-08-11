@@ -10,8 +10,8 @@
  * @file Terminal module exports.
  */
 
-export * from './command-execution-engine';
-export { CommandExecutionEngine } from './command-execution-engine';
+export * from './command-execution-engine.ts';
+export { CommandExecutionEngine } from './command-execution-engine.ts';
 export * from './command-execution-renderer';
 export { type CommandExecutionProps, CommandExecutionRenderer } from './command-execution-renderer';
 // Additional specific component exports to resolve conflicts
@@ -34,7 +34,7 @@ export {
   StatusBadge,
   type StatusBadgeProps,
   type Theme,
-} from './components/index';
+} from './components/index.ts';
 
 export * from './interactive-terminal-application';
 export {
@@ -48,7 +48,7 @@ export {
   type TerminalConfig,
   TerminalManager,
   type TerminalSession,
-} from './process-orchestrator';
+} from './process-orchestrator.ts';
 
 // Screens - specific exports to avoid conflicts
 export {
@@ -60,33 +60,33 @@ export {
   ScreenUtils,
   SwarmDashboard,
   type SwarmDashboardProps,
-} from './screens/index';
+} from './screens/index.ts';
 
 // Additional screen type exports to resolve conflicts
 export type { SwarmAgent, SwarmMetrics, SwarmTask } from './screens/swarm-dashboard';
 // State Hooks (React hooks for component state management) - avoid conflicts
 // Note: Re-exporting from state-hooks causes conflicts, import directly when needed
 // Specific exports to avoid conflicts:
-export { type UseConfigReturn, useConfig } from './state-hooks/use-config';
+export { type UseConfigReturn, useConfig } from './state-hooks/use-config.ts';
 export {
   type SwarmState,
   type UseSwarmStatusReturn,
   useSwarmStatus,
-} from './state-hooks/use-swarm-status';
+} from './state-hooks/use-swarm-status.ts';
 
 // Main components (updated for Google standards)
 export * from './terminal-interface-router';
 // Re-export key items for convenience (updated names)
 export { TerminalApp, type TerminalAppProps } from './terminal-interface-router';
-export * from './utils/mock-command-handler';
+export * from './utils/mock-command-handler.ts';
 
 export {
   type CommandContext,
   type CommandResult,
   MockCommandHandler,
-} from './utils/mock-command-handler';
+} from './utils/mock-command-handler.ts';
 // Utilities (updated for Google standards)
-export * from './utils/mode-detector';
+export * from './utils/mode-detector.ts';
 export {
   detectMode,
   detectModeWithReason,
@@ -95,7 +95,7 @@ export {
   isInteractiveSupported,
   type ModeDetectionResult,
   type TerminalMode,
-} from './utils/mode-detector';
+} from './utils/mode-detector.ts';
 
 // Terminal interface configuration
 export interface TerminalInterfaceConfig {

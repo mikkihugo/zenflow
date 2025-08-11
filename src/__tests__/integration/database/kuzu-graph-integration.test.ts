@@ -3,8 +3,8 @@
  * Tests the integration of Kuzu graph database capabilities
  */
 
-import { DatabaseController } from '../../../database/controllers/database-controller';
-import { KuzuAdapter } from '../../../database/providers/database-providers';
+import { DatabaseController } from '../../../database/controllers/database-controller.ts';
+import { KuzuAdapter } from '../../../database/providers/database-providers.ts';
 
 // Mock logger
 const mockLogger = {

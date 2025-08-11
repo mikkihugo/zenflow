@@ -2,16 +2,16 @@
  * Comprehensive test suite for neural network manager
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, , vi } from 'vitest';
 
 // Mock the persistence manager
-jest.mock('../src/persistence.js', () => ({
-  PersistenceManager: jest.fn().mockImplementation(() => ({
-    initialize: jest.fn().mockResolvedValue(true),
-    saveNeuralModel: jest.fn().mockResolvedValue(true),
-    loadNeuralModel: jest.fn().mockResolvedValue(null),
-    saveTrainingData: jest.fn().mockResolvedValue(true),
-    getTrainingHistory: jest.fn().mockResolvedValue([]),
+vi.mock('../src/persistence.js', () => ({
+  PersistenceManager: vi.fn().mockImplementation(() => ({
+    initialize: vi.fn().mockResolvedValue(true),
+    saveNeuralModel: vi.fn().mockResolvedValue(true),
+    loadNeuralModel: vi.fn().mockResolvedValue(null),
+    saveTrainingData: vi.fn().mockResolvedValue(true),
+    getTrainingHistory: vi.fn().mockResolvedValue([]),
   })),
 }));
 
@@ -25,11 +25,11 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
   beforeEach(() => {
     manager = new NeuralNetworkManager();
     mockPersistence = manager.persistence;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('Network Creation and Configuration', () => {

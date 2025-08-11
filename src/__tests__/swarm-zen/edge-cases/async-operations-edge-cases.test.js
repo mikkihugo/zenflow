@@ -3,10 +3,10 @@
  * Tests promise handling, timeouts, race conditions, and async edge cases
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, , vi } from 'vitest';
 
 // Mock timers for timeout testing
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 describe('Async Operations Edge Cases', () => {
   let ruv;
@@ -15,19 +15,19 @@ describe('Async Operations Edge Cases', () => {
   beforeEach(async () => {
     // Initialize with mocks
     ruv = {
-      createSwarm: jest.fn().mockResolvedValue({
+      createSwarm: vi.fn().mockResolvedValue({
         id: 'test-swarm',
-        spawn: jest.fn(),
-        orchestrate: jest.fn(),
-        terminate: jest.fn(),
+        spawn: vi.fn(),
+        orchestrate: vi.fn(),
+        terminate: vi.fn(),
       }),
     };
     _swarm = await ruv.createSwarm({ topology: 'mesh' });
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
-    jest.useRealTimers();
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   describe('Promise Timeout Scenarios', () => {
@@ -41,7 +41,7 @@ describe('Async Operations Edge Cases', () => {
         setTimeout(() => reject(new Error('Operation timeout')), 5000);
       });
 
-      jest.useRealTimers(); // Use real timers for this test
+      vi.useRealTimers(); // Use real timers for this test
 
       const racePromise = Promise.race([longOperation(), timeoutPromise]);
 
@@ -49,7 +49,7 @@ describe('Async Operations Edge Cases', () => {
     });
 
     it('should handle multiple timeout scenarios', async () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
 
       const operations = [
         { delay: 1000, timeout: 500, shouldTimeout: true },
@@ -76,7 +76,7 @@ describe('Async Operations Edge Cases', () => {
         results.push(resultPromise);
 
         // Advance timers to the max of delay and timeout
-        jest.advanceTimersByTime(Math.max(delay, timeout) + 1);
+        vi.advanceTimersByTime(Math.max(delay, timeout) + 1);
       }
 
       const resolvedResults = await Promise.all(results);
@@ -204,7 +204,7 @@ describe('Async Operations Edge Cases', () => {
         ),
       ];
 
-      jest.useRealTimers();
+      vi.useRealTimers();
       const settled = await Promise.all(promises);
 
       // Results array shows actual execution order
@@ -276,7 +276,7 @@ describe('Async Operations Edge Cases', () => {
         new Promise((resolve) => setTimeout(() => resolve('delayed'), 100)),
       ];
 
-      jest.useRealTimers();
+      vi.useRealTimers();
       const results = await Promise.allSettled(operations);
 
       expect(results).toHaveLength(5);
@@ -300,7 +300,7 @@ describe('Async Operations Edge Cases', () => {
         new Promise((_, reject) => setTimeout(() => reject(new Error('Error 3')), 150)),
       ];
 
-      jest.useRealTimers();
+      vi.useRealTimers();
 
       // Should reject with the fastest rejection
       await expect(Promise.race(rejections)).rejects.toThrow('Error 2');

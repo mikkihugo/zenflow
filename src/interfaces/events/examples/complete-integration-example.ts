@@ -8,7 +8,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { EventManagerTypes, UEL, UELHelpers, UELSystemIntegration } from '../index';
+import { EventManagerTypes, UEL, UELHelpers, UELSystemIntegration } from '../index.ts';
 
 /**
  * Example: Complete UEL System Integration.

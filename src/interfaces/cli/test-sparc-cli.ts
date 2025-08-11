@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'commander';
-import { createSPARCTemplateCommands } from './sparc-template-commands';
+import { createSPARCTemplateCommands } from './sparc-template-commands.ts';
 
 const program = new Command();
 

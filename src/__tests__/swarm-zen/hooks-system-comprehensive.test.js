@@ -13,9 +13,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Mock dependencies
-jest.mock('fs/promises');
-jest.mock('child_process');
-jest.mock('url');
+vi.mock('fs/promises');
+vi.mock('child_process');
+vi.mock('url');
 
 describe('Hooks System - Complete Coverage', () => {
   let ZenSwarmHooks;
@@ -27,12 +27,12 @@ describe('Hooks System - Complete Coverage', () => {
     testTempDir = path.join(__dirname, `test-temp-${Date.now()}`);
 
     // Setup comprehensive mocks
-    fs.mkdir = jest.fn().mockResolvedValue(undefined);
-    fs.writeFile = jest.fn().mockResolvedValue(undefined);
-    fs.readFile = jest.fn().mockResolvedValue('{}');
-    fs.access = jest.fn().mockResolvedValue(undefined);
-    fs.rm = jest.fn().mockResolvedValue(undefined);
-    fs.stat = jest.fn().mockResolvedValue({
+    fs.mkdir = vi.fn().mockResolvedValue(undefined);
+    fs.writeFile = vi.fn().mockResolvedValue(undefined);
+    fs.readFile = vi.fn().mockResolvedValue('{}');
+    fs.access = vi.fn().mockResolvedValue(undefined);
+    fs.rm = vi.fn().mockResolvedValue(undefined);
+    fs.stat = vi.fn().mockResolvedValue({
       isDirectory: () => true,
       size: 1024,
       mtime: new Date(),
@@ -882,7 +882,7 @@ describe('Hooks System - Complete Coverage', () => {
 
   afterEach(() => {
     process.env = originalEnv;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Hooks System - Initialization', () => {
@@ -1253,7 +1253,7 @@ describe('Hooks System - Complete Coverage', () => {
       const hooks = new ZenSwarmHooks();
 
       // Override a method to throw error
-      hooks.preEditHook = jest.fn().mockRejectedValue(new Error('Test error'));
+      hooks.preEditHook = vi.fn().mockRejectedValue(new Error('Test error'));
 
       const result = await hooks.handleHook('pre-edit', {});
 

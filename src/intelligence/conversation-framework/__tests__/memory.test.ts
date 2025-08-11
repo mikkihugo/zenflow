@@ -1,6 +1,6 @@
 import type { AgentId } from '../../../types';
-import { ConversationMemoryImpl } from '../memory';
-import type { ConversationSession, ConversationStatus } from '../types';
+import { ConversationMemoryImpl } from '../memory.ts';
+import type { ConversationSession, ConversationStatus } from '../types.ts';
 
 describe('ConversationMemoryImpl - Classical TDD', () => {
   let memory: ConversationMemoryImpl;
@@ -16,14 +16,14 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
     const storage = new Map<string, any>();
 
     mockBackend = {
-      save: jest.fn().mockImplementation(async (key: string, value: any) => {
+      save: vi.fn().mockImplementation(async (key: string, value: any) => {
         storage.set(key, JSON.parse(JSON.stringify(value))); // Deep clone to simulate persistence
       }),
-      get: jest.fn().mockImplementation(async (key: string) => {
+      get: vi.fn().mockImplementation(async (key: string) => {
         const value = storage.get(key);
         return value ? JSON.parse(JSON.stringify(value)) : null; // Deep clone to simulate retrieval
       }),
-      delete: jest.fn().mockImplementation(async (key: string) => {
+      delete: vi.fn().mockImplementation(async (key: string) => {
         storage.delete(key);
       }),
     };

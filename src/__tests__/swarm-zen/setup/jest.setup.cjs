@@ -7,10 +7,10 @@
 global.console = {
   ...console,
   // Uncomment to suppress console output during tests
-  // log: jest.fn(),
-  // debug: jest.fn(),
-  // info: jest.fn(),
-  // warn: jest.fn(),
+  // log: vi.fn(),
+  // debug: vi.fn(),
+  // info: vi.fn(),
+  // warn: vi.fn(),
   error: console.error, // Keep errors visible
 };
 
@@ -32,11 +32,11 @@ if (typeof global.WebAssembly === 'undefined') {
         };
       }
     },
-    instantiate: jest.fn().mockResolvedValue({
+    instantiate: vi.fn().mockResolvedValue({
       instance: new global.WebAssembly.Instance(),
       module: new global.WebAssembly.Module(),
     }),
-    instantiateStreaming: jest.fn().mockResolvedValue({
+    instantiateStreaming: vi.fn().mockResolvedValue({
       instance: new global.WebAssembly.Instance(),
       module: new global.WebAssembly.Module(),
     }),
@@ -47,14 +47,14 @@ if (typeof global.WebAssembly === 'undefined') {
 jest.mock(
   'worker_threads',
   () => ({
-    Worker: jest.fn(),
+    Worker: vi.fn(),
     isMainThread: true,
     parentPort: null,
     workerData: null,
-    MessageChannel: jest.fn(),
-    MessagePort: jest.fn(),
-    moveMessagePortToContext: jest.fn(),
-    receiveMessageOnPort: jest.fn(),
+    MessageChannel: vi.fn(),
+    MessagePort: vi.fn(),
+    moveMessagePortToContext: vi.fn(),
+    receiveMessageOnPort: vi.fn(),
     threadId: 0,
   }),
   { virtual: true }
@@ -64,12 +64,12 @@ jest.mock(
 jest.mock(
   'fs/promises',
   () => ({
-    readFile: jest.fn(),
-    writeFile: jest.fn(),
-    mkdir: jest.fn(),
-    readdir: jest.fn(),
-    stat: jest.fn(),
-    access: jest.fn(),
+    readFile: vi.fn(),
+    writeFile: vi.fn(),
+    mkdir: vi.fn(),
+    readdir: vi.fn(),
+    stat: vi.fn(),
+    access: vi.fn(),
   }),
   { virtual: true }
 );
@@ -78,17 +78,17 @@ jest.mock(
 jest.mock(
   'better-sqlite3',
   () => {
-    return jest.fn().mockImplementation(() => ({
-      prepare: jest.fn().mockReturnValue({
-        run: jest.fn(),
-        get: jest.fn(),
-        all: jest.fn().mockReturnValue([]),
-        iterate: jest.fn(),
+    return vi.fn().mockImplementation(() => ({
+      prepare: vi.fn().mockReturnValue({
+        run: vi.fn(),
+        get: vi.fn(),
+        all: vi.fn().mockReturnValue([]),
+        iterate: vi.fn(),
       }),
-      exec: jest.fn(),
-      close: jest.fn(),
-      transaction: jest.fn().mockReturnValue(() => {}),
-      pragma: jest.fn(),
+      exec: vi.fn(),
+      close: vi.fn(),
+      transaction: vi.fn().mockReturnValue(() => {}),
+      pragma: vi.fn(),
     }));
   },
   { virtual: true }
@@ -98,7 +98,7 @@ jest.mock(
 jest.mock(
   'uuid',
   () => ({
-    v4: jest.fn(() => `mock-uuid-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`),
+    v4: vi.fn(() => `mock-uuid-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`),
   }),
   { virtual: true }
 );
@@ -107,19 +107,19 @@ jest.mock(
 jest.mock(
   'ws',
   () => ({
-    WebSocket: jest.fn().mockImplementation(() => ({
-      on: jest.fn(),
-      send: jest.fn(),
-      close: jest.fn(),
+    WebSocket: vi.fn().mockImplementation(() => ({
+      on: vi.fn(),
+      send: vi.fn(),
+      close: vi.fn(),
       readyState: 1, // OPEN
       CONNECTING: 0,
       OPEN: 1,
       CLOSING: 2,
       CLOSED: 3,
     })),
-    WebSocketServer: jest.fn().mockImplementation(() => ({
-      on: jest.fn(),
-      close: jest.fn(),
+    WebSocketServer: vi.fn().mockImplementation(() => ({
+      on: vi.fn(),
+      close: vi.fn(),
     })),
   }),
   { virtual: true }
@@ -190,11 +190,11 @@ global.testUtils = {
    */
   createMockWasmModule: () => ({
     exports: {
-      initialize: jest.fn().mockReturnValue(true),
-      getVersion: jest.fn().mockReturnValue('0.2.0'),
-      createAgent: jest.fn().mockReturnValue('mock-agent'),
-      createSwarm: jest.fn().mockReturnValue('mock-swarm'),
-      getMemoryUsage: jest.fn().mockReturnValue({ heapUsed: 1024, heapTotal: 2048 }),
+      initialize: vi.fn().mockReturnValue(true),
+      getVersion: vi.fn().mockReturnValue('0.2.0'),
+      createAgent: vi.fn().mockReturnValue('mock-agent'),
+      createSwarm: vi.fn().mockReturnValue('mock-swarm'),
+      getMemoryUsage: vi.fn().mockReturnValue({ heapUsed: 1024, heapTotal: 2048 }),
     },
   }),
 };

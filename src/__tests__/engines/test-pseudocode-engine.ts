@@ -2,7 +2,7 @@
  * @file Test-pseudocode processing engine.
  */
 
-import { getLogger } from './config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('test-pseudocode-engine');
 
@@ -11,7 +11,8 @@ const logger = getLogger('test-pseudocode-engine');
  * Tests core functionality without complex jest setup.
  */
 
-import { PseudocodePhaseEngine } from './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine';
+import { PseudocodePhaseEngine } from '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts';
+import type { DetailedSpecification } from '../../coordination/swarm/sparc/types/sparc-types.ts';
 
 async function testPseudocodeEngine() {
   const engine = new PseudocodePhaseEngine();

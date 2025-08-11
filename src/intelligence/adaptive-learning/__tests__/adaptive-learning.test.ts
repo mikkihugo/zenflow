@@ -6,16 +6,16 @@
  * - 30% Classical TDD (Detroit) for algorithms and mathematical operations.
  */
 
-import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { LearningCoordinator } from '../learning-coordinator';
+import { afterEach, beforeEach, describe, expect, jest, test } from 'vitest';
+import { LearningCoordinator } from '../learning-coordinator.ts';
 import {
   EnsembleModels,
   NeuralNetworkPredictor,
   OnlineLearningSystem,
   ReinforcementLearningEngine,
-} from '../ml-integration';
-import { PatternRecognitionEngine } from '../pattern-recognition-engine';
-import { PerformanceOptimizer } from '../performance-optimizer';
+} from '../ml-integration.ts';
+import { PatternRecognitionEngine } from '../pattern-recognition-engine.ts';
+import { PerformanceOptimizer } from '../performance-optimizer.ts';
 import type {
   AdaptiveLearningConfig,
   Agent,
@@ -23,7 +23,7 @@ import type {
   SuccessPattern,
   SystemContext,
   Task,
-} from '../types';
+} from '../types.ts';
 
 // ============================================
 // Test Helpers and Fixtures
@@ -114,11 +114,11 @@ const createTestContext = (): SystemContext => ({
 describe('Adaptive Learning System - London TDD (Integration & Interactions)', () => {
   describe('PatternRecognitionEngine Integration', () => {
     let engine: PatternRecognitionEngine;
-    let mockEmit: jest.MockedFunction<any>;
+    let mockEmit: vi.MockedFunction<any>;
 
     beforeEach(() => {
       engine = new PatternRecognitionEngine(createTestConfig(), createTestContext());
-      mockEmit = jest.spyOn(engine, 'emit');
+      mockEmit = vi.spyOn(engine, 'emit');
     });
 
     afterEach(() => {
@@ -215,12 +215,12 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
 
   describe('LearningCoordinator Integration', () => {
     let coordinator: LearningCoordinator;
-    let mockEmit: jest.MockedFunction<any>;
+    let mockEmit: vi.MockedFunction<any>;
 
     beforeEach(() => {
-      const mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() };
+      const mockLogger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
       coordinator = new LearningCoordinator(createTestConfig(), createTestContext(), mockLogger);
-      mockEmit = jest.spyOn(coordinator, 'emit').mockImplementation(() => true);
+      mockEmit = vi.spyOn(coordinator, 'emit').mockImplementation(() => true);
     });
 
     afterEach(() => {
@@ -344,11 +344,11 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
 
   describe('PerformanceOptimizer Integration', () => {
     let optimizer: PerformanceOptimizer;
-    let mockEmit: jest.MockedFunction<any>;
+    let mockEmit: vi.MockedFunction<any>;
 
     beforeEach(() => {
       optimizer = new PerformanceOptimizer(createTestConfig(), createTestContext());
-      mockEmit = jest.spyOn(optimizer, 'emit');
+      mockEmit = vi.spyOn(optimizer, 'emit');
     });
 
     afterEach(() => {
@@ -458,7 +458,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
     test('ReinforcementLearningEngine should emit events during training', () => {
       // London TDD: Test RL training interactions
       const rlEngine = new ReinforcementLearningEngine({ learningRate: 0.1 });
-      const mockEmit = jest.spyOn(rlEngine, 'emit');
+      const mockEmit = vi.spyOn(rlEngine, 'emit');
 
       rlEngine.updateQValue('state1', 'action1', 1.0, 'state2');
 
@@ -480,7 +480,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
     test('NeuralNetworkPredictor should emit training events', async () => {
       // London TDD: Test neural network training interactions
       const nnPredictor = new NeuralNetworkPredictor({ inputSize: 5, outputSize: 3 });
-      const mockEmit = jest.spyOn(nnPredictor, 'emit');
+      const mockEmit = vi.spyOn(nnPredictor, 'emit');
 
       const executionData = createMockExecutionData();
       const labels = ['success', 'failure'];
@@ -504,9 +504,9 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
     test('EnsembleModels should emit model management events', () => {
       // London TDD: Test ensemble model interactions
       const ensemble = new EnsembleModels();
-      const mockEmit = jest.spyOn(ensemble, 'emit');
+      const mockEmit = vi.spyOn(ensemble, 'emit');
 
-      const mockModel = { predict: jest.fn().mockResolvedValue([0.5]) };
+      const mockModel = { predict: vi.fn().mockResolvedValue([0.5]) };
       ensemble.addModel(mockModel, 1.0);
 
       expect(mockEmit).toHaveBeenCalledWith(
@@ -810,9 +810,9 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       const ensemble = new EnsembleModels();
 
       // Add models with known weights
-      const model1 = { predict: jest.fn().mockResolvedValue([0.8]) };
-      const model2 = { predict: jest.fn().mockResolvedValue([0.4]) };
-      const model3 = { predict: jest.fn().mockResolvedValue([0.6]) };
+      const model1 = { predict: vi.fn().mockResolvedValue([0.8]) };
+      const model2 = { predict: vi.fn().mockResolvedValue([0.4]) };
+      const model3 = { predict: vi.fn().mockResolvedValue([0.6]) };
 
       ensemble.addModel(model1, 0.5); // 50% weight
       ensemble.addModel(model2, 0.3); // 30% weight
@@ -830,8 +830,8 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       // Classical TDD: Test weight update algorithm
       const ensemble = new EnsembleModels();
 
-      ensemble.addModel({ predict: jest.fn() }, 1.0);
-      ensemble.addModel({ predict: jest.fn() }, 1.0);
+      ensemble.addModel({ predict: vi.fn() }, 1.0);
+      ensemble.addModel({ predict: vi.fn() }, 1.0);
 
       const performanceMetrics = [
         { accuracy: 0.9 }, // High performance
@@ -864,7 +864,7 @@ describe('Adaptive Learning System - Integration Tests', () => {
     const context = createTestContext();
 
     const patternEngine = new PatternRecognitionEngine(config, context);
-    const mockLogger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() };
+    const mockLogger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
     const coordinator = new LearningCoordinator(config, context, mockLogger);
     const optimizer = new PerformanceOptimizer(config, context);
 

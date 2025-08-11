@@ -21,7 +21,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 
 const logger = getLogger('MemorySystem');
 
@@ -583,7 +583,12 @@ export class MemorySystem extends EventEmitter {
     if (result.status === 'success') {
       this.emit('stored', { key, namespace, timestamp: result?.timestamp });
     } else {
-      this.emit('error', { operation: 'store', key, namespace, error: result?.error });
+      this.emit('error', {
+        operation: 'store',
+        key,
+        namespace,
+        error: result?.error,
+      });
     }
 
     return result;
@@ -618,7 +623,11 @@ export class MemorySystem extends EventEmitter {
 
     const results = await this.backend.search(pattern, namespace);
 
-    this.emit('searched', { pattern, namespace, resultCount: Object.keys(results).length });
+    this.emit('searched', {
+      pattern,
+      namespace,
+      resultCount: Object.keys(results).length,
+    });
 
     return results;
   }

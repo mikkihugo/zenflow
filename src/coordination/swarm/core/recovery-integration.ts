@@ -17,13 +17,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import ChaosEngineering from '../chaos-engineering/chaos-engineering';
-import ConnectionStateManager from '../connection-management/connection-state-manager';
-import HealthMonitor from '../../diagnostics/health-monitor';
-import { ErrorFactory } from './errors';
-import { Logger } from './logger';
-import MonitoringDashboard from './monitoring-dashboard';
-import RecoveryWorkflows from './recovery-workflows';
+import HealthMonitor from '../../diagnostics/health-monitor.ts';
+import ChaosEngineering from '../chaos-engineering/chaos-engineering.ts';
+import ConnectionStateManager from '../connection-management/connection-state-manager.ts';
+import { ErrorFactory } from './errors.ts';
+import { Logger } from './logger.ts';
+import MonitoringDashboard from './monitoring-dashboard.ts';
+import RecoveryWorkflows from './recovery-workflows.ts';
 
 export class RecoveryIntegration extends EventEmitter {
   // Public properties
@@ -588,7 +588,7 @@ export class RecoveryIntegration extends EventEmitter {
       const connectionStatus = this.connectionManager.getConnectionStatus();
       if (connectionStatus && connectionStatus.connections) {
         for (const [connectionId, connection] of Object.entries(connectionStatus.connections)) {
-          if ((connection as any).metadata?.swarmId === swarmId) {
+          if ((connection).metadata?.swarmId === swarmId) {
             await this.connectionManager.removeConnection(connectionId);
           }
         }

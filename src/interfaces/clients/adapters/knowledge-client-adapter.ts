@@ -23,7 +23,7 @@ import {
   FACTIntegration,
   type FACTQuery,
   type FACTResult,
-} from '../../../knowledge/knowledge-client';
+} from '../../../knowledge/knowledge-client.ts';
 import type {
   ClientConfig,
   ClientMetadata,
@@ -35,9 +35,9 @@ import type {
   KnowledgeSearchOptions,
   KnowledgeStats,
   SemanticSearchOptions,
-} from '../interfaces';
-import type { ProtocolType } from '../types';
-import { ClientStatuses, ProtocolTypes } from '../types';
+} from '../interfaces.ts';
+import type { ProtocolType } from '../types.ts';
+import { ClientStatuses, ProtocolTypes } from '../types.ts';
 
 /**
  * Extended client configuration for Knowledge clients.

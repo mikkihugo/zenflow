@@ -3,14 +3,14 @@
  * London TDD approach - testing interactions and message patterns
  */
 
-import { beforeEach, describe, expect, it } from '@jest/globals';
-import { AgentCommunicationProtocol } from '../../../../coordination/protocols/communication/communication-protocols';
-import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { AgentCommunicationProtocol } from '../../../../coordination/protocols/communication/communication-protocols.ts';
+import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers.ts';
 
 describe('Agent Communication Protocols (London TDD)', () => {
   let communicationProtocol: AgentCommunicationProtocol;
-  let mockMessageBroker: jest.Mocked<MessageBroker>;
-  let mockAgents: jest.Mocked<Agent>[];
+  let mockMessageBroker: vi.Mocked<MessageBroker>;
+  let mockAgents: vi.Mocked<Agent>[];
   let testHelpers: CoordinationTestHelpers;
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
       destroyChannel: vi.fn(),
       getChannelHealth: vi.fn(),
       routeMessage: vi.fn(),
-    } as jest.Mocked<MessageBroker>;
+    } as vi.Mocked<MessageBroker>;
 
     mockAgents = Array.from(
       { length: 6 },
@@ -39,7 +39,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           unsubscribeFromChannel: vi.fn(),
           getMessageQueue: vi.fn(),
           processMessage: vi.fn(),
-        }) as jest.Mocked<Agent>
+        }) as vi.Mocked<Agent>
     );
 
     testHelpers = new CoordinationTestHelpers();
@@ -398,7 +398,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
       expect(agent.getMessageQueue().prioritySort).toHaveBeenCalled();
 
       // Verify priority ordering
-      const enqueueCalls = (agent.getMessageQueue().enqueue as jest.Mock).mock.calls;
+      const enqueueCalls = (agent.getMessageQueue().enqueue as vi.Mock).mock.calls;
       enqueueCalls.forEach(([message], index) => {
         expect(message).toMatchObject({
           priorityScore: expect.any(Number),

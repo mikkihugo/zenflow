@@ -15,7 +15,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // Test framework setup
 const __filename = fileURLToPath(import.meta.url);
@@ -481,7 +481,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
     });
 
     test('should trigger alerts on repeated failures', async () => {
-      const alertSpy = jest.fn();
+      const alertSpy = vi.fn();
       healthMonitor.on('health:alert', alertSpy);
 
       healthMonitor.registerHealthCheck('test.alert', async () => {

@@ -11,7 +11,7 @@ const logger = getLogger('coordination-load-balancing-algorithms-ml-predictive')
  * Uses ML models to predict optimal agent selection and performance.
  */
 
-import type { LoadBalancingAlgorithm, PredictionEngine } from '../interfaces';
+import type { LoadBalancingAlgorithm, PredictionEngine } from '../interfaces.ts';
 import type {
   Agent,
   HistoricalData,
@@ -19,7 +19,7 @@ import type {
   PredictionModel,
   RoutingResult,
   Task,
-} from '../types';
+} from '../types.ts';
 
 interface MLFeatures {
   agentId: string;

@@ -9,7 +9,7 @@
  * @file Screens module exports.
  */
 
-export type { SwarmStatus } from '../components/index';
+export type { SwarmStatus } from '../components/index.ts';
 // Main screens
 export * from './main-menu';
 // Re-export key screens for convenience

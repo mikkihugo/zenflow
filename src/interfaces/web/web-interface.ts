@@ -11,16 +11,16 @@
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getLogger } from '../../config/logging-config';
-import { WebApiRoutes } from './web-api-routes';
+import { getLogger } from '../../config/logging-config.ts';
+import { WebApiRoutes } from './web-api-routes.ts';
 // Import modular components
-import { createWebConfig, type WebConfig } from './web-config';
-import { WebDashboardServer } from './web-dashboard-server';
-import { WebDataService } from './web-data-service';
-import { WebHtmlGenerator } from './web-html-generator';
-import { WebProcessManager } from './web-process-manager';
-import { WebSessionManager } from './web-session-manager';
-import { WebSocketManager } from './web-socket-manager';
+import { createWebConfig, type WebConfig } from './web-config.ts';
+import { WebDashboardServer } from './web-dashboard-server.ts';
+import { WebDataService } from './web-data-service.ts';
+import { WebHtmlGenerator } from './web-html-generator.ts';
+import { WebProcessManager } from './web-process-manager.ts';
+import { WebSessionManager } from './web-session-manager.ts';
+import { WebSocketManager } from './web-socket-manager.ts';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -260,5 +260,5 @@ export class WebInterface {
 }
 
 // Re-export types and configuration utilities
-export type { WebConfig } from './web-config';
-export { createWebConfig } from './web-config';
+export type { WebConfig } from './web-config.ts';
+export { createWebConfig } from './web-config.ts';

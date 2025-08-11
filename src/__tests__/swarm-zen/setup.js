@@ -9,10 +9,10 @@ process.env['NODE_ENV'] = 'test';
 if (!process.env['DEBUG']) {
   global.console = {
     ...console,
-    log: jest.fn(),
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
+    log: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
     // Keep error for debugging failed tests
     error: console.error,
   };
@@ -56,8 +56,8 @@ global.testUtils = {
 // Mock WebAssembly if not available
 if (typeof WebAssembly === 'undefined') {
   global.WebAssembly = {
-    validate: jest.fn(() => false),
-    instantiate: jest.fn(() =>
+    validate: vi.fn(() => false),
+    instantiate: vi.fn(() =>
       Promise.resolve({
         module: {},
         instance: {
@@ -65,17 +65,17 @@ if (typeof WebAssembly === 'undefined') {
         },
       })
     ),
-    Module: jest.fn(),
-    Instance: jest.fn(),
-    Memory: jest.fn(() => ({ buffer: new ArrayBuffer(1024) })),
-    Table: jest.fn(),
+    Module: vi.fn(),
+    Instance: vi.fn(),
+    Memory: vi.fn(() => ({ buffer: new ArrayBuffer(1024) })),
+    Table: vi.fn(),
   };
 }
 
 // Mock performance API if not available
 if (typeof performance === 'undefined') {
   global.performance = {
-    now: jest.fn(() => Date.now()),
+    now: vi.fn(() => Date.now()),
     memory: {
       usedJSHeapSize: 1000000,
       totalJSHeapSize: 2000000,
@@ -96,7 +96,7 @@ global.cleanupTest = async () => {
   global._ruvSwarmInitialized = 0;
 
   // Clear all mocks
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 };
 
 // Add custom matchers
@@ -140,5 +140,5 @@ process.on('unhandledRejection', (error) => {
 
 // Increase timeout for CI environments
 if (process.env['CI']) {
-  jest.setTimeout(60000);
+  vi.setConfig({ testTimeout: 60000 });
 }

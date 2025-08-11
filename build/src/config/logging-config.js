@@ -1,0 +1,192 @@
+/**
+ * @file Centralized Logging Configuration
+ * Provides unified logging configuration and factory methods for the entire application.
+ */
+import { getLogger as getLogTapeLogger } from '@logtape/logtape';
+export var LoggingLevel;
+(function (LoggingLevel) {
+    LoggingLevel["DEBUG"] = "debug";
+    LoggingLevel["INFO"] = "info";
+    LoggingLevel["WARN"] = "warn";
+    LoggingLevel["ERROR"] = "error";
+})(LoggingLevel || (LoggingLevel = {}));
+class LoggingConfigurationManager {
+    static instance;
+    config;
+    loggers = new Map();
+    constructor() {
+        this.config = this.loadConfiguration();
+    }
+    static getInstance() {
+        if (!LoggingConfigurationManager.instance) {
+            LoggingConfigurationManager.instance = new LoggingConfigurationManager();
+        }
+        return LoggingConfigurationManager.instance;
+    }
+    loadConfiguration() {
+        // Load from environment variables with sensible defaults
+        const nodeEnv = process.env['NODE_ENV'] || 'development';
+        const defaultLevel = nodeEnv === 'development' ? LoggingLevel.DEBUG : LoggingLevel.INFO;
+        return {
+            level: process.env['LOG_LEVEL'] || defaultLevel,
+            enableConsole: process.env['LOG_DISABLE_CONSOLE'] !== 'true',
+            enableFile: process.env['LOG_ENABLE_FILE'] === 'true',
+            timestamp: process.env['LOG_DISABLE_TIMESTAMP'] !== 'true',
+            format: process.env['LOG_FORMAT'] || 'text',
+            components: {
+                // Override levels for specific components
+                'swarm-coordinator': process.env['LOG_LEVEL_SWARM'] || defaultLevel,
+                'neural-network': process.env['LOG_LEVEL_NEURAL'] || defaultLevel,
+                'mcp-server': process.env['LOG_LEVEL_MCP'] || defaultLevel,
+                database: process.env['LOG_LEVEL_DB'] || defaultLevel,
+            },
+        };
+    }
+    /**
+     * Get logging configuration.
+     */
+    getConfig() {
+        return { ...this.config };
+    }
+    /**
+     * Update logging configuration.
+     *
+     * @param updates
+     */
+    updateConfig(updates) {
+        this.config = { ...this.config, ...updates };
+        // Clear cached loggers to force recreation with new config
+        this.loggers.clear();
+    }
+    /**
+     * Create or get cached logger for a component.
+     *
+     * @param component
+     */
+    getLogger(component) {
+        if (this.loggers.has(component)) {
+            return this.loggers.get(component);
+        }
+        const logger = this.createLoggerForComponent(component);
+        this.loggers.set(component, logger);
+        return logger;
+    }
+    createLoggerForComponent(component) {
+        // Use component-specific log level if configured
+        const componentLevel = this.config.components[component] || this.config.level;
+        // Set environment variable for the component so existing loggers pick it up
+        const originalLevel = process.env['LOG_LEVEL'];
+        process.env['LOG_LEVEL'] = componentLevel;
+        try {
+            // Create logger using logtape (no circular deps since we import directly)
+            const coreLogger = getLogTapeLogger(component);
+            // Enhance with additional methods compatible with existing interfaces
+            const enhancedLogger = {
+                debug: (message, meta) => coreLogger.debug(message, meta),
+                info: (message, meta) => coreLogger.info(message, meta),
+                warn: (message, meta) => coreLogger.warn(message, meta),
+                error: (message, meta) => coreLogger.error(message, meta),
+            };
+            // Add success and progress methods
+            enhancedLogger.success = (message, meta) => {
+                coreLogger.info(`✅ ${message}`, meta);
+            };
+            enhancedLogger.progress = (message, meta) => {
+                coreLogger.info(`🔄 ${message}`, meta);
+            };
+            return enhancedLogger;
+        }
+        finally {
+            // Restore original log level
+            if (originalLevel !== undefined) {
+                process.env['LOG_LEVEL'] = originalLevel;
+            }
+            else {
+                delete process.env['LOG_LEVEL'];
+            }
+        }
+    }
+    /**
+     * Create logger specifically for console.log replacement
+     * This creates a logger optimized for CLI output and user-facing messages.
+     *
+     * @param component
+     */
+    createConsoleReplacementLogger(component) {
+        const logger = this.getLogger(component);
+        return {
+            debug: (message, meta) => logger.debug(message, meta),
+            // For console.log replacement, use info level
+            info: (message, meta) => logger.info(message, meta),
+            warn: (message, meta) => logger.warn(message, meta),
+            error: (message, meta) => logger.error(message, meta),
+            success: logger.success || ((message, meta) => logger.info(message, meta)),
+            progress: logger.progress || ((message, meta) => logger.info(message, meta)),
+        };
+    }
+    /**
+     * Enable debug logging for development.
+     */
+    enableDebugMode() {
+        this.updateConfig({
+            level: LoggingLevel.DEBUG,
+            components: Object.fromEntries(Object.keys(this.config.components).map((key) => [key, LoggingLevel.DEBUG])),
+        });
+    }
+    /**
+     * Set production logging (INFO and above).
+     */
+    setProductionMode() {
+        this.updateConfig({
+            level: LoggingLevel.INFO,
+            components: Object.fromEntries(Object.keys(this.config.components).map((key) => [key, LoggingLevel.INFO])),
+        });
+    }
+    /**
+     * Silence all logging except errors.
+     */
+    setSilentMode() {
+        this.updateConfig({
+            level: LoggingLevel.ERROR,
+            components: Object.fromEntries(Object.keys(this.config.components).map((key) => [key, LoggingLevel.ERROR])),
+        });
+    }
+}
+// Export singleton instance
+export const loggingConfigManager = LoggingConfigurationManager.getInstance();
+/**
+ * Convenience function to get a logger for a component.
+ *
+ * @param component
+ * @example
+ */
+export function getLogger(component) {
+    return loggingConfigManager?.getLogger(component);
+}
+/**
+ * Convenience function for console.log replacement.
+ *
+ * @param component
+ * @example
+ */
+export function getConsoleReplacementLogger(component) {
+    return loggingConfigManager?.createConsoleReplacementLogger(component);
+}
+/**
+ * Convenience functions for common logging needs.
+ */
+export const logger = {
+    // Default system logger
+    system: getLogger('system'),
+    // CLI output logger
+    cli: getConsoleReplacementLogger('cli'),
+    // Swarm coordination logger
+    swarm: getLogger('swarm-coordinator'),
+    // Neural network logger
+    neural: getLogger('neural-network'),
+    // MCP server logger
+    mcp: getLogger('mcp-server'),
+    // Database logger
+    database: getLogger('database'),
+};
+export default loggingConfigManager;

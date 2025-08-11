@@ -221,7 +221,11 @@ export enum SystemEvents {
 }
 
 export interface EventMap extends Record<string, unknown> {
-  [SystemEvents['AGENT_SPAWNED']]: { agentId: string; profile: AgentProfile; sessionId: string };
+  [SystemEvents['AGENT_SPAWNED']]: {
+    agentId: string;
+    profile: AgentProfile;
+    sessionId: string;
+  };
   [SystemEvents['AGENT_TERMINATED']]: { agentId: string; reason: string };
   [SystemEvents['AGENT_ERROR']]: { agentId: string; error: Error };
   [SystemEvents['AGENT_IDLE']]: { agentId: string };
@@ -235,7 +239,10 @@ export interface EventMap extends Record<string, unknown> {
   [SystemEvents['TASK_CANCELLED']]: { taskId: string; reason: string };
 
   [SystemEvents['MEMORY_CREATED']]: { entry: MemoryEntry };
-  [SystemEvents['MEMORY_UPDATED']]: { entry: MemoryEntry; previousVersion: number };
+  [SystemEvents['MEMORY_UPDATED']]: {
+    entry: MemoryEntry;
+    previousVersion: number;
+  };
   [SystemEvents['MEMORY_DELETED']]: { entryId: string };
   [SystemEvents['MEMORY_SYNCED']]: { entries: MemoryEntry[] };
 
@@ -246,9 +253,20 @@ export interface EventMap extends Record<string, unknown> {
 
   [SystemEvents['RESOURCE_ACQUIRED']]: { resourceId: string; agentId: string };
   [SystemEvents['RESOURCE_RELEASED']]: { resourceId: string; agentId: string };
-  [SystemEvents['DEADLOCK_DETECTED']]: { agents: string[]; resources: string[] };
-  [SystemEvents['MESSAGE_SENT']]: { from: string; to: string; message: Message };
-  [SystemEvents['MESSAGE_RECEIVED']]: { from: string; to: string; message: Message };
+  [SystemEvents['DEADLOCK_DETECTED']]: {
+    agents: string[];
+    resources: string[];
+  };
+  [SystemEvents['MESSAGE_SENT']]: {
+    from: string;
+    to: string;
+    message: Message;
+  };
+  [SystemEvents['MESSAGE_RECEIVED']]: {
+    from: string;
+    to: string;
+    message: Message;
+  };
 
   // Additional events
   'metrics:collected': OrchestratorMetrics;

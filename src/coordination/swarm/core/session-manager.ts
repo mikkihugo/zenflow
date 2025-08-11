@@ -2,7 +2,7 @@
  * @file Session management system.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-core-session-manager');
 
@@ -24,8 +24,8 @@ import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import type { IDao, SessionCoordinationDao, SessionEntity } from '../../../database';
 import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
-import type { SwarmOptions, SwarmState } from './types';
-import { generateId } from './utils';
+import type { SwarmOptions, SwarmState } from './types.ts';
+import { generateId } from './utils.ts';
 
 export interface SessionState {
   id: string;

@@ -14,23 +14,26 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
-import type { CollaborativeReasoningConfig } from './collaborative-reasoning-engine';
-import { CollaborativeReasoningEngine } from './collaborative-reasoning-engine';
-import type { CollectiveIntelligenceConfig } from './collective-intelligence-coordinator';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { CollaborativeReasoningConfig } from './collaborative-reasoning-engine.ts';
+import { CollaborativeReasoningEngine } from './collaborative-reasoning-engine.ts';
+import type { CollectiveIntelligenceConfig } from './collective-intelligence-coordinator.ts';
 // Import all cross-agent knowledge systems
-import { CollectiveIntelligenceCoordinator } from './collective-intelligence-coordinator';
-import type { DistributedLearningConfig, ErrorHandlingConfig } from './distributed-learning-system';
-import { DistributedLearningSystem } from './distributed-learning-system';
-import type { IntelligenceCoordinationConfig } from './intelligence-coordination-system';
-import { IntelligenceCoordinationSystem } from './intelligence-coordination-system';
-import type { KnowledgeQualityConfig } from './knowledge-quality-management';
-import { KnowledgeQualityManagementSystem } from './knowledge-quality-management';
+import { CollectiveIntelligenceCoordinator } from './collective-intelligence-coordinator.ts';
+import type {
+  DistributedLearningConfig,
+  ErrorHandlingConfig,
+} from './distributed-learning-system.ts';
+import { DistributedLearningSystem } from './distributed-learning-system.ts';
+import type { IntelligenceCoordinationConfig } from './intelligence-coordination-system.ts';
+import { IntelligenceCoordinationSystem } from './intelligence-coordination-system.ts';
+import type { KnowledgeQualityConfig } from './knowledge-quality-management.ts';
+import { KnowledgeQualityManagementSystem } from './knowledge-quality-management.ts';
 import type {
   MonitoringConfig,
   PerformanceOptimizationConfig,
-} from './performance-optimization-system';
-import { PerformanceOptimizationSystem } from './performance-optimization-system';
+} from './performance-optimization-system.ts';
+import { PerformanceOptimizationSystem } from './performance-optimization-system.ts';
 
 /**
  * Main Integration Configuration.
@@ -284,7 +287,10 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
       return result;
     } catch (error) {
-      this.logger.error('Collective knowledge processing failed', { processingId, error });
+      this.logger.error('Collective knowledge processing failed', {
+        processingId,
+        error,
+      });
       throw error;
     }
   }
@@ -706,7 +712,9 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
   private async storeProcessingResult(_result: KnowledgeProcessingResult): Promise<void> {
     // Store processing result for learning
-    this.logger.info('Storing processing result', { processingId: _result.processingId });
+    this.logger.info('Storing processing result', {
+      processingId: _result.processingId,
+    });
   }
 
   private async calculateLearningImprovement(

@@ -13,10 +13,10 @@ import type {
   DatabaseMetadata,
   SortCriteria,
   TransactionOperation,
-} from '../database/interfaces';
+} from '../database/interfaces.ts';
 import type { HealthStatus } from '../types/health-types';
 import type { PerformanceMetrics } from '../types/performance-types';
-import type { IDataAccessObject, IRepository, QueryOptions } from './interfaces';
+import type { IDataAccessObject, IRepository, QueryOptions } from './interfaces.ts';
 
 // Create a simple logger interface to avoid import issues
 interface ILogger {
@@ -110,7 +110,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
    * @param options
    */
   async findAll(options?: QueryOptions): Promise<T[]> {
-    this.logger.debug(`Finding all entities in table: ${this.tableName}`, { options });
+    this.logger.debug(`Finding all entities in table: ${this.tableName}`, {
+      options,
+    });
 
     try {
       const query = this.buildFindAllQuery(options);
@@ -131,7 +133,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
    * @param entity
    */
   async create(entity: Omit<T, 'id'>): Promise<T> {
-    this.logger.debug(`Creating new entity in table: ${this.tableName}`, { entity });
+    this.logger.debug(`Creating new entity in table: ${this.tableName}`, {
+      entity,
+    });
 
     try {
       const query = this.buildCreateQuery(entity);
@@ -165,7 +169,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
    * @param updates
    */
   async update(id: string | number, updates: Partial<T>): Promise<T> {
-    this.logger.debug(`Updating entity ${id} in table: ${this.tableName}`, { updates });
+    this.logger.debug(`Updating entity ${id} in table: ${this.tableName}`, {
+      updates,
+    });
 
     try {
       const query = this.buildUpdateQuery(id, updates);
@@ -209,7 +215,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
    * @param criteria
    */
   async count(criteria?: Partial<T>): Promise<number> {
-    this.logger.debug(`Counting entities in table: ${this.tableName}`, { criteria });
+    this.logger.debug(`Counting entities in table: ${this.tableName}`, {
+      criteria,
+    });
 
     try {
       const query = this.buildCountQuery(criteria);
@@ -275,7 +283,10 @@ export abstract class BaseDao<T> implements IRepository<T> {
    *
    * @param id
    */
-  protected buildFindByIdQuery(id: string | number): { sql: string; params: any[] } {
+  protected buildFindByIdQuery(id: string | number): {
+    sql: string;
+    params: any[];
+  } {
     return {
       sql: `SELECT * FROM ${this.tableName} WHERE id = ?`,
       params: [id],
@@ -298,7 +309,10 @@ export abstract class BaseDao<T> implements IRepository<T> {
     return { sql, params };
   }
 
-  protected buildFindAllQuery(options?: QueryOptions): { sql: string; params: any[] } {
+  protected buildFindAllQuery(options?: QueryOptions): {
+    sql: string;
+    params: any[];
+  } {
     const orderClause = this.buildOrderClause(options?.['sort']);
     const limitClause = this.buildLimitClause(options?.['limit'], options?.['offset']);
 
@@ -307,7 +321,10 @@ export abstract class BaseDao<T> implements IRepository<T> {
     return { sql, params: [] };
   }
 
-  protected buildCreateQuery(entity: Omit<T, 'id'>): { sql: string; params: any[] } {
+  protected buildCreateQuery(entity: Omit<T, 'id'>): {
+    sql: string;
+    params: any[];
+  } {
     const mappedEntity = this.mapEntityToRow(entity as Partial<T>);
     const columns = Object.keys(mappedEntity).join(', ');
     const placeholders = Object.keys(mappedEntity)
@@ -335,14 +352,20 @@ export abstract class BaseDao<T> implements IRepository<T> {
     return { sql, params };
   }
 
-  protected buildDeleteQuery(id: string | number): { sql: string; params: any[] } {
+  protected buildDeleteQuery(id: string | number): {
+    sql: string;
+    params: any[];
+  } {
     return {
       sql: `DELETE FROM ${this.tableName} WHERE id = ?`,
       params: [id],
     };
   }
 
-  protected buildCountQuery(criteria?: Partial<T>): { sql: string; params: any[] } {
+  protected buildCountQuery(criteria?: Partial<T>): {
+    sql: string;
+    params: any[];
+  } {
     if (!criteria || Object.keys(criteria).length === 0) {
       return {
         sql: `SELECT COUNT(*) as count FROM ${this.tableName}`,

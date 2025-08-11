@@ -2,7 +2,7 @@
  * @file Knowledge-storage implementation.
  */
 
-import { Logger } from '../core/logger';
+import { Logger } from '../core/logger.ts';
 
 const logger = new Logger('src-knowledge-knowledge-storage');
 
@@ -26,7 +26,7 @@ const logger = new Logger('src-knowledge-knowledge-storage');
 
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import SQLiteBackend from './knowledge-cache-backends/sqlite-backend';
+import SQLiteBackend from './knowledge-cache-backends/sqlite-backend.ts';
 
 // Type definitions
 export interface FACTStorageConfig {
@@ -46,7 +46,11 @@ export interface FACTStorageBackend {
   delete(id: string): Promise<boolean>;
   clear(): Promise<void>;
   cleanup(maxAge: number): Promise<number>;
-  getStats(): Promise<{ persistentEntries?: number; oldestEntry?: number; newestEntry?: number }>;
+  getStats(): Promise<{
+    persistentEntries?: number;
+    oldestEntry?: number;
+    newestEntry?: number;
+  }>;
   shutdown(): Promise<void>;
 }
 
@@ -148,7 +152,7 @@ export class FACTStorageSystem extends EventEmitter {
   async storeKnowledge(
     entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>
   ): Promise<string> {
-    const id = this.generateEntryId(entry.query, entry.metadata['type'] as string);
+    const id = this.generateEntryId(entry.query, entry.metadata['type']);
     const timestamp = Date.now();
 
     const knowledgeEntry: FACTKnowledgeEntry = {

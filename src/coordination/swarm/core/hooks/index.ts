@@ -2,7 +2,7 @@
  * @file Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
  */
 
-import { getLogger } from '../../../../config/logging-config';
+import { getLogger } from '../../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-core-hooks-index');
 
@@ -1142,7 +1142,7 @@ ${this.sessionData.learnings
       agents: {
         total_spawned: this.sessionData.agents.size,
         by_type: Object.fromEntries(
-          Array.from((this.sessionData.agents as any).values()).reduce((acc: any, agent: any) => {
+          Array.from((this.sessionData.agents).values()).reduce((acc: any, agent: any) => {
             acc.set(agent.type, (acc.get(agent.type) || 0) + 1);
             return acc;
           }, new Map()) as any

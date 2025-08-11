@@ -2,7 +2,7 @@
  * @file Integration module exports.
  */
 
-import { getLogger } from '../core/logger';
+import { getLogger } from '../core/logger.ts';
 
 const logger = getLogger('src-integration-index');
 
@@ -13,8 +13,8 @@ const logger = getLogger('src-integration-index');
  */
 
 // Core integration components
-export * from './multi-system-coordinator';
-export { MultiSystemCoordinator as default } from './multi-system-coordinator';
+export * from './multi-system-coordinator.ts';
+export { MultiSystemCoordinator as default } from './multi-system-coordinator.ts';
 
 // Integration utilities
 export const IntegrationUtils = {
@@ -74,15 +74,15 @@ export const IntegrationUtils = {
     try {
       switch (system) {
         case 'neural': {
-          const neural = await import('../neural/index');
+          const neural = await import('../neural/index.ts');
           return Boolean(neural);
         }
         case 'database': {
-          const database = await import('../database/index');
+          const database = await import('../database/index.ts');
           return Boolean(database);
         }
         case 'coordination': {
-          const coordination = await import('../coordination/index');
+          const coordination = await import('../coordination/index.ts');
           return Boolean(coordination);
         }
         default:
@@ -108,7 +108,7 @@ export class IntegrationFactory {
     const key = `${systems.sort().join('-')}:${instanceKey}`;
 
     if (!IntegrationFactory.coordinators.has(key)) {
-      const { MultiSystemCoordinator } = await import('./multi-system-coordinator');
+      const { MultiSystemCoordinator } = await import('./multi-system-coordinator.ts');
 
       // Create a simple logger for the coordinator
       const logger = {
@@ -119,7 +119,9 @@ export class IntegrationFactory {
       };
 
       // Create coordinator with logger and systems config
-      const coordinator = new (MultiSystemCoordinator as any)(logger, { systems });
+      const coordinator = new (MultiSystemCoordinator as any)(logger, {
+        systems,
+      });
       IntegrationFactory.coordinators.set(key, coordinator);
     }
 

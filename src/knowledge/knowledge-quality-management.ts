@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
 
 // Quick type aliases to resolve missing type errors
 export type BootstrappingConfig = any;
@@ -1049,7 +1049,13 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
     _protocol: ValidationProtocol
   ): Promise<any> {
     // TODO: Implement result aggregation
-    return { overallScore: 0.5, isValid: true, confidence: 0.8, issues: [], recommendations: [] };
+    return {
+      overallScore: 0.5,
+      isValid: true,
+      confidence: 0.8,
+      issues: [],
+      recommendations: [],
+    };
   }
 
   private async applyValidationDecision(

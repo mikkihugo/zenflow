@@ -2,7 +2,7 @@
  * @file Coordination system: swarm-providers.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-storage-swarm-providers');
 
@@ -13,11 +13,11 @@ const logger = getLogger('coordination-swarm-storage-swarm-providers');
  * The existing DAL Factory and repository patterns.
  */
 
-import { DIContainer } from '../di/container/di-container.js';
-import { CORE_TOKENS, DATABASE_TOKENS, SWARM_TOKENS } from '../di/tokens/core-tokens.js';
-import { type BackupConfig, SwarmBackupManager } from './backup-manager.js';
-import { type SwarmDatabaseConfig, SwarmDatabaseManager } from './swarm-database-manager.js';
-import { type MaintenanceConfig, SwarmMaintenanceManager } from './swarm-maintenance.js';
+import { DIContainer } from '../di/container/di-container';
+import { CORE_TOKENS, DATABASE_TOKENS, SWARM_TOKENS } from '../di/tokens/core-tokens';
+import { type BackupConfig, SwarmBackupManager } from './backup-manager.ts';
+import { type SwarmDatabaseConfig, SwarmDatabaseManager } from './swarm-database-manager.ts';
+import { type MaintenanceConfig, SwarmMaintenanceManager } from './swarm-maintenance.ts';
 
 /**
  * Default swarm storage configuration.
@@ -91,7 +91,7 @@ export function registerSwarmProviders(
     create: (container) =>
       new SwarmDatabaseManager(
         container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig,
-        container.resolve(DATABASE_TOKENS?.DALFactory) as any,
+        container.resolve(DATABASE_TOKENS?.DALFactory),
         container.resolve(CORE_TOKENS.Logger)
       ),
   });

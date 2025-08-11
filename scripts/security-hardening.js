@@ -42,7 +42,7 @@ class SecurityHardeningSystem {
       await this.generateSecurityReport();
       return this.hardeningResults;
     } catch (error) {
-      console.error('❌ Security hardening failed:', error);
+      // console.error('❌ Security hardening failed:', error);
       throw error;
     }
   }
@@ -139,7 +139,7 @@ class DependencyAnalyzer {
       JSON.stringify(report, null, 2)
     );
     
-    console.log('📊 Dependency analysis complete');
+    // console.log('📊 Dependency analysis complete');
   }
   
   checkOutdated() {
@@ -743,7 +743,7 @@ export class SecurityMonitor {
   writeToLog(entry) {
     const logLine = JSON.stringify(entry) + '\\n';
     // Implement file writing (async)
-    console.log('Security Event:', logLine);
+    // console.log('Security Event:', logLine);
   }
 
   async sendAlert(event) {
@@ -760,9 +760,9 @@ export class SecurityMonitor {
       };
 
       // Send to webhook (implement based on your alerting system)
-      console.log('🚨 SECURITY ALERT:', alert);
+      // console.log('🚨 SECURITY ALERT:', alert);
     } catch (error) {
-      console.error('Failed to send security alert:', error);
+      // console.error('Failed to send security alert:', error);
     }
   }
 

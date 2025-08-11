@@ -17,7 +17,7 @@ import type {
   ProjectConfig,
   ProjectCreationResult,
   SwarmCommand,
-} from './types/advanced-cli-types';
+} from './types/advanced-cli-types.ts';
 
 /**
  * Advanced CLI System Implementation.

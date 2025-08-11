@@ -4,7 +4,7 @@
  */
 
 import { getLogger as getLogTapeLogger } from '@logtape/logtape';
-import type { ILogger } from '../core/bootstrap-logger';
+import type { ILogger } from '../core/bootstrap-logger.ts';
 
 export enum LoggingLevel {
   DEBUG = 'debug',

@@ -5,11 +5,11 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
-import type { SessionMemoryStore } from '@memory/memory';
-import { getLogger } from '../../config/logging-config';
-import { getHiveFACT, type HiveFACTSystem } from '../hive-fact-integration';
-import type { DiscoveredDomain, DomainDiscoveryBridge } from './domain-discovery-bridge';
+import type { AGUIInterface } from '../../interfaces/agui/agui-adapter.ts';
+import type { SessionMemoryStore } from '../../memory/memory.ts';
+import { getLogger } from '../../config/logging-config.ts';
+import { getHiveFACT, type HiveFACTSystem } from '../hive-fact-integration.ts';
+import type { DiscoveredDomain, DomainDiscoveryBridge } from './domain-discovery-bridge.ts';
 
 const logger = getLogger('ProgressiveConfidence');
 

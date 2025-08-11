@@ -173,7 +173,7 @@ class TemplateValidator {
 
       return this.results;
     } catch (error) {
-      console.error('❌ Template validation failed:', error.message);
+      // console.error('❌ Template validation failed:', error.message);
       throw error;
     }
   }
@@ -980,7 +980,7 @@ function main() {
 
     process.exit(exitCode);
   } catch (error) {
-    console.error('💥 Template validation failed:', error.message);
+    // console.error('💥 Template validation failed:', error.message);
     process.exit(1);
   }
 }

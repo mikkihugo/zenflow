@@ -162,38 +162,38 @@ export class ${className} {
    * Generate conversion report
    */
   generateReport() {
-    console.log('🔍 Mock to TDD London Conversion Report');
-    console.log('='.repeat(50));
-    console.log(`Files scanned: ${this.filesProcessed}`);
-    console.log(`Files needing conversion: ${this.conversionsFound.length}`);
-    console.log();
+    // console.log('🔍 Mock to TDD London Conversion Report');
+    // console.log('='.repeat(50));
+    // console.log(`Files scanned: ${this.filesProcessed}`);
+    // console.log(`Files needing conversion: ${this.conversionsFound.length}`);
+    // console.log();
 
     if (this.conversionsFound.length === 0) {
-      console.log('✅ No conversions needed - all mocks follow TDD London patterns!');
+      // console.log('✅ No conversions needed - all mocks follow TDD London patterns!');
       return;
     }
 
-    console.log('📋 Files needing TDD London conversion:');
-    console.log();
+    // console.log('📋 Files needing TDD London conversion:');
+    // console.log();
 
     this.conversionsFound.forEach(({ file, conversions }) => {
-      console.log(`📁 ${file}`);
+      // console.log(`📁 ${file}`);
       conversions.forEach((conversion) => {
-        console.log(`  Line ${conversion.line}: ${conversion.type}`);
-        console.log(`  💡 ${conversion.suggestion}`);
-        console.log();
+        // console.log(`  Line ${conversion.line}: ${conversion.type}`);
+        // console.log(`  💡 ${conversion.suggestion}`);
+        // console.log();
       });
     });
 
-    console.log('🔧 Recommended Actions:');
-    console.log('1. Use /src/__tests__/helpers/tdd-london-mock-coordination.ts as reference');
-    console.log('2. Convert basic object mocks to Mock classes with Jest.MockedFunction');
-    console.log('3. Add expectXxxCalled() helper methods for interaction testing');
-    console.log('4. Use setupXxxScenario() methods for test data preparation');
-    console.log('5. Add clearAllMocks() calls in afterEach() hooks');
+    // console.log('🔧 Recommended Actions:');
+    // console.log('1. Use /src/__tests__/helpers/tdd-london-mock-coordination.ts as reference');
+    // console.log('2. Convert basic object mocks to Mock classes with Jest.MockedFunction');
+    // console.log('3. Add expectXxxCalled() helper methods for interaction testing');
+    // console.log('4. Use setupXxxScenario() methods for test data preparation');
+    // console.log('5. Add clearAllMocks() calls in afterEach() hooks');
 
-    console.log();
-    console.log('📊 Summary by Pattern Type:');
+    // console.log();
+    // console.log('📊 Summary by Pattern Type:');
     const typeCounts = {};
     this.conversionsFound.forEach(({ conversions }) => {
       conversions.forEach(({ type }) => {
@@ -202,7 +202,7 @@ export class ${className} {
     });
 
     Object.entries(typeCounts).forEach(([type, count]) => {
-      console.log(`  • ${type}: ${count} occurrences`);
+      // console.log(`  • ${type}: ${count} occurrences`);
     });
   }
 
@@ -210,14 +210,14 @@ export class ${className} {
    * Main conversion process
    */
   run() {
-    console.log('🔍 Scanning for mock patterns that need TDD London conversion...');
+    // console.log('🔍 Scanning for mock patterns that need TDD London conversion...');
 
     // Scan test directories
     const testDirs = [path.join(REPO_ROOT, 'src/__tests__'), path.join(REPO_ROOT, 'tests')];
 
     testDirs.forEach((dir) => {
       if (fs.existsSync(dir)) {
-        console.log(`Scanning ${dir}...`);
+        // console.log(`Scanning ${dir}...`);
         this.scanDirectory(dir);
       }
     });

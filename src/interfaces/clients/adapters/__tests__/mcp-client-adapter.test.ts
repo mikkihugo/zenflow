@@ -11,15 +11,15 @@ import {
   MCPClientAdapter,
   type MCPClientConfig,
   MCPClientFactory,
-} from '../mcp-client-adapter.js';
+} from '../mcp-client-adapter.ts';
 
 // Mock child_process for testing
 jest.mock('node:child_process', () => ({
-  spawn: jest.fn(),
+  spawn: vi.fn(),
 }));
 
 // Mock fetch for HTTP testing
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 describe('MCPClientAdapter', () => {
   let adapter: MCPClientAdapter;
@@ -32,14 +32,14 @@ describe('MCPClientAdapter', () => {
     // Mock process
     mockProcess = new EventEmitter();
     mockProcess.stdin = {
-      write: jest.fn((data, callback) => {
+      write: vi.fn((data, callback) => {
         if (callback) callback();
       }),
     };
     mockProcess.stdout = new EventEmitter();
     mockProcess.stderr = new EventEmitter();
     mockProcess.pid = 12345;
-    mockProcess.kill = jest.fn();
+    mockProcess.kill = vi.fn();
     mockProcess.killed = false;
 
     const { spawn } = require('node:child_process');

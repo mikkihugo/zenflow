@@ -6,10 +6,10 @@
  * @description Enhanced database controller with DI integration for Issue #63.
  */
 
-import type { ConnectionStats, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject } from '../../di/decorators/inject';
-import { injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
+import type { ConnectionStats, ILogger } from '../../core/interfaces/base-interfaces.ts';
+import { inject } from '../../di/decorators/inject.ts';
+import { injectable } from '../../di/decorators/injectable.ts';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens.ts';
 import type {
   DatabaseAdapter,
   DatabaseConfig,
@@ -18,7 +18,7 @@ import type {
   IndexConfig,
   VectorData,
   VectorDatabaseAdapter,
-} from '../providers/database-providers';
+} from '../providers/database-providers.ts';
 
 /**
  * Request interface for database query operations.
@@ -1625,7 +1625,7 @@ export class DatabaseController {
         throw new Error('Current database adapter does not support vector operations');
       }
 
-      const vectorAdapter = this.adapter as VectorDatabaseAdapter;
+      const vectorAdapter = this.adapter;
       const result = await vectorAdapter.vectorSearch(request.vector, request.limit || 10);
 
       const executionTime = Date.now() - startTime;
@@ -1687,7 +1687,7 @@ export class DatabaseController {
         throw new Error('Current database adapter does not support vector operations');
       }
 
-      const vectorAdapter = this.adapter as VectorDatabaseAdapter;
+      const vectorAdapter = this.adapter;
 
       // Convert request format to VectorData format
       const vectorData: VectorData[] = request.vectors.map((v) => ({
@@ -1834,7 +1834,7 @@ export class DatabaseController {
         throw new Error('Current database adapter does not support vector operations');
       }
 
-      const vectorAdapter = this.adapter as VectorDatabaseAdapter;
+      const vectorAdapter = this.adapter;
 
       const indexConfig: IndexConfig = {
         name: request.name,

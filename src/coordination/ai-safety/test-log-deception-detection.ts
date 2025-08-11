@@ -5,7 +5,7 @@
  * Tests the system against actual log files to detect real deception patterns.
  */
 
-import { LogBasedDeceptionDetector } from './log-based-deception-detector';
+import { LogBasedDeceptionDetector } from './log-based-deception-detector.ts';
 
 async function testLogBasedDeception() {
   console.log('🔍 LOG-BASED DECEPTION DETECTION TEST\n');

@@ -1,12 +1,12 @@
 /**
  * @file Type-Safe Event System - Phase 0, Task 0.3 - AGUI Integration Foundation
- * 
+ *
  * Implements a comprehensive type-safe event bus with domain validation integration,
  * designed for high-throughput event processing with compile-time and runtime type safety.
- * 
+ *
  * This system forms the foundation for AGUI human validation workflows and
  * multi-agent coordination across domain boundaries.
- * 
+ *
  * ARCHITECTURE: Multi-Agent Cognitive Architecture compliant
  * - Type safety at compile time AND runtime
  * - Domain boundary validation integration
@@ -17,23 +17,23 @@
  */
 
 import { EventEmitter } from 'events';
-import { getLogger } from '../config/logging-config';
-import type { Logger } from '../config/logging-config';
-import { 
-  DomainBoundaryValidator,
+import type { Logger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config.ts';
+import type { Agent, Task } from '../coordination/types.ts';
+import type { WorkflowContext, WorkflowDefinition, WorkflowEvent } from '../workflows/types.ts';
+import {
+  ContractViolationError,
   Domain,
-  TypeSchema,
-  Result,
+  type DomainBoundaryValidator,
   DomainMetadata,
-  PerformanceMetrics,
-  getDomainValidator,
-  validateCrossDomain,
   DomainValidationError,
-  ContractViolationError
-} from './domain-boundary-validator';
-import type { IEventBus } from './interfaces/base-interfaces';
-import type { Agent, Task } from '../coordination/types';
-import type { WorkflowDefinition, WorkflowContext, WorkflowEvent } from '../workflows/types';
+  getDomainValidator,
+  PerformanceMetrics,
+  type Result,
+  type TypeSchema,
+  validateCrossDomain,
+} from './domain-boundary-validator.ts';
+import type { IEventBus } from './interfaces/base-interfaces.ts';
 
 // ============================================================================
 // EVENT SYSTEM CORE TYPES - Foundation for all event operations
@@ -74,7 +74,7 @@ export enum EventPriority {
   NORMAL = 1,
   HIGH = 2,
   CRITICAL = 3,
-  URGENT = 4
+  URGENT = 4,
 }
 
 /**
@@ -86,7 +86,7 @@ export enum EventStatus {
   PROCESSED = 'processed',
   FAILED = 'failed',
   REJECTED = 'rejected',
-  RETRYING = 'retrying'
+  RETRYING = 'retrying',
 }
 
 /**
@@ -456,9 +456,9 @@ export interface ErrorOccurredEvent extends CoreEvent {
 /**
  * Union type of all domain events
  */
-export type DomainEvent = 
+export type DomainEvent =
   | CoordinationEvent
-  | WorkflowDomainEvent  
+  | WorkflowDomainEvent
   | NeuralEvent
   | DatabaseEvent
   | MemoryEvent
@@ -510,10 +510,10 @@ const BaseEventSchema: TypeSchema<BaseEvent> = {
   properties: {
     id: { type: 'string', required: true },
     type: { type: 'string', required: true },
-    domain: { 
-      type: 'string', 
+    domain: {
+      type: 'string',
       required: true,
-      enum: Object.values(Domain)
+      enum: Object.values(Domain),
     },
     timestamp: { type: 'object', required: true },
     version: { type: 'string', required: true },
@@ -527,20 +527,20 @@ const BaseEventSchema: TypeSchema<BaseEvent> = {
         userId: { type: 'string', required: false },
         sessionId: { type: 'string', required: false },
         traceId: { type: 'string', required: false },
-        priority: { 
-          type: 'number', 
+        priority: {
+          type: 'number',
           required: false,
-          enum: Object.values(EventPriority).filter(v => typeof v === 'number')
+          enum: Object.values(EventPriority).filter((v) => typeof v === 'number'),
         },
-        tags: { 
-          type: 'array', 
+        tags: {
+          type: 'array',
           required: false,
-          items: { type: 'string' }
+          items: { type: 'string' },
         },
-        customData: { type: 'object', required: false }
-      }
-    }
-  }
+        customData: { type: 'object', required: false },
+      },
+    },
+  },
 };
 
 /**
@@ -556,19 +556,19 @@ export const EventSchemas = {
         required: true,
         properties: {
           agent: { type: 'object', required: true },
-          capabilities: { 
-            type: 'array', 
+          capabilities: {
+            type: 'array',
             required: true,
-            items: { type: 'string' }
+            items: { type: 'string' },
           },
-          initialStatus: { 
-            type: 'string', 
+          initialStatus: {
+            type: 'string',
             required: true,
-            enum: ['idle', 'busy']
-          }
-        }
-      }
-    }
+            enum: ['idle', 'busy'],
+          },
+        },
+      },
+    },
   } as TypeSchema<AgentCreatedEvent>,
 
   TaskAssigned: {
@@ -581,10 +581,10 @@ export const EventSchemas = {
         properties: {
           task: { type: 'object', required: true },
           agentId: { type: 'string', required: true },
-          assignmentTime: { type: 'object', required: true }
-        }
-      }
-    }
+          assignmentTime: { type: 'object', required: true },
+        },
+      },
+    },
   } as TypeSchema<TaskAssignedEvent>,
 
   WorkflowStarted: {
@@ -598,10 +598,10 @@ export const EventSchemas = {
           workflowId: { type: 'string', required: true },
           definition: { type: 'object', required: true },
           context: { type: 'object', required: true },
-          startTime: { type: 'object', required: true }
-        }
-      }
-    }
+          startTime: { type: 'object', required: true },
+        },
+      },
+    },
   } as TypeSchema<WorkflowStartedEvent>,
 
   HumanValidationRequested: {
@@ -613,22 +613,22 @@ export const EventSchemas = {
         required: true,
         properties: {
           requestId: { type: 'string', required: true },
-          validationType: { 
-            type: 'string', 
+          validationType: {
+            type: 'string',
             required: true,
-            enum: ['approval', 'selection', 'input', 'review']
+            enum: ['approval', 'selection', 'input', 'review'],
           },
           context: { type: 'object', required: true },
-          priority: { 
-            type: 'number', 
+          priority: {
+            type: 'number',
             required: true,
-            enum: Object.values(EventPriority).filter(v => typeof v === 'number')
+            enum: Object.values(EventPriority).filter((v) => typeof v === 'number'),
           },
-          timeout: { type: 'number', required: false }
-        }
-      }
-    }
-  } as TypeSchema<HumanValidationRequestedEvent>
+          timeout: { type: 'number', required: false },
+        },
+      },
+    },
+  } as TypeSchema<HumanValidationRequestedEvent>,
 } as const;
 
 // ============================================================================
@@ -735,7 +735,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
       batchSize: config.batchSize ?? 50,
       retryAttempts: config.retryAttempts ?? 3,
       backoffMultiplier: config.backoffMultiplier ?? 2,
-      domainValidation: config.domainValidation ?? true
+      domainValidation: config.domainValidation ?? true,
     };
 
     this.logger = getLogger('type-safe-event-bus');
@@ -749,7 +749,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
     this.logger.info('TypeSafeEventBus initialized', {
       config: this.config,
-      domainValidationEnabled: this.config.domainValidation
+      domainValidationEnabled: this.config.domainValidation,
     });
   }
 
@@ -771,7 +771,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
   ): Promise<EventProcessingResult> {
     const startTime = Date.now();
     const eventId = event.id || this.generateEventId();
-    
+
     try {
       // Enhanced event with processing metadata
       const enhancedEvent: TEvent = {
@@ -781,10 +781,11 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         version: event.version || '1.0.0',
         metadata: {
           ...event.metadata,
-          correlationId: options.correlationId || event.metadata?.correlationId || this.generateCorrelationId(),
+          correlationId:
+            options.correlationId || event.metadata?.correlationId || this.generateCorrelationId(),
           priority: options.priority ?? event.metadata?.priority ?? EventPriority.NORMAL,
-          source: event.metadata?.source || 'type-safe-event-bus'
-        }
+          source: event.metadata?.source || 'type-safe-event-bus',
+        },
       };
 
       // Domain boundary validation
@@ -813,7 +814,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
       // Process event handlers
       const processingResult = await this.processEventHandlers(enhancedEvent, {
-        timeout: options.timeout ?? this.config.defaultTimeout
+        timeout: options.timeout ?? this.config.defaultTimeout,
       });
 
       // Emit on Node.js EventEmitter for compatibility
@@ -830,7 +831,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         eventType: event.type,
         domain: event.domain,
         processingTime: Date.now() - startTime,
-        handlerCount: processingResult.handlerResults.length
+        handlerCount: processingResult.handlerResults.length,
       });
 
       return {
@@ -842,13 +843,12 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           startTime: new Date(startTime),
           endTime: new Date(),
           handlerCount: processingResult.handlerResults.length,
-          successCount: processingResult.handlerResults.filter(r => r.success).length,
-          failureCount: processingResult.handlerResults.filter(r => !r.success).length,
+          successCount: processingResult.handlerResults.filter((r) => r.success).length,
+          failureCount: processingResult.handlerResults.filter((r) => !r.success).length,
           totalProcessingTime: Date.now() - startTime,
-          validationTime: processingResult.validationTime || 0
-        }
+          validationTime: processingResult.validationTime || 0,
+        },
       };
-
     } catch (error) {
       const processingTime = Date.now() - startTime;
 
@@ -862,7 +862,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         eventType: event.type,
         domain: event.domain,
         error: error instanceof Error ? error.message : String(error),
-        processingTime
+        processingTime,
       });
 
       return {
@@ -878,8 +878,8 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           successCount: 0,
           failureCount: 1,
           totalProcessingTime: processingTime,
-          validationTime: 0
-        }
+          validationTime: 0,
+        },
       };
     }
   }
@@ -897,24 +897,22 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
   ): Promise<EventProcessingResult[]> {
     const startTime = Date.now();
     const maxConcurrency = options.maxConcurrency ?? this.config.maxConcurrency;
-    
+
     this.logger.info('Processing event batch', {
       eventCount: events.length,
-      maxConcurrency
+      maxConcurrency,
     });
 
     const results: EventProcessingResult[] = [];
-    
+
     // Process events in batches to avoid overwhelming the system
     for (let i = 0; i < events.length; i += this.config.batchSize) {
       const batch = events.slice(i, i + this.config.batchSize);
-      
-      const batchPromises = batch.map(event => 
-        this.emitEvent(event, options)
-      );
+
+      const batchPromises = batch.map((event) => this.emitEvent(event, options));
 
       const batchResults = await Promise.allSettled(batchPromises);
-      
+
       for (const result of batchResults) {
         if (result.status === 'fulfilled') {
           results.push(result.value);
@@ -922,7 +920,8 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           results.push({
             success: false,
             processingTime: Date.now() - startTime,
-            error: result.reason instanceof Error ? result.reason : new Error(String(result.reason)),
+            error:
+              result.reason instanceof Error ? result.reason : new Error(String(result.reason)),
             handlerResults: [],
             metadata: {
               eventId: 'batch-failed',
@@ -932,8 +931,8 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
               successCount: 0,
               failureCount: 1,
               totalProcessingTime: Date.now() - startTime,
-              validationTime: 0
-            }
+              validationTime: 0,
+            },
           });
         }
       }
@@ -941,9 +940,9 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
     this.logger.info('Event batch processing completed', {
       totalEvents: events.length,
-      successCount: results.filter(r => r.success).length,
-      failureCount: results.filter(r => !r.success).length,
-      totalTime: Date.now() - startTime
+      successCount: results.filter((r) => r.success).length,
+      failureCount: results.filter((r) => !r.success).length,
+      totalTime: Date.now() - startTime,
     });
 
     return results;
@@ -963,7 +962,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     schema?: TypeSchema<TEvent>
   ): string {
     const handlerId = this.generateHandlerId();
-    
+
     const typedHandler: TypedEventHandler<TEvent> = {
       id: handlerId,
       eventType,
@@ -976,9 +975,9 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         errorHandling: 'retry',
         validatePayload: true,
         trackMetrics: true,
-        ...config
+        ...config,
       },
-      schema
+      schema,
     };
 
     if (!this.eventHandlers.has(eventType)) {
@@ -995,7 +994,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
       handlerId,
       eventType,
       priority: config.priority,
-      totalHandlers: handlers.length
+      totalHandlers: handlers.length,
     });
 
     return handlerId;
@@ -1012,7 +1011,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
       schema?: TypeSchema<any>;
     }>
   ): string[] {
-    return registrations.map(reg => 
+    return registrations.map((reg) =>
       this.registerHandler(reg.eventType, reg.handler, reg.config, reg.schema)
     );
   }
@@ -1043,10 +1042,10 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
    */
   public unregisterHandler(handlerId: string): boolean {
     for (const [eventType, handlers] of this.eventHandlers.entries()) {
-      const index = handlers.findIndex(h => h.id === handlerId);
+      const index = handlers.findIndex((h) => h.id === handlerId);
       if (index >= 0) {
         handlers.splice(index, 1);
-        
+
         if (handlers.length === 0) {
           this.eventHandlers.delete(eventType);
         }
@@ -1054,7 +1053,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         this.logger.debug('Event handler unregistered', {
           handlerId,
           eventType,
-          remainingHandlers: handlers.length
+          remainingHandlers: handlers.length,
         });
 
         return true;
@@ -1092,7 +1091,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     operation: string
   ): Promise<Result<EventProcessingResult>> {
     const startTime = Date.now();
-    
+
     try {
       // Validate cross-domain event routing
       if (this.config.domainValidation) {
@@ -1113,8 +1112,8 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
               operation: `cross_domain_event:${operation}`,
               timestamp: new Date(),
               validationTime: Date.now() - startTime,
-              crossingId: this.generateCrossingId()
-            }
+              crossingId: this.generateCrossingId(),
+            },
           };
         }
       }
@@ -1131,10 +1130,10 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
             crossDomain: {
               from: fromDomain,
               to: toDomain,
-              operation
-            }
-          }
-        }
+              operation,
+            },
+          },
+        },
       };
 
       const processingResult = await this.emitEvent(crossDomainEvent);
@@ -1148,17 +1147,16 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           operation: `cross_domain_event:${operation}`,
           timestamp: new Date(),
           validationTime: Date.now() - startTime,
-          crossingId: this.generateCrossingId()
-        }
+          crossingId: this.generateCrossingId(),
+        },
       };
-
     } catch (error) {
       this.logger.error('Cross-domain event routing failed', {
         fromDomain,
         toDomain,
         operation,
         eventType: event.type,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
 
       return {
@@ -1170,8 +1168,8 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           operation: `cross_domain_event:${operation}`,
           timestamp: new Date(),
           validationTime: Date.now() - startTime,
-          crossingId: this.generateCrossingId()
-        }
+          crossingId: this.generateCrossingId(),
+        },
       };
     }
   }
@@ -1195,30 +1193,30 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     let filteredEvents = this.eventHistory.slice();
 
     if (criteria.eventType) {
-      filteredEvents = filteredEvents.filter(e => e.type === criteria.eventType);
+      filteredEvents = filteredEvents.filter((e) => e.type === criteria.eventType);
     }
 
     if (criteria.domain) {
-      filteredEvents = filteredEvents.filter(e => e.domain === criteria.domain);
+      filteredEvents = filteredEvents.filter((e) => e.domain === criteria.domain);
     }
 
     if (criteria.startTime) {
-      filteredEvents = filteredEvents.filter(e => e.timestamp >= criteria.startTime!);
+      filteredEvents = filteredEvents.filter((e) => e.timestamp >= criteria.startTime!);
     }
 
     if (criteria.endTime) {
-      filteredEvents = filteredEvents.filter(e => e.timestamp <= criteria.endTime!);
+      filteredEvents = filteredEvents.filter((e) => e.timestamp <= criteria.endTime!);
     }
 
     if (criteria.correlationId) {
-      filteredEvents = filteredEvents.filter(e => 
-        e.metadata?.correlationId === criteria.correlationId
+      filteredEvents = filteredEvents.filter(
+        (e) => e.metadata?.correlationId === criteria.correlationId
       );
     }
 
     if (criteria.tags && criteria.tags.length > 0) {
-      filteredEvents = filteredEvents.filter(e =>
-        e.metadata?.tags?.some(tag => criteria.tags!.includes(tag))
+      filteredEvents = filteredEvents.filter((e) =>
+        e.metadata?.tags?.some((tag) => criteria.tags!.includes(tag))
       );
     }
 
@@ -1239,7 +1237,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     }
 
     // Search in history
-    return this.eventHistory.find(e => e.id === eventId);
+    return this.eventHistory.find((e) => e.id === eventId);
   }
 
   /**
@@ -1271,46 +1269,50 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
     const domainEventCounts: Record<Domain, number> = {} as Record<Domain, number>;
     for (const domain of Object.values(Domain)) {
-      domainEventCounts[domain] = this.eventHistory.filter(e => e.domain === domain).length;
+      domainEventCounts[domain] = this.eventHistory.filter((e) => e.domain === domain).length;
     }
 
     const totalProcessingTimes = Array.from(this.processingStats.values())
       .flat()
-      .filter(time => time > 0);
+      .filter((time) => time > 0);
 
-    const averageProcessingTime = totalProcessingTimes.length > 0
-      ? totalProcessingTimes.reduce((sum, time) => sum + time, 0) / totalProcessingTimes.length
-      : 0;
+    const averageProcessingTime =
+      totalProcessingTimes.length > 0
+        ? totalProcessingTimes.reduce((sum, time) => sum + time, 0) / totalProcessingTimes.length
+        : 0;
 
     const failedEvents = this.eventHistory.length - totalProcessingTimes.length;
-    const failureRate = this.eventHistory.length > 0 
-      ? failedEvents / this.eventHistory.length 
-      : 0;
+    const failureRate = this.eventHistory.length > 0 ? failedEvents / this.eventHistory.length : 0;
 
     return {
       totalEvents: this.eventCounter,
       eventsPerSecond: uptimeSeconds > 0 ? this.eventCounter / uptimeSeconds : 0,
       averageProcessingTime,
       failureRate,
-      handlerCount: Array.from(this.eventHandlers.values())
-        .reduce((sum, handlers) => sum + handlers.length, 0),
+      handlerCount: Array.from(this.eventHandlers.values()).reduce(
+        (sum, handlers) => sum + handlers.length,
+        0
+      ),
       domainEventCounts,
       memoryUsage: this.estimateMemoryUsage(),
-      cacheHitRate: this.calculateCacheHitRate()
+      cacheHitRate: this.calculateCacheHitRate(),
     };
   }
 
   /**
    * Get detailed performance statistics
    */
-  public getPerformanceStats(): Record<string, {
-    count: number;
-    averageTime: number;
-    minTime: number;
-    maxTime: number;
-    p95Time: number;
-    p99Time: number;
-  }> {
+  public getPerformanceStats(): Record<
+    string,
+    {
+      count: number;
+      averageTime: number;
+      minTime: number;
+      maxTime: number;
+      p95Time: number;
+      p99Time: number;
+    }
+  > {
     const stats: Record<string, any> = {};
 
     for (const [eventType, times] of this.processingStats.entries()) {
@@ -1326,7 +1328,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         minTime: sortedTimes[0],
         maxTime: sortedTimes[sortedTimes.length - 1],
         p95Time: sortedTimes[Math.floor(count * 0.95)] || 0,
-        p99Time: sortedTimes[Math.floor(count * 0.99)] || 0
+        p99Time: sortedTimes[Math.floor(count * 0.99)] || 0,
       };
     }
 
@@ -1352,7 +1354,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
    */
   public async initialize(): Promise<void> {
     this.logger.info('Initializing TypeSafeEventBus', {
-      config: this.config
+      config: this.config,
     });
 
     // Initialize domain validators
@@ -1364,7 +1366,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         } catch (error) {
           this.logger.error('Failed to initialize domain validator', {
             domain,
-            error: error instanceof Error ? error.message : String(error)
+            error: error instanceof Error ? error.message : String(error),
           });
           throw error;
         }
@@ -1394,22 +1396,22 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         payload: {
           reason: 'graceful_shutdown',
           graceful: true,
-          uptime: Date.now() - this.startTime
-        }
+          uptime: Date.now() - this.startTime,
+        },
       } as SystemShutdownEvent);
     } catch (error) {
-      this.logger.warn('Failed to emit shutdown event', { 
-        error: error instanceof Error ? error.message : String(error) 
+      this.logger.warn('Failed to emit shutdown event', {
+        error: error instanceof Error ? error.message : String(error),
       });
     }
 
     // Clear all handlers
     this.eventHandlers.clear();
-    
+
     // Clear caches
     this.eventCache.clear();
     this.schemaCache.clear();
-    
+
     // Remove all listeners
     this.removeAllListeners();
 
@@ -1443,18 +1445,16 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
     // Get handlers for this specific event type
     const specificHandlers = this.getHandlers(event.type);
-    
+
     // Get domain handlers
     const domainHandlers = this.getHandlers(`domain:${event.domain}`);
-    
+
     // Get wildcard handlers
     const wildcardHandlers = this.getHandlers('*');
 
     // Combine and deduplicate handlers
     const allHandlers = [...specificHandlers, ...domainHandlers, ...wildcardHandlers];
-    const uniqueHandlers = Array.from(
-      new Map(allHandlers.map(h => [h.id, h])).values()
-    );
+    const uniqueHandlers = Array.from(new Map(allHandlers.map((h) => [h.id, h])).values());
 
     if (uniqueHandlers.length === 0) {
       return { handlerResults, validationTime };
@@ -1466,67 +1466,68 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
       logger: this.logger,
       startTime: new Date(),
       correlationId: event.metadata?.correlationId || this.generateCorrelationId(),
-      metadata: {}
+      metadata: {},
     };
 
     // Process handlers concurrently with timeout
     const handlerPromises = uniqueHandlers.map(async (handler) => {
       const handlerStartTime = Date.now();
-      
+
       try {
         // Validate event against handler schema if provided
         if (handler.schema && handler.config.validatePayload) {
           const schemaValidationStart = Date.now();
-          
+
           if (this.config.domainValidation) {
             const validator = this.domainValidators.get(event.domain);
             if (validator) {
               validator.validateInput(event, handler.schema);
             }
           }
-          
+
           validationTime += Date.now() - schemaValidationStart;
         }
 
         // Execute handler with timeout
         await Promise.race([
           handler.handler(event, context),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Handler timeout')), 
-              handler.config.timeout || options.timeout)
-          )
+          new Promise((_, reject) =>
+            setTimeout(
+              () => reject(new Error('Handler timeout')),
+              handler.config.timeout || options.timeout
+            )
+          ),
         ]);
 
         const processingTime = Date.now() - handlerStartTime;
-        
+
         return {
           handlerId: handler.id,
           success: true,
           processingTime,
         };
-
       } catch (error) {
         const processingTime = Date.now() - handlerStartTime;
-        
+
         this.logger.error('Event handler failed', {
           handlerId: handler.id,
           eventType: event.type,
           eventId: event.id,
           error: error instanceof Error ? error.message : String(error),
-          processingTime
+          processingTime,
         });
 
         return {
           handlerId: handler.id,
           success: false,
           processingTime,
-          error: error instanceof Error ? error : new Error(String(error))
+          error: error instanceof Error ? error : new Error(String(error)),
         };
       }
     });
 
     const results = await Promise.allSettled(handlerPromises);
-    
+
     for (const result of results) {
       if (result.status === 'fulfilled') {
         handlerResults.push(result.value);
@@ -1535,7 +1536,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           handlerId: 'unknown',
           success: false,
           processingTime: 0,
-          error: result.reason instanceof Error ? result.reason : new Error(String(result.reason))
+          error: result.reason instanceof Error ? result.reason : new Error(String(result.reason)),
         });
       }
     }
@@ -1550,19 +1551,19 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     if (!validator) {
       return {
         success: true,
-        data: event
+        data: event,
       };
     }
 
     try {
       // Get or create schema for this event type
       const schema = this.getEventSchema(event.type);
-      
+
       if (schema) {
         const validatedEvent = validator.validateInput(event, schema);
         return {
           success: true,
-          data: validatedEvent
+          data: validatedEvent,
         };
       } else {
         // If no schema, just validate basic structure
@@ -1570,13 +1571,13 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         validator.validateInput(event, basicSchema);
         return {
           success: true,
-          data: event
+          data: event,
         };
       }
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error : new Error(String(error))
+        error: error instanceof Error ? error : new Error(String(error)),
       };
     }
   }
@@ -1598,18 +1599,18 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         );
         return {
           success: true,
-          data: validatedEvent
+          data: validatedEvent,
         };
       } else {
         return {
           success: true,
-          data: event
+          data: event,
         };
       }
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error : new Error(String(error))
+        error: error instanceof Error ? error : new Error(String(error)),
       };
     }
   }
@@ -1621,9 +1622,10 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     }
 
     // Look up in predefined schemas
-    const schemaKey = eventType.split('.').map(part => 
-      part.charAt(0).toUpperCase() + part.slice(1)
-    ).join('');
+    const schemaKey = eventType
+      .split('.')
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join('');
 
     const schema = (EventSchemas as any)[schemaKey];
     if (schema) {
@@ -1667,7 +1669,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         error: event.payload.error.message,
         severity: event.payload.severity,
         recoverable: event.payload.recoverable,
-        context: event.payload.context
+        context: event.payload.context,
       });
     });
 
@@ -1675,7 +1677,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     this.registerHandler('system.started', async (event: SystemStartedEvent) => {
       this.logger.info('System started', {
         version: event.payload.version,
-        startTime: event.payload.startTime
+        startTime: event.payload.startTime,
       });
     });
   }
@@ -1719,16 +1721,21 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
   emit(eventName: string | symbol, ...args: any[]): boolean {
     // Handle both the new typed events and legacy event emitter events
     const result = super.emit(eventName, ...args);
-    
+
     // If this is a typed event, also process it through our type-safe system
-    if (typeof eventName === 'string' && args.length > 0 && args[0] && typeof args[0] === 'object') {
+    if (
+      typeof eventName === 'string' &&
+      args.length > 0 &&
+      args[0] &&
+      typeof args[0] === 'object'
+    ) {
       const event = args[0] as BaseEvent;
       if (event.type && event.domain && event.timestamp) {
         // This is already processed by emitEvent, so we don't need to process it again
         // This is just for compatibility
       }
     }
-    
+
     return result;
   }
 
@@ -1779,7 +1786,7 @@ export function createEvent<TEvent extends BaseEvent>(
     timestamp: new Date(),
     version: '1.0.0',
     metadata,
-    ...payload
+    ...payload,
   } as TEvent;
 }
 
@@ -1795,7 +1802,7 @@ export function createCorrelationId(): string {
  */
 export function isBaseEvent(obj: unknown): obj is BaseEvent {
   if (!obj || typeof obj !== 'object') return false;
-  
+
   const event = obj as any;
   return (
     typeof event.id === 'string' &&
@@ -1820,7 +1827,9 @@ export function isDomainEvent<TDomain extends Domain>(
 /**
  * Extract event type from event class
  */
-export function getEventType<TEvent extends BaseEvent>(eventClass: new (...args: any[]) => TEvent): string {
+export function getEventType<TEvent extends BaseEvent>(
+  eventClass: new (...args: any[]) => TEvent
+): string {
   // This would require reflection or a different approach in TypeScript
   // For now, events should define their own type property
   return 'unknown';
@@ -1880,6 +1889,5 @@ export type {
   AGUIGateClosedEvent,
   SystemStartedEvent,
   SystemShutdownEvent,
-  ErrorOccurredEvent
+  ErrorOccurredEvent,
 };
-

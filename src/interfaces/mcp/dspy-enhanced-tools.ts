@@ -12,7 +12,7 @@
  */
 
 import { DSPy, type DSPyProgram } from 'dspy.ts';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('DSPyMCPTools');
 

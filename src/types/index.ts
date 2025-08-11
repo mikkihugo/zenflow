@@ -18,7 +18,7 @@ export type {
   WASMNeuralAccelerator,
   WASMNeuralConfig,
   WASMPerformanceMetrics,
-} from '../neural/types/wasm-types';
+} from '../neural/types/wasm-types.ts';
 // Export specific types from agent-types with unique names to avoid conflicts
 export type {
   AgentCapabilities,
@@ -31,7 +31,7 @@ export type {
   AgentStatus as DetailedAgentStatus,
   AgentType as DetailedAgentType,
   GlobalAgentInfo,
-} from './agent-types';
+} from './agent-types.ts';
 // Primary exports from shared-types (these are the main Agent interface)
 // Re-export shared types selectively to avoid conflicts
 export type {
@@ -42,10 +42,10 @@ export type {
   TaskStatus,
   ZenSwarm as SwarmType,
   ZenSwarm,
-} from './shared-types';
+} from './shared-types.ts';
 
 // Type guards and utilities
-export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
+export function isZenSwarm(obj: any): obj is import('./shared-types.ts').ZenSwarm {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -54,7 +54,7 @@ export function isZenSwarm(obj: any): obj is import('./shared-types').ZenSwarm {
   );
 }
 
-export function isSwarmAgent(obj: any): obj is import('./shared-types').SwarmAgent {
+export function isSwarmAgent(obj: any): obj is import('./shared-types.ts').SwarmAgent {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -63,7 +63,7 @@ export function isSwarmAgent(obj: any): obj is import('./shared-types').SwarmAge
   );
 }
 
-export function isSystemEvent(obj: any): obj is import('./shared-types').SystemEvent {
+export function isSystemEvent(obj: any): obj is import('./shared-types.ts').SystemEvent {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -80,14 +80,14 @@ export {
   isObjectArrayWithProps,
   isPositiveNumber,
   isValidNumber,
-} from '../utils/type-guards';
-export * from './client-types';
-export * from './conversation-types';
-export * from './events-types';
-export * from './knowledge-types';
-export * from './mcp-types';
-export * from './neural-types';
-export * from './protocol-types';
-export * from './services-types';
-export * from './singletons';
-export * from './workflow-types';
+} from '../utils/type-guards.ts';
+export * from './client-types.ts';
+export * from './conversation-types.ts';
+export * from './events-types.ts';
+export * from './knowledge-types.ts';
+export * from './mcp-types.ts';
+export * from './neural-types.ts';
+export * from './protocol-types.ts';
+export * from './services-types.ts';
+export * from './singletons.ts';
+export * from './workflow-types.ts';

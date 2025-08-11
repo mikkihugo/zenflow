@@ -12,8 +12,8 @@ import { existsSync } from 'node:fs';
 import { createServer, type Server as HTTPServer } from 'node:http';
 import express, { type Express } from 'express';
 import { Server as SocketIOServer } from 'socket.io';
-import { getLogger } from '../../config/logging-config';
-import type { WebConfig } from './web-config';
+import { getLogger } from '../../config/logging-config.ts';
+import type { WebConfig } from './web-config.ts';
 
 export class WebDashboardServer {
   private logger = getLogger('WebServer');

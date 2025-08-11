@@ -1,0 +1,1 @@
+{"version":3,"file":"failover-manager.d.ts","sourceRoot":"","sources":["../../../../../src/coordination/load-balancing/routing/failover-manager.ts"],"names":[],"mappings":"AAAA;;;GAGG;AACH;;GAEG;AAEH,qBAAa,eAAe;IAC1B,OAAO,CAAC,kBAAkB,CAAkC;IAE/C,gBAAgB,CAAC,aAAa,EAAE,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC;YAmBrD,gBAAgB;YAEhB,oBAAoB;YAEpB,mBAAmB;CAClC"}

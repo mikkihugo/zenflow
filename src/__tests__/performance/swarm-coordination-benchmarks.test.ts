@@ -3,11 +3,11 @@
  * Comprehensive performance testing for swarm operations
  */
 
-import { AgentManager } from '../../coordination/agents/agent-manager';
-import { TaskOrchestrator } from '../../coordination/orchestrator';
-import { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator';
-import { CoordinationTestHelpers } from '../helpers/coordination-test-helpers';
-import { PerformanceMeasurement } from '../helpers/performance-measurement';
+import { AgentManager } from '../../coordination/agents/agent-manager.ts';
+import { TaskOrchestrator } from '../../coordination/orchestrator.ts';
+import { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator.ts';
+import { CoordinationTestHelpers } from '../helpers/coordination-test-helpers.ts';
+import { PerformanceMeasurement } from '../helpers/performance-measurement.ts';
 
 describe('Swarm Coordination Performance Benchmarks', () => {
   let swarmCoordinator: SwarmCoordinator;

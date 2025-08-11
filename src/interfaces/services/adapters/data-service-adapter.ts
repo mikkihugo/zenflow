@@ -12,24 +12,24 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../../config/logging-config';
-import type { ILogger } from '../../../core/logger';
-import type { BaseDocumentEntity } from '../../../database/entities/product-entities';
+import { getLogger } from '../../../config/logging-config.ts';
+import type { ILogger } from '../../../core/logger.ts';
+import type { BaseDocumentEntity } from '../../../database/entities/product-entities.ts';
 import type {
   DocumentCreateOptions,
   DocumentQueryOptions,
   DocumentSearchOptions,
-} from '../../../database/managers/document-manager';
-import { DocumentService } from '../../../database/services/document-service-legacy';
+} from '../../../database/managers/document-manager.ts';
+import { DocumentService } from '../../../database/services/document-service-legacy.ts';
 import type {
   CommandResult,
   DocumentData,
   SwarmData,
   SystemStatusData,
   TaskData,
-} from '../../../interfaces/web/web-data-service';
-import { WebDataService } from '../../../interfaces/web/web-data-service';
-import type { DocumentType } from '../../../types/workflow-types';
+} from '../../../interfaces/web/web-data-service.ts';
+import { WebDataService } from '../../../interfaces/web/web-data-service.ts';
+import type { DocumentType } from '../../../types/workflow-types.ts';
 import type {
   IService,
   ServiceConfig,
@@ -43,8 +43,8 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../../core/interfaces';
-import type { DataServiceConfig } from '../types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+import type { DataServiceConfig } from '../types.ts';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../types.ts';
 
 /**
  * Data service adapter configuration extending USL DataServiceConfig.

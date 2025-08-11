@@ -9,10 +9,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 import type { SessionMemoryStore } from '../memory';
-import { getHiveFACT, type HiveFACTSystem, type UniversalFact } from './hive-fact-integration';
-import type { HiveSwarmCoordinator } from './hive-swarm-sync';
+import { getHiveFACT, type HiveFACTSystem, type UniversalFact } from './hive-fact-integration.ts';
+import type { HiveSwarmCoordinator } from './hive-swarm-sync.ts';
 
 interface SwarmContext {
   relevanceScore: number;
@@ -318,7 +318,10 @@ export class HiveKnowledgeBridge extends EventEmitter {
       );
     }
 
-    this.emit('knowledge:contributed', { swarmId: request.swarmId, contribution });
+    this.emit('knowledge:contributed', {
+      swarmId: request.swarmId,
+      contribution,
+    });
 
     return {
       requestId: request.requestId,
@@ -675,7 +678,10 @@ export class HiveKnowledgeBridge extends EventEmitter {
       }
     }
 
-    this.emit('knowledge:distributed', { update, swarmCount: relevantSwarms.size });
+    this.emit('knowledge:distributed', {
+      update,
+      swarmCount: relevantSwarms.size,
+    });
   }
 
   /**

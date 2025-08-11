@@ -12,8 +12,8 @@
  * @file Neural network: gateway.
  */
 
-import { WasmModuleLoader } from './wasm-loader';
-import { WasmMemoryOptimizer } from './wasm-memory-optimizer';
+import { WasmModuleLoader } from './wasm-loader.ts';
+import { WasmMemoryOptimizer } from './wasm-memory-optimizer.ts';
 
 export interface WasmGatewayMetrics {
   initialized: boolean;

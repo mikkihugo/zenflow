@@ -5,19 +5,19 @@
  * that enables zero-manual-initialization swarm creation.
  */
 
-import { AutoSwarmFactory } from '@coordination/discovery/auto-swarm-factory';
-import type { HiveSwarmCoordinator } from '@coordination/hive-swarm-sync';
-import type { SwarmCoordinator } from '@coordination/swarm/core/swarm-coordinator';
-import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
-import type { jest } from '@jest/globals';
-import type { SessionMemoryStore } from '@memory/memory';
+import { describe, it, expect, beforeEach, vi, type MockedFunction, type Mocked } from 'vitest'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { AutoSwarmFactory } from '../../../coordination/discovery/auto-swarm-factory.ts';
+import type { HiveSwarmCoordinator } from '../../../coordination/hive-swarm-sync.ts';
+import type { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator.ts';
+import type { AGUIInterface } from '../../../interfaces/agui/agui-adapter.ts';
+import type { SessionMemoryStore } from '../../../memory/memory.ts';
 
 describe('AutoSwarmFactory', () => {
   let factory: AutoSwarmFactory;
-  let mockSwarmCoordinator: jest.Mocked<SwarmCoordinator>;
-  let mockHiveSync: jest.Mocked<HiveSwarmCoordinator>;
-  let mockMemoryStore: jest.Mocked<SessionMemoryStore>;
-  let mockAgui: jest.Mocked<AGUIInterface>;
+  let mockSwarmCoordinator: Mocked<SwarmCoordinator>;
+  let mockHiveSync: Mocked<HiveSwarmCoordinator>;
+  let mockMemoryStore: Mocked<SessionMemoryStore>;
+  let mockAgui: Mocked<AGUIInterface>;
 
   beforeEach(() => {
     // Create mocks

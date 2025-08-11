@@ -11,7 +11,7 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -21,10 +21,10 @@ import type {
   ProductProjectEntity,
   TaskDocumentEntity,
   VisionDocumentEntity,
-} from '../database/entities/product-entities';
-import type { DocumentManager } from '../database/managers/document-manager';
-import type { DocumentType } from '../types/workflow-types';
-import type { WorkflowEngine } from './workflow-engine';
+} from '../database/entities/product-entities.ts';
+import type { DocumentManager } from '../database/managers/document-manager.ts';
+import type { DocumentType } from '../types/workflow-types.ts';
+import type { WorkflowEngine } from './workflow-engine.ts';
 
 const logger = getLogger('DatabaseDriven');
 
@@ -188,7 +188,11 @@ export class DatabaseDrivenSystem extends EventEmitter {
     this.workspaces.set(workspaceId, context);
 
     logger.info(`📁 Created database workspace: ${projectSpec.name} (${workspaceId})`);
-    this.emit('workspace:created', { workspaceId, projectId: project.id, project });
+    this.emit('workspace:created', {
+      workspaceId,
+      projectId: project.id,
+      project,
+    });
 
     return workspaceId;
   }
@@ -359,7 +363,9 @@ export class DatabaseDrivenSystem extends EventEmitter {
     const document = await this.documentService.createDocument(visionDoc, {
       autoGenerateRelationships: options?.autoGenerateRelationships !== false,
       generateSearchIndex: options?.generateSearchIndex !== false,
-      ...(options?.startWorkflows !== false && { startWorkflow: 'vision-to-prds' }),
+      ...(options?.startWorkflows !== false && {
+        startWorkflow: 'vision-to-prds',
+      }),
     });
 
     await this.processDocumentEntity(workspaceId, document, options);
@@ -787,8 +793,16 @@ This epic will enable users to ${epicSpec.businessValue.toLowerCase()}.
   ): Promise<FeatureDocumentEntity[]> {
     // Create features based on epic scope
     const featureSpecs = [
-      { title: 'User Registration', type: 'ui', approach: 'React forms with validation' },
-      { title: 'Authentication API', type: 'api', approach: 'JWT-based REST endpoints' },
+      {
+        title: 'User Registration',
+        type: 'ui',
+        approach: 'React forms with validation',
+      },
+      {
+        title: 'Authentication API',
+        type: 'api',
+        approach: 'JWT-based REST endpoints',
+      },
       {
         title: 'User Profile Management',
         type: 'ui',

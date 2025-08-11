@@ -5,7 +5,7 @@
  * Tests the architecture and design decisions for Product Flow + SPARC integration
  */
 
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 import { nanoid } from 'nanoid';
 
 describe('Product Flow + SPARC Unit Tests', () => {

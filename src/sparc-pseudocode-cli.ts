@@ -10,7 +10,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import { getLogger } from './config/logging-config';
+import { getLogger } from './config/logging-config.ts';
 
 const logger = getLogger('sparc-pseudocode-cli');
 
@@ -32,7 +32,7 @@ program
     try {
       // Import the pseudocode engine dynamically
       const { PseudocodePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
       );
 
       const engine = new PseudocodePhaseEngine();
@@ -69,7 +69,7 @@ program
   .action(async (options) => {
     try {
       const { PseudocodePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
       );
 
       const engine = new PseudocodePhaseEngine();

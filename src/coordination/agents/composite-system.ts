@@ -3,7 +3,7 @@
  * Provides uniform interfaces for individual agents and agent groups.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('coordination-agents-composite-system');
 
@@ -654,7 +654,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
   getStatus(): CompositeStatus {
     const memberStatuses = Array.from(this.members.values()).map((member) => member.getStatus());
     const individualStatuses = memberStatuses.filter((s) => 'state' in s) as AgentStatus[];
-    const compositeStatuses = memberStatuses.filter((s) => 'memberCount' in s) as CompositeStatus[];
+    const compositeStatuses = memberStatuses.filter((s) => 'memberCount' in s);
 
     const activeMemberCount =
       individualStatuses.filter((s) => s.state !== 'offline').length +

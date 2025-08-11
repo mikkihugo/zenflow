@@ -4,9 +4,9 @@
  * Enables batch agent spawning, task distribution, and coordination.
  */
 
-import { getLogger } from '../../config/logging-config';
-import type { AgentType } from '../types';
-import type { BatchOperation } from './batch-engine';
+import { getLogger } from '../../config/logging-config.ts';
+import type { AgentType } from '../types.ts';
+import type { BatchOperation } from './batch-engine.ts';
 
 const logger = getLogger('SwarmBatch');
 

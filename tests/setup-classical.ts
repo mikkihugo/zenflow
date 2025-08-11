@@ -8,12 +8,12 @@
 
 import 'jest-extended';
 // Explicit import for ESM environment to ensure jest global is available
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // Classical TDD focuses on real implementations and state verification
 beforeEach(() => {
   // Minimal mocking - use real implementations when possible
-  jest.restoreAllMocks();
+  vi.restoreAllMocks();
 
   // Setup performance monitoring for algorithm testing
   setupPerformanceMonitoring();

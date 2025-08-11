@@ -9,10 +9,10 @@
  */
 
 import { Command } from 'commander';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 // Fixed imports - using actual existing modules
-import type { FeatureDocumentEntity, TaskDocumentEntity } from '../../types/shared-types';
+import type { FeatureDocumentEntity, TaskDocumentEntity } from '../../types/shared-types.ts';
 
 const logger = getLogger('SPARCSwarmCLI');
 
@@ -246,7 +246,7 @@ export function createSPARCSwarmCommands(): Command {
 
         // Import the pseudocode engine dynamically to avoid circular dependencies
         const { PseudocodePhaseEngine } = await import(
-          '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+          '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
         );
         const fs = await import('node:fs').then((m) => m.promises);
 
@@ -286,7 +286,7 @@ export function createSPARCSwarmCommands(): Command {
         logger.info('🔍 Validating pseudocode structure...');
 
         const { PseudocodePhaseEngine } = await import(
-          '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+          '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
         );
         const fs = await import('node:fs').then((m) => m.promises);
 
@@ -333,7 +333,7 @@ export function createSPARCSwarmCommands(): Command {
         logger.info('🧮 Generating algorithms from specification...');
 
         const { PseudocodePhaseEngine } = await import(
-          '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+          '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
         );
         const fs = await import('node:fs').then((m) => m.promises);
 
@@ -614,7 +614,7 @@ export function addArchitectureCommands(program: Command): void {
     .action(async (options) => {
       try {
         const { ArchitecturePhaseEngine } = await import(
-          '../../coordination/swarm/sparc/phases/architecture/architecture-engine'
+          '../../coordination/swarm/sparc/phases/architecture/architecture-engine.ts'
         );
         const fs = await import('node:fs').then((m) => m.promises);
 
@@ -687,7 +687,7 @@ export function addArchitectureCommands(program: Command): void {
     .action(async (options) => {
       try {
         const { ArchitecturePhaseEngine } = await import(
-          '../../coordination/swarm/sparc/phases/architecture/architecture-engine'
+          '../../coordination/swarm/sparc/phases/architecture/architecture-engine.ts'
         );
         const fs = await import('node:fs').then((m) => m.promises);
 
@@ -734,7 +734,7 @@ export function addArchitectureCommands(program: Command): void {
     .action(async (options) => {
       try {
         const { ArchitecturePhaseEngine } = await import(
-          '../../coordination/swarm/sparc/phases/architecture/architecture-engine'
+          '../../coordination/swarm/sparc/phases/architecture/architecture-engine.ts'
         );
         const fs = await import('node:fs').then((m) => m.promises);
 

@@ -140,9 +140,7 @@ export const Menu: React.FC<MenuProps> = ({
       {/* Main menu */}
       <Box flexGrow={1} paddingX={2}>
         <Box flexDirection="column" width="100%">
-          <Text bold>
-            Select an option:
-          </Text>
+          <Text bold>Select an option:</Text>
           <Box marginBottom={1} />
 
           <SelectInput

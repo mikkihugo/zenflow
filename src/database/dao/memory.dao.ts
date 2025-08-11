@@ -8,9 +8,9 @@
  * @file Database layer: memory.dao.
  */
 
-import { BaseDao } from '../base.dao';
+import { BaseDao } from '../base.dao.ts';
 import type { DatabaseAdapter, ILogger } from '../core/interfaces/base-interfaces';
-import type { CustomQuery, IMemoryRepository, MemoryStats } from '../interfaces';
+import type { CustomQuery, IMemoryRepository, MemoryStats } from '../interfaces.ts';
 
 /**
  * In-memory cache entry.

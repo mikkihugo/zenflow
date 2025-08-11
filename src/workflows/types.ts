@@ -5,15 +5,15 @@
 
 // Re-export all workflow-related types from the unified engine
 export type {
-  WorkflowStep,
-  WorkflowDefinition,
-  WorkflowContext,
-  WorkflowState,
-  WorkflowEngineConfig,
   DocumentContent,
   StepExecutionResult,
+  WorkflowContext,
   WorkflowData,
-} from './workflow-engine';
+  WorkflowDefinition,
+  WorkflowEngineConfig,
+  WorkflowState,
+  WorkflowStep,
+} from './workflow-engine.ts';
 
 // Additional workflow types for advanced functionality
 export interface WorkflowTemplate {
@@ -55,7 +55,13 @@ export interface WorkflowRegistry {
 
 // Event types for workflow orchestration
 export interface WorkflowEvent {
-  type: 'workflow.started' | 'workflow.completed' | 'workflow.failed' | 'step.started' | 'step.completed' | 'step.failed';
+  type:
+    | 'workflow.started'
+    | 'workflow.completed'
+    | 'workflow.failed'
+    | 'step.started'
+    | 'step.completed'
+    | 'step.failed';
   workflowId: string;
   stepIndex?: number;
   data?: Record<string, any>;

@@ -1,9 +1,9 @@
 describe('Auto-Swarm Integration', () => {
   it('should be able to import all required swarm components', async () => {
     // Test dynamic imports used in discover.ts
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync');
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api');
+    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
+    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
+    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
 
     expect(AutoSwarmFactory).toBeDefined();
     expect(HiveSwarmCoordinator).toBeDefined();
@@ -11,10 +11,10 @@ describe('Auto-Swarm Integration', () => {
   });
 
   it('should be able to create auto-swarm factory with all dependencies', async () => {
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync');
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api');
-    const { EventBus } = await import('../../core/event-bus');
+    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
+    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
+    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
+    const { EventBus } = await import('../../core/event-bus.ts');
 
     // Mock required dependencies
     const mockMemoryStore = {

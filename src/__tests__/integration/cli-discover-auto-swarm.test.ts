@@ -22,10 +22,10 @@ describe('CLI Discover Auto-Swarm Integration', () => {
 
   it('should be able to create auto-swarm infrastructure for CLI integration', async () => {
     // Test the exact imports and setup used in discover.ts
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync');
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api');
-    const { EventBus } = await import('../../core/event-bus');
+    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
+    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
+    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
+    const { EventBus } = await import('../../core/event-bus.ts');
 
     // Calculate resource constraints (same logic as discover.ts)
     const mockConfidenceResult = {
@@ -110,7 +110,7 @@ describe('CLI Discover Auto-Swarm Integration', () => {
   });
 
   it('should handle deployment verification', async () => {
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api');
+    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
 
     // Test deployment verification logic
     const swarmCoordinator = await createPublicSwarmCoordinator();

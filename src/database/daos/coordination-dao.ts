@@ -1,14 +1,14 @@
 /**
- * @deprecated Use CoordinationDao from '../dao/coordination.dao'.
+ * @deprecated Use CoordinationDao from '../dao/coordination.dao.ts';.
  * This shim will be removed after migration period.
  */
 /**
  * @file Database layer: coordination-dao.
  */
 
-export { CoordinationDao as CoordinationDAO } from '../dao/coordination.dao';
+export { CoordinationDao as CoordinationDAO } from '../dao/coordination.dao.ts';
 
-import type { Logger } from '../../config/logging-config';
+import type { Logger } from '../../config/logging-config.ts';
 
 interface CoordinationEvent<T = any> {
   type: string;

@@ -1,7 +1,7 @@
+import type { IncomingMessage, ServerResponse } from 'http';
 import { createMock } from 'ts-auto-mock'; // optional; if unavailable, replace with simple stubs
-import { IncomingMessage, ServerResponse } from 'http';
 // Import the actual auth middleware when available. Keep path aligned with your project layout.
-import { authMiddleware } from '../../../../../interfaces/api/http/middleware/auth';
+import { authMiddleware } from '../../../../../interfaces/api/http/middleware/auth.ts';
 
 type NextFunction = (err?: any) => void;
 
@@ -27,13 +27,13 @@ const makeRes = (): Res => {
   const res: Res = Object.assign(base as Res, {
     statusCode: 200,
     locals: {},
-    json: jest.fn(),
-    end: jest.fn(),
+    json: vi.fn(),
+    end: vi.fn(),
   });
   return res;
 };
 
-const makeNext = (): NextFunction => jest.fn();
+const makeNext = (): NextFunction => vi.fn();
 
 // Helper to run the middleware synchronously if it supports callback-next semantics
 const runMiddleware = async (req: Req, res: Res): Promise<{ next: jest.Mock; res: Res }> => {

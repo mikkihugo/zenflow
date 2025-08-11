@@ -5,14 +5,14 @@
  * Focus on interactions between orchestrator and its dependencies.
  */
 
-import type { AgentId } from '../../../types/agent-types';
-import { ConversationOrchestratorImpl } from '../orchestrator';
+import type { AgentId } from '../../../types/agent-types.ts';
+import { ConversationOrchestratorImpl } from '../orchestrator.ts';
 import type {
   ConversationConfig,
   ConversationMemory,
   ConversationMessage,
   ConversationSession,
-} from '../types';
+} from '../types.ts';
 
 describe('ConversationOrchestratorImpl - London TDD', () => {
   let orchestrator: ConversationOrchestratorImpl;
@@ -26,12 +26,12 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
   beforeEach(() => {
     // Mock the memory dependency
     mockMemory = {
-      storeConversation: jest.fn(),
-      getConversation: jest.fn(),
-      searchConversations: jest.fn(),
-      updateConversation: jest.fn(),
-      deleteConversation: jest.fn(),
-      getAgentConversationHistory: jest.fn(),
+      storeConversation: vi.fn(),
+      getConversation: vi.fn(),
+      searchConversations: vi.fn(),
+      updateConversation: vi.fn(),
+      deleteConversation: vi.fn(),
+      getAgentConversationHistory: vi.fn(),
     };
 
     orchestrator = new ConversationOrchestratorImpl(mockMemory);

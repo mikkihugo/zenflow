@@ -8,7 +8,7 @@
  * @file Interface implementation: web-html-generator.
  */
 
-import type { WebConfig } from './web-config';
+import type { WebConfig } from './web-config.ts';
 
 export class WebHtmlGenerator {
   private config: WebConfig;

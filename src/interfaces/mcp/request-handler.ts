@@ -8,7 +8,7 @@
  * @file Interface implementation: request-handler.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('MCP-RequestHandler');
 

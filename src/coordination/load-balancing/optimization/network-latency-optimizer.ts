@@ -6,7 +6,7 @@
  * @file Coordination system: network-latency-optimizer
  */
 
-import type { NetworkOptimizer } from '../interfaces';
+import type { NetworkOptimizer } from '../interfaces.ts';
 
 export class NetworkLatencyOptimizer implements NetworkOptimizer {
   private bandwidthMeasurements: Map<string, number> = new Map();

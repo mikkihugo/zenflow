@@ -5,15 +5,15 @@
  * Tests focus on interactions and behavior verification rather than state testing.
  */
 
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 // Mock types for testing CLI command processing
 interface MockCommandRegistry {
-  register: jest.Mock;
-  unregister: jest.Mock;
-  execute: jest.Mock;
-  has: jest.Mock;
-  list: jest.Mock;
+  register: vi.Mock;
+  unregister: vi.Mock;
+  execute: vi.Mock;
+  has: vi.Mock;
+  list: vi.Mock;
 }
 
 interface MockCommandContext {
@@ -30,18 +30,18 @@ interface MockCommandResult {
 }
 
 interface MockArgumentParser {
-  parse: jest.Mock;
-  validate: jest.Mock;
+  parse: vi.Mock;
+  validate: vi.Mock;
 }
 
 interface MockOutputFormatter {
-  format: jest.Mock;
-  setDefaults: jest.Mock;
+  format: vi.Mock;
+  setDefaults: vi.Mock;
 }
 
 interface MockErrorHandler {
-  handle: jest.Mock;
-  register: jest.Mock;
+  handle: vi.Mock;
+  register: vi.Mock;
 }
 
 describe('CLI Command Processing - TDD London', () => {

@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
 
 // Basic utility types
 export interface DependencyMapper {
@@ -1036,7 +1036,10 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
       return solution;
     } catch (error) {
-      this.logger.error('Collaborative problem solving failed', { problemId, error });
+      this.logger.error('Collaborative problem solving failed', {
+        problemId,
+        error,
+      });
       throw error;
     }
   }

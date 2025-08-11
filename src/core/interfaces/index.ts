@@ -39,7 +39,7 @@
  *
  * @see {@link WasmBindingInterface}
  */
-export { WasmBindingInterface } from '../../bindings/wasm-binding-interface';
+export { WasmBindingInterface } from '../../bindings/wasm-binding-interface.ts';
 /**
  * Swarm coordination and agent management interfaces.
  *
@@ -69,28 +69,7 @@ export {
   TaskPriority,
   TaskStatus,
   WasmModule,
-} from '../../coordination/swarm/core/types';
-/**
- * Database configuration and connection interfaces.
- *
- * Supports multiple database backends including PostgreSQL, SQLite,
- * MySQL, Kuzu (graph), and LanceDB (vector) databases.
- *
- * @see {@link DatabaseConfig} - Multi-backend database configuration
- */
-export { DatabaseConfig } from '../../database/providers/database-providers';
-/**
- * Memory management and caching interfaces.
- *
- * Provides abstractions for memory caching, session management,
- * and persistent storage with multiple backend support.
- *
- * @see {@link BackendInterface} - Pluggable storage backend interface
- * @see {@link CacheEntry} - Memory cache entry structure
- * @see {@link SessionState} - User session state management
- * @see {@link StorageResult} - Unified storage operation results
- */
-export { CacheEntry, SessionState } from '../../memory/memory';
+} from '../../coordination/swarm/core/types.ts';
 /**
  * Unified agent system interfaces and types.
  *
@@ -113,7 +92,28 @@ export {
   AgentType,
   ExecutionResult,
   Task,
-} from '../../coordination/types';
+} from '../../coordination/types.ts';
+/**
+ * Database configuration and connection interfaces.
+ *
+ * Supports multiple database backends including PostgreSQL, SQLite,
+ * MySQL, Kuzu (graph), and LanceDB (vector) databases.
+ *
+ * @see {@link DatabaseConfig} - Multi-backend database configuration
+ */
+export { DatabaseConfig } from '../../database/providers/database-providers.ts';
+/**
+ * Memory management and caching interfaces.
+ *
+ * Provides abstractions for memory caching, session management,
+ * and persistent storage with multiple backend support.
+ *
+ * @see {@link BackendInterface} - Pluggable storage backend interface
+ * @see {@link CacheEntry} - Memory cache entry structure
+ * @see {@link SessionState} - User session state management
+ * @see {@link StorageResult} - Unified storage operation results
+ */
+export { CacheEntry, SessionState } from '../../memory/memory.ts';
 /**
  * Event system interfaces for pub/sub messaging.
  *
@@ -122,13 +122,13 @@ export {
  *
  * @see {@link ../../types/event-types} - Complete event system types
  */
-export * from '../../types/event-types';
+export * from '../../types/event-types.ts';
 export {
   BackendInterface,
   BackendStats,
   JSONValue,
   StorageResult,
-} from '../memory-system';
+} from '../memory-system.ts';
 
 /**
  * Configuration interface for memory/storage backends.
@@ -171,4 +171,4 @@ export interface BackendConfig {
  *
  * @see {@link ./base-interfaces} - Fundamental interface definitions
  */
-export * from './base-interfaces';
+export * from './base-interfaces.ts';

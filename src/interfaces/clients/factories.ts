@@ -9,7 +9,7 @@
  * @file Interface implementation: factories.
  */
 
-import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
+import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces.ts';
 import type {
   ClientConfig,
   ClientHealthStatus,
@@ -21,8 +21,8 @@ import type {
   IKnowledgeClient,
   IMcpClient,
   IWebSocketClient,
-} from './interfaces';
-import type { ClientStatus, ClientType, ProtocolType } from './types';
+} from './interfaces.ts';
+import type { ClientStatus, ClientType, ProtocolType } from './types.ts';
 import {
   ClientConfigs,
   ClientErrorCodes,
@@ -30,7 +30,7 @@ import {
   ProtocolToClientTypeMap,
   ProtocolTypes,
   TypeGuards,
-} from './types';
+} from './types.ts';
 
 /**
  * Configuration for client creation.
@@ -465,20 +465,20 @@ export class UACLFactory {
 
     switch (clientType) {
       case ClientTypes.HTTP: {
-        const { HTTPClientFactory } = await import('./factories/http-client-factory');
+        const { HTTPClientFactory } = await import('./factories/http-client-factory.ts');
         FactoryClass = HTTPClientFactory as unknown as new (...args: any[]) => IClientFactory;
         break;
       }
 
       case ClientTypes.WEBSOCKET: {
-        const { WebSocketClientFactory } = await import('./adapters/websocket-client-factory');
+        const { WebSocketClientFactory } = await import('./adapters/websocket-client-factory.ts');
         FactoryClass = WebSocketClientFactory as unknown as new (...args: any[]) => IClientFactory;
         break;
       }
 
       case ClientTypes.KNOWLEDGE: {
         const { KnowledgeClientFactory } = await import(
-          './implementations/knowledge-client-factory'
+          './implementations/knowledge-client-factory.ts'
         );
         FactoryClass = KnowledgeClientFactory as unknown as new (...args: any[]) => IClientFactory;
         break;

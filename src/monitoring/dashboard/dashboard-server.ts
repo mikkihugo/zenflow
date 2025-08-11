@@ -12,10 +12,10 @@ import * as path from 'node:path';
 import express from 'express';
 import { Server as SocketIOServer } from 'socket.io';
 import { getConfig } from '../../config';
-import type { PerformanceInsights } from '../analytics/performance-analyzer';
+import type { PerformanceInsights } from '../analytics/performance-analyzer.ts';
 import { getCORSOrigins } from '../config/url-builder';
-import type { CompositeMetrics } from '../core/metrics-collector';
-import type { OptimizationResult } from '../optimization/optimization-engine';
+import type { CompositeMetrics } from '../core/metrics-collector.ts';
+import type { OptimizationResult } from '../optimization/optimization-engine.ts';
 
 export interface DashboardConfig {
   port: number;

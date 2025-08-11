@@ -13,7 +13,7 @@
 
 import 'jest-extended';
 // Explicit import for ESM environment to ensure jest global is available
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 /**
  * Hybrid TDD Configuration
@@ -45,7 +45,7 @@ const HYBRID_CONFIG: HybridTDDConfig = {
 // Domain-specific test setup
 beforeEach(() => {
   // Common setup for all domains
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   // Setup based on test file path
   const testPath = expect.getState().testPath || '';
@@ -71,7 +71,7 @@ afterEach(() => {
     cleanupClassicalResources();
   }
 
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 /**
@@ -80,11 +80,11 @@ afterEach(() => {
  */
 function setupLondonTDD() {
   // Mock timers for deterministic coordination testing
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 
   // Setup interaction spies
   createInteractionSpy = (name: string) => {
-    return jest.fn().mockName(name);
+    return vi.fn().mockName(name);
   };
 
   // Mock factory for complex coordination objects
@@ -247,10 +247,10 @@ function cleanupClassicalResources() {
  */
 (globalThis as any).createTestContainer = () => {
   const mockContainer = {
-    register: jest.fn(),
-    resolve: jest.fn(),
-    createScope: jest.fn(),
-    dispose: jest.fn(),
+    register: vi.fn(),
+    resolve: vi.fn(),
+    createScope: vi.fn(),
+    dispose: vi.fn(),
   };
 
   return mockContainer;
@@ -282,7 +282,7 @@ interface MemoryTestScenario {
   /** Test configuration */
   config: unknown;
   /** Mock methods */
-  mocks: Record<string, jest.Mock>;
+  mocks: Record<string, vi.Mock>;
 }
 
 /**
@@ -292,11 +292,11 @@ interface MemoryTestScenario {
  */
 interface TestContainer {
   /** Register a service */
-  register: jest.Mock;
+  register: vi.Mock;
   /** Resolve a service */
-  resolve: jest.Mock;
+  resolve: vi.Mock;
   /** Dispose container */
-  dispose: jest.Mock;
+  dispose: vi.Mock;
 }
 
 /**
@@ -346,7 +346,7 @@ declare global {
   namespace NodeJS {
     interface Global {
       // London TDD utilities
-      createInteractionSpy(name: string): jest.Mock;
+      createInteractionSpy(name: string): vi.Mock;
       createCoordinationMock<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
 
       // Classical TDD utilities

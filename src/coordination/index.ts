@@ -12,10 +12,10 @@
 export * from './diagnostics';
 
 // Export core coordination components
-export { Orchestrator } from './orchestrator';
+export { Orchestrator } from './orchestrator.ts';
 // Export public API for external access
-export * from './public-api';
-export { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy';
+export * from './public-api.ts';
+export { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy.ts';
 // Export SPARC methodology for swarm implementation
-export * from './swarm/sparc/index';
-export * from './types';
+export * from './swarm/sparc/index.ts';
+export * from './types.ts';

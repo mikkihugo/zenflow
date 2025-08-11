@@ -13,8 +13,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../config/logging-config';
-import { getLogger } from '../../../config/logging-config';
+import type { Logger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config.ts';
 import {
   ClaudeZenFacade,
   type IDatabaseService,
@@ -23,12 +23,12 @@ import {
   type INeuralService,
   type ISwarmService,
   type IWorkflowService,
-} from '../../../core/facade';
+} from '../../../core/facade.ts';
 import {
   ConfigurationFactory,
   IntegratedPatternSystem,
   type IntegrationConfig,
-} from '../../../core/pattern-integration';
+} from '../../../core/pattern-integration.ts';
 import type {
   IService,
   ServiceDependencyConfig,
@@ -39,8 +39,8 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '../core/interfaces';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+} from '../core/interfaces.ts';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../types.ts';
 
 // Define ServiceError locally if not available in types
 class ServiceError extends Error {
@@ -53,7 +53,7 @@ class ServiceError extends Error {
   }
 }
 
-import type { InfrastructureServiceConfig } from '../types';
+import type { InfrastructureServiceConfig } from '../types.ts';
 
 // Error classes for infrastructure service operations
 class ServiceDependencyError extends Error {

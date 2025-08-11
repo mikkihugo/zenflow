@@ -7,9 +7,9 @@
  * @file Event Registry Implementation following UACL/USL patterns.
  */
 
-import type { ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
+import type { ILogger } from '../../core/interfaces/base-interfaces.ts';
+import { inject, injectable } from '../../di/decorators/injectable.ts';
+import { CORE_TOKENS } from '../../di/tokens/core-tokens.ts';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -19,9 +19,9 @@ import type {
   IEventManagerFactory,
   IEventManagerRegistry,
   SystemEvent,
-} from './core/interfaces';
-import { EventManagerTypes } from './core/interfaces';
-import { EventCategories, EventPriorityMap } from './types';
+} from './core/interfaces.ts';
+import { EventManagerTypes } from './core/interfaces.ts';
+import { EventCategories, EventPriorityMap } from './types.ts';
 
 /**
  * Registry entry for managing event manager instances and their lifecycle.

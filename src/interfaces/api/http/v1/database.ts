@@ -9,17 +9,17 @@
  */
 
 import { type NextFunction, type Request, type Response, Router } from 'express';
-import { checkDatabaseContainerHealth, getDatabaseController } from '../di/database-container';
-import { authMiddleware, hasPermission, optionalAuthMiddleware } from '../middleware/auth';
-import { asyncHandler, createInternalError, createValidationError } from '../middleware/errors';
-import { LogLevel, log, logPerformance } from '../middleware/logging';
+import { checkDatabaseContainerHealth, getDatabaseController } from '../di/database-container.ts';
+import { authMiddleware, hasPermission, optionalAuthMiddleware } from '../middleware/auth.ts';
+import { asyncHandler, createInternalError, createValidationError } from '../middleware/errors.ts';
+import { LogLevel, log, logPerformance } from '../middleware/logging.ts';
 import {
   adminOperationsLimiter,
   heavyOperationsLimiter,
   lightOperationsLimiter,
   mediumOperationsLimiter,
   rateLimitInfoMiddleware,
-} from '../middleware/rate-limit';
+} from '../middleware/rate-limit.ts';
 
 // Type definitions for request/response interfaces
 interface QueryRequest {
@@ -84,7 +84,7 @@ function getDatabaseControllerInstance() {
  * @example
  */
 function validateQueryRequest(req: Request): QueryRequest {
-  const { sql, params, options } = req.body as any;
+  const { sql, params, options } = req.body;
 
   if (!sql || typeof sql !== 'string') {
     throw createValidationError('sql', sql, 'SQL query is required and must be a string');
@@ -98,7 +98,7 @@ function validateQueryRequest(req: Request): QueryRequest {
 }
 
 function validateCommandRequest(req: Request): CommandRequest {
-  const { sql, params, options } = req.body as any;
+  const { sql, params, options } = req.body;
 
   if (!sql || typeof sql !== 'string') {
     throw createValidationError('sql', sql, 'SQL command is required and must be a string');
@@ -112,7 +112,7 @@ function validateCommandRequest(req: Request): CommandRequest {
 }
 
 function validateBatchRequest(req: Request): BatchRequest {
-  const { operations, useTransaction, continueOnError } = req.body as any;
+  const { operations, useTransaction, continueOnError } = req.body;
 
   if (!Array.isArray(operations) || operations.length === 0) {
     throw createValidationError(
@@ -149,7 +149,7 @@ function validateBatchRequest(req: Request): BatchRequest {
 }
 
 function validateMigrationRequest(req: Request): MigrationRequest {
-  const { statements, version, description, dryRun } = req.body as any;
+  const { statements, version, description, dryRun } = req.body;
 
   if (!Array.isArray(statements) || statements.length === 0) {
     throw createValidationError(

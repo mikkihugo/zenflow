@@ -3,7 +3,7 @@
  * Provides protocol adaptation and legacy system integration.
  */
 
-import { getLogger } from '../core/logger';
+import { getLogger } from '../core/logger.ts';
 
 const logger = getLogger('src-integration-adapter-system');
 
@@ -451,7 +451,9 @@ export class WebSocketAdapter implements ProtocolAdapter {
       );
 
       // This would be properly implemented with response tracking
-      this.connection?.addEventListener('message', responseHandler, { once: true });
+      this.connection?.addEventListener('message', responseHandler, {
+        once: true,
+      });
     });
   }
 
@@ -837,12 +839,18 @@ export class LegacySystemAdapter implements ProtocolAdapter {
 
   private async connectSOAP(config: ConnectionConfig): Promise<void> {
     // SOAP connection implementation
-    this.connection = { type: 'soap', endpoint: `${config?.host}:${config?.port}` };
+    this.connection = {
+      type: 'soap',
+      endpoint: `${config?.host}:${config?.port}`,
+    };
   }
 
   private async connectXMLRPC(config: ConnectionConfig): Promise<void> {
     // XML-RPC connection implementation
-    this.connection = { type: 'xmlrpc', endpoint: `${config?.host}:${config?.port}` };
+    this.connection = {
+      type: 'xmlrpc',
+      endpoint: `${config?.host}:${config?.port}`,
+    };
   }
 
   private async connectTCP(config: ConnectionConfig): Promise<void> {
@@ -931,7 +939,11 @@ export class ProtocolManager extends EventEmitter {
     await adapter.connect(config);
 
     this.adapters.set(name, adapter);
-    this.emit('protocol:added', { name, protocol, capabilities: adapter.getCapabilities() });
+    this.emit('protocol:added', {
+      name,
+      protocol,
+      capabilities: adapter.getCapabilities(),
+    });
   }
 
   async removeProtocol(name: string): Promise<void> {
@@ -1004,8 +1016,12 @@ export class ProtocolManager extends EventEmitter {
     connected: boolean;
     healthy: boolean;
   }> {
-    const status: Array<{ name: string; protocol: string; connected: boolean; healthy: boolean }> =
-      [];
+    const status: Array<{
+      name: string;
+      protocol: string;
+      connected: boolean;
+      healthy: boolean;
+    }> = [];
 
     for (const [name, adapter] of this.adapters) {
       status.push({

@@ -6,8 +6,8 @@
  * @file Swarm-optimizer implementation.
  */
 
-import { getLogger } from '../../config/logging-config';
-import type { SwarmOptimizer } from '../interfaces/optimization-interfaces';
+import { getLogger } from '../../config/logging-config.ts';
+import type { SwarmOptimizer } from '../interfaces/optimization-interfaces.ts';
 
 export interface SwarmOptimizationConfig {
   maxAgents: number;

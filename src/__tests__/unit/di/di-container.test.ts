@@ -15,7 +15,7 @@ import {
   SingletonProvider,
   SWARM_TOKENS,
   TransientProvider,
-} from '../../../di/index';
+} from '../../../di/index.ts';
 
 describe('DI Container - Core Functionality', () => {
   let container: DIContainer;
@@ -162,7 +162,7 @@ describe('DI Container - Core Functionality', () => {
         disposed = false;
       }
 
-      const disposeFn = jest.fn(async (instance: MockDisposableService) => {
+      const disposeFn = vi.fn(async (instance: MockDisposableService) => {
         instance.disposed = true;
       });
 
@@ -186,7 +186,7 @@ describe('DI Container - Core Functionality', () => {
         disposed = false;
       }
 
-      const disposeFn = jest.fn(async (instance: MockDisposableService) => {
+      const disposeFn = vi.fn(async (instance: MockDisposableService) => {
         instance.disposed = true;
       });
 

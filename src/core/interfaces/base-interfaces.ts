@@ -8,7 +8,7 @@
  */
 
 // Re-export core token interfaces for consistency
-export { IConfig, IDatabase, IEventBus, ILogger } from '../../di/tokens/core-tokens';
+export { IConfig, IDatabase, IEventBus, ILogger } from '../../di/tokens/core-tokens.ts';
 
 /**
  * Base database adapter interface that all database implementations must follow.

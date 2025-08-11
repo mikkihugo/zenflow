@@ -5,7 +5,7 @@
  * Focus on interactions between orchestrator and its dependencies
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { ConversationOrchestratorImpl } from '../../../src/intelligence/conversation-framework/orchestrator';
 import type {
   ConversationConfig,
@@ -17,7 +17,7 @@ import type { AgentId } from '../../../src/types/agent-types';
 
 describe('ConversationOrchestratorImpl - London TDD', () => {
   let orchestrator: ConversationOrchestratorImpl;
-  let mockMemory: jest.Mocked<ConversationMemory>;
+  let mockMemory: vi.Mocked<ConversationMemory>;
 
   const sampleAgents: AgentId[] = [
     { id: 'agent-1', swarmId: 'swarm-1', type: 'coder', instance: 0 },
@@ -27,12 +27,12 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
   beforeEach(() => {
     // Mock the memory dependency
     mockMemory = {
-      storeConversation: jest.fn(),
-      getConversation: jest.fn(),
-      searchConversations: jest.fn(),
-      updateConversation: jest.fn(),
-      deleteConversation: jest.fn(),
-      getAgentConversationHistory: jest.fn(),
+      storeConversation: vi.fn(),
+      getConversation: vi.fn(),
+      searchConversations: vi.fn(),
+      updateConversation: vi.fn(),
+      deleteConversation: vi.fn(),
+      getAgentConversationHistory: vi.fn(),
     };
 
     orchestrator = new ConversationOrchestratorImpl(mockMemory);

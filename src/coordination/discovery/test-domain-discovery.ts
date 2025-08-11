@@ -2,9 +2,7 @@
  * @file Test suite for test-domain-discovery
  */
 
-#
-!/usr/bin / env;
-node;
+// #!/usr/bin/env node
 
 /**
  * Test script for Domain Discovery Bridge.
@@ -22,15 +20,15 @@ node;
  * ```
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 import { DocumentProcessor } from '../core/document-processor';
-import { EventBus } from '../core/event-bus';
+import { EventBus } from '../core/event-bus.ts';
 import { MemorySystem } from '../core/memory-system';
 import { WorkflowEngine } from '../core/workflow-engine';
 import { IntelligenceCoordinationSystem } from '../knowledge/intelligence-coordination-system';
 import ProjectContextAnalyzer from '../knowledge/project-context-analyzer';
 import { DomainAnalysisEngine } from '../tools/domain-splitting/analyzers/domain-analyzer';
-import { DomainDiscoveryBridge } from './domain-discovery-bridge';
+import { DomainDiscoveryBridge } from './domain-discovery-bridge.ts';
 
 const logger = getLogger('DomainDiscoveryTest');
 

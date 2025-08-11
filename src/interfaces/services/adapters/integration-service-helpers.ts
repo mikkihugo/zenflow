@@ -9,13 +9,13 @@
  * @file Interface implementation: integration-service-helpers.
  */
 
-import { getLogger } from '../../../config/logging-config';
-import type { ArchitectureDesign } from '../../../types/shared-types';
+import { getLogger } from '../../../config/logging-config.ts';
+import type { ArchitectureDesign } from '../../../types/shared-types.ts';
 import type { APIResult } from '../../types/shared-types';
 import type {
   IntegrationServiceAdapter,
   IntegrationServiceAdapterConfig,
-} from './integration-service-adapter';
+} from './integration-service-adapter.ts';
 
 /**
  * Integration operation result type.
@@ -237,7 +237,7 @@ export class IntegrationServiceHelper {
         results.push(...batchResults);
       }
 
-      const successfulResults = results.filter((r) => r !== null) as string[];
+      const successfulResults = results.filter((r) => r !== null);
 
       return {
         success: errors.length === 0 || !failFast,
@@ -1063,7 +1063,7 @@ export class IntegrationServiceUtils {
     const successCount = results.filter((r) => r.success).length;
     const errorCount = totalOperations - successCount;
 
-    const latencies = results.filter((r) => r.metadata?.duration).map((r) => r.metadata!.duration!);
+    const latencies = results.filter((r) => r.metadata?.duration).map((r) => r.metadata!.duration);
 
     const averageLatency =
       latencies.length > 0

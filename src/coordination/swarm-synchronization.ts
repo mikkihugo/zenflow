@@ -9,8 +9,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
-import type { AgentState } from '../types/agent-types';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { AgentState } from '../types/agent-types.ts';
 
 export interface SwarmSyncConfig {
   syncInterval: number; // Milliseconds between sync cycles
@@ -98,7 +98,9 @@ export class SwarmSynchronizer extends EventEmitter {
    * Start synchronization processes.
    */
   async start(): Promise<void> {
-    this.logger?.info('Starting swarm synchronization', { swarmId: this.swarmId });
+    this.logger?.info('Starting swarm synchronization', {
+      swarmId: this.swarmId,
+    });
 
     // Initialize vector clock
     this.vectorClock[this.swarmId] = 0;
@@ -122,7 +124,9 @@ export class SwarmSynchronizer extends EventEmitter {
    * Stop synchronization processes.
    */
   async stop(): Promise<void> {
-    this.logger?.info('Stopping swarm synchronization', { swarmId: this.swarmId });
+    this.logger?.info('Stopping swarm synchronization', {
+      swarmId: this.swarmId,
+    });
 
     if (this.syncTimer) {
       clearInterval(this.syncTimer);
@@ -364,7 +368,9 @@ export class SwarmSynchronizer extends EventEmitter {
       const agentState = this.agentStates.get(agentId);
       if (agentState) {
         agentState.status = 'offline';
-        this.logger?.warn('Agent marked as offline due to missed heartbeats', { agentId });
+        this.logger?.warn('Agent marked as offline due to missed heartbeats', {
+          agentId,
+        });
       }
     }
 
@@ -453,7 +459,10 @@ export class SwarmSynchronizer extends EventEmitter {
   private updateAgentState(agentId: string, newState: unknown): void {
     const currentState = this.agentStates.get(agentId);
     if (currentState && typeof newState === 'object' && newState !== null) {
-      const updatedState = { ...currentState, ...(newState as Partial<AgentState>) };
+      const updatedState = {
+        ...currentState,
+        ...(newState as Partial<AgentState>),
+      };
       this.agentStates.set(agentId, updatedState);
 
       // Increment vector clock for this update
@@ -498,7 +507,10 @@ export class SwarmSynchronizer extends EventEmitter {
     globalState: SwarmGlobalState
   ): string {
     const crypto = require('node:crypto');
-    const data = JSON.stringify({ agentStates: Array.from(agentStates.entries()), globalState });
+    const data = JSON.stringify({
+      agentStates: Array.from(agentStates.entries()),
+      globalState,
+    });
     return crypto.createHash('sha256').update(data).digest('hex');
   }
 
@@ -509,7 +521,10 @@ export class SwarmSynchronizer extends EventEmitter {
         await this.applyStateChange(change);
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        this.logger?.error('Failed to apply state change', { change, error: errorMessage });
+        this.logger?.error('Failed to apply state change', {
+          change,
+          error: errorMessage,
+        });
       }
     }
   }

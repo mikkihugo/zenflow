@@ -7,8 +7,8 @@
  * - Classical TDD (30%): Test actual computation and data transformation.
  */
 
-import { type ProtocolType } from '../../../../types/protocol-types';
-import { ProtocolTypes } from '../../types';
+import type { ProtocolType } from '../../../../types/protocol-types.ts';
+import { ProtocolTypes } from '../../types.ts';
 import {
   createCustomKnowledgeClient,
   createFACTClient,
@@ -18,21 +18,21 @@ import {
   KnowledgeHelpers,
   type KnowledgeRequest,
   type KnowledgeResponse,
-} from '../knowledge-client-adapter';
+} from '../knowledge-client-adapter.ts';
 
 // Mock the FACT integration
 jest.mock('../../../../knowledge/knowledge-client', () => {
   const mockFACTIntegration = {
-    initialize: jest.fn().mockResolvedValue(undefined),
-    shutdown: jest.fn().mockResolvedValue(undefined),
-    query: jest.fn(),
-    getMetrics: jest.fn(),
-    on: jest.fn(),
-    emit: jest.fn(),
+    initialize: vi.fn().mockResolvedValue(undefined),
+    shutdown: vi.fn().mockResolvedValue(undefined),
+    query: vi.fn(),
+    getMetrics: vi.fn(),
+    on: vi.fn(),
+    emit: vi.fn(),
   };
 
   return {
-    FACTIntegration: jest.fn().mockImplementation(() => mockFACTIntegration),
+    FACTIntegration: vi.fn().mockImplementation(() => mockFACTIntegration),
     __mockFACTIntegration: mockFACTIntegration,
   };
 });
@@ -123,8 +123,8 @@ describe('KnowledgeClientAdapter', () => {
       });
 
       it('should emit connection events', async () => {
-        const connectSpy = jest.fn();
-        const disconnectSpy = jest.fn();
+        const connectSpy = vi.fn();
+        const disconnectSpy = vi.fn();
 
         knowledgeClient.on('connect', connectSpy);
         knowledgeClient.on('disconnect', disconnectSpy);
@@ -140,7 +140,7 @@ describe('KnowledgeClientAdapter', () => {
         const error = new Error('Connection failed');
         __mockFACTIntegration.initialize.mockRejectedValueOnce(error);
 
-        const errorSpy = jest.fn();
+        const errorSpy = vi.fn();
         knowledgeClient.on('error', errorSpy);
 
         await expect(knowledgeClient.connect()).rejects.toThrow('Connection failed');
@@ -693,8 +693,8 @@ describe('KnowledgeHelpers', () => {
 
   beforeEach(() => {
     mockClient = {
-      query: jest.fn(),
-      search: jest.fn(),
+      query: vi.fn(),
+      search: vi.fn(),
     } as any;
   });
 

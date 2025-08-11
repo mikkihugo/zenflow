@@ -20,7 +20,7 @@ class JSDocFixer {
   }
 
   async fix() {
-    console.log('🔧 Auto-Fixing JSDoc Violations...');
+    // console.log('🔧 Auto-Fixing JSDoc Violations...');
 
     // Find all TypeScript files
     const pattern = path.join(this.baseDir, '**/*.{ts,tsx}');
@@ -28,21 +28,21 @@ class JSDocFixer {
       ignore: ['**/node_modules/**', '**/dist/**', '**/*.d.ts', '**/__tests__/**', '**/tests/**'],
     });
 
-    console.log(`📁 Found ${files.length} TypeScript files to check`);
+    // console.log(`📁 Found ${files.length} TypeScript files to check`);
 
     // Process each file
     for (const filePath of files) {
       await this.fixJSDocInFile(filePath);
     }
 
-    console.log(`\n✅ JSDoc fixing complete:`);
-    console.log(`   📝 Fixed ${this.fixedFiles.length} files`);
+    // console.log(`\n✅ JSDoc fixing complete:`);
+    // console.log(`   📝 Fixed ${this.fixedFiles.length} files`);
 
     if (this.fixedFiles.length > 0) {
-      console.log(`\n📋 Fixed files:`);
+      // console.log(`\n📋 Fixed files:`);
       this.fixedFiles.forEach((file) => {
         const relative = path.relative(this.baseDir, file.path);
-        console.log(`   • ${relative} (${file.changes.join(', ')})`);
+        // console.log(`   • ${relative} (${file.changes.join(', ')})`);
       });
     }
   }
@@ -293,19 +293,19 @@ async function main() {
     const fixer = new JSDocFixer();
     await fixer.fix();
 
-    console.log('\n🎉 JSDoc fixing complete!');
-    console.log('\n💡 Benefits:');
-    console.log('   • Added file overview comments to files missing @file');
-    console.log('   • Fixed incomplete sentence descriptions');
-    console.log('   • Added missing parameter descriptions');
-    console.log('   • Added missing return value descriptions');
+    // console.log('\n🎉 JSDoc fixing complete!');
+    // console.log('\n💡 Benefits:');
+    // console.log('   • Added file overview comments to files missing @file');
+    // console.log('   • Fixed incomplete sentence descriptions');
+    // console.log('   • Added missing parameter descriptions');
+    // console.log('   • Added missing return value descriptions');
 
-    console.log('\n🔧 Next steps:');
-    console.log('   1. Run ESLint to verify JSDoc violations are fixed');
-    console.log('   2. Review generated descriptions and improve if needed');
-    console.log('   3. Add @example blocks for complex functions');
+    // console.log('\n🔧 Next steps:');
+    // console.log('   1. Run ESLint to verify JSDoc violations are fixed');
+    // console.log('   2. Review generated descriptions and improve if needed');
+    // console.log('   3. Add @example blocks for complex functions');
   } catch (error) {
-    console.error('❌ JSDoc fixing failed:', error.message);
+    // console.error('❌ JSDoc fixing failed:', error.message);
     process.exit(1);
   }
 }

@@ -17,8 +17,9 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-system';
+import { getLogger } from '../../config/logging-config.ts';
+import type { MemorySystem } from '../../core/memory-system.ts';
+import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
 import type {
   ADRDocumentEntity,
   EpicDocumentEntity,
@@ -26,8 +27,12 @@ import type {
   PRDDocumentEntity,
   TaskDocumentEntity,
   VisionDocumentEntity,
-} from '../../database/entities/product-entities';
-import type { DocumentManager } from '../../database/managers/document-manager';
+} from '../../database/entities/product-entities.ts';
+import type { DocumentManager } from '../../database/managers/document-manager.ts';
+import {
+  WorkflowAGUIAdapter,
+  type WorkflowAGUIConfig,
+} from '../../interfaces/agui/workflow-agui-adapter.ts';
 import type {
   StepExecutionResult,
   WorkflowContext,
@@ -35,31 +40,26 @@ import type {
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
-} from '../../workflows/types';
-import type {
-  WorkflowGateRequest,
-  WorkflowGateResult,
-  WorkflowContext as GateWorkflowContext,
-  GateEscalationLevel
-} from '../workflows/workflow-gate-request';
-import { 
-  WorkflowAGUIAdapter,
-  type WorkflowAGUIConfig 
-} from '../../interfaces/agui/workflow-agui-adapter';
-import type {
-  WorkflowHumanGate,
-  WorkflowHumanGateType,
-  WorkflowGatePriority,
-  WorkflowGateContext,
-  WorkflowGateData
-} from './workflow-gates';
-import { TypeSafeEventBus } from '../../core/type-safe-event-system';
-import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine';
+} from '../../workflows/types.ts';
+import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine.ts';
 import type {
   ProjectSpecification,
   SPARCPhase,
   SPARCProject,
-} from '../swarm/sparc/types/sparc-types';
+} from '../swarm/sparc/types/sparc-types.ts';
+import type {
+  GateEscalationLevel,
+  WorkflowContext as GateWorkflowContext,
+  WorkflowGateRequest,
+  WorkflowGateResult,
+} from '../workflows/workflow-gate-request.ts';
+import type {
+  WorkflowGateContext,
+  WorkflowGateData,
+  WorkflowGatePriority,
+  WorkflowHumanGate,
+  WorkflowHumanGateType,
+} from './workflow-gates.ts';
 
 // Define missing types locally
 type WorkflowStatus = 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
@@ -107,7 +107,7 @@ interface WorkflowStepState {
 }
 
 // Import WorkflowStep from workflow-types
-import type { WorkflowStep } from '../../workflows/types';
+import type { WorkflowStep } from '../../workflows/types.ts';
 
 const logger = getLogger('ProductWorkflow');
 
@@ -228,23 +228,25 @@ export class ProductWorkflowEngine extends EventEmitter {
     this.documentService = documentService;
     this.eventBus = eventBus;
     this.sparcEngine = new SPARCEngineCore();
-    
+
     // Initialize AGUI adapter with default config if not provided
-    this.aguiAdapter = aguiAdapter || new WorkflowAGUIAdapter(eventBus, {
-      enableRichPrompts: true,
-      enableDecisionLogging: true,
-      enableTimeoutHandling: true,
-      enableEscalationManagement: true,
-      auditRetentionDays: 90,
-      maxAuditRecords: 10000,
-      timeoutConfig: {
-        initialTimeout: 300000, // 5 minutes
-        escalationTimeouts: [600000, 1200000, 1800000], // 10, 20, 30 minutes
-        maxTotalTimeout: 3600000, // 1 hour
-        enableAutoEscalation: true,
-        notifyOnTimeout: true
-      }
-    });
+    this.aguiAdapter =
+      aguiAdapter ||
+      new WorkflowAGUIAdapter(eventBus, {
+        enableRichPrompts: true,
+        enableDecisionLogging: true,
+        enableTimeoutHandling: true,
+        enableEscalationManagement: true,
+        auditRetentionDays: 90,
+        maxAuditRecords: 10000,
+        timeoutConfig: {
+          initialTimeout: 300000, // 5 minutes
+          escalationTimeouts: [600000, 1200000, 1800000], // 10, 20, 30 minutes
+          maxTotalTimeout: 3600000, // 1 hour
+          enableAutoEscalation: true,
+          notifyOnTimeout: true,
+        },
+      });
     this.config = {
       enableSPARCIntegration: true,
       sparcDomainMapping: {
@@ -550,19 +552,22 @@ export class ProductWorkflowEngine extends EventEmitter {
    */
   private async integrateSPARCForFeatures(workflow: ProductWorkflowState): Promise<void> {
     logger.info('🔧 Integrating SPARC methodology for feature implementation');
-    
+
     // Check for gate before SPARC integration
     const shouldOpenGate = await this.shouldExecuteGate('sparc-integration', workflow);
     if (shouldOpenGate) {
       const gateResult = await this.executeWorkflowGate('sparc-integration', workflow, {
-        question: 'Should we proceed with SPARC methodology integration for technical implementation?',
+        question:
+          'Should we proceed with SPARC methodology integration for technical implementation?',
         businessImpact: 'critical',
         stakeholders: ['technical-lead', 'architect', 'product-manager'],
-        gateType: 'approval'
+        gateType: 'approval',
       });
-      
+
       if (!gateResult.approved) {
-        throw new Error('SPARC integration gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+        throw new Error(
+          'SPARC integration gate rejected: ' + (gateResult.error?.message || 'Unknown reason')
+        );
       }
     }
 
@@ -726,18 +731,249 @@ export class ProductWorkflowEngine extends EventEmitter {
    * @param feature
    */
   private assessFeatureComplexity(feature: FeatureDocumentEntity): any {
-    // Simple heuristic - in production this would be more sophisticated
+    // Production-ready sophisticated complexity assessment using multiple dimensions
+    try {
+      const complexityScore = this.calculateComplexityScore(feature);
+      const weights = {
+        acceptance_criteria: 0.3,
+        dependencies: 0.2,
+        technical_risk: 0.2,
+        business_impact: 0.15,
+        estimation_confidence: 0.15
+      };
+
+      const dimensions = {
+        acceptance_criteria: this.assessCriteriaComplexity(feature.acceptance_criteria),
+        dependencies: this.assessDependencyComplexity(feature),
+        technical_risk: this.assessTechnicalRisk(feature),
+        business_impact: this.assessBusinessImpact(feature),
+        estimation_confidence: this.assessEstimationConfidence(feature)
+      };
+
+      // Calculate weighted complexity score
+      const weightedScore = Object.entries(dimensions).reduce(
+        (acc, [dimension, score]) => acc + (score * weights[dimension as keyof typeof weights]),
+        0
+      );
+
+      // Determine complexity level with thresholds
+      let level: string;
+      let risk: string;
+      
+      if (weightedScore <= 30) {
+        level = 'simple';
+        risk = 'low';
+      } else if (weightedScore <= 60) {
+        level = 'moderate';
+        risk = 'medium';
+      } else if (weightedScore <= 80) {
+        level = 'high';
+        risk = 'high';
+      } else {
+        level = 'complex';
+        risk = 'critical';
+      }
+
+      const result = {
+        level,
+        risk,
+        score: Math.round(weightedScore),
+        dimensions,
+        recommendations: this.generateComplexityRecommendations(weightedScore, dimensions),
+        metadata: {
+          criteria_count: feature.acceptance_criteria.length,
+          estimated_effort_hours: this.estimateEffortHours(weightedScore),
+          suggested_team_size: this.suggestTeamSize(weightedScore),
+          breakdowns_recommended: weightedScore > 70
+        }
+      };
+
+      logger.debug(`Feature complexity assessed: ${feature.title}`, result);
+      
+      return result;
+
+    } catch (error) {
+      logger.error('Error in feature complexity assessment:', error);
+      
+      // Fallback to simple heuristic
+      const criteriaCount = feature.acceptance_criteria.length;
+      if (criteriaCount <= 2) return { level: 'simple', score: 25 };
+      if (criteriaCount <= 5) return { level: 'moderate', score: 50 };
+      if (criteriaCount <= 10) return { level: 'high', score: 75 };
+      return { level: 'complex', score: 90 };
+    }
+  }
+
+  private calculateComplexityScore(feature: FeatureDocumentEntity): number {
+    // Base complexity from acceptance criteria
+    let score = Math.min(50, feature.acceptance_criteria.length * 5);
+    
+    // Add complexity from feature description length and technical terms
+    const description = `${feature.title} ${feature.description || ''}`;
+    const technicalTerms = this.countTechnicalTerms(description);
+    score += Math.min(20, technicalTerms * 2);
+    
+    // Add complexity from integration requirements
+    if (description.toLowerCase().includes('api') || description.toLowerCase().includes('integration')) {
+      score += 15;
+    }
+    
+    return score;
+  }
+
+  private assessCriteriaComplexity(criteria: string[]): number {
+    if (criteria.length === 0) return 0;
+    
+    let complexity = Math.min(80, criteria.length * 8);
+    
+    // Analyze criteria content for complexity indicators
+    const complexityKeywords = [
+      'integration', 'api', 'security', 'performance', 'scalability',
+      'migration', 'compatibility', 'validation', 'authentication', 'authorization'
+    ];
+    
+    criteria.forEach(criterion => {
+      const lowerCriterion = criterion.toLowerCase();
+      const keywordCount = complexityKeywords.filter(keyword => 
+        lowerCriterion.includes(keyword)
+      ).length;
+      complexity += keywordCount * 5;
+    });
+    
+    return Math.min(100, complexity);
+  }
+
+  private assessDependencyComplexity(feature: FeatureDocumentEntity): number {
+    // Analyze dependencies from feature content
+    const content = `${feature.title} ${feature.description || ''}`;
+    const dependencyIndicators = [
+      'depends on', 'requires', 'after', 'before', 'integration with',
+      'api', 'service', 'database', 'external', 'third-party'
+    ];
+    
+    let dependencyScore = 0;
+    dependencyIndicators.forEach(indicator => {
+      if (content.toLowerCase().includes(indicator)) {
+        dependencyScore += 10;
+      }
+    });
+    
+    return Math.min(100, dependencyScore);
+  }
+
+  private assessTechnicalRisk(feature: FeatureDocumentEntity): number {
+    const content = `${feature.title} ${feature.description || ''}`;
+    const riskKeywords = [
+      'new technology', 'prototype', 'experiment', 'migration', 'refactor',
+      'security', 'performance', 'scalability', 'complex algorithm', 'machine learning'
+    ];
+    
+    let riskScore = 20; // Base risk
+    
+    riskKeywords.forEach(keyword => {
+      if (content.toLowerCase().includes(keyword)) {
+        riskScore += 15;
+      }
+    });
+    
+    return Math.min(100, riskScore);
+  }
+
+  private assessBusinessImpact(feature: FeatureDocumentEntity): number {
+    const content = `${feature.title} ${feature.description || ''}`;
+    const impactKeywords = [
+      'critical', 'urgent', 'high priority', 'revenue', 'customer',
+      'compliance', 'legal', 'security', 'data protection'
+    ];
+    
+    let impactScore = 30; // Base impact
+    
+    impactKeywords.forEach(keyword => {
+      if (content.toLowerCase().includes(keyword)) {
+        impactScore += 10;
+      }
+    });
+    
+    return Math.min(100, impactScore);
+  }
+
+  private assessEstimationConfidence(feature: FeatureDocumentEntity): number {
+    // Higher criteria count and detail usually means better estimation confidence
     const criteriaCount = feature.acceptance_criteria.length;
-    if (criteriaCount <= 2) return 'simple';
-    if (criteriaCount <= 5) return 'moderate';
-    if (criteriaCount <= 10) return 'high';
-    return 'complex';
+    const avgCriteriaLength = feature.acceptance_criteria.reduce(
+      (acc, c) => acc + c.length, 0
+    ) / (criteriaCount || 1);
+    
+    let confidence = Math.min(70, criteriaCount * 10);
+    
+    if (avgCriteriaLength > 50) confidence += 20;
+    if (feature.description && feature.description.length > 100) confidence += 10;
+    
+    // Return inverse for complexity score (low confidence = high complexity)
+    return 100 - Math.min(100, confidence);
+  }
+
+  private countTechnicalTerms(text: string): number {
+    const technicalTerms = [
+      'api', 'database', 'server', 'client', 'authentication', 'authorization',
+      'microservice', 'endpoint', 'integration', 'migration', 'deployment',
+      'algorithm', 'optimization', 'caching', 'queue', 'webhook'
+    ];
+    
+    const lowerText = text.toLowerCase();
+    return technicalTerms.filter(term => lowerText.includes(term)).length;
+  }
+
+  private generateComplexityRecommendations(score: number, dimensions: any): string[] {
+    const recommendations = [];
+    
+    if (score > 70) {
+      recommendations.push('Consider breaking down into smaller features');
+      recommendations.push('Conduct technical spike to validate approach');
+    }
+    
+    if (dimensions.dependencies > 60) {
+      recommendations.push('Map out all dependencies before starting development');
+      recommendations.push('Consider phased implementation to manage dependencies');
+    }
+    
+    if (dimensions.technical_risk > 70) {
+      recommendations.push('Assign senior developers to this feature');
+      recommendations.push('Plan additional testing and validation phases');
+    }
+    
+    if (dimensions.estimation_confidence > 60) {
+      recommendations.push('Refine acceptance criteria with more detail');
+      recommendations.push('Conduct estimation review with multiple team members');
+    }
+    
+    if (score < 40) {
+      recommendations.push('Good candidate for junior developers');
+      recommendations.push('Can be included in regular sprint planning');
+    }
+    
+    return recommendations.length > 0 ? recommendations : ['Feature complexity is manageable with standard practices'];
+  }
+
+  private estimateEffortHours(complexityScore: number): number {
+    // Base effort estimation based on complexity score
+    if (complexityScore <= 30) return Math.floor(8 + (complexityScore * 0.5));
+    if (complexityScore <= 60) return Math.floor(20 + (complexityScore * 1.2));
+    if (complexityScore <= 80) return Math.floor(40 + (complexityScore * 2));
+    return Math.floor(80 + (complexityScore * 3));
+  }
+
+  private suggestTeamSize(complexityScore: number): number {
+    if (complexityScore <= 40) return 1;
+    if (complexityScore <= 65) return 2;
+    if (complexityScore <= 85) return 3;
+    return 4;
   }
 
   // Placeholder implementations for Product Flow steps
   private async executeVisionAnalysis(workflow: ProductWorkflowState): Promise<void> {
     logger.info('📄 Analyzing vision document for requirements extraction');
-    
+
     // Check for gate before vision analysis
     const shouldOpenGate = await this.shouldExecuteGate('vision-analysis', workflow);
     if (shouldOpenGate) {
@@ -745,20 +981,22 @@ export class ProductWorkflowEngine extends EventEmitter {
         question: 'Should we proceed with vision analysis?',
         businessImpact: 'high',
         stakeholders: ['product-manager', 'business-analyst'],
-        gateType: 'checkpoint'
+        gateType: 'checkpoint',
       });
-      
+
       if (!gateResult.approved) {
-        throw new Error('Vision analysis gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+        throw new Error(
+          'Vision analysis gate rejected: ' + (gateResult.error?.message || 'Unknown reason')
+        );
       }
     }
-    
+
     // Implementation would analyze vision document and extract key requirements
   }
 
   private async createPRDsFromVision(workflow: ProductWorkflowState): Promise<void> {
     logger.info('📋 Creating Product Requirements Documents from vision');
-    
+
     // Check for gate before PRD creation
     const shouldOpenGate = await this.shouldExecuteGate('prd-creation', workflow);
     if (shouldOpenGate) {
@@ -766,20 +1004,22 @@ export class ProductWorkflowEngine extends EventEmitter {
         question: 'Are the PRDs ready for creation based on the vision analysis?',
         businessImpact: 'high',
         stakeholders: ['product-manager', 'business-stakeholder', 'technical-lead'],
-        gateType: 'approval'
+        gateType: 'approval',
       });
-      
+
       if (!gateResult.approved) {
-        throw new Error('PRD creation gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+        throw new Error(
+          'PRD creation gate rejected: ' + (gateResult.error?.message || 'Unknown reason')
+        );
       }
     }
-    
+
     // Implementation would break down vision into detailed product requirements
   }
 
   private async breakdownPRDsToEpics(workflow: ProductWorkflowState): Promise<void> {
     logger.info('📈 Breaking down PRDs into Epic-level features');
-    
+
     // Check for gate before epic breakdown
     const shouldOpenGate = await this.shouldExecuteGate('epic-breakdown', workflow);
     if (shouldOpenGate) {
@@ -787,20 +1027,22 @@ export class ProductWorkflowEngine extends EventEmitter {
         question: 'Should we proceed with breaking down PRDs into epics?',
         businessImpact: 'medium',
         stakeholders: ['product-manager', 'engineering-manager'],
-        gateType: 'checkpoint'
+        gateType: 'checkpoint',
       });
-      
+
       if (!gateResult.approved) {
-        throw new Error('Epic breakdown gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+        throw new Error(
+          'Epic breakdown gate rejected: ' + (gateResult.error?.message || 'Unknown reason')
+        );
       }
     }
-    
+
     // Implementation would group related requirements into epic-level features
   }
 
   private async defineFeatures(workflow: ProductWorkflowState): Promise<void> {
     logger.info('🎯 Defining individual implementable features');
-    
+
     // Check for gate before feature definition
     const shouldOpenGate = await this.shouldExecuteGate('feature-definition', workflow);
     if (shouldOpenGate) {
@@ -808,14 +1050,16 @@ export class ProductWorkflowEngine extends EventEmitter {
         question: 'Are we ready to define individual features from the epics?',
         businessImpact: 'high',
         stakeholders: ['product-manager', 'tech-lead', 'ux-designer'],
-        gateType: 'approval'
+        gateType: 'approval',
       });
-      
+
       if (!gateResult.approved) {
-        throw new Error('Feature definition gate rejected: ' + (gateResult.error?.message || 'Unknown reason'));
+        throw new Error(
+          'Feature definition gate rejected: ' + (gateResult.error?.message || 'Unknown reason')
+        );
       }
     }
-    
+
     // Implementation would break down epics into individual features
   }
 
@@ -1010,7 +1254,7 @@ export class ProductWorkflowEngine extends EventEmitter {
           'Strategic gate to validate vision document analysis before proceeding',
           'strategic',
           WorkflowGatePriority.HIGH
-        )
+        ),
       },
       {
         id: 'prd-creation',
@@ -1020,7 +1264,7 @@ export class ProductWorkflowEngine extends EventEmitter {
           'Business gate to approve PRD creation based on vision analysis',
           'business',
           WorkflowGatePriority.HIGH
-        )
+        ),
       },
       {
         id: 'epic-breakdown',
@@ -1030,7 +1274,7 @@ export class ProductWorkflowEngine extends EventEmitter {
           'Checkpoint gate to validate epic breakdown from PRDs',
           'checkpoint',
           WorkflowGatePriority.MEDIUM
-        )
+        ),
       },
       {
         id: 'feature-definition',
@@ -1040,7 +1284,7 @@ export class ProductWorkflowEngine extends EventEmitter {
           'Strategic gate to approve individual feature definitions',
           'strategic',
           WorkflowGatePriority.HIGH
-        )
+        ),
       },
       {
         id: 'sparc-integration',
@@ -1050,8 +1294,8 @@ export class ProductWorkflowEngine extends EventEmitter {
           'Architectural gate to approve SPARC methodology integration',
           'architectural',
           WorkflowGatePriority.CRITICAL
-        )
-      }
+        ),
+      },
     ];
 
     gateDefinitions.forEach(({ id, gate }) => {
@@ -1060,7 +1304,7 @@ export class ProductWorkflowEngine extends EventEmitter {
 
     logger.info('Initialized gate definitions', {
       gateCount: this.gateDefinitions.size,
-      gates: Array.from(this.gateDefinitions.keys())
+      gates: Array.from(this.gateDefinitions.keys()),
     });
   }
 
@@ -1099,22 +1343,22 @@ export class ProductWorkflowEngine extends EventEmitter {
             timeHours: 40,
             costImpact: 10000,
             teamSize: 3,
-            criticality: 'medium'
+            criticality: 'medium',
           },
           complianceImpact: {
             regulations: [],
             riskLevel: 'low',
             requiredReviews: ['product'],
-            deadlines: []
+            deadlines: [],
           },
-          userExperienceImpact: 0.5
-        }
+          userExperienceImpact: 0.5,
+        },
       } as WorkflowGateContext,
       gateData: {
         payload: { category, phase: subtype },
         structured: { type: category },
         attachments: [],
-        externalReferences: []
+        externalReferences: [],
       } as WorkflowGateData,
       triggers: [],
       priority,
@@ -1123,8 +1367,8 @@ export class ProductWorkflowEngine extends EventEmitter {
         approvers: ['product-manager'],
         escalationChain: {
           levels: [GateEscalationLevel.TEAM_LEAD, GateEscalationLevel.MANAGER],
-          timeout: 300000 // 5 minutes
-        }
+          timeout: 300000, // 5 minutes
+        },
       } as any,
       metrics: {
         createdAt: new Date(),
@@ -1132,8 +1376,8 @@ export class ProductWorkflowEngine extends EventEmitter {
         totalResolutionTime: 0,
         averageResolutionTime: 0,
         approvalRate: 0,
-        escalationRate: 0
-      } as any
+        escalationRate: 0,
+      } as any,
     };
   }
 
@@ -1181,7 +1425,7 @@ export class ProductWorkflowEngine extends EventEmitter {
       stepName,
       workflowId: workflow.id,
       gateType: gateConfig.gateType,
-      businessImpact: gateConfig.businessImpact
+      businessImpact: gateConfig.businessImpact,
     });
 
     try {
@@ -1200,9 +1444,9 @@ export class ProductWorkflowEngine extends EventEmitter {
             category: 'operational',
             severity: 'medium',
             probability: 0.3,
-            description: 'Workflow step dependency risk'
-          }
-        ]
+            description: 'Workflow step dependency risk',
+          },
+        ],
       };
 
       // Create workflow gate request
@@ -1214,7 +1458,7 @@ export class ProductWorkflowEngine extends EventEmitter {
         context: {
           workflowStep: stepName,
           workflowId: workflow.id,
-          productFlow: workflow.productFlow
+          productFlow: workflow.productFlow,
         },
         confidence: 0.8,
         priority: gateConfig.businessImpact === 'critical' ? 'critical' : 'medium',
@@ -1228,13 +1472,13 @@ export class ProductWorkflowEngine extends EventEmitter {
         timeoutConfig: {
           initialTimeout: 300000, // 5 minutes
           escalationTimeouts: [600000, 1200000], // 10, 20 minutes
-          maxTotalTimeout: 1800000 // 30 minutes
+          maxTotalTimeout: 1800000, // 30 minutes
         },
         integrationConfig: {
           correlationId: `${workflow.id}-${stepName}`,
           domainValidation: true,
-          enableMetrics: true
-        }
+          enableMetrics: true,
+        },
       };
 
       // Store pending gate
@@ -1244,7 +1488,7 @@ export class ProductWorkflowEngine extends EventEmitter {
       const pausedWorkflow = {
         ...workflow,
         status: 'paused' as any,
-        pausedAt: new Date()
+        pausedAt: new Date(),
       };
       this.activeWorkflows.set(workflow.id, pausedWorkflow);
       await this.saveWorkflow(pausedWorkflow);
@@ -1261,14 +1505,14 @@ export class ProductWorkflowEngine extends EventEmitter {
         processingTime: Date.now() - startTime,
         escalationLevel: GateEscalationLevel.NONE,
         decisionMaker: 'user',
-        correlationId: gateRequest.integrationConfig?.correlationId || ''
+        correlationId: gateRequest.integrationConfig?.correlationId || '',
       };
 
       // Resume workflow if approved
       if (approved) {
         const resumedWorkflow = {
           ...pausedWorkflow,
-          status: 'running' as any
+          status: 'running' as any,
         };
         delete (resumedWorkflow as any).pausedAt;
         this.activeWorkflows.set(workflow.id, resumedWorkflow);
@@ -1282,16 +1526,15 @@ export class ProductWorkflowEngine extends EventEmitter {
         gateId,
         approved,
         processingTime: gateResult.processingTime,
-        decisionMaker: gateResult.decisionMaker
+        decisionMaker: gateResult.decisionMaker,
       });
 
       return gateResult;
-
     } catch (error) {
       logger.error('Workflow gate execution failed', {
         gateId,
         stepName,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
 
       // Cleanup pending gate
@@ -1304,7 +1547,7 @@ export class ProductWorkflowEngine extends EventEmitter {
         processingTime: Date.now() - startTime,
         escalationLevel: GateEscalationLevel.NONE,
         error: error instanceof Error ? error : new Error(String(error)),
-        correlationId: ''
+        correlationId: '',
       };
     }
   }
@@ -1335,19 +1578,19 @@ export class ProductWorkflowEngine extends EventEmitter {
   private interpretGateResponse(response: string): boolean {
     const approvalKeywords = ['yes', 'approve', 'approved', 'accept', 'ok', 'continue', 'proceed'];
     const rejectionKeywords = ['no', 'reject', 'rejected', 'deny', 'stop', 'cancel', 'abort'];
-    
+
     const lowerResponse = response.toLowerCase();
-    
+
     // Check for explicit approval
-    if (approvalKeywords.some(keyword => lowerResponse.includes(keyword))) {
+    if (approvalKeywords.some((keyword) => lowerResponse.includes(keyword))) {
       return true;
     }
-    
+
     // Check for explicit rejection
-    if (rejectionKeywords.some(keyword => lowerResponse.includes(keyword))) {
+    if (rejectionKeywords.some((keyword) => lowerResponse.includes(keyword))) {
       return false;
     }
-    
+
     // Default to rejection for ambiguous responses (safety first)
     return false;
   }
@@ -1399,7 +1642,10 @@ export class ProductWorkflowEngine extends EventEmitter {
     return this.activeWorkflows.get(workflowId) || null;
   }
 
-  async pauseProductWorkflow(workflowId: string, reason?: string): Promise<{ success: boolean; error?: string }> {
+  async pauseProductWorkflow(
+    workflowId: string,
+    reason?: string
+  ): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'running') {
       // Create paused workflow state
@@ -1411,14 +1657,17 @@ export class ProductWorkflowEngine extends EventEmitter {
       this.activeWorkflows.set(workflowId, pausedWorkflow);
       await this.saveWorkflow(pausedWorkflow);
       this.emit('product-workflow:paused', { workflowId, reason });
-      
+
       logger.info('Product workflow paused', { workflowId, reason });
       return { success: true };
     }
     return { success: false, error: 'Product workflow not found or not running' };
   }
 
-  async resumeProductWorkflow(workflowId: string, reason?: string): Promise<{ success: boolean; error?: string }> {
+  async resumeProductWorkflow(
+    workflowId: string,
+    reason?: string
+  ): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'paused') {
       // Create resumed workflow state
@@ -1435,7 +1684,7 @@ export class ProductWorkflowEngine extends EventEmitter {
       });
 
       this.emit('product-workflow:resumed', { workflowId, reason });
-      
+
       logger.info('Product workflow resumed', { workflowId, reason });
       return { success: true };
     }
@@ -1474,7 +1723,7 @@ export class ProductWorkflowEngine extends EventEmitter {
       const cancelled = await this.aguiAdapter.cancelGate(gateId, reason);
       if (cancelled) {
         this.pendingGates.delete(gateId);
-        
+
         logger.info('Gate cancelled', { gateId, reason });
         return { success: true };
       } else {
@@ -1483,12 +1732,12 @@ export class ProductWorkflowEngine extends EventEmitter {
     } catch (error) {
       logger.error('Error cancelling gate', {
         gateId,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
-      
+
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -1512,15 +1761,41 @@ export class ProductWorkflowEngine extends EventEmitter {
    */
   async shutdownGates(): Promise<void> {
     logger.info('Shutting down workflow gates');
-    
+
     // Cancel all pending gates
     for (const [gateId] of this.pendingGates) {
       await this.cancelGate(gateId, 'System shutdown');
     }
-    
+
     // Shutdown AGUI adapter
     await this.aguiAdapter.shutdown();
-    
+
     logger.info('Workflow gates shutdown complete');
   }
+
+  /**
+   * Shutdown the entire ProductWorkflowEngine
+   */
+  async shutdown(): Promise<void> {
+    logger.info('Shutting down ProductWorkflowEngine');
+    
+    // Shutdown all active workflows
+    for (const workflow of this.activeWorkflows.values()) {
+      if (workflow.status === 'running' || workflow.status === 'paused') {
+        const failedWorkflow = {
+          ...workflow,
+          status: 'cancelled' as WorkflowStatus,
+          endTime: new Date()
+        };
+        this.activeWorkflows.set(workflow.id, failedWorkflow);
+        await this.saveWorkflow(failedWorkflow);
+      }
+    }
+    
+    // Shutdown gates
+    await this.shutdownGates();
+    
+    logger.info('ProductWorkflowEngine shutdown complete');
+  }
+
 }

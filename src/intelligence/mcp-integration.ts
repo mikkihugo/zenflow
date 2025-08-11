@@ -2,8 +2,8 @@
  * @file Mcp-integration implementation.
  */
 
-import { ConversationFramework } from './conversation-framework/index';
-import { ConversationMCPToolsFactory } from './conversation-framework/mcp-tools';
+import { ConversationFramework } from './conversation-framework/index.ts';
+import { ConversationMCPToolsFactory } from './conversation-framework/mcp-tools.ts';
 
 /**
  * Enhanced Intelligence MCP Tools with ag2.ai integration.
@@ -70,7 +70,10 @@ export class IntelligenceMCPTools {
         inputSchema: {
           type: 'object',
           properties: {
-            conversationId: { type: 'string', description: 'Conversation ID to analyze' },
+            conversationId: {
+              type: 'string',
+              description: 'Conversation ID to analyze',
+            },
             focusArea: {
               type: 'string',
               enum: ['efficiency', 'participation', 'consensus', 'quality'],
@@ -91,8 +94,14 @@ export class IntelligenceMCPTools {
               items: { type: 'string' },
               description: 'Conversation IDs to learn from',
             },
-            patternName: { type: 'string', description: 'Name for the new pattern' },
-            domain: { type: 'string', description: 'Domain this pattern applies to' },
+            patternName: {
+              type: 'string',
+              description: 'Name for the new pattern',
+            },
+            domain: {
+              type: 'string',
+              description: 'Domain this pattern applies to',
+            },
             targetMetrics: {
               type: 'object',
               properties: {
@@ -112,7 +121,10 @@ export class IntelligenceMCPTools {
         inputSchema: {
           type: 'object',
           properties: {
-            conversationId: { type: 'string', description: 'Active conversation ID' },
+            conversationId: {
+              type: 'string',
+              description: 'Active conversation ID',
+            },
             predictionHorizon: {
               type: 'number',
               default: 30,

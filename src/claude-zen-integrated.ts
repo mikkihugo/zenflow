@@ -2,7 +2,7 @@
  * @file Claude-zen-integrated implementation.
  */
 
-import { getLogger } from './config/logging-config';
+import { getLogger } from './config/logging-config.ts';
 
 const logger = getLogger('claude-zen-integrated');
 /**
@@ -174,4 +174,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-export default ClaudeZenIntegrated;
+// Default export removed - use named export: import { ClaudeZenIntegrated } from './claude-zen-integrated.js'

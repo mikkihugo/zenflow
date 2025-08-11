@@ -2,16 +2,16 @@
  * Edge case and error handling tests for persistence module
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import Database from 'better-sqlite3';
+import { afterEach, beforeEach, describe, expect, it, , vi } from 'vitest';
 
 // Mock modules
-jest.mock('better-sqlite3');
-jest.mock('fs', () => ({
+vi.mock('better-sqlite3');
+vi.mock('fs', () => ({
   promises: {
-    access: jest.fn(),
-    mkdir: jest.fn(),
-    unlink: jest.fn(),
+    access: vi.fn(),
+    mkdir: vi.fn(),
+    unlink: vi.fn(),
   },
 }));
 
@@ -25,27 +25,27 @@ describe('PersistenceManager Edge Cases', () => {
 
   beforeEach(() => {
     mockStmt = {
-      run: jest.fn(),
-      get: jest.fn(),
-      all: jest.fn(),
-      finalize: jest.fn(),
+      run: vi.fn(),
+      get: vi.fn(),
+      all: vi.fn(),
+      finalize: vi.fn(),
     };
 
     mockDb = {
-      prepare: jest.fn().mockReturnValue(mockStmt),
-      exec: jest.fn(),
-      close: jest.fn(),
-      transaction: jest.fn((fn) => fn),
-      pragma: jest.fn(),
+      prepare: vi.fn().mockReturnValue(mockStmt),
+      exec: vi.fn(),
+      close: vi.fn(),
+      transaction: vi.fn((fn) => fn),
+      pragma: vi.fn(),
     };
 
     Database.mockReturnValue(mockDb);
     persistence = new PersistenceManager();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('Database Connection Issues', () => {
@@ -385,7 +385,7 @@ describe('PersistenceManager Edge Cases', () => {
     });
 
     it('should rollback on transaction failure', async () => {
-      const rollbackFn = jest.fn();
+      const rollbackFn = vi.fn();
       mockDb.transaction.mockImplementation((fn) => {
         try {
           return fn();

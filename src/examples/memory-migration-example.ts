@@ -12,7 +12,7 @@ import {
   type MemoryNotFound,
   type MemoryResult,
   type MemorySuccess,
-} from '../utils/type-guards';
+} from '../utils/type-guards.ts';
 
 // ============================================
 // BEFORE: Unsafe Memory Operations
@@ -327,7 +327,7 @@ class SafeMemoryService {
 
       return {
         found: true,
-        data: undefined as undefined,
+        data: undefined,
         key: `${namespace}:${key}`,
         timestamp: new Date(),
         metadata: { operation: 'store' },
@@ -403,7 +403,11 @@ export async function demonstrateMigration(): Promise<void> {
     const unsafeProfile = await unsafeService.getUserProfile(userId);
 
     // ❌ No indication if this succeeded or failed
-    await unsafeService.cacheUserSession(userId, { id: 'session123', userId, token: 'abc' });
+    await unsafeService.cacheUserSession(userId, {
+      id: 'session123',
+      userId,
+      token: 'abc',
+    });
 
     // ❌ Could throw runtime errors on property access
     const unsafePrefs = await unsafeService.getUserPreferences(userId);

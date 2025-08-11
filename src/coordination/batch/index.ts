@@ -4,28 +4,28 @@
  */
 
 // Import the actual classes for use in factory functions
-import { BatchEngine } from './batch-engine';
-import { FileBatchOperator } from './file-batch';
-import { BatchPerformanceMonitor } from './performance-monitor';
-import { SwarmBatchCoordinator } from './swarm-batch';
+import { BatchEngine } from './batch-engine.ts';
+import { FileBatchOperator } from './file-batch.ts';
+import { BatchPerformanceMonitor } from './performance-monitor.ts';
+import { SwarmBatchCoordinator } from './swarm-batch.ts';
 
 export type {
   BatchExecutionConfig,
   BatchOperation,
   BatchResult,
   ExtendedBatchExecutionSummary,
-} from './batch-engine';
-export { BatchEngine, createBatchOperation, createToolBatch } from './batch-engine';
-export type { FileOperation, FileOperationResult } from './file-batch';
-export { FileBatchOperator } from './file-batch';
+} from './batch-engine.ts';
+export { BatchEngine, createBatchOperation, createToolBatch } from './batch-engine.ts';
+export type { FileOperation, FileOperationResult } from './file-batch.ts';
+export { FileBatchOperator } from './file-batch.ts';
 export type {
   PerformanceComparison,
   PerformanceMetrics,
   PerformanceTrend,
-} from './performance-monitor';
-export { BatchPerformanceMonitor } from './performance-monitor';
-export type { SwarmBatchConfig, SwarmOperation, SwarmOperationResult } from './swarm-batch';
-export { SwarmBatchCoordinator } from './swarm-batch';
+} from './performance-monitor.ts';
+export { BatchPerformanceMonitor } from './performance-monitor.ts';
+export type { SwarmBatchConfig, SwarmOperation, SwarmOperationResult } from './swarm-batch.ts';
+export { SwarmBatchCoordinator } from './swarm-batch.ts';
 
 /**
  * Factory function to create a complete batch system with all components.
@@ -37,8 +37,8 @@ export { SwarmBatchCoordinator } from './swarm-batch';
  * @example
  */
 export function createBatchSystem(options?: {
-  batchConfig?: import('./batch-engine').BatchExecutionConfig;
-  swarmConfig?: import('./swarm-batch').SwarmBatchConfig;
+  batchConfig?: import('./batch-engine.ts').BatchExecutionConfig;
+  swarmConfig?: import('./swarm-batch.ts').SwarmBatchConfig;
   maxConcurrentFiles?: number;
 }) {
   const batchEngine = new BatchEngine(options?.['batchConfig']);
@@ -57,7 +57,7 @@ export function createBatchSystem(options?: {
      *
      * @param operations
      */
-    async executeBatchWorkflow(operations: import('./batch-engine').BatchOperation[]) {
+    async executeBatchWorkflow(operations: import('./batch-engine.ts').BatchOperation[]) {
       // Execute batch operations
       const summary = await batchEngine.executeBatch(operations);
 

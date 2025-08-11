@@ -7,7 +7,7 @@
  */
 
 // Simple test without complex imports to avoid circular dependencies
-import { analyzeAIResponse } from './ai-deception-detector';
+import { analyzeAIResponse } from './ai-deception-detector.ts';
 
 async function runSimpleTest() {
   console.log('🧪 Simple AI Deception Detection Test\n');

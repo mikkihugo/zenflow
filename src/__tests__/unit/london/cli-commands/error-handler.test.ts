@@ -6,7 +6,7 @@
  * collaborates with logging, formatting, and recovery systems.
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // Mock error handler interface for testing interactions
 interface ErrorHandler {
@@ -67,10 +67,10 @@ interface RecoveryStrategy {
 
 // Mock logger interface
 interface MockLogger {
-  error: jest.Mock;
-  warn: jest.Mock;
-  info: jest.Mock;
-  debug: jest.Mock;
+  error: vi.Mock;
+  warn: vi.Mock;
+  info: vi.Mock;
+  debug: vi.Mock;
 }
 
 // Mock implementation for testing
@@ -86,9 +86,9 @@ class MockErrorHandler implements ErrorHandler {
     averageHandlingTime: 0,
   };
   private logger: MockLogger;
-  private handleFunction: jest.Mock;
+  private handleFunction: vi.Mock;
 
-  constructor(handleFunction?: jest.Mock, logger?: MockLogger) {
+  constructor(handleFunction?: vi.Mock, logger?: MockLogger) {
     this.handleFunction = handleFunction || vi.fn();
     this.logger = logger || {
       error: vi.fn(),
@@ -194,7 +194,7 @@ class CommandNotFoundError extends Error {
 
 describe('ErrorHandler - TDD London', () => {
   let errorHandler: MockErrorHandler;
-  let mockHandleFunction: jest.Mock;
+  let mockHandleFunction: vi.Mock;
   let mockLogger: MockLogger;
 
   beforeEach(() => {
@@ -377,21 +377,21 @@ describe('ErrorHandler - TDD London', () => {
       // Arrange
       const lowPriorityStrategy: RecoveryStrategy = {
         name: 'low-priority',
-        canRecover: jest.fn(() => true),
+        canRecover: vi.fn(() => true),
         recover: vi.fn().mockResolvedValue(true),
         priority: 1,
       };
 
       const highPriorityStrategy: RecoveryStrategy = {
         name: 'high-priority',
-        canRecover: jest.fn(() => true),
+        canRecover: vi.fn(() => true),
         recover: vi.fn().mockResolvedValue(true),
         priority: 10,
       };
 
       const mediumPriorityStrategy: RecoveryStrategy = {
         name: 'medium-priority',
-        canRecover: jest.fn(() => true),
+        canRecover: vi.fn(() => true),
         recover: vi.fn().mockResolvedValue(true),
         priority: 5,
       };
@@ -414,14 +414,14 @@ describe('ErrorHandler - TDD London', () => {
       // Arrange
       const retryStrategy: RecoveryStrategy = {
         name: 'retry',
-        canRecover: jest.fn(() => true),
+        canRecover: vi.fn(() => true),
         recover: vi.fn().mockResolvedValue(false), // Fails to recover
         priority: 5,
       };
 
       const fallbackStrategy: RecoveryStrategy = {
         name: 'fallback',
-        canRecover: jest.fn(() => true),
+        canRecover: vi.fn(() => true),
         recover: vi.fn().mockResolvedValue(true), // Successfully recovers
         priority: 1,
       };

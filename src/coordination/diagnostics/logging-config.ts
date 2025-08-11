@@ -2,7 +2,7 @@
  * @file Coordination system: logging-config.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('coordination-diagnostics-logging-config');
 /**

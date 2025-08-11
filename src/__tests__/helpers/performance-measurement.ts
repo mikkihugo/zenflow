@@ -4,7 +4,7 @@
  * Comprehensive performance testing for both London and Classical TDD
  */
 
-import type { PerformanceMetrics, PerformanceTestOptions } from './types';
+import type { PerformanceMetrics, PerformanceTestOptions } from './types.ts';
 
 export class PerformanceMeasurement {
   private options: PerformanceTestOptions;

@@ -2,7 +2,7 @@
  * @file Claude-zen-core implementation.
  */
 
-import { getLogger } from './config/logging-config';
+import { getLogger } from './config/logging-config.ts';
 
 const logger = getLogger('claude-zen-core');
 
@@ -14,10 +14,10 @@ const logger = getLogger('claude-zen-core');
  */
 
 import { EventEmitter } from 'node:events';
-import { CoordinationManager } from './coordination/manager';
+import { CoordinationManager } from './coordination/manager.ts';
 
 // Import DI-enhanced coordinators
-import { Orchestrator } from './coordination/orchestrator';
+import { Orchestrator } from './coordination/orchestrator.ts';
 import {
   CORE_TOKENS,
   createContainerBuilder,
@@ -28,9 +28,9 @@ import {
   type IEventBus,
   type ILogger,
   SWARM_TOKENS,
-} from './di/index';
-import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
-import { LearningCoordinator } from './intelligence/adaptive-learning/learning-coordinator';
+} from './di/index.ts';
+import { MultiSystemCoordinator } from './integration/multi-system-coordinator.ts';
+import { LearningCoordinator } from './intelligence/adaptive-learning/learning-coordinator.ts';
 
 // Core service implementations
 class ConsoleLogger implements ILogger {
@@ -420,4 +420,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-export default ClaudeZenCore;
+// Default export removed - use named export: import { ClaudeZenCore } from './claude-zen-core.js'

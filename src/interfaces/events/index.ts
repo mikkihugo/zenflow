@@ -8,7 +8,7 @@
  * - Global instances and initialization.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('interfaces-events-index');
 
@@ -67,7 +67,7 @@ export {
   SystemEventHelpers,
   SystemEventManagerFactory,
 } from './adapters';
-export { CompatibilityFactory } from './compatibility';
+export { CompatibilityFactory } from './compatibility.ts';
 // Core interfaces for UEL
 export type {
   EventBatch,
@@ -90,7 +90,7 @@ export type {
   IEventManagerFactory,
   IEventManagerRegistry,
   SystemEvent,
-} from './core/interfaces';
+} from './core/interfaces.ts';
 export {
   EventEmissionError,
   EventError,
@@ -101,7 +101,7 @@ export {
   EventSubscriptionError,
   EventTimeoutError,
   EventTypeGuards,
-} from './core/interfaces';
+} from './core/interfaces.ts';
 // Core UEL components
 export {
   type EventManagerFactoryConfig,
@@ -119,15 +119,15 @@ export {
   type IWorkflowEventManager,
   UELFactory,
   UELRegistry,
-} from './factories';
+} from './factories.ts';
 // Additional exports for UEL system - Remove duplicates
-export { EventManager } from './manager';
-export { EventRegistry } from './registry';
+export { EventManager } from './manager.ts';
+export { EventRegistry } from './registry.ts';
 export {
   UELEnhancedApplicationCoordinator,
   UELEnhancedEventBus,
   UELEnhancedObserverSystem,
-} from './system-integrations';
+} from './system-integrations.ts';
 // Event type definitions
 export type {
   CommunicationEvent,
@@ -140,7 +140,7 @@ export type {
   SystemLifecycleEvent,
   UELEvent,
   WorkflowEvent,
-} from './types';
+} from './types.ts';
 export {
   DefaultEventManagerConfigs,
   EventCategories,
@@ -149,8 +149,8 @@ export {
   EventSources,
   EventTypePatterns,
   UELTypeGuards,
-} from './types';
-export { UELValidationFramework } from './validation';
+} from './types.ts';
+export { UELValidationFramework } from './validation.ts';
 
 // Import types for internal use
 import type {
@@ -161,7 +161,7 @@ import type {
   SystemEventAdapter,
   SystemEventAdapterConfig,
 } from './adapters';
-import type { CompatibilityFactory, UELCompatibleEventEmitter } from './compatibility';
+import type { CompatibilityFactory, UELCompatibleEventEmitter } from './compatibility.ts';
 // Import missing types
 import type {
   EventManagerConfig,
@@ -169,17 +169,17 @@ import type {
   EventManagerType,
   EventManagerTypes,
   SystemEvent,
-} from './core/interfaces';
+} from './core/interfaces.ts';
 // Import core components for UEL class
-import type { UELFactory, UELRegistry } from './factories';
-import type { EventManager } from './manager';
-import type { EventRegistry } from './registry';
+import type { UELFactory, UELRegistry } from './factories.ts';
+import type { EventManager } from './manager.ts';
+import type { EventRegistry } from './registry.ts';
 import type {
   UELEnhancedApplicationCoordinator,
   UELEnhancedEventBus,
   UELEnhancedObserverSystem,
-} from './system-integrations';
-import type { UELValidationFramework } from './validation';
+} from './system-integrations.ts';
+import type { UELValidationFramework } from './validation.ts';
 
 // Additional compatibility exports
 export {
@@ -190,9 +190,9 @@ export {
   // Backward Compatibility Layer
   UELCompatibleEventEmitter,
   wrapWithUEL,
-} from './compatibility';
+} from './compatibility.ts';
 // Import UEL from singleton to avoid circular dependency
-export { UEL, uel } from './core/uel-singleton';
+export { UEL, uel } from './core/uel-singleton.ts';
 // Factory convenience functions
 export {
   createCommunicationEventBus,
@@ -200,14 +200,14 @@ export {
   createEventManager,
   createMonitoringEventBus,
   createSystemEventBus,
-} from './factories';
+} from './factories.ts';
 export type {
   ConnectionManager,
   CoordinationSettings,
   // Event Manager System
   EventManagerCreationOptions,
   ManagerStatistics,
-} from './manager';
+} from './manager.ts';
 // Legacy compatibility - re-export from observer system
 export {
   type AllSystemEvents,
@@ -229,7 +229,7 @@ export {
   type SystemObserver,
   type ToolResult,
   WebSocketObserver,
-} from './observer-system';
+} from './observer-system.ts';
 // UEL Integration Layer - Complete System Components
 export type {
   EventDiscoveryConfig,
@@ -238,13 +238,13 @@ export type {
   EventTypeRegistry,
   FactoryRegistry,
   HealthMonitoringConfig,
-} from './registry';
+} from './registry.ts';
 export {
   analyzeSystemEventEmitterUsage,
   enhanceWithUEL,
   SystemIntegrationFactory,
   UELSystemIntegration,
-} from './system-integrations';
+} from './system-integrations.ts';
 export type {
   EventTypeSchema,
   HealthValidationConfig,
@@ -254,10 +254,10 @@ export type {
   ValidationRecommendation,
   ValidationResult,
   ValidationWarning,
-} from './validation';
+} from './validation.ts';
 
 // Import for use in this file
-import { type UEL, uel } from './core/uel-singleton';
+import { type UEL, uel } from './core/uel-singleton.ts';
 
 /**
  * Initialize UEL with default configuration.

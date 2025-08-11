@@ -9,8 +9,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
-import type { AgentType } from '../types/agent-types';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { AgentType } from '../types/agent-types.ts';
 
 export interface AgentKnowledge {
   agentType: AgentType;
@@ -272,7 +272,10 @@ export class PersistentLearningSystem extends EventEmitter {
     // Clean up swarm memory (keep summary for reference)
     this.archiveSwarmMemory(swarmId, swarmResults);
 
-    this.emit('learnings:collected', { swarmId, insights: swarmResults?.insights?.length || 0 });
+    this.emit('learnings:collected', {
+      swarmId,
+      insights: swarmResults?.insights?.length || 0,
+    });
   }
 
   /**

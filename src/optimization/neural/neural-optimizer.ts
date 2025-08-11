@@ -6,7 +6,7 @@
  * @file Neural network: neural-optimizer.
  */
 
-import type { NeuralOptimizer } from '../interfaces/optimization-interfaces';
+import type { NeuralOptimizer } from '../interfaces/optimization-interfaces.ts';
 
 export interface NeuralOptimizationConfig {
   enableGPUAcceleration: boolean;

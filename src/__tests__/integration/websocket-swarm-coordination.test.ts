@@ -6,7 +6,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock WebSocket for protocol testing (London)
 class MockWebSocket extends EventEmitter {
@@ -28,7 +28,7 @@ class MockWebSocket extends EventEmitter {
     }, 10);
   }
 
-  send = jest.fn((data: string) => {
+  send = vi.fn((data: string) => {
     if (this.readyState !== MockWebSocket['OPEN']) {
       throw new Error('WebSocket is not open');
     }
@@ -38,7 +38,7 @@ class MockWebSocket extends EventEmitter {
     }, 5);
   });
 
-  close = jest.fn(() => {
+  close = vi.fn(() => {
     this.readyState = MockWebSocket['CLOSING'];
     setTimeout(() => {
       this.readyState = MockWebSocket['CLOSED'];
@@ -175,14 +175,14 @@ class SwarmCoordinator {
 
 describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
   let mockWebSocket: MockWebSocket;
-  let mockProtocol: { encode: jest.Mock; decode: jest.Mock };
+  let mockProtocol: { encode: vi.Mock; decode: vi.Mock };
   let coordinator: SwarmCoordinator;
 
   beforeEach(() => {
     mockWebSocket = new MockWebSocket('ws://localhost:8080');
     mockProtocol = {
-      encode: jest.fn((msg) => JSON.stringify(msg)),
-      decode: jest.fn((data) => JSON.parse(data)),
+      encode: vi.fn((msg) => JSON.stringify(msg)),
+      decode: vi.fn((data) => JSON.parse(data)),
     };
     coordinator = new SwarmCoordinator(mockWebSocket, mockProtocol);
   });

@@ -6,7 +6,7 @@
  * with different output targets and handles various data formats.
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // Mock output formatter interface for testing interactions
 interface OutputFormatter {
@@ -42,20 +42,20 @@ interface TableColumn {
 
 // Mock console interface for testing output behavior
 interface MockConsole {
-  log: jest.Mock;
-  error: jest.Mock;
-  warn: jest.Mock;
-  info: jest.Mock;
-  table: jest.Mock;
+  log: vi.Mock;
+  error: vi.Mock;
+  warn: vi.Mock;
+  info: vi.Mock;
+  table: vi.Mock;
 }
 
 // Mock implementation for testing
 class MockOutputFormatter implements OutputFormatter {
   private defaults: Partial<FormatOptions> = {};
   private renderers = new Map<string, FormatRenderer>();
-  private formatFunction: jest.Mock;
+  private formatFunction: vi.Mock;
 
-  constructor(formatFunction?: jest.Mock) {
+  constructor(formatFunction?: vi.Mock) {
     this.formatFunction = formatFunction || vi.fn();
 
     // Setup default renderers
@@ -94,15 +94,15 @@ class MockOutputFormatter implements OutputFormatter {
   private setupDefaultRenderers(): void {
     // Mock renderers for testing
     this.renderers.set('json', {
-      render: jest.fn((data) => JSON.stringify(data, null, 2)),
+      render: vi.fn((data) => JSON.stringify(data, null, 2)),
     });
 
     this.renderers.set('table', {
-      render: jest.fn(() => 'Mock table output'),
+      render: vi.fn(() => 'Mock table output'),
     });
 
     this.renderers.set('yaml', {
-      render: jest.fn(() => 'Mock YAML output'),
+      render: vi.fn(() => 'Mock YAML output'),
     });
   }
 }
@@ -110,7 +110,7 @@ class MockOutputFormatter implements OutputFormatter {
 // Mock output writer for testing output behavior
 class MockOutputWriter {
   private console: MockConsole;
-  private formatFunction: jest.Mock;
+  private formatFunction: vi.Mock;
 
   constructor() {
     this.console = {
@@ -142,7 +142,7 @@ class MockOutputWriter {
     return this.console;
   }
 
-  setFormatter(formatter: jest.Mock): void {
+  setFormatter(formatter: vi.Mock): void {
     this.formatFunction = formatter;
   }
 }
@@ -150,7 +150,7 @@ class MockOutputWriter {
 describe('OutputFormatter - TDD London', () => {
   let formatter: MockOutputFormatter;
   let writer: MockOutputWriter;
-  let mockFormatFunction: jest.Mock;
+  let mockFormatFunction: vi.Mock;
 
   beforeEach(() => {
     mockFormatFunction = vi.fn();
@@ -211,8 +211,8 @@ describe('OutputFormatter - TDD London', () => {
     it('should register custom format renderer', () => {
       // Arrange
       const customRenderer: FormatRenderer = {
-        render: jest.fn(() => 'custom output'),
-        validate: jest.fn(() => true),
+        render: vi.fn(() => 'custom output'),
+        validate: vi.fn(() => true),
       };
 
       // Act
@@ -457,7 +457,7 @@ describe('OutputFormatter - TDD London', () => {
     it('should validate data before rendering when validator is provided', () => {
       // Arrange
       const validatingRenderer: FormatRenderer = {
-        render: jest.fn(() => 'Valid data rendered'),
+        render: vi.fn(() => 'Valid data rendered'),
         validate: vi.fn().mockReturnValue(false),
       };
 

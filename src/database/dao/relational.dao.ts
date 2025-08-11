@@ -54,8 +54,8 @@
  * ```
  */
 
-import { BaseDao } from '../base.dao';
-import type { IDao } from '../interfaces';
+import { BaseDao } from '../base.dao.ts';
+import type { IDao } from '../interfaces.ts';
 
 /**
  * Relational Database DAO Implementation Class.

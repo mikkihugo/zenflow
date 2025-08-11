@@ -14,7 +14,7 @@ import path from 'path';
 import type { Server as SocketIOServer } from 'socket.io';
 // Configuration system
 import { config } from '../config';
-import type { SystemConfiguration } from '../config/types';
+import type { SystemConfiguration } from '../config/types.ts';
 // LogTape integration
 import {
   createAppLogger,
@@ -22,13 +22,13 @@ import {
   createExpressLoggingMiddleware,
   initializeLogging,
   logServerEvent,
-} from '../utils/logging-config.js';
+} from '../utils/logging-config';
 
 // Route handlers (to be created)
-// import { mcpRoutes } from './routes/mcp-routes.js';
-// import { apiRoutes } from './routes/api-routes.js';
-// import { webRoutes } from './routes/web-routes.js';
-// import { monitoringRoutes } from './routes/monitoring-routes.js';
+// import { mcpRoutes } from './routes/mcp-routes';
+// import { apiRoutes } from './routes/api-routes';
+// import { webRoutes } from './routes/web-routes';
+// import { monitoringRoutes } from './routes/monitoring-routes';
 
 const logger = createAppLogger();
 
@@ -353,30 +353,31 @@ export class UnifiedClaudeZenServer {
     await this.initialize();
 
     return new Promise((resolve, reject) => {
-      this.server!
-        .listen(this.config.port, this.config.host, () => {
-          logServerEvent(logger, 'started', {
-            port: this.config.port,
-            host: this.config.host,
-            features: this.config.features,
-            pid: process.pid,
-          });
-
-          console.log(`🚀 Unified Claude-Zen Server started:`);
-          console.log(`   📍 Address: http://${this.config.host}:${this.config.port}`);
-          console.log(
-            `   🔧 Features: ${Object.keys(this.config.features)
-              .filter((f) => this.config.features[f as keyof typeof this.config.features])
-              .join(', ')}`
-          );
-          console.log(`   💡 Health: http://${this.config.host}:${this.config.port}/health`);
-
-          resolve();
-        })
-        .on('error', (err) => {
-          logger.error('Server failed to start', { error: err.message, stack: err.stack });
-          reject(err);
+      this.server!.listen(this.config.port, this.config.host, () => {
+        logServerEvent(logger, 'started', {
+          port: this.config.port,
+          host: this.config.host,
+          features: this.config.features,
+          pid: process.pid,
         });
+
+        console.log(`🚀 Unified Claude-Zen Server started:`);
+        console.log(`   📍 Address: http://${this.config.host}:${this.config.port}`);
+        console.log(
+          `   🔧 Features: ${Object.keys(this.config.features)
+            .filter((f) => this.config.features[f as keyof typeof this.config.features])
+            .join(', ')}`
+        );
+        console.log(`   💡 Health: http://${this.config.host}:${this.config.port}/health`);
+
+        resolve();
+      }).on('error', (err) => {
+        logger.error('Server failed to start', {
+          error: err.message,
+          stack: err.stack,
+        });
+        reject(err);
+      });
     });
   }
 

@@ -3,7 +3,7 @@
  * This test adapts the London School TDD approach from the original test suite.
  */
 
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 import { Orchestrator } from 'coordination/orchestrator';
 import { ZenSwarmStrategy } from 'coordination/strategies/ruv-swarm.strategy';
 import { SwarmDatabase } from '../../src/database/swarm-database';
@@ -12,23 +12,23 @@ import { SwarmDatabase } from '../../src/database/swarm-database';
 vi.mock('../../src/database/swarm-database');
 vi.mock('coordination/strategies/ruv-swarm.strategy');
 
-const MockedSwarmDatabase = SwarmDatabase as jest.MockedClass<typeof SwarmDatabase>;
-const MockedZenSwarmStrategy = ZenSwarmStrategy as jest.MockedClass<typeof ZenSwarmStrategy>;
+const MockedSwarmDatabase = SwarmDatabase as vi.MockedClass<typeof SwarmDatabase>;
+const MockedZenSwarmStrategy = ZenSwarmStrategy as vi.MockedClass<typeof ZenSwarmStrategy>;
 
 describe('Orchestrator Integration Test', () => {
   let orchestrator: Orchestrator;
-  let mockStrategy: jest.Mocked<ZenSwarmStrategy>;
-  let mockDb: jest.Mocked<SwarmDatabase>;
-  let mockLogger: jest.Mocked<ILogger>;
+  let mockStrategy: vi.Mocked<ZenSwarmStrategy>;
+  let mockDb: vi.Mocked<SwarmDatabase>;
+  let mockLogger: vi.Mocked<ILogger>;
 
   beforeEach(() => {
     // Instantiate the mocks
-    mockStrategy = new MockedZenSwarmStrategy() as jest.Mocked<ZenSwarmStrategy>;
-    mockDb = new MockedSwarmDatabase() as jest.Mocked<SwarmDatabase>;
+    mockStrategy = new MockedZenSwarmStrategy() as vi.Mocked<ZenSwarmStrategy>;
+    mockDb = new MockedSwarmDatabase() as vi.Mocked<SwarmDatabase>;
     mockLogger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
 
     // Mock the database constructor to return our mock instance
-    (SwarmDatabase as jest.Mock).mockImplementation(() => mockDb);
+    (SwarmDatabase as vi.Mock).mockImplementation(() => mockDb);
 
     orchestrator = new Orchestrator(mockStrategy, mockDb, mockLogger);
   });

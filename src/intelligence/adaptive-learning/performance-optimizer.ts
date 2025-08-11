@@ -30,7 +30,7 @@ import type {
   SystemContext,
   Task,
   TaskAllocation,
-} from './types';
+} from './types.ts';
 
 export class PerformanceOptimizer extends EventEmitter implements IPerformanceOptimizer {
   private config: AdaptiveLearningConfig;

@@ -9,7 +9,7 @@
 import { rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import LanceDBInterface from '../../../database/lancedb-interface';
 
 // Mock vector similarity functions for testing
@@ -53,12 +53,12 @@ class VectorMath {
 interface MockLanceDBConnection {
   isConnected: boolean;
   tables: Map<string, any>;
-  connect: jest.Mock;
-  createTable: jest.Mock;
-  openTable: jest.Mock;
-  insertVectors: jest.Mock;
-  searchSimilar: jest.Mock;
-  close: jest.Mock;
+  connect: vi.Mock;
+  createTable: vi.Mock;
+  openTable: vi.Mock;
+  insertVectors: vi.Mock;
+  searchSimilar: vi.Mock;
+  close: vi.Mock;
 }
 
 describe('LanceDB Vector Operations Integration Tests', () => {
@@ -77,7 +77,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
       connect: vi.fn(),
       createTable: vi.fn(),
       openTable: vi.fn(),
-      insertVectors: jest.Mock,
+      insertVectors: vi.Mock,
       searchSimilar: vi.fn(),
       close: vi.fn(),
     };

@@ -5,8 +5,8 @@
  * monitoring, resilience patterns, and system integration
  */
 
-import { errorMonitor } from '../../utils/error-monitoring';
-import { errorRecoveryOrchestrator } from '../../utils/error-recovery';
+import { errorMonitor } from '../../utils/error-monitoring.ts';
+import { errorRecoveryOrchestrator } from '../../utils/error-recovery.ts';
 import {
   executeWithErrorHandling,
   getSystemStatus,
@@ -424,7 +424,7 @@ describe('Comprehensive Error Handling System Integration', () => {
 
 describe('MCP Error Handling Integration', () => {
   it('should wrap MCP tools with error handling automatically', async () => {
-    const { MCPToolWrapper } = await import('../../coordination/swarm/mcp/error-handler');
+    const { MCPToolWrapper } = await import('../../coordination/swarm/mcp/error-handler.ts');
 
     const mockTool = {
       name: 'test_tool',
@@ -460,7 +460,7 @@ describe('MCP Error Handling Integration', () => {
   });
 
   it('should validate MCP tool parameters', async () => {
-    const { MCPParameterValidator } = await import('../../coordination/swarm/mcp/error-handler');
+    const { MCPParameterValidator } = await import('../../coordination/swarm/mcp/error-handler.ts');
 
     const schema = {
       type: 'object',

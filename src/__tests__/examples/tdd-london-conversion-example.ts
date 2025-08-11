@@ -5,7 +5,7 @@
  * to proper TDD London interaction testing pattern.
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // ============================================================================
 // ❌ BEFORE: Basic Object Mock Pattern (from integration-features-coverage.test.js)
@@ -15,16 +15,16 @@ function OLD_PATTERN_example() {
   test('❌ OLD PATTERN - should coordinate neural agents with WASM memory optimization', async () => {
     // ❌ Basic object mocks - tests state, not interactions
     const mockMemoryPool = {
-      allocate: jest.fn().mockReturnValue({
+      allocate: vi.fn().mockReturnValue({
         id: 1,
         offset: 0,
         ptr: new ArrayBuffer(1024),
       }),
-      deallocate: jest.fn().mockReturnValue(true),
+      deallocate: vi.fn().mockReturnValue(true),
     };
 
     const mockCoordination = {
-      coordinateAgents: jest.fn().mockResolvedValue({
+      coordinateAgents: vi.fn().mockResolvedValue({
         success: true,
         coordinationId: 'coord-123',
         memoryAllocations: [],
@@ -56,8 +56,8 @@ function OLD_PATTERN_example() {
  * Focuses on method calls and collaboration patterns
  */
 class MockMemoryPool {
-  allocate: jest.MockedFunction<(type: string, size: number) => MemoryAllocation> = jest.fn();
-  deallocate: jest.MockedFunction<(id: number) => boolean> = jest.fn();
+  allocate: vi.MockedFunction<(type: string, size: number) => MemoryAllocation> = vi.fn();
+  deallocate: vi.MockedFunction<(id: number) => boolean> = vi.fn();
 
   constructor() {
     this.allocate.mockReturnValue({
@@ -88,15 +88,15 @@ class MockMemoryPool {
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }
 
 class MockCoordinationService {
-  coordinateAgents: jest.MockedFunction<
+  coordinateAgents: vi.MockedFunction<
     (agentIds: string[], topology: string, task: string) => Promise<CoordinationResult>
-  > = jest.fn();
+  > = vi.fn();
 
   constructor() {
     this.coordinateAgents.mockResolvedValue({
@@ -117,7 +117,7 @@ class MockCoordinationService {
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }

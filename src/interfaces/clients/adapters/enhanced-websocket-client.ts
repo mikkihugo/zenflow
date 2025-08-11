@@ -1,11 +1,5 @@
 /**
- * Enhanced WebSocket Client with UACL Integration.
- *
- * Extends the original WebSocket client to implement UACL interface.
- * While maintaining 100% backward compatibility with existing code.
- */
-/**
- * @file Interface implementation: enhanced-websocket-client.
+ * @fileoverview Interface implementation: enhanced-websocket-client.
  */
 
 import { EventEmitter } from 'node:events';
@@ -15,7 +9,7 @@ import type {
   ClientStatus,
   IClient,
   RequestOptions,
-} from '../core/interfaces';
+} from '../core/interfaces.ts';
 
 import type {
   WebSocketClientConfig,
@@ -23,7 +17,7 @@ import type {
   WebSocketMessage,
   WebSocketMetrics,
   WebSocketRequestOptions,
-} from './websocket-types';
+} from './websocket-types.ts';
 
 // WebSocket ready state type
 type WebSocketReadyState = 0 | 1 | 2 | 3;

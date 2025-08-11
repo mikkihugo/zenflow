@@ -4,26 +4,32 @@
  * @file Central export point for all memory functionality including types,
  * stores, backends, and API controllers. This module serves as the single source
  * of truth for all memory operations and type definitions.
- * 
+ *
  * Following domain architecture standard with consolidated types.
  */
 
 // Export all memory types (Single Source of Truth)
-export * from './types';
+export * from './types.ts';
+
+// Import specific types for internal use
+import type { MemoryStats } from './types.ts';
 
 /**
  * @deprecated Legacy export structure - use domain types instead
  * @file Memory module legacy exports.
  */
 
-export * from './backends/base-backend';
-export * from './backends/factory';
-export { MemoryBackendFactory as BackendFactory, memoryBackendFactory } from './backends/factory';
+export * from './backends/base-backend.ts';
+export * from './backends/factory.ts';
+export {
+  MemoryBackendFactory as BackendFactory,
+  memoryBackendFactory,
+} from './backends/factory.ts';
 
 // Import types directly for use in factory method
-import type { MemoryCoordinationConfig } from './core/memory-coordinator';
-import type { MonitoringConfig } from './monitoring/memory-monitor';
-import type { OptimizationConfig } from './optimization/performance-optimizer';
+import type { MemoryCoordinationConfig } from './core/memory-coordinator.ts';
+import type { MonitoringConfig } from './monitoring/memory-monitor.ts';
+import type { OptimizationConfig } from './optimization/performance-optimizer.ts';
 
 // Advanced coordination and optimization
 export {
@@ -31,7 +37,7 @@ export {
   type MemoryCoordinationConfig,
   MemoryCoordinator,
   type MemoryNode,
-} from './core/memory-coordinator';
+} from './core/memory-coordinator.ts';
 // Error handling and recovery
 export {
   MemoryBackendError,
@@ -42,13 +48,13 @@ export {
   MemoryErrorCode,
   type MemoryErrorContext,
   MemoryPerformanceError,
-} from './error-handling/memory-errors';
+} from './error-handling/memory-errors.ts';
 export {
   type RecoveryContext,
   type RecoveryResult,
   type RecoveryStrategy,
   RecoveryStrategyManager,
-} from './error-handling/recovery-strategies';
+} from './error-handling/recovery-strategies.ts';
 
 // MCP Tools
 export {
@@ -58,21 +64,21 @@ export {
   memoryMonitorTool,
   memoryOptimizeTool,
   memoryTools,
-} from './mcp/memory-tools';
-export { MemoryManager, SessionMemoryStore } from './memory';
+} from './mcp/memory-tools.ts';
+export { MemoryManager, SessionMemoryStore } from './memory.ts';
 // Monitoring and analytics
 export {
   type MemoryAlert,
   type MemoryMetrics,
   MemoryMonitor,
   type MonitoringConfig,
-} from './monitoring/memory-monitor';
+} from './monitoring/memory-monitor.ts';
 export {
   type OptimizationAction,
   type OptimizationConfig,
   type PerformanceMetrics,
   PerformanceOptimizer,
-} from './optimization/performance-optimizer';
+} from './optimization/performance-optimizer.ts';
 
 // Memory system factory for easy initialization
 export class MemorySystemFactory {
@@ -89,14 +95,18 @@ export class MemorySystemFactory {
     coordination?: MemoryCoordinationConfig;
     optimization?: OptimizationConfig;
     monitoring?: MonitoringConfig;
-    backends?: Array<{ id: string; type: string; config: Record<string, unknown> }>;
+    backends?: Array<{
+      id: string;
+      type: string;
+      config: Record<string, unknown>;
+    }>;
   }) {
     // Import directly from source modules instead of circular self-import
-    const { MemoryCoordinator } = await import('./core/memory-coordinator');
-    const { PerformanceOptimizer } = await import('./optimization/performance-optimizer');
-    const { MemoryMonitor } = await import('./monitoring/memory-monitor');
-    const { RecoveryStrategyManager } = await import('./error-handling/recovery-strategies');
-    const { MemoryBackendFactory } = await import('./backends/factory');
+    const { MemoryCoordinator } = await import('./core/memory-coordinator.ts');
+    const { PerformanceOptimizer } = await import('./optimization/performance-optimizer.ts');
+    const { MemoryMonitor } = await import('./monitoring/memory-monitor.ts');
+    const { RecoveryStrategyManager } = await import('./error-handling/recovery-strategies.ts');
+    const { MemoryBackendFactory } = await import('./backends/factory.ts');
 
     // Initialize components
     const coordinator = config?.['coordination']
@@ -190,15 +200,27 @@ export class MemorySystemFactory {
    * @param backends
    */
   static async createBasicMemorySystem(
-    backends: Array<{ id: string; type: string; config: Record<string, unknown> }>
+    backends: Array<{
+      id: string;
+      type: string;
+      config: Record<string, unknown>;
+    }>
   ) {
     return MemorySystemFactory.createAdvancedMemorySystem({
       backends,
       coordination: {
         enabled: true,
         consensus: { quorum: 0.67, timeout: 5000, strategy: 'majority' },
-        distributed: { replication: 1, consistency: 'eventual', partitioning: 'hash' },
-        optimization: { autoCompaction: true, cacheEviction: 'adaptive', memoryThreshold: 0.8 },
+        distributed: {
+          replication: 1,
+          consistency: 'eventual',
+          partitioning: 'hash',
+        },
+        optimization: {
+          autoCompaction: true,
+          cacheEviction: 'adaptive',
+          memoryThreshold: 0.8,
+        },
       },
       monitoring: {
         enabled: true,
@@ -206,7 +228,12 @@ export class MemorySystemFactory {
         retentionPeriod: 300000,
         alerts: {
           enabled: true,
-          thresholds: { latency: 100, errorRate: 0.05, memoryUsage: 200, cacheHitRate: 0.7 },
+          thresholds: {
+            latency: 100,
+            errorRate: 0.05,
+            memoryUsage: 200,
+            cacheHitRate: 0.7,
+          },
         },
         metrics: { detailed: false, histograms: false, percentiles: true },
       },

@@ -13,9 +13,9 @@ const __dirname = path.dirname(__filename);
 
 // Mock WebAssembly for WASM tests
 global.WebAssembly = {
-  Memory: jest.fn().mockImplementation((config) => ({
+  Memory: vi.fn().mockImplementation((config) => ({
     buffer: new ArrayBuffer(config.initial * 64 * 1024),
-    grow: jest.fn().mockReturnValue(0),
+    grow: vi.fn().mockReturnValue(0),
   })),
 };
 
@@ -27,7 +27,7 @@ describe('Advanced Features - Complete Coverage', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Cognitive Pattern Evolution - Complete Coverage', () => {

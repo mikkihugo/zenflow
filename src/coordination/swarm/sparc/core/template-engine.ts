@@ -2,7 +2,7 @@
  * @file Template processing engine.
  */
 
-import { getLogger } from '../../../../config/logging-config';
+import { getLogger } from '../../../../config/logging-config.ts';
 import type {
   ArchitectureDesign,
   DetailedSpecification,
@@ -10,7 +10,7 @@ import type {
   ProjectSpecification,
   PseudocodeStructure,
   SPARCTemplate,
-} from '../types/sparc-types';
+} from '../types/sparc-types.ts';
 
 const logger = getLogger('coordination-swarm-sparc-core-template-engine');
 
@@ -23,10 +23,10 @@ const logger = getLogger('coordination-swarm-sparc-core-template-engine');
 
 import { nanoid } from 'nanoid';
 // Import all available templates
-import { MEMORY_SYSTEMS_TEMPLATE } from '../templates/memory-systems-template';
-import { NEURAL_NETWORKS_TEMPLATE } from '../templates/neural-networks-template';
-import { REST_API_TEMPLATE } from '../templates/rest-api-template';
-import { SWARM_COORDINATION_TEMPLATE } from '../templates/swarm-coordination-template';
+import { MEMORY_SYSTEMS_TEMPLATE } from '../templates/memory-systems-template.ts';
+import { NEURAL_NETWORKS_TEMPLATE } from '../templates/neural-networks-template.ts';
+import { REST_API_TEMPLATE } from '../templates/rest-api-template.ts';
+import { SWARM_COORDINATION_TEMPLATE } from '../templates/swarm-coordination-template.ts';
 
 export interface TemplateApplicationResult {
   specification: DetailedSpecification;

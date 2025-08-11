@@ -4,7 +4,7 @@
  */
 
 import type { NextFunction, Request, Response } from 'express';
-import { LogLevel, log } from './logging';
+import { LogLevel, log } from './logging.ts';
 
 /**
  * User information interface (for future use)
@@ -95,7 +95,7 @@ export const optionalAuthMiddleware = (
   next: NextFunction
 ): void => {
   // Check for auth headers (but don't enforce)
-  const authHeader = req.headers['authorization'] as string | undefined;
+  const authHeader = req.headers['authorization'];
   const apiKey = req.headers['x-api-key'] as string;
 
   let authContext: AuthContext;

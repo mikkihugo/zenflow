@@ -6,7 +6,11 @@
  */
 
 import type { EventEmitter } from 'node:events';
-import type { FACTSearchQuery, FACTStorageStats, FACTKnowledgeEntry } from '../knowledge/types/fact-types';
+import type {
+  FACTKnowledgeEntry,
+  FACTSearchQuery,
+  FACTStorageStats,
+} from '../knowledge/types/fact-types.ts';
 import type {
   GlobalAgentInfo,
   GlobalResourceMetrics,
@@ -15,7 +19,7 @@ import type {
   SwarmInfo,
   SwarmPerformanceMetrics,
   UniversalFact,
-} from './hive-types';
+} from './hive-types.ts';
 
 /**
  * Hive FACT System Interface

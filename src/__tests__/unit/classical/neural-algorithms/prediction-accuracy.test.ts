@@ -5,14 +5,14 @@
  * No mocks - verify real predictions on known datasets and mathematical functions
  */
 
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
   ACTIVATION_FUNCTIONS,
   createNeuralNetwork,
   createTrainer,
   initializeNeuralWasm,
   TRAINING_ALGORITHMS,
-} from '../../../../neural/core/neural-network';
+} from '../../../../neural/core/neural-network.ts';
 
 describe('Prediction Accuracy - Classical TDD', () => {
   let wasmModule: any;

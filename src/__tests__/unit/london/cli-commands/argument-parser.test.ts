@@ -6,7 +6,7 @@
  * with other components rather than testing implementation details.
  */
 
-import type { jest } from '@jest/globals';
+import type { jest } from 'vitest';
 
 // Mock argument parser interface for testing interactions
 interface ArgumentParser {
@@ -68,10 +68,10 @@ interface ValidationResult {
 class MockArgumentParser implements ArgumentParser {
   private options: ParserOptions = {};
   private commands = new Map<string, CommandDefinition>();
-  private parseFunction: jest.Mock;
-  private validateFunction: jest.Mock;
+  private parseFunction: vi.Mock;
+  private validateFunction: vi.Mock;
 
-  constructor(parseFunction?: jest.Mock, validateFunction?: jest.Mock) {
+  constructor(parseFunction?: vi.Mock, validateFunction?: vi.Mock) {
     this.parseFunction = parseFunction || vi.fn();
     this.validateFunction = validateFunction || vi.fn();
   }
@@ -115,8 +115,8 @@ class MockArgumentParser implements ArgumentParser {
 
 describe('ArgumentParser - TDD London', () => {
   let parser: MockArgumentParser;
-  let mockParseFunction: jest.Mock;
-  let mockValidateFunction: jest.Mock;
+  let mockParseFunction: vi.Mock;
+  let mockValidateFunction: vi.Mock;
 
   beforeEach(() => {
     mockParseFunction = vi.fn();

@@ -11,22 +11,22 @@
  * @file Interface implementation: api-client-wrapper.
  */
 
-import { getMCPServerURL } from '../../../config/index';
+import { getMCPServerURL } from '../../../config/index.ts';
 import type {
   Agent,
   HealthStatus,
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../../../coordination/schemas';
+} from '../../../coordination/schemas.ts';
 import type {
   NeuralNetwork,
   PredictionRequest,
   PredictionResponse,
   TrainingRequest,
-} from '../../api/http/schemas/neural';
-import { HTTPClientAdapter } from '../adapters/http-client-adapter';
-import type { HTTPClientConfig } from '../adapters/http-types';
+} from '../../api/http/schemas/neural.ts';
+import { HTTPClientAdapter } from '../adapters/http-client-adapter.ts';
+import type { HTTPClientConfig } from '../adapters/http-types.ts';
 
 /**
  * Legacy API Client Configuration (maintained for compatibility).

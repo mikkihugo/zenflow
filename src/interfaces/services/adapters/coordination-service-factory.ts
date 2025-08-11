@@ -9,16 +9,16 @@
  * @file Interface implementation: coordination-service-factory.
  */
 
-import type { Logger } from '../../../config/logging-config';
-import { getLogger } from '../../../config/logging-config';
-import type { IServiceFactory } from '../core/interfaces';
-import { ServicePriority, ServiceType } from '../types';
+import type { Logger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config.ts';
+import type { IServiceFactory } from '../core/interfaces.ts';
+import { ServicePriority, ServiceType } from '../types.ts';
 import {
   type CoordinationServiceAdapter,
   type CoordinationServiceAdapterConfig,
   createCoordinationServiceAdapter,
   createDefaultCoordinationServiceAdapterConfig,
-} from './coordination-service-adapter';
+} from './coordination-service-adapter.ts';
 
 /**
  * Factory class for creating CoordinationServiceAdapter instances.

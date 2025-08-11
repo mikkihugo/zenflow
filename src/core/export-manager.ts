@@ -11,7 +11,7 @@
 import { EventEmitter } from 'node:events';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 
 const logger = getLogger('UnifiedExport');
 
@@ -190,7 +190,11 @@ export class ExportSystem extends EventEmitter {
    * @param format
    * @param options
    */
-  async exportData(data: unknown, format: string, options: ExportOptions = {}): Promise<ExportResult> {
+  async exportData(
+    data: unknown,
+    format: string,
+    options: ExportOptions = {}
+  ): Promise<ExportResult> {
     const exporter = this.exporters.get(format.toLowerCase());
 
     if (!exporter) {
@@ -287,7 +291,10 @@ export class ExportSystem extends EventEmitter {
       }
     }
 
-    this.emit('export:batch', { total: formats.length, successful: results.length });
+    this.emit('export:batch', {
+      total: formats.length,
+      successful: results.length,
+    });
     return results;
   }
 

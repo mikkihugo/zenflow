@@ -6,7 +6,7 @@
  * @file Coordination system: least-connections
  */
 
-import type { LoadBalancingAlgorithm } from '../interfaces';
+import type { LoadBalancingAlgorithm } from '../interfaces.ts';
 
 interface ConnectionState {
   agentId: string;

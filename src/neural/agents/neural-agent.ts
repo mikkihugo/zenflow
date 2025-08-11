@@ -10,7 +10,7 @@ import { EventEmitter } from 'node:events';
 
 // Import these after class definitions to avoid circular dependency
 let MemoryOptimizer:
-  | typeof import('../../memory/optimization/performance-optimizer').PerformanceOptimizer
+  | typeof import('../../memory/optimization/performance-optimizer.ts').PerformanceOptimizer
   | null = null;
 let PATTERN_MEMORY_CONFIG: Record<string, unknown> | null = null;
 
@@ -1018,8 +1018,8 @@ class NeuralAgentFactory {
 
 // Lazy load to avoid circular dependency
 setImmediate(() => {
-  import('../core/network')
-    .catch(() => import('../core/neural'))
+  import('../core/network.ts')
+    .catch(() => import('../core/neural.ts'))
     .catch(() => null)
     .then((neural) => {
       if (neural) {

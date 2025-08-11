@@ -8,12 +8,15 @@
  * @file Interface implementation: system-event-factory.
  */
 
-import { getLogger } from '../../../config/logging-config';
-import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
-import type { IEventManager, IEventManagerFactory } from '../core/interfaces';
-import { EventManagerTypes } from '../core/interfaces';
-import type { SystemEventAdapterConfig } from './system-event-adapter';
-import { createDefaultSystemEventAdapterConfig, SystemEventAdapter } from './system-event-adapter';
+import { getLogger } from '../../../config/logging-config.ts';
+import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces.ts';
+import type { IEventManager, IEventManagerFactory } from '../core/interfaces.ts';
+import { EventManagerTypes } from '../core/interfaces.ts';
+import type { SystemEventAdapterConfig } from './system-event-adapter.ts';
+import {
+  createDefaultSystemEventAdapterConfig,
+  SystemEventAdapter,
+} from './system-event-adapter.ts';
 
 /**
  * System Event Manager Factory.

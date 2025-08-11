@@ -8,9 +8,9 @@
  * @file System-resilience implementation.
  */
 
-import { getLogger } from '../config/logging-config';
-import { errorMonitor } from './error-monitoring';
-import { AgentError, SystemError, TimeoutError, WASMMemoryError } from './errors';
+import { getLogger } from '../config/logging-config.ts';
+import { errorMonitor } from './error-monitoring.ts';
+import { AgentError, SystemError, TimeoutError, WASMMemoryError } from './errors.ts';
 
 const logger = getLogger('SystemResilience');
 
@@ -184,7 +184,9 @@ export class ResourceManager {
     }
     this.resourcesByOwner.get(owner)?.add(resourceId);
 
-    logger.debug(`Resource allocated: ${resourceId} (${type}) for ${owner}`, { size });
+    logger.debug(`Resource allocated: ${resourceId} (${type}) for ${owner}`, {
+      size,
+    });
 
     return resourceId;
   }
@@ -963,7 +965,12 @@ export class ErrorBoundary {
         `Error boundary '${this.config.name}' is breached`,
         'ERROR_BOUNDARY_BREACHED',
         'critical',
-        { metadata: { boundaryName: this.config.name, errorCount: this.errors.length } }
+        {
+          metadata: {
+            boundaryName: this.config.name,
+            errorCount: this.errors.length,
+          },
+        }
       );
     }
 
@@ -1321,7 +1328,9 @@ export class SystemResilienceOrchestrator {
         maxErrors: 5,
         windowMs: 5 * 60 * 1000, // 5 minutes
         onBreach: async (errors) => {
-          logger.error('FACT system error boundary breached', { errorCount: errors.length });
+          logger.error('FACT system error boundary breached', {
+            errorCount: errors.length,
+          });
           // Could implement FACT system restart logic here
         },
         recovery: async () => {
@@ -1339,7 +1348,9 @@ export class SystemResilienceOrchestrator {
         maxErrors: 10,
         windowMs: 3 * 60 * 1000, // 3 minutes
         onBreach: async (errors) => {
-          logger.error('Swarm coordination error boundary breached', { errorCount: errors.length });
+          logger.error('Swarm coordination error boundary breached', {
+            errorCount: errors.length,
+          });
           // Could implement swarm restart logic here
         },
         recovery: async () => {

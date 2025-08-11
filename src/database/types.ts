@@ -1,33 +1,33 @@
 /**
  * @fileoverview Database Domain Types - Single Source of Truth
- * 
+ *
  * All database-related types, interfaces, and type definitions.
  * Following Google TypeScript style guide and domain architecture standard.
  */
 
 // Re-export core entity types
 export type {
-  BaseEntity,
-  BaseDocumentEntity,
-  ProductVisionEntity,
-  ProductRequirementDocumentEntity,
-  EpicEntity,
-  FeatureEntity,
-  TaskEntity,
   ADREntity,
-  UserStoryEntity,
-  TestCaseEntity,
+  BaseDocumentEntity,
+  BaseEntity,
   CodeSnippetEntity,
-  QueryResultEntity,
+  CompetitorAnalysisEntity,
+  EpicEntity,
   ExecutionPlanEntity,
+  FeatureEntity,
+  ProductRequirementDocumentEntity,
+  ProductVisionEntity,
+  ProjectTemplateEntity,
+  QueryResultEntity,
+  RiskAssessmentEntity,
+  StakeholderEntity,
+  SWOTAnalysisEntity,
+  TaskEntity,
+  TestCaseEntity,
+  UserStoryEntity,
   WorkflowRunEntity,
   WorkflowStepEntity,
-  SWOTAnalysisEntity,
-  StakeholderEntity,
-  RiskAssessmentEntity,
-  ProjectTemplateEntity,
-  CompetitorAnalysisEntity,
-} from './entities/product-entities';
+} from './entities/product-entities.ts';
 
 // Re-export database configuration types
 export interface DatabaseConfig {
@@ -50,7 +50,7 @@ export interface DatabaseConnection {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   query<T = unknown>(sql: string, params?: unknown[]): Promise<T[]>;
-  execute(sql: string, params?: unknown[]): Promise<{rowsAffected: number}>;
+  execute(sql: string, params?: unknown[]): Promise<{ rowsAffected: number }>;
   transaction<T>(callback: (conn: DatabaseConnection) => Promise<T>): Promise<T>;
 }
 
@@ -170,7 +170,7 @@ export interface QueryCondition {
 export interface QueryOptions {
   readonly select?: readonly string[];
   readonly where?: readonly QueryCondition[];
-  readonly orderBy?: readonly {field: string; direction: 'ASC' | 'DESC'}[];
+  readonly orderBy?: readonly { field: string; direction: 'ASC' | 'DESC' }[];
   readonly limit?: number;
   readonly offset?: number;
   readonly joins?: readonly {
@@ -202,14 +202,20 @@ export class DatabaseError extends Error {
 }
 
 export class MigrationError extends DatabaseError {
-  constructor(message: string, public readonly migrationVersion?: string) {
+  constructor(
+    message: string,
+    public readonly migrationVersion?: string
+  ) {
     super(message, 'MIGRATION_ERROR');
     this.name = 'MigrationError';
   }
 }
 
 export class ConnectionError extends DatabaseError {
-  constructor(message: string, public readonly connectionConfig?: Partial<DatabaseConfig>) {
+  constructor(
+    message: string,
+    public readonly connectionConfig?: Partial<DatabaseConfig>
+  ) {
     super(message, 'CONNECTION_ERROR');
     this.name = 'ConnectionError';
   }
@@ -227,7 +233,7 @@ export class QueryError extends DatabaseError {
 }
 
 // Utility types
-export type EntityType = 
+export type EntityType =
   | 'vision'
   | 'prd'
   | 'epic'

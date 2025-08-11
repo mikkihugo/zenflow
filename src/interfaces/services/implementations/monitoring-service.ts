@@ -8,9 +8,9 @@
  * @file Monitoring service implementation.
  */
 
-import type { IService } from '../core/interfaces';
-import type { MonitoringServiceConfig, ServiceOperationOptions } from '../types';
-import { BaseService } from './base-service';
+import type { IService } from '../core/interfaces.ts';
+import type { MonitoringServiceConfig, ServiceOperationOptions } from '../types.ts';
+import { BaseService } from './base-service.ts';
 
 /**
  * Monitoring service implementation.

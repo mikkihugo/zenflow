@@ -8,8 +8,8 @@
  * @file Interface implementation: mock-command-handler.
  */
 
-import { getLogger } from '../../../config/logging-config';
-import { CommandExecutionEngine } from '../command-execution-engine';
+import { getLogger } from '../../../config/logging-config.ts';
+import { CommandExecutionEngine } from '../command-execution-engine.ts';
 
 const logger = getLogger('mock-command-handler');
 

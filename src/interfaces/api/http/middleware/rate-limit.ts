@@ -9,8 +9,8 @@
 
 import type { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import type { AuthContext } from './auth';
-import { LogLevel, log } from './logging';
+import type { AuthContext } from './auth.ts';
+import { LogLevel, log } from './logging.ts';
 
 /**
  * Rate limit configuration for different operation types.

@@ -16,7 +16,7 @@ import {
   isAuthenticationError,
   isClientError,
   isConnectionError,
-} from '../index';
+} from '../index.ts';
 
 // ===== BASIC USAGE =====
 
@@ -366,7 +366,7 @@ async function loadBalancingExample() {
  */
 async function backwardCompatibility() {
   // Import the compatible API client
-  const { APIClient, createAPIClient } = await import('../wrappers/api-client-wrapper');
+  const { APIClient, createAPIClient } = await import('../wrappers/api-client-wrapper.ts');
 
   // Create client using the old interface
   const apiClient = createAPIClient({

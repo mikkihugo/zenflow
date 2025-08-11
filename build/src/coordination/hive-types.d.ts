@@ -1,0 +1,111 @@
+/**
+ * @file TypeScript type definitions for coordination.
+ */
+import type { AgentId, AgentMetrics, AgentStatus, AgentType } from '../types/agent-types.ts';
+export interface HiveFACTConfig {
+    enableCache?: boolean;
+    cacheSize?: number;
+    knowledgeSources?: string[];
+    autoRefreshInterval?: number;
+}
+export interface UniversalFact {
+    id: string;
+    type: 'npm-package' | 'github-repo' | 'api-docs' | 'security-advisory' | 'general' | 'external';
+    category: string;
+    subject: string;
+    content: Record<string, unknown> | string | null;
+    source: string;
+    confidence: number;
+    timestamp: number;
+    refreshInterval?: number;
+    metadata: {
+        source: string;
+        timestamp: number;
+        confidence: number;
+        ttl?: number;
+    };
+    accessCount: number;
+    swarmAccess: Set<string>;
+    freshness?: 'fresh' | 'stale' | 'expired';
+}
+export interface GlobalAgentInfo {
+    id: AgentId;
+    name: string;
+    type: AgentType;
+    status: AgentStatus;
+    swarmId: string;
+    hiveMindId: string;
+    capabilities: AgentCapability[];
+    currentWorkload: number;
+    availability: AgentAvailability;
+    lastSync: Date;
+    networkLatency: number;
+    metrics?: AgentMetrics;
+    health?: number;
+}
+export interface SwarmInfo {
+    id: string;
+    hiveMindId: string;
+    topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
+    agentCount: number;
+    activeAgents: number;
+    taskQueue: number;
+    performance: SwarmPerformanceMetrics;
+    lastHeartbeat: Date;
+    location?: string;
+}
+export interface Task {
+    id: string;
+    type: string;
+    priority: number;
+    requirements: {
+        capabilities: string[];
+        minAgents: number;
+        maxAgents: number;
+        resources: {
+            cpu?: number;
+            memory?: number;
+        };
+    };
+    status: 'pending' | 'assigned' | 'executing' | 'completed' | 'failed';
+    assignedAgents: string[];
+    result?: Record<string, unknown> | string | number | boolean | null;
+}
+export interface AgentCapability {
+    type: string;
+    level: number;
+    resources: string[];
+    specializations: string[];
+}
+export interface AgentAvailability {
+    status: 'available' | 'busy' | 'reserved' | 'offline';
+    currentTasks: number;
+    maxConcurrentTasks: number;
+    estimatedFreeTime?: Date;
+    reservedFor?: string;
+}
+export interface SwarmPerformanceMetrics {
+    averageResponseTime: number;
+    tasksCompletedPerMinute: number;
+    successRate: number;
+    resourceEfficiency: number;
+    qualityScore: number;
+}
+export interface GlobalResourceMetrics {
+    totalCPU: number;
+    usedCPU: number;
+    totalMemory: number;
+    usedMemory: number;
+    totalAgents: number;
+    availableAgents: number;
+    busyAgents: number;
+    networkBandwidth: number;
+}
+export interface HiveHealthMetrics {
+    overallHealth: number;
+    consensus: number;
+    synchronization: number;
+    faultTolerance: number;
+    loadBalance: number;
+}
+//# sourceMappingURL=hive-types.d.ts.map

@@ -3,13 +3,13 @@
  * Tests all boundary conditions and error scenarios for MCP tool validation
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, , vi } from 'vitest';
 import { ZenSwarm } from '../../src/index-enhanced.js';
 import { EnhancedMCPTools } from '../../src/mcp-tools-enhanced.js';
 
 // Mock dependencies
-jest.mock('../../src/index-enhanced.js');
-jest.mock('../../src/persistence.js');
+vi.mock('../../src/index-enhanced.js');
+vi.mock('../../src/persistence.js');
 
 describe('MCP Validation Edge Cases', () => {
   let mcpTools;
@@ -17,16 +17,16 @@ describe('MCP Validation Edge Cases', () => {
 
   beforeEach(() => {
     mockZenSwarm = {
-      createSwarm: jest.fn(),
-      detectFeatures: jest.fn(),
-      benchmark: jest.fn(),
+      createSwarm: vi.fn(),
+      detectFeatures: vi.fn(),
+      benchmark: vi.fn(),
     };
-    ZenSwarm.initialize = jest.fn().mockResolvedValue(mockZenSwarm);
+    ZenSwarm.initialize = vi.fn().mockResolvedValue(mockZenSwarm);
     mcpTools = new EnhancedMCPTools();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Iteration Validation Edge Cases', () => {
@@ -104,9 +104,9 @@ describe('MCP Validation Edge Cases', () => {
 
       for (const { value, shouldFail } of learningRateTests) {
         const mockSwarm = {
-          spawn: jest.fn().mockResolvedValue({
+          spawn: vi.fn().mockResolvedValue({
             id: 'agent-1',
-            train: jest.fn().mockResolvedValue({ loss: 0.1 }),
+            train: vi.fn().mockResolvedValue({ loss: 0.1 }),
           }),
         };
         mcpTools.activeSwarms.set('test-swarm', mockSwarm);
@@ -148,7 +148,7 @@ describe('MCP Validation Edge Cases', () => {
 
       for (const { value, shouldFail } of modelTypeTests) {
         const mockSwarm = {
-          spawn: jest.fn().mockResolvedValue({
+          spawn: vi.fn().mockResolvedValue({
             id: 'agent-1',
             capabilities: ['neural'],
           }),
@@ -254,7 +254,7 @@ describe('MCP Validation Edge Cases', () => {
 
       const mockSwarm = {
         id: 'test-swarm',
-        spawn: jest.fn().mockImplementation(async () => {
+        spawn: vi.fn().mockImplementation(async () => {
           // Simulate processing delay
           await new Promise((resolve) => setTimeout(resolve, 10));
           return { id: `agent-${Date.now()}`, type: 'researcher' };
@@ -325,7 +325,7 @@ describe('MCP Validation Edge Cases', () => {
         return {
           id: `swarm-${swarmCount}`,
           topology: 'mesh',
-          terminate: jest.fn(),
+          terminate: vi.fn(),
         };
       });
 
@@ -359,7 +359,7 @@ describe('MCP Validation Edge Cases', () => {
       ];
 
       const mockSwarm = {
-        orchestrate: jest.fn().mockResolvedValue({
+        orchestrate: vi.fn().mockResolvedValue({
           id: 'task-1',
           status: 'completed',
         }),
@@ -384,7 +384,7 @@ describe('MCP Validation Edge Cases', () => {
       await mcpTools.initialize(mockZenSwarm);
 
       const mockSwarm = {
-        monitor: jest.fn().mockImplementation(async () => {
+        monitor: vi.fn().mockImplementation(async () => {
           // Simulate long network delay
           await new Promise((resolve) => setTimeout(resolve, 5000));
           return { status: 'timeout' };
@@ -409,8 +409,8 @@ describe('MCP Validation Edge Cases', () => {
 
       const mockSwarm = {
         id: 'test-swarm',
-        reconfigure: jest.fn().mockResolvedValue(true),
-        getStatus: jest.fn().mockReturnValue({ topology: 'mesh' }),
+        reconfigure: vi.fn().mockResolvedValue(true),
+        getStatus: vi.fn().mockReturnValue({ topology: 'mesh' }),
       };
 
       mockZenSwarm.createSwarm.mockResolvedValue(mockSwarm);

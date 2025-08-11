@@ -21,19 +21,19 @@ export type {
   IClient,
   IClientFactory,
   RequestOptions,
-} from '../core/interfaces';
+} from '../core/interfaces.ts';
 
 // Enhanced WebSocket client with backward compatibility
 export {
   EnhancedWebSocketClient,
   WebSocketClient, // Legacy export
-} from './enhanced-websocket-client';
+} from './enhanced-websocket-client.ts';
 // Core WebSocket adapter
 export {
   createWebSocketClient,
   WebSocketClientAdapter,
   WebSocketClientFactory as WebSocketAdapterFactory,
-} from './websocket-client-adapter';
+} from './websocket-client-adapter.ts';
 // WebSocket client factory with advanced features
 export {
   createWebSocketClientFactory,
@@ -41,17 +41,17 @@ export {
   FailoverWebSocketClient,
   LoadBalancedWebSocketClient,
   WebSocketClientFactory,
-} from './websocket-client-factory';
+} from './websocket-client-factory.ts';
 
 // Import for internal use
 import {
   FailoverWebSocketClient,
   LoadBalancedWebSocketClient,
   WebSocketClientFactory,
-} from './websocket-client-factory';
+} from './websocket-client-factory.ts';
 
 // Import types for internal use
-import type { WebSocketClientConfig } from './websocket-types';
+import type { WebSocketClientConfig } from './websocket-types.ts';
 
 // WebSocket types and utilities
 export {
@@ -78,7 +78,7 @@ export {
   // Utilities and type guards
   WebSocketTypeGuards,
   WebSocketUtils,
-} from './websocket-types';
+} from './websocket-types.ts';
 
 /**
  * Convenience function to create a WebSocket client with automatic factory selection.
@@ -116,7 +116,7 @@ export async function createOptimalWebSocketClient(
       size?: number;
     };
   }
-): Promise<import('../core/interfaces').IClient> {
+): Promise<import('../core/interfaces.ts').IClient> {
   const factory = new WebSocketClientFactory();
 
   // Handle load balancing
@@ -178,7 +178,7 @@ export async function createSimpleWebSocketClient(
     heartbeat?: boolean;
     useEnhanced?: boolean;
   }
-): Promise<import('../core/interfaces').IClient> {
+): Promise<import('../core/interfaces.ts').IClient> {
   const config: WebSocketClientConfig = {
     name: `simple-ws-${Date.now()}`,
     baseURL: url,
@@ -352,7 +352,7 @@ export const WebSocketClientPresets = {
  * @example
  */
 export class WebSocketHealthMonitor {
-  private clients = new Map<string, import('../core/interfaces').IClient>();
+  private clients = new Map<string, import('../core/interfaces.ts').IClient>();
   private intervals = new Map<string, NodeJS.Timeout>();
 
   /**
@@ -364,7 +364,7 @@ export class WebSocketHealthMonitor {
    */
   addClient(
     name: string,
-    client: import('../core/interfaces').IClient,
+    client: import('../core/interfaces.ts').IClient,
     checkInterval: number = 60000
   ): void {
     this.clients.set(name, client);
@@ -401,7 +401,7 @@ export class WebSocketHealthMonitor {
   /**
    * Get health status for all monitored clients.
    */
-  async getHealthStatus(): Promise<Map<string, import('../core/interfaces').ClientStatus>> {
+  async getHealthStatus(): Promise<Map<string, import('../core/interfaces.ts').ClientStatus>> {
     const results = new Map();
 
     for (const [name, client] of this.clients) {

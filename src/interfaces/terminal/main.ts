@@ -5,8 +5,8 @@
  * This is the main entry point for the Claude-Zen terminal interface.
  * It gets called by the CLI binary and launches the appropriate terminal interface.
  */
-import { getLogger } from '../../config/logging-config';
-import { detectModeWithReason, launchTerminalInterface } from './index';
+import { getLogger } from '../../config/logging-config.ts';
+import { detectModeWithReason, launchTerminalInterface } from './index.ts';
 
 const logger = getLogger('interfaces-terminal-main');
 

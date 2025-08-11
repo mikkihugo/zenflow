@@ -5,7 +5,7 @@
  * No mocks - verify real memory consumption and efficiency metrics
  */
 
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   ACTIVATION_FUNCTIONS,
   createNeuralNetwork,
@@ -16,7 +16,7 @@ import {
   TRAINING_ALGORITHMS,
   type TrainingConfig,
   type TrainingDataConfig,
-} from '../../../../neural/core/neural-network';
+} from '../../../../neural/core/neural-network.ts';
 
 describe('Memory Efficiency - Classical TDD', () => {
   let wasmModule: any;

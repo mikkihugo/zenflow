@@ -5,9 +5,9 @@
 
 import { EventEmitter } from 'node:events';
 import { PerformanceObserver, performance } from 'node:perf_hooks';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
-import { HiveKnowledgeBridge } from '../../coordination/hive-knowledge-bridge';
-import { SwarmKnowledgeSync } from '../../coordination/swarm/knowledge-sync';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest';
+import { HiveKnowledgeBridge } from '../../coordination/hive-knowledge-bridge.ts';
+import { SwarmKnowledgeSync } from '../../coordination/swarm/knowledge-sync.ts';
 
 // Performance test configuration
 const PERFORMANCE_CONFIG = {
@@ -62,9 +62,9 @@ class PerformanceMetrics {
 
     return {
       avg: sum / count,
-      min: sorted[0],
-      max: sorted[count - 1],
-      p95: sorted[Math.floor(count * 0.95)],
+      min: sorted[0] || 0,
+      max: sorted[count - 1] || 0,
+      p95: sorted[Math.floor(count * 0.95)] || 0,
       count,
     };
   }
@@ -308,7 +308,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         expect(missStats).not.toBeNull();
         expect(hitStats).not.toBeNull();
-        expect(hitStats?.avg).toBeLessThan(missStats?.avg);
+        expect(hitStats?.avg || 0).toBeLessThan(missStats?.avg || 0);
 
         await swarm.shutdown();
       },
@@ -343,7 +343,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
         const promises = queries.map(async ({ swarm, query, domain }, index) => {
           metrics.mark(`request-${index}-start`);
           try {
-            const result = await swarm.queryKnowledge(query, domain);
+            const result = await swarm?.queryKnowledge(query, domain);
             metrics.mark(`request-${index}-end`);
             metrics.measure(
               `individual-request-${index}`,
@@ -493,7 +493,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
           while (Date.now() < endTime) {
             const swarm = swarms[requestCount % swarms.length];
-            const promise = swarm
+            const promise = swarm!
               .queryKnowledge(`load test ${requestCount}`, 'performance')
               .then(() => requestCount++)
               .catch(() => {
@@ -643,7 +643,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
         expect(baselineStats).not.toBeNull();
         expect(afterChangesStats).not.toBeNull();
 
-        const regressionRatio = afterChangesStats?.avg / baselineStats?.avg;
+        const regressionRatio = (afterChangesStats?.avg || 0) / (baselineStats?.avg || 1);
 
         // Should not have significant performance regression
         // After cache warming, performance should actually improve

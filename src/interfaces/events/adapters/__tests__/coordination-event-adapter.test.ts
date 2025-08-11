@@ -15,16 +15,16 @@
  * - Health monitoring computations.
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { EventManagerTypes } from '../../core/interfaces';
-import type { CoordinationEvent } from '../../types';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { EventManagerTypes } from '../../core/interfaces.ts';
+import type { CoordinationEvent } from '../../types.ts';
 import {
   CoordinationEventAdapter,
   type CoordinationEventAdapterConfig,
   CoordinationEventHelpers,
   createCoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
-} from '../coordination-event-adapter';
+} from '../coordination-event-adapter.ts';
 
 describe('CoordinationEventAdapter', () => {
   let adapter: CoordinationEventAdapter;
@@ -68,7 +68,7 @@ describe('CoordinationEventAdapter', () => {
   describe('Lifecycle Management (London TDD)', () => {
     // London TDD: Mock internal dependencies and verify interactions
     it('should start successfully and emit start event', async () => {
-      const startHandler = jest.fn();
+      const startHandler = vi.fn();
       adapter.on('start', startHandler);
 
       await adapter.start();
@@ -78,7 +78,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should stop successfully and emit stop event', async () => {
-      const stopHandler = jest.fn();
+      const stopHandler = vi.fn();
       adapter.on('stop', stopHandler);
 
       await adapter.start();
@@ -89,8 +89,8 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should restart successfully', async () => {
-      const startHandler = jest.fn();
-      const stopHandler = jest.fn();
+      const startHandler = vi.fn();
+      const stopHandler = vi.fn();
 
       adapter.on('start', startHandler);
       adapter.on('stop', stopHandler);
@@ -125,7 +125,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should subscribe to coordination events', () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       const subscriptionId = adapter.subscribe(['coordination:swarm'], listener);
 
       expect(subscriptionId).toMatch(/coord-sub-/);
@@ -133,7 +133,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should unsubscribe from coordination events', () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       const subscriptionId = adapter.subscribe(['coordination:swarm'], listener);
 
       const result = adapter.unsubscribe(subscriptionId);
@@ -143,8 +143,8 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should unsubscribe all listeners for event type', () => {
-      const listener1 = jest.fn();
-      const listener2 = jest.fn();
+      const listener1 = vi.fn();
+      const listener2 = vi.fn();
 
       adapter.subscribe(['coordination:swarm'], listener1);
       adapter.subscribe(['coordination:swarm'], listener2);
@@ -157,7 +157,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should call subscribed listeners when events are emitted', async () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       adapter.subscribe(['coordination:swarm'], listener);
 
       const event: CoordinationEvent = {
@@ -181,7 +181,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should emit coordination events with proper validation', async () => {
-      const emissionHandler = jest.fn();
+      const emissionHandler = vi.fn();
       adapter.on('emission', emissionHandler);
 
       const event: CoordinationEvent = {
@@ -209,7 +209,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should emit coordination events immediately', async () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       adapter.subscribe(['coordination:agent'], listener);
 
       const event: CoordinationEvent = {
@@ -227,7 +227,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should process event batches correctly', async () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       adapter.subscribe(['coordination:task'], listener);
 
       const events: CoordinationEvent[] = [
@@ -268,7 +268,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should add and apply event filters', async () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       adapter.subscribe(['coordination:swarm'], listener);
 
       // Add filter that only allows events from specific source
@@ -304,7 +304,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should add and apply event transforms', async () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       adapter.subscribe(['coordination:agent'], listener);
 
       // Add transform that enriches events
@@ -575,7 +575,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should emit swarm coordination events', async () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       adapter.subscribe(['coordination:swarm'], listener);
 
       await adapter.emitSwarmCoordinationEvent({
@@ -600,7 +600,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should subscribe to swarm lifecycle events', () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       const subscriptionId = adapter.subscribeSwarmLifecycleEvents(listener);
 
       expect(subscriptionId).toMatch(/coord-sub-/);
@@ -609,7 +609,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should subscribe to agent management events', () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       const subscriptionId = adapter.subscribeAgentManagementEvents(listener);
 
       expect(subscriptionId).toMatch(/coord-sub-/);
@@ -617,7 +617,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should subscribe to task orchestration events', () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       const subscriptionId = adapter.subscribeTaskOrchestrationEvents(listener);
 
       expect(subscriptionId).toMatch(/coord-sub-/);
@@ -658,7 +658,7 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should handle invalid events gracefully', async () => {
-      const errorHandler = jest.fn();
+      const errorHandler = vi.fn();
       adapter.on('error', errorHandler);
 
       try {
@@ -676,8 +676,8 @@ describe('CoordinationEventAdapter', () => {
     });
 
     it('should handle subscription errors gracefully', async () => {
-      const faultyListener = jest.fn().mockRejectedValue(new Error('Listener error'));
-      const subscriptionErrorHandler = jest.fn();
+      const faultyListener = vi.fn().mockRejectedValue(new Error('Listener error'));
+      const subscriptionErrorHandler = vi.fn();
 
       adapter.on('subscription-error', subscriptionErrorHandler);
       adapter.subscribe(['coordination:swarm'], faultyListener);

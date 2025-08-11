@@ -1,22 +1,22 @@
 /**
  * @file Product Workflow Engine with Gates Integration Example
- * 
+ *
  * Demonstrates the enhanced ProductWorkflowEngine with AGUI gate capabilities:
  * - Gate injection at key workflow steps
  * - Human-in-the-loop decision points
  * - Workflow pause/resume based on gate decisions
  * - Decision audit trail and metrics
- * 
+ *
  * This example shows how to orchestrate a complete product development workflow
  * with strategic decision gates for human oversight and approval.
  */
 
-import { ProductWorkflowEngine } from '../coordination/orchestration/product-workflow-engine';
-import { WorkflowAGUIAdapter } from '../interfaces/agui/workflow-agui-adapter';
-import { TypeSafeEventBus, createTypeSafeEventBus } from '../core/type-safe-event-system';
-import { getLogger } from '../config/logging-config';
-import type { MemorySystem } from '../core/memory-system';
-import type { DocumentManager } from '../database/managers/document-manager';
+import { getLogger } from '../config/logging-config.ts';
+import { ProductWorkflowEngine } from '../coordination/orchestration/product-workflow-engine.ts';
+import type { MemorySystem } from '../core/memory-system.ts';
+import { createTypeSafeEventBus, type TypeSafeEventBus } from '../core/type-safe-event-system.ts';
+import type { DocumentManager } from '../database/managers/document-manager.ts';
+import { WorkflowAGUIAdapter } from '../interfaces/agui/workflow-agui-adapter.ts';
 
 const logger = getLogger('product-workflow-gates-integration');
 
@@ -34,7 +34,10 @@ class MockMemorySystem implements Partial<MemorySystem> {
   async store(key: string, data: any, namespace?: string): Promise<void> {
     const fullKey = namespace ? `${namespace}:${key}` : key;
     this.storage.set(fullKey, data);
-    logger.debug('Stored data', { key: fullKey, size: JSON.stringify(data).length });
+    logger.debug('Stored data', {
+      key: fullKey,
+      size: JSON.stringify(data).length,
+    });
   }
 
   async retrieve(key: string, namespace?: string): Promise<any> {
@@ -45,13 +48,13 @@ class MockMemorySystem implements Partial<MemorySystem> {
   async search(pattern: string, namespace?: string): Promise<Record<string, any>> {
     const results: Record<string, any> = {};
     const searchPattern = namespace ? `${namespace}:${pattern}` : pattern;
-    
+
     for (const [key, value] of this.storage) {
       if (key.includes(searchPattern.replace('*', ''))) {
         results[key] = value;
       }
     }
-    
+
     return results;
   }
 }
@@ -77,11 +80,11 @@ export class ProductWorkflowGatesIntegrationDemo {
     // Initialize dependencies
     this.memorySystem = new MockMemorySystem();
     this.documentManager = new MockDocumentManager();
-    
+
     // Create event bus for system coordination
     this.eventBus = createTypeSafeEventBus({
       enableMetrics: true,
-      domainValidation: true
+      domainValidation: true,
     });
 
     // Create AGUI adapter with production-like configuration
@@ -97,8 +100,8 @@ export class ProductWorkflowGatesIntegrationDemo {
         escalationTimeouts: [600000, 1200000, 1800000], // 10, 20, 30 minutes
         maxTotalTimeout: 3600000, // 1 hour
         enableAutoEscalation: true,
-        notifyOnTimeout: true
-      }
+        notifyOnTimeout: true,
+      },
     });
 
     // Create enhanced ProductWorkflowEngine with gate capabilities
@@ -123,7 +126,7 @@ export class ProductWorkflowGatesIntegrationDemo {
         maxConcurrentWorkflows: 5,
         defaultTimeout: 300000,
         enableMetrics: true,
-        enablePersistence: true
+        enablePersistence: true,
       }
     );
   }
@@ -172,7 +175,7 @@ export class ProductWorkflowGatesIntegrationDemo {
     // Show gate definitions
     const gateDefinitions = this.engine.getGateDefinitions();
     console.log(`🚪 Gate Definitions: ${gateDefinitions.size} gates configured`);
-    
+
     for (const [stepName, gate] of gateDefinitions) {
       console.log(`   • ${stepName}: ${gate.title} (${gate.priority} priority)`);
     }
@@ -183,7 +186,9 @@ export class ProductWorkflowGatesIntegrationDemo {
 
     // Show AGUI adapter statistics
     const stats = this.engine.getGateStatistics();
-    console.log(`📈 AGUI Statistics: ${stats.totalDecisionAudits} decisions logged, ${stats.activeGates} active gates`);
+    console.log(
+      `📈 AGUI Statistics: ${stats.totalDecisionAudits} decisions logged, ${stats.activeGates} active gates`
+    );
 
     console.log('='.repeat(80) + '\n');
   }
@@ -202,7 +207,7 @@ export class ProductWorkflowGatesIntegrationDemo {
         technicalComplexity: 'medium',
         targetMarket: 'b2c',
         estimatedEffort: '6 months',
-        stakeholders: ['product-manager', 'tech-lead', 'business-analyst', 'ux-designer']
+        stakeholders: ['product-manager', 'tech-lead', 'business-analyst', 'ux-designer'],
       },
       environment: {
         type: 'development',
@@ -215,7 +220,7 @@ export class ProductWorkflowGatesIntegrationDemo {
           maxMemory: 1024 * 1024 * 1024,
           maxFileSize: 10 * 1024 * 1024,
           maxConcurrency: 5,
-        }
+        },
       },
       permissions: {
         canReadDocuments: true,
@@ -223,7 +228,7 @@ export class ProductWorkflowGatesIntegrationDemo {
         canDeleteDocuments: false,
         canExecuteSteps: ['*'],
         canAccessResources: ['*'],
-      }
+      },
     });
 
     if (!workflowResult.success) {
@@ -248,7 +253,7 @@ export class ProductWorkflowGatesIntegrationDemo {
     const progressMonitor = setInterval(async () => {
       try {
         iterationCount++;
-        
+
         // Get workflow status
         const workflowStatus = await this.engine.getProductWorkflowStatus(workflowId);
         if (!workflowStatus) {
@@ -267,11 +272,13 @@ export class ProductWorkflowGatesIntegrationDemo {
         const pendingGates = await this.engine.getPendingGates();
         if (pendingGates.size > 0) {
           console.log(`   🚪 Pending Gates: ${pendingGates.size}`);
-          
+
           // Simulate gate decisions for demo
           for (const [gateId, gateRequest] of pendingGates) {
-            console.log(`      Gate: ${gateRequest.workflowContext.stepName} - ${gateRequest.question}`);
-            
+            console.log(
+              `      Gate: ${gateRequest.workflowContext.stepName} - ${gateRequest.question}`
+            );
+
             // Auto-approve gates for demo (in real scenario, this would be human decisions)
             await this.simulateGateDecision(gateId, gateRequest);
           }
@@ -288,7 +295,6 @@ export class ProductWorkflowGatesIntegrationDemo {
           console.log('⏰ Monitoring timeout reached');
           monitoring = false;
         }
-
       } catch (error) {
         logger.error('Error monitoring workflow progress', { error });
         monitoring = false;
@@ -317,7 +323,7 @@ export class ProductWorkflowGatesIntegrationDemo {
     console.log(`      Question: ${gateRequest.question}`);
     console.log(`      Business Impact: ${gateRequest.workflowContext.businessImpact}`);
     console.log(`      Stakeholders: ${gateRequest.workflowContext.stakeholders.join(', ')}`);
-    
+
     // In a real scenario, this would be handled by the AGUI system
     // For demo purposes, we simulate approval
     // (The actual gate processing happens internally in the workflow engine)
@@ -398,16 +404,15 @@ export async function runInteractiveDemo(): Promise<void> {
 
     console.log('Step 2: Displaying system status...');
     await demo.displaySystemStatus();
-    
+
     console.log('Step 3: Starting product workflow with gates...');
     await demo.runProductWorkflowWithGates();
     console.log('✅ Workflow execution completed\n');
 
     console.log('Step 4: Displaying final metrics...');
     await demo.displayGateMetrics();
-    
-    console.log('🎉 Interactive demo completed successfully!');
 
+    console.log('🎉 Interactive demo completed successfully!');
   } catch (error) {
     console.error('❌ Interactive demo failed:', error);
     throw error;
@@ -425,7 +430,7 @@ export { runProductWorkflowGatesDemo, runInteractiveDemo };
 
 // Run demo if executed directly
 if (require.main === module) {
-  runProductWorkflowGatesDemo().catch(error => {
+  runProductWorkflowGatesDemo().catch((error) => {
     console.error('Demo execution failed:', error);
     process.exit(1);
   });

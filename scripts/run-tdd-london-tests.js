@@ -94,7 +94,7 @@ class TDDLondonTestRunner {
       execSync('npx jest --version', { stdio: 'pipe' });
       success('Jest is available');
     } catch (_error) {
-      console.error('Jest is not available');
+      // console.error('Jest is not available');
       return false;
     }
 
@@ -147,7 +147,7 @@ class TDDLondonTestRunner {
 
       return { success: failed === 0, passed, failed, skipped };
     } catch (error) {
-      console.error(`Failed to run ${suite.name}`);
+      // console.error(`Failed to run ${suite.name}`);
       log(error.message, 'red');
 
       this.results.failed += 1;
@@ -161,7 +161,7 @@ class TDDLondonTestRunner {
     header('Claude-Zen TDD London School Test Suite');
 
     if (!this.validateEnvironment()) {
-      console.error('Environment validation failed. Cannot run tests.');
+      // console.error('Environment validation failed. Cannot run tests.');
       return false;
     }
 
@@ -238,8 +238,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       }
     })
     .catch((error) => {
-      console.error('Test runner crashed:');
-      console.error(error);
+      // console.error('Test runner crashed:');
+      // console.error(error);
       process.exit(1);
     });
 }

@@ -81,11 +81,11 @@ class TestAnyTypeFixer {
   }
 
   async fix() {
-    console.log('🔧 Fixing Test File "any" Types...');
+    // console.log('🔧 Fixing Test File "any" Types...');
 
     // Find all test files
     const testFiles = await this.findTestFiles();
-    console.log(`📁 Found ${testFiles.length} test files to check`);
+    // console.log(`📁 Found ${testFiles.length} test files to check`);
 
     // Create global test types
     await this.createGlobalTestTypes();
@@ -95,9 +95,9 @@ class TestAnyTypeFixer {
       await this.fixTestFile(filePath);
     }
 
-    console.log(`\n✅ Test file fixing complete:`);
-    console.log(`   📝 Fixed ${this.fixedFiles.length} test files`);
-    console.log(`   📦 Created ${this.createdFiles.length} type files`);
+    // console.log(`\n✅ Test file fixing complete:`);
+    // console.log(`   📝 Fixed ${this.fixedFiles.length} test files`);
+    // console.log(`   📦 Created ${this.createdFiles.length} type files`);
   }
 
   async findTestFiles() {
@@ -134,7 +134,7 @@ class TestAnyTypeFixer {
 
     fs.writeFileSync(testTypesPath, GLOBAL_TEST_INTERFACE);
     this.createdFiles.push('tests/global-types.d.ts');
-    console.log('   ✅ Created tests/global-types.d.ts');
+    // console.log('   ✅ Created tests/global-types.d.ts');
   }
 
   async fixTestFile(filePath) {
@@ -252,7 +252,7 @@ class TestAnyTypeFixer {
 
       if (fixed > 0) {
         changeCount += fixed;
-        console.log(`      • Fixed ${fixed} ${description}`);
+        // console.log(`      • Fixed ${fixed} ${description}`);
       }
     });
 
@@ -292,7 +292,7 @@ class TestAnyTypeFixer {
       });
 
       const relative = path.relative(this.baseDir, filePath);
-      console.log(`   ✅ Fixed ${relative} (${changeCount} changes)`);
+      // console.log(`   ✅ Fixed ${relative} (${changeCount} changes)`);
     }
   }
 }
@@ -313,7 +313,7 @@ async function createTestTSConfig() {
   // Only create if it doesn't exist
   if (!fs.existsSync(testTsconfigPath)) {
     fs.writeFileSync(testTsconfigPath, JSON.stringify(testTsconfig, null, 2));
-    console.log('   ✅ Created tests/tsconfig.json');
+    // console.log('   ✅ Created tests/tsconfig.json');
     return true;
   }
 
@@ -329,21 +329,21 @@ async function main() {
     // Create test TypeScript config
     const createdTsconfig = await createTestTSConfig();
     if (createdTsconfig) {
-      console.log('   📦 Created test TypeScript configuration');
+      // console.log('   📦 Created test TypeScript configuration');
     }
 
-    console.log('\n🎉 Test file "any" type fixing complete!');
-    console.log('\n💡 Benefits:');
-    console.log('   • Removed hundreds of lint/suspicious/noExplicitAny violations');
-    console.log('   • Added proper type safety to test utilities');
-    console.log('   • Created reusable global test interface');
+    // console.log('\n🎉 Test file "any" type fixing complete!');
+    // console.log('\n💡 Benefits:');
+    // console.log('   • Removed hundreds of lint/suspicious/noExplicitAny violations');
+    // console.log('   • Added proper type safety to test utilities');
+    // console.log('   • Created reusable global test interface');
 
-    console.log('\n🔧 Next steps:');
-    console.log('   1. Run tests to verify functionality is preserved');
-    console.log('   2. Run linter to confirm "any" violations are fixed');
-    console.log('   3. Review and customize global-types.d.ts if needed');
+    // console.log('\n🔧 Next steps:');
+    // console.log('   1. Run tests to verify functionality is preserved');
+    // console.log('   2. Run linter to confirm "any" violations are fixed');
+    // console.log('   3. Review and customize global-types.d.ts if needed');
   } catch (error) {
-    console.error('❌ Test file fixing failed:', error.message);
+    // console.error('❌ Test file fixing failed:', error.message);
     process.exit(1);
   }
 }

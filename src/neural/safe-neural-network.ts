@@ -2,7 +2,7 @@
  * @file Neural network: safe-neural-network.
  */
 
-import { Logger } from '../core/logger';
+import { Logger } from '../core/logger.ts';
 
 const logger = new Logger('src-neural-safe-neural-network');
 
@@ -25,7 +25,7 @@ import {
   type WasmError,
   type WasmResult,
   type WasmSuccess,
-} from '../utils/type-guards';
+} from '../utils/type-guards.ts';
 
 export interface NeuralNetworkConfig {
   layers: number[];

@@ -16,14 +16,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
-import { MemoryManager } from '../memory/index';
-import { DocumentDrivenSystem } from './document-driven-system';
-import { DocumentationLinker } from './documentation-linker';
-import { ExportSystem as ExportManager } from './export-manager';
-import { InterfaceLauncher } from './interface-launcher';
-import { MemorySystem } from './memory-system';
-import { WorkflowEngine } from './workflow-engine';
+import { getLogger } from '../config/logging-config.ts';
+import { MemoryManager } from '../memory/index.ts';
+import { DocumentDrivenSystem } from './document-driven-system.ts';
+import { DocumentationLinker } from './documentation-linker.ts';
+import { ExportSystem as ExportManager } from './export-manager.ts';
+import { InterfaceLauncher } from './interface-launcher.ts';
+import { MemorySystem } from './memory-system.ts';
+import { WorkflowEngine } from './workflow-engine.ts';
 
 const logger = getLogger('ApplicationCoordinator');
 
@@ -82,7 +82,11 @@ export interface SystemStatus {
     workflow: { status: string; activeWorkflows: number };
     export: { status: string; availableFormats: number };
     documentation: { status: string; documentsIndexed: number };
-    workspace: { status: string; workspaceId?: string; documentsLoaded: number };
+    workspace: {
+      status: string;
+      workspaceId?: string;
+      documentsLoaded: number;
+    };
   };
   uptime: number;
   lastUpdate: string;
@@ -316,7 +320,9 @@ export class ApplicationCoordinator extends EventEmitter {
       verbose: false,
       silent: false,
       config: {
-        ...(this.config.interface?.theme !== undefined && { theme: this.config.interface.theme }),
+        ...(this.config.interface?.theme !== undefined && {
+          theme: this.config.interface.theme,
+        }),
         ...(this.config.interface?.enableRealTime !== undefined && {
           realTime: this.config.interface.enableRealTime,
         }),
@@ -338,7 +344,12 @@ export class ApplicationCoordinator extends EventEmitter {
   async getSystemStatus(): Promise<SystemStatus> {
     const memoryStats = await this.memorySystem.getStats();
     const workflowMetrics = { running: 0 }; // await this.workflowEngine.getWorkflowMetrics();
-    const _exportStats = { totalExports: 0, successfulExports: 0, failedExports: 0, totalSize: 0 }; // this.exportSystem.getExportStats();
+    const _exportStats = {
+      totalExports: 0,
+      successfulExports: 0,
+      failedExports: 0,
+      totalSize: 0,
+    }; // this.exportSystem.getExportStats();
 
     return {
       status: this.status,
@@ -367,7 +378,9 @@ export class ApplicationCoordinator extends EventEmitter {
         },
         workspace: {
           status: this.activeWorkspaceId ? 'ready' : 'none',
-          ...(this.activeWorkspaceId !== undefined && { workspaceId: this.activeWorkspaceId }),
+          ...(this.activeWorkspaceId !== undefined && {
+            workspaceId: this.activeWorkspaceId,
+          }),
           documentsLoaded: 0, // Would be calculated from document system
         },
       },

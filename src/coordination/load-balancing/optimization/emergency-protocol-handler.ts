@@ -12,7 +12,7 @@ const logger = getLogger('coordination-load-balancing-optimization-emergency-pro
  */
 
 import { EventEmitter } from 'node:events';
-import type { EmergencyHandler } from '../interfaces';
+import type { EmergencyHandler } from '../interfaces.ts';
 
 interface EmergencyProtocol {
   name: string;

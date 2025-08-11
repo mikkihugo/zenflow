@@ -5,9 +5,9 @@
  * for testing interactions and protocols.
  */
 
-import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
-import { sparcMCPTools } from '../../coordination/swarm/sparc/integrations/mcp-sparc-tools';
-import { SpecificationPhaseEngine } from '../../coordination/swarm/sparc/phases/specification/specification-engine';
+import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine.ts';
+import { sparcMCPTools } from '../../coordination/swarm/sparc/integrations/mcp-sparc-tools.ts';
+import { SpecificationPhaseEngine } from '../../coordination/swarm/sparc/phases/specification/specification-engine.ts';
 
 describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
   let sparcEngine: SPARCEngineCore;

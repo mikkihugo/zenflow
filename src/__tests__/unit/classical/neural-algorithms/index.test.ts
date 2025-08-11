@@ -5,7 +5,7 @@
  * Focus: Real computations, mathematical correctness, no mocks
  */
 
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('Neural Algorithms - Classical TDD Test Suite', () => {
   describe('Test Suite Overview', () => {

@@ -1,26 +1,148 @@
 /**
- * DSPy Swarm Coordinator.
- *
- * A DSPy-powered swarm where each agent is a DSPy program that learns and optimizes.
- * This creates an intelligent swarm where agents improve their performance over time.
- * Through DSPy's optimization capabilities.
+ * @fileoverview DSPy Swarm Coordinator - Neural Multi-Agent Coordination System
+ * 
+ * This module implements a sophisticated swarm coordination system where each agent
+ * is powered by Stanford's DSPy framework. Unlike traditional static agents, these
+ * DSPy agents are neural programs that continuously learn and optimize their performance
+ * through execution feedback and training examples.
+ * 
+ * ## Core Architecture
+ * 
+ * The DSPy Swarm Coordinator creates a network of intelligent agents where:
+ * - **Each Agent = DSPy Program**: Agents are neural programs with specific signatures
+ * - **Continuous Learning**: Agents improve through execution examples and optimization
+ * - **Intelligent Coordination**: Central coordination program assigns optimal agents
+ * - **Performance Tracking**: Comprehensive metrics and learning history
+ * - **Adaptive Topology**: Network structure adapts based on agent performance
+ * 
+ * ## Agent Types and Capabilities
+ * 
+ * Default agents include:
+ * - **Code Generator**: Creates high-quality code with tests and documentation
+ * - **Code Analyzer**: Analyzes code quality and suggests improvements
+ * - **System Architect**: Designs optimal system architectures
+ * - **Test Engineer**: Creates comprehensive test suites
+ * - **Research Specialist**: Conducts deep technical research
+ * - **Task Coordinator**: Manages complex multi-agent workflows
+ * 
+ * ## Learning and Optimization
+ * 
+ * The system implements continuous learning through:
+ * - **Execution Examples**: Every task execution becomes a training example
+ * - **Automatic Optimization**: Agents are optimized after every 10 successful executions
+ * - **Performance Metrics**: Success rate, accuracy, and response time tracking
+ * - **Quality Assessment**: Learning examples are quality-scored for optimization
+ * 
+ * ## Integration with stdio MCP
+ * 
+ * This coordinator powers the DSPy MCP tools available through:
+ * ```bash
+ * claude-zen swarm  # Starts stdio MCP server with DSPy tools
+ * ```
+ * 
+ * Available tools include:
+ * - `dspy_swarm_init` - Initialize intelligent swarm coordination
+ * - `dspy_swarm_execute_task` - Execute tasks using neural agents
+ * - `dspy_swarm_generate_code` - AI-powered code generation
+ * - And 5 additional production-grade tools
+ * 
+ * ## Neural Coordination Intelligence
+ * 
+ * The coordinator uses a dedicated DSPy program for task assignment:
+ * ```typescript
+ * // Coordination signature
+ * 'task_description: string, available_agents: array, swarm_state: object -> 
+ *  optimal_assignment: object, coordination_plan: array, expected_outcome: string'
+ * ```
+ * 
+ * This enables intelligent decision-making for:
+ * - **Agent Selection**: Choose optimal agents based on capabilities and performance
+ * - **Resource Allocation**: Distribute tasks efficiently across the swarm
+ * - **Load Balancing**: Prevent agent overload and optimize throughput
+ * - **Quality Prediction**: Estimate task success probability before execution
+ * 
+ * @example
+ * ```typescript
+ * // Initialize DSPy swarm coordinator
+ * const coordinator = new DSPySwarmCoordinator({
+ *   model: 'claude-3-5-sonnet-20241022',
+ *   temperature: 0.1,
+ *   topology: 'hierarchical'
+ * });
+ * 
+ * await coordinator.initialize();
+ * 
+ * // Execute intelligent task coordination
+ * const result = await coordinator.executeTask({
+ *   type: 'code-generation',
+ *   description: 'Create React authentication component',
+ *   input: { requirements: 'Login form with validation' },
+ *   requiredCapabilities: ['code-generation', 'react', 'validation'],
+ *   priority: 'high',
+ *   complexity: 7
+ * });
+ * ```
+ * 
+ * @author Claude Code Zen Team
+ * @version 2.0.0-alpha.73
+ * @since 1.0.0
+ * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Framework
+ * @see {@link dspySwarmMCPTools} MCP Tools powered by this coordinator
  */
 /**
  * @file Dspy-swarm coordination system.
  */
 
-import { getLogger } from '../../config/logging-config';
-import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper';
-import { createDSPyWrapper } from '../../neural/dspy-wrapper';
-import type { DSPyConfig } from '../../neural/types/dspy-types';
-import type { AgentType } from '../types';
+import { getLogger } from '../../config/logging-config.ts';
+import type { DSPyProgram, DSPyWrapper } from '../../neural/dspy-wrapper.ts';
+import { createDSPyWrapper } from '../../neural/dspy-wrapper.ts';
+import type { DSPyConfig } from '../../neural/types/dspy-types.ts';
+import type { AgentType } from '../types.ts';
 
 const logger = getLogger('DSPySwarmCoordinator');
 
 /**
- * DSPy Agent - Each agent is a DSPy program with specific capabilities.
- *
+ * DSPy Agent - Neural program with specialized capabilities and performance tracking.
+ * 
+ * Each DSPy agent represents a specialized neural program built using Stanford's DSPy
+ * framework. Unlike traditional static agents, these agents continuously learn and
+ * optimize their performance through execution feedback and training examples.
+ * 
+ * ## Agent Lifecycle
+ * 
+ * 1. **Creation**: Agent is initialized with a specific DSPy program signature
+ * 2. **Execution**: Agent processes tasks and generates results
+ * 3. **Learning**: Successful executions become training examples
+ * 4. **Optimization**: After every 10 successful executions, agent is optimized
+ * 5. **Performance Update**: Metrics are continuously updated based on results
+ * 
+ * ## Performance Tracking
+ * 
+ * Each agent maintains comprehensive performance metrics:
+ * - **Accuracy**: Quality of agent outputs (0-1 scale)
+ * - **Response Time**: Average execution time in milliseconds
+ * - **Success Rate**: Percentage of successful task completions
+ * - **Learning Examples**: Number of training examples accumulated
+ * 
  * @example
+ * ```typescript
+ * const codeAgent: DSPyAgent = {
+ *   id: 'dspy-coder-1625847693123',
+ *   type: 'coder',
+ *   name: 'Code Generator',
+ *   program: dspyProgram, // DSPy program instance
+ *   signature: 'requirements: string -> code: string, tests: array',
+ *   capabilities: ['code-generation', 'testing', 'typescript'],
+ *   performance: {
+ *     accuracy: 0.92,
+ *     responseTime: 1500,
+ *     successRate: 0.89,
+ *     learningExamples: 45
+ *   },
+ *   status: 'idle',
+ *   lastOptimization: new Date('2024-01-15T10:30:00Z')
+ * };
+ * ```
  */
 export interface DSPyAgent {
   id: string;
@@ -40,9 +162,61 @@ export interface DSPyAgent {
 }
 
 /**
- * Task Assignment for DSPy agents.
- *
+ * Task Assignment for DSPy agents with comprehensive tracking and metadata.
+ * 
+ * DSPy tasks represent work units that are intelligently assigned to agents based on
+ * capabilities, performance, and current system state. Each task includes detailed
+ * metadata for learning, optimization, and performance analysis.
+ * 
+ * ## Task Lifecycle
+ * 
+ * 1. **Creation**: Task is submitted to the swarm coordinator
+ * 2. **Analysis**: Coordinator analyzes task requirements and complexity
+ * 3. **Assignment**: Optimal agent is selected using DSPy coordination program
+ * 4. **Execution**: Assigned agent processes the task
+ * 5. **Learning**: Result becomes a training example for the agent
+ * 6. **Optimization**: Agent performance is updated based on execution
+ * 
+ * ## Task Complexity Scoring
+ * 
+ * Complexity is scored on a 1-100 scale:
+ * - **1-25**: Simple tasks (basic queries, simple transformations)
+ * - **26-50**: Moderate tasks (code analysis, simple generation)
+ * - **51-75**: Complex tasks (architecture design, advanced code generation)
+ * - **76-100**: Expert tasks (complex system design, advanced optimization)
+ * 
+ * ## Priority Levels
+ * 
+ * - **low**: Background processing, non-urgent tasks
+ * - **medium**: Standard processing priority (default)
+ * - **high**: Expedited processing for important tasks  
+ * - **critical**: Maximum priority with immediate processing
+ * 
  * @example
+ * ```typescript
+ * const codeGenTask: DSPyTask = {
+ *   id: 'task-1625847693456',
+ *   type: 'code-generation',
+ *   description: 'Create React authentication component with TypeScript',
+ *   input: {
+ *     requirements: 'Login form with email/password validation',
+ *     framework: 'react',
+ *     language: 'typescript'
+ *   },
+ *   requiredCapabilities: ['code-generation', 'react', 'typescript', 'validation'],
+ *   complexity: 65,
+ *   priority: 'high',
+ *   assignedAgent: 'dspy-coder-1625847693123',
+ *   startTime: new Date('2024-01-15T10:30:00Z'),
+ *   endTime: new Date('2024-01-15T10:32:30Z'),
+ *   success: true,
+ *   result: {
+ *     code: 'function LoginForm() { ... }',
+ *     tests: ['test suite code'],
+ *     documentation: 'JSDoc comments'
+ *   }
+ * };
+ * ```
  */
 export interface DSPyTask {
   id: string;
@@ -60,9 +234,60 @@ export interface DSPyTask {
 }
 
 /**
- * Swarm Topology for DSPy coordination.
- *
+ * Swarm Topology for DSPy coordination and inter-agent communication.
+ * 
+ * The swarm topology defines how DSPy agents are connected and coordinate with each
+ * other. The topology affects performance, scalability, and coordination efficiency
+ * based on the specific use case and requirements.
+ * 
+ * ## Topology Types
+ * 
+ * ### Mesh Topology
+ * - **Structure**: Every agent connected to every other agent
+ * - **Best For**: Collaborative tasks requiring extensive inter-agent communication
+ * - **Advantages**: Maximum flexibility, fault tolerance, parallel processing
+ * - **Disadvantages**: High communication overhead, complexity scales O(n²)
+ * 
+ * ### Hierarchical Topology  
+ * - **Structure**: Tree-like structure with coordinator at root
+ * - **Best For**: Large teams with clear command structure
+ * - **Advantages**: Clear coordination, scalable, efficient resource allocation
+ * - **Disadvantages**: Single point of failure, bottleneck at coordinator
+ * 
+ * ### Ring Topology
+ * - **Structure**: Agents connected in circular pattern
+ * - **Best For**: Pipeline processing, sequential workflows
+ * - **Advantages**: Predictable communication, easy to implement
+ * - **Disadvantages**: Sequential bottlenecks, single point of failure
+ * 
+ * ### Star Topology
+ * - **Structure**: Central coordinator with spoke agents
+ * - **Best For**: Centralized control, simple coordination
+ * - **Advantages**: Simple management, clear control point
+ * - **Disadvantages**: Coordinator bottleneck, limited parallel processing
+ * 
+ * ## Coordination Strategies
+ * 
+ * - **parallel**: Maximum concurrent task execution
+ * - **sequential**: Tasks executed in order with dependencies
+ * - **adaptive**: Dynamic strategy selection based on current state
+ * 
  * @example
+ * ```typescript
+ * const meshTopology: DSPySwarmTopology = {
+ *   type: 'mesh',
+ *   agents: [codeAgent, analyzeAgent, archAgent],
+ *   connections: [
+ *     {
+ *       from: 'dspy-coder-123',
+ *       to: 'dspy-analyzer-456', 
+ *       weight: 0.8,
+ *       messageTypes: ['coordination', 'data', 'results']
+ *     }
+ *   ],
+ *   coordinationStrategy: 'adaptive'
+ * };
+ * ```
  */
 export interface DSPySwarmTopology {
   type: 'mesh' | 'hierarchical' | 'ring' | 'star';
@@ -77,9 +302,93 @@ export interface DSPySwarmTopology {
 }
 
 /**
- * Main DSPy Swarm Coordinator.
- *
+ * Main DSPy Swarm Coordinator - Neural Multi-Agent System Manager.
+ * 
+ * The DSPySwarmCoordinator is the central orchestration system for managing a network
+ * of intelligent DSPy agents. It provides comprehensive coordination, learning, and
+ * optimization capabilities that enable agents to improve performance over time.
+ * 
+ * ## Key Responsibilities
+ * 
+ * ### Agent Management
+ * - **Agent Creation**: Initialize specialized DSPy agents with unique capabilities
+ * - **Lifecycle Management**: Handle agent states (idle, busy, learning, optimizing)
+ * - **Performance Monitoring**: Track agent metrics and execution statistics
+ * - **Resource Allocation**: Manage computational resources across agents
+ * 
+ * ### Task Coordination
+ * - **Intelligent Assignment**: Use DSPy coordination program for optimal agent selection
+ * - **Load Balancing**: Distribute tasks efficiently across available agents
+ * - **Priority Handling**: Process tasks based on priority and complexity
+ * - **Dependency Management**: Handle task dependencies and sequencing
+ * 
+ * ### Learning and Optimization
+ * - **Example Collection**: Gather training examples from successful executions
+ * - **Automatic Optimization**: Trigger agent optimization after sufficient examples
+ * - **Performance Tracking**: Monitor agent improvement over time
+ * - **Quality Assessment**: Evaluate and score learning examples
+ * 
+ * ### Topology Management
+ * - **Network Structure**: Maintain agent connection topology
+ * - **Communication Routing**: Handle inter-agent message routing
+ * - **Adaptive Connections**: Adjust connections based on collaboration patterns
+ * - **Fault Tolerance**: Handle agent failures and network partitions
+ * 
+ * ## Coordination Intelligence
+ * 
+ * The coordinator uses a dedicated DSPy program for intelligent task assignment:
+ * 
+ * ```
+ * Signature: task_description + available_agents + swarm_state -> 
+ *           optimal_assignment + coordination_plan + expected_outcome
+ * ```
+ * 
+ * This neural coordination enables:
+ * - Context-aware agent selection
+ * - Performance-based routing decisions
+ * - Predictive task success estimation
+ * - Dynamic load balancing
+ * 
+ * ## Integration Points
+ * 
+ * - **MCP Tools**: Powers 8 production MCP tools via `claude-zen swarm`
+ * - **stdio MCP Server**: Exposes coordination via Model Context Protocol
+ * - **Core System**: Integrates with Claude Code Zen's core architecture
+ * - **Learning Pipeline**: Connects to neural training and optimization systems
+ * 
  * @example
+ * ```typescript
+ * // Basic coordinator setup
+ * const coordinator = new DSPySwarmCoordinator({
+ *   model: 'claude-3-5-sonnet-20241022',
+ *   temperature: 0.1,
+ *   topology: 'hierarchical'
+ * });
+ * 
+ * await coordinator.initialize();
+ * 
+ * // Execute coordinated task
+ * const result = await coordinator.executeTask({
+ *   type: 'architecture-design',
+ *   description: 'Design microservices architecture for e-commerce platform',
+ *   input: {
+ *     requirements: 'Scalable, high-availability, cost-effective',
+ *     constraints: ['cloud-native', 'kubernetes'],
+ *     expectedLoad: '1M requests/day'
+ *   },
+ *   requiredCapabilities: ['architecture-design', 'microservices', 'scalability'],
+ *   priority: 'high',
+ *   complexity: 85
+ * });
+ * 
+ * // Check swarm performance
+ * const status = coordinator.getSwarmStatus();
+ * console.log(`Success Rate: ${status.overallPerformance.successRate}`);
+ * console.log(`Learning Examples: ${status.learningExamples}`);
+ * ```
+ * 
+ * @since 1.0.0
+ * @version 2.0.0
  */
 export class DSPySwarmCoordinator {
   private dspyWrapper: DSPyWrapper | null = null;
@@ -111,9 +420,49 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Initialize the DSPy swarm system.
-   *
-   * @param config
+   * Initializes the DSPy swarm system with neural coordination capabilities.
+   * 
+   * This method sets up the complete swarm infrastructure including DSPy wrapper
+   * initialization, coordination program creation, and default agent deployment.
+   * The initialization process establishes the foundation for intelligent task
+   * coordination and continuous learning.
+   * 
+   * ## Initialization Process
+   * 
+   * 1. **DSPy Wrapper Setup**: Configure connection to DSPy framework
+   * 2. **Coordination Program**: Create neural program for task assignment
+   * 3. **Default Agents**: Deploy specialized agents (coder, analyst, architect, etc.)
+   * 4. **Topology Configuration**: Establish agent connections and communication
+   * 5. **Performance Baseline**: Initialize performance tracking systems
+   * 
+   * ## Default Configuration
+   * 
+   * If no config is provided, uses optimal defaults:
+   * - **Model**: claude-3-5-sonnet-20241022 for best performance
+   * - **Temperature**: 0.1 for consistent, deterministic outputs
+   * - **Max Tokens**: 2000 for comprehensive responses
+   * 
+   * @param config - Optional DSPy configuration object
+   * @param config.model - Language model for DSPy programs (default: claude-3-5-sonnet-20241022)
+   * @param config.temperature - Sampling temperature (default: 0.1)
+   * @param config.maxTokens - Maximum tokens per request (default: 2000)
+   * 
+   * @throws {Error} When DSPy wrapper creation fails
+   * @throws {Error} When coordination program creation fails
+   * @throws {Error} When default agent initialization fails
+   * 
+   * @example
+   * ```typescript
+   * // Initialize with default configuration
+   * await coordinator.initialize();
+   * 
+   * // Initialize with custom configuration
+   * await coordinator.initialize({
+   *   model: 'claude-3-5-sonnet-20241022',
+   *   temperature: 0.05, // Lower for production consistency
+   *   maxTokens: 4000    // Higher for complex tasks
+   * });
+   * ```
    */
   async initialize(config?: DSPyConfig): Promise<void> {
     try {
@@ -146,7 +495,46 @@ export class DSPySwarmCoordinator {
   }
 
   /**
-   * Create and register specialized DSPy agents.
+   * Creates and registers the default set of specialized DSPy agents.
+   * 
+   * This method deploys a comprehensive suite of specialized agents, each implemented
+   * as a DSPy program with specific capabilities and signatures. The agents form
+   * a complete development ecosystem capable of handling diverse tasks.
+   * 
+   * ## Default Agent Types
+   * 
+   * ### Code Generator Agent
+   * - **Type**: coder
+   * - **Capabilities**: code-generation, testing, documentation, TypeScript, JavaScript
+   * - **Signature**: requirements + context + style_guide -> code + tests + documentation
+   * 
+   * ### Code Analyzer Agent  
+   * - **Type**: analyst
+   * - **Capabilities**: code-analysis, quality-assessment, refactoring, patterns
+   * - **Signature**: code + file_path + project_context -> analysis + issues + suggestions
+   * 
+   * ### System Architect Agent
+   * - **Type**: architect
+   * - **Capabilities**: architecture-design, system-design, patterns, scalability
+   * - **Signature**: requirements + constraints + domain -> architecture + components + patterns
+   * 
+   * ### Test Engineer Agent
+   * - **Type**: tester  
+   * - **Capabilities**: test-generation, quality-assurance, coverage-analysis, validation
+   * - **Signature**: code + requirements + test_strategy -> test_suite + coverage + quality_score
+   * 
+   * ### Research Specialist Agent
+   * - **Type**: researcher
+   * - **Capabilities**: research, analysis, documentation, knowledge-synthesis
+   * - **Signature**: query + domain + depth -> research + sources + insights
+   * 
+   * ### Task Coordinator Agent
+   * - **Type**: coordinator
+   * - **Capabilities**: coordination, planning, resource-allocation, optimization
+   * - **Signature**: tasks + agents + dependencies -> execution_plan + assignments + timeline
+   * 
+   * @throws {Error} When DSPy wrapper is not initialized
+   * @throws {Error} When agent creation fails for any agent type
    */
   private async initializeDefaultAgents(): Promise<void> {
     if (!this.dspyWrapper) throw new Error('DSPy wrapper not initialized');

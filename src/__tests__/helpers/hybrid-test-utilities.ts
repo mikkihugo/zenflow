@@ -66,7 +66,7 @@ export class HybridTestUtility {
   }
 
   private createMockForDependency(dependency: string, approach: 'london' | 'classical'): jest.Mock {
-    const mock = jest.fn();
+    const mock = vi.fn();
 
     if (approach === 'london') {
       // London: Focus on interaction verification

@@ -3,11 +3,11 @@
  * Tests for the core performance optimization system
  */
 
-import { PerformanceOptimizer } from '../../../optimization/core/performance-optimizer';
-import { DataPerformanceOptimizer } from '../../../optimization/data/data-optimizer';
-import { NeuralNetworkOptimizer } from '../../../optimization/neural/neural-optimizer';
-import { SwarmCoordinationOptimizer } from '../../../optimization/swarm/swarm-optimizer';
-import { WasmPerformanceOptimizer } from '../../../optimization/wasm/wasm-optimizer';
+import { PerformanceOptimizer } from '../../../optimization/core/performance-optimizer.ts';
+import { DataPerformanceOptimizer } from '../../../optimization/data/data-optimizer.ts';
+import { NeuralNetworkOptimizer } from '../../../optimization/neural/neural-optimizer.ts';
+import { SwarmCoordinationOptimizer } from '../../../optimization/swarm/swarm-optimizer.ts';
+import { WasmPerformanceOptimizer } from '../../../optimization/wasm/wasm-optimizer.ts';
 
 describe('Performance Optimization System', () => {
   let performanceOptimizer: PerformanceOptimizer;

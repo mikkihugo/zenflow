@@ -8,8 +8,8 @@
 import {
   createNeuralTestSuite,
   NeuralTestDataGenerator,
-} from '../../../helpers/neural-test-helpers';
-import { createBenchmarkSuite } from '../../../helpers/performance-test-suite';
+} from '../../../helpers/neural-test-helpers.ts';
+import { createBenchmarkSuite } from '../../../helpers/performance-test-suite.ts';
 
 // Mock GPU/WebGL interfaces for testing
 const mockWebGLContext = {

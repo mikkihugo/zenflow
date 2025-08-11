@@ -5,21 +5,21 @@
  * cognitive pattern evolution, and collaborative learning capabilities.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('neural-core-neural-network-manager');
 
 // Internal neural modules
-import { CognitivePatternEvolution } from './cognitive-pattern-evolution';
-import { DAACognition } from './daa-cognition';
-import { MetaLearningFramework } from './meta-learning-framework';
-import { NeuralCoordinationProtocol } from './neural-coordination-protocol';
-import { createNeuralModel, MODEL_PRESETS } from './neural-models/index';
+import { CognitivePatternEvolution } from './cognitive-pattern-evolution.ts';
+import { DAACognition } from './daa-cognition.ts';
+import { MetaLearningFramework } from './meta-learning-framework.ts';
+import { NeuralCoordinationProtocol } from './neural-coordination-protocol.ts';
+import { createNeuralModel, MODEL_PRESETS } from './neural-models/index.ts';
 import {
   COMPLETE_NEURAL_PRESETS,
   CognitivePatternSelector,
   NeuralAdaptationEngine,
-} from './neural-models/neural-presets-complete';
+} from './neural-models/neural-presets-complete.ts';
 import {
   getCategoryPresets,
   getPreset,
@@ -27,7 +27,7 @@ import {
   NEURAL_PRESETS,
   searchPresetsByUseCase,
   validatePresetConfig,
-} from './neural-models/presets/index';
+} from './neural-models/presets/index.ts';
 
 /**
  * Neural network instance interface.
@@ -1409,8 +1409,8 @@ class NeuralNetworkManager {
    */
   inferDomainFromTraining(adaptation: any) {
     // Simple heuristic - in practice, would use more sophisticated analysis
-    const accuracy = (adaptation as any).trainingResult.accuracy;
-    const loss = (adaptation as any).trainingResult.loss;
+    const accuracy = (adaptation).trainingResult.accuracy;
+    const loss = (adaptation).trainingResult.loss;
 
     if (accuracy > 0.9 && loss < 0.1) {
       return 'classification';
@@ -1669,7 +1669,7 @@ class NeuralNetworkManager {
         studentIdx >= 0 &&
         session.coordinationMatrix?.[studentIdx]?.[teacherIdx] !== undefined
       ) {
-        session.coordinationMatrix![studentIdx]![teacherIdx]! +=
+        session.coordinationMatrix[studentIdx][teacherIdx] +=
           distillationResult?.improvement || 0;
       }
     } catch (error) {
@@ -1961,7 +1961,7 @@ class NeuralNetworkManager {
       (modelTypes as any)[modelType] = {
         count: Object.keys(presets).length,
         presets: Object.keys(presets),
-        description: (Object.values(presets)[0] as any)?.description || 'Neural model type',
+        description: (Object.values(presets)[0])?.description || 'Neural model type',
       };
     });
 

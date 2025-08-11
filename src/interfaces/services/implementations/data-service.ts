@@ -11,10 +11,10 @@
  * @file Data service implementation.
  */
 
-import type { IService } from '../core/interfaces';
-import type { DataServiceConfig, ServiceOperationOptions } from '../types';
+import type { IService } from '../core/interfaces.ts';
+import type { DataServiceConfig, ServiceOperationOptions } from '../types.ts';
 import { WebDataService } from '../web/web-data-service';
-import { BaseService } from './base-service';
+import { BaseService } from './base-service.ts';
 
 /**
  * Data service configuration interface.

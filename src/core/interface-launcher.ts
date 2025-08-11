@@ -9,14 +9,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getWebDashboardURL } from '../config/defaults';
-import { getLogger } from '../config/logging-config';
-import type { WebConfig } from '../interfaces/web/web-config';
+import { getWebDashboardURL } from '../config/defaults.ts';
+import { getLogger } from '../config/logging-config.ts';
+import type { WebConfig } from '../interfaces/web/web-config.ts';
 import {
   type InterfaceMode,
   InterfaceModeDetector,
   type ModeDetectionOptions,
-} from './interface-mode-detector';
+} from './interface-mode-detector.ts';
 
 const logger = getLogger('InterfaceLauncher');
 
@@ -245,7 +245,7 @@ export class InterfaceLauncher extends EventEmitter {
 
     try {
       // Dynamic import of Web interface
-      const { WebInterface } = await import('../interfaces/web/web-interface');
+      const { WebInterface } = await import('../interfaces/web/web-interface.ts');
 
       const webConfig: WebConfig = {
         port: webPort,
@@ -300,7 +300,9 @@ export class InterfaceLauncher extends EventEmitter {
           if (typeof getSystemStatusFn === 'function') {
             const status = await getSystemStatusFn();
             if (status && typeof status === 'object' && 'components' in status) {
-              for (const [_name, _info] of Object.entries(status.components as Record<string, unknown>)) {
+              for (const [_name, _info] of Object.entries(
+                status.components as Record<string, unknown>
+              )) {
               }
             }
           }
@@ -329,9 +331,15 @@ export class InterfaceLauncher extends EventEmitter {
   } {
     return {
       active: !!this.activeInterface,
-      ...(this.activeInterface?.mode !== undefined && { mode: this.activeInterface.mode }),
-      ...(this.activeInterface?.url !== undefined && { url: this.activeInterface.url }),
-      ...(this.activeInterface?.pid !== undefined && { pid: this.activeInterface.pid }),
+      ...(this.activeInterface?.mode !== undefined && {
+        mode: this.activeInterface.mode,
+      }),
+      ...(this.activeInterface?.url !== undefined && {
+        url: this.activeInterface.url,
+      }),
+      ...(this.activeInterface?.pid !== undefined && {
+        pid: this.activeInterface.pid,
+      }),
     };
   }
 

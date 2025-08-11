@@ -2,7 +2,7 @@
  * @file Sqlite-backend implementation.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('knowledge-storage-backends-sqlite-backend');
 
@@ -15,15 +15,18 @@ const logger = getLogger('knowledge-storage-backends-sqlite-backend');
 
 import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
-import type { DatabaseAdapter, DatabaseConfig } from '../../database/providers/database-providers';
+import type {
+  DatabaseAdapter,
+  DatabaseConfig,
+} from '../../database/providers/database-providers.ts';
 // Use DAL instead of direct database access
-import { DatabaseProviderFactory } from '../../database/providers/database-providers';
+import { DatabaseProviderFactory } from '../../database/providers/database-providers.ts';
 import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,
   FACTStorageBackend,
   FACTStorageStats,
-} from '../storage-interface';
+} from '../storage-interface.ts';
 
 interface SQLiteBackendConfig {
   dbPath: string;
@@ -149,7 +152,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         `SELECT * FROM ${this.config.tableName} WHERE id = ?`,
         [id]
       );
-      const row = result?.rows?.[0] as any;
+      const row = result?.rows?.[0];
 
       if (!row) {
         return null;
@@ -242,7 +245,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       }
 
       const result = await this.dalAdapter.query(sql, params);
-      const rows = result?.rows as any[];
+      const rows = result?.rows;
 
       return rows.map((row) => ({
         id: row.id,
@@ -325,7 +328,7 @@ export class SQLiteBackend implements FACTStorageBackend {
          MAX(timestamp) as newest_timestamp
          FROM ${this.config.tableName}`
       );
-      const stats = result?.rows?.[0] as any;
+      const stats = result?.rows?.[0];
 
       return {
         persistentEntries: stats.total_count,
@@ -506,7 +509,7 @@ export class SQLiteBackend implements FACTStorageBackend {
          AVG(access_count) as avg_access_count
          FROM ${this.config.tableName}`
       );
-      const basicStats = basicStatsResult?.rows?.[0] as any;
+      const basicStats = basicStatsResult?.rows?.[0];
 
       // Get top domains
       const domainsResult = await this.dalAdapter.query(
@@ -516,17 +519,17 @@ export class SQLiteBackend implements FACTStorageBackend {
          ORDER BY count DESC
          LIMIT 10`
       );
-      const topDomains = domainsResult?.rows
-        ?.map((row: any) => {
-          try {
-            const domains = JSON.parse(row.domains || '[]');
-            return Array.isArray(domains) ? domains : [];
-          } catch {
-            return [];
-          }
-        })
-        .flat()
-        .slice(0, 10) || [];
+      const topDomains =
+        domainsResult?.rows
+          ?.flatMap((row: any) => {
+            try {
+              const domains = JSON.parse(row.domains || '[]');
+              return Array.isArray(domains) ? domains : [];
+            } catch {
+              return [];
+            }
+          })
+          .slice(0, 10) || [];
 
       // Calculate storage health based on various metrics
       let storageHealth: 'excellent' | 'good' | 'fair' | 'poor' = 'excellent';

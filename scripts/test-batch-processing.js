@@ -21,11 +21,11 @@ class BatchProcessingTest {
   }
 
   async testBatchProcessing() {
-    console.log('🧪 Testing Batch Processing for Single-Error Files\n');
+    // console.log('🧪 Testing Batch Processing for Single-Error Files\n');
 
     // Get current TypeScript errors
     const errors = await this.runTypeScriptCompiler();
-    console.log(`📊 Total errors: ${errors.length}\n`);
+    // console.log(`📊 Total errors: ${errors.length}\n`);
 
     // Group by file and find single-error files
     const errorsByFile = this.groupErrorsByFile(errors);
@@ -34,81 +34,81 @@ class BatchProcessingTest {
       .slice(0, 10); // Test with first 10 single-error files
 
     if (singleErrorFiles.length === 0) {
-      console.log('❌ No single-error files found for testing');
+      // console.log('❌ No single-error files found for testing');
       return;
     }
 
-    console.log(`🎯 Testing with ${singleErrorFiles.length} single-error files:`);
+    // console.log(`🎯 Testing with ${singleErrorFiles.length} single-error files:`);
     singleErrorFiles.forEach(([filePath, fileErrors]) => {
       const error = fileErrors[0];
-      console.log(
-        `   ${path.basename(filePath)}: ${error.code} - ${error.message.slice(0, 60)}...`
-      );
+      // console.log(
+      `   ${path.basename(filePath)}: ${error.code} - ${error.message.slice(0, 60)}...`;
+      )
     });
 
     // Group by error type
     const errorGroups = this.groupSingleErrorFilesByType(singleErrorFiles);
 
-    console.log(`\n📦 Error type groups:`);
+    // console.log(`\n📦 Error type groups:`);
     for (const [errorType, files] of errorGroups.entries()) {
-      console.log(`   ${errorType}: ${files.length} files`);
+      // console.log(`   ${errorType}: ${files.length} files`);
     }
 
     // Test batch processing vs individual processing
     const testSize = Math.min(5, singleErrorFiles.length); // Test with 5 files max
     const testFiles = singleErrorFiles.slice(0, testSize);
 
-    console.log(`\n⚡ SPEED TEST: Processing ${testSize} files\n`);
+    // console.log(`\n⚡ SPEED TEST: Processing ${testSize} files\n`);
 
     // Method 1: Individual Processing (current approach)
-    console.log('🔄 Method 1: Individual Processing');
+    // console.log('🔄 Method 1: Individual Processing');
     const individualStart = Date.now();
     let individualSuccess = 0;
 
     for (const [filePath, fileErrors] of testFiles) {
-      console.log(`   Processing ${path.basename(filePath)}...`);
+      // console.log(`   Processing ${path.basename(filePath)}...`);
       const result = await this.processIndividualFile(filePath, fileErrors[0]);
       if (result.success) individualSuccess++;
       await this.sleep(500); // Simulate processing time
     }
 
     const individualTime = Date.now() - individualStart;
-    console.log(`   ✅ Individual: ${individualSuccess}/${testSize} files, ${individualTime}ms\n`);
+    // console.log(`   ✅ Individual: ${individualSuccess}/${testSize} files, ${individualTime}ms\n`);
 
     // Method 2: Batch Processing (new approach)
-    console.log('🚀 Method 2: Batch Processing');
+    // console.log('🚀 Method 2: Batch Processing');
     const batchStart = Date.now();
 
     const batchResult = await this.processBatch(testFiles);
     const batchTime = Date.now() - batchStart;
 
-    console.log(
-      `   ✅ Batch: ${batchResult.success ? testSize : 0}/${testSize} files, ${batchTime}ms\n`
-    );
+    // console.log(
+    `   ✅ Batch: ${batchResult.success ? testSize : 0}/${testSize} files, ${batchTime}ms\n`;
+    )
 
     // Results
     const speedup = individualTime / batchTime;
-    console.log(`📊 RESULTS:`);
-    console.log(`   Individual approach: ${individualTime}ms`);
-    console.log(`   Batch approach: ${batchTime}ms`);
-    console.log(`   🚀 Speedup: ${speedup.toFixed(2)}x faster`);
-    console.log(`   💾 Tool calls: ${testSize} → 1 (${testSize}x reduction)`);
+    // console.log(`📊 RESULTS:`);
+    // console.log(`   Individual approach: ${individualTime}ms`);
+    // console.log(`   Batch approach: ${batchTime}ms`);
+    // console.log(`   🚀 Speedup: ${speedup.toFixed(2)}x faster`);
+    // console.log(`   💾 Tool calls: ${testSize} → 1 (${testSize}x reduction)`);
 
     if (speedup > 3) {
-      console.log(`\n🔥 EXCELLENT: Batching provides significant speedup!`);
-      console.log(`💡 Recommendation: Integrate batching into main fixer for single-error files`);
+      // console.log(`\n🔥 EXCELLENT: Batching provides significant speedup!`);
+      // console.log(`💡 Recommendation: Integrate batching into main fixer for single-error files`);
     } else if (speedup > 1.5) {
-      console.log(`\n⚡ GOOD: Batching provides moderate speedup`);
-      console.log(`💡 Recommendation: Consider batching for efficiency gains`);
+      // console.log(`\n⚡ GOOD: Batching provides moderate speedup`);
+      // console.log(`💡 Recommendation: Consider batching for efficiency gains`);
     } else {
-      console.log(`\n📋 NEUTRAL: Limited speedup for small batches`);
-      console.log(`💡 Note: Larger batches (15-20 files) would show better results`);
+      // console.log(`\n📋 NEUTRAL: Limited speedup for small batches`);
+      // console.log(`💡 Note: Larger batches (15-20 files) would show better results`);
     }
   }
 
   async processIndividualFile(filePath, error) {
     // Simulate individual file processing (without actually calling Claude)
-    console.log(`     Fixing ${error.code} error...`);
+    // console.log(`     Fixing ${error.code} error...`);
 
     try {
       // Mock processing - in real implementation this would call Claude CLI
@@ -120,7 +120,7 @@ class BatchProcessingTest {
   }
 
   async processBatch(files) {
-    console.log(`     Processing batch of ${files.length} files...`);
+    // console.log(`     Processing batch of ${files.length} files...`);
 
     const fileList = files
       .map(
@@ -144,7 +144,7 @@ This is a SIMULATION - respond with a brief acknowledgment of the batch processi
       // Simulate batch processing time (faster than individual)
       await this.sleep(300 + Math.random() * 200);
 
-      console.log(`     ✅ Batch processed ${files.length} files with coordinated fixes`);
+      // console.log(`     ✅ Batch processed ${files.length} files with coordinated fixes`);
       return { success: true, processedFiles: files.length };
     } catch (error) {
       return { success: false, error: error.message };

@@ -476,7 +476,7 @@ class NeuralCLI {
                 accuracyCount++;
 
                 if (accuracy > bestModel.accuracy) {
-                  bestModel = { name: modelType as string, accuracy: Number(accuracy.toFixed(1)) };
+                  bestModel = { name: modelType, accuracy: Number(accuracy.toFixed(1)) };
                 }
               }
             }

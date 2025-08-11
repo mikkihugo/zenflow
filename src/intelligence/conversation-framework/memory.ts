@@ -2,7 +2,7 @@
  * @file Memory implementation.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('intelligence-conversation-framework-memory');
 
@@ -12,7 +12,7 @@ const logger = getLogger('intelligence-conversation-framework-memory');
  * Memory management for conversation persistence using existing memory backends.
  */
 
-import type { ConversationMemory, ConversationQuery, ConversationSession } from './types';
+import type { ConversationMemory, ConversationQuery, ConversationSession } from './types.ts';
 
 /**
  * Memory backend adapter interface.
@@ -305,7 +305,7 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithSQLite(config: any = {}): Promise<ConversationMemory> {
-    const { MemoryBackendFactory } = await import('../../memory/backends/factory');
+    const { MemoryBackendFactory } = await import('../../memory/backends/factory.ts');
     const backend = await MemoryBackendFactory.createBackend('sqlite', {
       type: 'sqlite',
       path: config?.path || './data',
@@ -320,7 +320,7 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithJSON(config: any = {}): Promise<ConversationMemory> {
-    const { MemoryBackendFactory } = await import('../../memory/backends/factory');
+    const { MemoryBackendFactory } = await import('../../memory/backends/factory.ts');
     const backend = await MemoryBackendFactory.createBackend('jsonb', {
       type: 'jsonb',
       path: config?.basePath || '/tmp/conversations',
@@ -336,7 +336,7 @@ export class ConversationMemoryFactory {
    */
   static async createWithLanceDB(config: any = {}): Promise<ConversationMemory> {
     // LanceDB not available in factory, using SQLite as fallback for vector operations
-    const { MemoryBackendFactory } = await import('../../memory/backends/factory');
+    const { MemoryBackendFactory } = await import('../../memory/backends/factory.ts');
     const backend = await MemoryBackendFactory.createBackend('sqlite', {
       type: 'sqlite',
       path: config?.path || './data',

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Optimization Domain Types - Single Source of Truth
- * 
+ *
  * All optimization-related types for performance, neural, data, swarm, and WASM optimization.
  * Following Google TypeScript style guide and domain architecture standard.
  */
@@ -15,7 +15,7 @@ export interface OptimizationConfig {
   readonly timeout: number;
 }
 
-export type OptimizationTarget = 
+export type OptimizationTarget =
   | 'performance'
   | 'memory'
   | 'throughput'
@@ -429,7 +429,7 @@ export class OptimizationTimeoutError extends OptimizationError {
 
 // Event types
 export interface OptimizationEvent {
-  readonly type: 
+  readonly type:
     | 'optimization_started'
     | 'optimization_completed'
     | 'optimization_failed'

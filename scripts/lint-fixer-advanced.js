@@ -419,7 +419,7 @@ class AdvancedLintFixer {
 
       return false;
     } catch (error) {
-      console.error(`❌ Error processing ${filePath}:`, error.message);
+      // console.error(`❌ Error processing ${filePath}:`, error.message);
       return false;
     }
   }
@@ -476,7 +476,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       process.exit(0);
     })
     .catch((error) => {
-      console.error('❌ Advanced Lint Fixer failed:', error);
+      // console.error('❌ Advanced Lint Fixer failed:', error);
       process.exit(1);
     });
 }

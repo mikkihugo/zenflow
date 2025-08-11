@@ -3,7 +3,7 @@
  * Hybrid TDD approach: London TDD for hierarchy management, Classical TDD for task execution algorithms
  */
 
-import { AgentFactory } from '../../coordination/agents/composite-system';
+import { AgentFactory } from '../../coordination/agents/composite-system.ts';
 
 // Mock task executor for testing
 const createMockTaskExecutor = (delay: number = 50, shouldSucceed: boolean = true) =>
@@ -738,7 +738,7 @@ describe('Composite Pattern Implementation', () => {
               const subGroup = AgentFactory.createHierarchicalGroup(
                 `${prefix}-group-${i}`,
                 `Group ${prefix}-${i}`,
-                children as AgentComponent[],
+                children,
                 maxDepth
               );
               subGroups.push(subGroup);
@@ -811,8 +811,8 @@ describe('Composite Pattern Implementation', () => {
 
   // London TDD - Test component management and hierarchy interactions
   describe('Component Management (London TDD)', () => {
-    let mockAgent: jest.Mocked<Agent>;
-    let mockGroup: jest.Mocked<AgentGroup>;
+    let mockAgent: vi.Mocked<Agent>;
+    let mockGroup: vi.Mocked<AgentGroup>;
 
     beforeEach(() => {
       mockAgent = {

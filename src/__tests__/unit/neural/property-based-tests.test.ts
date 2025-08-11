@@ -5,7 +5,7 @@
  * neural network model invariants, data processing correctness, and edge case handling.
  */
 
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import fc from 'fast-check';
 
 // Import neural network types and functions

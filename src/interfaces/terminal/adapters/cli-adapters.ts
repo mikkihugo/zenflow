@@ -9,7 +9,7 @@ import type {
   CommandResult,
   DiscoverCommandInterface,
   ExecutionContext,
-} from '../../shared/command-interfaces';
+} from '../../shared/command-interfaces.ts';
 
 /**
  * Discover Command Adapter
@@ -24,7 +24,7 @@ export class DiscoverCommandAdapter implements DiscoverCommandInterface {
   async execute(context: ExecutionContext): Promise<CommandResult> {
     try {
       // Dynamic import to avoid circular dependency
-      const { DiscoverCommand } = await import('../../cli/commands/discover');
+      const { DiscoverCommand } = await import('../../cli/commands/discover.ts');
       const discoverCommand = new DiscoverCommand();
 
       // Execute the discover command

@@ -5,7 +5,7 @@
  * providing seamless session persistence for swarm operations.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-core-session-integration');
 
@@ -16,12 +16,12 @@ import { EventEmitter } from 'node:events';
 import type { IDao, SessionCoordinationDao } from '../database';
 
 // Internal modules - absolute paths
-import { ZenSwarm } from './base-swarm';
+import { ZenSwarm } from './base-swarm.ts';
 // Internal modules - types
-import type { SessionConfig, SessionState } from './session-manager';
-import { SessionManager } from './session-manager';
-import { SessionRecovery, SessionValidator } from './session-utils';
-import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types';
+import type { SessionConfig, SessionState } from './session-manager.ts';
+import { SessionManager } from './session-manager.ts';
+import { SessionRecovery, SessionValidator } from './session-utils.ts';
+import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types.ts';
 
 /**
  * Enhanced ZenSwarm with session management capabilities.

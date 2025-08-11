@@ -82,7 +82,7 @@ async function runCLITests() {
     });
 
     jest.on('error', (error) => {
-      console.error('Failed to start test runner:', error);
+      // console.error('Failed to start test runner:', error);
       reject(error);
     });
   });
@@ -102,7 +102,7 @@ async function main() {
     await runCLITests();
     process.exit(0);
   } catch (error) {
-    console.error('Test execution failed:', error.message);
+    // console.error('Test execution failed:', error.message);
     process.exit(1);
   }
 }

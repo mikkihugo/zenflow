@@ -8,7 +8,7 @@
  * Purpose: Centralize all DSPy API access with full TypeScript support.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 import {
   DEFAULT_DSPY_CONFIG,
   DEFAULT_OPTIMIZATION_CONFIG,
@@ -27,7 +27,7 @@ import {
   type DSPyWrapper,
   isDSPyConfig,
   isDSPyProgram,
-} from './types/index';
+} from './types/index.ts';
 
 const logger = getLogger('DSPyWrapper');
 
@@ -63,7 +63,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   async configure(config: DSPyConfig): Promise<void> {
     try {
       if (!isDSPyConfig(config)) {
-        throw new DSPyConfigurationError('Invalid configuration object', { config });
+        throw new DSPyConfigurationError('Invalid configuration object', {
+          config,
+        });
       }
 
       // Import dspy.ts dynamically to handle potential import issues
@@ -108,7 +110,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
           this.dspyInstance = new DSPy(finalConfig);
         } catch (error) {
           // Fallback to static access if constructor fails
-          logger.warn('Constructor approach failed, using static access', { error });
+          logger.warn('Constructor approach failed, using static access', {
+            error,
+          });
           this.dspyInstance = DSPy;
         }
       } else {
@@ -178,7 +182,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       }
 
       const program = new DSPyProgramWrapper(rawProgram, signature, description, this);
-      this.programs.set(program.id!, program);
+      this.programs.set(program.id, program);
 
       logger.debug('DSPy program created successfully', {
         id: program.id,
@@ -232,7 +236,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
           timestamp: new Date(),
           model: this.currentConfig?.model,
           // Add token usage if available in result
-          ...(rawResult?.['tokensUsed'] && { tokensUsed: rawResult?.['tokensUsed'] }),
+          ...(rawResult?.['tokensUsed'] && {
+            tokensUsed: rawResult?.['tokensUsed'],
+          }),
           // Ensure confidence is always present, even if undefined
           confidence: rawResult?.['confidence'] || undefined,
         },
@@ -372,7 +378,10 @@ export class DSPyWrapperImpl implements DSPyWrapper {
         optimizationResult = await rawProgram.optimize(optimizationConfig);
       } else {
         logger.warn('Optimization not available - returning original program');
-        optimizationResult = { program: rawProgram, metrics: { improvementPercent: 0 } };
+        optimizationResult = {
+          program: rawProgram,
+          metrics: { improvementPercent: 0 },
+        };
       }
 
       const executionTime = Date.now() - startTime;
@@ -567,10 +576,58 @@ class DSPyProgramWrapper implements DSPyProgram {
 // =============================================================================
 
 /**
- * Create a new DSPy wrapper with configuration.
- *
- * @param config
+ * Factory function to create and configure a DSPy wrapper instance with comprehensive error handling.
+ * 
+ * This is the primary entry point for creating DSPy wrapper instances in Claude Code Zen.
+ * It provides a clean, async interface for DSPy initialization while handling the complex
+ * setup process internally.
+ * 
+ * ## Usage in Claude Code Zen
+ * 
+ * This factory is used throughout the system:
+ * - **MCP Tools**: `dspy-swarm-mcp-tools.ts` creates wrappers for each tool execution
+ * - **Swarm Coordinator**: `DSPySwarmCoordinator` uses this for agent program creation
+ * - **Integration Manager**: Central coordination point for all DSPy systems
+ * - **Enhanced Operations**: Core DSPy-powered development operations
+ * 
+ * ## Integration with stdio MCP
+ * 
+ * When you run `claude-zen swarm`, this factory creates wrappers that power:
+ * - `dspy_swarm_init` - Initialize intelligent swarm coordination
+ * - `dspy_swarm_execute_task` - Execute tasks using DSPy neural programs
+ * - `dspy_swarm_generate_code` - AI-powered code generation
+ * - And 5 other production MCP tools
+ * 
+ * @param config - DSPy configuration object
+ * @param config.model - Language model to use (default: 'claude-3-5-sonnet-20241022')
+ * @param config.temperature - Sampling temperature (default: 0.1)
+ * @param config.maxTokens - Maximum tokens per request (default: 2000)
+ * @param config.apiKey - API key for model access (optional)
+ * @param config.baseURL - Custom API endpoint (optional)
+ * 
+ * @returns Promise resolving to fully configured DSPy wrapper instance
+ * 
+ * @throws {DSPyConfigurationError} When configuration is invalid
+ * @throws {DSPyAPIError} When dspy.ts package setup fails
+ * 
  * @example
+ * ```typescript
+ * // Used by MCP tools
+ * const wrapper = await createDSPyWrapper({
+ *   model: 'claude-3-5-sonnet-20241022',
+ *   temperature: 0.1
+ * });
+ * 
+ * // Create and execute programs
+ * const program = await wrapper.createProgram(
+ *   'code_request -> optimized_code',
+ *   'Generate optimized code'
+ * );
+ * const result = await wrapper.execute(program, { code_request: 'React form' });
+ * ```
+ * 
+ * @since 1.0.0
+ * @version 2.0.0
  */
 export async function createDSPyWrapper(config: DSPyConfig): Promise<DSPyWrapper> {
   const wrapper = new DSPyWrapperImpl();
@@ -579,16 +636,78 @@ export async function createDSPyWrapper(config: DSPyConfig): Promise<DSPyWrapper
 }
 
 /**
- * Create a DSPy wrapper with default configuration.
- *
+ * Creates a DSPy wrapper instance using optimal default configuration for Claude Code Zen.
+ * 
+ * This convenience function provides a quick way to create DSPy wrappers without
+ * specifying configuration details. It uses production-tested defaults that work
+ * well across all Claude Code Zen DSPy integrations.
+ * 
+ * ## Default Configuration
+ * 
+ * Uses `DEFAULT_DSPY_CONFIG` which provides:
+ * - **Model**: 'claude-3-5-sonnet-20241022' for optimal performance
+ * - **Temperature**: 0.1 for consistent, deterministic outputs
+ * - **Max Tokens**: 2000 for comprehensive responses
+ * - **Timeout**: 30000ms for reliable execution
+ * - **Retry Count**: 3 attempts for fault tolerance
+ * 
+ * @returns Promise resolving to DSPy wrapper with default configuration
+ * 
+ * @throws {DSPyConfigurationError} When default configuration fails validation
+ * @throws {DSPyAPIError} When dspy.ts package setup fails
+ * 
  * @example
+ * ```typescript
+ * // Quick setup for internal components
+ * const wrapper = await createDefaultDSPyWrapper();
+ * 
+ * // Use immediately
+ * const program = await wrapper.createProgram('input -> output', 'Process data');
+ * const result = await wrapper.execute(program, { input: 'test' });
+ * ```
+ * 
+ * @since 1.0.0
  */
 export async function createDefaultDSPyWrapper(): Promise<DSPyWrapper> {
   return createDSPyWrapper(DEFAULT_DSPY_CONFIG);
 }
 
 /**
- * Get a singleton DSPy wrapper instance (lazy initialization).
+ * Retrieves or creates a singleton DSPy wrapper instance for system-wide shared access.
+ * 
+ * This function implements the singleton pattern for DSPy wrapper access, ensuring
+ * that only one wrapper instance exists per process. This is crucial for:
+ * - **Memory efficiency**: Prevent multiple wrapper instantiation in MCP servers
+ * - **Consistent state**: All components share the same DSPy configuration
+ * - **Resource management**: Single cleanup point for DSPy resources
+ * - **Performance**: Reuse existing wrapper and its internal state
+ * 
+ * ## Usage in stdio MCP Server
+ * 
+ * When `claude-zen swarm` starts, components use this singleton pattern:
+ * - All 8 MCP tools share the same wrapper instance
+ * - Configuration is consistent across tool executions
+ * - Memory usage remains stable during long-running sessions
+ * 
+ * @param config - Optional configuration for first-time initialization (ignored on subsequent calls)
+ * @returns Promise resolving to singleton DSPy wrapper instance
+ * 
+ * @throws {DSPyConfigurationError} When initial configuration fails
+ * @throws {DSPyAPIError} When dspy.ts setup fails during first initialization
+ * 
+ * @example
+ * ```typescript
+ * // MCP server initialization
+ * const wrapper = await getSingletonDSPyWrapper({
+ *   model: 'claude-3-5-sonnet-20241022'
+ * });
+ * 
+ * // Later tool executions reuse same instance
+ * const sameWrapper = await getSingletonDSPyWrapper(); // Returns existing instance
+ * ```
+ * 
+ * @since 1.0.0
+ * @warning Configuration only applies on first call
  */
 let singletonWrapper: DSPyWrapper | null = null;
 export async function getSingletonDSPyWrapper(config?: DSPyConfig): Promise<DSPyWrapper> {

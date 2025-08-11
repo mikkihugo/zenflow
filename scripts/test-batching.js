@@ -12,10 +12,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 class BatchingTester {
   async testBatchingOpportunity() {
-    console.log('🧪 Analyzing current TypeScript errors for batching opportunities...\n');
+    // console.log('🧪 Analyzing current TypeScript errors for batching opportunities...\n');
 
     const errors = await this.runTypeScriptCompiler();
-    console.log(`📊 Total errors found: ${errors.length}\n`);
+    // console.log(`📊 Total errors found: ${errors.length}\n`);
 
     // Group errors by file
     const errorsByFile = this.groupErrorsByFile(errors);
@@ -29,13 +29,13 @@ class BatchingTester {
       ([filePath, fileErrors]) => fileErrors.length > 1
     );
 
-    console.log(`📦 BATCHING ANALYSIS:`);
-    console.log(`   📁 Total files with errors: ${errorsByFile.size}`);
-    console.log(`   📦 Single-error files: ${singleErrorFiles.length} (BATCHABLE)`);
-    console.log(`   📋 Multi-error files: ${multiErrorFiles.length} (individual processing)`);
+    // console.log(`📦 BATCHING ANALYSIS:`);
+    // console.log(`   📁 Total files with errors: ${errorsByFile.size}`);
+    // console.log(`   📦 Single-error files: ${singleErrorFiles.length} (BATCHABLE)`);
+    // console.log(`   📋 Multi-error files: ${multiErrorFiles.length} (individual processing)`);
 
     if (singleErrorFiles.length === 0) {
-      console.log('\n✅ No single-error files to batch at this time.');
+      // console.log('\n✅ No single-error files to batch at this time.');
       return;
     }
 
@@ -53,7 +53,7 @@ class BatchingTester {
       errorTypeGroups.get(errorType).push({ filePath, error });
     }
 
-    console.log(`\n🎯 BATCH GROUPS (by error type):`);
+    // console.log(`\n🎯 BATCH GROUPS (by error type):`);
     let totalBatches = 0;
     const batchSize = 15;
 
@@ -61,34 +61,34 @@ class BatchingTester {
       const batches = Math.ceil(files.length / batchSize);
       totalBatches += batches;
 
-      console.log(`   ${errorType}: ${files.length} files → ${batches} batches`);
+      // console.log(`   ${errorType}: ${files.length} files → ${batches} batches`);
 
       // Show sample files for this error type
       const sampleFiles = files.slice(0, 5).map((f) => path.basename(f.filePath));
-      console.log(`      Samples: ${sampleFiles.join(', ')}${files.length > 5 ? ', ...' : ''}`);
+      // console.log(`      Samples: ${sampleFiles.join(', ')}${files.length > 5 ? ', ...' : ''}`);
     }
 
     const currentApproach = singleErrorFiles.length; // 1 AI call per file
     const batchedApproach = totalBatches; // 1 AI call per batch
     const speedup = Math.round(currentApproach / batchedApproach);
 
-    console.log(`\n⚡ OPTIMIZATION POTENTIAL:`);
-    console.log(`   Current approach: ${currentApproach} AI calls (1 per file)`);
-    console.log(`   Batched approach: ${batchedApproach} AI calls (1 per batch)`);
-    console.log(`   🚀 Estimated speedup: ${speedup}x faster for single-error files`);
+    // console.log(`\n⚡ OPTIMIZATION POTENTIAL:`);
+    // console.log(`   Current approach: ${currentApproach} AI calls (1 per file)`);
+    // console.log(`   Batched approach: ${batchedApproach} AI calls (1 per batch)`);
+    // console.log(`   🚀 Estimated speedup: ${speedup}x faster for single-error files`);
 
     const timeSavings = (currentApproach - batchedApproach) * 2; // Assume 2 min per AI call
-    console.log(`   ⏰ Estimated time savings: ~${timeSavings} minutes`);
+    // console.log(`   ⏰ Estimated time savings: ~${timeSavings} minutes`);
 
-    console.log(`\n💡 RECOMMENDATION:`);
+    // console.log(`\n💡 RECOMMENDATION:`);
     if (speedup >= 10) {
-      console.log(`   🔥 MASSIVE speedup potential! Batching highly recommended.`);
+      // console.log(`   🔥 MASSIVE speedup potential! Batching highly recommended.`);
     } else if (speedup >= 5) {
-      console.log(`   🚀 Significant speedup available. Batching recommended.`);
+      // console.log(`   🚀 Significant speedup available. Batching recommended.`);
     } else if (speedup >= 2) {
-      console.log(`   ⚡ Moderate speedup available. Batching beneficial.`);
+      // console.log(`   ⚡ Moderate speedup available. Batching beneficial.`);
     } else {
-      console.log(`   📋 Limited batching benefit at current error distribution.`);
+      // console.log(`   📋 Limited batching benefit at current error distribution.`);
     }
   }
 

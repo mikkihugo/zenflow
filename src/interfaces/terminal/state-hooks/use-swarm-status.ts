@@ -9,7 +9,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('SwarmStatusHook');
 
@@ -240,7 +240,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
     // Attempt to load real swarm data with fallback to mock data
     try {
       // Try to import and use real swarm coordination through public API
-      const { createPublicSwarmCoordinator } = await import('../../../coordination/public-api');
+      const { createPublicSwarmCoordinator } = await import('../../../coordination/public-api.ts');
       const coordinator = await createPublicSwarmCoordinator();
 
       if (coordinator) {
@@ -304,7 +304,9 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       // Attempt to start real agent with fallback to simulation
       try {
         // Try to use real swarm coordinator to start agent
-        const { createPublicSwarmCoordinator } = await import('../../../coordination/public-api');
+        const { createPublicSwarmCoordinator } = await import(
+          '../../../coordination/public-api.ts'
+        );
         const coordinator = await createPublicSwarmCoordinator();
 
         if (coordinator) {

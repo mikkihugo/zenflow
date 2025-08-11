@@ -1,15 +1,128 @@
 /**
- * Graph Neural Network (GNN) Model
- * Implements message passing neural networks for graph-structured data
+ * @fileoverview Graph Neural Network (GNN) Model Implementation
+ * 
+ * This module implements a comprehensive Graph Neural Network (GNN) using message passing
+ * architecture for analyzing graph-structured data such as domain relationships, code dependencies,
+ * and error propagation patterns. The implementation includes:
+ * 
+ * - Message passing layers with configurable aggregation (mean, max, sum)
+ * - GRU-style node updates with gating mechanisms
+ * - Support for both node and edge features
+ * - Training with validation and early stopping
+ * - WASM acceleration compatibility
+ * - Multiple activation functions (ReLU, tanh, sigmoid)
+ * 
+ * @author Claude Code Zen Team
+ * @version 1.0.0-alpha.43
+ * @since 2024-01-01
+ * 
+ * @example Basic GNN Usage
+ * ```javascript
+ * const gnn = new GNNModel({
+ *   nodeDimensions: 128,
+ *   edgeDimensions: 64,
+ *   numLayers: 3,
+ *   aggregation: 'mean'
+ * });
+ * 
+ * // Prepare graph data
+ * const graphData = {
+ *   nodes: new Float32Array([...]), // Node features
+ *   edges: new Float32Array([...]), // Edge features  
+ *   adjacency: [[0,1], [1,2], [2,0]] // Graph connections
+ * };
+ * 
+ * // Forward pass
+ * const predictions = await gnn.forward(graphData, false);
+ * console.log(predictions.shape); // [numNodes, outputDimensions]
+ * ```
+ * 
+ * @example Training GNN
+ * ```javascript
+ * const trainingData = [{
+ *   graphs: graphData,
+ *   targets: { taskType: 'node_classification', labels: [...] }
+ * }];
+ * 
+ * const results = await gnn.train(trainingData, {
+ *   epochs: 50,
+ *   batchSize: 32,
+ *   learningRate: 0.001,
+ *   validationSplit: 0.2
+ * });
+ * 
+ * console.log('Training completed:', results.finalLoss);
+ * ```
  */
 
 import { NeuralModel } from './base.js';
 
+/**
+ * Graph Neural Network (GNN) Model class implementing message passing architecture.
+ * 
+ * This class provides a complete GNN implementation with configurable message passing layers,
+ * node update mechanisms, and training capabilities. It supports various graph learning tasks
+ * including node classification, graph classification, and link prediction.
+ * 
+ * Key Features:
+ * - Configurable message passing with 1-10 layers
+ * - Multiple aggregation strategies (mean, max, sum)
+ * - GRU-style gated node updates for improved gradient flow
+ * - Support for heterogeneous graphs with node and edge features
+ * - Batch processing and validation during training
+ * - Memory-efficient Float32Array operations
+ * - Extensible architecture for custom graph tasks
+ * 
+ * @class GNNModel
+ * @extends {NeuralModel}
+ */
 class GNNModel extends NeuralModel {
+  /**
+   * Creates a new Graph Neural Network model with specified configuration.
+   * 
+   * @constructor
+   * @param {Object} [config={}] - Configuration object for the GNN model
+   * @param {number} [config.nodeDimensions=128] - Input node feature dimension
+   * @param {number} [config.edgeDimensions=64] - Input edge feature dimension  
+   * @param {number} [config.hiddenDimensions=256] - Hidden layer dimension for message passing
+   * @param {number} [config.outputDimensions=128] - Output node embedding dimension
+   * @param {number} [config.numLayers=3] - Number of message passing layers (1-10 recommended)
+   * @param {'mean'|'max'|'sum'} [config.aggregation='mean'] - Message aggregation strategy
+   * @param {'relu'|'tanh'|'sigmoid'} [config.activation='relu'] - Activation function
+   * @param {number} [config.dropoutRate=0.2] - Dropout rate for training regularization (0-1)
+   * @param {number} [config.messagePassingSteps=3] - Steps of message passing per layer
+   * 
+   * @example
+   * ```javascript
+   * const gnn = new GNNModel({
+   *   nodeDimensions: 64,     // Input node features
+   *   edgeDimensions: 32,     // Input edge features
+   *   hiddenDimensions: 128,  // Hidden layer size
+   *   outputDimensions: 96,   // Output embedding size
+   *   numLayers: 4,           // 4 message passing layers
+   *   aggregation: 'mean',    // Average neighbor messages
+   *   activation: 'relu',     // ReLU activation
+   *   dropoutRate: 0.3        // 30% dropout during training
+   * });
+   * ```
+   */
   constructor(config = {}) {
     super('gnn');
 
-    // GNN configuration
+    /**
+     * GNN model configuration containing all hyperparameters and architecture settings.
+     * 
+     * @type {Object}
+     * @property {number} nodeDimensions - Dimension of input node features
+     * @property {number} edgeDimensions - Dimension of input edge features
+     * @property {number} hiddenDimensions - Hidden layer size for message passing
+     * @property {number} outputDimensions - Final output embedding dimension
+     * @property {number} numLayers - Number of GNN layers for deep message passing
+     * @property {string} aggregation - How to combine neighbor messages ('mean'|'max'|'sum')
+     * @property {string} activation - Activation function for non-linearity
+     * @property {number} dropoutRate - Regularization dropout rate during training
+     * @property {number} messagePassingSteps - Steps of message propagation per layer
+     */
     this.config = {
       nodeDimensions: config.nodeDimensions || 128,
       edgeDimensions: config.edgeDimensions || 64,
@@ -23,15 +136,68 @@ class GNNModel extends NeuralModel {
       ...config,
     };
 
-    // Initialize weights
+    /**
+     * Message passing weights for each GNN layer.
+     * Contains node-to-message and edge-to-message transformation matrices.
+     * @type {Array<Object>}
+     */
     this.messageWeights = [];
+
+    /**
+     * Node update weights implementing GRU-style gated updates.
+     * Contains update and gate transformation matrices for each layer.
+     * @type {Array<Object>}
+     */
     this.updateWeights = [];
+
+    /**
+     * Aggregation weights for attention-based message combination.
+     * Used when sophisticated aggregation beyond mean/max/sum is needed.
+     * @type {Array<Object>}
+     */
     this.aggregateWeights = [];
+
+    /**
+     * Final output transformation weights to produce node embeddings.
+     * Maps from hidden dimensions to output dimensions.
+     * @type {Object|null}
+     */
     this.outputWeights = null;
 
     this.initializeWeights();
   }
 
+  /**
+   * Initializes all GNN weights using He initialization for optimal gradient flow.
+   * 
+   * This method sets up weight matrices for all GNN components:
+   * - Message passing weights (node-to-message and edge-to-message transformations)
+   * - Node update weights (GRU-style gated updates with update and gate matrices)
+   * - Aggregation weights (attention mechanisms for sophisticated message combination)
+   * - Output transformation weights (final node embedding projection)
+   * 
+   * He initialization is used for ReLU activation functions to prevent vanishing/exploding gradients.
+   * 
+   * @private
+   * @method initializeWeights
+   * @returns {void}
+   * 
+   * @example Weight Structure
+   * ```javascript
+   * this.messageWeights[layer] = {
+   *   nodeToMessage: Float32Array,  // [inputDim, hiddenDim]
+   *   edgeToMessage: Float32Array,  // [edgeDim, hiddenDim]
+   *   messageBias: Float32Array     // [hiddenDim]
+   * };
+   * 
+   * this.updateWeights[layer] = {
+   *   updateTransform: Float32Array, // [hiddenDim*2, hiddenDim]
+   *   updateBias: Float32Array,      // [hiddenDim]
+   *   gateTransform: Float32Array,   // [hiddenDim*2, hiddenDim]
+   *   gateBias: Float32Array         // [hiddenDim]
+   * };
+   * ```
+   */
   initializeWeights() {
     // Initialize weights for each layer
     for (let layer = 0; layer < this.config.numLayers; layer++) {
@@ -89,23 +255,75 @@ class GNNModel extends NeuralModel {
     return weight;
   }
 
+  /**
+   * Performs forward pass through the Graph Neural Network.
+   * 
+   * This is the main inference method that processes graph data through multiple message passing
+   * layers to generate node embeddings. The forward pass includes:
+   * 
+   * 1. Input validation and preprocessing
+   * 2. Multi-layer message passing with neighbor aggregation
+   * 3. Node state updates using GRU-style gating
+   * 4. Activation functions and dropout (if training)
+   * 5. Final output transformation
+   * 
+   * @async
+   * @method forward
+   * @param {Object} graphData - Input graph data structure
+   * @param {Float32Array} graphData.nodes - Node feature matrix [numNodes, nodeFeatureDim]
+   * @param {Float32Array} [graphData.edges] - Edge feature matrix [numEdges, edgeFeatureDim]
+   * @param {Array<Array<number>>} graphData.adjacency - Adjacency list [[source, target], ...]
+   * @param {boolean} [training=false] - Whether to apply training-time behaviors (dropout, etc.)
+   * 
+   * @returns {Promise<Float32Array>} Node embeddings with shape [numNodes, outputDimensions]
+   * 
+   * @throws {Error} When graph data validation fails (invalid dimensions, missing nodes, etc.)
+   * 
+   * @example Basic Forward Pass
+   * ```javascript
+   * const graphData = {
+   *   nodes: new Float32Array([
+   *     1.0, 0.5, 0.2,  // Node 0 features
+   *     0.8, 1.0, 0.1,  // Node 1 features  
+   *     0.3, 0.7, 0.9   // Node 2 features
+   *   ]),
+   *   adjacency: [[0,1], [1,2], [2,0]], // Triangle graph
+   *   edges: new Float32Array([...])    // Optional edge features
+   * };
+   * 
+   * const embeddings = await gnn.forward(graphData, false);
+   * console.log(embeddings.shape); // [3, outputDimensions]
+   * ```
+   * 
+   * @example Training Mode
+   * ```javascript
+   * // Training mode enables dropout and other training-specific behaviors
+   * const embeddings = await gnn.forward(graphData, true);
+   * // Dropout will be applied based on this.config.dropoutRate
+   * ```
+   */
   async forward(graphData, training = false) {
     const { nodes, edges, adjacency } = graphData;
     const numNodes = nodes.shape[0];
 
-    // Validate graph data
+    // Validate graph data with comprehensive error messages
     if (numNodes <= 0) {
-      throw new Error(`Invalid number of nodes: ${numNodes}`);
+      throw new Error(`Invalid number of nodes: ${numNodes}. Graph must contain at least one node.`);
     }
-    if (nodes.shape[1] !== this.config.nodeFeatureDim) {
+    if (nodes.shape[1] !== this.config.nodeDimensions) {
       throw new Error(
-        `Node feature dimension mismatch: expected ${this.config.nodeFeatureDim}, got ${nodes.shape[1]}`
+        `Node feature dimension mismatch: expected ${this.config.nodeDimensions}, got ${nodes.shape[1]}. ` +
+        `Check your input node features and GNN configuration.`
       );
     }
-    if (adjacency && (adjacency.shape[0] !== numNodes || adjacency.shape[1] !== numNodes)) {
-      throw new Error(
-        `Adjacency matrix size mismatch: expected [${numNodes}, ${numNodes}], got [${adjacency.shape[0]}, ${adjacency.shape[1]}]`
-      );
+    if (adjacency && adjacency.length > 0) {
+      const maxNodeId = Math.max(...adjacency.flat());
+      if (maxNodeId >= numNodes) {
+        throw new Error(
+          `Adjacency list references node ${maxNodeId} but only ${numNodes} nodes provided. ` +
+          `Node indices must be in range [0, ${numNodes-1}].`
+        );
+      }
     }
 
     // Initialize node representations
@@ -314,6 +532,98 @@ class GNNModel extends NeuralModel {
     }
   }
 
+  /**
+   * Trains the Graph Neural Network using provided training data.
+   * 
+   * This method implements a complete training loop with the following features:
+   * - Configurable epochs, batch size, and learning rate
+   * - Automatic train/validation split for model evaluation
+   * - Data shuffling between epochs for better convergence
+   * - Support for multiple graph learning tasks (node classification, graph classification, link prediction)
+   * - Training history tracking with loss and validation metrics
+   * - Early stopping potential and model checkpointing
+   * 
+   * The training process uses mini-batch gradient descent with configurable parameters.
+   * Loss functions are automatically selected based on the task type specified in targets.
+   * 
+   * @async
+   * @method train
+   * @param {Array<Object>} trainingData - Array of training samples
+   * @param {Object} trainingData[].graphs - Graph data for this sample (nodes, edges, adjacency)
+   * @param {Object} trainingData[].targets - Target labels/values for this sample
+   * @param {'node_classification'|'graph_classification'|'link_prediction'} trainingData[].targets.taskType - Type of learning task
+   * @param {Array<number>} [trainingData[].targets.labels] - Classification labels for node/graph classification
+   * @param {Array<number>} [trainingData[].targets.values] - Regression values for link prediction
+   * @param {Object} [options={}] - Training configuration options
+   * @param {number} [options.epochs=10] - Number of training epochs (1-1000)
+   * @param {number} [options.batchSize=32] - Batch size for mini-batch training (1-256)
+   * @param {number} [options.learningRate=0.001] - Learning rate for gradient descent (1e-5 to 1e-1)
+   * @param {number} [options.validationSplit=0.1] - Fraction of data for validation (0-0.5)
+   * 
+   * @returns {Promise<Object>} Training results with history and final metrics
+   * @returns {Array<Object>} returns.history - Per-epoch training history
+   * @returns {number} returns.history[].epoch - Epoch number
+   * @returns {number} returns.history[].trainLoss - Training loss for this epoch
+   * @returns {number} returns.history[].valLoss - Validation loss for this epoch  
+   * @returns {number} returns.finalLoss - Final training loss
+   * @returns {string} returns.modelType - Model type identifier ('gnn')
+   * @returns {number} returns.accuracy - Final model accuracy (simulated)
+   * 
+   * @throws {Error} When training data is invalid or training fails
+   * 
+   * @example Node Classification Training
+   * ```javascript
+   * const trainingData = [
+   *   {
+   *     graphs: {
+   *       nodes: new Float32Array([...]),
+   *       adjacency: [[0,1], [1,2]],
+   *       edges: new Float32Array([...])
+   *     },
+   *     targets: {
+   *       taskType: 'node_classification',
+   *       labels: [0, 1, 0] // Class labels for each node
+   *     }
+   *   }
+   * ];
+   * 
+   * const results = await gnn.train(trainingData, {
+   *   epochs: 50,
+   *   batchSize: 16,
+   *   learningRate: 0.01,
+   *   validationSplit: 0.2
+   * });
+   * 
+   * console.log(`Training completed with loss: ${results.finalLoss}`);
+   * console.log(`Model accuracy: ${results.accuracy}`);
+   * ```
+   * 
+   * @example Graph Classification Training  
+   * ```javascript
+   * const trainingData = [
+   *   {
+   *     graphs: graphData1,
+   *     targets: {
+   *       taskType: 'graph_classification',
+   *       labels: [1] // Graph-level class label
+   *     }
+   *   },
+   *   {
+   *     graphs: graphData2,
+   *     targets: {
+   *       taskType: 'graph_classification', 
+   *       labels: [0]
+   *     }
+   *   }
+   * ];
+   * 
+   * const results = await gnn.train(trainingData, {
+   *   epochs: 100,
+   *   batchSize: 8,
+   *   learningRate: 0.005
+   * });
+   * ```
+   */
   async train(trainingData, options = {}) {
     const { epochs = 10, batchSize = 32, learningRate = 0.001, validationSplit = 0.1 } = options;
 

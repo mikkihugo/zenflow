@@ -2,8 +2,8 @@
  * @file Database layer: vector-dao.
  */
 
-import type { Logger } from '../../config/logging-config';
-import { BaseDao } from '../base.dao';
+import type { Logger } from '../../config/logging-config.ts';
+import { BaseDao } from '../base.dao.ts';
 
 interface VectorDocument<T> {
   id: string | number;
@@ -542,7 +542,7 @@ export class VectorDao<T = any> extends BaseDao<T> {
 }
 
 /**
- * @deprecated Use VectorDao from '../dao/vector.dao'.
+ * @deprecated Use VectorDao from '../dao/vector.dao.ts';.
  * This shim will be removed after migration period.
  */
 // Export alias for compatibility - removed self-reference

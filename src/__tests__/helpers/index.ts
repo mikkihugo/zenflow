@@ -8,22 +8,22 @@
  */
 
 // Legacy Test Helpers (backward compatibility)
-export { AssertionHelpers, AssertionHelpers as assertionHelpers } from './assertion-helpers';
-export * from './coordination-test-helpers';
+export { AssertionHelpers, AssertionHelpers as assertionHelpers } from './assertion-helpers.ts';
+export * from './coordination-test-helpers.ts';
 // Enhanced Hybrid TDD Helpers
-export * from './hybrid-test-utilities';
+export * from './hybrid-test-utilities.ts';
 export {
   IntegrationTestSetup,
   IntegrationTestSetup as integrationTestSetup,
-} from './integration-test-setup';
-export { MockBuilder } from './mock-builder';
-export * from './neural-test-helpers';
+} from './integration-test-setup.ts';
+export { MockBuilder } from './mock-builder.ts';
+export * from './neural-test-helpers.ts';
 export {
   PerformanceMeasurement,
   PerformanceMeasurement as performanceMeasurement,
-} from './performance-measurement';
-export * from './performance-test-suite';
-export { TestDataFactory, TestDataFactory as testDataFactory } from './test-data-factory';
+} from './performance-measurement.ts';
+export * from './performance-test-suite.ts';
+export { TestDataFactory, TestDataFactory as testDataFactory } from './test-data-factory.ts';
 
 // Factory functions
 export function createLondonMocks(config?: any) {
@@ -38,11 +38,11 @@ export function createTestLogger(config?: any) {
   return new TestLogger(config);
 }
 
-export { DatabaseTestHelper } from './database-test-helper';
-export { FileSystemTestHelper } from './filesystem-test-helper';
-export { NetworkTestHelper } from './network-test-helper';
+export { DatabaseTestHelper } from './database-test-helper.ts';
+export { FileSystemTestHelper } from './filesystem-test-helper.ts';
+export { NetworkTestHelper } from './network-test-helper.ts';
 // Common test utilities
-export { TestLogger } from './test-logger';
+export { TestLogger } from './test-logger.ts';
 
 // Type exports for test configurations
 export type {
@@ -51,4 +51,4 @@ export type {
   MockConfiguration,
   PerformanceTestOptions,
   TestDataOptions,
-} from './types';
+} from './types.ts';

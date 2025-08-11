@@ -1,0 +1,1 @@
+{"version":3,"file":"wasm-loader2.d.ts","sourceRoot":"","sources":["../../../../src/neural/wasm/wasm-loader2.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;;GAqBG;AACH;;GAEG;AAEH,qBAAa,WAAW;IACtB,OAAO,CAAC,WAAW,CAAS;IAEtB,UAAU,IAAI,OAAO,CAAC,IAAI,CAAC;IAOjC,aAAa,IAAI,OAAO;CAGzB;AAED,eAAe,WAAW,CAAC"}

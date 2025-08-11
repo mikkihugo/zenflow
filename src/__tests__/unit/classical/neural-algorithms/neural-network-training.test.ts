@@ -5,7 +5,7 @@
  * No mocks - verify real computations
  */
 
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 // Example neural network implementation (would be imported from actual code)
 class NeuralNetwork {

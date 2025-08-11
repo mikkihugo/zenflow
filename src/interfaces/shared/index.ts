@@ -16,15 +16,15 @@
  */
 
 // Re-export config types
-export type { InterfaceConfig } from '../../config/types';
+export type { InterfaceConfig } from '../../config/types.ts';
 // Re-export types from CLI advanced types
 export type {
   ComplexityLevel,
   ProjectType,
-} from '../cli/types/advanced-cli-types';
+} from '../cli/types/advanced-cli-types.ts';
 // Re-export command types from command-interfaces
-export type { CommandResult } from './command-interfaces';
-export * from './config';
+export type { CommandResult } from './command-interfaces.ts';
+export * from './config.ts';
 export type {
   // Export the types defined in contracts
   CommandContext,
@@ -36,11 +36,11 @@ export type {
   SwarmCoordinatorContract,
   SystemHealth,
   SystemMonitorContract,
-} from './contracts';
+} from './contracts.ts';
 // Export all contracts
-export * from './contracts';
+export * from './contracts.ts';
 // Re-export key types for convenience - only the ones that actually exist
-export type { ComponentStatus } from './types';
+export type { ComponentStatus } from './types.ts';
 
 // Export all shared types
-export * from './types';
+export * from './types.ts';

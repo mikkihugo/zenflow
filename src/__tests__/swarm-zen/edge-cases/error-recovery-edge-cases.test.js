@@ -3,7 +3,7 @@
  * Tests error propagation, recovery mechanisms, and failure scenarios
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, , vi } from 'vitest';
 import { EnhancedMCPTools } from '../../src/mcp-tools-enhanced.js';
 
 describe('Error Handling and Recovery Edge Cases', () => {
@@ -12,15 +12,15 @@ describe('Error Handling and Recovery Edge Cases', () => {
 
   beforeEach(() => {
     mockZenSwarm = {
-      createSwarm: jest.fn(),
-      benchmark: jest.fn(),
+      createSwarm: vi.fn(),
+      benchmark: vi.fn(),
     };
     mcpTools = new EnhancedMCPTools();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('Error Propagation Edge Cases', () => {

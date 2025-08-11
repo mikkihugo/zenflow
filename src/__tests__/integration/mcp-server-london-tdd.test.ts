@@ -9,7 +9,7 @@
  * - Focus on component interactions and communication protocols
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 

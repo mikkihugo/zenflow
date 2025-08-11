@@ -67,7 +67,7 @@ export class EventBus extends EventEmitter implements EventBusInterface {
 
   getEventHistory(eventType?: string): SystemEvent[] {
     if (eventType) {
-      return this.eventHistory.filter(event => event.type === eventType);
+      return this.eventHistory.filter((event) => event.type === eventType);
     }
     return [...this.eventHistory];
   }

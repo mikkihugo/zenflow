@@ -1,34 +1,131 @@
 /**
- * @file Comprehensive Test Suite for Hive Knowledge Integration
- * Tests all components of the Hive Knowledge System Integration using swarm coordination
+ * @fileoverview Comprehensive Test Suite for Hive Knowledge Integration System
+ * 
+ * This test suite validates the complete integration of the Hive Knowledge System,
+ * including FACT (Fast Augmented Context Tools) integration, swarm coordination,
+ * knowledge discovery, and cross-system communication patterns.
+ * 
+ * Test Coverage:
+ * - HiveKnowledgeBridge initialization and coordination
+ * - SwarmKnowledgeSync caching and distribution
+ * - KnowledgeAwareDiscovery pattern matching
+ * - Cross-swarm knowledge sharing workflows
+ * - Performance and concurrency validation
+ * - Error handling and fallback mechanisms
+ * 
+ * @author Claude Code Zen Team
+ * @since 1.0.0-alpha.43
+ * @version 1.0.0-alpha.43
+ * 
+ * @see {@link ../../coordination/hive-knowledge-bridge.ts} HiveKnowledgeBridge Implementation
+ * @see {@link ../../coordination/swarm/knowledge-sync.ts} SwarmKnowledgeSync System
+ * @see {@link ../../coordination/discovery/knowledge-enhanced-discovery.ts} Knowledge Discovery
+ * 
+ * @requires vitest - Testing framework
+ * @requires @vitest/expect - Assertion library
+ * @requires @coordination/hive-fact-integration - FACT system integration
+ * @requires @knowledge/types/fact-types - Knowledge type definitions
+ * 
+ * @example
+ * ```bash
+ * # Run this specific test suite
+ * npm test -- hive-knowledge-integration
+ * 
+ * # Run with coverage
+ * npm run test:coverage -- hive-knowledge-integration
+ * 
+ * # Run specific test group
+ * npm test -- --grep "HiveKnowledgeBridge"
+ * ```
  */
 
 import { EventEmitter } from 'node:events';
-import { afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
-import { KnowledgeAwareDiscovery } from '../../coordination/discovery/knowledge-enhanced-discovery';
-import { HiveKnowledgeBridge } from '../../coordination/hive-knowledge-bridge';
-import { SwarmKnowledgeSync } from '../../coordination/swarm/knowledge-sync';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { KnowledgeAwareDiscovery } from '../../coordination/discovery/knowledge-enhanced-discovery.ts';
+import { HiveKnowledgeBridge, type KnowledgeRequest, type KnowledgeResponse } from '../../coordination/hive-knowledge-bridge.ts';
+import { type HiveFACTSystem, type UniversalFact } from '../../coordination/hive-fact-integration.ts';
+import { type FACTSearchQuery, type FACTKnowledgeEntry, type FACTStorageStats } from '../../knowledge/types/fact-types.ts';
+import { SwarmKnowledgeSync, type SwarmLearning } from '../../coordination/swarm/knowledge-sync.ts';
+import type { SessionMemoryStore } from '../../memory/memory.ts';
 
-// Mock implementations
-class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
+/**
+ * Mock implementations for testing Hive Knowledge Integration.
+ * These mocks simulate the behavior of production systems for isolated testing.
+ */
+
+/**
+ * Mock implementation of HiveFACT system for testing purposes.
+ * 
+ * Simulates the Hive-level FACT (Fast Augmented Context Tools) system
+ * with pre-seeded knowledge entries for consistent test scenarios.
+ * 
+ * @class MockHiveFACT
+ * @extends {EventEmitter}
+ * 
+ * @implements Partial<HiveFACTSystem> interface compatibility
+ * 
+ * @example
+ * ```typescript
+ * const mockFact = new MockHiveFACT();
+ * const results = await mockFact.searchFacts({ query: 'authentication' });
+ * expect(results).toHaveLength(1);
+ * ```
+ * 
+ * @see {@link ../../coordination/hive-fact-integration.ts} Production HiveFACTSystem
+ * @see {@link ../../knowledge/types/fact-types.ts} FACT type definitions
+ */
+class MockHiveFACT extends EventEmitter {
+  /**
+   * Internal storage for mock knowledge facts.
+   * Maps fact IDs to UniversalFact objects for quick retrieval.
+   * 
+   * @private
+   * @type {Map<string, UniversalFact>}
+   */
   private facts = new Map<string, UniversalFact>();
 
+  /**
+   * Creates a new MockHiveFACT instance with pre-seeded test data.
+   * 
+   * @constructor
+   * @emits ready - When mock initialization is complete
+   */
   constructor() {
     super();
     this.seedMockFacts();
   }
 
+  /**
+   * Seeds the mock with predefined test facts.
+   * 
+   * Creates a variety of knowledge entries covering different domains
+   * (authentication, frontend development) for comprehensive testing.
+   * 
+   * @private
+   * @method seedMockFacts
+   * @returns {void}
+   * 
+   * @example
+   * ```typescript
+   * // This method is called automatically in constructor
+   * // Mock facts include authentication and React patterns
+   * ```
+   */
   private seedMockFacts(): void {
     const mockFacts: UniversalFact[] = [
       {
         id: 'fact-1',
         type: 'general',
+        category: 'authentication',
         subject: 'authentication patterns',
         content: {
           patterns: ['JWT tokens', 'OAuth 2.0', 'session management'],
           bestPractices: ['Use HTTPS', 'Implement rate limiting', 'Hash passwords'],
           topology: 'hierarchical',
         },
+        source: 'hive-fact',
+        confidence: 0.9,
+        timestamp: Date.now(),
         metadata: { source: 'hive-fact', timestamp: Date.now(), confidence: 0.9 },
         accessCount: 5,
         swarmAccess: new Set(['swarm-1', 'swarm-2']),
@@ -36,11 +133,15 @@ class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
       {
         id: 'fact-2',
         type: 'npm-package',
+        category: 'frontend',
         subject: 'react',
         content: {
           patterns: ['component architecture', 'state management', 'hooks pattern'],
           bestPractices: ['Use functional components', 'Optimize re-renders', 'Use TypeScript'],
         },
+        source: 'external-mcp',
+        confidence: 0.95,
+        timestamp: Date.now(),
         metadata: { source: 'external-mcp', timestamp: Date.now(), confidence: 0.95 },
         accessCount: 12,
         swarmAccess: new Set(['swarm-1', 'swarm-3']),
@@ -50,13 +151,77 @@ class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
     mockFacts.forEach((fact) => this.facts.set(fact.id, fact));
   }
 
-  async searchFacts(query: any): Promise<UniversalFact[]> {
+  /**
+   * Searches mock facts based on query parameters.
+   * 
+   * Filters the seeded facts using text-based matching and returns
+   * results in FACTKnowledgeEntry format compatible with the production API.
+   * 
+   * @async
+   * @method searchFacts
+   * @param {FACTSearchQuery} query - Search parameters including query string and limits
+   * @param {string} [query.query] - Text query to search for in fact content
+   * @param {number} [query.limit=10] - Maximum number of results to return
+   * @returns {Promise<FACTKnowledgeEntry[]>} Array of matching knowledge entries
+   * 
+   * @example
+   * ```typescript
+   * const results = await mockFact.searchFacts({
+   *   query: 'authentication',
+   *   limit: 5
+   * });
+   * expect(results).toHaveLength(1);
+   * expect(results[0].query).toBe('authentication');
+   * ```
+   * 
+   * @see {@link FACTSearchQuery} Query parameter interface
+   * @see {@link FACTKnowledgeEntry} Return type interface
+   */
+  async searchFacts(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
     const results = Array.from(this.facts.values()).filter((fact) =>
-      JSON.stringify(fact).toLowerCase().includes(query.query.toLowerCase())
+      query.query ? JSON.stringify(fact).toLowerCase().includes(query.query.toLowerCase()) : true
     );
-    return results?.slice(0, query.limit || 10);
+    return results?.slice(0, query.limit || 10).map((fact, index) => ({
+      id: `fact-entry-${index}`,
+      query: query.query || '',
+      result: typeof fact.content === 'object' ? JSON.stringify(fact.content) : String(fact.content || ''),
+      source: 'mock-hive-fact',
+      timestamp: Date.now(),
+      ttl: Date.now() + 3600000, // 1 hour TTL
+      accessCount: fact.accessCount || 0,
+      lastAccessed: Date.now(),
+      metadata: {
+        type: fact.type,
+        domains: [fact.category],
+        confidence: fact.metadata.confidence,
+      }
+    }));
   }
 
+  /**
+   * Retrieves a specific fact by type and subject.
+   * 
+   * Searches for a fact matching the specified type and subject criteria.
+   * Optionally tracks swarm access for usage analytics.
+   * 
+   * @async
+   * @method getFact
+   * @param {string} type - The fact type to search for
+   * @param {string} subject - Subject content to match against
+   * @param {string} [swarmId] - Optional swarm ID for access tracking
+   * @returns {Promise<UniversalFact | null>} Matching fact or null if not found
+   * 
+   * @example
+   * ```typescript
+   * const fact = await mockFact.getFact('general', 'authentication', 'swarm-1');
+   * if (fact) {
+   *   expect(fact.type).toBe('general');
+   *   expect(fact.swarmAccess.has('swarm-1')).toBe(true);
+   * }
+   * ```
+   * 
+   * @sideEffect Updates access count and swarm tracking if swarmId provided
+   */
   async getFact(type: string, subject: string, swarmId?: string): Promise<UniversalFact | null> {
     const fact = Array.from(this.facts.values()).find(
       (f) => f.type === type && f.subject.includes(subject)
@@ -70,7 +235,27 @@ class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
     return fact || null;
   }
 
-  getStats() {
+  /**
+   * Returns mock storage statistics for testing.
+   * 
+   * Provides simulated storage metrics compatible with the production
+   * FACTStorageStats interface for testing dashboard and monitoring features.
+   * 
+   * @async
+   * @method getStats
+   * @returns {Promise<FACTStorageStats>} Mock storage statistics
+   * 
+   * @example
+   * ```typescript
+   * const stats = await mockFact.getStats();
+   * expect(stats.memoryEntries).toBeGreaterThan(0);
+   * expect(stats.storageHealth).toBe('excellent');
+   * expect(stats.cacheHitRate).toBeCloseTo(0.85);
+   * ```
+   * 
+   * @see {@link FACTStorageStats} Statistics interface
+   */
+  async getStats(): Promise<FACTStorageStats> {
     return {
       memoryEntries: this.facts.size,
       persistentEntries: 0,
@@ -84,38 +269,207 @@ class MockHiveFACT extends EventEmitter implements Partial<HiveFACTSystem> {
   }
 }
 
+/**
+ * Mock implementation of SessionMemoryStore for testing.
+ * 
+ * Provides an in-memory storage mechanism that simulates the behavior
+ * of the production memory store without external dependencies.
+ * 
+ * @class MockMemoryStore
+ * @implements {Partial<SessionMemoryStore>}
+ * 
+ * @example
+ * ```typescript
+ * const store = new MockMemoryStore();
+ * await store.store('test-key', 'test-data', { value: 'test' });
+ * const retrieved = await store.retrieve('test-key');
+ * expect(retrieved).toEqual({ value: 'test' });
+ * ```
+ * 
+ * @see {@link ../../memory/memory.ts} Production SessionMemoryStore
+ */
 class MockMemoryStore implements Partial<SessionMemoryStore> {
+  /**
+   * Internal storage map for mock memory entries.
+   * 
+   * @private
+   * @type {Map<string, any>}
+   */
   private storage = new Map<string, any>();
 
+  /**
+   * Stores data with a key and type identifier.
+   * 
+   * @async
+   * @method store
+   * @param {string} key - Unique identifier for the stored data
+   * @param {string} type - Type classification for the data
+   * @param {any} data - The data payload to store
+   * @returns {Promise<void>}
+   * 
+   * @example
+   * ```typescript
+   * await store.store('session-1', 'user-data', { userId: 123 });
+   * ```
+   */
   async store(key: string, type: string, data: any): Promise<void> {
     this.storage.set(key, { type, data, timestamp: Date.now() });
   }
 
+  /**
+   * Retrieves stored data by key.
+   * 
+   * @async
+   * @method retrieve
+   * @param {string} key - The key to retrieve data for
+   * @returns {Promise<any>} The stored data or null if not found
+   * 
+   * @example
+   * ```typescript
+   * const data = await store.retrieve('session-1');
+   * expect(data).toEqual({ userId: 123 });
+   * ```
+   */
   async retrieve(key: string): Promise<any> {
     const entry = this.storage.get(key);
     return entry ? entry.data : null;
   }
 
+  /**
+   * Clears all stored data.
+   * 
+   * @async
+   * @method clear
+   * @returns {Promise<void>}
+   * 
+   * @example
+   * ```typescript
+   * await store.clear();
+   * const data = await store.retrieve('any-key'); // Returns null
+   * ```
+   */
   async clear(): Promise<void> {
     this.storage.clear();
   }
 }
 
+/**
+ * Mock implementation of HiveSwarmCoordinator for testing.
+ * 
+ * Simulates the swarm coordination system that manages communication
+ * between different swarms and knowledge requests.
+ * 
+ * @class MockHiveSwarmCoordinator
+ * @extends {EventEmitter}
+ * 
+ * @example
+ * ```typescript
+ * const coordinator = new MockHiveSwarmCoordinator();
+ * const fact = await coordinator.requestUniversalFact('swarm-1', 'auth', 'jwt');
+ * expect(fact.content).toContain('auth:jwt');
+ * ```
+ * 
+ * @see {@link ../../coordination/hive-swarm-sync.ts} Production coordinator
+ */
 class MockHiveSwarmCoordinator extends EventEmitter {
+  /**
+   * Requests a universal fact from the coordination system.
+   * 
+   * @async
+   * @method requestUniversalFact
+   * @param {string} _swarmId - The requesting swarm ID (unused in mock)
+   * @param {string} factType - Type of fact being requested
+   * @param {string} subject - Subject matter of the requested fact
+   * @returns {Promise<any>} Mock fact response with formatted content
+   * 
+   * @example
+   * ```typescript
+   * const response = await coordinator.requestUniversalFact(
+   *   'swarm-1',
+   *   'authentication', 
+   *   'jwt-tokens'
+   * );
+   * expect(response.content).toBe('Mock fact for authentication:jwt-tokens');
+   * ```
+   */
   async requestUniversalFact(_swarmId: string, factType: string, subject: string): Promise<any> {
     return { content: `Mock fact for ${factType}:${subject}` };
   }
 }
 
+/**
+ * Main test suite for Hive Knowledge Integration system.
+ * 
+ * This comprehensive test suite validates the complete knowledge integration
+ * workflow including bridges, synchronization, discovery, and cross-system
+ * communication patterns.
+ * 
+ * Test Structure:
+ * - HiveKnowledgeBridge: Core bridging functionality
+ * - SwarmKnowledgeSync: Knowledge caching and distribution
+ * - KnowledgeAwareDiscovery: Pattern-based knowledge application
+ * - Integration Tests: End-to-end workflow validation
+ * 
+ * @suite Hive Knowledge Integration
+ * @requires MockHiveFACT - Mock FACT system for isolated testing
+ * @requires MockMemoryStore - Mock storage for test isolation
+ * @requires MockHiveSwarmCoordinator - Mock coordination for testing
+ * 
+ * @performance Tests include concurrency and load validation
+ * @coverage Comprehensive error handling and edge case testing
+ */
 describe('Hive Knowledge Integration - Complete System Tests', () => {
+  /**
+   * Mock FACT system instance for testing.
+   * @type {MockHiveFACT}
+   */
   let hiveFact: MockHiveFACT;
+  
+  /**
+   * Mock memory store for isolated testing.
+   * @type {MockMemoryStore}
+   */
   let memoryStore: MockMemoryStore;
+  
+  /**
+   * Mock swarm coordinator for testing coordination features.
+   * @type {MockHiveSwarmCoordinator}
+   */
   let hiveCoordinator: MockHiveSwarmCoordinator;
+  
+  /**
+   * Knowledge bridge instance under test.
+   * @type {HiveKnowledgeBridge}
+   */
   let knowledgeBridge: HiveKnowledgeBridge;
+  
+  /**
+   * First swarm knowledge sync instance for testing.
+   * @type {SwarmKnowledgeSync}
+   */
   let swarmKnowledge1: SwarmKnowledgeSync;
+  
+  /**
+   * Second swarm knowledge sync instance for cross-swarm testing.
+   * @type {SwarmKnowledgeSync}
+   */
   let swarmKnowledge2: SwarmKnowledgeSync;
+  
+  /**
+   * Knowledge-aware discovery system for pattern testing.
+   * @type {KnowledgeAwareDiscovery}
+   */
   let knowledgeAwareDiscovery: KnowledgeAwareDiscovery;
 
+  /**
+   * Global setup for all tests in this suite.
+   * 
+   * Initializes mock components that persist across all tests
+   * for consistent test environment.
+   * 
+   * @hook beforeAll
+   * @async
+   */
   beforeAll(async () => {
     // Initialize all components
     hiveFact = new MockHiveFACT();
@@ -123,6 +477,15 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
     hiveCoordinator = new MockHiveSwarmCoordinator();
   });
 
+  /**
+   * Setup for individual test execution.
+   * 
+   * Resets and reconfigures components for isolated test execution.
+   * Each test gets a fresh instance of the systems under test.
+   * 
+   * @hook beforeEach
+   * @async
+   */
   beforeEach(async () => {
     // Reset components for each test
     await memoryStore.clear();

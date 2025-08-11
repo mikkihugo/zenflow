@@ -71,11 +71,11 @@ export class CoordinationTestBuilder {
     this.setupTopologyConnections();
 
     // Create coordinator mock
-    const coordinator = jest.fn();
+    const coordinator = vi.fn();
     coordinator.mockImplementation(this.createCoordinatorBehavior());
 
     // Create message router mock
-    const messageRouter = jest.fn();
+    const messageRouter = vi.fn();
     messageRouter.mockImplementation(this.createMessageRouterBehavior());
 
     // Create topology representation

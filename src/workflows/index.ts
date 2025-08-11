@@ -1,28 +1,26 @@
 /**
  * @fileoverview Workflows Domain - Clean Architecture
- * 
+ *
  * Single source of truth for all workflow functionality.
  * Google TypeScript style with unified, focused implementation.
  */
 
-// Primary exports from unified engine
-export {WorkflowEngine} from './workflow-engine';
-export {WorkflowEngine as default} from './workflow-engine';
-
 // Re-export all types
 export type {
+  DocumentContent,
+  StepExecutionResult,
   WorkflowContext,
+  WorkflowData,
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-  DocumentContent,
-  StepExecutionResult,
-  WorkflowData,
-} from './workflow-engine';
+} from './workflow-engine.ts';
+// Primary exports from unified engine
+export { WorkflowEngine, WorkflowEngine as default } from './workflow-engine.ts';
 
 // Import for factory use
-import {WorkflowEngine} from './workflow-engine';
+import { WorkflowEngine } from './workflow-engine.ts';
 
 // Workflow utilities
 export const WorkflowUtils = {

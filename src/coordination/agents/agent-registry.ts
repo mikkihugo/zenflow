@@ -9,14 +9,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
-import type {
-  AgentCapabilities,
-  AgentId,
-  AgentMetrics,
-  AgentStatus,
-  AgentType,
-} from '../types';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
+import type { AgentCapabilities, AgentId, AgentMetrics, AgentStatus, AgentType } from '../types.ts';
 
 export interface AgentRegistryQuery {
   type?: AgentType;

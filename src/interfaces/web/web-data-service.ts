@@ -8,7 +8,7 @@
  * @file Web-data service implementation.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 export interface SystemStatusData {
   system: string;

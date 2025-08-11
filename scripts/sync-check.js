@@ -69,7 +69,7 @@ class UpstreamSyncChecker {
         return false;
       }
     } catch (error) {
-      console.error('❌ Error checking upstream status:', error.message);
+      // console.error('❌ Error checking upstream status:', error.message);
       return false;
     }
   }
@@ -108,7 +108,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       }
     })
     .catch((error) => {
-      console.error('❌ Sync check failed:', error);
+      // console.error('❌ Sync check failed:', error);
       process.exit(1);
     });
 }

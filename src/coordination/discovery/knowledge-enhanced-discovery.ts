@@ -10,11 +10,11 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config';
-import type { DiscoveredDomain } from '../../interfaces/tui/types';
-import type { SessionMemoryStore } from '../../memory/memory';
-import type { HiveFACTSystem } from '../hive-fact-integration';
-import type { SwarmKnowledgeSync } from '../swarm/knowledge-sync';
+import { getLogger } from '../../config/logging-config.ts';
+import type { DiscoveredDomain } from '../../interfaces/tui/types.ts';
+import type { SessionMemoryStore } from '../../memory/memory.ts';
+import type { HiveFACTSystem } from '../hive-fact-integration.ts';
+import type { SwarmKnowledgeSync } from '../swarm/knowledge-sync.ts';
 
 const logger = getLogger('Knowledge-Aware-Discovery');
 

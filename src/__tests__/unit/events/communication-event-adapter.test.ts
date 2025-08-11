@@ -13,8 +13,8 @@ import { EventEmitter } from 'node:events';
 import {
   CommunicationEventAdapter,
   createDefaultCommunicationEventAdapterConfig,
-} from '../../../interfaces/events/adapters/communication-event-adapter';
-import { CommunicationEventFactory } from '../../../interfaces/events/adapters/communication-event-factory';
+} from '../../../interfaces/events/adapters/communication-event-adapter.ts';
+import { CommunicationEventFactory } from '../../../interfaces/events/adapters/communication-event-factory.ts';
 
 describe('CommunicationEventAdapter', () => {
   describe('🏗️ Constructor and Configuration (Classical TDD)', () => {
@@ -93,11 +93,11 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should start adapter and initialize communication integrations', async () => {
-      const mockInitializeCommunicationIntegrations = jest
+      const mockInitializeCommunicationIntegrations = vi
         .spyOn(adapter as any, 'initializeCommunicationIntegrations')
         .mockResolvedValue(undefined);
 
-      const mockStartEventProcessing = jest
+      const mockStartEventProcessing = vi
         .spyOn(adapter as any, 'startEventProcessing')
         .mockImplementation(() => {});
 
@@ -114,7 +114,7 @@ describe('CommunicationEventAdapter', () => {
     it('should stop adapter and cleanup resources', async () => {
       await adapter.start();
 
-      const mockUnwrapCommunicationComponents = jest
+      const mockUnwrapCommunicationComponents = vi
         .spyOn(adapter as any, 'unwrapCommunicationComponents')
         .mockResolvedValue(undefined);
 
@@ -128,7 +128,7 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should handle start errors gracefully', async () => {
-      const mockInitializeCommunicationIntegrations = jest
+      const mockInitializeCommunicationIntegrations = vi
         .spyOn(adapter as any, 'initializeCommunicationIntegrations')
         .mockRejectedValue(new Error('Initialization failed'));
 
@@ -171,7 +171,7 @@ describe('CommunicationEventAdapter', () => {
       });
 
       // Mock WebSocket client wrapping
-      const mockWrapWebSocketClients = jest
+      const mockWrapWebSocketClients = vi
         .spyOn(adapter as any, 'wrapWebSocketClients')
         .mockImplementation(async () => {
           const wrappedComponent = {
@@ -321,7 +321,7 @@ describe('CommunicationEventAdapter', () => {
       });
 
       // Mock MCP server wrapping
-      const mockWrapMCPServers = jest
+      const mockWrapMCPServers = vi
         .spyOn(adapter as any, 'wrapMCPServers')
         .mockImplementation(async () => {
           const wrappedComponent = {
@@ -468,7 +468,7 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       // Mock HTTP communication wrapping
-      const mockWrapHTTPCommunication = jest
+      const mockWrapHTTPCommunication = vi
         .spyOn(adapter as any, 'wrapHTTPCommunication')
         .mockImplementation(async () => {
           const wrappedComponent = {
@@ -580,7 +580,7 @@ describe('CommunicationEventAdapter', () => {
       adapter = new CommunicationEventAdapter(config);
 
       // Mock protocol communication wrapping
-      const mockWrapProtocolCommunication = jest
+      const mockWrapProtocolCommunication = vi
         .spyOn(adapter as any, 'wrapProtocolCommunication')
         .mockImplementation(async () => {
           ['http', 'https', 'ws', 'wss', 'stdio'].forEach((protocolType) => {
@@ -1240,9 +1240,9 @@ describe('CommunicationEventAdapter', () => {
       );
 
       // Mock initialization to fail
-      jest
-        .spyOn(failingAdapter as any, 'initializeCommunicationIntegrations')
-        .mockRejectedValue(new Error('Initialization failed'));
+      vi.spyOn(failingAdapter as any, 'initializeCommunicationIntegrations').mockRejectedValue(
+        new Error('Initialization failed')
+      );
 
       await expect(failingAdapter.start()).rejects.toThrow('Initialization failed');
       expect(failingAdapter.isRunning()).toBe(false);

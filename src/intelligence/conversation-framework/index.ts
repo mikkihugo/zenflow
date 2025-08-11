@@ -8,7 +8,11 @@
  * @file Conversation-framework module exports.
  */
 
-import type { ConversationMCPTools, ConversationMemory, ConversationOrchestrator } from './types';
+import type {
+  ConversationMCPTools,
+  ConversationMemory,
+  ConversationOrchestrator,
+} from './types.ts';
 
 /**
  * Configuration for conversation framework creation.
@@ -36,13 +40,13 @@ export interface ConversationFrameworkSystem {
 }
 
 // MCP integration
-export { ConversationMCPTools, ConversationMCPToolsFactory } from './mcp-tools';
+export { ConversationMCPTools, ConversationMCPToolsFactory } from './mcp-tools.ts';
 // Memory and persistence
-export { ConversationMemoryFactory, ConversationMemoryImpl } from './memory';
+export { ConversationMemoryFactory, ConversationMemoryImpl } from './memory.ts';
 // Conversation orchestration
-export { ConversationOrchestratorImpl } from './orchestrator';
+export { ConversationOrchestratorImpl } from './orchestrator.ts';
 // Core types and interfaces
-export * from './types';
+export * from './types.ts';
 
 /**
  * Conversation Framework Factory.
@@ -66,27 +70,27 @@ export class ConversationFramework {
     let memory;
     switch (memoryBackend) {
       case 'sqlite': {
-        const { ConversationMemoryFactory: SQLiteFactory } = await import('./memory.js');
+        const { ConversationMemoryFactory: SQLiteFactory } = await import('./memory.ts');
         memory = await SQLiteFactory.createWithSQLite(memoryConfig);
         break;
       }
       case 'lancedb': {
-        const { ConversationMemoryFactory: LanceFactory } = await import('./memory.js');
+        const { ConversationMemoryFactory: LanceFactory } = await import('./memory.ts');
         memory = await LanceFactory.createWithLanceDB(memoryConfig);
         break;
       }
       default: {
-        const { ConversationMemoryFactory: JSONFactory } = await import('./memory.js');
+        const { ConversationMemoryFactory: JSONFactory } = await import('./memory.ts');
         memory = await JSONFactory.createWithJSON(memoryConfig);
       }
     }
 
     // Create orchestrator
-    const { ConversationOrchestratorImpl } = await import('./orchestrator.js');
+    const { ConversationOrchestratorImpl } = await import('./orchestrator.ts');
     const orchestrator = new ConversationOrchestratorImpl(memory);
 
     // Create MCP tools
-    const { ConversationMCPTools } = await import('./mcp-tools.js');
+    const { ConversationMCPTools } = await import('./mcp-tools.ts');
     const mcpTools = new ConversationMCPTools(orchestrator);
 
     return {

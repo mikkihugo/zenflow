@@ -13,8 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Mock dependencies
-jest.mock('fs/promises');
-jest.mock('child_process');
+vi.mock('fs/promises');
+vi.mock('child_process');
 
 describe('Claude Integration - Complete Coverage', () => {
   let testTempDir;
@@ -25,18 +25,18 @@ describe('Claude Integration - Complete Coverage', () => {
     testTempDir = path.join(__dirname, `test-temp-${Date.now()}`);
 
     // Setup mocks
-    fs.mkdir = jest.fn().mockResolvedValue(undefined);
-    fs.writeFile = jest.fn().mockResolvedValue(undefined);
-    fs.readFile = jest.fn().mockResolvedValue('{}');
-    fs.access = jest.fn().mockResolvedValue(undefined);
-    fs.rm = jest.fn().mockResolvedValue(undefined);
-    fs.stat = jest.fn().mockResolvedValue({ isDirectory: () => true });
+    fs.mkdir = vi.fn().mockResolvedValue(undefined);
+    fs.writeFile = vi.fn().mockResolvedValue(undefined);
+    fs.readFile = vi.fn().mockResolvedValue('{}');
+    fs.access = vi.fn().mockResolvedValue(undefined);
+    fs.rm = vi.fn().mockResolvedValue(undefined);
+    fs.stat = vi.fn().mockResolvedValue({ isDirectory: () => true });
     execSync.mockReturnValue('mocked output');
   });
 
   afterEach(() => {
     process.env = originalEnv;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Core Module - Comprehensive Coverage', () => {
@@ -911,9 +911,9 @@ NODE_ENV=production
       const orchestrator = new ClaudeIntegrationOrchestrator({ workingDir: testTempDir });
 
       // Mock concurrent operations
-      orchestrator.docs.generateAll = jest.fn().mockResolvedValue({ success: true });
-      orchestrator.remote.createAll = jest.fn().mockResolvedValue({ success: true });
-      orchestrator.core.initialize = jest.fn().mockResolvedValue({ success: true });
+      orchestrator.docs.generateAll = vi.fn().mockResolvedValue({ success: true });
+      orchestrator.remote.createAll = vi.fn().mockResolvedValue({ success: true });
+      orchestrator.core.initialize = vi.fn().mockResolvedValue({ success: true });
 
       const promises = [
         orchestrator.docs.generateAll(),

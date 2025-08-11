@@ -5,7 +5,7 @@
  * to ensure it integrates properly with the SPARC methodology.
  */
 
-import { PseudocodePhaseEngine } from '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine';
+import { PseudocodePhaseEngine } from '../../coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts';
 
 describe('SPARC Pseudocode Engine Integration Tests', () => {
   let pseudocodeEngine: PseudocodePhaseEngine;

@@ -20,7 +20,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 import type { MemorySystem } from '../memory/memory-system';
 
 const logger = getLogger('DocumentationManager');

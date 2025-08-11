@@ -1,83 +1,169 @@
 /**
- * Core System - Main System Coordinator.
- *
- * Clean, focused system coordinator that manages core components without bloated "unified" architecture.
- * Follows single responsibility principle and provides a clean dependency injection model.
- *
- * ## Architecture Overview
- *
- * The CoreSystem replaces the bloated ApplicationCoordinator with a clean, focused architecture:
- * - **MemorySystem**: Multi-backend memory management (JSON, SQLite, LanceDB)
- * - **WorkflowEngine**: Document workflow processing (Vision → ADRs → PRDs → Epics → Features → Tasks → Code)
- * - **DocumentProcessor**: Unified document processing (consolidates file-based and database-driven)
- * - **ExportManager**: Data export in multiple formats
- * - **DocumentationManager**: Documentation indexing and linking.
- * - **InterfaceManager**: Multi-interface support (CLI, TUI, Web).
- *
- * ## Key Improvements
- *
- * 1. **Single Responsibility**: Each component has a clear, focused purpose
- * 2. **Clean Dependencies**: Explicit dependency injection without circular imports
- * 3. **Better Separation**: Clear boundaries between systems
- * 4. **Easier Testing**: Components can be tested in isolation
- * 5. **Maintainable**: No more bloated "unified" classes.
- *
- * ## Migration Guide
- *
- * **Old (ApplicationCoordinator):**.
+ * @fileoverview Core System Coordinator for Claude Code Zen
+ * 
+ * Clean, focused system coordinator that manages core components with a well-architected,
+ * single-responsibility design. This module replaces bloated "unified" architectures with
+ * a clean dependency injection model and clear component boundaries.
+ * 
+ * Key Features:
+ * - Multi-backend memory management (JSON, SQLite, LanceDB)
+ * - Document workflow processing (Vision → ADRs → PRDs → Epics → Features → Tasks → Code)
+ * - Unified document processing with file-based and database-driven support
+ * - Multi-format data export capabilities
+ * - Documentation indexing and cross-linking
+ * - Multi-interface support (CLI, TUI, Web)
+ * - Event-driven architecture with comprehensive observability
+ * - Clean component isolation for enhanced testability
+ * 
+ * Architecture Design Principles:
+ * - **Single Responsibility**: Each component has one clear, focused purpose
+ * - **Clean Dependencies**: Explicit dependency injection without circular imports
+ * - **Clear Boundaries**: Well-defined interfaces between system components
+ * - **Enhanced Testability**: All components can be tested in complete isolation
+ * - **Maintainable Design**: Eliminates bloated "unified" classes
+ * 
+ * Component Architecture:
+ * - **MemorySystem**: Foundation storage layer with pluggable backends
+ * - **WorkflowEngine**: Document processing pipelines and state management
+ * - **DocumentProcessor**: Unified document ingestion and transformation
+ * - **ExportManager**: Multi-format data export and serialization
+ * - **DocumentationManager**: Cross-reference indexing and link management
+ * - **InterfaceManager**: Multi-modal user interface coordination
+ * 
+ * @author Claude Code Zen Team
+ * @since 1.0.0-alpha.43 (Clean Architecture v2.0.0)
+ * @version 1.0.0-alpha.43
+ * 
+ * @see {@link https://nodejs.org/api/events.html} Node.js EventEmitter
+ * @see {@link MemorySystem} Multi-backend memory management
+ * @see {@link WorkflowEngine} Document workflow processing
+ * @see {@link DocumentProcessor} Document ingestion and transformation
+ * 
+ * @requires node:events - For event-driven architecture
+ * @requires ../config/logging-config.ts - Structured logging configuration
+ * 
+ * @example
+ * ```typescript
+ * // Production system initialization with comprehensive configuration
+ * const coreSystem = new System({
+ *   memory: { 
+ *     backend: 'lancedb', 
+ *     directory: './data/production',
+ *     namespace: 'claude-zen-prod'
+ *   },
+ *   workflow: { 
+ *     maxConcurrentWorkflows: 20,
+ *     persistWorkflows: true
+ *   },
+ *   interface: { 
+ *     defaultMode: 'web', 
+ *     webPort: 8080 
+ *   },
+ *   documents: { 
+ *     autoWatch: true, 
+ *     enableWorkflows: true 
+ *   },
+ *   export: { 
+ *     defaultFormat: 'json', 
+ *     outputPath: './exports' 
+ *   },
+ *   documentation: { 
+ *     autoLink: true, 
+ *     scanPaths: ['./docs', './src'] 
+ *   }
+ * });
+ * 
+ * // Initialize and launch system
+ * await coreSystem.initialize();
+ * await coreSystem.launch();
+ * 
+ * // Process complex document workflow
+ * const workflowResult = await coreSystem.processDocument(
+ *   './docs/vision/ai-research-roadmap.md',
+ *   { enableADRGeneration: true, createPRDs: true }
+ * );
+ * 
+ * // Monitor system health and performance
+ * const status = await coreSystem.getSystemStatus();
+ * console.log(`System Health: ${status.status}`);
+ * console.log(`Active Workflows: ${status.components.workflow.active}`);
+ * console.log(`Memory Entries: ${status.components.memory.entries}`);
+ * 
+ * // Access individual components for specialized operations
+ * const components = coreSystem.getComponents();
+ * 
+ * // Advanced memory operations
+ * await components.memory.store('research-findings', {
+ *   topic: 'neural-architecture-search',
+ *   findings: ['transformer-efficiency', 'attention-mechanisms'],
+ *   confidence: 0.94,
+ *   timestamp: Date.now()
+ * });
+ * 
+ * // Export system state for analysis
+ * await coreSystem.exportSystem('comprehensive-backup', {
+ *   format: 'json',
+ *   compression: true,
+ *   includeMetrics: true,
+ *   includeMemoryData: true
+ * });
+ * ```
+ * 
+ * @migration
+ * ## Migration from ApplicationCoordinator
+ * 
+ * **Legacy Pattern (Deprecated):**
  * ```typescript
  * const system = new ApplicationCoordinator(config);
  * await system.initialize();
  * await system.launch();
  * ```
- *
- * **New (CoreSystem):**
+ * 
+ * **New Clean Architecture Pattern:**
  * ```typescript
- * const system = new CoreSystem(config);
+ * const system = new System(config);
  * await system.initialize();
  * await system.launch();
  * ```
- *
- * The API is compatible, but the internal architecture is much cleaner.
- *
- * @example
- * ```typescript
- * // Basic usage
- * const coreSystem = new CoreSystem({
- *   memory: { backend: 'sqlite', directory: './data' },
- *   workflow: { maxConcurrentWorkflows: 10 },
- *   interface: { defaultMode: 'web', webPort: 3000 }
- * });
- *
- * await coreSystem.initialize();
- * await coreSystem.launch();
- *
- * // Process a document
- * await coreSystem.processDocument('./docs/vision/product-vision.md');
- *
- * // Get system status
- * const status = await coreSystem.getSystemStatus();
- * console.log(`System status: ${status.status}`);
- *
- * // Access individual components
- * const components = coreSystem.getComponents();
- * await components.memory.store('key', { data: 'value' });
- * ```
- * @since 2.0.0-clean-architecture
- */
-/**
- * @file Core-system implementation.
+ * 
+ * The API maintains compatibility while providing a much cleaner internal architecture.
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
-import { DocumentProcessor } from './document-processor';
-import { DocumentationManager } from './documentation-manager';
-import { ExportSystem as ExportManager } from './export-manager';
-import { InterfaceManager } from './interface-manager';
-import { MemorySystem } from './memory-system';
-import { WorkflowEngine } from './workflow-engine';
+import { getLogger } from '../config/logging-config.ts';
+import { DocumentProcessor } from './document-processor.ts';
+import { DocumentationManager } from './documentation-manager.ts';
+import { ExportSystem as ExportManager } from './export-manager.ts';
+import { InterfaceManager } from './interface-manager.ts';
+import { MemorySystem } from './memory-system.ts';
+import { WorkflowEngine } from './workflow-engine.ts';
 
+/**
+ * Export options interface for system state serialization.
+ * 
+ * Configures how system data should be exported, including format options,
+ * compression settings, and data inclusion preferences.
+ * 
+ * @interface ExportOptions
+ * 
+ * @property {string} filename - Custom filename for the export (without extension)
+ * @property {boolean} compression - Whether to compress the exported data
+ * @property {boolean} includeMetrics - Include system performance metrics in export
+ * @property {boolean} includeMemoryData - Include complete memory store contents
+ * @property {unknown} [key: string] - Additional format-specific options
+ * 
+ * @example
+ * ```typescript
+ * const exportOptions: ExportOptions = {
+ *   filename: 'system-backup-2024',
+ *   compression: true,
+ *   includeMetrics: true,
+ *   includeMemoryData: false, // Exclude memory for privacy
+ *   format: 'json',
+ *   prettyPrint: true
+ * };
+ * ```
+ */
 interface ExportOptions {
   filename?: string;
   compression?: boolean;
@@ -89,9 +175,50 @@ interface ExportOptions {
 const logger = getLogger('CoreSystem');
 
 /**
- * Core system configuration with clear, focused options.
- *
+ * Comprehensive system configuration interface with clear, focused options.
+ * 
+ * Defines all configurable aspects of the Claude Code Zen core system,
+ * organized by component responsibility for clean architecture boundaries.
+ * 
+ * @interface SystemConfig
+ * 
+ * @property {object} memory - Memory system configuration options
+ * @property {object} workflow - Workflow engine configuration options
+ * @property {object} interface - User interface management configuration
+ * @property {object} documents - Document processing configuration
+ * @property {object} export - Data export system configuration
+ * @property {object} documentation - Documentation management configuration
+ * 
  * @example
+ * ```typescript
+ * const config: SystemConfig = {
+ *   memory: {
+ *     backend: 'lancedb',
+ *     directory: './data/production',
+ *     namespace: 'research-project'
+ *   },
+ *   workflow: {
+ *     maxConcurrentWorkflows: 15,
+ *     persistWorkflows: true
+ *   },
+ *   interface: {
+ *     defaultMode: 'tui',
+ *     webPort: 3000
+ *   },
+ *   documents: {
+ *     autoWatch: true,
+ *     enableWorkflows: true
+ *   },
+ *   export: {
+ *     defaultFormat: 'yaml',
+ *     outputPath: './exports/research'
+ *   },
+ *   documentation: {
+ *     autoLink: true,
+ *     scanPaths: ['./research', './papers', './notes']
+ *   }
+ * };
+ * ```
  */
 export interface SystemConfig {
   // Memory configuration
@@ -133,9 +260,46 @@ export interface SystemConfig {
 }
 
 /**
- * System status with clear component boundaries.
- *
+ * Comprehensive system status interface with clear component boundaries.
+ * 
+ * Provides detailed status information for all system components,
+ * performance metrics, and operational health indicators.
+ * 
+ * @interface SystemStatus
+ * 
+ * @property {'initializing' | 'ready' | 'error' | 'shutdown'} status - Overall system operational state
+ * @property {string} version - Current system version identifier
+ * @property {object} components - Status of all core system components
+ * @property {number} uptime - System uptime in milliseconds
+ * @property {string} lastUpdate - ISO timestamp of last status update
+ * 
  * @example
+ * ```typescript
+ * const status: SystemStatus = {
+ *   status: 'ready',
+ *   version: '1.0.0-alpha.43',
+ *   components: {
+ *     memory: { status: 'ready', entries: 15420 },
+ *     workflow: { status: 'ready', active: 3 },
+ *     documents: { status: 'ready', loaded: 847 },
+ *     export: { status: 'ready', formats: 5 },
+ *     documentation: { status: 'ready', indexed: 2341 },
+ *     interface: { status: 'ready', mode: 'web' }
+ *   },
+ *   uptime: 3600000, // 1 hour
+ *   lastUpdate: '2024-01-15T10:30:00.000Z'
+ * };
+ * 
+ * // Health monitoring usage
+ * if (status.status === 'error') {
+ *   console.error('System in error state, checking components...');
+ *   Object.entries(status.components).forEach(([name, component]) => {
+ *     if (component.status !== 'ready') {
+ *       console.error(`Component ${name} is ${component.status}`);
+ *     }
+ *   });
+ * }
+ * ```
  */
 export interface SystemStatus {
   status: 'initializing' | 'ready' | 'error' | 'shutdown';
@@ -153,9 +317,109 @@ export interface SystemStatus {
 }
 
 /**
- * Clean, focused core system without bloated "unified" architecture.
- *
+ * Clean, focused core system coordinator implementing clean architecture principles.
+ * 
+ * The System class serves as the main entry point and coordinator for all Claude Code Zen
+ * components, providing a clean alternative to bloated "unified" architectures. It implements
+ * dependency injection, clear component boundaries, and comprehensive lifecycle management.
+ * 
+ * Key Responsibilities:
+ * - **Component Coordination**: Manages initialization and lifecycle of all core components
+ * - **Dependency Injection**: Provides clean dependency management between components
+ * - **Event Orchestration**: Coordinates inter-component communication through events
+ * - **System Health**: Monitors component health and provides comprehensive status reporting
+ * - **Interface Management**: Coordinates multiple user interface modes (CLI, TUI, Web)
+ * - **Workflow Processing**: Orchestrates document processing and workflow execution
+ * 
+ * Architecture Benefits:
+ * - Each component has single, well-defined responsibility
+ * - Clean dependency injection without circular dependencies
+ * - Components can be tested in complete isolation
+ * - Clear interfaces between system boundaries
+ * - Event-driven coordination for loose coupling
+ * 
+ * @class System
+ * @extends {EventEmitter}
+ * 
+ * @param {SystemConfig} config - Comprehensive system configuration options
+ * 
+ * @fires System#initialized - Emitted when system initialization is complete
+ * @fires System#launched - Emitted when system launch is successful
+ * @fires System#shutdown - Emitted when system shutdown begins
+ * @fires System#error - Emitted when system errors occur
+ * @fires System#componentReady - Emitted when individual components become ready
+ * @fires System#statusUpdate - Emitted when system status changes
+ * 
  * @example
+ * ```typescript
+ * // Create system with comprehensive configuration
+ * const system = new System({
+ *   memory: { 
+ *     backend: 'lancedb',
+ *     directory: './data/research',
+ *     namespace: 'ai-research-project'
+ *   },
+ *   workflow: { 
+ *     maxConcurrentWorkflows: 12,
+ *     persistWorkflows: true
+ *   },
+ *   interface: { 
+ *     defaultMode: 'auto',
+ *     webPort: 4000
+ *   },
+ *   documents: { 
+ *     autoWatch: true,
+ *     enableWorkflows: true
+ *   }
+ * });
+ * 
+ * // Set up event listeners for system monitoring
+ * system.on('initialized', () => {
+ *   console.log('Core system initialized successfully');
+ * });
+ * 
+ * system.on('componentReady', ({ component, status }) => {
+ *   console.log(`Component ${component} is now ${status}`);
+ * });
+ * 
+ * system.on('error', ({ error, component }) => {
+ *   console.error(`System error in ${component}:`, error.message);
+ * });
+ * 
+ * // Initialize and launch
+ * try {
+ *   await system.initialize();
+ *   await system.launch();
+ *   
+ *   // Process research documents
+ *   const result = await system.processDocument(
+ *     './research/neural-architecture-search.md',
+ *     { 
+ *       generateADR: true,
+ *       createWorkflows: true,
+ *       linkDocumentation: true
+ *     }
+ *   );
+ *   
+ *   console.log('Document processing result:', result);
+ *   
+ *   // Monitor system health
+ *   setInterval(async () => {
+ *     const status = await system.getSystemStatus();
+ *     if (status.status !== 'ready') {
+ *       console.warn('System health check failed:', status);
+ *     }
+ *   }, 30000); // Every 30 seconds
+ *   
+ * } catch (error) {
+ *   console.error('System startup failed:', error);
+ *   await system.shutdown();
+ * }
+ * ```
+ * 
+ * @see {@link SystemConfig} Configuration interface
+ * @see {@link SystemStatus} Status reporting interface
+ * @see {@link ExportOptions} Export configuration options
  */
 export class System extends EventEmitter {
   private config: SystemConfig;

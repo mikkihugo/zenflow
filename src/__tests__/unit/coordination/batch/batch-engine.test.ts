@@ -2,7 +2,7 @@ import {
   BatchEngine,
   createBatchOperation,
   createToolBatch,
-} from '../../../../coordination/batch/batch-engine';
+} from '../../../../coordination/batch/batch-engine.ts';
 
 describe('BatchEngine - Claude-zen Concurrent Execution', () => {
   let batchEngine: BatchEngine;

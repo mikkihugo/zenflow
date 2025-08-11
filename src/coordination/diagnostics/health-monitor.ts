@@ -2,7 +2,7 @@
  * @file Coordination system: health-monitor.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('coordination-diagnostics-health-monitor');
 
@@ -37,7 +37,10 @@ export interface HealthMonitorOptions {
   [key: string]: unknown;
 }
 
-export type HealthCheckFunction = () => Promise<HealthCheckResult | Partial<HealthCheckResult>> | HealthCheckResult | Partial<HealthCheckResult>;
+export type HealthCheckFunction = () =>
+  | Promise<HealthCheckResult | Partial<HealthCheckResult>>
+  | HealthCheckResult
+  | Partial<HealthCheckResult>;
 
 export interface HealthCheck {
   name: string;
@@ -286,7 +289,7 @@ export class HealthMonitor extends EventEmitter {
           results[checkName] = {
             score: 0,
             status: 'error',
-            details: (result as PromiseRejectedResult).reason?.message ?? 'Unknown error',
+            details: (result).reason?.message ?? 'Unknown error',
             metrics: {},
             timestamp: new Date().toISOString(),
             duration: 0,
@@ -366,7 +369,7 @@ export class HealthMonitor extends EventEmitter {
 
       // Normalize result format
       const normalizedResult: HealthCheckResult = {
-        score: typeof result === 'number' ? result : (result as any)?.score ?? 100,
+        score: typeof result === 'number' ? result : ((result as any)?.score ?? 100),
         status: (result as any)?.status || 'healthy',
         details: (result as any)?.details || (result as any)?.message || 'Health check passed',
         metrics: (result as any)?.metrics || {},

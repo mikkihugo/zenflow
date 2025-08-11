@@ -7,8 +7,8 @@ const { jest } = require('@jest/globals');
 
 // Mock dependencies
 const mockZenSwarm = {
-  initialize: jest.fn(),
-  createSwarm: jest.fn(),
+  initialize: vi.fn(),
+  createSwarm: vi.fn(),
   features: {
     neural_networks: true,
     forecasting: true,
@@ -16,27 +16,27 @@ const mockZenSwarm = {
     simd_support: true,
   },
   wasmLoader: {
-    getTotalMemoryUsage: jest.fn(() => 1024 * 1024),
-    getModuleStatus: jest.fn(() => ({ core: { loaded: true } })),
+    getTotalMemoryUsage: vi.fn(() => 1024 * 1024),
+    getModuleStatus: vi.fn(() => ({ core: { loaded: true } })),
   },
 };
 
 const mockPersistence = {
-  createSwarm: jest.fn(),
-  createAgent: jest.fn(),
-  getActiveSwarms: jest.fn(() => []),
-  getSwarmAgents: jest.fn(() => []),
+  createSwarm: vi.fn(),
+  createAgent: vi.fn(),
+  getActiveSwarms: vi.fn(() => []),
+  getSwarmAgents: vi.fn(() => []),
 };
 
 // Import the modules with mocking
 jest.unstable_mockModule('../src/index-enhanced.js', () => ({
   ZenSwarm: {
-    initialize: jest.fn(() => mockZenSwarm),
+    initialize: vi.fn(() => mockZenSwarm),
   },
 }));
 
 jest.unstable_mockModule('../src/persistence.js', () => ({
-  SwarmPersistence: jest.fn(() => mockPersistence),
+  SwarmPersistence: vi.fn(() => mockPersistence),
 }));
 
 // Now import the modules under test
@@ -390,7 +390,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
   describe('Integration with MCP Tools', () => {
     test('swarm_init should use enhanced error handling', async () => {
       // Mock to throw an error
-      mockZenSwarm.createSwarm = jest.fn().mockRejectedValue(new Error('WASM module not loaded'));
+      mockZenSwarm.createSwarm = vi.fn().mockRejectedValue(new Error('WASM module not loaded'));
 
       await expect(mcpTools.swarm_init({})).rejects.toThrow();
 
@@ -410,11 +410,11 @@ describe('Enhanced MCP Tools Error Handling', () => {
 
     test('agent_spawn should use enhanced error handling', async () => {
       // First initialize a swarm
-      mockZenSwarm.createSwarm = jest.fn().mockResolvedValue({
+      mockZenSwarm.createSwarm = vi.fn().mockResolvedValue({
         id: 'test-swarm',
         agents: new Map(),
         maxAgents: 5,
-        spawn: jest.fn().mockRejectedValue(new Error('Neural network initialization failed')),
+        spawn: vi.fn().mockRejectedValue(new Error('Neural network initialization failed')),
       });
 
       await mcpTools.swarm_init({});

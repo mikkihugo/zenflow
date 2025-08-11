@@ -9,9 +9,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
-import { createDao, DatabaseTypes, EntityTypes } from '../database/index';
-import type { IRepository, IVectorRepository } from '../database/interfaces';
+import { getLogger } from '../config/logging-config.ts';
+import { createDao, type DatabaseTypes, EntityTypes } from '../database/index.ts';
+import type { IRepository, IVectorRepository } from '../database/interfaces.ts';
 
 const logger = getLogger('UnifiedMemory');
 
@@ -629,7 +629,12 @@ export class MemorySystem extends EventEmitter {
     if (result.status === 'success') {
       this.emit('stored', { key, namespace, timestamp: result?.timestamp });
     } else {
-      this.emit('error', { operation: 'store', key, namespace, error: result?.error });
+      this.emit('error', {
+        operation: 'store',
+        key,
+        namespace,
+        error: result?.error,
+      });
     }
 
     return result;
@@ -650,7 +655,11 @@ export class MemorySystem extends EventEmitter {
 
     const results = await this.backend.search(pattern, namespace);
 
-    this.emit('searched', { pattern, namespace, resultCount: Object.keys(results).length });
+    this.emit('searched', {
+      pattern,
+      namespace,
+      resultCount: Object.keys(results).length,
+    });
 
     return results;
   }

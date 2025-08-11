@@ -1,4 +1,4 @@
-#!/usr/bin/env nodeimport { getLogger } from '../config/logging-config";
+#!/usr/bin/env nodeimport { getLogger } from '../config/logging-config';
 /**
  * @file Interface implementation: validate-external-config.
  */
@@ -12,7 +12,7 @@ const logger = getLogger('interfaces-mcp-validate-external-config');
 
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import type { getLogger } from '../../core/logger';
+import type { getLogger } from '../../core/logger.ts';
 
 /**
  * Validate configuration files.
@@ -85,7 +85,7 @@ function testMCPConfiguration(): void {
         const _serverCount = Object.keys(config?.mcpServers).length;
 
         // List configured servers
-        for (const [_name, _serverConfig] of Object.entries(config?.mcpServers as any)) {
+        for (const [_name, _serverConfig] of Object.entries(config?.mcpServers)) {
         }
       } else {
       }

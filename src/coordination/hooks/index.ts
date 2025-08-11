@@ -7,39 +7,35 @@
  * @file Hooks module exports.
  */
 
+// Auto agent assignment
+export * from './auto-agent-assignment.ts';
 // Main Manager
-export * from './hook-manager';
-export { DefaultHookManager } from './hook-manager';
-
+export * from './hook-manager.ts';
+export { DefaultHookManager } from './hook-manager.ts';
 // Core System - explicit exports to avoid conflicts
 export {
-  HookSystem,
   DefaultHookSystem,
   FileOperation as CoreFileOperation,
+  HookSystem,
   Operation as CoreOperation,
   RiskLevel as CoreRiskLevel,
   SecurityRisk as CoreSecurityRisk,
-  ValidationResult as CoreValidationResult
-} from './hook-system-core';
-
+  ValidationResult as CoreValidationResult,
+} from './hook-system-core.ts';
 // Performance tracking
-export * from './performance-tracker';
-
+export * from './performance-tracker.ts';
 // Safety validation - explicit exports with prefixes
 export {
-  FileOperationValidator,
   FileOperation as SafetyFileOperation,
+  FileOperationValidator,
   Operation as SafetyOperation,
   RiskLevel as SafetyRiskLevel,
   SecurityRisk as SafetySecurityRisk,
-  ValidationResult as SafetyValidationResult
-} from './safety-validator';
-
-// Auto agent assignment
-export * from './auto-agent-assignment';
+  ValidationResult as SafetyValidationResult,
+} from './safety-validator.ts';
 
 // Import for convenience function
-import { DefaultHookManager } from './hook-manager';
+import { DefaultHookManager } from './hook-manager.ts';
 
 // Convenience factory function
 export function createHookManager() {

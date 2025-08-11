@@ -4,9 +4,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BaseMemoryBackend } from '../backends/base-backend';
-import type { BackendInterface } from '../core/memory-system';
-import { type MemoryError, MemoryErrorCode } from './memory-errors';
+import type { BaseMemoryBackend } from '../backends/base-backend.ts';
+import type { BackendInterface } from '../core/memory-system.ts';
+import { type MemoryError, MemoryErrorCode } from './memory-errors.ts';
 
 export interface RecoveryStrategy {
   name: string;

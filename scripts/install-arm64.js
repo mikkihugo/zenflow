@@ -26,13 +26,13 @@ async function rebuildSqlite() {
       if (code === 0) {
         resolve(true);
       } else {
-        console.error('Failed to rebuild better-sqlite3');
+        // console.error('Failed to rebuild better-sqlite3');
         resolve(false);
       }
     });
 
     rebuild.on('error', () => {
-      console.error('Failed to rebuild better-sqlite3');
+      // console.error('Failed to rebuild better-sqlite3');
       resolve(false);
     });
   });

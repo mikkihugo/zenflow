@@ -5,8 +5,8 @@
  * Adds 'safety' mode to main.ts and provides integration hooks.
  */
 
-import type { AIInteractionData, DeceptionAlert } from './ai-deception-detector';
-import { type AISafetyOrchestrator, createAISafetyOrchestrator } from './safety-orchestrator';
+import type { AIInteractionData, DeceptionAlert } from './ai-deception-detector.ts';
+import { type AISafetyOrchestrator, createAISafetyOrchestrator } from './safety-orchestrator.ts';
 
 /**
  * Global safety orchestrator instance.

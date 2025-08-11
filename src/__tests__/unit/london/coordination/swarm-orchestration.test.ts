@@ -1,6 +1,6 @@
-import { SwarmOrchestrator } from '../../../../coordination/orchestrator';
-import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers';
-import { MockBuilder } from '../../../helpers/mock-builder';
+import { SwarmOrchestrator } from '../../../../coordination/orchestrator.ts';
+import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers.ts';
+import { MockBuilder } from '../../../helpers/mock-builder.ts';
 
 describe('Advanced Swarm Orchestration (London TDD)', () => {
   let swarmOrchestrator: SwarmOrchestrator;

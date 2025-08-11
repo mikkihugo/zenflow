@@ -7,7 +7,8 @@ import {
   generateComparisonReport,
   OUR_AGENT_CATEGORIES,
   performGapAnalysis,
-} from '../../../coordination/agents/gap-analysis';
+} from '../../../coordination/agents/gap-analysis.ts';
+import type { AgentType } from '../../../types/agent-types.ts';
 
 describe('Agent System Gap Analysis', () => {
   describe('New Agent Types', () => {
@@ -200,7 +201,7 @@ describe('Agent System Gap Analysis', () => {
     });
 
     test('should have reasonable agent distribution', () => {
-      for (const [category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) {
+      for (const [category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) { // eslint-disable-line @typescript-eslint/no-unused-vars
         // Each category should have at least 1 agent
         expect(agents.length).toBeGreaterThan(0);
 

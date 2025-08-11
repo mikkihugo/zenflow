@@ -9,45 +9,45 @@
  * performance metrics, caching, retry logic, and helper functions.
  */
 
-import { jest } from '@jest/globals';
-import documentManager from '../../../../database/managers/document-manager';
+import { vi } from 'vitest';
+import documentManager from '../../../../database/managers/document-manager.ts';
 
 type DocumentService = typeof documentManager;
 
-import { WebDataService } from '../../../web/web-data-service';
-import { ServiceType } from '../../types';
+import { WebDataService } from '../../../web/web-data-service.ts';
+import { ServiceType } from '../../types.ts';
 import {
   createDefaultDataServiceAdapterConfig,
   DataServiceAdapter,
   type DataServiceAdapterConfig,
-} from '../data-service-adapter';
-import { DataServiceFactory } from '../data-service-factory';
-import { DataServiceHelper, DataServiceUtils } from '../data-service-helpers';
+} from '../data-service-adapter.ts';
+import { DataServiceFactory } from '../data-service-factory.ts';
+import { DataServiceHelper, DataServiceUtils } from '../data-service-helpers.ts';
 
 // Mock external dependencies
-jest.mock('../../../web/web-data-service');
-jest.mock('../../../../database/managers/document-manager');
-jest.mock('../../../../utils/logger', () => ({
-  createLogger: jest.fn(() => ({
-    info: jest.fn(),
-    debug: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
+vi.mock('../../../web/web-data-service');
+vi.mock('../../../../database/managers/document-manager');
+vi.mock('../../../../utils/logger', () => ({
+  createLogger: vi.fn(() => ({
+    info: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
   })),
 }));
 
-const MockedWebDataService = WebDataService as jest.MockedClass<typeof WebDataService>;
-const MockedDocumentService = jest.mocked(documentManager);
+const MockedWebDataService = WebDataService as vi.MockedClass<typeof WebDataService>;
+const MockedDocumentService = vi.mocked(documentManager);
 
 describe('DataServiceAdapter', () => {
   let adapter: DataServiceAdapter;
   let config: DataServiceAdapterConfig;
-  let mockWebDataService: jest.Mocked<WebDataService>;
+  let mockWebDataService: vi.Mocked<WebDataService>;
   // mockDocumentService is now accessed via MockedDocumentService
 
   beforeEach(() => {
     // Reset all mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Create test configuration
     config = createDefaultDataServiceAdapterConfig('test-adapter', {
@@ -79,27 +79,27 @@ describe('DataServiceAdapter', () => {
 
     // Set up WebDataService mock
     mockWebDataService = {
-      getSystemStatus: jest.fn(),
-      getSwarms: jest.fn(),
-      createSwarm: jest.fn(),
-      getTasks: jest.fn(),
-      createTask: jest.fn(),
-      getDocuments: jest.fn(),
-      executeCommand: jest.fn(),
-      getServiceStats: jest.fn(),
+      getSystemStatus: vi.fn(),
+      getSwarms: vi.fn(),
+      createSwarm: vi.fn(),
+      getTasks: vi.fn(),
+      createTask: vi.fn(),
+      getDocuments: vi.fn(),
+      executeCommand: vi.fn(),
+      getServiceStats: vi.fn(),
     } as any;
 
     // Set up DocumentService mock
     const mockDocumentService = {
-      initialize: jest.fn(),
-      createDocument: jest.fn(),
-      getDocument: jest.fn(),
-      updateDocument: jest.fn(),
-      deleteDocument: jest.fn(),
-      queryDocuments: jest.fn(),
-      searchDocuments: jest.fn(),
-      createProject: jest.fn(),
-      getProjectWithDocuments: jest.fn(),
+      initialize: vi.fn(),
+      createDocument: vi.fn(),
+      getDocument: vi.fn(),
+      updateDocument: vi.fn(),
+      deleteDocument: vi.fn(),
+      queryDocuments: vi.fn(),
+      searchDocuments: vi.fn(),
+      createProject: vi.fn(),
+      getProjectWithDocuments: vi.fn(),
     } as any;
 
     MockedWebDataService?.mockImplementation(() => mockWebDataService);
@@ -690,15 +690,15 @@ describe('DataServiceFactory', () => {
 
     beforeEach(() => {
       const mockDocumentService = {
-        initialize: jest.fn(),
-        createDocument: jest.fn(),
-        getDocument: jest.fn(),
-        updateDocument: jest.fn(),
-        deleteDocument: jest.fn(),
-        queryDocuments: jest.fn(),
-        searchDocuments: jest.fn(),
-        createProject: jest.fn(),
-        getProjectWithDocuments: jest.fn(),
+        initialize: vi.fn(),
+        createDocument: vi.fn(),
+        getDocument: vi.fn(),
+        updateDocument: vi.fn(),
+        deleteDocument: vi.fn(),
+        queryDocuments: vi.fn(),
+        searchDocuments: vi.fn(),
+        createProject: vi.fn(),
+        getProjectWithDocuments: vi.fn(),
       } as any;
       Object.assign(MockedDocumentService, mockDocumentService);
       MockedDocumentService.initialize.mockResolvedValue();
@@ -742,15 +742,15 @@ describe('DataServiceFactory', () => {
 
     beforeEach(() => {
       const mockDocumentService = {
-        initialize: jest.fn(),
-        createDocument: jest.fn(),
-        getDocument: jest.fn(),
-        updateDocument: jest.fn(),
-        deleteDocument: jest.fn(),
-        queryDocuments: jest.fn(),
-        searchDocuments: jest.fn(),
-        createProject: jest.fn(),
-        getProjectWithDocuments: jest.fn(),
+        initialize: vi.fn(),
+        createDocument: vi.fn(),
+        getDocument: vi.fn(),
+        updateDocument: vi.fn(),
+        deleteDocument: vi.fn(),
+        queryDocuments: vi.fn(),
+        searchDocuments: vi.fn(),
+        createProject: vi.fn(),
+        getProjectWithDocuments: vi.fn(),
       } as any;
       Object.assign(MockedDocumentService, mockDocumentService);
       MockedDocumentService.initialize.mockResolvedValue();
@@ -790,15 +790,15 @@ describe('DataServiceHelper', () => {
     helper = new DataServiceHelper(adapter);
 
     const mockDocumentService = {
-      initialize: jest.fn(),
-      createDocument: jest.fn(),
-      getDocument: jest.fn(),
-      updateDocument: jest.fn(),
-      deleteDocument: jest.fn(),
-      queryDocuments: jest.fn(),
-      searchDocuments: jest.fn(),
-      createProject: jest.fn(),
-      getProjectWithDocuments: jest.fn(),
+      initialize: vi.fn(),
+      createDocument: vi.fn(),
+      getDocument: vi.fn(),
+      updateDocument: vi.fn(),
+      deleteDocument: vi.fn(),
+      queryDocuments: vi.fn(),
+      searchDocuments: vi.fn(),
+      createProject: vi.fn(),
+      getProjectWithDocuments: vi.fn(),
     } as any;
     Object.assign(MockedDocumentService, mockDocumentService);
     mockDocumentService.initialize.mockResolvedValue();
@@ -816,14 +816,14 @@ describe('DataServiceHelper', () => {
       // Arrange
       const mockStatus = { system: 'healthy', version: '1.0.0' };
       const mockWebDataService = {
-        getSystemStatus: jest.fn(),
-        getSwarms: jest.fn(),
-        createSwarm: jest.fn(),
-        getTasks: jest.fn(),
-        createTask: jest.fn(),
-        getDocuments: jest.fn(),
-        executeCommand: jest.fn(),
-        getServiceStats: jest.fn(),
+        getSystemStatus: vi.fn(),
+        getSwarms: vi.fn(),
+        createSwarm: vi.fn(),
+        getTasks: vi.fn(),
+        createTask: vi.fn(),
+        getDocuments: vi.fn(),
+        executeCommand: vi.fn(),
+        getServiceStats: vi.fn(),
       } as any;
       MockedWebDataService.mockImplementation(() => mockWebDataService);
       mockWebDataService?.getSystemStatus?.mockResolvedValue(mockStatus as any);
@@ -859,14 +859,14 @@ describe('DataServiceHelper', () => {
         },
       ];
       const mockWebDataService = {
-        getSystemStatus: jest.fn(),
-        getSwarms: jest.fn(),
-        createSwarm: jest.fn(),
-        getTasks: jest.fn(),
-        createTask: jest.fn(),
-        getDocuments: jest.fn(),
-        executeCommand: jest.fn(),
-        getServiceStats: jest.fn(),
+        getSystemStatus: vi.fn(),
+        getSwarms: vi.fn(),
+        createSwarm: vi.fn(),
+        getTasks: vi.fn(),
+        createTask: vi.fn(),
+        getDocuments: vi.fn(),
+        executeCommand: vi.fn(),
+        getServiceStats: vi.fn(),
       } as any;
       MockedWebDataService.mockImplementation(() => mockWebDataService);
       mockWebDataService?.getSwarms?.mockResolvedValue(mockSwarms as any);

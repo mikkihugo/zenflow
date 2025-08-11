@@ -11,13 +11,13 @@
  * management for communication events across Claude-Zen.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('interfaces-events-adapters-communication-event-adapter');
 
 // Import communication system classes to wrap their EventEmitter usage
-import type { WebSocketClientAdapter } from '../../clients/adapters/websocket-client-adapter';
-import type { HTTPMCPServer } from '../../mcp/http-mcp-server';
+import type { WebSocketClientAdapter } from '../../clients/adapters/websocket-client-adapter.ts';
+import type { HTTPMCPServer } from '../../mcp/http-mcp-server.ts';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -33,30 +33,40 @@ import type {
   EventTransform,
   IEventManager,
   SystemEvent,
-} from '../core/interfaces';
-import { EventManagerTypes } from '../core/interfaces';
-import type { CommunicationEvent } from '../types';
-import { EventPriorityMap } from '../types';
+} from '../core/interfaces.ts';
+import { EventManagerTypes } from '../core/interfaces.ts';
+import type { CommunicationEvent } from '../types.ts';
+import { EventPriorityMap } from '../types.ts';
 
-// Note: MCP SDK imports commented out for tests - would be real imports in production
-// import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
-// import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+// Production MCP SDK imports
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 
-// Mock logger for tests - would be real logger in production
-interface Logger {
-  info: (message: string, meta?: any) => void;
-  debug: (message: string, meta?: any) => void;
-  warn: (message: string, meta?: any) => void;
-  error: (message: string, meta?: any, error?: any) => void;
+// Production logger integration
+import { getLogger } from '../../../config/logging-config.ts';
+import type { ILogger } from '../../../core/interfaces/base-interfaces.ts';
+
+// Production MCP client and server management
+interface MCPServerConfig {
+  name: string;
+  transport: 'stdio' | 'sse' | 'websocket';
+  command?: string;
+  args?: string[];
+  url?: string;
+  capabilities?: string[];
 }
 
-const createLogger = (name: string): Logger => ({
-  info: (_message: string, _meta?: any) => {},
-  debug: (_message: string, _meta?: any) => {},
-  warn: (message: string, meta?: any) => logger.warn(`[WARN] ${name}: ${message}`, meta),
-  error: (message: string, meta?: any, error?: any) =>
-    logger.error(`[ERROR] ${name}: ${message}`, { ...meta, error }),
-});
+interface MCPClientConfig {
+  serverName: string;
+  transport: 'stdio' | 'sse' | 'websocket';
+  endpoint?: string;
+  timeout?: number;
+  retries?: number;
+}
 
 import { EventEmitter } from 'node:events';
 

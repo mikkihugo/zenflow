@@ -5,7 +5,7 @@
 
 import * as path from 'node:path';
 import * as fs from 'fs-extra';
-import { DomainAnalysisEngine } from '../../../../tools/domain-splitting/analyzers/domain-analyzer';
+import { DomainAnalysisEngine } from '../../../../tools/domain-splitting/analyzers/domain-analyzer.ts';
 import { NEURAL_SPLITTING_PLAN } from '../../../../tools/domain-splitting/types/domain-types';
 
 describe('Domain Splitting - Classical TDD', () => {

@@ -5,7 +5,7 @@
  * @file Test suite for session-manager.
  */
 
-import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, jest, test } from 'vitest';
 import type {
   CoordinationChange,
   CoordinationEvent,
@@ -16,49 +16,49 @@ import type {
   SessionCoordinationDao,
   SessionEntity,
 } from '../database';
-import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
-import { SessionManager, type SessionState } from './session-manager';
-import { SessionSerializer, SessionStats, SessionValidator } from './session-utils';
-import type { SwarmOptions, SwarmState } from './types';
+import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration.ts';
+import { SessionManager, type SessionState } from './session-manager.ts';
+import { SessionSerializer, SessionStats, SessionValidator } from './session-utils.ts';
+import type { SwarmOptions, SwarmState } from './types.ts';
 
 // TDD London Mock - Tests INTERACTIONS, not state
 class MockCoordinationDao implements SessionCoordinationDao {
   public initialized: boolean = true;
 
   // Jest spies for interaction testing (TDD London approach) - properly typed
-  query: jest.MockedFunction<(sql: string, params?: unknown[]) => Promise<any[]>> = jest.fn();
-  execute: jest.MockedFunction<
+  query: vi.MockedFunction<(sql: string, params?: unknown[]) => Promise<any[]>> = vi.fn();
+  execute: vi.MockedFunction<
     (sql: string, params?: unknown[]) => Promise<{ affectedRows?: number; insertId?: number }>
-  > = jest.fn();
-  findById: jest.MockedFunction<(id: string | number) => Promise<SessionEntity | null>> = jest.fn();
-  findBy: jest.MockedFunction<
+  > = vi.fn();
+  findById: vi.MockedFunction<(id: string | number) => Promise<SessionEntity | null>> = vi.fn();
+  findBy: vi.MockedFunction<
     (criteria: Partial<SessionEntity>, options?: QueryOptions) => Promise<SessionEntity[]>
-  > = jest.fn();
-  findAll: jest.MockedFunction<(options?: QueryOptions) => Promise<SessionEntity[]>> = jest.fn();
-  create: jest.MockedFunction<(entity: Omit<SessionEntity, 'id'>) => Promise<SessionEntity>> =
-    jest.fn();
-  update: jest.MockedFunction<
+  > = vi.fn();
+  findAll: vi.MockedFunction<(options?: QueryOptions) => Promise<SessionEntity[]>> = vi.fn();
+  create: vi.MockedFunction<(entity: Omit<SessionEntity, 'id'>) => Promise<SessionEntity>> =
+    vi.fn();
+  update: vi.MockedFunction<
     (id: string | number, updates: Partial<SessionEntity>) => Promise<SessionEntity>
-  > = jest.fn();
-  delete: jest.MockedFunction<(id: string | number) => Promise<boolean>> = jest.fn();
-  count: jest.MockedFunction<(criteria?: Partial<SessionEntity>) => Promise<number>> = jest.fn();
-  exists: jest.MockedFunction<(id: string | number) => Promise<boolean>> = jest.fn();
-  executeCustomQuery: jest.MockedFunction<(query: CustomQuery) => Promise<any>> = jest.fn();
-  acquireLock: jest.MockedFunction<
+  > = vi.fn();
+  delete: vi.MockedFunction<(id: string | number) => Promise<boolean>> = vi.fn();
+  count: vi.MockedFunction<(criteria?: Partial<SessionEntity>) => Promise<number>> = vi.fn();
+  exists: vi.MockedFunction<(id: string | number) => Promise<boolean>> = vi.fn();
+  executeCustomQuery: vi.MockedFunction<(query: CustomQuery) => Promise<any>> = vi.fn();
+  acquireLock: vi.MockedFunction<
     (resourceId: string, lockTimeout?: number) => Promise<CoordinationLock>
-  > = jest.fn();
-  releaseLock: jest.MockedFunction<(lockId: string) => Promise<void>> = jest.fn();
-  subscribe: jest.MockedFunction<
+  > = vi.fn();
+  releaseLock: vi.MockedFunction<(lockId: string) => Promise<void>> = vi.fn();
+  subscribe: vi.MockedFunction<
     (
       pattern: string,
       callback: (change: CoordinationChange<SessionEntity>) => void
     ) => Promise<string>
-  > = jest.fn();
-  unsubscribe: jest.MockedFunction<(subscriptionId: string) => Promise<void>> = jest.fn();
-  publish: jest.MockedFunction<
+  > = vi.fn();
+  unsubscribe: vi.MockedFunction<(subscriptionId: string) => Promise<void>> = vi.fn();
+  publish: vi.MockedFunction<
     (channel: string, event: CoordinationEvent<SessionEntity>) => Promise<void>
-  > = jest.fn();
-  getCoordinationStats: jest.MockedFunction<() => Promise<CoordinationStats>> = jest.fn();
+  > = vi.fn();
+  getCoordinationStats: vi.MockedFunction<() => Promise<CoordinationStats>> = vi.fn();
 
   constructor() {
     // Configure default return values for London TDD - with correct types
@@ -132,7 +132,7 @@ class MockCoordinationDao implements SessionCoordinationDao {
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   }
 }
 
@@ -244,7 +244,7 @@ describe('SessionManager', () => {
       persistence.expectUpdateCalled(sessionId, {
         // Note: swarmState is part of SessionState but not SessionEntity
         // Using available properties for test verification
-        lastAccessedAt: expect.any(Date) as any,
+        lastAccessedAt: expect.any(Date),
       });
     });
 

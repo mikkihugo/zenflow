@@ -13,11 +13,11 @@ export interface Agent {
   performance?: AgentPerformance;
 }
 
-export type AgentType = 
-  | 'researcher' 
-  | 'coder' 
-  | 'analyst' 
-  | 'optimizer' 
+export type AgentType =
+  | 'researcher'
+  | 'coder'
+  | 'analyst'
+  | 'optimizer'
   | 'coordinator'
   | 'tester'
   | 'architect'

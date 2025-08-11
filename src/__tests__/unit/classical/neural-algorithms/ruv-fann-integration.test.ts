@@ -5,7 +5,7 @@
  * No mocks - verify real ruv-FANN computations and WASM integration
  */
 
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   ACTIVATION_FUNCTIONS,
   createNeuralNetwork,

@@ -11,16 +11,16 @@
  */
 
 import { getMCPServerURL } from '../../../config';
-import type { Logger } from '../../../config/logging-config';
-import { getLogger } from '../../../config/logging-config';
-import type { IService, IServiceFactory, ServiceConfig } from '../core/interfaces';
-import type { ServiceType } from '../types';
+import type { Logger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config.ts';
+import type { IService, IServiceFactory, ServiceConfig } from '../core/interfaces.ts';
+import type { ServiceType } from '../types.ts';
 import {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
   type IntegrationServiceAdapter,
   type IntegrationServiceAdapterConfig,
-} from './integration-service-adapter';
+} from './integration-service-adapter.ts';
 
 /**
  * Integration Service Factory Options for different integration patterns.

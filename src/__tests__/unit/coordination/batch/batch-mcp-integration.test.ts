@@ -7,7 +7,7 @@ import {
   batchExecuteTool,
   batchPerformanceTool,
   projectInitBatchTool,
-} from '../../../../coordination/swarm/mcp/batch-tools';
+} from '../../../../coordination/swarm/mcp/batch-tools.ts';
 
 describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
   describe('🚀 Batch Execute Tool - Core Claude-zen Pattern', () => {

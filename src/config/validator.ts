@@ -4,8 +4,8 @@
  * Validates configuration against schema and provides detailed error reporting.
  */
 
-import { VALIDATION_RULES } from './defaults';
-import type { ConfigValidationResult, SystemConfiguration, ValidationResult } from './types';
+import { VALIDATION_RULES } from './defaults.ts';
+import type { ConfigValidationResult, SystemConfiguration, ValidationResult } from './types.ts';
 
 /**
  * Configuration validator.

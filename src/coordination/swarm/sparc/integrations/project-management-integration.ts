@@ -2,7 +2,7 @@
  * @file Coordination system: project-management-integration.
  */
 
-import { getLogger } from '../../../../config/logging-config';
+import { getLogger } from '../../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-sparc-integrations-project-management-integration');
 
@@ -18,15 +18,15 @@ const logger = getLogger('coordination-swarm-sparc-integrations-project-manageme
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
-import { MemorySystem } from '../../../../core/memory-system';
-import type { WorkflowEngine } from '../../../../core/workflow-engine';
+import { DocumentDrivenSystem } from '../../../../core/document-driven-system.ts';
+import { MemorySystem } from '../../../../core/memory-system.ts';
+import type { WorkflowEngine } from '../../../../core/workflow-engine.ts';
 import { TaskAPI } from '../../../../interfaces/api';
 import {
   type TaskConfig,
   TaskCoordinator,
-} from '../../../protocols/distribution/task-distribution-engine';
-import type { DetailedSpecification, SPARCProject } from '../types/sparc-types';
+} from '../../../protocols/distribution/task-distribution-engine.ts';
+import type { DetailedSpecification, SPARCProject } from '../types/sparc-types.ts';
 
 // Task Management Integration Types
 export interface Task {

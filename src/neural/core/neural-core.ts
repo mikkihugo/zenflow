@@ -2,7 +2,7 @@
  * @file Neural network: neural-core.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('neural-core-neural-core');
 
@@ -16,7 +16,7 @@ const logger = getLogger('neural-core-neural-core');
  *
  * @example
  * ```typescript
- * import { NeuralCore, PATTERN_MEMORY_CONFIG } from './neural-core';
+ * import { NeuralCore, PATTERN_MEMORY_CONFIG } from './neural-core.ts';
  *
  * // Initialize neural core with optimized configuration
  * const neuralCore = new NeuralCore({
@@ -190,7 +190,7 @@ export class NeuralCLI {
   async initialize(_config: NeuralConfig = {}): Promise<any> {
     if (!this.ruvSwarm) {
       // TODO: Replace with proper ZenSwarm import after coordination restructure
-      // const { ZenSwarm } = await import('../../coordination/swarm/core/index-complete.js');
+      // const { ZenSwarm } = await import('../../coordination/swarm/core/index-complete');
       // this.ruvSwarm = await ZenSwarm.initialize({
       //   enableNeuralNetworks: true,
       //   loadingStrategy: 'progressive',

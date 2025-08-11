@@ -36,7 +36,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger, type Logger } from '../../config/logging-config';
+import { getLogger, type Logger } from '../../config/logging-config.ts';
 import type {
   IService,
   IServiceCapabilityRegistry,
@@ -50,12 +50,12 @@ import type {
   ServiceLifecycleStatus,
   ServiceMetrics,
   ServiceStatus,
-} from './core/interfaces';
+} from './core/interfaces.ts';
 import {
   ServiceConfigurationError,
   ServiceInitializationError,
   ServiceOperationError,
-} from './core/interfaces';
+} from './core/interfaces.ts';
 import {
   type CoordinationServiceConfig,
   type DatabaseServiceConfig,
@@ -67,7 +67,7 @@ import {
   ServicePriority,
   ServiceType,
   type WebServiceConfig,
-} from './types';
+} from './types.ts';
 
 /**
  * Configuration for the USL Factory system.
@@ -688,13 +688,13 @@ export class USLFactory implements IServiceFactory {
       case ServiceType.WEB_DATA:
       case ServiceType.DOCUMENT: {
         // Use the enhanced DataServiceAdapter for unified data operations
-        const { DataServiceAdapter } = await import('./adapters/data-service-adapter');
+        const { DataServiceAdapter } = await import('./adapters/data-service-adapter.ts');
         return new DataServiceAdapter(config as any);
       }
 
       case ServiceType.WEB:
       case ServiceType.API: {
-        const { WebService } = await import('./implementations/web-service');
+        const { WebService } = await import('./implementations/web-service.ts');
         return new WebService(config as WebServiceConfig);
       }
 
@@ -703,35 +703,35 @@ export class USLFactory implements IServiceFactory {
       case ServiceType.SESSION_RECOVERY: {
         // Use the enhanced CoordinationServiceAdapter for unified coordination operations
         const { CoordinationServiceAdapter } = await import(
-          './adapters/coordination-service-adapter'
+          './adapters/coordination-service-adapter.ts'
         );
         return new CoordinationServiceAdapter(config as any);
       }
 
       case ServiceType.SWARM:
       case ServiceType.ORCHESTRATION: {
-        const { CoordinationService } = await import('./implementations/coordination-service');
+        const { CoordinationService } = await import('./implementations/coordination-service.ts');
         return new CoordinationService(config as CoordinationServiceConfig);
       }
 
       case ServiceType.NEURAL: {
-        const { NeuralService } = await import('./implementations/neural-service');
+        const { NeuralService } = await import('./implementations/neural-service.ts');
         return new NeuralService(config as NeuralServiceConfig);
       }
 
       case ServiceType.MEMORY:
       case ServiceType.CACHE: {
-        const { MemoryService } = await import('./implementations/memory-service');
+        const { MemoryService } = await import('./implementations/memory-service.ts');
         return new MemoryService(config as MemoryServiceConfig);
       }
 
       case ServiceType.DATABASE: {
-        const { DatabaseService } = await import('./implementations/database-service');
+        const { DatabaseService } = await import('./implementations/database-service.ts');
         return new DatabaseService(config as DatabaseServiceConfig);
       }
 
       case ServiceType.MONITORING: {
-        const { MonitoringService } = await import('./implementations/monitoring-service');
+        const { MonitoringService } = await import('./implementations/monitoring-service.ts');
         return new MonitoringService(config);
       }
 
@@ -743,7 +743,7 @@ export class USLFactory implements IServiceFactory {
         }
 
         // Fall back to generic service implementation
-        const { GenericService } = await import('./implementations/generic-service');
+        const { GenericService } = await import('./implementations/generic-service.ts');
         return new GenericService(config);
       }
     }

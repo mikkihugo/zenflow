@@ -1,4 +1,4 @@
-import { NeuralWasmGateway } from '../../../../src/neural/wasm/gateway';
+import { NeuralWasmGateway } from '../../../../src/neural/wasm/gateway.ts';
 
 describe('NeuralWasmGateway', () => {
   it('initializes lazily and reports metrics', async () => {

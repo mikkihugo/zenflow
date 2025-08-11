@@ -153,7 +153,10 @@ export class InterfaceModeDetector {
    *
    * @param mode
    */
-  static validateMode(mode: InterfaceMode): { valid: boolean; reason?: string } {
+  static validateMode(mode: InterfaceMode): {
+    valid: boolean;
+    reason?: string;
+  } {
     switch (mode) {
       case 'cli':
         return { valid: true };

@@ -15,14 +15,14 @@ const logger = getLogger('interfaces-api-http-index');
  */
 
 import { getCORSOrigins, getMCPServerURL } from '../config/url-builder';
-import { APIClient } from './client';
+import { APIClient } from './client.ts';
 // Import server types for internal use
-import { type APIClientConfig, APIServer, type APIServerConfig } from './server';
+import { type APIClientConfig, APIServer, type APIServerConfig } from './server.ts';
 
-export type { APIClientConfig, PaginationOptions, RequestOptions } from './client';
+export type { APIClientConfig, PaginationOptions, RequestOptions } from './client.ts';
 // ===== API CLIENT SDK =====
-export { APIClient, apiClient, createAPIClient } from './client';
-export type { AuthContext, User } from './middleware/auth';
+export { APIClient, apiClient, createAPIClient } from './client.ts';
+export type { AuthContext, User } from './middleware/auth.ts';
 export {
   authMiddleware,
   getCurrentUser,
@@ -30,7 +30,7 @@ export {
   hasRole,
   isAdmin,
   optionalAuthMiddleware,
-} from './middleware/auth';
+} from './middleware/auth.ts';
 // ===== MIDDLEWARE =====
 export {
   APIError as APIErrorClass,
@@ -42,8 +42,8 @@ export {
   createValidationError,
   errorHandler,
   notFoundHandler,
-} from './middleware/errors';
-export { LogLevel, log, logError, logPerformance, requestLogger } from './middleware/logging';
+} from './middleware/errors.ts';
+export { LogLevel, log, logError, logPerformance, requestLogger } from './middleware/logging.ts';
 export type {
   // Coordination types (re-exported from domain)
   Agent,
@@ -69,18 +69,18 @@ export type {
   TrainingConfig,
   TrainingJob,
   TrainingRequest,
-} from './schemas/index';
+} from './schemas/index.ts';
 // ===== SCHEMAS AND TYPES =====
-export { RestAPISchema } from './schemas/index';
-export type { APIServerConfig } from './server';
+export { RestAPISchema } from './schemas/index.ts';
+export type { APIServerConfig } from './server.ts';
 // ===== API SERVER =====
-export { APIServer, createAPIServer, DEFAULT_API_CONFIG } from './server';
+export { APIServer, createAPIServer, DEFAULT_API_CONFIG } from './server.ts';
 
 // ===== ROUTE CREATORS =====
-export { createCoordinationRoutes } from './v1/coordination';
-export { createDatabaseRoutes } from './v1/database';
-export { createMemoryRoutes } from './v1/memory';
-export { createNeuralRoutes } from './v1/neural';
+export { createCoordinationRoutes } from './v1/coordination.ts';
+export { createDatabaseRoutes } from './v1/database.ts';
+export { createMemoryRoutes } from './v1/memory.ts';
+export { createNeuralRoutes } from './v1/neural.ts';
 
 // ===== VERSION INFORMATION =====
 export const REST_API_VERSION = '1.0.0' as const;

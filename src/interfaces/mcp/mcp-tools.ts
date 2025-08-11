@@ -6,8 +6,8 @@
  */
 
 import * as fs from 'fs';
-import type { MCPTool, MCPToolResult } from '../../coordination/swarm/mcp/types';
-import { MemoryCoordinator } from '../../memory/core/memory-coordinator';
+import type { MCPTool, MCPToolResult } from '../../coordination/swarm/mcp/types.ts';
+import { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
 
 // This is a placeholder for the actual memoryCoordinator instance.
 // In a real application, this would be initialized and managed by the DI container.

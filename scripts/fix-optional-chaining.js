@@ -17,7 +17,7 @@ class OptionalChainingFixer {
   }
 
   async fix() {
-    console.log('🔧 Auto-Fixing Optional Chaining Issues...');
+    // console.log('🔧 Auto-Fixing Optional Chaining Issues...');
 
     // Find all TypeScript files
     const pattern = path.join(this.baseDir, '**/*.{ts,tsx}');
@@ -25,21 +25,21 @@ class OptionalChainingFixer {
       ignore: ['**/node_modules/**', '**/dist/**', '**/*.d.ts', '**/__tests__/**', '**/tests/**'],
     });
 
-    console.log(`📁 Found ${files.length} TypeScript files to check`);
+    // console.log(`📁 Found ${files.length} TypeScript files to check`);
 
     // Process each file
     for (const filePath of files) {
       await this.fixOptionalChainingInFile(filePath);
     }
 
-    console.log(`\n✅ Optional chaining fixing complete:`);
-    console.log(`   📝 Fixed ${this.fixedFiles.length} files`);
+    // console.log(`\n✅ Optional chaining fixing complete:`);
+    // console.log(`   📝 Fixed ${this.fixedFiles.length} files`);
 
     if (this.fixedFiles.length > 0) {
-      console.log(`\n📋 Fixed files:`);
+      // console.log(`\n📋 Fixed files:`);
       this.fixedFiles.forEach((file) => {
         const relative = path.relative(this.baseDir, file.path);
-        console.log(`   • ${relative} (${file.changes.join(', ')})`);
+        // console.log(`   • ${relative} (${file.changes.join(', ')})`);
       });
     }
   }
@@ -247,18 +247,18 @@ async function main() {
     const fixer = new OptionalChainingFixer();
     await fixer.fix();
 
-    console.log('\n🎉 Optional chaining fixing complete!');
-    console.log('\n💡 Benefits:');
-    console.log('   • Fixed TS2779 "assignment to optional property access" errors');
-    console.log('   • Removed unnecessary optional chaining on guaranteed objects');
-    console.log('   • Improved code clarity and performance');
+    // console.log('\n🎉 Optional chaining fixing complete!');
+    // console.log('\n💡 Benefits:');
+    // console.log('   • Fixed TS2779 "assignment to optional property access" errors');
+    // console.log('   • Removed unnecessary optional chaining on guaranteed objects');
+    // console.log('   • Improved code clarity and performance');
 
-    console.log('\n🔧 Next steps:');
-    console.log('   1. Run TypeScript compilation to verify fixes');
-    console.log('   2. Test functionality to ensure no runtime errors');
-    console.log('   3. Review any remaining optional chaining warnings');
+    // console.log('\n🔧 Next steps:');
+    // console.log('   1. Run TypeScript compilation to verify fixes');
+    // console.log('   2. Test functionality to ensure no runtime errors');
+    // console.log('   3. Review any remaining optional chaining warnings');
   } catch (error) {
-    console.error('❌ Optional chaining fixing failed:', error.message);
+    // console.error('❌ Optional chaining fixing failed:', error.message);
     process.exit(1);
   }
 }

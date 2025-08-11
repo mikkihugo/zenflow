@@ -8,22 +8,22 @@
 
 import { EventEmitter } from 'node:events';
 import { config, getMCPServerURL } from '../../../config';
-import { getLogger } from '../../../config/logging-config';
-import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage';
+import { getLogger } from '../../../config/logging-config.ts';
+import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage.ts';
 import type {
   ArchitecturalValidation,
   ArchitectureDesign,
-} from '../../../coordination/swarm/sparc/types/sparc-types';
-import type { ILogger } from '../../../core/logger';
-import type { ConnectionConfig } from '../../../integration/adapter-system';
+} from '../../../coordination/swarm/sparc/types/sparc-types.ts';
+import type { ILogger } from '../../../core/logger.ts';
+import type { ConnectionConfig } from '../../../integration/adapter-system.ts';
 import {
   MCPAdapter,
   ProtocolManager,
   RESTAdapter,
   WebSocketAdapter,
-} from '../../../integration/adapter-system';
-import type { APIResult } from '../../../utils/type-guards';
-import { SafeAPIClient, SafeAPIService } from '../../api/safe-api-client';
+} from '../../../integration/adapter-system.ts';
+import type { APIResult } from '../../../utils/type-guards.ts';
+import { SafeAPIClient, SafeAPIService } from '../../api/safe-api-client.ts';
 import type {
   IService,
   ServiceConfig,
@@ -36,9 +36,9 @@ import type {
   ServiceOperationResponse,
   ServiceRetryConfig,
   ServiceStatus,
-} from '../core/interfaces';
-import type { IntegrationServiceConfig } from '../types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+} from '../core/interfaces.ts';
+import type { IntegrationServiceConfig } from '../types.ts';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../types.ts';
 
 // ============================================
 // Service-Specific Error Classes
@@ -489,11 +489,11 @@ export class IntegrationServiceAdapter implements IService {
         // Connect to real database adapter using DAL Factory
         let realDatabaseAdapter;
         try {
-          const { DALFactory } = await import('../../../database/factory');
+          const { DALFactory } = await import('../../../database/factory.ts');
           // TODO: Fix DI container imports and token resolution
-          // const { DIContainer } = await import('../../../di/container/di-container');
+          // const { DIContainer } = await import('../../../di/container/di-container.ts');
           // const { DATABASE_TOKENS } = await import('../../../di/tokens/database-tokens');
-          // const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens');
+          // const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens.ts');
 
           // TODO: Fix DI container usage
           // const container = new DIContainer();
@@ -1513,32 +1513,32 @@ export class IntegrationServiceAdapter implements IService {
       // Safe API Service operations
       case 'api-get': {
         const result = await this.safeAPIGet<T>(params?.endpoint, params?.options);
-        return result.success ? (result.data as T) : (result as any);
+        return result.success ? (result.data) : (result as any);
       }
 
       case 'api-post': {
         const result = await this.safeAPIPost<T>(params?.endpoint, params?.data, params?.options);
-        return result.success ? (result.data as T) : (result as any);
+        return result.success ? (result.data) : (result as any);
       }
 
       case 'api-put': {
         const result = await this.safeAPIPut<T>(params?.endpoint, params?.data, params?.options);
-        return result.success ? (result.data as T) : (result as any);
+        return result.success ? (result.data) : (result as any);
       }
 
       case 'api-delete': {
         const result = await this.safeAPIDelete<T>(params?.endpoint, params?.options);
-        return result.success ? (result.data as T) : (result as any);
+        return result.success ? (result.data) : (result as any);
       }
 
       case 'api-create-resource': {
         const result = await this.createResource<T>(params?.endpoint, params?.data);
-        return result.success ? (result.data as T) : (result as any);
+        return result.success ? (result.data) : (result as any);
       }
 
       case 'api-get-resource': {
         const result = await this.getResource<T>(params?.endpoint, params?.id);
-        return result.success ? (result.data as T) : (result as any);
+        return result.success ? (result.data) : (result as any);
       }
 
       case 'api-list-resources': {
@@ -1548,7 +1548,7 @@ export class IntegrationServiceAdapter implements IService {
 
       case 'api-update-resource': {
         const result = await this.updateResource<T>(params?.endpoint, params?.id, params?.data);
-        return result.success ? (result.data as T) : (result as any);
+        return result.success ? (result.data) : (result as any);
       }
 
       case 'api-delete-resource':
@@ -2324,7 +2324,7 @@ export class IntegrationServiceAdapter implements IService {
     if (
       error.name === 'ServiceTimeoutError' &&
       'timeout' in error &&
-      (error as any).timeout < 5000
+      (error).timeout < 5000
     ) {
       return false; // Don't retry short timeouts
     }

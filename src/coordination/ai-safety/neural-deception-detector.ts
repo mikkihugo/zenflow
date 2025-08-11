@@ -5,8 +5,11 @@
  * and adapt to new forms of AI deception over time.
  */
 
-import { getLogger } from '../../config/logging-config';
-import { type LogAnalysisResult, LogBasedDeceptionDetector } from './log-based-deception-detector';
+import { getLogger } from '../../config/logging-config.ts';
+import {
+  type LogAnalysisResult,
+  LogBasedDeceptionDetector,
+} from './log-based-deception-detector.ts';
 
 interface DeceptionFeatures {
   claimToActionRatio: number;
@@ -244,7 +247,7 @@ export class NeuralDeceptionDetector {
 
     // Calculate weighted sum
     for (const [featureName, weight] of this.modelWeights) {
-      const featureValue = features[featureName as keyof DeceptionFeatures] as number;
+      const featureValue = features[featureName as keyof DeceptionFeatures];
       const contribution = featureValue * weight;
       score += contribution;
 
@@ -310,7 +313,7 @@ export class NeuralDeceptionDetector {
 
     // Update weights using gradient descent
     for (const [featureName, currentWeight] of this.modelWeights) {
-      const featureValue = features[featureName as keyof DeceptionFeatures] as number;
+      const featureValue = features[featureName as keyof DeceptionFeatures];
       const weightUpdate = this.adaptationRate * error * featureValue;
       this.modelWeights.set(featureName, currentWeight + weightUpdate);
     }

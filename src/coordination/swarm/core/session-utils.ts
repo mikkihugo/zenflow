@@ -2,7 +2,7 @@
  * @file Coordination system: session-utils.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-core-session-utils');
 
@@ -14,8 +14,8 @@ const logger = getLogger('coordination-swarm-core-session-utils');
  */
 
 import crypto from 'node:crypto';
-import type { SessionCheckpoint, SessionState, SessionStatus } from './session-manager';
-import type { SwarmOptions, SwarmState } from './types';
+import type { SessionCheckpoint, SessionState, SessionStatus } from './session-manager.ts';
+import type { SwarmOptions, SwarmState } from './types.ts';
 
 /**
  * Session validation utilities.

@@ -12,9 +12,9 @@
  */
 
 import { config } from '../../config';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 import { DEFAULT_CONFIG } from '../config/defaults';
-import { HTTPMCPServer } from './http-mcp-server';
+import { HTTPMCPServer } from './http-mcp-server.ts';
 
 const logger = getLogger('MCP-Starter');
 

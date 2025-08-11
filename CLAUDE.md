@@ -1,3 +1,39 @@
+/**
+ * @fileoverview Claude Code Configuration for ruv-swarm Integration
+ * 
+ * Comprehensive configuration document for Claude Code instances working with
+ * ruv-swarm MCP tools. This document defines the separation of responsibilities,
+ * coordination protocols, and best practices for efficient parallel execution.
+ * 
+ * Key Features:
+ * - Clear separation between Claude Code operations and MCP coordination
+ * - Mandatory parallel execution patterns for maximum performance  
+ * - Comprehensive swarm orchestration guidelines
+ * - Agent coordination protocols with hooks integration
+ * - Memory management and persistence strategies
+ * - Performance optimization techniques
+ * 
+ * @author Claude Code Zen Team
+ * @since 1.0.0-alpha.43
+ * @version 1.0.0
+ * 
+ * @see {@link https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm} ruv-swarm Documentation
+ * @see {@link https://docs.anthropic.com/en/docs/claude-code} Claude Code Documentation
+ * 
+ * @requires ruv-swarm - MCP server for coordination
+ * @requires @anthropic/claude-code - Native Claude Code CLI tools
+ * 
+ * @example
+ * ```bash
+ * # Add ruv-swarm MCP server to Claude Code
+ * claude mcp add ruv-swarm npx ruv-swarm mcp start
+ * 
+ * # Use parallel execution patterns
+ * # ✅ CORRECT - Multiple operations in single message
+ * # ❌ WRONG - Sequential operations across multiple messages
+ * ```
+ */
+
 # Claude Code Configuration for ruv-swarm
 
 ## 🎯 IMPORTANT: Separation of Responsibilities

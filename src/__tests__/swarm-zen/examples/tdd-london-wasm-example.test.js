@@ -3,7 +3,7 @@
  * Shows how to use inline mocks instead of separate mock files
  */
 
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it, , vi } from 'vitest';
 import {
   createMockWasmLoader,
   createMockWasmModule,
@@ -16,8 +16,8 @@ describe('TDD London Style WASM Testing Examples', () => {
     it('should use inline WASM mock for basic operations', async () => {
       // Arrange - Create inline mock
       const mockWasmModule = createMockWasmModule({
-        createSwarm: jest.fn().mockReturnValue(42),
-        getVersion: jest.fn().mockReturnValue('2.0.0'),
+        createSwarm: vi.fn().mockReturnValue(42),
+        getVersion: vi.fn().mockReturnValue('2.0.0'),
       });
 
       // Act
@@ -35,7 +35,7 @@ describe('TDD London Style WASM Testing Examples', () => {
     it('should mock WASM loader for testing loading behavior', async () => {
       // Arrange
       const mockLoader = createMockWasmLoader({
-        getVersion: jest.fn().mockReturnValue('custom-version'),
+        getVersion: vi.fn().mockReturnValue('custom-version'),
       });
 
       // Act
@@ -150,9 +150,9 @@ describe('TDD London Style WASM Testing Examples', () => {
     it('should test SwarmManager with mocked WASM', async () => {
       // Arrange - Inline mock for WASM dependency
       const mockWasm = createMockWasmModule({
-        createSwarm: jest.fn().mockReturnValue(123),
-        addAgent: jest.fn().mockReturnValue(456),
-        getState: jest.fn().mockReturnValue({
+        createSwarm: vi.fn().mockReturnValue(123),
+        addAgent: vi.fn().mockReturnValue(456),
+        getState: vi.fn().mockReturnValue({
           topology: 'mesh',
           metrics: { totalTasks: 0 },
         }),
@@ -181,7 +181,7 @@ describe('TDD London Style WASM Testing Examples', () => {
     it('should handle WASM initialization errors', async () => {
       // Arrange
       const mockWasm = createMockWasmModule({
-        init: jest.fn().mockRejectedValue(new Error('WASM init failed')),
+        init: vi.fn().mockRejectedValue(new Error('WASM init failed')),
       });
 
       // Act & Assert
@@ -194,7 +194,7 @@ describe('TDD London Style WASM Testing Examples', () => {
 /**
  * Migration Guide: Converting from __mocks__ to inline mocks
  *
- * 1. Remove moduleNameMapper from jest.config.js
+ * 1. Remove moduleNameMapper from vi.config.js
  * 2. Delete __mocks__/wasmMock.js
  * 3. Import mock helpers in your test files:
  *    import { createMockWasmModule } from '../helpers/wasm-test-helpers.js';

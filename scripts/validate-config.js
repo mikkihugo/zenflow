@@ -58,9 +58,9 @@ class ConfigValidator {
    * Main validation entry point
    */
   async validate() {
-    console.log(
-      `${colors.blue}${colors.bold}🔍 Claude-Zen Configuration Validator${colors.reset}\n`
-    );
+    // console.log(
+    `${colors.blue}${colors.bold}🔍 Claude-Zen Configuration Validator${colors.reset}\n`;
+    )
 
     try {
       // Load configuration
@@ -92,7 +92,7 @@ class ConfigValidator {
       const exitCode = this.errors.length > 0 ? 1 : 0;
       process.exit(exitCode);
     } catch (error) {
-      console.error(`${colors.red}❌ Validation failed: ${error.message}${colors.reset}`);
+      // console.error(`${colors.red}❌ Validation failed: ${error.message}${colors.reset}`);
       process.exit(1);
     }
   }
@@ -738,9 +738,9 @@ class ConfigValidator {
    * Apply automatic fixes
    */
   applyFixes() {
-    console.log(
-      `\n${colors.blue}🔧 Applying ${this.fixes.length} automatic fixes...${colors.reset}\n`
-    );
+    // console.log(
+    `\n${colors.blue}🔧 Applying ${this.fixes.length} automatic fixes...${colors.reset}\n`;
+    )
 
     let envContent = '';
     const envPath = path.resolve(this.options.envFile);
@@ -752,7 +752,7 @@ class ConfigValidator {
 
     // Apply each fix
     for (const fix of this.fixes) {
-      console.log(`  ${colors.green}✓${colors.reset} ${fix.key}: ${fix.reason}`);
+      // console.log(`  ${colors.green}✓${colors.reset} ${fix.key}: ${fix.reason}`);
 
       // Update or add the environment variable
       const regex = new RegExp(`^${fix.key}=.*$`, 'm');
@@ -768,9 +768,9 @@ class ConfigValidator {
     // Write updated .env file
     try {
       fs.writeFileSync(envPath, envContent.trim() + '\n');
-      console.log(`\n${colors.green}✅ Applied fixes to ${envPath}${colors.reset}`);
+      // console.log(`\n${colors.green}✅ Applied fixes to ${envPath}${colors.reset}`);
     } catch (error) {
-      console.error(`${colors.red}❌ Failed to write fixes: ${error.message}${colors.reset}`);
+      // console.error(`${colors.red}❌ Failed to write fixes: ${error.message}${colors.reset}`);
     }
   }
 
@@ -809,84 +809,84 @@ class ConfigValidator {
       })),
     };
 
-    console.log(JSON.stringify(result, null, 2));
+    // console.log(JSON.stringify(result, null, 2));
   }
 
   /**
    * Output results as formatted table
    */
   outputTable() {
-    console.log(
-      `\n${colors.bold}📊 Validation Results for ${this.options.env.toUpperCase()} environment:${colors.reset}\n`
-    );
+    // console.log(
+    `\n${colors.bold}📊 Validation Results for ${this.options.env.toUpperCase()} environment:${colors.reset}\n`;
+    )
 
     // Summary
     const errorColor = this.errors.length > 0 ? colors.red : colors.green;
     const warningColor = this.warnings.length > 0 ? colors.yellow : colors.green;
 
-    console.log(`${errorColor}❌ Errors: ${this.errors.length}${colors.reset}`);
-    console.log(`${warningColor}⚠️  Warnings: ${this.warnings.length}${colors.reset}`);
-    console.log(`${colors.blue}ℹ️  Info: ${this.info.length}${colors.reset}`);
-    console.log(`${colors.magenta}🔧 Fixable: ${this.fixes.length}${colors.reset}\n`);
+    // console.log(`${errorColor}❌ Errors: ${this.errors.length}${colors.reset}`);
+    // console.log(`${warningColor}⚠️  Warnings: ${this.warnings.length}${colors.reset}`);
+    // console.log(`${colors.blue}ℹ️  Info: ${this.info.length}${colors.reset}`);
+    // console.log(`${colors.magenta}🔧 Fixable: ${this.fixes.length}${colors.reset}\n`);
 
     // Errors
     if (this.errors.length > 0) {
-      console.log(`${colors.red}${colors.bold}❌ ERRORS:${colors.reset}`);
+      // console.log(`${colors.red}${colors.bold}❌ ERRORS:${colors.reset}`);
       this.errors.forEach((error, i) => {
-        console.log(`  ${i + 1}. ${error}`);
+        // console.log(`  ${i + 1}. ${error}`);
       });
-      console.log();
+      // console.log();
     }
 
     // Warnings
     if (this.warnings.length > 0) {
-      console.log(`${colors.yellow}${colors.bold}⚠️  WARNINGS:${colors.reset}`);
+      // console.log(`${colors.yellow}${colors.bold}⚠️  WARNINGS:${colors.reset}`);
       this.warnings.forEach((warning, i) => {
-        console.log(`  ${i + 1}. ${warning}`);
+        // console.log(`  ${i + 1}. ${warning}`);
       });
-      console.log();
+      // console.log();
     }
 
     // Info
     if (this.info.length > 0) {
-      console.log(`${colors.blue}${colors.bold}ℹ️  INFO:${colors.reset}`);
+      // console.log(`${colors.blue}${colors.bold}ℹ️  INFO:${colors.reset}`);
       this.info.forEach((info, i) => {
-        console.log(`  ${i + 1}. ${info}`);
+        // console.log(`  ${i + 1}. ${info}`);
       });
-      console.log();
+      // console.log();
     }
 
     // Fixes
     if (this.fixes.length > 0) {
-      console.log(`${colors.magenta}${colors.bold}🔧 SUGGESTED FIXES:${colors.reset}`);
+      // console.log(`${colors.magenta}${colors.bold}🔧 SUGGESTED FIXES:${colors.reset}`);
       this.fixes.forEach((fix, i) => {
-        console.log(`  ${i + 1}. ${fix.key}: ${fix.reason}`);
-        console.log(`     Current: ${colors.dim}${fix.current}${colors.reset}`);
-        console.log(`     Suggested: ${colors.green}${fix.suggested}${colors.reset}`);
+        // console.log(`  ${i + 1}. ${fix.key}: ${fix.reason}`);
+        // console.log(`     Current: ${colors.dim}${fix.current}${colors.reset}`);
+        // console.log(`     Suggested: ${colors.green}${fix.suggested}${colors.reset}`);
       });
-      console.log();
-      console.log(
-        `${colors.magenta}💡 Run with --fix to apply these changes automatically${colors.reset}\n`
-      );
+      // console.log();
+      // console.log(
+      `${colors.magenta}💡 Run with --fix to apply these changes automatically${colors.reset}\n`;
+      )
     }
 
     // Final status
     if (this.errors.length === 0) {
-      console.log(
-        `${colors.green}${colors.bold}✅ Configuration validation passed!${colors.reset}`
-      );
+      // console.log(
+      `${colors.green}${colors.bold}✅ Configuration validation passed!${colors.reset}`;
+      )
       if (this.warnings.length > 0) {
-        console.log(
-          `${colors.yellow}Consider addressing the warnings above for optimal performance.${colors.reset}`
-        );
+        // console.log(
+        `${colors.yellow}Consider addressing the warnings above for optimal performance.${colors.reset}`;
+        )
       }
     } else {
-      console.log(`${colors.red}${colors.bold}❌ Configuration validation failed!${colors.reset}`);
-      console.log(
-        `${colors.red}Please fix the errors above before deploying to production.${colors.reset}`
-      );
+      // console.log(`${colors.red}${colors.bold}❌ Configuration validation failed!${colors.reset}`);
+      // console.log(
+      `${colors.red}Please fix the errors above before deploying to production.${colors.reset}`;
+      )
     }
-    console.log();
+    // console.log();
   }
 
   // Utility validation methods
@@ -968,7 +968,7 @@ if (require.main === module) {
     } else if (arg === '--fix') {
       options.fix = true;
     } else if (arg === '--help' || arg === '-h') {
-      console.log(`
+      // console.log(`
 Usage: node validate-config.js [options]
 
 Options:
@@ -992,7 +992,7 @@ Examples:
   // Run validation
   const validator = new ConfigValidator(options);
   validator.validate().catch((error) => {
-    console.error(`${colors.red}❌ Validation error: ${error.message}${colors.reset}`);
+    // console.error(`$colors.red❌ Validation error: $error.message$colors.reset`);
     process.exit(1);
   });
 }

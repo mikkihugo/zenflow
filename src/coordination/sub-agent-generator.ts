@@ -9,7 +9,7 @@
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { AgentType } from '../types/agent-types';
+import type { AgentType } from '../types/agent-types.ts';
 
 export interface SubAgentConfig {
   name: string;
@@ -85,7 +85,11 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     systemPrompt:
       'You are a software architect focusing on:\n- **System Design**: Create scalable, maintainable architectures\n- **Technology Selection**: Choose appropriate technologies and patterns\n- **Design Patterns**: Apply proven architectural patterns\n- **Performance Architecture**: Design for scale and performance\n- **Security Architecture**: Implement secure design principles\n- **Documentation**: Create clear architectural documentation\nEmphasize long-term maintainability and scalability.',
     tools: ['Read', 'Write', 'Edit', 'WebSearch'],
-    capabilities: { systemDesign: true, architectureReview: true, technologySelection: true },
+    capabilities: {
+      systemDesign: true,
+      architectureReview: true,
+      technologySelection: true,
+    },
     domains: ['architecture', 'system-design', 'scalability'],
     triggers: ['architecture', 'system design', 'technical design', 'scalability'],
   },
@@ -96,7 +100,11 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     systemPrompt:
       'You are a debugging expert specializing in:\n- **Root Cause Analysis**: Systematically identify issue sources\n- **Performance Debugging**: Find bottlenecks and optimization opportunities\n- **Memory Analysis**: Detect memory leaks and resource issues\n- **Concurrency Issues**: Debug race conditions and synchronization problems\n- **System Debugging**: Troubleshoot infrastructure and deployment issues\nUse systematic debugging methodology with clear step-by-step analysis.',
     tools: ['Read', 'Bash', 'Grep', 'Edit', 'LS'],
-    capabilities: { debugging: true, performanceAnalysis: true, systemTroubleshooting: true },
+    capabilities: {
+      debugging: true,
+      performanceAnalysis: true,
+      systemTroubleshooting: true,
+    },
     domains: ['debugging', 'troubleshooting', 'performance'],
     triggers: ['debug', 'troubleshoot', 'fix issue', 'performance problem'],
   },

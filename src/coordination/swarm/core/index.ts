@@ -2,7 +2,7 @@
  * @file Core module exports.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-core-index');
 
@@ -21,10 +21,10 @@ const logger = getLogger('coordination-swarm-core-index');
 
 import type { SessionCoordinationDao } from '../../../database';
 // import { DALFactory } from '../database'; // TODO: Implement proper DI integration
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
-import { AgentPool, createAgent } from '../../agents/agent';
-import { executeTaskWithAgent } from './agent-adapter';
-import { getContainer } from './singleton-container';
+import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.ts';
+import { AgentPool, createAgent } from '../../agents/agent.ts';
+import { executeTaskWithAgent } from './agent-adapter.ts';
+import { getContainer } from './singleton-container.ts';
 import type {
   AgentConfig,
   Message,
@@ -35,34 +35,34 @@ import type {
   SwarmState,
   Task,
   TaskStatus,
-} from './types';
-import { formatMetrics, generateId, priorityToNumber, validateSwarmOptions } from './utils';
+} from './types.ts';
+import { formatMetrics, generateId, priorityToNumber, validateSwarmOptions } from './utils.ts';
 
-export * from '../../../neural/core/neural-network-manager';
-export * from '../../../neural/wasm/wasm-loader2';
+export * from '../../../neural/core/neural-network-manager.ts';
+export * from '../../../neural/wasm/wasm-loader2.ts';
 // Enhanced exports with neural capabilities
-export * from '../../agents/agent';
-export * from '../mcp/mcp-daa-tools';
+export * from '../../agents/agent.ts';
+export * from '../mcp/mcp-daa-tools.ts';
 // Export the base implementation as BaseZenSwarm to avoid conflict
-export { ZenSwarm as BaseZenSwarm } from './base-swarm';
-export * from './errors';
+export { ZenSwarm as BaseZenSwarm } from './base-swarm.ts';
+export * from './errors.ts';
 export * from './hooks';
-export * from './logger';
-export * from './logging-config';
-export * from './monitoring-dashboard';
-export * from './performance';
-export * from './performance-benchmarks';
-export * from './recovery-integration';
-export * from './recovery-workflows';
-export * from './schemas';
-export * from './session-integration';
-export * from './session-manager';
-export * from './session-utils';
-export * from './singleton-container';
-export { TopologyManager } from './topology-manager';
+export * from './logger.ts';
+export * from './logging-config.ts';
+export * from './monitoring-dashboard.ts';
+export * from './performance.ts';
+export * from './performance-benchmarks.ts';
+export * from './recovery-integration.ts';
+export * from './recovery-workflows.ts';
+export * from './schemas.ts';
+export * from './session-integration.ts';
+export * from './session-manager.ts';
+export * from './session-utils.ts';
+export * from './singleton-container.ts';
+export { TopologyManager } from './topology-manager.ts';
 // Re-export all types and utilities
-export * from './types';
-export * from './utils';
+export * from './types.ts';
+export * from './utils.ts';
 
 /**
  * Enhanced Agent class with neural capabilities and cognitive patterns.
@@ -273,7 +273,7 @@ export class ZenSwarm implements SwarmEventEmitter {
         // Browser environment
         const wasmModule = await import(this.options.wasmPath);
         await wasmModule.default();
-        this.wasmModule = wasmModule as any;
+        this.wasmModule = wasmModule;
       } else {
       }
 
@@ -856,7 +856,10 @@ export class ZenSwarm implements SwarmEventEmitter {
       }
 
       for (const agent of Array.from(this.state.agents.values())) {
-        this.state.metrics.agentUtilization.set((agent as any).id, (agent as any).status === 'busy' ? 1 : 0);
+        this.state.metrics.agentUtilization.set(
+          (agent as any).id,
+          (agent as any).status === 'busy' ? 1 : 0
+        );
       }
     }, this.options.syncInterval);
   }

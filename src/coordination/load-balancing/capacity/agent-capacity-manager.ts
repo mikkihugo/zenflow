@@ -6,9 +6,9 @@
  * @file agent-capacity management system
  */
 
-import type { CapacityManager } from '../interfaces';
-import { CapacityPredictor } from './capacity-predictor';
-import { ResourceMonitor } from './resource-monitor';
+import type { CapacityManager } from '../interfaces.ts';
+import { CapacityPredictor } from './capacity-predictor.ts';
+import { ResourceMonitor } from './resource-monitor.ts';
 
 interface AgentCapacityProfile {
   agentId: string;

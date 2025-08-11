@@ -2,7 +2,7 @@
  * @file Coordination system: swarm-coordination-integration.
  */
 
-import { getLogger } from '../../../../config/logging-config';
+import { getLogger } from '../../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-sparc-integrations-swarm-coordination-integration');
 
@@ -14,9 +14,9 @@ const logger = getLogger('coordination-swarm-sparc-integrations-swarm-coordinati
  */
 
 import { TaskAPI } from '../../../../interfaces/api';
+import type { AgentType } from '../../../../types/agent-types.ts';
 import { type TaskConfig, TaskCoordinator } from '../../task-coordinator';
-import type { AgentType } from '../../../../types/agent-types';
-import type { SPARCPhase, SPARCProject } from '../types/sparc-types';
+import type { SPARCPhase, SPARCProject } from '../types/sparc-types.ts';
 
 // SPARC-specific agent types from existing 147+ agent types
 export const SPARC_AGENT_TYPES: AgentType[] = [

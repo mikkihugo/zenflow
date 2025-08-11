@@ -5,8 +5,8 @@
 
 import { LanceDBInterface } from '../../../../database/lancedb-interface';
 import { VectorStore } from '../../../../memory/backends/lancedb.backend';
-import { DatabaseTestHelper } from '../../../helpers/database-test-helper';
-import { PerformanceMeasurement } from '../../../helpers/performance-measurement';
+import { DatabaseTestHelper } from '../../../helpers/database-test-helper.ts';
+import { PerformanceMeasurement } from '../../../helpers/performance-measurement.ts';
 
 describe('Vector Database Performance (Classical TDD)', () => {
   let lancedb: LanceDBInterface;

@@ -1,23 +1,125 @@
 /**
- * Hive MCP Tools - High-Level Knowledge Coordination.
- *
- * Provides Hive-level coordination commands that abstract away swarm complexity.
- * Users interact with the Hive mind rather than individual swarms.
- */
-/**
- * @file Coordination system: hive-tools.
+ * @fileoverview High-Level Hive Coordination MCP Tools for Claude Code Zen
+ * 
+ * This module provides sophisticated hive-level coordination tools that abstract
+ * away the complexity of individual swarm management. The Hive represents the
+ * collective intelligence of all swarms and provides a unified interface for
+ * high-level knowledge coordination and system management.
+ * 
+ * ## Hive Architecture Philosophy
+ * 
+ * The Hive operates as a meta-layer above individual swarms:
+ * - **Collective Intelligence**: Aggregates knowledge across all swarms
+ * - **Abstracted Complexity**: Users interact with concepts, not implementation details
+ * - **Unified Interface**: Single point of access for system-wide coordination
+ * - **Knowledge Management**: Persistent storage and retrieval of collective insights
+ * 
+ * ## Tool Categories
+ * 
+ * ### Status and Health
+ * - `hive_status` - Get comprehensive hive system status
+ * - `hive_health` - Monitor hive system health and performance
+ * 
+ * ### Knowledge Management
+ * - `hive_query` - Query the collective hive knowledge base
+ * - `hive_contribute` - Contribute new knowledge to the hive mind
+ * - `hive_knowledge` - Access and manage hive knowledge repositories
+ * - `hive_sync` - Synchronize hive state across distributed systems
+ * 
+ * ### Coordination and Management
+ * - `hive_agents` - Manage hive-level agent coordination
+ * - `hive_tasks` - Coordinate high-level task execution
+ * 
+ * ## Data Access Layer Integration
+ * 
+ * The Hive tools are designed for eventual integration with DAL (Data Access Layer)
+ * factory for persistent knowledge storage and cross-session continuity. Currently
+ * uses simplified data access with graceful fallbacks.
+ * 
+ * ## Integration with stdio MCP
+ * 
+ * All tools are exposed through the stdio MCP server when running `claude-zen swarm`:
+ * ```
+ * mcp__claude-zen-unified__hive_status
+ * mcp__claude-zen-unified__hive_query
+ * mcp__claude-zen-unified__hive_contribute
+ * ... and 5 other hive coordination tools
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * // Initialize hive tools
+ * const hiveTools = new HiveTools();
+ * 
+ * // Query collective knowledge
+ * const knowledge = await hiveTools.tools.hive_query({
+ *   query: 'optimal microservices patterns',
+ *   domain: 'architecture'
+ * });
+ * 
+ * // Contribute new insights
+ * await hiveTools.tools.hive_contribute({
+ *   knowledge: 'Event-driven architecture reduces coupling',
+ *   category: 'architecture-patterns',
+ *   confidence: 0.9
+ * });
+ * ```
+ * 
+ * @author Claude Code Zen Team
+ * @version 1.0.0-alpha.43
+ * @since 1.0.0
+ * @see {@link SwarmTools} Lower-level swarm management tools
+ * @see {@link StdioMcpServer} MCP server that exposes these tools
  */
 
 import { exec } from 'node:child_process';
 import * as os from 'node:os';
 import { promisify } from 'node:util';
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 import type { DALFactory } from '../database/factory';
 
 const logger = getLogger('HiveTools');
 
+/**
+ * High-level hive coordination tools for collective intelligence management.
+ * 
+ * The HiveTools class provides sophisticated coordination capabilities that
+ * operate above individual swarm management. It represents the collective
+ * intelligence layer that aggregates knowledge, coordinates complex workflows,
+ * and provides unified access to system-wide capabilities.
+ * 
+ * ## Design Philosophy
+ * 
+ * - **Abstraction**: Hide swarm complexity behind intuitive hive concepts
+ * - **Collective Intelligence**: Aggregate knowledge from all system components
+ * - **Unified Interface**: Single access point for high-level coordination
+ * - **Future-Ready**: Prepared for DAL factory integration and persistence
+ * 
+ * ## Tool Management
+ * 
+ * Tools are registered at construction and bound to methods for proper `this`
+ * context. Each tool follows consistent patterns for MCP integration and
+ * provides graceful fallbacks when advanced features are unavailable.
+ * 
+ * @example
+ * ```typescript
+ * const hive = new HiveTools();
+ * 
+ * // Access collective knowledge
+ * const insights = await hive.tools.hive_query({
+ *   query: 'TypeScript best practices',
+ *   maxResults: 10
+ * });
+ * 
+ * // Get system-wide status
+ * const status = await hive.tools.hive_status();
+ * ```
+ */
 export class HiveTools {
+  /** Data Access Layer factory for persistent storage (future integration) */
   private dalFactory: DALFactory | null = null;
+  
+  /** Registry of all available hive coordination tools */
   public tools: Record<string, Function>;
 
   constructor() {

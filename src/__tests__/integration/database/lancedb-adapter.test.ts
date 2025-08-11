@@ -3,8 +3,8 @@
  * Test the real LanceDB adapter implementation
  */
 
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { LanceDBAdapter } from '../../../database/providers/database-providers';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { LanceDBAdapter } from '../../../database/providers/database-providers.ts';
 
 // Mock logger for tests
 const mockLogger: ILogger = {

@@ -6,7 +6,7 @@
  * @file Swarm-tokens implementation.
  */
 
-import { createToken } from './token-factory';
+import { createToken } from './token-factory.ts';
 
 // Swarm coordination interfaces (to be implemented)
 export interface ISwarmCoordinator {

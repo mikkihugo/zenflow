@@ -1,4 +1,4 @@
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('coordination-strategies-ruv-swarmstrategy');
 
@@ -6,9 +6,9 @@ const logger = getLogger('coordination-strategies-ruv-swarmstrategy');
  * @file A swarm strategy that uses the ZenSwarm implementation.
  */
 
-import type { SwarmStrategy } from '../types';
-import type { SwarmAgent } from '../../types/shared-types';
+import type { SwarmAgent } from '../../types/shared-types.ts';
 import { ZenSwarm } from '../swarm/core';
+import type { SwarmStrategy } from '../types.ts';
 
 export class ZenSwarmStrategy implements SwarmStrategy {
   private swarm: ZenSwarm;
@@ -49,13 +49,13 @@ export class ZenSwarmStrategy implements SwarmStrategy {
     const agents = this.swarm
       .getTasksByStatus('in_progress')
       .flatMap((t) => t.assignedAgents || []);
-    return agents.map((a) => ({ 
-      id: a, 
+    return agents.map((a) => ({
+      id: a,
       name: `Agent-${a}`,
       type: 'researcher' as const,
-      capabilities: [], 
+      capabilities: [],
       status: 'busy' as const,
-      metadata: {}
+      metadata: {},
     }));
   }
 }

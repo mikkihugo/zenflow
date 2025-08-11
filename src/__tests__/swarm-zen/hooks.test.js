@@ -4,21 +4,21 @@
 
 import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, , vi } from 'vitest';
 
 // Mock modules
-jest.mock('fs', () => ({
+vi.mock('fs', () => ({
   promises: {
-    readFile: jest.fn(),
-    writeFile: jest.fn(),
-    access: jest.fn(),
-    mkdir: jest.fn(),
-    readdir: jest.fn(),
+    readFile: vi.fn(),
+    writeFile: vi.fn(),
+    access: vi.fn(),
+    mkdir: vi.fn(),
+    readdir: vi.fn(),
   },
 }));
 
-jest.mock('child_process', () => ({
-  execSync: jest.fn(),
+vi.mock('child_process', () => ({
+  execSync: vi.fn(),
 }));
 
 // Import the module to test
@@ -33,11 +33,11 @@ describe('ZenSwarmHooks', () => {
     hooks = new ZenSwarmHooks();
     mockFs = fs;
     mockExecSync = execSync;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('constructor', () => {
@@ -57,14 +57,14 @@ describe('ZenSwarmHooks', () => {
 
   describe('handleHook', () => {
     it('should route pre-edit hook correctly', async () => {
-      hooks.preEditHook = jest.fn().mockResolvedValue({ continue: true });
+      hooks.preEditHook = vi.fn().mockResolvedValue({ continue: true });
       const result = await hooks.handleHook('pre-edit', { file: 'test.js' });
       expect(hooks.preEditHook).toHaveBeenCalledWith({ file: 'test.js' });
       expect(result).toEqual({ continue: true });
     });
 
     it('should route post-edit hook correctly', async () => {
-      hooks.postEditHook = jest.fn().mockResolvedValue({ success: true });
+      hooks.postEditHook = vi.fn().mockResolvedValue({ success: true });
       const result = await hooks.handleHook('post-edit', { file: 'test.js' });
       expect(hooks.postEditHook).toHaveBeenCalledWith({ file: 'test.js' });
       expect(result).toEqual({ success: true });
@@ -79,7 +79,7 @@ describe('ZenSwarmHooks', () => {
     });
 
     it('should handle errors gracefully', async () => {
-      hooks.preEditHook = jest.fn().mockRejectedValue(new Error('Test error'));
+      hooks.preEditHook = vi.fn().mockRejectedValue(new Error('Test error'));
       const result = await hooks.handleHook('pre-edit', {});
       expect(result).toEqual({
         continue: true,

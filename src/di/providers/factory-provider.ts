@@ -6,7 +6,7 @@
  * @file Factory-provider implementation.
  */
 
-import type { FactoryProvider as IFactoryProvider } from '../types/di-types';
+import type { FactoryProvider as IFactoryProvider } from '../types/di-types.ts';
 
 export class FactoryProvider<T> implements IFactoryProvider<T> {
   readonly type = 'transient' as const;

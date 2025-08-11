@@ -6,7 +6,7 @@
  * with learning and adaptation capabilities.
  */
 
-import { NeuralDeceptionDetector } from './neural-deception-detector';
+import { NeuralDeceptionDetector } from './neural-deception-detector.ts';
 
 async function testNeuralDeceptionDetection() {
   console.log('🧠 NEURAL NETWORK DECEPTION DETECTION TEST\n');

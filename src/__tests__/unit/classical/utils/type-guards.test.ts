@@ -19,7 +19,7 @@ import {
   isQuerySuccess,
   isTrainingResult,
   safePropertyAccess,
-} from '../../../../utils/type-guards';
+} from '../../../../utils/type-guards.ts';
 
 describe('Type Guards - Classical TDD', () => {
   // ============================================

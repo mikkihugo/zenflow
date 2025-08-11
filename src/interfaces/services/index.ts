@@ -11,32 +11,37 @@
  * Main USL exports following the same successful patterns as DAL and UACL.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('interfaces-services-index');
 
 // Note: url-builder module not found, removing import
 import { createDefaultIntegrationServiceAdapterConfig, globalDataServiceFactory } from './adapters';
-import type { CompatibilityConfig } from './compatibility';
-import { USLCompatibilityLayer } from './compatibility';
-import type { IService, ServiceCapability, ServiceMetrics, ServiceStatus } from './core/interfaces';
+import type { CompatibilityConfig } from './compatibility.ts';
+import { USLCompatibilityLayer } from './compatibility.ts';
+import type {
+  IService,
+  ServiceCapability,
+  ServiceMetrics,
+  ServiceStatus,
+} from './core/interfaces.ts';
 // Additional imports for missing types
-import { ServiceDependencyError } from './core/interfaces';
+import { ServiceDependencyError } from './core/interfaces.ts';
 // Import factory and service management globals
 import {
   globalServiceCapabilityRegistry,
   globalServiceRegistry,
   globalUSLFactory,
-} from './factories';
-import type { ServiceManager, ServiceManagerConfig } from './manager';
-import type { EnhancedServiceRegistry, ServiceRegistryConfig } from './registry';
-import { type AnyServiceConfig, ServiceConfigFactory, ServiceType } from './types';
+} from './factories.ts';
+import type { ServiceManager, ServiceManagerConfig } from './manager.ts';
+import type { EnhancedServiceRegistry, ServiceRegistryConfig } from './registry.ts';
+import { type AnyServiceConfig, ServiceConfigFactory, ServiceType } from './types.ts';
 import type {
   SystemHealthValidation,
   USLValidationFramework,
   ValidationConfig,
   ValidationResult,
-} from './validation';
+} from './validation.ts';
 
 // Data service adapters (enhanced implementations)
 // Integration service adapters (enhanced implementations)
@@ -73,7 +78,7 @@ export {
   initializeCompatibility,
   type LegacyServicePattern,
   MigrationUtils,
-} from './compatibility';
+} from './compatibility.ts';
 
 /**
  * Global compatibility layer instance with USL integration.
@@ -129,7 +134,7 @@ export {
   type ServiceRetryConfig,
   type ServiceStatus,
   ServiceTimeoutError,
-} from './core/interfaces';
+} from './core/interfaces.ts';
 // Factory and registry implementations
 export {
   globalServiceCapabilityRegistry,
@@ -144,14 +149,14 @@ export {
   // Main factory class
   USLFactory,
   type USLFactoryConfig,
-} from './factories';
-export type { CoordinationService } from './implementations/coordination-service';
+} from './factories.ts';
+export type { CoordinationService } from './implementations/coordination-service.ts';
 // Service implementations (re-exported for convenience)
-export type { DataService } from './implementations/data-service';
-export type { DatabaseService } from './implementations/database-service';
-export type { MemoryService } from './implementations/memory-service';
-export type { NeuralService } from './implementations/neural-service';
-export type { WebService } from './implementations/web-service';
+export type { DataService } from './implementations/data-service.ts';
+export type { DatabaseService } from './implementations/database-service.ts';
+export type { MemoryService } from './implementations/memory-service.ts';
+export type { NeuralService } from './implementations/neural-service.ts';
+export type { WebService } from './implementations/web-service.ts';
 export {
   type BatchServiceCreationRequest,
   type ServiceCreationRequest,
@@ -159,7 +164,7 @@ export {
   ServiceManager,
   type ServiceManagerConfig,
   type ServiceManagerStatus,
-} from './manager';
+} from './manager.ts';
 // Enhanced Service Management (USL Integration Layer)
 export {
   // Enhanced Service Registry
@@ -167,7 +172,7 @@ export {
   type ServiceDependencyGraph,
   type ServiceDiscoveryInfo,
   type ServiceRegistryConfig,
-} from './registry';
+} from './registry.ts';
 // Service types and configurations
 export {
   type AnyServiceConfig,
@@ -198,7 +203,7 @@ export {
   ServiceType,
   type WebServiceConfig,
   type WorkflowServiceConfig,
-} from './types';
+} from './types.ts';
 export {
   type SystemHealthValidation,
   // Validation Framework
@@ -206,7 +211,7 @@ export {
   type ValidationConfig,
   type ValidationResult,
   type ValidationSectionResult,
-} from './validation';
+} from './validation.ts';
 
 /**
  * USL Main Interface.
@@ -706,7 +711,7 @@ export class USL {
     // Dynamic import for createIntegrationServiceAdapter
     const { createIntegrationServiceAdapter } = await import('./adapters');
     const adapter = createIntegrationServiceAdapter(config);
-    await (adapter as any).initialize();
+    await (adapter).initialize();
 
     return adapter;
   }
@@ -1641,7 +1646,7 @@ export const USLHelpers = {
     try {
       // Initialize Service Manager if enabled
       if (config?.enableServiceManager ?? true) {
-        const { ServiceManager } = await import('./manager');
+        const { ServiceManager } = await import('./manager.ts');
         const serviceManager = new ServiceManager(config?.serviceManagerConfig);
         await serviceManager.initialize();
         result.serviceManager = serviceManager;
@@ -1649,14 +1654,14 @@ export const USLHelpers = {
 
       // Initialize Enhanced Registry if enabled
       if (config?.enableEnhancedRegistry ?? true) {
-        const { EnhancedServiceRegistry } = await import('./registry');
+        const { EnhancedServiceRegistry } = await import('./registry.ts');
         const registry = new EnhancedServiceRegistry(config?.registryConfig);
         result.registry = registry;
       }
 
       // Initialize Compatibility Layer if enabled
       if (config?.enableCompatibilityLayer ?? true) {
-        const { USLCompatibilityLayer } = await import('./compatibility');
+        const { USLCompatibilityLayer } = await import('./compatibility.ts');
         const compatibility = new USLCompatibilityLayer(config?.compatibilityConfig);
         await compatibility.initialize();
         result.compatibility = compatibility;
@@ -1664,7 +1669,7 @@ export const USLHelpers = {
 
       // Initialize Validation Framework if enabled
       if (config?.enableValidationFramework ?? false) {
-        const { USLValidationFramework } = await import('./validation');
+        const { USLValidationFramework } = await import('./validation.ts');
         if (result?.serviceManager && result?.registry) {
           const validation = new USLValidationFramework(
             result?.serviceManager,
@@ -1696,7 +1701,7 @@ export const USLHelpers = {
   }> {
     try {
       // Initialize compatibility layer
-      const { USLCompatibilityLayer } = await import('./compatibility');
+      const { USLCompatibilityLayer } = await import('./compatibility.ts');
       const compatibility = new USLCompatibilityLayer();
       await compatibility.initialize();
 
@@ -1704,7 +1709,7 @@ export const USLHelpers = {
       const migrationResult = await compatibility.migrateExistingServices(existingServices);
 
       // Generate compatibility report
-      const { MigrationUtils } = await import('./compatibility');
+      const { MigrationUtils } = await import('./compatibility.ts');
       const compatibilityReport = MigrationUtils.generateCompatibilityReport();
 
       return {

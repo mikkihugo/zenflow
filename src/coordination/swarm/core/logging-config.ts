@@ -6,7 +6,7 @@
  * @file Coordination system: logging-config.
  */
 
-import { Logger } from './logger';
+import { Logger } from './logger.ts';
 
 // Default log levels for different components
 const DEFAULT_LOG_LEVELS = {

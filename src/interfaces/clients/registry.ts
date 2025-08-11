@@ -8,10 +8,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { APIClient } from '../api/http/client';
-import type { WebSocketClient } from '../api/websocket/client';
+import type { APIClient } from '../api/http/client.ts';
+import type { WebSocketClient } from '../api/websocket/client.ts';
 import type { FACTIntegration } from '../knowledge/knowledge-client';
-import type { ExternalMCPClient } from '../mcp/external-mcp-client';
+import type { ExternalMCPClient } from '../mcp/external-mcp-client.ts';
 
 /**
  * Client type enumeration for type safety.

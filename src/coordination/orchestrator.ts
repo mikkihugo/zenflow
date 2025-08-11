@@ -3,11 +3,11 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../core/interfaces/base-interfaces';
-import type { IDatabase } from '../di/tokens/core-tokens';
-import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens';
-import { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy';
-import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';
+import type { ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { IDatabase } from '../di/tokens/core-tokens.ts';
+import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens.ts';
+import { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy.ts';
+import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types.ts';
 
 export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   private strategy: SwarmStrategy | ZenSwarmStrategy;
@@ -115,7 +115,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     _execution: any
   ): Promise<any> {
     const phaseIndex = plan.phases.indexOf(phase);
-    const assignments = plan.phaseAssignments.filter(assignment => assignment.phase === phase);
+    const assignments = plan.phaseAssignments.filter((assignment) => assignment.phase === phase);
     const agentAssignments = await this.assignAgentsToPhase(task, assignments);
     const results = await Promise.all(
       agentAssignments.map((agentAssignment) =>
@@ -163,7 +163,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
         capabilities: agent.capabilities,
         status: agent.status as 'idle' | 'busy',
       }));
-    
+
     const suitableAgents = compatibleAgents.filter(
       (agent) =>
         agent.status === 'idle' &&
@@ -212,13 +212,22 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus'
   ): any {
     const strategies = {
-      parallel: { determinePhases: () => ['exec'], isParallelizable: () => true },
-      sequential: { determinePhases: () => ['phase1', 'phase2'], isParallelizable: () => false },
+      parallel: {
+        determinePhases: () => ['exec'],
+        isParallelizable: () => true,
+      },
+      sequential: {
+        determinePhases: () => ['phase1', 'phase2'],
+        isParallelizable: () => false,
+      },
       adaptive: {
         determinePhases: (t: Task) => (t.description.length > 100 ? ['analyze', 'exec'] : ['exec']),
         isParallelizable: () => true,
       },
-      consensus: { determinePhases: () => ['propose', 'vote'], isParallelizable: () => false },
+      consensus: {
+        determinePhases: () => ['propose', 'vote'],
+        isParallelizable: () => false,
+      },
     };
     return strategies[strategy];
   }
@@ -230,7 +239,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
       for (const task of queuedTasks) {
         const plan = this.executionPlans.get(task.id);
         if (plan) {
-          await this.executeTask(task as any, plan);
+          await this.executeTask(task, plan);
         }
       }
     }, 5000);

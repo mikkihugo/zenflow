@@ -3,10 +3,10 @@
  * Demonstrates how to use the advanced Memory and Database domain features together.
  */
 
-import { DALFactory, type DatabaseQuery } from '../database/index';
-import { DIContainer } from '../di/container/di-container';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
-import { MemorySystemFactory } from '../memory/index';
+import { DALFactory, type DatabaseQuery } from '../database/index.ts';
+import { DIContainer } from '../di/container/di-container.ts';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens.ts';
+import { MemorySystemFactory } from '../memory/index.ts';
 
 /**
  * Example: Complete system integration with Memory and Database coordination.
@@ -19,8 +19,16 @@ export async function createIntegratedSystem() {
     coordination: {
       enabled: true,
       consensus: { quorum: 0.67, timeout: 5000, strategy: 'majority' },
-      distributed: { replication: 2, consistency: 'eventual', partitioning: 'hash' },
-      optimization: { autoCompaction: true, cacheEviction: 'adaptive', memoryThreshold: 0.8 },
+      distributed: {
+        replication: 2,
+        consistency: 'eventual',
+        partitioning: 'hash',
+      },
+      optimization: {
+        autoCompaction: true,
+        cacheEviction: 'adaptive',
+        memoryThreshold: 0.8,
+      },
     },
     optimization: {
       enabled: true,
@@ -37,7 +45,11 @@ export async function createIntegratedSystem() {
         memoryUsageWarning: 200,
         cacheHitRateMin: 0.7,
       },
-      adaptation: { enabled: true, learningRate: 0.1, adaptationInterval: 60000 },
+      adaptation: {
+        enabled: true,
+        learningRate: 0.1,
+        adaptationInterval: 60000,
+      },
     },
     monitoring: {
       enabled: true,
@@ -45,7 +57,12 @@ export async function createIntegratedSystem() {
       retentionPeriod: 300000,
       alerts: {
         enabled: true,
-        thresholds: { latency: 100, errorRate: 0.05, memoryUsage: 200, cacheHitRate: 0.7 },
+        thresholds: {
+          latency: 100,
+          errorRate: 0.05,
+          memoryUsage: 200,
+          cacheHitRate: 0.7,
+        },
       },
       metrics: { detailed: true, histograms: true, percentiles: true },
     },
@@ -107,19 +124,19 @@ export async function createIntegratedSystem() {
   // For the multi-engine system, we'll create individual DAOs
   // Note: The createAdvancedDatabaseSystem method doesn't exist in the new API
   // Instead, we create individual DAOs/repositories as needed
-  const vectorDao = await (dalFactory as any).createDao({
+  const vectorDao = await (dalFactory).createDao({
     databaseType: 'lancedb',
     entityType: 'VectorDocument',
     databaseConfig: { dbPath: '/tmp/vector.db', dimensions: 768 },
   });
 
-  const graphDao = await (dalFactory as any).createDao({
+  const graphDao = await (dalFactory).createDao({
     databaseType: 'kuzu',
     entityType: 'GraphNode',
     databaseConfig: { dbPath: '/tmp/graph.db' },
   });
 
-  const documentDao = await (dalFactory as any).createDao({
+  const documentDao = await (dalFactory).createDao({
     databaseType: 'sqlite',
     entityType: 'Document',
     databaseConfig: { dbPath: '/tmp/documents.db' },
@@ -188,7 +205,11 @@ export async function createIntegratedSystem() {
           collection: 'memory_store',
           document: { sessionId, key, data, timestamp: Date.now() },
         },
-        requirements: { consistency: 'strong', timeout: 10000, priority: 'medium' },
+        requirements: {
+          consistency: 'strong',
+          timeout: 10000,
+          priority: 'medium',
+        },
         routing: { loadBalancing: 'performance_based' },
         timestamp: Date.now(),
         sessionId,
@@ -218,7 +239,11 @@ export async function createIntegratedSystem() {
           collection: 'memory_store',
           filter: { sessionId, key },
         },
-        requirements: { consistency: 'eventual', timeout: 5000, priority: 'high' },
+        requirements: {
+          consistency: 'eventual',
+          timeout: 5000,
+          priority: 'high',
+        },
         routing: { loadBalancing: 'performance_based' },
         timestamp: Date.now(),
         sessionId,
@@ -236,8 +261,15 @@ export async function createIntegratedSystem() {
           vector: embedding,
           options: { limit: 10, threshold: 0.8 },
         },
-        requirements: { consistency: 'eventual', timeout: 15000, priority: 'medium' },
-        routing: { preferredEngines: ['vector-db'], loadBalancing: 'capability_based' },
+        requirements: {
+          consistency: 'eventual',
+          timeout: 15000,
+          priority: 'medium',
+        },
+        routing: {
+          preferredEngines: ['vector-db'],
+          loadBalancing: 'capability_based',
+        },
         timestamp: Date.now(),
         sessionId,
       };
@@ -306,15 +338,19 @@ export async function createIntegratedSystem() {
  */
 export async function demonstrateMCPIntegration() {
   // Import MCP tools
-  const { memoryTools } = await import('../memory/mcp/memory-tools');
-  const { databaseTools } = await import('../database/mcp/database-tools');
+  const { memoryTools } = await import('../memory/mcp/memory-tools.ts');
+  const { databaseTools } = await import('../database/mcp/database-tools.ts');
 
   // Example: Initialize memory system via MCP
   const memoryInitResult = await memoryTools[0]?.handler({
     coordination: {
       enabled: true,
       consensus: { quorum: 0.67, timeout: 5000, strategy: 'majority' },
-      distributed: { replication: 2, consistency: 'eventual', partitioning: 'hash' },
+      distributed: {
+        replication: 2,
+        consistency: 'eventual',
+        partitioning: 'hash',
+      },
     },
     optimization: {
       enabled: true,
@@ -333,17 +369,29 @@ export async function demonstrateMCPIntegration() {
         capabilities: ['vector_search', 'similarity'],
         config: {},
       },
-      { id: 'main-graph', type: 'graph', capabilities: ['graph_queries', 'traversal'], config: {} },
+      {
+        id: 'main-graph',
+        type: 'graph',
+        capabilities: ['graph_queries', 'traversal'],
+        config: {},
+      },
     ],
     optimization: { enabled: true, aggressiveness: 'medium' },
-    coordination: { healthCheckInterval: 30000, loadBalancing: 'performance_based' },
+    coordination: {
+      healthCheckInterval: 30000,
+      loadBalancing: 'performance_based',
+    },
   });
 
   // Example: Execute optimized query via MCP
   const queryResult = await databaseTools[1]?.handler({
     operation: 'vector_search',
     parameters: { vector: [0.1, 0.2, 0.3], options: { limit: 5 } },
-    requirements: { consistency: 'eventual', timeout: 10000, priority: 'medium' },
+    requirements: {
+      consistency: 'eventual',
+      timeout: 10000,
+      priority: 'medium',
+    },
     routing: { loadBalancing: 'performance_based' },
     optimization: { enabled: true, caching: true },
     sessionId: 'demo_session',
@@ -351,7 +399,10 @@ export async function demonstrateMCPIntegration() {
 
   // Example: Monitor system performance via MCP
   const monitoringResult = await Promise.all([
-    memoryTools[2]?.handler({ duration: 30000, metrics: ['latency', 'memory', 'cache'] }),
+    memoryTools[2]?.handler({
+      duration: 30000,
+      metrics: ['latency', 'memory', 'cache'],
+    }),
     databaseTools[3]?.handler({
       duration: 30000,
       metrics: ['performance', 'utilization', 'queries'],
@@ -376,17 +427,19 @@ export async function demonstrateErrorHandling() {
 
   try {
     // Simulate some operations that might fail
-    await system.storeWithCoordination('test_session', 'test_key', { data: 'test' });
+    await system.storeWithCoordination('test_session', 'test_key', {
+      data: 'test',
+    });
 
     // This might trigger error handling
     await system.performVectorSearch(new Array(768).fill(0.1));
   } catch (error) {
     // Import error handling classes
     const { MemoryError, MemoryErrorClassifier } = await import(
-      '../memory/error-handling/memory-errors'
+      '../memory/error-handling/memory-errors.ts'
     );
     const { DatabaseError, DatabaseErrorClassifier } = await import(
-      '../database/error-handling/database-errors'
+      '../database/error-handling/database-errors.ts'
     );
 
     if (error instanceof MemoryError) {
@@ -419,7 +472,9 @@ export async function demonstrateOptimization() {
 
   // Run some operations to generate data
   for (let i = 0; i < 100; i++) {
-    await system.storeWithCoordination(`session_${i % 10}`, `key_${i}`, { value: i });
+    await system.storeWithCoordination(`session_${i % 10}`, `key_${i}`, {
+      value: i,
+    });
   }
 
   // Get performance metrics

@@ -1,0 +1,61 @@
+/**
+ * @file Advanced CLI Commands Integration.
+ *
+ * Provides advanced CLI command implementations that integrate with the existing.
+ * command execution system. Uses shared abstractions to avoid cross-interface dependencies.
+ */
+import { CliCommandAdapter } from './adapters/cli-command-adapter.ts';
+/**
+ * Advanced CLI Commands Handler.
+ *
+ * Implements the advanced CLI commands while maintaining compatibility.
+ * With the existing terminal interface system. Uses adapter pattern
+ * to avoid cross-interface dependencies..
+ *
+ * @example
+ */
+export class AdvancedCLICommands {
+    commandAdapter;
+    constructor() {
+        this.commandAdapter = new CliCommandAdapter();
+    }
+    /**
+     * Execute advanced CLI command.
+     *
+     * @param commandName
+     * @param args
+     * @param options
+     */
+    async executeCommand(commandName, args, options) {
+        const context = {
+            command: commandName,
+            args,
+            options,
+            workingDirectory: process.cwd(),
+        };
+        return await this.commandAdapter.executeCommand(context);
+    }
+    /**
+     * Check if command is an advanced CLI command.
+     *
+     * @param commandName
+     */
+    isAdvancedCommand(commandName) {
+        return this.commandAdapter.isValidCommand(commandName);
+    }
+    /**
+     * Get available commands.
+     */
+    getAvailableCommands() {
+        return this.commandAdapter.getAvailableCommands();
+    }
+    /**
+     * Get help for advanced commands.
+     *
+     * @param command
+     */
+    getAdvancedCommandHelp(command) {
+        return this.commandAdapter.getCommandHelp(command);
+    }
+}
+export default AdvancedCLICommands;

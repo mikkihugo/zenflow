@@ -8,9 +8,9 @@
  * @file Web service implementation.
  */
 
-import type { IService } from '../core/interfaces';
-import type { ServiceOperationOptions, WebServiceConfig } from '../types';
-import { BaseService } from './base-service';
+import type { IService } from '../core/interfaces.ts';
+import type { ServiceOperationOptions, WebServiceConfig } from '../types.ts';
+import { BaseService } from './base-service.ts';
 
 /**
  * Web service implementation.

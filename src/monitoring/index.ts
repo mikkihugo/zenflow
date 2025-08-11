@@ -2,7 +2,7 @@
  * @file Monitoring module exports.
  */
 
-import { getLogger } from '../core/logger';
+import { getLogger } from '../core/logger.ts';
 
 const logger = getLogger('src-monitoring-index');
 
@@ -17,7 +17,7 @@ export {
   PerformanceAnalyzer,
   PerformanceInsights,
   TrendAnalysis,
-} from './analytics/performance-analyzer';
+} from './analytics/performance-analyzer.ts';
 export {
   CompositeMetrics,
   FactMetrics,
@@ -26,23 +26,27 @@ export {
   RagMetrics,
   SwarmMetrics,
   SystemMetrics,
-} from './core/metrics-collector';
-export { DashboardConfig, DashboardData, DashboardServer } from './dashboard/dashboard-server';
+} from './core/metrics-collector.ts';
+export {
+  DashboardConfig,
+  DashboardData,
+  DashboardServer,
+} from './dashboard/dashboard-server.ts';
 export {
   IntegrationConfig,
   SystemHooks,
   SystemIntegration,
-} from './integrations/system-integration';
+} from './integrations/system-integration.ts';
 export {
   OptimizationAction,
   OptimizationEngine,
   OptimizationResult,
   OptimizationStrategy,
-} from './optimization/optimization-engine';
-export * from './performance/real-time-monitor';
+} from './optimization/optimization-engine.ts';
+export * from './performance/real-time-monitor.ts';
 
 import { getConfig } from '../../config';
-import { type IntegrationConfig, SystemIntegration } from './integrations/system-integration';
+import { type IntegrationConfig, SystemIntegration } from './integrations/system-integration.ts';
 
 /**
  * Main monitoring system factory.
@@ -83,7 +87,7 @@ export class PerformanceMonitoringSystem {
   /**
    * Get system integration hooks for external systems.
    */
-  public getHooks(): import('./integrations/system-integration').SystemHooks {
+  public getHooks(): import('./integrations/system-integration.ts').SystemHooks {
     return this.integration.getSystemHooks();
   }
 
@@ -129,7 +133,7 @@ export async function setupClaudeZenMonitoring(
   options: { dashboardPort?: number; enableOptimization?: boolean; metricsInterval?: number } = {}
 ): Promise<{
   system: PerformanceMonitoringSystem;
-  hooks: import('./integrations/system-integration').SystemHooks;
+  hooks: import('./integrations/system-integration.ts').SystemHooks;
   dashboardUrl: string;
 }> {
   const centralConfig = getConfig();

@@ -4,7 +4,9 @@
  */
 
 import { parseArgs } from 'node:util';
-import { getLogger } from './config/logging-config';
+import { getLogger } from './config/logging-config.ts';
+import { ClaudeZenCore } from './claude-zen-core.js';
+import { ClaudeZenIntegrated } from './claude-zen-integrated.js';
 
 const logger = getLogger('Main');
 
@@ -64,7 +66,7 @@ async function main() {
   try {
     switch (mode) {
       case 'core': {
-        const { ClaudeZenCore } = await import('./claude-zen-core.js');
+        // Use named export (cleaned up!)
         const app = new ClaudeZenCore();
         await app.initialize();
         break;
@@ -72,7 +74,7 @@ async function main() {
 
       case 'integrated':
       case 'server': {
-        const { ClaudeZenIntegrated } = await import('./claude-zen-integrated.js');
+        // Use named export (cleaned up!)
         const app = new ClaudeZenIntegrated({ port: parseInt(args.port || '3000') });
         await app.initialize();
         break;
@@ -80,9 +82,7 @@ async function main() {
 
       case 'tui':
       case 'terminal': {
-        const TUIModule = await import(
-          './interfaces/terminal/interactive-terminal-application.js'
-        );
+        const TUIModule = await import('./interfaces/terminal/interactive-terminal-application');
         // Handle both default and named exports
         const TUIApp = TUIModule.default || TUIModule.InteractiveTerminalApplication;
         if (typeof TUIApp === 'function') {
@@ -94,7 +94,7 @@ async function main() {
       }
 
       case 'web': {
-        const WebModule = await import('./interfaces/web/web-interface.js');
+        const WebModule = await import('./interfaces/web/web-interface.ts');
         const WebInterface = WebModule.WebInterface;
         const webApp = new WebInterface({ port: parseInt(args.port || '3000') });
         await webApp.run();
@@ -102,14 +102,14 @@ async function main() {
       }
 
       case 'mcp': {
-        const MCPModule = await import('./interfaces/mcp/start-server.js');
+        const MCPModule = await import('./interfaces/mcp/start-server.ts');
         const startServer = MCPModule.startHTTPMCPServer;
         await startServer();
         break;
       }
 
       case 'swarm': {
-        const SwarmModule = await import('./coordination/swarm/mcp/mcp-server.js');
+        const SwarmModule = await import('./coordination/swarm/mcp/mcp-server.ts');
         // Handle both default and named exports
         const SwarmServer = SwarmModule.default || SwarmModule.MCPServer;
         if (typeof SwarmServer === 'function') {
@@ -122,7 +122,7 @@ async function main() {
       }
 
       case 'safety': {
-        const { runSafetyMode } = await import('./coordination/ai-safety/safety-integration.js');
+        const { runSafetyMode } = await import('./coordination/ai-safety/safety-integration.ts');
         await runSafetyMode();
         break;
       }

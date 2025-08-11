@@ -9,8 +9,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
-import type { HiveFACTSystemInterface } from './shared-types';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { HiveFACTSystemInterface } from './shared-types.ts';
 
 // Type alias for backward compatibility
 type HiveFACTSystem = HiveFACTSystemInterface;
@@ -22,7 +22,7 @@ import type {
   Task as HiveTask,
   SwarmInfo,
   SwarmPerformanceMetrics,
-} from './hive-types';
+} from './hive-types.ts';
 
 export interface HiveRegistry {
   // Global agent registry
@@ -43,7 +43,7 @@ export interface HiveRegistry {
 }
 
 // Import HiveFACT from integration module
-import { initializeHiveFACT } from './hive-fact-integration';
+import { initializeHiveFACT } from './hive-fact-integration.ts';
 
 /**
  * Central hive mind synchronization coordinator.
@@ -413,7 +413,9 @@ export class HiveSwarmCoordinator extends EventEmitter {
 
       if (timeSinceHeartbeat > healthThreshold) {
         this.connectionHealth.set(swarmId, 0);
-        this.logger?.warn('Swarm health degraded - no recent heartbeat', { swarmId });
+        this.logger?.warn('Swarm health degraded - no recent heartbeat', {
+          swarmId,
+        });
 
         (this.eventBus as any).emit('hive:swarm:unhealthy', {
           swarmId,
@@ -664,7 +666,9 @@ export class HiveSwarmCoordinator extends EventEmitter {
       }
     }
 
-    this.logger?.warn('Swarm disconnected from hive', { swarmId: data?.swarmId });
+    this.logger?.warn('Swarm disconnected from hive', {
+      swarmId: data?.swarmId,
+    });
     this.emit('swarm:disconnected', { swarmId: data?.swarmId });
   }
 
@@ -768,7 +772,7 @@ export class HiveSwarmCoordinator extends EventEmitter {
   }
 
   // Interface compatibility methods required by HiveSwarmCoordinatorInterface
-  
+
   /**
    * Register a swarm with the hive coordinator.
    */

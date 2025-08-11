@@ -18,19 +18,19 @@ import {
 } from '../src/utils/logging-config.js';
 
 async function testLogtapeIntegration() {
-  console.log('🧪 Testing @logtape/logtape integration...\n');
+  // console.log('🧪 Testing @logtape/logtape integration...\n');
 
   try {
     // Initialize logging
     await initializeLogging();
-    console.log('✅ Logging initialization successful');
+    // console.log('✅ Logging initialization successful');
 
     // Create loggers
     const logger = createClaudeAILogger();
     const claudeLogger = createClaudeCLILogger();
     const expressLogger = createExpressLogger();
     const appLogger = createAppLogger();
-    console.log('✅ Logger creation successful');
+    // console.log('✅ Logger creation successful');
 
     // Test basic logging
     logger.info('Test info message', { test: 'data', timestamp: new Date().toISOString() });
@@ -51,7 +51,7 @@ async function testLogtapeIntegration() {
       component: 'logtape-integration-test',
     });
 
-    console.log('✅ Basic logging tests successful');
+    // console.log('✅ Basic logging tests successful');
 
     // Test structured logging functions
     logClaudeOperation(claudeLogger, 'test_operation', {
@@ -86,15 +86,15 @@ async function testLogtapeIntegration() {
       features: { mcp: true, api: true, dashboard: true },
     });
 
-    console.log('✅ Structured logging functions successful');
+    // console.log('✅ Structured logging functions successful');
 
-    console.log('\n🎉 All logtape integration tests passed!');
-    console.log('\n📁 Log files should be created at:');
-    console.log('   - logs/claude-zen-activity.log (JSON format)');
-    console.log('   - logs/ai-fixing-detailed.log (Text format)');
+    // console.log('\n🎉 All logtape integration tests passed!');
+    // console.log('\n📁 Log files should be created at:');
+    // console.log('   - logs/claude-zen-activity.log (JSON format)');
+    // console.log('   - logs/ai-fixing-detailed.log (Text format)');
   } catch (error) {
-    console.error('❌ Logtape integration test failed:', error.message);
-    console.error('Stack:', error.stack);
+    // console.error('❌ Logtape integration test failed:', error.message);
+    // console.error('Stack:', error.stack);
     process.exit(1);
   }
 }

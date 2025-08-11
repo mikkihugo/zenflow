@@ -3,10 +3,13 @@
  * Classical TDD approach - testing actual computation results and performance
  */
 
-import { NeuralNetworkManager } from '../../../../neural/core/neural-network-manager';
-import { WasmNeuralAccelerator } from '../../../../neural/wasm/wasm-neural-accelerator';
-import { NeuralMathHelpers, NeuralTestDataGenerator } from '../../../helpers/neural-test-helpers';
-import { PerformanceMeasurement } from '../../../helpers/performance-measurement';
+import { NeuralNetworkManager } from '../../../../neural/core/neural-network-manager.ts';
+import { WasmNeuralAccelerator } from '../../../../neural/wasm/wasm-neural-accelerator.ts';
+import {
+  NeuralMathHelpers,
+  NeuralTestDataGenerator,
+} from '../../../helpers/neural-test-helpers.ts';
+import { PerformanceMeasurement } from '../../../helpers/performance-measurement.ts';
 
 describe('WASM Neural Acceleration (Classical TDD)', () => {
   let wasmAccelerator: WasmNeuralAccelerator;

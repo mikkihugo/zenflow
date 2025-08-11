@@ -9,8 +9,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { MemoryConfig } from '../providers/memory-providers';
-import type { BackendCapabilities } from './factory';
+import type { MemoryConfig } from '../providers/memory-providers.ts';
+import type { BackendCapabilities } from './factory.ts';
 
 // Additional types needed for base backend
 export interface MemoryEntry {

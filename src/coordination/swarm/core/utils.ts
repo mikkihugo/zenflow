@@ -5,7 +5,7 @@
  * @file Coordination system: utils.
  */
 
-import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from './types';
+import type { AgentType, CognitiveProfile, SwarmTopology, TaskPriority } from './types.ts';
 
 /**
  * Generate a unique ID for agents, tasks, and messages.

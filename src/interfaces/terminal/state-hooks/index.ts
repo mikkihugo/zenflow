@@ -10,17 +10,17 @@
  * @file State-hooks module exports.
  */
 
-export * from './use-config';
+export * from './use-config.ts';
 // Re-export key hooks for convenience
-export { type TerminalConfig, type UseConfigReturn, useConfig } from './use-config';
-export * from './use-swarm-status';
+export { type TerminalConfig, type UseConfigReturn, useConfig } from './use-config.ts';
+export * from './use-swarm-status.ts';
 
 export {
   type SwarmState,
   type UseSwarmStatusOptions,
   type UseSwarmStatusReturn,
   useSwarmStatus,
-} from './use-swarm-status';
+} from './use-swarm-status.ts';
 
 // Additional React hook utilities
 export const StateHookUtils = {

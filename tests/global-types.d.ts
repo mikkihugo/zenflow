@@ -22,8 +22,7 @@ declare global {
   function createMemoryTestScenario(type: 'sqlite' | 'lancedb' | 'json'): MemoryTestScenario;
 
   // Node.js garbage collection (optional)
-  function gc
-  ?(): void
+  function gc(): void;
 
   // Custom Vitest matchers
   namespace jest {

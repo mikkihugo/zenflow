@@ -10,7 +10,7 @@
 
 import { EventEmitter } from 'node:events';
 import * as readline from 'node:readline';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('AGUIAdapter');
 

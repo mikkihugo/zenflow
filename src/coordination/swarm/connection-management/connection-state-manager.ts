@@ -2,7 +2,7 @@
  * @file Connection-state management system.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-connection-management-connection-state-manager');
 

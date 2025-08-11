@@ -214,9 +214,7 @@ jobs:
             git add .
             git commit -m "🤖 Auto-fix: Resolve issue #${{ steps.analysis.outputs.issue_number }}
 
-- Applied ${{ steps.analysis.outputs.strategy }} strategy
-- Automated fixes for common code issues
-- Tests status: ${{ env.TEST_STATUS }}
+Applied ${{ steps.analysis.outputs.strategy }} strategy, automated fixes for common code issues, tests status: ${{ env.TEST_STATUS }}
 
 Resolves #${{ steps.analysis.outputs.issue_number }}"
             

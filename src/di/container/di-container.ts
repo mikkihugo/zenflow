@@ -2,7 +2,7 @@
  * @file Di-container implementation.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('di-container-di-container');
 
@@ -17,8 +17,8 @@ import type {
   DIToken,
   DIContainer as IDIContainer,
   Provider,
-} from '../types/di-types';
-import { CircularDependencyError, DIError, ServiceNotFoundError } from '../types/di-types';
+} from '../types/di-types.ts';
+import { CircularDependencyError, DIError, ServiceNotFoundError } from '../types/di-types.ts';
 
 export class DIContainer implements IDIContainer {
   private readonly providers = new Map<symbol, Provider<any>>();

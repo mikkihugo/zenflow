@@ -5,7 +5,7 @@
  * Focus on numerical accuracy and performance
  */
 
-import { beforeAll, describe, expect, it } from '@jest/globals';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 // Simulated WASM matrix operations (would be actual WASM in production)
 class WASMMatrixOps {

@@ -4,7 +4,7 @@
  * Tests the full integration pipeline for Sub-task 2.3 requirements
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 describe('Complete Auto-Swarm Pipeline Integration', () => {
   let mockMemoryStore: any;
@@ -31,9 +31,9 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     // Test all the integration points mentioned in the problem statement
 
     // 1. Test Swarm Coordinator Initialization (FIXED)
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync');
-    const { EventBus } = await import('../../core/event-bus');
+    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
+    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
+    const { EventBus } = await import('../../core/event-bus.ts');
 
     const eventBus = EventBus.getInstance();
     const swarmCoordinator = await createPublicSwarmCoordinator();
@@ -44,7 +44,7 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     expect(typeof swarmCoordinator.initialize).toBe('function');
 
     // 2. Test Auto-Swarm Factory Configuration (ENHANCED)
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory');
+    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
 
     const testDomains = new Map([
       [
@@ -148,10 +148,10 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
 
   it('should handle error scenarios gracefully', async () => {
     // Test failed swarm creation handling
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory');
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync');
-    const { EventBus } = await import('../../core/event-bus');
+    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
+    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
+    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
+    const { EventBus } = await import('../../core/event-bus.ts');
 
     const eventBus = EventBus.getInstance();
     const swarmCoordinator = await createPublicSwarmCoordinator();
@@ -222,10 +222,10 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
 
   it('should validate resource constraints properly', async () => {
     // Test resource constraint validation as mentioned in requirements
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory');
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync');
-    const { EventBus } = await import('../../core/event-bus');
+    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
+    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
+    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
+    const { EventBus } = await import('../../core/event-bus.ts');
 
     const eventBus = EventBus.getInstance();
     const swarmCoordinator = await createPublicSwarmCoordinator();

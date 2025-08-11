@@ -12,7 +12,7 @@ import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 
 const logger = getLogger('UnifiedDocLinker');
 
@@ -318,7 +318,11 @@ export class DocumentationLinker extends EventEmitter {
         confidence,
       });
 
-      this.emit('code:reference:found', { ...reference, suggestedLinks, confidence });
+      this.emit('code:reference:found', {
+        ...reference,
+        suggestedLinks,
+        confidence,
+      });
     }
   }
 
@@ -679,7 +683,11 @@ export class DocumentationLinker extends EventEmitter {
     const sections: Array<{ title: string; level: number; content: string }> = [];
     const lines = content.split('\n');
 
-    let currentSection: { title: string; level: number; content: string } | null = null;
+    let currentSection: {
+      title: string;
+      level: number;
+      content: string;
+    } | null = null;
 
     for (const line of lines) {
       const headingMatch = line.match(/^(#+)\s+(.+)$/);
@@ -713,11 +721,16 @@ export class DocumentationLinker extends EventEmitter {
     return sections;
   }
 
-  private extractLinks(
-    content: string
-  ): Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> {
-    const links: Array<{ type: 'internal' | 'external' | 'code'; target: string; text: string }> =
-      [];
+  private extractLinks(content: string): Array<{
+    type: 'internal' | 'external' | 'code';
+    target: string;
+    text: string;
+  }> {
+    const links: Array<{
+      type: 'internal' | 'external' | 'code';
+      target: string;
+      text: string;
+    }> = [];
 
     // Markdown links
     const markdownLinks = content.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];

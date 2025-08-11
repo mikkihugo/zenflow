@@ -10,7 +10,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import { getLogger } from './config/logging-config';
+import { getLogger } from './config/logging-config.ts';
 
 const logger = getLogger('sparc-architecture-cli');
 
@@ -32,7 +32,7 @@ program
   .action(async (options) => {
     try {
       const { ArchitecturePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/architecture/architecture-engine'
+        './coordination/swarm/sparc/phases/architecture/architecture-engine.ts'
       );
 
       const engine = new ArchitecturePhaseEngine();
@@ -108,7 +108,7 @@ program
   .action(async (options) => {
     try {
       const { ArchitecturePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/architecture/architecture-engine'
+        './coordination/swarm/sparc/phases/architecture/architecture-engine.ts'
       );
 
       const engine = new ArchitecturePhaseEngine();
@@ -153,7 +153,7 @@ program
   .action(async (options) => {
     try {
       const { ArchitecturePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/architecture/architecture-engine'
+        './coordination/swarm/sparc/phases/architecture/architecture-engine.ts'
       );
 
       const engine = new ArchitecturePhaseEngine();

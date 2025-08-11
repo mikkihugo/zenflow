@@ -5,7 +5,7 @@
  * London School (mock-heavy) and Classical School (real object) TDD approaches
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Import all test helpers
 import {
@@ -16,7 +16,7 @@ import {
   performanceMeasurement,
   type TestLogger,
   testDataFactory,
-} from './index';
+} from './index.ts';
 
 describe('Test Helper Utilities - Example Usage', () => {
   let testLogger: TestLogger;

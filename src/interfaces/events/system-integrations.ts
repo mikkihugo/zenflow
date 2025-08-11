@@ -11,18 +11,18 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { EventEmitterMigrationHelper, type UELCompatibleEventEmitter } from './compatibility';
+import { EventEmitterMigrationHelper, type UELCompatibleEventEmitter } from './compatibility.ts';
 import type {
   EventManagerConfig,
   EventManagerType,
   IEventManager,
   SystemEvent,
-} from './core/interfaces';
+} from './core/interfaces.ts';
 
-import { EventManagerTypes } from './core/interfaces';
+import { EventManagerTypes } from './core/interfaces.ts';
 // Remove circular dependency - import UEL from specific source instead
-import type { EventManager } from './manager';
-import type { MonitoringEvent, SystemLifecycleEvent } from './types';
+import type { EventManager } from './manager.ts';
+import type { MonitoringEvent, SystemLifecycleEvent } from './types.ts';
 
 /**
  * Enhanced Event Bus with UEL integration.
@@ -340,7 +340,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
   }): Promise<void> {
     try {
       // Import UEL directly to avoid circular dependency
-      const { UEL } = await import('./core/uel-singleton');
+      const { UEL } = await import('./core/uel-singleton.ts');
       this.uelSystem = UEL.getInstance();
 
       await this.uelSystem.initialize({
@@ -556,7 +556,7 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
           score -= 20;
         }
 
-        const healthPercentage = (uelStatus as any).healthPercentage || 100;
+        const healthPercentage = (uelStatus).healthPercentage || 100;
         if (healthPercentage < 80) {
           issues.push(`UEL system health degraded: ${healthPercentage}%`);
           score -= 15;

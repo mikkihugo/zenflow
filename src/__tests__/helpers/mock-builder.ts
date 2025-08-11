@@ -4,8 +4,8 @@
  * Creates sophisticated mocks for interaction-focused testing
  */
 
-import { jest } from '@jest/globals';
-import type { MockConfiguration, MockObject } from './types';
+import { vi } from 'vitest';
+import type { MockConfiguration, MockObject } from './types.ts';
 
 export class MockBuilder {
   private static instance: MockBuilder;
@@ -59,7 +59,7 @@ export class MockBuilder {
     Object.keys(overrides).forEach((key) => {
       const value = overrides[key as keyof T];
       if (typeof value === 'function') {
-        mockObj[key] = jest.fn(value as any);
+        mockObj[key] = vi.fn(value as any);
       } else {
         mockObj[key] = value;
       }
@@ -84,7 +84,7 @@ export class MockBuilder {
 
     methodsToSpy.forEach((method) => {
       if (typeof obj[method] === 'function') {
-        spy[method] = jest.spyOn(obj, method as any);
+        spy[method] = vi.spyOn(obj, method as any);
       }
     });
 
@@ -221,8 +221,8 @@ export class MockBuilder {
     Object.values(mocks).forEach((mock) => {
       if (mock && typeof mock === 'object') {
         Object.values(mock).forEach((method) => {
-          if (jest.isMockFunction(method)) {
-            (method as jest.Mock).mockReset();
+          if (vi.isMockFunction(method)) {
+            (method as vi.Mock).mockReset();
           }
         });
 
@@ -252,8 +252,8 @@ export class MockBuilder {
     return methods;
   }
 
-  private createMethodMock(methodName: string, config: MockConfiguration): jest.Mock {
-    const mock = jest.fn();
+  private createMethodMock(methodName: string, config: MockConfiguration): vi.Mock {
+    const mock = vi.fn();
 
     if (config?.autoGenerate) {
       // Auto-generate reasonable return values based on method name
@@ -276,8 +276,8 @@ export class MockBuilder {
     // Wrap all mock functions to track interactions
     Object.keys(mockObj).forEach((key) => {
       const originalMock = mockObj[key];
-      if (jest.isMockFunction(originalMock)) {
-        mockObj[key] = jest.fn((...args: any[]) => {
+      if (vi.isMockFunction(originalMock)) {
+        mockObj[key] = vi.fn((...args: any[]) => {
           interactions.push({
             method: key,
             args,

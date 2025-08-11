@@ -8,7 +8,7 @@
  * @file Coordination system: dspy-agent-programs
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 import type { DSPyProgram, DSPyWrapper } from '../neural/dspy-wrapper';
 import type { DSPyExample } from '../neural/types/dspy-types';
 

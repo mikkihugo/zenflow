@@ -7,9 +7,9 @@
  * @file Event Manager Implementation following UACL/USL patterns.
  */
 
-import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
-import { inject, injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens';
+import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces.ts';
+import { inject, injectable } from '../../di/decorators/injectable.ts';
+import { CORE_TOKENS } from '../../di/tokens/core-tokens.ts';
 import type {
   EventManagerConfig,
   EventManagerStatus,
@@ -17,8 +17,8 @@ import type {
   IEventManager,
   IEventManagerFactory,
   SystemEvent,
-} from './core/interfaces';
-import { EventManagerPresets, EventManagerTypes } from './core/interfaces';
+} from './core/interfaces.ts';
+import { EventManagerPresets, EventManagerTypes } from './core/interfaces.ts';
 import type {
   ICommunicationEventManager,
   ICoordinationEventManager,
@@ -29,9 +29,9 @@ import type {
   INeuralEventManager,
   ISystemEventManager,
   IWorkflowEventManager,
-} from './factories';
-import { EventRegistry } from './registry';
-import { DefaultEventManagerConfigs, EventCategories } from './types';
+} from './factories.ts';
+import { EventRegistry } from './registry.ts';
+import { DefaultEventManagerConfigs, EventCategories } from './types.ts';
 
 /**
  * Configuration options for creating new event managers.
@@ -868,14 +868,14 @@ export class EventManager {
     try {
       switch (type) {
         case EventManagerTypes.SYSTEM: {
-          const { SystemEventManagerFactory } = await import('./adapters/system-event-factory');
+          const { SystemEventManagerFactory } = await import('./adapters/system-event-factory.ts');
           FactoryClass = SystemEventManagerFactory;
           break;
         }
 
         case EventManagerTypes.COORDINATION: {
           const { CoordinationEventManagerFactory } = await import(
-            './adapters/coordination-event-factory'
+            './adapters/coordination-event-factory.ts'
           );
           FactoryClass = CoordinationEventManagerFactory;
           break;
@@ -883,14 +883,14 @@ export class EventManager {
 
         case EventManagerTypes.COMMUNICATION: {
           const { CommunicationEventFactory } = await import(
-            './adapters/communication-event-factory'
+            './adapters/communication-event-factory.ts'
           );
           FactoryClass = CommunicationEventFactory;
           break;
         }
 
         case EventManagerTypes.MONITORING: {
-          const { MonitoringEventFactory } = await import('./adapters/monitoring-event-factory');
+          const { MonitoringEventFactory } = await import('./adapters/monitoring-event-factory.ts');
           // MonitoringEventFactory is static, wrap it in a compatible interface
           FactoryClass = class implements IEventManagerFactory {
             async create(config: EventManagerConfig) {

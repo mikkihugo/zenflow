@@ -23,7 +23,7 @@ import {
   injectable,
   NEURAL_TOKENS,
   SWARM_TOKENS,
-} from '../index';
+} from '../index.ts';
 
 // Real service implementations
 class ProductionLogger implements ILogger {

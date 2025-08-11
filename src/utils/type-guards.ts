@@ -1,11 +1,60 @@
 /**
- * Type Guards Utility Module.
- *
- * Provides type guard functions for safe union type property access.
- * Throughout the claude-code-zen codebase. This addresses TypeScript
- * strict mode compilation issues with union type handling..
- *
- * @file Comprehensive type guards for union type safety.
+ * @fileoverview Comprehensive Type Guards Utility Module for Claude Code Zen
+ * 
+ * Provides a complete set of type guard functions for safe union type property access
+ * throughout the claude-code-zen codebase. This module addresses TypeScript strict mode
+ * compilation issues with union type handling and provides runtime type safety.
+ * 
+ * Key Features:
+ * - Database result type guards with discriminant unions
+ * - Memory store operation result guards
+ * - Neural network training/inference result guards
+ * - API response type guards with metadata support
+ * - WASM operation result type guards
+ * - Coordination system result type guards
+ * - Generic Result<T, E> pattern implementation
+ * - Utility functions for safe property access
+ * - Specialized type guards for system components
+ * 
+ * Type Safety Benefits:
+ * - Eliminates unsafe union type access
+ * - Provides compile-time type narrowing
+ * - Runtime type validation with proper error handling
+ * - Consistent error message extraction across result types
+ * - Safe property access patterns
+ * 
+ * @author Claude Code Zen Team
+ * @since 1.0.0-alpha.43
+ * @version 1.0.0-alpha.43
+ * 
+ * @see {@link https://www.typescriptlang.org/docs/handbook/2/narrowing.html} TypeScript Type Narrowing
+ * @see {@link https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates} Type Predicates
+ * 
+ * @requires typescript >= 4.0 - For discriminant union support
+ * @requires @types/node - For Node.js type definitions
+ * 
+ * @example
+ * ```typescript
+ * // Database result handling
+ * const dbResult = await queryDatabase();
+ * if (isQuerySuccess(dbResult)) {
+ *   console.log('Data:', dbResult.data); // Type-safe access
+ * } else if (isQueryError(dbResult)) {
+ *   console.error('Error:', dbResult.error.message); // Type-safe error handling
+ * }
+ * 
+ * // Memory store result handling
+ * const memResult = await memoryStore.get('key');
+ * if (isMemorySuccess(memResult)) {
+ *   processData(memResult.data); // Guaranteed to exist
+ * }
+ * 
+ * // Neural network result handling
+ * const neuralResult = await trainNetwork();
+ * if (isTrainingResult(neuralResult)) {
+ *   console.log('Training completed with error:', neuralResult.finalError);
+ * }
+ * ```
  */
 
 // ============================================
@@ -14,6 +63,33 @@
 
 /**
  * Union type for database query operations.
+ * 
+ * Discriminant union that represents the result of any database query operation.
+ * Uses the `success` property as a discriminant for type narrowing.
+ * 
+ * @template T - The type of data returned on successful queries
+ * @type {QuerySuccess<T> | QueryError}
+ * 
+ * @example
+ * ```typescript
+ * async function getUserById(id: string): Promise<DatabaseResult<User>> {
+ *   try {
+ *     const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+ *     return {
+ *       success: true,
+ *       data: result.rows[0],
+ *       rowCount: result.rowCount,
+ *       executionTime: performance.now() - startTime
+ *     };
+ *   } catch (error) {
+ *     return {
+ *       success: false,
+ *       error: { code: 'DB_ERROR', message: error.message },
+ *       executionTime: performance.now() - startTime
+ *     };
+ *   }
+ * }
+ * ```
  */
 export type DatabaseResult<T = any> = QuerySuccess<T> | QueryError;
 
@@ -52,9 +128,27 @@ export interface QueryError {
 
 /**
  * Type guard for successful database query results.
- *
- * @param result
+ * 
+ * Narrows a DatabaseResult union type to QuerySuccess<T> by checking
+ * the discriminant property and ensuring data property exists.
+ * 
+ * @template T - The expected data type for successful queries
+ * @param {DatabaseResult<T>} result - The database result to check
+ * @returns {result is QuerySuccess<T>} True if result is a successful query
+ * 
  * @example
+ * ```typescript
+ * const result = await getUserById('123');
+ * if (isQuerySuccess(result)) {
+ *   // TypeScript knows result.data exists and is of type T
+ *   console.log('User found:', result.data.name);
+ *   console.log('Query took:', result.executionTime, 'ms');
+ *   console.log('Rows returned:', result.rowCount);
+ * }
+ * ```
+ * 
+ * @see {@link QuerySuccess} Success result interface
+ * @see {@link DatabaseResult} Union type definition
  */
 export function isQuerySuccess<T = any>(result: DatabaseResult<T>): result is QuerySuccess<T> {
   return result?.success === true && 'data' in result;
@@ -466,10 +560,32 @@ export function isFailure<T, E = Error>(result: Result<T, E>): result is Failure
 // ============================================
 
 /**
- * Safely extract data from a result union type.
- *
- * @param result
+ * Safely extract data from a database result union type.
+ * 
+ * Uses type guards internally to safely extract data from successful
+ * database operations, returning null for error cases.
+ * 
+ * @template T - The expected data type
+ * @param {DatabaseResult<T>} result - The database result to extract data from
+ * @returns {T | null} The extracted data or null if the operation failed
+ * 
  * @example
+ * ```typescript
+ * const dbResult = await getUserById('123');
+ * const userData = extractData(dbResult);
+ * 
+ * if (userData) {
+ *   // userData is guaranteed to be of type T
+ *   console.log('User:', userData.name);
+ * } else {
+ *   // Handle the error case
+ *   const errorMsg = extractErrorMessage(dbResult);
+ *   console.error('Failed to get user:', errorMsg);
+ * }
+ * ```
+ * 
+ * @see {@link isQuerySuccess} Type guard used internally
+ * @see {@link extractErrorMessage} For error message extraction
  */
 export function extractData<T>(result: DatabaseResult<T>): T | null {
   if (isQuerySuccess(result)) {
@@ -520,11 +636,45 @@ export function hasProperty<T, K extends PropertyKey>(
 }
 
 /**
- * Safe property access with type checking.
- *
- * @param obj
- * @param prop
+ * Safe property access with comprehensive type checking.
+ * 
+ * Provides null-safe property access with TypeScript type preservation.
+ * Handles null, undefined, and non-object values gracefully.
+ * 
+ * @template T - The object type to access properties from
+ * @template K - The property key type (must be keyof T)
+ * @param {T | null | undefined} obj - The object to access properties from
+ * @param {K} prop - The property key to access
+ * @returns {T[K] | undefined} The property value or undefined if access is unsafe
+ * 
  * @example
+ * ```typescript
+ * interface User {
+ *   id: string;
+ *   name: string;
+ *   email?: string;
+ * }
+ * 
+ * const user: User | null = await getUser();
+ * const userName = safePropertyAccess(user, 'name');
+ * const userEmail = safePropertyAccess(user, 'email');
+ * 
+ * if (userName) {
+ *   console.log('User name:', userName); // Type is string
+ * }
+ * 
+ * if (userEmail) {
+ *   console.log('User email:', userEmail); // Type is string
+ * }
+ * ```
+ * 
+ * @safety
+ * - Handles null and undefined objects gracefully
+ * - Validates object type before property access
+ * - Preserves TypeScript type information
+ * - Never throws runtime errors
+ * 
+ * @see {@link hasProperty} For existence checking without value extraction
  */
 export function safePropertyAccess<T, K extends keyof T>(
   obj: T | null | undefined,

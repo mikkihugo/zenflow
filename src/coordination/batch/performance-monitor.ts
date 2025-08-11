@@ -4,7 +4,7 @@
  * Implements claude-zen's performance monitoring patterns.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('BatchPerformanceMonitor');
 

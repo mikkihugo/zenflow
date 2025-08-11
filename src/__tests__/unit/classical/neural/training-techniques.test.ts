@@ -8,7 +8,7 @@
 import {
   createNeuralTestSuite,
   NeuralTestDataGenerator,
-} from '../../../helpers/neural-test-helpers';
+} from '../../../helpers/neural-test-helpers.ts';
 
 interface TrainingMetrics {
   trainLoss: number[];

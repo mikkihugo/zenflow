@@ -8,7 +8,7 @@
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../core/logger';
+import type { ILogger } from '../../core/logger.ts';
 import type { IEventBus } from '../core/event-bus';
 
 export interface TerminalConfig {

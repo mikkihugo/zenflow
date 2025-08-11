@@ -43,7 +43,7 @@ export interface CommandContext {
 // Generic command interface with comprehensive lifecycle support
 export interface MCPCommand<T = any> {
   execute(): Promise<CommandResult<T>>;
-  undo?(): Promise<void>;
+  undo?(): Promise<CommandResult<T>>;
   canUndo(): boolean;
   getCommandType(): string;
   getEstimatedDuration(): number;
@@ -216,11 +216,23 @@ export class SwarmInitCommand implements MCPCommand<SwarmInitResult> {
     }
   }
 
-  async undo(): Promise<void> {
+  async undo(): Promise<CommandResult<any>> {
     if (this.swarmId) {
       await this.swarmManager.destroySwarm(this.swarmId);
       this.swarmId = undefined;
+      return {
+        success: true,
+        executionTime: 0,
+        resourceUsage: this.measureResources(),
+        message: 'Successfully undone',
+      };
     }
+    return {
+      success: false,
+      error: new Error('No swarm to undo'),
+      executionTime: 0,
+      resourceUsage: this.measureResources(),
+    };
   }
 
   canUndo(): boolean {

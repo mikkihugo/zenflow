@@ -29,8 +29,8 @@ import {
 } from '../src/claude-integration/index.js';
 
 // Mock file system operations
-jest.mock('fs/promises');
-jest.mock('child_process');
+vi.mock('fs/promises');
+vi.mock('child_process');
 
 describe('Integration & Advanced Features Coverage', () => {
   let testTempDir;
@@ -42,12 +42,12 @@ describe('Integration & Advanced Features Coverage', () => {
     testTempDir = path.join(__dirname, `test-temp-${Date.now()}`);
 
     // Mock fs operations
-    fs.mkdir = jest.fn().mockResolvedValue(undefined);
-    fs.writeFile = jest.fn().mockResolvedValue(undefined);
-    fs.readFile = jest.fn().mockResolvedValue('{}');
-    fs.access = jest.fn().mockResolvedValue(undefined);
-    fs.rm = jest.fn().mockResolvedValue(undefined);
-    fs.stat = jest.fn().mockResolvedValue({ isDirectory: () => true });
+    fs.mkdir = vi.fn().mockResolvedValue(undefined);
+    fs.writeFile = vi.fn().mockResolvedValue(undefined);
+    fs.readFile = vi.fn().mockResolvedValue('{}');
+    fs.access = vi.fn().mockResolvedValue(undefined);
+    fs.rm = vi.fn().mockResolvedValue(undefined);
+    fs.stat = vi.fn().mockResolvedValue({ isDirectory: () => true });
 
     // Mock execSync
     execSync.mockReturnValue('mocked command output');
@@ -58,7 +58,7 @@ describe('Integration & Advanced Features Coverage', () => {
     process.env = originalEnv;
 
     // Clean up mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Clean up temp directory if it exists
     try {
@@ -108,11 +108,11 @@ describe('Integration & Advanced Features Coverage', () => {
         });
 
         // Mock docs and remote generation
-        orchestrator.docs.generateAll = jest.fn().mockResolvedValue({
+        orchestrator.docs.generateAll = vi.fn().mockResolvedValue({
           success: true,
           files: ['claude.md', '.claude/commands/'],
         });
-        orchestrator.remote.createAll = jest.fn().mockResolvedValue({
+        orchestrator.remote.createAll = vi.fn().mockResolvedValue({
           success: true,
           wrappers: ['cross-platform', 'helper-scripts'],
         });
@@ -135,9 +135,9 @@ describe('Integration & Advanced Features Coverage', () => {
         });
 
         // Mock successful core initialization
-        orchestrator.docs.generateAll = jest.fn().mockResolvedValue({ success: true });
-        orchestrator.remote.createAll = jest.fn().mockResolvedValue({ success: true });
-        orchestrator.core.initialize = jest.fn().mockResolvedValue({ success: true });
+        orchestrator.docs.generateAll = vi.fn().mockResolvedValue({ success: true });
+        orchestrator.remote.createAll = vi.fn().mockResolvedValue({ success: true });
+        orchestrator.core.initialize = vi.fn().mockResolvedValue({ success: true });
 
         const result = await orchestrator.setupIntegration();
 
@@ -152,9 +152,9 @@ describe('Integration & Advanced Features Coverage', () => {
           autoSetup: true,
         });
 
-        orchestrator.docs.generateAll = jest.fn().mockResolvedValue({ success: true });
-        orchestrator.remote.createAll = jest.fn().mockResolvedValue({ success: true });
-        orchestrator.core.initialize = jest.fn().mockRejectedValue(new Error('Core setup failed'));
+        orchestrator.docs.generateAll = vi.fn().mockResolvedValue({ success: true });
+        orchestrator.remote.createAll = vi.fn().mockResolvedValue({ success: true });
+        orchestrator.core.initialize = vi.fn().mockRejectedValue(new Error('Core setup failed'));
 
         const result = await orchestrator.setupIntegration();
 
@@ -168,7 +168,7 @@ describe('Integration & Advanced Features Coverage', () => {
         const orchestrator = new ClaudeIntegrationOrchestrator();
         const mockResult = { response: 'test response' };
 
-        orchestrator.core.invokeClaudeWithPrompt = jest.fn().mockResolvedValue(mockResult);
+        orchestrator.core.invokeClaudeWithPrompt = vi.fn().mockResolvedValue(mockResult);
 
         const result = await orchestrator.invokeClaudeWithPrompt('test prompt');
 
@@ -181,8 +181,8 @@ describe('Integration & Advanced Features Coverage', () => {
           workingDir: testTempDir,
         });
 
-        orchestrator.core.isClaudeAvailable = jest.fn().mockResolvedValue(true);
-        orchestrator.core.checkExistingFiles = jest.fn().mockResolvedValue(false);
+        orchestrator.core.isClaudeAvailable = vi.fn().mockResolvedValue(true);
+        orchestrator.core.checkExistingFiles = vi.fn().mockResolvedValue(false);
 
         const status = await orchestrator.checkStatus();
 
@@ -222,12 +222,12 @@ describe('Integration & Advanced Features Coverage', () => {
         // We need to mock the constructor since it's used in the convenience function
         const originalConstructor = ClaudeIntegrationOrchestrator;
         const mockOrchestrator = {
-          setupIntegration: jest.fn().mockResolvedValue(mockSetupResult),
+          setupIntegration: vi.fn().mockResolvedValue(mockSetupResult),
         };
 
         // Temporarily replace the constructor
-        jest.doMock('../src/claude-integration/index.js', () => ({
-          ClaudeIntegrationOrchestrator: jest.fn(() => mockOrchestrator),
+        vi.doMock('../src/claude-integration/index.js', () => ({
+          ClaudeIntegrationOrchestrator: vi.fn(() => mockOrchestrator),
           setupClaudeIntegration: originalConstructor.setupClaudeIntegration,
         }));
 
@@ -240,11 +240,11 @@ describe('Integration & Advanced Features Coverage', () => {
       test('invokeClaudeWithSwarm should work', async () => {
         const mockResult = { response: 'test' };
         const mockOrchestrator = {
-          invokeClaudeWithPrompt: jest.fn().mockResolvedValue(mockResult),
+          invokeClaudeWithPrompt: vi.fn().mockResolvedValue(mockResult),
         };
 
-        jest.doMock('../src/claude-integration/index.js', () => ({
-          ClaudeIntegrationOrchestrator: jest.fn(() => mockOrchestrator),
+        vi.doMock('../src/claude-integration/index.js', () => ({
+          ClaudeIntegrationOrchestrator: vi.fn(() => mockOrchestrator),
           invokeClaudeWithSwarm: require('../src/claude-integration/index.js')
             .invokeClaudeWithSwarm,
         }));
@@ -495,7 +495,7 @@ describe('Integration & Advanced Features Coverage', () => {
 
       // Override a hook method to throw an error
       if (hooks.preEditHook) {
-        hooks.preEditHook = jest.fn().mockRejectedValue(new Error('Test error'));
+        hooks.preEditHook = vi.fn().mockRejectedValue(new Error('Test error'));
 
         const result = await hooks.handleHook('pre-edit', {});
 
@@ -574,14 +574,14 @@ describe('Integration & Advanced Features Coverage', () => {
     beforeEach(async () => {
       // Mock better-sqlite3
       const mockDb = {
-        exec: jest.fn(),
-        prepare: jest.fn(() => ({
-          run: jest.fn(),
-          all: jest.fn().mockReturnValue([]),
+        exec: vi.fn(),
+        prepare: vi.fn(() => ({
+          run: vi.fn(),
+          all: vi.fn().mockReturnValue([]),
         })),
       };
 
-      jest.doMock('better-sqlite3', () => jest.fn(() => mockDb));
+      vi.doMock('better-sqlite3', () => vi.fn(() => mockDb));
 
       try {
         const hookModule = await import('../src/github-coordinator/claude-hooks.js');
@@ -670,14 +670,14 @@ describe('Integration & Advanced Features Coverage', () => {
         const hooks = new ClaudeGitHubHooks();
 
         // Mock available tasks
-        hooks.coordinator.getAvailableTasks = jest.fn().mockResolvedValue([
+        hooks.coordinator.getAvailableTasks = vi.fn().mockResolvedValue([
           {
             number: 123,
             title: 'Test task implementation',
             body: 'Implement test functionality',
           },
         ]);
-        hooks.coordinator.claimTask = jest.fn().mockResolvedValue(true);
+        hooks.coordinator.claimTask = vi.fn().mockResolvedValue(true);
 
         const result = await hooks.preTask('test implementation');
 
@@ -704,7 +704,7 @@ describe('Integration & Advanced Features Coverage', () => {
       test('should handle pre-task errors', async () => {
         const hooks = new ClaudeGitHubHooks();
 
-        hooks.coordinator.getAvailableTasks = jest.fn().mockRejectedValue(new Error('API error'));
+        hooks.coordinator.getAvailableTasks = vi.fn().mockRejectedValue(new Error('API error'));
 
         const result = await hooks.preTask('test task');
 
@@ -714,7 +714,7 @@ describe('Integration & Advanced Features Coverage', () => {
       test('should handle post-edit with active task', async () => {
         const hooks = new ClaudeGitHubHooks();
         hooks.activeTask = 123;
-        hooks.coordinator.updateTaskProgress = jest.fn().mockResolvedValue(true);
+        hooks.coordinator.updateTaskProgress = vi.fn().mockResolvedValue(true);
 
         await hooks.postEdit('/path/to/file.js', { summary: 'Added tests' });
 
@@ -727,7 +727,7 @@ describe('Integration & Advanced Features Coverage', () => {
 
       test('should skip post-edit without active task', async () => {
         const hooks = new ClaudeGitHubHooks();
-        hooks.coordinator.updateTaskProgress = jest.fn();
+        hooks.coordinator.updateTaskProgress = vi.fn();
 
         await hooks.postEdit('/path/to/file.js', {});
 
@@ -737,7 +737,7 @@ describe('Integration & Advanced Features Coverage', () => {
       test('should handle post-task completion', async () => {
         const hooks = new ClaudeGitHubHooks();
         hooks.activeTask = 123;
-        hooks.coordinator.updateTaskProgress = jest.fn().mockResolvedValue(true);
+        hooks.coordinator.updateTaskProgress = vi.fn().mockResolvedValue(true);
 
         await hooks.postTask('task-1', {
           completed: true,
@@ -751,7 +751,7 @@ describe('Integration & Advanced Features Coverage', () => {
       test('should handle post-task release', async () => {
         const hooks = new ClaudeGitHubHooks();
         hooks.activeTask = 123;
-        hooks.coordinator.releaseTask = jest.fn().mockResolvedValue(true);
+        hooks.coordinator.releaseTask = vi.fn().mockResolvedValue(true);
 
         await hooks.postTask('task-1', { completed: false });
 
@@ -762,7 +762,7 @@ describe('Integration & Advanced Features Coverage', () => {
       test('should detect conflicts', async () => {
         const hooks = new ClaudeGitHubHooks();
 
-        hooks.coordinator.getCoordinationStatus = jest.fn().mockResolvedValue({
+        hooks.coordinator.getCoordinationStatus = vi.fn().mockResolvedValue({
           swarmStatus: { 'swarm-1': [], 'swarm-2': [] },
         });
 
@@ -907,7 +907,7 @@ describe('Integration & Advanced Features Coverage', () => {
         coordinator.db
           .prepare()
           .all.mockReturnValue([{ issue_number: 123, swarm_id: 'swarm-old' }]);
-        coordinator.releaseTask = jest.fn().mockResolvedValue(true);
+        coordinator.releaseTask = vi.fn().mockResolvedValue(true);
 
         const cleanedCount = await coordinator.cleanupStaleLocks();
 
@@ -1328,9 +1328,9 @@ describe('Integration & Advanced Features Coverage', () => {
     beforeEach(async () => {
       // Mock WebAssembly.Memory
       global.WebAssembly = {
-        Memory: jest.fn().mockImplementation((config) => ({
+        Memory: vi.fn().mockImplementation((config) => ({
           buffer: new ArrayBuffer(config.initial * 64 * 1024),
-          grow: jest.fn().mockReturnValue(0),
+          grow: vi.fn().mockReturnValue(0),
         })),
       };
 
@@ -1537,8 +1537,8 @@ describe('Integration & Advanced Features Coverage', () => {
           .mockResolvedValue([
             { number: 123, title: 'Integration test', body: 'Test integration' },
           ]),
-        claimTask: jest.fn().mockResolvedValue(true),
-        updateTaskProgress: jest.fn().mockResolvedValue(true),
+        claimTask: vi.fn().mockResolvedValue(true),
+        updateTaskProgress: vi.fn().mockResolvedValue(true),
         config: { owner: 'test', repo: 'test', labelPrefix: 'swarm-' },
       };
 
@@ -1561,7 +1561,7 @@ describe('Integration & Advanced Features Coverage', () => {
     test('should coordinate pattern evolution with meta-learning', async () => {
       // This tests the interaction between cognitive patterns and meta-learning
       const mockEvolution = {
-        evolvePattern: jest.fn().mockResolvedValue({
+        evolvePattern: vi.fn().mockResolvedValue({
           success: true,
           newPattern: 'evolved-pattern',
           confidence: 0.9,
@@ -1569,7 +1569,7 @@ describe('Integration & Advanced Features Coverage', () => {
       };
 
       const mockMetaLearning = {
-        adaptToDomain: jest.fn().mockResolvedValue({
+        adaptToDomain: vi.fn().mockResolvedValue({
           success: true,
           adaptationScore: 0.85,
           transferredKnowledge: ['pattern-knowledge'],
@@ -1597,16 +1597,16 @@ describe('Integration & Advanced Features Coverage', () => {
 
     test('should coordinate neural agents with WASM memory optimization', async () => {
       const mockMemoryPool = {
-        allocate: jest.fn().mockReturnValue({
+        allocate: vi.fn().mockReturnValue({
           id: 1,
           offset: 0,
           ptr: new ArrayBuffer(1024),
         }),
-        deallocate: jest.fn().mockReturnValue(true),
+        deallocate: vi.fn().mockReturnValue(true),
       };
 
       const mockCoordination = {
-        coordinateAgents: jest.fn().mockResolvedValue({
+        coordinateAgents: vi.fn().mockResolvedValue({
           success: true,
           coordinationId: 'coord-123',
           memoryAllocations: [],
@@ -1637,7 +1637,7 @@ describe('Integration & Advanced Features Coverage', () => {
 
       // Mock file system error
       fs.mkdir.mockRejectedValue(new Error('Permission denied'));
-      orchestrator.docs.generateAll = jest.fn().mockRejectedValue(new Error('FS error'));
+      orchestrator.docs.generateAll = vi.fn().mockRejectedValue(new Error('FS error'));
 
       await expect(orchestrator.setupIntegration()).rejects.toThrow();
     });
@@ -1660,7 +1660,7 @@ describe('Integration & Advanced Features Coverage', () => {
 
     test('should handle memory allocation failures', () => {
       // Mock WebAssembly.Memory to throw error
-      global.WebAssembly.Memory = jest.fn().mockImplementation(() => {
+      global.WebAssembly.Memory = vi.fn().mockImplementation(() => {
         throw new Error('Out of memory');
       });
 

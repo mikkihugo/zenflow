@@ -2,12 +2,12 @@
 import 'jest-extended';
 
 // Global test timeout for complex operations
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
-jest.setTimeout(60000);
+vi.setTimeout(60000);
 
 // Setup for both London and Classical TDD approaches
 beforeEach(() => {
   // Clear mocks for London TDD
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });

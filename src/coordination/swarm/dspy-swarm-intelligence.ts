@@ -11,12 +11,12 @@
  * @file Coordination system: dspy-swarm-intelligence.
  */
 
-import { getLogger } from '../../config/logging-config';
-import type { DSPyWrapper } from '../../neural/dspy-wrapper';
+import { getLogger } from '../../config/logging-config.ts';
+import type { DSPyWrapper } from '../../neural/dspy-wrapper.ts';
 // Using the new wrapper architecture instead of direct dspy.ts imports
-import { createDSPyWrapper } from '../../neural/dspy-wrapper';
-import type { DSPyConfig } from '../../neural/types/dspy-types';
-import type { AgentType } from '../types';
+import { createDSPyWrapper } from '../../neural/dspy-wrapper.ts';
+import type { DSPyConfig } from '../../neural/types/dspy-types.ts';
+import type { AgentType } from '../types.ts';
 
 const logger = getLogger('DSPySwarmIntelligence');
 
@@ -484,7 +484,7 @@ export class DSPySwarmIntelligence {
   private startContinuousLearning() {
     setInterval(() => {
       this.performContinuousLearning();
-    }, this.config.optimizationInterval!);
+    }, this.config.optimizationInterval);
 
     logger.info('Continuous learning enabled');
   }

@@ -60,7 +60,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     // Mock base agent for neural agent testing
     mockAgent = {
       id: 'test-agent',
-      execute: jest.fn().mockResolvedValue({
+      execute: vi.fn().mockResolvedValue({
         success: true,
         result: 'test result',
         metrics: {
@@ -72,7 +72,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   // ================================
@@ -118,7 +118,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
 
     test('should handle WASM module unavailable gracefully', async () => {
       const mockWasmLoader = {
-        loadModule: jest.fn().mockResolvedValue({ isPlaceholder: true }),
+        loadModule: vi.fn().mockResolvedValue({ isPlaceholder: true }),
       };
 
       const manager = new NeuralNetworkManager(mockWasmLoader);
@@ -762,7 +762,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should emit task completion event', async () => {
-      const eventHandler = jest.fn();
+      const eventHandler = vi.fn();
       neuralAgent.on('taskCompleted', eventHandler);
 
       const task = { id: 'event-test', description: 'Event test task' };
@@ -779,7 +779,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should emit learning event during training', async () => {
-      const eventHandler = jest.fn();
+      const eventHandler = vi.fn();
       neuralAgent.on('learning', eventHandler);
 
       const task = { id: 'learning-test', description: 'Learning test task' };
@@ -1398,7 +1398,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should run benchmark with default parameters', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
 
       await benchmarkCLI.run([]);
 
@@ -1412,7 +1412,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should run benchmark with custom parameters', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
       const args = ['--iterations', '5', '--test', 'neural'];
 
       await benchmarkCLI.run(args);
@@ -1424,11 +1424,11 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should compare benchmark results', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation();
 
       // Should fail with missing files
-      const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
+      const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process.exit() was called');
       });
 
@@ -1446,8 +1446,8 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should handle benchmark run failure gracefully', async () => {
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation();
+      const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process.exit() was called');
       });
 
@@ -1493,7 +1493,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should analyze system performance comprehensively', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
 
       await performanceCLI.analyze(['--detailed']);
 
@@ -1509,11 +1509,11 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should detect and report bottlenecks', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
 
       // Mock high memory usage to trigger bottleneck detection
       const originalMemoryUsage = process.memoryUsage;
-      process.memoryUsage = jest.fn(() => ({
+      process.memoryUsage = vi.fn(() => ({
         heapUsed: 900 * 1024 * 1024, // 900MB
         heapTotal: 1000 * 1024 * 1024, // 1GB (90% utilization)
         external: 50 * 1024 * 1024,
@@ -1529,7 +1529,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should optimize performance with different targets', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
       const targets = ['speed', 'memory', 'tokens', 'balanced'];
 
       for (const target of targets) {
@@ -1546,7 +1546,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should apply optimizations without dry run', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
 
       await performanceCLI.optimize(['speed']);
 
@@ -1558,7 +1558,7 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should generate optimization suggestions', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
 
       await performanceCLI.suggest([]);
 
@@ -1576,11 +1576,11 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should categorize suggestions by priority', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
 
       // Mock high memory utilization to trigger HIGH priority suggestion
       const originalMemoryUsage = process.memoryUsage;
-      process.memoryUsage = jest.fn(() => ({
+      process.memoryUsage = vi.fn(() => ({
         heapUsed: 850 * 1024 * 1024, // 850MB
         heapTotal: 1000 * 1024 * 1024, // 1GB (85% utilization)
         external: 50 * 1024 * 1024,
@@ -1596,14 +1596,14 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should handle analysis failure gracefully', async () => {
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation();
+      const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process.exit() was called');
       });
 
       // Force an error by mocking cpuUsage to throw
       const originalCpuUsage = process.cpuUsage;
-      process.cpuUsage = jest.fn(() => {
+      process.cpuUsage = vi.fn(() => {
         throw new Error('CPU usage error');
       });
 
@@ -1617,8 +1617,8 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should handle optimization failure gracefully', async () => {
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation();
+      const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process.exit() was called');
       });
 
@@ -1638,11 +1638,11 @@ describe('🧠 Neural Performance Comprehensive Test Suite', () => {
     });
 
     test('should suggest optimizations for low memory usage', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
 
       // Mock low memory utilization
       const originalMemoryUsage = process.memoryUsage;
-      process.memoryUsage = jest.fn(() => ({
+      process.memoryUsage = vi.fn(() => ({
         heapUsed: 200 * 1024 * 1024, // 200MB
         heapTotal: 1000 * 1024 * 1024, // 1GB (20% utilization)
         external: 50 * 1024 * 1024,

@@ -5,18 +5,18 @@
  * Ensures zero breaking changes when transitioning to UACL architecture.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('interfaces-clients-compatibility');
 
-import { getMCPServerURL } from '../../config/defaults';
-import { FACTIntegration } from '../../knowledge/knowledge-client';
-import { type APIClient, createAPIClient } from '../api/http/client';
-import { WebSocketClient } from '../api/websocket/client';
-import { ExternalMCPClient } from '../mcp/external-mcp-client';
-import { uaclRegistry } from './core/client-registry';
-import type { ClientInstance } from './registry';
-import { ClientTypes } from './types';
+import { getMCPServerURL } from '../../config/defaults.ts';
+import { FACTIntegration } from '../../knowledge/knowledge-client.ts';
+import { type APIClient, createAPIClient } from '../api/http/client.ts';
+import { WebSocketClient } from '../api/websocket/client.ts';
+import { ExternalMCPClient } from '../mcp/external-mcp-client.ts';
+import { uaclRegistry } from './core/client-registry.ts';
+import type { ClientInstance } from './registry.ts';
+import { ClientTypes } from './types.ts';
 
 /**
  * Legacy HTTP Client Factory (Backward Compatible).
@@ -44,7 +44,7 @@ export const createManagedAPIClient = async (
   config: any = {}
 ): Promise<{ client: APIClient; instance: ClientInstance }> => {
   // Dynamic import to avoid circular dependency
-  const { uacl } = await import('./index');
+  const { uacl } = await import('./index.ts');
   const instance = await uacl.createHTTPClient(id, config?.baseURL || getMCPServerURL(), {
     enabled: true,
     priority: 5,
@@ -88,7 +88,7 @@ export const createManagedWebSocketClient = async (
   options: any = {}
 ): Promise<{ client: WebSocketClient; instance: ClientInstance }> => {
   // Dynamic import to avoid circular dependency
-  const { uacl } = await import('./index');
+  const { uacl } = await import('./index.ts');
   const instance = await uacl.createWebSocketClient(id, url, {
     enabled: true,
     priority: 5,
@@ -124,7 +124,7 @@ export const createManagedKnowledgeClient = async (
   config: any
 ): Promise<{ client: FACTIntegration; instance: ClientInstance }> => {
   // Dynamic import to avoid circular dependency
-  const { uacl } = await import('./index');
+  const { uacl } = await import('./index.ts');
   const instance = await uacl.createKnowledgeClient(
     id,
     config?.factRepoPath,
@@ -162,7 +162,7 @@ export const createManagedMCPClient = async (
   servers: any
 ): Promise<{ client: ExternalMCPClient; instance: ClientInstance }> => {
   // Dynamic import to avoid circular dependency
-  const { uacl } = await import('./index');
+  const { uacl } = await import('./index.ts');
   const instance = await uacl.createMCPClient(id, servers, {
     enabled: true,
     priority: 5,
@@ -292,7 +292,7 @@ export class UACLMigrationHelper {
   ): Promise<ClientInstance | null> {
     try {
       // Dynamic import to avoid circular dependency
-      const { uacl } = await import('./index');
+      const { uacl } = await import('./index.ts');
       await uacl.initialize();
 
       switch (clientType) {

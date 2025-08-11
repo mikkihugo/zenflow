@@ -79,11 +79,11 @@ async function main() {
     // Exit with appropriate code
     process.exit(results.success ? 0 : 1);
   } catch (error) {
-    console.error(chalk.red.bold('\n❌ INFRASTRUCTURE TEST SUITE FAILED'));
-    console.error(chalk.red(`Error: ${error.message}`));
+    // console.error(chalk.red.bold('\n❌ INFRASTRUCTURE TEST SUITE FAILED'));
+    // console.error(chalk.red(`Error: ${error.message}`));
     if (error.stack) {
-      console.error(chalk.gray('\nStack trace:'));
-      console.error(chalk.gray(error.stack));
+      // console.error(chalk.gray('\nStack trace:'));
+      // console.error(chalk.gray(error.stack));
     }
     process.exit(1);
   }
@@ -96,14 +96,14 @@ process.on('SIGINT', () => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error(chalk.red('🚨 Unhandled Rejection at:'), promise);
-  console.error(chalk.red('Reason:'), reason);
+  // console.error(chalk.red('🚨 Unhandled Rejection at:'), promise);
+  // console.error(chalk.red('Reason:'), reason);
   process.exit(1);
 });
 
 // Run the test suite
 main().catch((error) => {
-  console.error(chalk.red.bold('💥 Fatal error in test runner'));
-  console.error(error);
+  // console.error(chalk.red.bold('💥 Fatal error in test runner'));
+  // console.error(error);
   process.exit(1);
 });

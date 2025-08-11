@@ -88,7 +88,7 @@ class UELValidationCLI {
         console.warn(`⚠️  ${msg}`, ...args);
       },
       error: (msg, ...args) => {
-        console.error(`❌ ${msg}`, ...args);
+        // console.error(`❌ ${msg}`, ...args);
       },
       success: (_msg, ..._args) => {
         if (this.options.format !== 'json') {
@@ -928,7 +928,7 @@ class UELValidationCLI {
 if (require.main === module) {
   const cli = new UELValidationCLI();
   cli.run().catch((error) => {
-    console.error('💥 Validation failed:', error);
+    // console.error('💥 Validation failed:', error);
     process.exit(3);
   });
 }

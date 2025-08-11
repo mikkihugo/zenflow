@@ -1,4 +1,4 @@
-import { DefaultEnhancedHookManager } from '../../../../../coordination/hooks/index';
+import { DefaultEnhancedHookManager } from '../../../../../coordination/hooks/index.ts';
 
 describe('Enhanced Hook System - London TDD', () => {
   let hookManager: DefaultEnhancedHookManager;

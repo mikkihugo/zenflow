@@ -5,8 +5,8 @@
  * command execution system. Uses shared abstractions to avoid cross-interface dependencies.
  */
 
-import type { CommandContext, CommandResult } from '../shared/index';
-import { CliCommandAdapter } from './adapters/cli-command-adapter';
+import type { CommandContext, CommandResult } from '../shared/index.ts';
+import { CliCommandAdapter } from './adapters/cli-command-adapter.ts';
 
 /**
  * Advanced CLI Commands Handler.

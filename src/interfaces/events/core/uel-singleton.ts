@@ -4,12 +4,12 @@
  * Extracted UEL class to break circular dependency between index.ts and system-integrations.ts.
  */
 
-import type { CompatibilityFactory } from '../compatibility';
-import type { UELFactory, UELRegistry } from '../factories';
-import type { EventManager } from '../manager';
-import type { EventRegistry } from '../registry';
-import type { UELValidationFramework } from '../validation';
-import type { EventManagerConfig } from './interfaces';
+import type { CompatibilityFactory } from '../compatibility.ts';
+import type { UELFactory, UELRegistry } from '../factories.ts';
+import type { EventManager } from '../manager.ts';
+import type { EventRegistry } from '../registry.ts';
+import type { UELValidationFramework } from '../validation.ts';
+import type { EventManagerConfig } from './interfaces.ts';
 
 /**
  * UEL Main Interface - Primary entry point for the Unified Event Layer.
@@ -48,14 +48,14 @@ export class UEL {
     }
 
     // Dynamic imports to avoid circular dependencies
-    const { UELFactory, UELRegistry } = await import('../factories');
-    const { EventManager } = await import('../manager');
-    const { EventRegistry } = await import('../registry');
-    const { UELValidationFramework } = await import('../validation');
-    const { CompatibilityFactory } = await import('../compatibility');
-    const { DIContainer } = await import('../../../di/container/di-container');
-    const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens');
-    const { SingletonProvider } = await import('../../../di/providers/singleton-provider');
+    const { UELFactory, UELRegistry } = await import('../factories.ts');
+    const { EventManager } = await import('../manager.ts');
+    const { EventRegistry } = await import('../registry.ts');
+    const { UELValidationFramework } = await import('../validation.ts');
+    const { CompatibilityFactory } = await import('../compatibility.ts');
+    const { DIContainer } = await import('../../../di/container/di-container.ts');
+    const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens.ts');
+    const { SingletonProvider } = await import('../../../di/providers/singleton-provider.ts');
 
     const container = new DIContainer();
 
@@ -90,7 +90,7 @@ export class UEL {
     this.factory = new UELFactory(logger as any, config?.config as any);
     this.registry = new UELRegistry(logger as any);
     // EventManager uses DI, create manually
-    this.eventManager = new (EventManager as any)(logger, config?.config as any) as any;
+    this.eventManager = new (EventManager as any)(logger, config?.config as any);
     this.eventRegistry = new EventRegistry(logger as any);
 
     // Initialize validation framework if enabled
@@ -270,7 +270,7 @@ export class UEL {
       return null;
     }
     // Basic migration implementation - wrap the EventEmitter
-    const { UELCompatibleEventEmitter } = await import('../compatibility');
+    const { UELCompatibleEventEmitter } = await import('../compatibility.ts');
     const compatibleEmitter = new UELCompatibleEventEmitter({
       enableUEL: true,
       uelManager: this.eventManager as any,
@@ -292,7 +292,7 @@ export class UEL {
     enableUEL?: boolean;
     managerName?: string;
   }): Promise<any> {
-    const { UELEnhancedEventBus } = await import('../system-integrations');
+    const { UELEnhancedEventBus } = await import('../system-integrations.ts');
     return new UELEnhancedEventBus(config);
   }
 
@@ -300,12 +300,12 @@ export class UEL {
     enableUEL?: boolean;
     uelConfig?: any;
   }): Promise<any> {
-    const { UELEnhancedApplicationCoordinator } = await import('../system-integrations');
+    const { UELEnhancedApplicationCoordinator } = await import('../system-integrations.ts');
     return new UELEnhancedApplicationCoordinator(config);
   }
 
   async createEnhancedObserverSystem(config?: { enableUEL?: boolean }): Promise<any> {
-    const { UELEnhancedObserverSystem } = await import('../system-integrations');
+    const { UELEnhancedObserverSystem } = await import('../system-integrations.ts');
     return new UELEnhancedObserverSystem(config);
   }
 

@@ -14,18 +14,15 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
-import type { DatabaseDrivenSystem } from '../core/database-driven-system';
-import { generateId } from '../core/helpers';
+import { getLogger } from '../config/logging-config.ts';
+import type { DatabaseDrivenSystem } from '../core/database-driven-system.ts';
+import { generateId } from '../core/helpers.ts';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
-} from '../database/entities/product-entities';
-import type { DocumentManager } from '../database/managers/document-manager';
-import type {
-  SPARCSwarmCoordinator,
-  SPARCTask,
-} from './swarm/core/sparc-swarm-coordinator';
+} from '../database/entities/product-entities.ts';
+import type { DocumentManager } from '../database/managers/document-manager.ts';
+import type { SPARCSwarmCoordinator, SPARCTask } from './swarm/core/sparc-swarm-coordinator.ts';
 
 const logger = getLogger('DatabaseSPARCBridge');
 
@@ -158,7 +155,9 @@ class DatabaseSPARCBridge extends EventEmitter {
       requirements: task.implementation_details?.files_to_create || [],
       context: {
         projectId: task.project_id ?? generateId(),
-        ...(task.parent_document_id !== undefined && { parentDocumentId: task.parent_document_id }),
+        ...(task.parent_document_id !== undefined && {
+          parentDocumentId: task.parent_document_id,
+        }),
         relatedDocuments: task.related_documents || [],
       },
     };

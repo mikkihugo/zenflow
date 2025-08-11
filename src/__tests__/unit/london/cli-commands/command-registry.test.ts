@@ -6,7 +6,7 @@
  * between objects rather than state verification.
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { BaseCommand } from '../../../../cli/core/base-command';
 import { CommandRegistry } from '../../../../cli/core/command-registry';
 
@@ -33,16 +33,16 @@ vi.mock('fs/promises', () => ({
 
 // Mock path
 vi.mock('path', () => ({
-  join: jest.fn((...args: string[]) => args.join('/')),
-  extname: jest.fn((path: string) => {
-    const parts = (path as string).split('.');
+  join: vi.fn((...args: string[]) => args.join('/')),
+  extname: vi.fn((path: string) => {
+    const parts = (path).split('.');
     return parts.length > 1 ? `.${parts[parts.length - 1]}` : '';
   }),
 }));
 
 describe('CommandRegistry - TDD London', () => {
   let registry: CommandRegistry;
-  let mockEventHandler: jest.Mock;
+  let mockEventHandler: vi.Mock;
 
   beforeEach(() => {
     registry = new CommandRegistry();
@@ -224,7 +224,7 @@ describe('CommandRegistry - TDD London', () => {
   });
 
   describe('command execution behavior', () => {
-    let mockHandler: jest.Mock;
+    let mockHandler: vi.Mock;
     let mockContext: CommandContext;
 
     beforeEach(() => {
@@ -411,7 +411,7 @@ describe('CommandRegistry - TDD London', () => {
   });
 
   describe('usage statistics behavior', () => {
-    let mockHandler: jest.Mock;
+    let mockHandler: vi.Mock;
 
     beforeEach(() => {
       mockHandler = vi.fn().mockResolvedValue({

@@ -4,15 +4,15 @@
  * Handles loading configuration from multiple sources with proper priority.
  */
 
-import { getLogger } from './logging-config';
+import { getLogger } from './logging-config.ts';
 
 const logger = getLogger('ConfigLoader');
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { DEFAULT_CONFIG, ENV_MAPPINGS } from './defaults';
-import type { ConfigurationSource, ConfigValidationResult, SystemConfiguration } from './types';
-import { ConfigValidator } from './validator';
+import { DEFAULT_CONFIG, ENV_MAPPINGS } from './defaults.ts';
+import type { ConfigurationSource, ConfigValidationResult, SystemConfiguration } from './types.ts';
+import { ConfigValidator } from './validator.ts';
 
 /**
  * Configuration loader with multi-source support.

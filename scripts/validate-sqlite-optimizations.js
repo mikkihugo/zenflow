@@ -152,7 +152,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       process.exit(success ? 0 : 1);
     })
     .catch((error) => {
-      console.error('Validation script failed:', error);
+      // console.error('Validation script failed:', error);
       process.exit(1);
     });
 }

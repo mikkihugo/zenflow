@@ -10,7 +10,7 @@
  * - End-to-end recovery scenarios
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import ChaosEngineering from '../src/chaos-engineering.js';
 import ConnectionStateManager from '../src/connection-state-manager.js';
 import HealthMonitor from '../src/health-monitor.js';
@@ -19,17 +19,17 @@ import RecoveryIntegration from '../src/recovery-integration.js';
 import RecoveryWorkflows from '../src/recovery-workflows.js';
 
 // Mock external dependencies
-jest.mock('../src/logger.js', () => ({
-  Logger: jest.fn().mockImplementation(() => ({
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-    debug: jest.fn(),
+vi.mock('../src/logger.js', () => ({
+  Logger: vi.fn().mockImplementation(() => ({
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
   })),
 }));
 
-jest.mock('../src/utils.js', () => ({
-  generateId: jest.fn().mockImplementation((prefix) => `${prefix}-${Date.now()}-${Math.random()}`),
+vi.mock('../src/utils.js', () => ({
+  generateId: vi.fn().mockImplementation((prefix) => `${prefix}-${Date.now()}-${Math.random()}`),
 }));
 
 // Mock process methods for testing
@@ -38,14 +38,14 @@ const originalMemoryUsage = process.memoryUsage;
 const originalCpuUsage = process.cpuUsage;
 
 beforeAll(() => {
-  process.exit = jest.fn();
-  process.memoryUsage = jest.fn().mockReturnValue({
+  process.exit = vi.fn();
+  process.memoryUsage = vi.fn().mockReturnValue({
     rss: 50000000,
     heapTotal: 30000000,
     heapUsed: 20000000,
     external: 5000000,
   });
-  process.cpuUsage = jest.fn().mockReturnValue({
+  process.cpuUsage = vi.fn().mockReturnValue({
     user: 1000000,
     system: 500000,
   });
@@ -82,7 +82,7 @@ describe('Health Monitor', () => {
   });
 
   test('should register custom health check', () => {
-    const checkFunction = jest.fn().mockResolvedValue({ status: 'ok' });
+    const checkFunction = vi.fn().mockResolvedValue({ status: 'ok' });
 
     const checkId = healthMonitor.registerHealthCheck('custom.test', checkFunction, {
       category: 'test',
@@ -98,7 +98,7 @@ describe('Health Monitor', () => {
   });
 
   test('should run health check successfully', async () => {
-    const checkFunction = jest.fn().mockResolvedValue({ value: 42 });
+    const checkFunction = vi.fn().mockResolvedValue({ value: 42 });
     healthMonitor.registerHealthCheck('test.success', checkFunction);
 
     const result = await healthMonitor.runHealthCheck('test.success');
@@ -110,7 +110,7 @@ describe('Health Monitor', () => {
   });
 
   test('should handle health check failure', async () => {
-    const checkFunction = jest.fn().mockRejectedValue(new Error('Test failure'));
+    const checkFunction = vi.fn().mockRejectedValue(new Error('Test failure'));
     healthMonitor.registerHealthCheck('test.failure', checkFunction);
 
     const result = await healthMonitor.runHealthCheck('test.failure');
@@ -121,8 +121,8 @@ describe('Health Monitor', () => {
   });
 
   test('should run all health checks', async () => {
-    const check1 = jest.fn().mockResolvedValue({ check: 1 });
-    const check2 = jest.fn().mockResolvedValue({ check: 2 });
+    const check1 = vi.fn().mockResolvedValue({ check: 1 });
+    const check2 = vi.fn().mockResolvedValue({ check: 2 });
 
     healthMonitor.registerHealthCheck('test.1', check1);
     healthMonitor.registerHealthCheck('test.2', check2);
@@ -558,13 +558,13 @@ describe('End-to-End Recovery Scenarios', () => {
   beforeEach(async () => {
     // Mock MCP Tools
     mockMCPTools = {
-      swarm_init: jest.fn().mockResolvedValue({ swarmId: 'test-swarm' }),
-      swarm_status: jest.fn().mockResolvedValue({
+      swarm_init: vi.fn().mockResolvedValue({ swarmId: 'test-swarm' }),
+      swarm_status: vi.fn().mockResolvedValue({
         agents: [],
         options: { topology: 'mesh' },
       }),
-      agent_spawn: jest.fn().mockResolvedValue({ id: 'test-agent' }),
-      agent_list: jest.fn().mockResolvedValue({ agents: [] }),
+      agent_spawn: vi.fn().mockResolvedValue({ id: 'test-agent' }),
+      agent_list: vi.fn().mockResolvedValue({ agents: [] }),
     };
 
     integration = new RecoveryIntegration({
@@ -806,7 +806,7 @@ describe('Error Handling and Edge Cases', () => {
       safetyEnabled: false,
     });
 
-    const shutdownSpy = jest.fn();
+    const shutdownSpy = vi.fn();
     integration.on('emergency:shutdown', shutdownSpy);
 
     await integration.emergencyShutdown('Test emergency');

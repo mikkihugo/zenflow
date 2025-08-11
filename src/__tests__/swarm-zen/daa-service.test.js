@@ -4,7 +4,7 @@
  * and < 1ms cross-boundary call latency
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 import { DAAService } from '../src/daa-service.js';
 
 describe('DAA Service', () => {
@@ -25,7 +25,7 @@ describe('DAA Service', () => {
     });
 
     test('should emit initialized event', async () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       service.on('initialized', listener);
 
       await service.initialize();
@@ -57,7 +57,7 @@ describe('DAA Service', () => {
     });
 
     test('should emit agentCreated event', async () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       service.on('agentCreated', listener);
 
       await service.createAgent('test-agent', ['learning']);
@@ -341,7 +341,7 @@ describe('DAA Service', () => {
     });
 
     test('should emit synchronization event', async () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       service.on('statesSynchronized', listener);
 
       await service.synchronizeStates(['sync-agent-1', 'sync-agent-2']);

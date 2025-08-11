@@ -14,14 +14,14 @@
  * @file sparc-swarm coordination system
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
-} from '../../../database/entities/product-entities';
-import type { AgentType } from '../../../types/agent-types';
-import type { SPARCPhase } from '../sparc/types/sparc-types';
-import { type SwarmAgent, SwarmCoordinator, type SwarmMetrics } from './swarm-coordinator';
+} from '../../../database/entities/product-entities.ts';
+import type { AgentType } from '../../../types/agent-types.ts';
+import type { SPARCPhase } from '../sparc/types/sparc-types.ts';
+import { type SwarmAgent, SwarmCoordinator, type SwarmMetrics } from './swarm-coordinator.ts';
 
 const logger = getLogger('SPARCSwarmCoordinator');
 

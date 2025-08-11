@@ -12,13 +12,13 @@
  * @file Mcp module exports.
  */
 
-export * from './http-mcp-server';
+export * from './http-mcp-server.ts';
 // Default export
-export { HTTPMCPServer as default } from './http-mcp-server';
+export { HTTPMCPServer as default } from './http-mcp-server.ts';
 // Legacy interface (deprecated)
-export * from './mcp-interface';
-export * from './mcp-logger';
-export * from './request-handler';
-export * from './start-server';
-export * from './tool-registry';
-export * from './validate-external-config';
+export * from './mcp-interface.ts';
+export * from './mcp-logger.ts';
+export * from './request-handler.ts';
+export * from './start-server.ts';
+export * from './tool-registry.ts';
+export * from './validate-external-config.ts';

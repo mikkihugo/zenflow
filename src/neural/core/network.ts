@@ -165,7 +165,7 @@ export async function initializeNeuralWasm(): Promise<any> {
 
   try {
     // Dynamic import of WASM module
-    // const { default: init, ...exports } = await import('../../wasm/ruv_swarm_wasm.js');
+    // const { default: init, ...exports } = await import('../../wasm/ruv_swarm_wasm');
     // await init();
     // wasmModule = exports;
     return null; // Temporary stub

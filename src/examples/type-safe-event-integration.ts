@@ -1,10 +1,10 @@
 /**
  * @file Type-Safe Event System Integration Examples
- * 
+ *
  * Demonstrates how to use the type-safe event system with domain boundary validation
  * for various scenarios including AGUI integration, multi-agent coordination,
  * and cross-domain workflows.
- * 
+ *
  * These examples show best practices for:
  * - Event-driven architecture implementation
  * - Domain boundary validation integration
@@ -13,33 +13,33 @@
  * - Error handling and recovery patterns
  */
 
+import { getLogger } from '../config/logging-config.ts';
+import type { Agent, Task } from '../coordination/types.ts';
 import {
-  TypeSafeEventBus,
-  createTypeSafeEventBus,
-  createEvent,
-  createCorrelationId,
-  EventPriority,
-  type BaseEvent,
+  Domain,
+  type DomainBoundaryValidator,
+  getDomainValidator,
+} from '../core/domain-boundary-validator.ts';
+import {
+  type AGUIGateClosedEvent,
+  type AGUIGateOpenedEvent,
   type AgentCreatedEvent,
+  type BaseEvent,
+  createCorrelationId,
+  createEvent,
+  createTypeSafeEventBus,
+  type EventHandler,
+  EventPriority,
+  type EventSystemConfig,
+  type HumanValidationCompletedEvent,
+  type HumanValidationRequestedEvent,
   type TaskAssignedEvent,
   type TaskCompletedEvent,
-  type WorkflowStartedEvent,
+  type TypeSafeEventBus,
   type WorkflowCompletedEvent,
-  type HumanValidationRequestedEvent,
-  type HumanValidationCompletedEvent,
-  type AGUIGateOpenedEvent,
-  type AGUIGateClosedEvent,
-  type EventHandler,
-  type EventSystemConfig
-} from '../core/type-safe-event-system';
-import { 
-  Domain,
-  getDomainValidator,
-  type DomainBoundaryValidator 
-} from '../core/domain-boundary-validator';
-import { getLogger } from '../config/logging-config';
-import type { Agent, Task } from '../coordination/types';
-import type { WorkflowDefinition, WorkflowContext } from '../workflows/types';
+  type WorkflowStartedEvent,
+} from '../core/type-safe-event-system.ts';
+import type { WorkflowContext, WorkflowDefinition } from '../workflows/types.ts';
 
 const logger = getLogger('event-integration-examples');
 
@@ -60,7 +60,7 @@ export async function createProductionEventBus(): Promise<TypeSafeEventBus> {
     maxConcurrency: 100,
     batchSize: 50,
     retryAttempts: 3,
-    backoffMultiplier: 2
+    backoffMultiplier: 2,
   };
 
   const eventBus = createTypeSafeEventBus(config);
@@ -84,11 +84,11 @@ export class EventDrivenCoordinationSystem {
     // Register handlers for agent lifecycle events
     this.eventBus.registerHandler('agent.created', this.handleAgentCreated.bind(this));
     this.eventBus.registerHandler('agent.destroyed', this.handleAgentDestroyed.bind(this));
-    
+
     // Register handlers for task management events
     this.eventBus.registerHandler('task.assigned', this.handleTaskAssigned.bind(this));
     this.eventBus.registerHandler('task.completed', this.handleTaskCompleted.bind(this));
-    
+
     // Register handlers for swarm state changes
     this.eventBus.registerHandler('swarm.state.changed', this.handleSwarmStateChanged.bind(this));
 
@@ -102,14 +102,14 @@ export class EventDrivenCoordinationSystem {
     type: 'researcher' | 'coder' | 'analyst' | 'coordinator';
   }): Promise<Agent> {
     const correlationId = createCorrelationId();
-    
+
     logger.info('Creating agent', { agentId: agentConfig.id, correlationId });
 
     // Create agent object
     const agent: Agent = {
       id: agentConfig.id,
       capabilities: agentConfig.capabilities,
-      status: 'idle'
+      status: 'idle',
     };
 
     // Emit agent creation event
@@ -120,19 +120,19 @@ export class EventDrivenCoordinationSystem {
         payload: {
           agent,
           capabilities: agent.capabilities,
-          initialStatus: agent.status
-        }
+          initialStatus: agent.status,
+        },
       },
       {
         correlationId,
         source: 'coordination-system',
         priority: EventPriority.HIGH,
-        tags: [`agent-type:${agentConfig.type}`, 'lifecycle:creation']
+        tags: [`agent-type:${agentConfig.type}`, 'lifecycle:creation'],
       }
     );
 
     const result = await this.eventBus.emitEvent(agentCreatedEvent);
-    
+
     if (!result.success) {
       throw new Error(`Failed to emit agent creation event: ${result.error?.message}`);
     }
@@ -140,7 +140,7 @@ export class EventDrivenCoordinationSystem {
     logger.info('Agent created successfully', {
       agentId: agent.id,
       correlationId,
-      processingTime: result.processingTime
+      processingTime: result.processingTime,
     });
 
     return agent;
@@ -149,7 +149,7 @@ export class EventDrivenCoordinationSystem {
   // Task Assignment with Cross-Domain Validation
   async assignTask(taskId: string, agentId: string): Promise<void> {
     const correlationId = createCorrelationId();
-    
+
     logger.info('Assigning task', { taskId, agentId, correlationId });
 
     // Create task object (simplified)
@@ -160,7 +160,7 @@ export class EventDrivenCoordinationSystem {
       dependencies: [],
       requiredCapabilities: ['analysis'],
       maxAgents: 1,
-      requireConsensus: false
+      requireConsensus: false,
     };
 
     // Use cross-domain event routing to ensure proper validation
@@ -171,13 +171,13 @@ export class EventDrivenCoordinationSystem {
         payload: {
           task,
           agentId,
-          assignmentTime: new Date()
-        }
+          assignmentTime: new Date(),
+        },
       },
-      { 
+      {
         correlationId,
         source: 'task-coordinator',
-        priority: EventPriority.NORMAL
+        priority: EventPriority.NORMAL,
       }
     );
 
@@ -194,7 +194,7 @@ export class EventDrivenCoordinationSystem {
         taskId,
         agentId,
         error: result.error?.message,
-        correlationId
+        correlationId,
       });
       throw new Error(`Task assignment failed: ${result.error?.message}`);
     }
@@ -203,62 +203,63 @@ export class EventDrivenCoordinationSystem {
       taskId,
       agentId,
       correlationId,
-      crossingId: result.metadata?.crossingId
+      crossingId: result.metadata?.crossingId,
     });
   }
 
   // Event handlers with comprehensive error handling
   private async handleAgentCreated(event: AgentCreatedEvent): Promise<void> {
     const { agent, capabilities } = event.payload;
-    
+
     logger.info('Processing agent creation', {
       agentId: agent.id,
       capabilities,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     try {
       // Validate agent creation with domain boundary validator
       const validator = getDomainValidator(Domain.COORDINATION);
-      
+
       // Track the domain crossing for monitoring
       validator.trackCrossings(Domain.CORE, Domain.COORDINATION, 'agent_creation');
-      
+
       // Additional business logic would go here
       // e.g., register agent in registry, allocate resources, etc.
-      
+
       logger.debug('Agent creation processed successfully', {
         agentId: agent.id,
-        status: agent.status
+        status: agent.status,
       });
-
     } catch (error) {
       logger.error('Agent creation processing failed', {
         agentId: agent.id,
         error: error instanceof Error ? error.message : String(error),
-        correlationId: event.metadata?.correlationId
+        correlationId: event.metadata?.correlationId,
       });
-      
+
       // Emit error event for monitoring
-      await this.eventBus.emitEvent(createEvent(
-        'error.occurred',
-        Domain.CORE,
-        {
-          payload: {
-            error: error instanceof Error ? error : new Error(String(error)),
-            context: { operation: 'agent_creation', agentId: agent.id },
-            severity: 'high' as const,
-            recoverable: true
-          }
-        },
-        { correlationId: event.metadata?.correlationId }
-      ));
+      await this.eventBus.emitEvent(
+        createEvent(
+          'error.occurred',
+          Domain.CORE,
+          {
+            payload: {
+              error: error instanceof Error ? error : new Error(String(error)),
+              context: { operation: 'agent_creation', agentId: agent.id },
+              severity: 'high' as const,
+              recoverable: true,
+            },
+          },
+          { correlationId: event.metadata?.correlationId }
+        )
+      );
     }
   }
 
   private async handleAgentDestroyed(event: any): Promise<void> {
     const { agentId, reason } = event.payload;
-    
+
     logger.info('Processing agent destruction', { agentId, reason });
 
     // Clean up resources, update registries, etc.
@@ -267,12 +268,12 @@ export class EventDrivenCoordinationSystem {
 
   private async handleTaskAssigned(event: TaskAssignedEvent): Promise<void> {
     const { task, agentId, assignmentTime } = event.payload;
-    
+
     logger.info('Processing task assignment', {
       taskId: task.id,
       agentId,
       assignmentTime,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // Here you would:
@@ -280,7 +281,7 @@ export class EventDrivenCoordinationSystem {
     // 2. Update agent status to 'busy'
     // 3. Start task execution monitoring
     // 4. Set up timeout handling
-    
+
     // Simulate task completion after some processing
     setTimeout(async () => {
       const taskCompletedEvent: TaskCompletedEvent = createEvent(
@@ -290,15 +291,18 @@ export class EventDrivenCoordinationSystem {
           payload: {
             taskId: task.id,
             agentId,
-            result: { status: 'completed', output: 'Task completed successfully' },
+            result: {
+              status: 'completed',
+              output: 'Task completed successfully',
+            },
             duration: 5000,
-            success: true
-          }
+            success: true,
+          },
         },
         {
           correlationId: event.metadata?.correlationId,
           causationId: event.id,
-          source: 'task-executor'
+          source: 'task-executor',
         }
       );
 
@@ -308,13 +312,13 @@ export class EventDrivenCoordinationSystem {
 
   private async handleTaskCompleted(event: TaskCompletedEvent): Promise<void> {
     const { taskId, agentId, result, duration, success } = event.payload;
-    
+
     logger.info('Processing task completion', {
       taskId,
       agentId,
       success,
       duration,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // Update agent status back to 'idle'
@@ -324,12 +328,12 @@ export class EventDrivenCoordinationSystem {
 
   private async handleSwarmStateChanged(event: any): Promise<void> {
     const { swarmId, previousState, newState, agentCount } = event.payload;
-    
+
     logger.info('Processing swarm state change', {
       swarmId,
       previousState,
       newState,
-      agentCount
+      agentCount,
     });
 
     // React to swarm state changes
@@ -345,19 +349,28 @@ export class EventDrivenCoordinationSystem {
  * Example 3: AGUI integration for human validation workflows
  */
 export class AGUIValidationSystem {
-  private pendingValidations = new Map<string, {
-    requestId: string;
-    context: any;
-    timeout: NodeJS.Timeout;
-    resolve: (approved: boolean) => void;
-  }>();
+  private pendingValidations = new Map<
+    string,
+    {
+      requestId: string;
+      context: any;
+      timeout: NodeJS.Timeout;
+      resolve: (approved: boolean) => void;
+    }
+  >();
 
   constructor(private eventBus: TypeSafeEventBus) {}
 
   async initializeAGUI(): Promise<void> {
     // Register AGUI event handlers
-    this.eventBus.registerHandler('human.validation.requested', this.handleValidationRequest.bind(this));
-    this.eventBus.registerHandler('human.validation.completed', this.handleValidationCompleted.bind(this));
+    this.eventBus.registerHandler(
+      'human.validation.requested',
+      this.handleValidationRequest.bind(this)
+    );
+    this.eventBus.registerHandler(
+      'human.validation.completed',
+      this.handleValidationCompleted.bind(this)
+    );
     this.eventBus.registerHandler('agui.gate.opened', this.handleGateOpened.bind(this));
     this.eventBus.registerHandler('agui.gate.closed', this.handleGateClosed.bind(this));
 
@@ -382,7 +395,7 @@ export class AGUIValidationSystem {
       requestId,
       validationType,
       priority: options.priority,
-      correlationId
+      correlationId,
     });
 
     // Create validation request event
@@ -395,19 +408,19 @@ export class AGUIValidationSystem {
           validationType,
           context,
           priority: options.priority || EventPriority.NORMAL,
-          timeout
-        }
+          timeout,
+        },
       },
       {
         correlationId,
         source: 'agui-validation-system',
-        priority: options.priority || EventPriority.NORMAL
+        priority: options.priority || EventPriority.NORMAL,
       }
     );
 
     // Emit the validation request
     const result = await this.eventBus.emitEvent(validationRequest);
-    
+
     if (!result.success) {
       throw new Error(`Failed to request human validation: ${result.error?.message}`);
     }
@@ -426,7 +439,7 @@ export class AGUIValidationSystem {
         resolve: (approved: boolean) => {
           clearTimeout(timeoutHandle);
           resolve({ approved, input: null, feedback: null });
-        }
+        },
       });
     });
   }
@@ -440,7 +453,12 @@ export class AGUIValidationSystem {
     const gateId = `gate-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
     const correlationId = createCorrelationId();
 
-    logger.info('Opening AGUI gate', { gateId, gateType, requiresApproval, correlationId });
+    logger.info('Opening AGUI gate', {
+      gateId,
+      gateType,
+      requiresApproval,
+      correlationId,
+    });
 
     // Emit gate opened event
     const gateOpenedEvent: AGUIGateOpenedEvent = createEvent(
@@ -451,14 +469,14 @@ export class AGUIValidationSystem {
           gateId,
           gateType,
           requiredApproval: requiresApproval,
-          context
-        }
+          context,
+        },
       },
       { correlationId, source: 'agui-gate-system' }
     );
 
     const result = await this.eventBus.emitEvent(gateOpenedEvent);
-    
+
     if (!result.success) {
       throw new Error(`Failed to open AGUI gate: ${result.error?.message}`);
     }
@@ -492,33 +510,33 @@ export class AGUIValidationSystem {
           gateId,
           approved,
           duration,
-          humanInput
-        }
+          humanInput,
+        },
       },
       { correlationId, source: 'agui-gate-system' }
     );
 
     await this.eventBus.emitEvent(gateClosedEvent);
-    
+
     return { approved, duration, humanInput };
   }
 
   // Event handlers
   private async handleValidationRequest(event: HumanValidationRequestedEvent): Promise<void> {
     const { requestId, validationType, context, priority } = event.payload;
-    
+
     logger.info('Processing validation request', {
       requestId,
       validationType,
       priority,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // In a real implementation, this would:
     // 1. Display validation UI to human operator
     // 2. Wait for human response
     // 3. Emit validation completed event with response
-    
+
     // For demo purposes, simulate approval after short delay
     setTimeout(async () => {
       const completedEvent: HumanValidationCompletedEvent = createEvent(
@@ -529,13 +547,13 @@ export class AGUIValidationSystem {
             requestId,
             approved: true,
             processingTime: 2000,
-            feedback: 'Approved by human operator'
-          }
+            feedback: 'Approved by human operator',
+          },
         },
         {
           correlationId: event.metadata?.correlationId,
           causationId: event.id,
-          source: 'human-operator'
+          source: 'human-operator',
         }
       );
 
@@ -545,12 +563,12 @@ export class AGUIValidationSystem {
 
   private async handleValidationCompleted(event: HumanValidationCompletedEvent): Promise<void> {
     const { requestId, approved, feedback } = event.payload;
-    
+
     logger.info('Processing validation completion', {
       requestId,
       approved,
       feedback,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // Resolve pending validation promise
@@ -563,12 +581,12 @@ export class AGUIValidationSystem {
 
   private async handleGateOpened(event: AGUIGateOpenedEvent): Promise<void> {
     const { gateId, gateType, requiredApproval, context } = event.payload;
-    
+
     logger.info('Processing gate opened', {
       gateId,
       gateType,
       requiredApproval,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // Gate opening logic would go here
@@ -577,12 +595,12 @@ export class AGUIValidationSystem {
 
   private async handleGateClosed(event: AGUIGateClosedEvent): Promise<void> {
     const { gateId, approved, duration } = event.payload;
-    
+
     logger.info('Processing gate closed', {
       gateId,
       approved,
       duration,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // Gate closure logic would go here
@@ -605,7 +623,10 @@ export class CrossDomainWorkflowOrchestrator {
     this.eventBus.registerHandler('workflow.started', this.handleWorkflowStarted.bind(this));
     this.eventBus.registerHandler('workflow.completed', this.handleWorkflowCompleted.bind(this));
     this.eventBus.registerHandler('workflow.failed', this.handleWorkflowFailed.bind(this));
-    this.eventBus.registerHandler('workflow.step.completed', this.handleWorkflowStepCompleted.bind(this));
+    this.eventBus.registerHandler(
+      'workflow.step.completed',
+      this.handleWorkflowStepCompleted.bind(this)
+    );
 
     logger.info('Cross-domain workflow orchestrator initialized');
   }
@@ -617,10 +638,10 @@ export class CrossDomainWorkflowOrchestrator {
     context: WorkflowContext
   ): Promise<{ success: boolean; result?: any; error?: Error }> {
     const correlationId = createCorrelationId();
-    
+
     logger.info('Starting complex workflow execution', {
       workflowId,
-      correlationId
+      correlationId,
     });
 
     try {
@@ -633,8 +654,8 @@ export class CrossDomainWorkflowOrchestrator {
             workflowId,
             definition,
             context,
-            startTime: new Date()
-          }
+            startTime: new Date(),
+          },
         },
         { correlationId, source: 'workflow-orchestrator' }
       );
@@ -652,8 +673,8 @@ export class CrossDomainWorkflowOrchestrator {
           payload: {
             workflowId,
             requiredCapabilities: ['workflow-execution'],
-            agentCount: 2
-          }
+            agentCount: 2,
+          },
         },
         { correlationId, causationId: workflowStartedEvent.id }
       );
@@ -679,8 +700,8 @@ export class CrossDomainWorkflowOrchestrator {
             validationType: 'approval',
             context: { workflow: workflowId, step: 'execution-approval' },
             priority: EventPriority.HIGH,
-            timeout: 30000
-          }
+            timeout: 30000,
+          },
         },
         { correlationId }
       );
@@ -704,8 +725,8 @@ export class CrossDomainWorkflowOrchestrator {
           payload: {
             workflowId,
             optimizationType: 'execution-path',
-            parameters: { accuracy: 0.95, speed: 'high' }
-          }
+            parameters: { accuracy: 0.95, speed: 'high' },
+          },
         },
         { correlationId }
       );
@@ -725,8 +746,8 @@ export class CrossDomainWorkflowOrchestrator {
           payload: {
             workflowId,
             data: { status: 'completed', timestamp: new Date() },
-            collection: 'workflow-results'
-          }
+            collection: 'workflow-results',
+          },
         },
         { correlationId }
       );
@@ -740,16 +761,15 @@ export class CrossDomainWorkflowOrchestrator {
 
       logger.info('Complex workflow completed successfully', {
         workflowId,
-        correlationId
+        correlationId,
       });
 
       return { success: true, result: { workflowId, status: 'completed' } };
-
     } catch (error) {
       logger.error('Complex workflow execution failed', {
         workflowId,
         correlationId,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
 
       // Emit workflow failure event
@@ -760,17 +780,17 @@ export class CrossDomainWorkflowOrchestrator {
           payload: {
             workflowId,
             error: error instanceof Error ? error : new Error(String(error)),
-            failedStep: 0
-          }
+            failedStep: 0,
+          },
         },
         { correlationId }
       );
 
       await this.eventBus.emitEvent(failureEvent);
 
-      return { 
-        success: false, 
-        error: error instanceof Error ? error : new Error(String(error))
+      return {
+        success: false,
+        error: error instanceof Error ? error : new Error(String(error)),
       };
     }
   }
@@ -778,11 +798,11 @@ export class CrossDomainWorkflowOrchestrator {
   // Event handlers for workflow orchestration
   private async handleWorkflowStarted(event: WorkflowStartedEvent): Promise<void> {
     const { workflowId, definition, startTime } = event.payload;
-    
+
     logger.info('Processing workflow start', {
       workflowId,
       startTime,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // Initialize workflow execution state
@@ -791,11 +811,11 @@ export class CrossDomainWorkflowOrchestrator {
 
   private async handleWorkflowCompleted(event: WorkflowCompletedEvent): Promise<void> {
     const { workflowId, result, duration } = event.payload;
-    
+
     logger.info('Processing workflow completion', {
       workflowId,
       duration,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // Clean up resources
@@ -805,12 +825,12 @@ export class CrossDomainWorkflowOrchestrator {
 
   private async handleWorkflowFailed(event: WorkflowFailedEvent): Promise<void> {
     const { workflowId, error, failedStep } = event.payload;
-    
+
     logger.error('Processing workflow failure', {
       workflowId,
       failedStep,
       error: error.message,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // Implement failure recovery
@@ -820,11 +840,11 @@ export class CrossDomainWorkflowOrchestrator {
 
   private async handleWorkflowStepCompleted(event: WorkflowStepCompletedEvent): Promise<void> {
     const { workflowId, stepIndex, stepResult } = event.payload;
-    
+
     logger.debug('Processing workflow step completion', {
       workflowId,
       stepIndex,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
 
     // Update workflow progress
@@ -841,7 +861,7 @@ export class CrossDomainWorkflowOrchestrator {
  */
 export class EventSystemAnalytics {
   private metricsCollectionInterval?: NodeJS.Timeout;
-  
+
   constructor(private eventBus: TypeSafeEventBus) {}
 
   async startMonitoring(intervalMs: number = 10000): Promise<void> {
@@ -850,7 +870,7 @@ export class EventSystemAnalytics {
     // Register handlers for all events to collect analytics
     this.eventBus.registerWildcardHandler(this.collectEventAnalytics.bind(this), {
       priority: -1, // Low priority so it runs after business logic
-      trackMetrics: false // Don't track metrics for metrics collection
+      trackMetrics: false, // Don't track metrics for metrics collection
     });
 
     // Set up periodic metrics reporting
@@ -872,12 +892,12 @@ export class EventSystemAnalytics {
   private async collectEventAnalytics(event: BaseEvent): Promise<void> {
     // Collect event patterns, frequencies, and performance data
     // This would typically send data to a monitoring service
-    
+
     logger.debug('Collecting event analytics', {
       eventType: event.type,
       domain: event.domain,
       timestamp: event.timestamp,
-      correlationId: event.metadata?.correlationId
+      correlationId: event.metadata?.correlationId,
     });
   }
 
@@ -894,7 +914,7 @@ export class EventSystemAnalytics {
       memoryUsage: metrics.memoryUsage,
       cacheHitRate: metrics.cacheHitRate,
       domainEventCounts: metrics.domainEventCounts,
-      performanceStats: Object.keys(performanceStats).length
+      performanceStats: Object.keys(performanceStats).length,
     });
 
     // In a production system, you would:
@@ -914,19 +934,20 @@ export class EventSystemAnalytics {
     const metrics = this.eventBus.getMetrics();
     const performanceStats = this.eventBus.getPerformanceStats();
     const eventHistory = this.eventBus.queryEvents({ limit: 100 });
-    
+
     const recommendations: string[] = [];
-    
+
     // Generate recommendations based on metrics
     if (metrics.failureRate > 0.05) {
       recommendations.push('High failure rate detected. Consider reviewing error handling.');
     }
-    
+
     if (metrics.averageProcessingTime > 1000) {
       recommendations.push('High average processing time. Consider optimizing handlers.');
     }
-    
-    if (metrics.memoryUsage > 50000000) { // 50MB
+
+    if (metrics.memoryUsage > 50000000) {
+      // 50MB
       recommendations.push('High memory usage. Consider reducing event history size.');
     }
 
@@ -934,7 +955,7 @@ export class EventSystemAnalytics {
       metrics,
       performanceStats,
       eventHistory,
-      recommendations
+      recommendations,
     };
   }
 }
@@ -969,7 +990,7 @@ export async function demonstrateCompleteIntegration(): Promise<void> {
     const agent = await coordinationSystem.createAgent({
       id: 'demo-agent-1',
       capabilities: ['analysis', 'coordination'],
-      type: 'analyst'
+      type: 'analyst',
     });
 
     await coordinationSystem.assignTask('demo-task-1', agent.id);
@@ -997,12 +1018,12 @@ export async function demonstrateCompleteIntegration(): Promise<void> {
     const workflowDefinition: WorkflowDefinition = {
       id: 'demo-workflow',
       name: 'Demo Workflow',
-      version: '1.0.0'
+      version: '1.0.0',
     } as WorkflowDefinition;
 
     const workflowContext: WorkflowContext = {
       workflowId: 'demo-workflow',
-      variables: { demo: true }
+      variables: { demo: true },
     } as WorkflowContext;
 
     const workflowResult = await workflowOrchestrator.executeComplexWorkflow(
@@ -1017,7 +1038,7 @@ export async function demonstrateCompleteIntegration(): Promise<void> {
     const analyticsReport = analytics.getAnalyticsReport();
     logger.info('Analytics report generated', {
       totalEvents: analyticsReport.metrics.totalEvents,
-      recommendations: analyticsReport.recommendations
+      recommendations: analyticsReport.recommendations,
     });
 
     // 8. Clean shutdown
@@ -1025,10 +1046,9 @@ export async function demonstrateCompleteIntegration(): Promise<void> {
     await eventBus.shutdown();
 
     logger.info('Complete event system integration demonstration completed successfully');
-
   } catch (error) {
     logger.error('Integration demonstration failed', {
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message : String(error),
     });
     throw error;
   }
@@ -1042,7 +1062,7 @@ export {
   EventDrivenCoordinationSystem,
   AGUIValidationSystem,
   CrossDomainWorkflowOrchestrator,
-  EventSystemAnalytics
+  EventSystemAnalytics,
 };
 
 // Example usage function for testing

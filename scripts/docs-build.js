@@ -159,7 +159,7 @@ class DocsBuilder {
 
       return this.results;
     } catch (error) {
-      console.error('❌ Documentation build pipeline failed:', error.message);
+      // console.error('❌ Documentation build pipeline failed:', error.message);
       this.results.success = false;
       this.results.error = error.message;
       throw error;
@@ -205,7 +205,7 @@ class DocsBuilder {
         error: error.message,
       };
 
-      console.error(`❌ Step ${stepName} failed after ${duration}ms:`, error.message);
+      // console.error(`❌ Step ${stepName} failed after ${duration}ms:`, error.message);
       throw error;
     }
   }
@@ -892,7 +892,7 @@ nav a {
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize search functionality
   if (window.SITE_STRUCTURE) {
-    console.log('Site structure loaded:', window.SITE_STRUCTURE);
+    // console.log('Site structure loaded:', window.SITE_STRUCTURE);
   }
   
   // Add interactive features
@@ -1212,7 +1212,7 @@ async function main() {
     const exitCode = results.success ? 0 : 1;
     process.exit(exitCode);
   } catch (error) {
-    console.error('💥 Documentation build failed:', error.message);
+    // console.error('💥 Documentation build failed:', error.message);
     process.exit(1);
   }
 }

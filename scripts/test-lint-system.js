@@ -52,7 +52,7 @@ class LintSystemTester {
       'unterminated-comment.js': `
 /* This is an unterminated comment
 function test() {
-  console.log('hello world');
+  // console.log('hello world');
 }
 `,
       'missing-semicolons.js': `
@@ -61,16 +61,16 @@ const age = 25
 function greet() {
   return \`Hello \${name}\`
 }
-console.log(greet())
+// console.log(greet())
 `,
       'missing-brackets.js': `
 function incomplete() {
   if (true) {
-    console.log('missing closing brace'
+    // console.log('missing closing brace'
   }
   
   const arr = [1, 2, 3
-  console.log(arr
+  // console.log(arr
 }
 `,
       'typescript-errors.ts': `
@@ -80,7 +80,7 @@ interface User {
 }
 
 function processUser(user: User): {
-  console.log(user.name)
+  // console.log(user.name)
 }
 
 const incomplete:
@@ -91,7 +91,7 @@ const fs = require('fs')
 export
 
 function test() {
-  console.log('mixed module syntax')
+  // console.log('mixed module syntax')
 }
 
 module.exports = test
@@ -140,7 +140,7 @@ export class TestClass {
 
   async method(): Promise<void> {
     const result = await this.process()
-    console.log(result
+    // console.log(result
   }
 
   private process(): string {
@@ -537,7 +537,7 @@ export class TestClass {
       return report;
     } catch (error) {
       this.logMemory('test-suite-error', { error: error.message });
-      console.error('❌ Test suite failed:', error);
+      // console.error('❌ Test suite failed:', error);
       throw error;
     } finally {
       // Cleanup test directory
@@ -557,7 +557,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       process.exit(report.summary.failed > 0 ? 1 : 0);
     })
     .catch((error) => {
-      console.error('❌ Test suite failed:', error);
+      // console.error('❌ Test suite failed:', error);
       process.exit(1);
     });
 }

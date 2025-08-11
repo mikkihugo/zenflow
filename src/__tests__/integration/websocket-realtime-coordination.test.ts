@@ -4,12 +4,12 @@
  */
 
 import { WebSocket } from 'ws';
-import { AgentManager } from '../../coordination/agents/agent-manager';
-import { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator';
-import { WebSocketManager } from '../../interfaces/web/web-socket-manager';
-import { RealTimeMonitor } from '../../monitoring/performance/real-time-monitor';
-import { IntegrationTestSetup } from '../helpers/integration-test-setup';
-import { NetworkTestHelper } from '../helpers/network-test-helper';
+import { AgentManager } from '../../coordination/agents/agent-manager.ts';
+import { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator.ts';
+import { WebSocketManager } from '../../interfaces/web/web-socket-manager.ts';
+import { RealTimeMonitor } from '../../monitoring/performance/real-time-monitor.ts';
+import { IntegrationTestSetup } from '../helpers/integration-test-setup.ts';
+import { NetworkTestHelper } from '../helpers/network-test-helper.ts';
 
 describe('WebSocket Real-time Coordination Integration Tests', () => {
   let wsManager: WebSocketManager;

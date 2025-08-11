@@ -3,7 +3,7 @@
  * Integrates all design patterns with existing swarm coordination system.
  */
 
-import { Logger } from '../core/logger';
+import { Logger } from '../core/logger.ts';
 
 const logger = new Logger('src-core-pattern-integration');
 
@@ -13,7 +13,7 @@ import {
   AgentFactory,
   type HierarchicalAgentGroup,
   type TaskDefinition,
-} from '../coordination/agents/composite-system';
+} from '../coordination/agents/composite-system.ts';
 // Import all pattern implementations
 import {
   type CoordinationContext,
@@ -21,7 +21,7 @@ import {
   StrategyFactory,
   SwarmCoordinator,
   type SwarmTopology,
-} from '../coordination/swarm/core/strategy';
+} from '../coordination/swarm/core/strategy.ts';
 import {
   ClaudeZenFacade,
   type IDatabaseService,
@@ -30,7 +30,7 @@ import {
   type INeuralService,
   type ISwarmService,
   type IWorkflowService,
-} from '../core/facade';
+} from '../core/facade.ts';
 import {
   AdapterFactory,
   type ConnectionConfig,
@@ -38,18 +38,18 @@ import {
   ProtocolManager,
   RESTAdapter,
   WebSocketAdapter,
-} from '../integration/adapter-system';
+} from '../integration/adapter-system.ts';
 import {
   EventBuilder,
   LoggerObserver,
   MetricsObserver,
   SystemEventManager,
-} from '../interfaces/events/observer-system';
+} from '../interfaces/events/observer-system.ts';
 import {
   type CommandContext,
   CommandFactory,
   MCPCommandQueue,
-} from '../interfaces/mcp/command-system';
+} from '../interfaces/mcp/command-system.ts';
 
 // Integration configuration
 export interface IntegrationConfig {
@@ -107,7 +107,12 @@ export class IntegratedSwarmService implements ISwarmService {
       const swarmEvent = EventBuilder.createSwarmEvent(
         result?.data?.swarmId,
         'init',
-        { healthy: true, activeAgents: config?.agentCount, completedTasks: 0, errors: [] },
+        {
+          healthy: true,
+          activeAgents: config?.agentCount,
+          completedTasks: 0,
+          errors: [],
+        },
         config?.topology,
         {
           latency: 0,
@@ -256,7 +261,10 @@ export class AgentManager extends EventEmitter {
     await group.initialize(swarmConfig);
     this.swarmGroups.set(swarmId, group);
 
-    this.emit('swarm:created', { swarmId, agentCount: swarmConfig?.agentCount });
+    this.emit('swarm:created', {
+      swarmId,
+      agentCount: swarmConfig?.agentCount,
+    });
     return group;
   }
 
@@ -583,7 +591,13 @@ export class IntegratedPatternSystem extends EventEmitter {
         timestamp: new Date(),
         environment: 'development',
         permissions: ['task:orchestrate'],
-        resources: { cpu: 0.8, memory: 0.7, network: 0.6, storage: 0.9, timestamp: new Date() },
+        resources: {
+          cpu: 0.8,
+          memory: 0.7,
+          network: 0.6,
+          storage: 0.9,
+          timestamp: new Date(),
+        },
       }
     );
 
@@ -769,7 +783,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   private async createRealMemoryService(): Promise<IMemoryService> {
     try {
       // Import memory coordinator with fallback
-      const memoryModule = await import('./memory-coordinator').catch(() => null);
+      const memoryModule = await import('./memory-coordinator.ts').catch(() => null);
       if (!memoryModule?.MemorySystem) {
         throw new Error('MemorySystem not available');
       }
@@ -831,10 +845,10 @@ export class IntegratedPatternSystem extends EventEmitter {
    */
   private async createRealDatabaseService(): Promise<IDatabaseService> {
     try {
-      const { DALFactory } = await import('../database/factory');
-      const { DIContainer } = await import('../di/container/di-container');
-      const { DATABASE_TOKENS } = await import('../di/tokens/core-tokens');
-      const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
+      const { DALFactory } = await import('../database/factory.ts');
+      const { DIContainer } = await import('../di/container/di-container.ts');
+      const { DATABASE_TOKENS } = await import('../di/tokens/core-tokens.ts');
+      const { CORE_TOKENS } = await import('../di/tokens/core-tokens.ts');
 
       const container = new DIContainer();
       // Register logger provider with proper typing
@@ -973,8 +987,15 @@ export class IntegratedPatternSystem extends EventEmitter {
           status: 'failed',
           activeConnections: 0,
         }),
-        startTUI: async (): Promise<any> => ({ instanceId: '', mode: '', status: 'failed' }),
-        startCLI: async (): Promise<any> => ({ instanceId: '', status: 'failed' }),
+        startTUI: async (): Promise<any> => ({
+          instanceId: '',
+          mode: '',
+          status: 'failed',
+        }),
+        startCLI: async (): Promise<any> => ({
+          instanceId: '',
+          status: 'failed',
+        }),
         stopInterface: async () => {},
         getInterfaceStatus: async () => [],
       };

@@ -6,7 +6,7 @@
  * @file Token-factory implementation.
  */
 
-import type { Constructor, DIToken } from '../types/di-types';
+import type { Constructor, DIToken } from '../types/di-types.ts';
 
 /**
  * Creates a typed DI token for service registration.

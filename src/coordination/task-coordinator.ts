@@ -5,11 +5,11 @@
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
-} from '../database/entities/product-entities';
-import type { AgentType } from '../types/agent-types';
-import type { DatabaseSPARCBridge } from './database-sparc-bridge';
-import type { SPARCSwarmCoordinator } from './swarm/core/sparc-swarm-coordinator';
-import { generateSubAgentConfig, mapToClaudeSubAgent } from './sub-agent-generator';
+} from '../database/entities/product-entities.ts';
+import type { AgentType } from '../types/agent-types.ts';
+import type { DatabaseSPARCBridge } from './database-sparc-bridge.ts';
+import { generateSubAgentConfig, mapToClaudeSubAgent } from './sub-agent-generator.ts';
+import type { SPARCSwarmCoordinator } from './swarm/core/sparc-swarm-coordinator.ts';
 
 export interface TaskConfig {
   description: string;
@@ -128,11 +128,11 @@ export class TaskCoordinator {
       // Use existing document
       if (config?.source_document?.type === 'feature') {
         assignmentId = await this.sparcBridge.assignFeatureToSparcs(
-          config?.source_document as FeatureDocumentEntity
+          config?.source_document
         );
       } else {
         assignmentId = await this.sparcBridge.assignTaskToSparcs(
-          config?.source_document as TaskDocumentEntity
+          config?.source_document
         );
       }
     } else {

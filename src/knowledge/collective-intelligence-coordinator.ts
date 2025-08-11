@@ -15,8 +15,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
-import type { WASMPerformanceMetrics } from '../neural/types/wasm-types';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { WASMPerformanceMetrics } from '../neural/types/wasm-types.ts';
 
 // Use WASM performance metrics as base performance type
 export type PerformanceMetrics = WASMPerformanceMetrics;
@@ -1372,7 +1372,10 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
   private async performOptimalMatching(taskAnalysis: any, agentCapabilities: any): Promise<any[]> {
     // TODO: Implement optimal matching algorithm
-    this.logger.info('Performing optimal matching', { taskAnalysis, agentCapabilities });
+    this.logger.info('Performing optimal matching', {
+      taskAnalysis,
+      agentCapabilities,
+    });
     return [];
   }
 

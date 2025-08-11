@@ -7,7 +7,7 @@
  * @file TypeScript type definitions for interfaces.
  */
 
-import type { AuthenticationConfig, ClientConfig, RetryConfig } from '../core/interfaces';
+import type { AuthenticationConfig, ClientConfig, RetryConfig } from '../core/interfaces.ts';
 
 /**
  * HTTP-specific authentication configuration.

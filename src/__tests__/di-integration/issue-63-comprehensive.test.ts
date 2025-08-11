@@ -6,12 +6,12 @@
  * @description Comprehensive tests for Issue #63 requirements validation
  */
 
-import { DatabaseController } from '../../database/controllers/database-controller';
-import { DatabaseProviderFactory } from '../../database/providers/database-providers';
-import { DIContainer } from '../../di/container/di-container';
-import { CORE_TOKENS, DATABASE_TOKENS, MEMORY_TOKENS } from '../../di/tokens/core-tokens';
-import { MemoryController } from '../../memory/controllers/memory-controller';
-import { MemoryProviderFactory } from '../../memory/providers/memory-providers';
+import { DatabaseController } from '../../database/controllers/database-controller.ts';
+import { DatabaseProviderFactory } from '../../database/providers/database-providers.ts';
+import { DIContainer } from '../../di/container/di-container.ts';
+import { CORE_TOKENS, DATABASE_TOKENS, MEMORY_TOKENS } from '../../di/tokens/core-tokens.ts';
+import { MemoryController } from '../../memory/controllers/memory-controller.ts';
+import { MemoryProviderFactory } from '../../memory/providers/memory-providers.ts';
 
 // Mock implementations for testing
 class MockLogger {

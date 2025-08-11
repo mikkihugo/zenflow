@@ -8,7 +8,7 @@
  * @file Errors implementation.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 
 const logger = getLogger('ErrorSystem');
 
@@ -472,7 +472,9 @@ export class SwarmCommunicationError extends SwarmError {
     public readonly messageType?: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
   ) {
-    super(message, undefined, severity, { metadata: { fromAgent, toAgent, messageType } });
+    super(message, undefined, severity, {
+      metadata: { fromAgent, toAgent, messageType },
+    });
     this.name = 'SwarmCommunicationError';
   }
 }
@@ -484,7 +486,9 @@ export class SwarmCoordinationError extends SwarmError {
     public readonly participantCount?: number,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
   ) {
-    super(message, undefined, severity, { metadata: { coordinationType, participantCount } });
+    super(message, undefined, severity, {
+      metadata: { coordinationType, participantCount },
+    });
     this.name = 'SwarmCoordinationError';
   }
 }
@@ -536,7 +540,9 @@ export class MCPValidationError extends MCPError {
     public readonly actualValue: any,
     toolName?: string
   ) {
-    super(message, toolName, 'medium', { metadata: { parameterName, expectedType, actualValue } });
+    super(message, toolName, 'medium', {
+      metadata: { parameterName, expectedType, actualValue },
+    });
     this.name = 'MCPValidationError';
   }
 }
@@ -709,7 +715,9 @@ export class ValidationError extends BaseClaudeZenError {
     public readonly expectedValue?: any,
     public readonly actualValue?: any
   ) {
-    super(message, 'Validation', 'medium', { metadata: { field, expectedValue, actualValue } });
+    super(message, 'Validation', 'medium', {
+      metadata: { field, expectedValue, actualValue },
+    });
     this.name = 'ValidationError';
   }
 }
@@ -720,7 +728,9 @@ export class NotFoundError extends BaseClaudeZenError {
     public readonly resource?: string,
     public readonly resourceId?: string
   ) {
-    super(message, 'NotFound', 'medium', { metadata: { resource, resourceId } });
+    super(message, 'NotFound', 'medium', {
+      metadata: { resource, resourceId },
+    });
     this.name = 'NotFoundError';
   }
 }
@@ -806,7 +816,10 @@ export class StorageError extends BaseClaudeZenError {
     public readonly operation: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
   ) {
-    super(message, 'Storage', severity, { operation, metadata: { storageType } });
+    super(message, 'Storage', severity, {
+      operation,
+      metadata: { storageType },
+    });
     this.name = 'StorageError';
   }
 }
@@ -831,7 +844,11 @@ export class TransactionError extends DatabaseError {
     public readonly rollbackSuccess: boolean = false
   ) {
     super(message, undefined, undefined, 'critical');
-    this.context.metadata = { ...this.context.metadata, transactionId, rollbackSuccess };
+    this.context.metadata = {
+      ...this.context.metadata,
+      transactionId,
+      rollbackSuccess,
+    };
     this.name = 'TransactionError';
   }
 }

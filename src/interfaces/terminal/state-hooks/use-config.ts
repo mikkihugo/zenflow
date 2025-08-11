@@ -9,7 +9,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('ConfigHook');
 

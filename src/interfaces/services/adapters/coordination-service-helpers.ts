@@ -9,12 +9,12 @@
  * @file Interface implementation: coordination-service-helpers.
  */
 
-import { getLogger } from '../../../config/logging-config';
-import type { SessionState } from '../../../coordination/swarm/core/session-manager';
-import type { SwarmAgent } from '../../../coordination/swarm/core/swarm-coordinator';
-import type { AgentType } from '../../../types/agent-types';
-import type { SwarmTopology } from '../../../types/shared-types';
-import type { CoordinationServiceAdapter } from './coordination-service-adapter';
+import { getLogger } from '../../../config/logging-config.ts';
+import type { SessionState } from '../../../coordination/swarm/core/session-manager.ts';
+import type { SwarmAgent } from '../../../coordination/swarm/core/swarm-coordinator.ts';
+import type { AgentType } from '../../../types/agent-types.ts';
+import type { SwarmTopology } from '../../../types/shared-types.ts';
+import type { CoordinationServiceAdapter } from './coordination-service-adapter.ts';
 
 // ============================================
 // Agent Management Helpers

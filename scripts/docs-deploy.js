@@ -172,7 +172,7 @@ class DocsDeploymentPipeline {
 
       return this.results;
     } catch (error) {
-      console.error('❌ Documentation deployment pipeline failed:', error.message);
+      // console.error('❌ Documentation deployment pipeline failed:', error.message);
 
       // Attempt rollback if enabled
       if (this.enableRollback) {
@@ -224,7 +224,7 @@ class DocsDeploymentPipeline {
         error: error.message,
       };
 
-      console.error(`❌ Stage ${stageName} failed after ${duration}ms:`, error.message);
+      // console.error(`❌ Stage ${stageName} failed after ${duration}ms:`, error.message);
       throw error;
     }
   }
@@ -925,7 +925,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
           error: error.message,
           timestamp: new Date().toISOString(),
         };
-        console.error(`❌ ${targetName} deployment failed: ${error.message}`);
+        // console.error(`❌ ${targetName} deployment failed: ${error.message}`);
       }
     }
 
@@ -1088,7 +1088,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
           accessible: false,
           error: error.message,
         };
-        console.error(`❌ ${targetName} verification failed: ${error.message}`);
+        // console.error(`❌ ${targetName} verification failed: ${error.message}`);
       }
     }
 
@@ -1509,7 +1509,7 @@ async function main() {
     const exitCode = results.success ? 0 : 1;
     process.exit(exitCode);
   } catch (error) {
-    console.error('💥 Documentation deployment failed:', error.message);
+    // console.error('💥 Documentation deployment failed:', error.message);
     process.exit(1);
   }
 }

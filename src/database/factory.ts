@@ -13,7 +13,7 @@
  * @example Basic Factory Usage
  * ```typescript
  * import { DALFactory } from './database/factory';
- * import { DIContainer } from '../di/container/di-container';
+ * import { DIContainer } from '../di/container/di-container.ts';
  *
  * const container = new DIContainer();
  * const factory = container.resolve(DALFactory);
@@ -102,13 +102,13 @@ interface DatabaseProviderFactory {
   createAdapter(config: DatabaseConfig): Promise<DatabaseAdapter>;
 }
 
-import type { ICoordinationRepository, IMemoryRepository } from '../database/interfaces';
+import type { ICoordinationRepository, IMemoryRepository } from '../database/interfaces.ts';
 import type {
   IDataAccessObject,
   IGraphRepository,
   IRepository,
   IVectorRepository,
-} from './interfaces';
+} from './interfaces.ts';
 
 /**
  * Configuration interface for repository and DAO creation.
@@ -294,9 +294,9 @@ export interface EntityTypeRegistry {
  * @since 1.0.0
  * @example Basic Factory Setup
  * ```typescript
- * import { DALFactory } from './factory';
- * import { DIContainer } from '../di/container/di-container';
- * import { CORE_TOKENS } from '../di/tokens/core-tokens';
+ * import { DALFactory } from './factory.ts';
+ * import { DIContainer } from '../di/container/di-container.ts';
+ * import { CORE_TOKENS } from '../di/tokens/core-tokens.ts';
  *
  * const container = new DIContainer();
  * container.register(CORE_TOKENS.Logger, () => logger);
@@ -341,7 +341,7 @@ export class DALFactory {
   constructor(
     @inject(CORE_TOKENS.Logger) private _logger: ILogger,
     @inject(CORE_TOKENS.Config) private _config: IConfig,
-    private databaseProviderFactory: DatabaseProviderFactory
+    private databaseProviderFactory: DatabaseProviderFactory,
   ) {
     this.initializeEntityRegistry();
   }
@@ -1227,11 +1227,11 @@ export class DALFactory {
   ): Promise<RepositoryType<T>> {
     // Use DAOs as repository implementations since they extend BaseDao which implements IRepository
     // Canonical DAO implementations (lowercase 'Dao')
-    const { RelationalDao } = await import('./dao/relational.dao');
-    const { GraphDao } = await import('./dao/graph.dao');
-    const { VectorDao } = await import('./dao/vector.dao');
-    const { MemoryDao } = await import('./dao/memory.dao');
-    const { CoordinationDao } = await import('./dao/coordination.dao');
+    const { RelationalDao } = await import('./dao/relational.dao.ts');
+    const { GraphDao } = await import('./dao/graph.dao.ts');
+    const { VectorDao } = await import('./dao/vector.dao.ts');
+    const { MemoryDao } = await import('./dao/memory.dao.ts');
+    const { CoordinationDao } = await import('./dao/coordination.dao.ts');
 
     const tableName = config?.['tableName'] || config?.['entityType'];
     const entitySchema = config?.['schema'] || this.entityRegistry[config?.['entityType']]?.schema;
@@ -1293,11 +1293,11 @@ export class DALFactory {
     repository: RepositoryType<T>,
     adapter: DatabaseAdapter
   ): Promise<IDataAccessObject<T>> {
-    const { RelationalDao } = await import('./dao/relational.dao');
-    const { GraphDao } = await import('./dao/graph.dao');
-    const { VectorDao } = await import('./dao/vector.dao');
-    const { MemoryDao } = await import('./dao/memory.dao');
-    const { CoordinationDao } = await import('./dao/coordination.dao');
+    const { RelationalDao } = await import('./dao/relational.dao.ts');
+    const { GraphDao } = await import('./dao/graph.dao.ts');
+    const { VectorDao } = await import('./dao/vector.dao.ts');
+    const { MemoryDao } = await import('./dao/memory.dao.ts');
+    const { CoordinationDao } = await import('./dao/coordination.dao.ts');
 
     // TODO: TypeScript errors with DAO instantiation - these constructors expect different parameter types than what's being passed
     // These need proper interface implementation and constructor signature fixes

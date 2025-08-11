@@ -12,7 +12,7 @@ import type {
   MemoryBackend,
   MemoryConfig,
   MemoryProviderFactory,
-} from '../providers/memory-providers';
+} from '../providers/memory-providers.ts';
 
 /**
  * Request interface for memory operations.

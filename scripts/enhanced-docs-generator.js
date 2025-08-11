@@ -38,7 +38,7 @@ class EnhancedDocumentationGenerator {
       await this.generateDocumentationIndex();
       return this.getGeneratedDocuments();
     } catch (error) {
-      console.error('❌ Documentation generation failed:', error);
+      // console.error('❌ Documentation generation failed:', error);
       throw error;
     }
   }

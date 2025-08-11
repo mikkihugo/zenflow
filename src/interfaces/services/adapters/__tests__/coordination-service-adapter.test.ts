@@ -5,51 +5,51 @@
  * the hybrid TDD approach (70% London + 30% Classical).
  */
 
-import { ServicePriority, ServiceType } from '../../types';
+import { ServicePriority, ServiceType } from '../../types.ts';
 import {
   CoordinationServiceAdapter,
   createCoordinationServiceAdapter,
   createDefaultCoordinationServiceAdapterConfig,
-} from '../coordination-service-adapter';
+} from '../coordination-service-adapter.ts';
 
 // Test helpers and mocks
 const createMockLogger = () => ({
-  info: jest.fn(),
-  debug: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
+  info: vi.fn(),
+  debug: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
 });
 
 const createMockDaaService = () => ({
-  initialize: jest.fn().mockResolvedValue(undefined),
-  isInitialized: jest.fn().mockReturnValue(true),
-  createAgent: jest.fn().mockResolvedValue({ id: 'agent-1', status: 'created' }),
-  adaptAgent: jest.fn().mockResolvedValue({ id: 'agent-1', adapted: true }),
-  getAgentLearningStatus: jest.fn().mockResolvedValue({ agentId: 'agent-1', proficiency: 0.85 }),
-  createWorkflow: jest.fn().mockResolvedValue({ id: 'workflow-1', status: 'created' }),
-  executeWorkflow: jest.fn().mockResolvedValue({ workflowId: 'workflow-1', status: 'completed' }),
-  shareKnowledge: jest.fn().mockResolvedValue({ shared: true }),
-  analyzeCognitivePatterns: jest.fn().mockResolvedValue({ patterns: ['problem-solving'] }),
-  setCognitivePattern: jest.fn().mockResolvedValue({ applied: true }),
-  performMetaLearning: jest.fn().mockResolvedValue({ learningRate: 0.92 }),
-  getPerformanceMetrics: jest.fn().mockResolvedValue({ metrics: { throughput: 1000 } }),
+  initialize: vi.fn().mockResolvedValue(undefined),
+  isInitialized: vi.fn().mockReturnValue(true),
+  createAgent: vi.fn().mockResolvedValue({ id: 'agent-1', status: 'created' }),
+  adaptAgent: vi.fn().mockResolvedValue({ id: 'agent-1', adapted: true }),
+  getAgentLearningStatus: vi.fn().mockResolvedValue({ agentId: 'agent-1', proficiency: 0.85 }),
+  createWorkflow: vi.fn().mockResolvedValue({ id: 'workflow-1', status: 'created' }),
+  executeWorkflow: vi.fn().mockResolvedValue({ workflowId: 'workflow-1', status: 'completed' }),
+  shareKnowledge: vi.fn().mockResolvedValue({ shared: true }),
+  analyzeCognitivePatterns: vi.fn().mockResolvedValue({ patterns: ['problem-solving'] }),
+  setCognitivePattern: vi.fn().mockResolvedValue({ applied: true }),
+  performMetaLearning: vi.fn().mockResolvedValue({ learningRate: 0.92 }),
+  getPerformanceMetrics: vi.fn().mockResolvedValue({ metrics: { throughput: 1000 } }),
 });
 
 const createMockSwarmCoordinator = () => ({
-  initialize: jest.fn().mockResolvedValue(undefined),
-  shutdown: jest.fn().mockResolvedValue(undefined),
-  getState: jest.fn().mockReturnValue('active'),
-  coordinateSwarm: jest.fn().mockResolvedValue({
+  initialize: vi.fn().mockResolvedValue(undefined),
+  shutdown: vi.fn().mockResolvedValue(undefined),
+  getState: vi.fn().mockReturnValue('active'),
+  coordinateSwarm: vi.fn().mockResolvedValue({
     success: true,
     averageLatency: 50,
     successRate: 0.95,
     agentsCoordinated: 5,
   }),
-  addAgent: jest.fn().mockResolvedValue(undefined),
-  removeAgent: jest.fn().mockResolvedValue(undefined),
-  assignTask: jest.fn().mockResolvedValue('agent-1'),
-  completeTask: jest.fn().mockResolvedValue(undefined),
-  getMetrics: jest.fn().mockReturnValue({
+  addAgent: vi.fn().mockResolvedValue(undefined),
+  removeAgent: vi.fn().mockResolvedValue(undefined),
+  assignTask: vi.fn().mockResolvedValue('agent-1'),
+  completeTask: vi.fn().mockResolvedValue(undefined),
+  getMetrics: vi.fn().mockReturnValue({
     agentCount: 5,
     activeAgents: 4,
     totalTasks: 10,
@@ -59,25 +59,25 @@ const createMockSwarmCoordinator = () => ({
     errorRate: 0.1,
     uptime: 300000,
   }),
-  getAgents: jest.fn().mockReturnValue([
+  getAgents: vi.fn().mockReturnValue([
     { id: 'agent-1', type: 'researcher', status: 'idle', capabilities: ['search'] },
     { id: 'agent-2', type: 'coder', status: 'busy', capabilities: ['programming'] },
   ]),
 });
 
 const createMockSessionEnabledSwarm = () => ({
-  init: jest.fn().mockResolvedValue(undefined),
-  destroy: jest.fn().mockResolvedValue(undefined),
-  isReady: jest.fn().mockReturnValue(true),
-  createSession: jest.fn().mockResolvedValue('session-1'),
-  loadSession: jest.fn().mockResolvedValue(undefined),
-  saveSession: jest.fn().mockResolvedValue(undefined),
-  createCheckpoint: jest.fn().mockResolvedValue('checkpoint-1'),
-  restoreFromCheckpoint: jest.fn().mockResolvedValue(undefined),
+  init: vi.fn().mockResolvedValue(undefined),
+  destroy: vi.fn().mockResolvedValue(undefined),
+  isReady: vi.fn().mockReturnValue(true),
+  createSession: vi.fn().mockResolvedValue('session-1'),
+  loadSession: vi.fn().mockResolvedValue(undefined),
+  saveSession: vi.fn().mockResolvedValue(undefined),
+  createCheckpoint: vi.fn().mockResolvedValue('checkpoint-1'),
+  restoreFromCheckpoint: vi.fn().mockResolvedValue(undefined),
   listSessions: jest
     .fn()
     .mockResolvedValue([{ id: 'session-1', name: 'Test Session', status: 'active' }]),
-  getSessionStats: jest.fn().mockResolvedValue({
+  getSessionStats: vi.fn().mockResolvedValue({
     uptime: 60000,
     operationsCount: 5,
     checkpointsCreated: 2,
@@ -88,19 +88,19 @@ const createMockSessionEnabledSwarm = () => ({
 
 // Mock external dependencies
 jest.mock('../../../coordination/swarm/core/daa-service', () => ({
-  DaaService: jest.fn().mockImplementation(() => createMockDaaService()),
+  DaaService: vi.fn().mockImplementation(() => createMockDaaService()),
 }));
 
 jest.mock('../../../coordination/swarm/core/swarm-coordinator', () => ({
-  SwarmCoordinator: jest.fn().mockImplementation(() => createMockSwarmCoordinator()),
+  SwarmCoordinator: vi.fn().mockImplementation(() => createMockSwarmCoordinator()),
 }));
 
 jest.mock('../../../coordination/swarm/core/session-integration', () => ({
-  SessionEnabledSwarm: jest.fn().mockImplementation(() => createMockSessionEnabledSwarm()),
+  SessionEnabledSwarm: vi.fn().mockImplementation(() => createMockSessionEnabledSwarm()),
 }));
 
 jest.mock('../../../utils/logger', () => ({
-  createLogger: jest.fn().mockImplementation(() => createMockLogger()),
+  createLogger: vi.fn().mockImplementation(() => createMockLogger()),
 }));
 
 describe('CoordinationServiceAdapter', () => {
@@ -301,7 +301,7 @@ describe('CoordinationServiceAdapter', () => {
   describe('Event Handling (London TDD)', () => {
     it('should emit lifecycle events', async () => {
       // Arrange
-      const eventHandler = jest.fn();
+      const eventHandler = vi.fn();
       adapter.on('initialized', eventHandler);
 
       // Act
@@ -321,7 +321,7 @@ describe('CoordinationServiceAdapter', () => {
       await adapter.initialize();
       await adapter.start();
 
-      const operationHandler = jest.fn();
+      const operationHandler = vi.fn();
       adapter.on('operation', operationHandler);
 
       // Act
@@ -339,7 +339,7 @@ describe('CoordinationServiceAdapter', () => {
 
     it('should remove event listeners', async () => {
       // Arrange
-      const eventHandler = jest.fn();
+      const eventHandler = vi.fn();
       adapter.on('initialized', eventHandler);
 
       // Act

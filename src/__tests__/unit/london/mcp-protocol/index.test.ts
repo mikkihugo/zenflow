@@ -17,7 +17,7 @@
  * 5. Streaming Support and Backpressure
  */
 
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
   describe('📋 Test Suite Overview', () => {

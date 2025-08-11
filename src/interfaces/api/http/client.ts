@@ -9,21 +9,21 @@
  */
 
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
-import { getMCPServerURL } from '../../../config/defaults.js';
+import { getMCPServerURL } from '../../../config/defaults.ts';
 import type {
   Agent,
   HealthStatus,
   PerformanceMetrics,
   SwarmConfig,
   Task,
-} from '../../../coordination/schemas.js';
-import type { APIError } from './schemas/common';
+} from '../../../coordination/schemas.ts';
+import type { APIError } from './schemas/common.ts';
 import type {
   NeuralNetwork,
   PredictionRequest,
   PredictionResponse,
   TrainingRequest,
-} from './schemas/neural';
+} from './schemas/neural.ts';
 
 /**
  * API Client Configuration.

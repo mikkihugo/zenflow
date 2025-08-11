@@ -2,7 +2,7 @@
  * @file Coordination system: session-example.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-core-session-example');
 
@@ -14,9 +14,9 @@ const logger = getLogger('coordination-swarm-core-session-example');
  */
 
 // import { DALFactory } from '../../database'; // TODO: Implement proper DI integration
-import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration';
-import { SessionManager } from './session-manager';
-import { SessionStats, SessionValidator } from './session-utils';
+import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration.ts';
+import { SessionManager } from './session-manager.ts';
+import { SessionStats, SessionValidator } from './session-utils.ts';
 
 /**
  * Example 1: Basic Session Usage.

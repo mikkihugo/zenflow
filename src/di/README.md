@@ -198,8 +198,8 @@ describe('UserService', () => {
   beforeEach(() => {
     container = new DIContainer();
     mockLogger = {
-      log: jest.fn(),
-      error: jest.fn(),
+      log: vi.fn(),
+      error: vi.fn(),
     };
     
     container.register(LOGGER_TOKEN, new SingletonProvider(() => mockLogger));

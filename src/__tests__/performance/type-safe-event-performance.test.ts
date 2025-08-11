@@ -1,9 +1,9 @@
 /**
  * @file Type-Safe Event System Performance Tests
- * 
+ *
  * Comprehensive performance benchmarks for the type-safe event system
  * validating high-throughput event processing capabilities.
- * 
+ *
  * Tests include:
  * - High-frequency event emission
  * - Concurrent handler processing
@@ -13,27 +13,27 @@
  * - AGUI integration performance
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { Domain } from '../../core/domain-boundary-validator.ts';
 import {
-  TypeSafeEventBus,
-  createTypeSafeEventBus,
-  createEvent,
-  createCorrelationId,
-  EventPriority,
   type BaseEvent,
+  createCorrelationId,
+  createEvent,
+  createTypeSafeEventBus,
+  EventPriority,
   type EventSystemConfig,
-  type EventSystemMetrics
-} from '../../core/type-safe-event-system';
-import { Domain } from '../../core/domain-boundary-validator';
+  type EventSystemMetrics,
+  type TypeSafeEventBus,
+} from '../../core/type-safe-event-system.ts';
 
 // Mock the logging system for performance tests
-jest.mock('../../config/logging-config', () => ({
-  getLogger: jest.fn(() => ({
-    info: jest.fn(),
-    debug: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn()
-  }))
+vi.mock('../../config/logging-config', () => ({
+  getLogger: vi.fn(() => ({
+    info: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  })),
 }));
 
 describe('TypeSafeEventBus Performance Tests', () => {
@@ -48,7 +48,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       defaultTimeout: 5000,
       maxConcurrency: 1000,
       batchSize: 100,
-      retryAttempts: 3
+      retryAttempts: 3,
     };
 
     eventBus = createTypeSafeEventBus(config);
@@ -63,7 +63,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
     test('should handle 10,000 events efficiently', async () => {
       const startTime = Date.now();
       const eventCount = 10000;
-      const mockHandler = jest.fn();
+      const mockHandler = vi.fn();
 
       eventBus.registerHandler('performance.test', mockHandler);
 
@@ -79,7 +79,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
 
       // Emit events in batch
       const results = await eventBus.emitEventBatch(events, {
-        maxConcurrency: 100
+        maxConcurrency: 100,
       });
 
       const endTime = Date.now();
@@ -88,7 +88,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
 
       // Performance assertions
       expect(results).toHaveLength(eventCount);
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
       expect(mockHandler).toHaveBeenCalledTimes(eventCount);
       expect(eventsPerSecond).toBeGreaterThan(1000); // At least 1000 events/sec
       expect(duration).toBeLessThan(30000); // Less than 30 seconds
@@ -108,12 +108,12 @@ describe('TypeSafeEventBus Performance Tests', () => {
     test('should maintain performance with multiple handlers', async () => {
       const eventCount = 5000;
       const handlerCount = 10;
-      const mockHandlers = Array.from({ length: handlerCount }, () => jest.fn());
+      const mockHandlers = Array.from({ length: handlerCount }, () => vi.fn());
 
       // Register multiple handlers for the same event
       mockHandlers.forEach((handler, index) => {
         eventBus.registerHandler('multi-handler.test', handler, {
-          priority: index % 3 // Vary priorities
+          priority: index % 3, // Vary priorities
         });
       });
 
@@ -130,11 +130,11 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const duration = endTime - startTime;
 
       // Performance assertions
-      expect(results.every(r => r.success)).toBe(true);
-      expect(results.every(r => r.handlerResults.length === handlerCount)).toBe(true);
-      
+      expect(results.every((r) => r.success)).toBe(true);
+      expect(results.every((r) => r.handlerResults.length === handlerCount)).toBe(true);
+
       // Each handler should have been called for each event
-      mockHandlers.forEach(handler => {
+      mockHandlers.forEach((handler) => {
         expect(handler).toHaveBeenCalledTimes(eventCount);
       });
 
@@ -154,7 +154,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
     test('should handle concurrent event emission from multiple sources', async () => {
       const concurrentSources = 20;
       const eventsPerSource = 500;
-      const mockHandler = jest.fn();
+      const mockHandler = vi.fn();
 
       eventBus.registerHandler('concurrent.test', mockHandler);
 
@@ -167,9 +167,9 @@ describe('TypeSafeEventBus Performance Tests', () => {
             'concurrent.test',
             Domain.CORE,
             {},
-            { 
+            {
               source: `source-${sourceIndex}`,
-              tags: [`source-${sourceIndex}`, `event-${eventIndex}`]
+              tags: [`source-${sourceIndex}`, `event-${eventIndex}`],
             }
           )
         );
@@ -186,7 +186,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const totalEvents = concurrentSources * eventsPerSource;
 
       expect(flatResults).toHaveLength(totalEvents);
-      expect(flatResults.every(r => r.success)).toBe(true);
+      expect(flatResults.every((r) => r.success)).toBe(true);
       expect(mockHandler).toHaveBeenCalledTimes(totalEvents);
 
       const eventsPerSecond = totalEvents / (duration / 1000);
@@ -204,7 +204,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
   describe('Memory Usage and Optimization', () => {
     test('should maintain reasonable memory usage under load', async () => {
       const eventCount = 20000;
-      const mockHandler = jest.fn();
+      const mockHandler = vi.fn();
 
       eventBus.registerHandler('memory.test', mockHandler);
 
@@ -256,12 +256,12 @@ describe('TypeSafeEventBus Performance Tests', () => {
     test('should efficiently manage cache performance', async () => {
       const eventCount = 10000;
       const uniqueEventTypes = 50;
-      const mockHandlers = new Map<string, jest.Mock>();
+      const mockHandlers = new Map<string, vi.Mock>();
 
       // Register handlers for different event types
       for (let i = 0; i < uniqueEventTypes; i++) {
         const eventType = `cache.test.${i}`;
-        const handler = jest.fn();
+        const handler = vi.fn();
         mockHandlers.set(eventType, handler);
         eventBus.registerHandler(eventType, handler);
       }
@@ -272,19 +272,21 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const events: BaseEvent[] = [];
       for (let i = 0; i < eventCount; i++) {
         const eventType = `cache.test.${i % uniqueEventTypes}`;
-        events.push(createEvent<BaseEvent>(
-          eventType,
-          Domain.CORE,
-          { value: i % 100 }, // Repeated data patterns
-          { correlationId: createCorrelationId() }
-        ));
+        events.push(
+          createEvent<BaseEvent>(
+            eventType,
+            Domain.CORE,
+            { value: i % 100 }, // Repeated data patterns
+            { correlationId: createCorrelationId() }
+          )
+        );
       }
 
       const results = await eventBus.emitEventBatch(events);
       const endTime = Date.now();
       const duration = endTime - startTime;
 
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
 
       // Verify all handlers were called appropriately
       const expectedCallsPerHandler = eventCount / uniqueEventTypes;
@@ -309,10 +311,10 @@ describe('TypeSafeEventBus Performance Tests', () => {
     test('should maintain performance with domain validation enabled', async () => {
       const eventCount = 5000;
       const domains = [Domain.CORE, Domain.COORDINATION, Domain.WORKFLOWS, Domain.NEURAL];
-      const mockHandler = jest.fn();
+      const mockHandler = vi.fn();
 
       // Register handler for all domains
-      domains.forEach(domain => {
+      domains.forEach((domain) => {
         eventBus.registerDomainHandler(domain, mockHandler);
       });
 
@@ -332,7 +334,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const endTime = Date.now();
       const duration = endTime - startTime;
 
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
       expect(mockHandler).toHaveBeenCalledTimes(eventCount);
 
       const eventsPerSecond = eventCount / (duration / 1000);
@@ -348,7 +350,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
 
     test('should efficiently handle cross-domain routing', async () => {
       const routingCount = 1000;
-      const mockHandler = jest.fn();
+      const mockHandler = vi.fn();
 
       eventBus.registerHandler('cross.domain.test', mockHandler);
 
@@ -366,19 +368,14 @@ describe('TypeSafeEventBus Performance Tests', () => {
         const fromDomain = i % 2 === 0 ? Domain.CORE : Domain.COORDINATION;
         const toDomain = Domain.WORKFLOWS;
 
-        return eventBus.routeCrossDomainEvent(
-          event,
-          fromDomain,
-          toDomain,
-          `routing_test_${i}`
-        );
+        return eventBus.routeCrossDomainEvent(event, fromDomain, toDomain, `routing_test_${i}`);
       });
 
       const results = await Promise.all(routingPromises);
       const endTime = Date.now();
       const duration = endTime - startTime;
 
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
       expect(mockHandler).toHaveBeenCalledTimes(routingCount);
 
       const routingsPerSecond = routingCount / (duration / 1000);
@@ -397,9 +394,9 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const eventCount = 100;
       const slowHandlerDelay = 50; // 50ms delay per handler
 
-      const fastHandler = jest.fn();
-      const slowHandler = jest.fn(async () => {
-        await new Promise(resolve => setTimeout(resolve, slowHandlerDelay));
+      const fastHandler = vi.fn();
+      const slowHandler = vi.fn(async () => {
+        await new Promise((resolve) => setTimeout(resolve, slowHandlerDelay));
       });
 
       eventBus.registerHandler('mixed.speed.test', fastHandler, { priority: 2 });
@@ -415,7 +412,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const endTime = Date.now();
       const duration = endTime - startTime;
 
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
       expect(fastHandler).toHaveBeenCalledTimes(eventCount);
       expect(slowHandler).toHaveBeenCalledTimes(eventCount);
 
@@ -436,8 +433,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const eventCount = 5000;
       const errorRate = 0.1; // 10% error rate
 
-      const successHandler = jest.fn();
-      const errorHandler = jest.fn((event: BaseEvent) => {
+      const successHandler = vi.fn();
+      const errorHandler = vi.fn((event: BaseEvent) => {
         const shouldError = Math.random() < errorRate;
         if (shouldError) {
           throw new Error(`Simulated error for event ${event.id}`);
@@ -458,13 +455,15 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const duration = endTime - startTime;
 
       // All events should still be processed successfully (overall success)
-      expect(results.every(r => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
       expect(successHandler).toHaveBeenCalledTimes(eventCount);
       expect(errorHandler).toHaveBeenCalledTimes(eventCount);
 
       // Count actual errors in handler results
-      const totalHandlerErrors = results.reduce((sum, result) => 
-        sum + result.handlerResults.filter(hr => !hr.success).length, 0);
+      const totalHandlerErrors = results.reduce(
+        (sum, result) => sum + result.handlerResults.filter((hr) => !hr.success).length,
+        0
+      );
 
       const actualErrorRate = totalHandlerErrors / (eventCount * 2); // 2 handlers per event
       expect(actualErrorRate).toBeLessThan(errorRate * 1.5); // Allow some variance
@@ -485,8 +484,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
   describe('AGUI Integration Performance', () => {
     test('should handle high-frequency AGUI events efficiently', async () => {
       const aguiEventCount = 1000;
-      const validationHandler = jest.fn();
-      const gateHandler = jest.fn();
+      const validationHandler = vi.fn();
+      const gateHandler = vi.fn();
 
       eventBus.registerHandler('human.validation.requested', validationHandler);
       eventBus.registerHandler('agui.gate.opened', gateHandler);
@@ -497,32 +496,28 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const events: BaseEvent[] = [];
       for (let i = 0; i < aguiEventCount; i++) {
         if (i % 2 === 0) {
-          events.push(createEvent(
-            'human.validation.requested',
-            Domain.INTERFACES,
-            {
+          events.push(
+            createEvent('human.validation.requested', Domain.INTERFACES, {
               payload: {
                 requestId: `validation-${i}`,
                 validationType: 'approval' as const,
                 context: { test: true, index: i },
                 priority: EventPriority.NORMAL,
-                timeout: 30000
-              }
-            }
-          ));
+                timeout: 30000,
+              },
+            })
+          );
         } else {
-          events.push(createEvent(
-            'agui.gate.opened',
-            Domain.INTERFACES,
-            {
+          events.push(
+            createEvent('agui.gate.opened', Domain.INTERFACES, {
               payload: {
                 gateId: `gate-${i}`,
                 gateType: 'approval-gate',
                 requiredApproval: true,
-                context: { test: true, index: i }
-              }
-            }
-          ));
+                context: { test: true, index: i },
+              },
+            })
+          );
         }
       }
 
@@ -530,11 +525,11 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const endTime = Date.now();
       const duration = endTime - startTime;
 
-      expect(results.every(r => r.success)).toBe(true);
-      
+      expect(results.every((r) => r.success)).toBe(true);
+
       const validationEvents = aguiEventCount / 2;
       const gateEvents = aguiEventCount / 2;
-      
+
       expect(validationHandler).toHaveBeenCalledTimes(validationEvents);
       expect(gateHandler).toHaveBeenCalledTimes(gateEvents);
 
@@ -556,7 +551,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const eventInterval = 10; // Emit event every 10ms
       let eventsEmitted = 0;
 
-      const mockHandler = jest.fn();
+      const mockHandler = vi.fn();
       eventBus.registerHandler('metrics.monitoring', mockHandler);
 
       const startTime = Date.now();
@@ -564,11 +559,9 @@ describe('TypeSafeEventBus Performance Tests', () => {
 
       // Emit events at regular intervals
       const emissionInterval = setInterval(async () => {
-        const event = createEvent<BaseEvent>(
-          'metrics.monitoring',
-          Domain.CORE,
-          { timestamp: Date.now() }
-        );
+        const event = createEvent<BaseEvent>('metrics.monitoring', Domain.CORE, {
+          timestamp: Date.now(),
+        });
 
         await eventBus.emitEvent(event);
         eventsEmitted++;
@@ -580,7 +573,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       }, eventInterval);
 
       // Wait for test completion
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         const checkCompletion = setInterval(() => {
           if (Date.now() - startTime >= testDuration) {
             clearInterval(checkCompletion);
@@ -619,7 +612,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
     test('should maintain stable performance over extended periods', async () => {
       const phases = 5;
       const eventsPerPhase = 2000;
-      const mockHandler = jest.fn();
+      const mockHandler = vi.fn();
 
       eventBus.registerHandler('stability.test', mockHandler);
 
@@ -647,14 +640,14 @@ describe('TypeSafeEventBus Performance Tests', () => {
         const phaseEndTime = Date.now();
         const phaseDuration = phaseEndTime - phaseStartTime;
         const phaseEventsPerSecond = eventsPerPhase / (phaseDuration / 1000);
-        
+
         const phaseMetrics = eventBus.getMetrics();
-        
+
         phaseResults.push({
           phase,
           duration: phaseDuration,
           eventsPerSecond: phaseEventsPerSecond,
-          averageProcessingTime: phaseMetrics.averageProcessingTime
+          averageProcessingTime: phaseMetrics.averageProcessingTime,
         });
 
         console.log(`Phase ${phase + 1}/${phases}:
@@ -663,13 +656,15 @@ describe('TypeSafeEventBus Performance Tests', () => {
           Avg processing time: ${phaseMetrics.averageProcessingTime.toFixed(2)}ms`);
 
         // Brief pause between phases
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       // Verify stability across phases
-      const avgEventsPerSecond = phaseResults.reduce((sum, p) => sum + p.eventsPerSecond, 0) / phases;
-      const eventsPerSecondVariance = phaseResults.reduce((sum, p) => 
-        sum + Math.pow(p.eventsPerSecond - avgEventsPerSecond, 2), 0) / phases;
+      const avgEventsPerSecond =
+        phaseResults.reduce((sum, p) => sum + p.eventsPerSecond, 0) / phases;
+      const eventsPerSecondVariance =
+        phaseResults.reduce((sum, p) => sum + (p.eventsPerSecond - avgEventsPerSecond) ** 2, 0) /
+        phases;
       const eventsPerSecondStdDev = Math.sqrt(eventsPerSecondVariance);
       const coefficientOfVariation = eventsPerSecondStdDev / avgEventsPerSecond;
 
@@ -697,7 +692,7 @@ describe('Event System Stress Tests', () => {
       maxEventHistory: 1000, // Reduced for memory efficiency
       defaultTimeout: 10000,
       maxConcurrency: 200,
-      batchSize: 200
+      batchSize: 200,
     };
 
     const eventBus = createTypeSafeEventBus(config);
@@ -705,7 +700,7 @@ describe('Event System Stress Tests', () => {
 
     try {
       const extremeEventCount = 50000;
-      const mockHandler = jest.fn();
+      const mockHandler = vi.fn();
 
       eventBus.registerHandler('stress.test', mockHandler);
 
@@ -714,23 +709,22 @@ describe('Event System Stress Tests', () => {
       // Create extreme load
       const batchSize = 5000;
       const batches = Math.ceil(extremeEventCount / batchSize);
-      
+
       for (let batch = 0; batch < batches; batch++) {
         const batchStartIndex = batch * batchSize;
         const batchEndIndex = Math.min(batchStartIndex + batchSize, extremeEventCount);
         const batchEvents = Array.from({ length: batchEndIndex - batchStartIndex }, (_, i) =>
-          createEvent<BaseEvent>(
-            'stress.test',
-            Domain.CORE,
-            { batchIndex: batch, eventIndex: batchStartIndex + i }
-          )
+          createEvent<BaseEvent>('stress.test', Domain.CORE, {
+            batchIndex: batch,
+            eventIndex: batchStartIndex + i,
+          })
         );
 
         await eventBus.emitEventBatch(batchEvents);
-        
+
         // Brief pause to prevent overwhelming the system
         if (batch < batches - 1) {
-          await new Promise(resolve => setTimeout(resolve, 10));
+          await new Promise((resolve) => setTimeout(resolve, 10));
         }
       }
 
@@ -742,7 +736,7 @@ describe('Event System Stress Tests', () => {
       expect(eventsPerSecond).toBeGreaterThan(500); // Should maintain reasonable performance
 
       const finalMetrics = eventBus.getMetrics();
-      
+
       console.log(`Extreme Load Stress Test Results:
         Events processed: ${extremeEventCount}
         Duration: ${(duration / 1000).toFixed(2)}s
@@ -752,7 +746,6 @@ describe('Event System Stress Tests', () => {
           - Failure rate: ${(finalMetrics.failureRate * 100).toFixed(2)}%
           - Memory usage: ${(finalMetrics.memoryUsage / 1024 / 1024).toFixed(2)}MB
           - Cache hit rate: ${(finalMetrics.cacheHitRate * 100).toFixed(2)}%`);
-
     } finally {
       await eventBus.shutdown();
     }

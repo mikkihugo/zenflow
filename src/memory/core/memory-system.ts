@@ -8,7 +8,7 @@
  * @file Memory management: memory-system.
  */
 
-import type { MemoryStats } from '../backends/base-backend';
+import type { MemoryStats } from '../backends/base-backend.ts';
 
 // JSON Value type for database compatibility
 export type JSONValue =

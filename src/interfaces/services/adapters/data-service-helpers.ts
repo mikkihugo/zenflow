@@ -10,8 +10,8 @@
  * a higher-level abstraction over the core adapter functionality.
  */
 
-import { getLogger, type Logger } from '../../../config/logging-config';
-import type { DataServiceAdapter } from './data-service-adapter';
+import { getLogger, type Logger } from '../../../config/logging-config.ts';
+import type { DataServiceAdapter } from './data-service-adapter.ts';
 
 // Mock types for missing imports
 export interface BaseDocumentEntity {
@@ -786,7 +786,7 @@ export class DataServiceHelper {
           ) {
             result = this.sortData(
               result,
-              step.config['field'] as string,
+              step.config['field'],
               step.config['direction'] as 'asc' | 'desc'
             );
           }
@@ -795,7 +795,7 @@ export class DataServiceHelper {
           if (typeof step.config['field'] === 'string') {
             result = this.groupData(
               result as Record<string, unknown>[],
-              step.config['field'] as string
+              step.config['field']
             ) as T[];
           }
           break;
@@ -878,14 +878,14 @@ export class DataServiceHelper {
 
     if (
       config['agents'] !== undefined &&
-      (typeof config['agents'] !== 'number' || (config['agents'] as number) < 1)
+      (typeof config['agents'] !== 'number' || (config['agents']) < 1)
     ) {
       errors.push('Agent count must be a positive number');
     }
 
     if (
       config['timeout'] !== undefined &&
-      (typeof config['timeout'] !== 'number' || (config['timeout'] as number) < 1000)
+      (typeof config['timeout'] !== 'number' || (config['timeout']) < 1000)
     ) {
       errors.push('Timeout must be at least 1000ms');
     }
@@ -1069,7 +1069,7 @@ export class DataServiceHelper {
         const items = (group['items'] as Record<string, unknown>[]) || [];
         const values = items
           .map((item) => item[agg.field])
-          .filter((v) => v !== undefined && typeof v === 'number') as number[];
+          .filter((v) => v !== undefined && typeof v === 'number');
         const alias = agg.alias || `${agg.operation}_${agg.field}`;
 
         switch (agg.operation) {

@@ -4,9 +4,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { MemoryCoordinator } from '../core/memory-coordinator';
-import type { BackendInterface } from '../core/memory-system';
-import type { PerformanceOptimizer } from '../optimization/performance-optimizer';
+import type { MemoryCoordinator } from '../core/memory-coordinator.ts';
+import type { BackendInterface } from '../core/memory-system.ts';
+import type { PerformanceOptimizer } from '../optimization/performance-optimizer.ts';
 
 export interface MemoryMetrics {
   timestamp: number;

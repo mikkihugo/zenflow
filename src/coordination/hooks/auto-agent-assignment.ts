@@ -7,7 +7,7 @@
  */
 
 import * as path from 'node:path';
-import type { AgentType } from '../types';
+import type { AgentType } from '../types.ts';
 import type {
   AgentAssignment,
   AgentContext,
@@ -23,7 +23,7 @@ import type {
   UrgencyLevel,
   WorkloadBalance,
   WorkloadRecommendation,
-} from './hook-system-core';
+} from './hook-system-core.ts';
 
 // Interface defined before class usage
 interface AgentCapabilityProfile {

@@ -1,17 +1,37 @@
-import { ProgressiveConfidenceBuilder } from '@coordination/discovery/progressive-confidence-builder';
+import { describe, it, expect, beforeEach, afterEach, vi, type Mocked } from 'vitest'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { ProgressiveConfidenceBuilder } from '../../../coordination/discovery/progressive-confidence-builder.ts';
+import type { DomainDiscoveryBridge, DiscoveredDomain } from '../../../coordination/discovery/domain-discovery-bridge.ts';
+import type { SessionMemoryStore } from '../../../memory/memory.ts';
+import type { AGUIInterface } from '../../../interfaces/agui/agui-adapter.ts';
 
 // Mock HiveFACT
-vi.mock('@coordination/hive-fact-integration', () => ({
+vi.mock('../../../coordination/hive-fact-integration.ts', () => ({
   getHiveFACT: vi.fn(),
 }));
 
-import { getHiveFACT } from '@coordination/hive-fact-integration';
+import { getHiveFACT } from '../../../coordination/hive-fact-integration.ts';
+
+// Helper function to create valid DiscoveredDomain test objects
+const createTestDomain = (overrides: Partial<DiscoveredDomain> = {}): DiscoveredDomain => ({
+  id: `domain-${Date.now()}`,
+  name: 'test-domain',
+  description: 'Test domain for unit testing',
+  confidence: 0.5,
+  documents: [],
+  codeFiles: ['test.ts'],
+  concepts: ['testing'],
+  category: 'test',
+  suggestedTopology: 'mesh',
+  relatedDomains: [],
+  suggestedAgents: [],
+  ...overrides,
+});
 
 describe('ProgressiveConfidenceBuilder', () => {
   let builder: ProgressiveConfidenceBuilder;
-  let mockDiscoveryBridge: jest.Mocked<DomainDiscoveryBridge>;
-  let mockMemoryStore: jest.Mocked<SessionMemoryStore>;
-  let mockAgui: jest.Mocked<AGUIInterface>;
+  let mockDiscoveryBridge: Mocked<DomainDiscoveryBridge>;
+  let mockMemoryStore: Mocked<SessionMemoryStore>;
+  let mockAgui: Mocked<AGUIInterface>;
   let mockHiveFact: any;
 
   beforeEach(() => {
@@ -41,7 +61,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       searchFacts: vi.fn().mockResolvedValue([]),
     };
 
-    (getHiveFACT as jest.Mock).mockReturnValue(mockHiveFact);
+    (getHiveFACT as any).mockReturnValue(mockHiveFact);
 
     // Create builder instance
     builder = new ProgressiveConfidenceBuilder(mockDiscoveryBridge, mockMemoryStore, mockAgui, {
@@ -60,14 +80,14 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'auth',
-            path: '/test/project/auth',
-            files: ['auth.ts', 'login.ts'],
-            confidence: 0.5,
-            suggestedConcepts: ['authentication', 'jwt'],
-            relatedDomains: [],
-          },
+            description: 'Authentication domain handling user login and JWT tokens',
+            codeFiles: ['auth.ts', 'login.ts'],
+            concepts: ['authentication', 'jwt'],
+            category: 'security',
+            suggestedTopology: 'hierarchical',
+          }),
         ],
       };
 
@@ -123,14 +143,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'payment',
-            path: '/test/project/payment',
-            files: ['payment.ts'],
             confidence: 0.3, // Low confidence
-            suggestedConcepts: ['stripe', 'payment processing'],
-            relatedDomains: [],
-          },
+            codeFiles: ['payment.ts'],
+            concepts: ['stripe', 'payment processing'],
+            category: 'business',
+          }),
         ],
       };
 
@@ -191,14 +210,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'unclear-domain',
-            path: '/test/project/unclear',
-            files: ['file1.ts', 'file2.ts'],
+            codeFiles: ['file1.ts', 'file2.ts'],
             confidence: 0.4,
-            suggestedConcepts: ['concept1', 'concept2'],
+            concepts: ['concept1', 'concept2'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -223,14 +241,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'test-domain',
-            path: '/test/project/test',
-            files: ['test.ts'],
+            codeFiles: ['test.ts'],
             confidence: 0.5,
-            suggestedConcepts: ['testing'],
+            concepts: ['testing'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -254,15 +271,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'graphql-api',
-            path: '/test/project/graphql',
-            files: ['schema.graphql', 'resolvers.ts'],
+            codeFiles: ['schema.graphql', 'resolvers.ts'],
             confidence: 0.4,
-            suggestedConcepts: ['graphql', 'api', 'schema'],
-            technologies: ['graphql', 'typescript'],
+            concepts: ['graphql', 'api', 'schema'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -270,7 +285,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       mockAgui.askBatchQuestions.mockResolvedValue([]);
 
       const searchQueries: string[] = [];
-      mockHiveFact.searchFacts.mockImplementation(async ({ query }) => {
+      mockHiveFact.searchFacts.mockImplementation(async ({ query }: { query: string }) => {
         searchQueries.push(query);
         return [];
       });
@@ -286,14 +301,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'security',
-            path: '/test/project/security',
-            files: ['auth.ts'],
+            codeFiles: ['auth.ts'],
             confidence: 0.3,
-            suggestedConcepts: ['authentication', 'security'],
+            concepts: ['authentication', 'security'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -316,7 +330,7 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       const securityDomain = result?.domains?.get('security');
       expect(securityDomain?.research.length).toBeGreaterThan(0);
-      expect(securityDomain?.research[0].insights.length).toBeGreaterThan(0);
+      expect(securityDomain?.research[0]?.insights?.length).toBeGreaterThan(0);
     });
   });
 
@@ -325,14 +339,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'domain1',
-            path: '/test/project/domain1',
-            files: ['file1.ts'],
+            codeFiles: ['file1.ts'],
             confidence: 0.6,
-            suggestedConcepts: ['concept1'],
+            concepts: ['concept1'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -359,14 +372,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'improving-domain',
-            path: '/test/project/improving',
-            files: ['file1.ts'],
+            codeFiles: ['file1.ts'],
             confidence: 0.2,
-            suggestedConcepts: ['concept1'],
+            concepts: ['concept1'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -403,22 +415,20 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'frontend',
-            path: '/test/project/frontend',
-            files: ['app.tsx'],
+            codeFiles: ['app.tsx'],
             confidence: 0.6,
-            suggestedConcepts: ['react', 'ui', 'api-client'],
+            concepts: ['react', 'ui', 'api-client'],
             relatedDomains: [],
-          },
-          {
+          }),
+          createTestDomain({
             name: 'backend',
-            path: '/test/project/backend',
-            files: ['server.ts'],
+            codeFiles: ['server.ts'],
             confidence: 0.6,
-            suggestedConcepts: ['express', 'api', 'api-client'],
+            concepts: ['express', 'api', 'api-client'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -480,14 +490,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'test-domain',
-            path: '/test/project/test',
-            files: ['test.ts'],
+            codeFiles: ['test.ts'],
             confidence: 0.3,
-            suggestedConcepts: ['testing'],
+            concepts: ['testing'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -519,14 +528,13 @@ describe('ProgressiveConfidenceBuilder', () => {
         validatorId: 'test-validator-123',
         sessionId: 'session-456',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'audit-test',
-            path: '/test/project/audit',
-            files: ['audit.ts'],
+            codeFiles: ['audit.ts'],
             confidence: 0.4,
-            suggestedConcepts: ['auditing'],
+            concepts: ['auditing'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -596,14 +604,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'under-validated',
-            path: '/test/project/under',
-            files: ['under.ts'],
+            codeFiles: ['under.ts'],
             confidence: 0.5,
-            suggestedConcepts: ['validation'],
+            concepts: ['validation'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -633,14 +640,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'impact-test',
-            path: '/test/project/impact',
-            files: ['impact.ts'],
+            codeFiles: ['impact.ts'],
             confidence: 0.5,
-            suggestedConcepts: ['testing'],
+            concepts: ['testing'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -668,14 +674,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'high-confidence',
-            path: '/test/project/high',
-            files: ['file1.ts'],
+            codeFiles: ['file1.ts'],
             confidence: 0.9,
-            suggestedConcepts: ['concept1'],
+            concepts: ['concept1'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 
@@ -701,14 +706,13 @@ describe('ProgressiveConfidenceBuilder', () => {
       const context = {
         projectPath: '/test/project',
         existingDomains: [
-          {
+          createTestDomain({
             name: 'test',
-            path: '/test/project/test',
-            files: ['test.ts'],
+            codeFiles: ['test.ts'],
             confidence: 0.8,
-            suggestedConcepts: ['testing'],
+            concepts: ['testing'],
             relatedDomains: [],
-          },
+          }),
         ],
       };
 

@@ -3,7 +3,7 @@
  * Integrates neural network components with Claude-Zen system.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 
 // TODO: Use dependency injection for logger
 // Should inject ILogger from DI container instead of creating directly

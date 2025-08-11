@@ -8,8 +8,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../di/index';
-import { CORE_TOKENS, inject, injectable } from '../di/index';
+import type { IEventBus, ILogger } from '../di/index.ts';
+import { CORE_TOKENS, inject, injectable } from '../di/index.ts';
 
 export interface CoordinationConfig {
   maxAgents: number;
@@ -66,7 +66,7 @@ export class CoordinationManager extends EventEmitter {
     };
 
     this.setupEventHandlers();
-    this._logger.info('CoordinationManager initialized');
+    this._logger.info("CoordinationManager initialized");
   }
 
   /**

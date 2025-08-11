@@ -3,7 +3,7 @@
  * Tests interactions between components using mocks
  */
 
-import { DomainAnalysisEngine } from '../../../../tools/domain-splitting/analyzers/domain-analyzer';
+import { DomainAnalysisEngine } from '../../../../tools/domain-splitting/analyzers/domain-analyzer.ts';
 import { DomainSplittingOrchestrator } from '../../../../tools/domain-splitting/orchestrator';
 import { SafeDomainSplitter } from '../../../../tools/domain-splitting/splitters/domain-splitter';
 import { DependencyValidator } from '../../../../tools/domain-splitting/validators/dependency-validator';
@@ -22,8 +22,8 @@ describe('Domain Splitting Orchestration - London TDD', () => {
   beforeEach(() => {
     // Create mock instances
     mockAnalyzer = new DomainAnalysisEngine() as jest.Mocked<DomainAnalysisEngine>;
-    mockSplitter = new SafeDomainSplitter() as jest.Mocked<SafeDomainSplitter>;
-    mockValidator = new DependencyValidator() as jest.Mocked<DependencyValidator>;
+    mockSplitter = new SafeDomainSplitter();
+    mockValidator = new DependencyValidator();
 
     // Create orchestrator with dependency injection
     orchestrator = new DomainSplittingOrchestrator();

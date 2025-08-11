@@ -26,7 +26,7 @@ import type {
   ModelInfo,
   Pattern,
   TrainingResult,
-} from './types';
+} from './types.ts';
 
 // ============================================
 // Reinforcement Learning Engine

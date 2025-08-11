@@ -2,7 +2,7 @@
  * @file Sparc module exports.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-sparc-index');
 
@@ -14,22 +14,22 @@ const logger = getLogger('coordination-swarm-sparc-index');
  */
 
 // Core Engine
-export { SPARCEngineCore } from './core/sparc-engine';
+export { SPARCEngineCore } from './core/sparc-engine.ts';
 
-import { SPARCEngineCore } from './core/sparc-engine';
-import type { PhaseResult, SPARCProject } from './types/sparc-types';
+import { SPARCEngineCore } from './core/sparc-engine.ts';
+import type { PhaseResult, SPARCProject } from './types/sparc-types.ts';
 
 // MCP Integration
-export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools';
+export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools.ts';
 // Project Management Integration
-export { ProjectManagementIntegration } from './integrations/project-management-integration';
-export { SPARCRoadmapManager } from './integrations/roadmap-integration';
+export { ProjectManagementIntegration } from './integrations/project-management-integration.ts';
+export { SPARCRoadmapManager } from './integrations/roadmap-integration.ts';
 // Phase Engines
-export { SpecificationPhaseEngine } from './phases/specification/specification-engine';
+export { SpecificationPhaseEngine } from './phases/specification/specification-engine.ts';
 // Templates
-export { SWARM_COORDINATION_TEMPLATE } from './templates/swarm-coordination-template';
+export { SWARM_COORDINATION_TEMPLATE } from './templates/swarm-coordination-template.ts';
 // Types
-export type * from './types/sparc-types';
+export type * from './types/sparc-types.ts';
 
 // Main SPARC facade for easy usage
 export class SPARC {

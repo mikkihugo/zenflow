@@ -1,33 +1,33 @@
 /**
  * @file Workflow Gate Request Tests - Phase 1, Task 1.2
- * 
+ *
  * Comprehensive test suite for WorkflowGateRequest system.
  * Tests extension of ValidationQuestion, escalation chains, event integration,
  * and domain boundary validation.
  */
 
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
-  WorkflowGateRequestProcessor,
-  type WorkflowGateRequest,
-  type WorkflowContext,
+  createApprovalGate,
+  createCheckpointGate,
+  createEmergencyGate,
   type EscalationChain,
   type EscalationLevel,
   GateEscalationLevel,
+  type WorkflowContext,
+  type WorkflowGateRequest,
+  WorkflowGateRequestProcessor,
   WorkflowGateRequestSchema,
-  createApprovalGate,
-  createCheckpointGate,
-  createEmergencyGate
-} from '../../../coordination/workflows/workflow-gate-request';
+} from '../../../coordination/workflows/workflow-gate-request.ts';
+import { Domain, getDomainValidator } from '../../../core/domain-boundary-validator.ts';
 import {
-  TypeSafeEventBus,
+  type AGUIGateOpenedEvent,
   createTypeSafeEventBus,
   EventPriority,
   type HumanValidationRequestedEvent,
-  type AGUIGateOpenedEvent
-} from '../../../core/type-safe-event-system';
-import { Domain, getDomainValidator } from '../../../core/domain-boundary-validator';
-import type { AGUIInterface } from '../../../interfaces/agui/agui-adapter';
+  type TypeSafeEventBus,
+} from '../../../core/type-safe-event-system.ts';
+import type { AGUIInterface } from '../../../interfaces/agui/agui-adapter.ts';
 
 // ============================================================================
 // MOCK IMPLEMENTATIONS
@@ -48,10 +48,10 @@ class MockAGUIInterface implements AGUIInterface {
   async askQuestion(question: any): Promise<string> {
     const response = this.mockResponses.get(question.id) || 'approve';
     this.callHistory.push({ question, response });
-    
+
     // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 10));
-    
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
     return response;
   }
 
@@ -86,7 +86,7 @@ describe('WorkflowGateRequest System', () => {
     eventBus = createTypeSafeEventBus({
       enableMetrics: false,
       enableCaching: false,
-      domainValidation: true
+      domainValidation: true,
     });
     await eventBus.initialize();
 
@@ -95,13 +95,13 @@ describe('WorkflowGateRequest System', () => {
       enableMetrics: false,
       enableDomainValidation: true,
       defaultTimeout: 10000, // Short timeout for tests
-      enableAutoApproval: true
+      enableAutoApproval: true,
     });
   });
 
   afterEach(async () => {
     await eventBus.shutdown();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   // ============================================================================
@@ -123,8 +123,8 @@ describe('WorkflowGateRequest System', () => {
             type: 'blocking',
             reference: 'other-workflow-002',
             criticality: 'high',
-            description: 'Must complete before deployment'
-          }
+            description: 'Must complete before deployment',
+          },
         ],
         impactEstimates: [
           {
@@ -132,8 +132,8 @@ describe('WorkflowGateRequest System', () => {
             timeImpact: 8,
             costImpact: 1000,
             qualityImpact: 0.9,
-            confidence: 0.8
-          }
+            confidence: 0.8,
+          },
         ],
         riskFactors: [
           {
@@ -142,17 +142,17 @@ describe('WorkflowGateRequest System', () => {
             severity: 'medium',
             probability: 0.3,
             description: 'Potential integration issues',
-            mitigation: ['thorough testing', 'rollback plan']
-          }
-        ]
+            mitigation: ['thorough testing', 'rollback plan'],
+          },
+        ],
       };
 
       expect(workflowContext.workflowId).toBe('test-workflow-001');
       expect(workflowContext.businessImpact).toBe('high');
       expect(workflowContext.stakeholders).toContain('manager1');
       expect(workflowContext.dependencies).toHaveLength(1);
-      expect(workflowContext.impactEstimates?.[0].confidence).toBe(0.8);
-      expect(workflowContext.riskFactors?.[0].mitigation).toContain('rollback plan');
+      expect(workflowContext.impactEstimates?.[0]?.confidence).toBe(0.8);
+      expect(workflowContext.riskFactors?.[0]?.mitigation).toContain('rollback plan');
     });
 
     it('should validate required fields', () => {
@@ -161,7 +161,7 @@ describe('WorkflowGateRequest System', () => {
         stepName: 'step-001',
         businessImpact: 'medium',
         decisionScope: 'task',
-        stakeholders: ['user1']
+        stakeholders: ['user1'],
       };
 
       expect(minimalContext.workflowId).toBeDefined();
@@ -183,42 +183,42 @@ describe('WorkflowGateRequest System', () => {
             approvers: ['team-lead-1'],
             requiredApprovals: 1,
             timeLimit: 1800000, // 30 minutes
-            permissions: ['approve_low_impact']
+            permissions: ['approve_low_impact'],
           },
           {
             level: GateEscalationLevel.MANAGER,
             approvers: ['manager-1', 'manager-2'],
             requiredApprovals: 1,
             timeLimit: 3600000, // 1 hour
-            permissions: ['approve_medium_impact']
+            permissions: ['approve_medium_impact'],
           },
           {
             level: GateEscalationLevel.DIRECTOR,
             approvers: ['director-1'],
             requiredApprovals: 1,
             timeLimit: 7200000, // 2 hours
-            permissions: ['approve_high_impact']
-          }
+            permissions: ['approve_high_impact'],
+          },
         ],
         triggers: [
           {
             type: 'timeout',
             threshold: 'time_limit',
-            delay: 0
+            delay: 0,
           },
           {
             type: 'business_impact',
             threshold: 'high',
-            delay: 300000 // 5 minutes
-          }
+            delay: 300000, // 5 minutes
+          },
         ],
         maxLevel: GateEscalationLevel.DIRECTOR,
-        notifyAllLevels: true
+        notifyAllLevels: true,
       };
 
       expect(escalationChain.levels).toHaveLength(3);
-      expect(escalationChain.levels[0].level).toBe(GateEscalationLevel.TEAM_LEAD);
-      expect(escalationChain.levels[1].approvers).toContain('manager-2');
+      expect(escalationChain.levels[0]?.level).toBe(GateEscalationLevel.TEAM_LEAD);
+      expect(escalationChain.levels[1]?.approvers).toContain('manager-2');
       expect(escalationChain.triggers).toHaveLength(2);
       expect(escalationChain.maxLevel).toBe(GateEscalationLevel.DIRECTOR);
     });
@@ -243,7 +243,7 @@ describe('WorkflowGateRequest System', () => {
         stepName: 'approval-gate',
         businessImpact: 'high',
         decisionScope: 'feature',
-        stakeholders: ['product-manager', 'tech-lead']
+        stakeholders: ['product-manager', 'tech-lead'],
       };
 
       const gateRequest: WorkflowGateRequest = {
@@ -264,12 +264,12 @@ describe('WorkflowGateRequest System', () => {
         timeoutConfig: {
           initialTimeout: 1800000, // 30 minutes
           escalationTimeouts: [1800000, 3600000], // 30min, 1hr
-          maxTotalTimeout: 7200000 // 2 hours
+          maxTotalTimeout: 7200000, // 2 hours
         },
         integrationConfig: {
           domainValidation: true,
-          enableMetrics: true
-        }
+          enableMetrics: true,
+        },
       };
 
       // Validate ValidationQuestion properties
@@ -289,22 +289,22 @@ describe('WorkflowGateRequest System', () => {
 
     it('should validate against WorkflowGateRequestSchema', () => {
       const validator = getDomainValidator(Domain.WORKFLOWS);
-      
+
       const validGateRequest: WorkflowGateRequest = {
         id: 'gate-002',
         type: 'checkpoint',
         question: 'Continue with next phase?',
         context: { phase: 'testing' },
         confidence: 0.8,
-        
+
         workflowContext: {
           workflowId: 'workflow-002',
           stepName: 'testing-gate',
           businessImpact: 'medium',
           decisionScope: 'task',
-          stakeholders: ['qa-lead']
+          stakeholders: ['qa-lead'],
         },
-        gateType: 'checkpoint'
+        gateType: 'checkpoint',
       };
 
       // Should not throw an error for valid gate request
@@ -315,22 +315,22 @@ describe('WorkflowGateRequest System', () => {
 
     it('should reject invalid gate requests', () => {
       const validator = getDomainValidator(Domain.WORKFLOWS);
-      
+
       const invalidGateRequest = {
         id: 'gate-003',
         // Missing required 'type' field
         question: 'Invalid gate?',
         context: {},
         confidence: 0.5,
-        
+
         workflowContext: {
           workflowId: 'workflow-003',
           stepName: 'invalid-gate',
           businessImpact: 'invalid-impact', // Invalid enum value
           decisionScope: 'task',
-          stakeholders: ['user']
+          stakeholders: ['user'],
         },
-        gateType: 'approval'
+        gateType: 'approval',
       };
 
       expect(() => {
@@ -348,7 +348,7 @@ describe('WorkflowGateRequest System', () => {
       const workflowContext: Partial<WorkflowContext> = {
         businessImpact: 'high',
         decisionScope: 'feature',
-        stakeholders: ['product-owner', 'engineering-manager']
+        stakeholders: ['product-owner', 'engineering-manager'],
       };
 
       const gateRequest = processor.createWorkflowGateRequest(
@@ -380,7 +380,7 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'medium',
           decisionScope: 'task',
-          stakeholders: ['developer']
+          stakeholders: ['developer'],
         }
       );
 
@@ -399,7 +399,7 @@ describe('WorkflowGateRequest System', () => {
       expect(callHistory).toHaveLength(1);
       expect(callHistory[0].question).toMatchObject({
         question: 'Approve this action?',
-        context: { action: 'deploy' }
+        context: { action: 'deploy' },
       });
     });
 
@@ -413,7 +413,7 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'high',
           decisionScope: 'feature',
-          stakeholders: ['security-team']
+          stakeholders: ['security-team'],
         }
       );
 
@@ -437,7 +437,7 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'low',
           decisionScope: 'task',
-          stakeholders: ['qa-system']
+          stakeholders: ['qa-system'],
         }
       );
 
@@ -450,9 +450,9 @@ describe('WorkflowGateRequest System', () => {
             operator: 'greater_than',
             field: 'businessImpact',
             value: 'low', // This should match
-            required: false
-          }
-        ]
+            required: false,
+          },
+        ],
       };
 
       const result = await processor.processWorkflowGate(gateRequest);
@@ -461,7 +461,7 @@ describe('WorkflowGateRequest System', () => {
       expect(result.approved).toBe(true);
       expect(result.autoApproved).toBe(true);
       expect(result.escalationLevel).toBe(GateEscalationLevel.NONE);
-      
+
       // Should not have called AGUI for auto-approval
       const callHistory = mockAGUI.getCallHistory();
       expect(callHistory).toHaveLength(0);
@@ -477,7 +477,7 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'medium',
           decisionScope: 'feature',
-          stakeholders: ['developer']
+          stakeholders: ['developer'],
         }
       );
 
@@ -490,9 +490,9 @@ describe('WorkflowGateRequest System', () => {
             operator: 'equals',
             field: 'tests_passed', // This will evaluate against context
             value: true,
-            required: true
-          }
-        ]
+            required: true,
+          },
+        ],
       };
 
       const result = await processor.processWorkflowGate(gateRequest);
@@ -504,13 +504,13 @@ describe('WorkflowGateRequest System', () => {
 
     it('should emit proper events during processing', async () => {
       const eventEmissions: any[] = [];
-      
+
       // Capture all events
       eventBus.registerWildcardHandler(async (event) => {
         eventEmissions.push({
           type: event.type,
           domain: event.domain,
-          timestamp: event.timestamp
+          timestamp: event.timestamp,
         });
       });
 
@@ -523,7 +523,7 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'medium',
           decisionScope: 'task',
-          stakeholders: ['developer']
+          stakeholders: ['developer'],
         }
       );
 
@@ -532,13 +532,13 @@ describe('WorkflowGateRequest System', () => {
       await processor.processWorkflowGate(gateRequest);
 
       // Check for expected events
-      const eventTypes = eventEmissions.map(e => e.type);
+      const eventTypes = eventEmissions.map((e) => e.type);
       expect(eventTypes).toContain('agui.gate.opened');
       expect(eventTypes).toContain('human.validation.requested');
       expect(eventTypes).toContain('agui.gate.closed');
 
       // Verify domain consistency
-      const interfaceEvents = eventEmissions.filter(e => e.domain === Domain.INTERFACES);
+      const interfaceEvents = eventEmissions.filter((e) => e.domain === Domain.INTERFACES);
       expect(interfaceEvents.length).toBeGreaterThan(0);
     });
 
@@ -550,23 +550,23 @@ describe('WorkflowGateRequest System', () => {
             level: GateEscalationLevel.TEAM_LEAD,
             approvers: ['team-lead'],
             requiredApprovals: 1,
-            timeLimit: 100 // Very short for testing
+            timeLimit: 100, // Very short for testing
           },
           {
             level: GateEscalationLevel.MANAGER,
             approvers: ['manager'],
             requiredApprovals: 1,
-            timeLimit: 100
-          }
+            timeLimit: 100,
+          },
         ],
         triggers: [
           {
             type: 'timeout',
             threshold: 'time_limit',
-            delay: 0
-          }
+            delay: 0,
+          },
         ],
-        maxLevel: GateEscalationLevel.MANAGER
+        maxLevel: GateEscalationLevel.MANAGER,
       };
 
       const gateRequest = processor.createWorkflowGateRequest(
@@ -578,10 +578,10 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'critical',
           decisionScope: 'feature',
-          stakeholders: ['team-lead', 'manager']
+          stakeholders: ['team-lead', 'manager'],
         },
         {
-          escalationChain
+          escalationChain,
         }
       );
 
@@ -605,7 +605,7 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'low',
           decisionScope: 'task',
-          stakeholders: ['user']
+          stakeholders: ['user'],
         }
       );
 
@@ -634,19 +634,19 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'medium',
           decisionScope: 'task',
-          stakeholders: ['user']
+          stakeholders: ['user'],
         }
       );
 
       // Delay AGUI response to allow cancellation
       mockAGUI.setMockResponse(gateRequest.id, 'approve');
-      
+
       // Start processing
       const processingPromise = processor.processWorkflowGate(gateRequest);
 
       // Cancel the gate
       const cancelled = await processor.cancelGate(gateRequest.id, 'Test cancellation');
-      
+
       await processingPromise;
 
       // Note: Due to timing, the gate might complete before cancellation
@@ -669,7 +669,7 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'high',
           deadline: new Date(Date.now() + 3600000), // 1 hour
-          priority: 'high'
+          priority: 'high',
         }
       );
 
@@ -689,7 +689,7 @@ describe('WorkflowGateRequest System', () => {
         { coverage: 85, tests_passed: true },
         {
           autoApprovalThreshold: 0.9,
-          businessImpact: 'medium'
+          businessImpact: 'medium',
         }
       );
 
@@ -746,9 +746,9 @@ describe('WorkflowGateRequest System', () => {
           stepName: 'integration-test',
           businessImpact: 'medium',
           decisionScope: 'feature',
-          stakeholders: ['qa-lead', 'developer']
+          stakeholders: ['qa-lead', 'developer'],
         },
-        gateType: 'checkpoint'
+        gateType: 'checkpoint',
       };
 
       // Should be usable as ValidationQuestion
@@ -760,7 +760,7 @@ describe('WorkflowGateRequest System', () => {
       // Should be processable as WorkflowGateRequest
       mockAGUI.setMockResponse(gateRequest.id, 'Yes');
       const result = await processor.processWorkflowGate(gateRequest);
-      
+
       expect(result.success).toBe(true);
       expect(result.approved).toBe(true);
     });
@@ -769,21 +769,24 @@ describe('WorkflowGateRequest System', () => {
       const eventHistory: any[] = [];
 
       // Register event listeners to verify integration
-      eventBus.registerHandler('human.validation.requested', async (event: HumanValidationRequestedEvent) => {
-        eventHistory.push({
-          type: 'validation_requested',
-          requestId: event.payload.requestId,
-          validationType: event.payload.validationType,
-          priority: event.payload.priority
-        });
-      });
+      eventBus.registerHandler(
+        'human.validation.requested',
+        async (event: HumanValidationRequestedEvent) => {
+          eventHistory.push({
+            type: 'validation_requested',
+            requestId: event.payload.requestId,
+            validationType: event.payload.validationType,
+            priority: event.payload.priority,
+          });
+        }
+      );
 
       eventBus.registerHandler('agui.gate.opened', async (event: AGUIGateOpenedEvent) => {
         eventHistory.push({
           type: 'gate_opened',
           gateId: event.payload.gateId,
           gateType: event.payload.gateType,
-          requiredApproval: event.payload.requiredApproval
+          requiredApproval: event.payload.requiredApproval,
         });
       });
 
@@ -796,13 +799,13 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'low',
           decisionScope: 'task',
-          stakeholders: ['developer']
+          stakeholders: ['developer'],
         },
         {
           integrationConfig: {
             enableMetrics: true,
-            domainValidation: true
-          }
+            domainValidation: true,
+          },
         }
       );
 
@@ -812,19 +815,19 @@ describe('WorkflowGateRequest System', () => {
 
       // Verify events were emitted and received
       expect(eventHistory.length).toBeGreaterThan(0);
-      
-      const validationRequested = eventHistory.find(e => e.type === 'validation_requested');
+
+      const validationRequested = eventHistory.find((e) => e.type === 'validation_requested');
       expect(validationRequested).toBeDefined();
       expect(validationRequested.requestId).toBe(`gate-${gateRequest.id}`);
 
-      const gateOpened = eventHistory.find(e => e.type === 'gate_opened');
+      const gateOpened = eventHistory.find((e) => e.type === 'gate_opened');
       expect(gateOpened).toBeDefined();
       expect(gateOpened.gateId).toBe(gateRequest.id);
     });
 
     it('should integrate with domain boundary validation', async () => {
       const domainValidator = getDomainValidator(Domain.WORKFLOWS);
-      
+
       // Test cross-domain validation
       const gateRequest = processor.createWorkflowGateRequest(
         'cross-domain-001',
@@ -835,12 +838,12 @@ describe('WorkflowGateRequest System', () => {
         {
           businessImpact: 'medium',
           decisionScope: 'feature',
-          stakeholders: ['developer']
+          stakeholders: ['developer'],
         },
         {
           integrationConfig: {
-            domainValidation: true
-          }
+            domainValidation: true,
+          },
         }
       );
 
@@ -869,8 +872,8 @@ describe('WorkflowGateRequest System', () => {
           impact_analysis: {
             estimated_downtime: '5 minutes',
             affected_users: 10000,
-            rollback_time: '15 minutes'
-          }
+            rollback_time: '15 minutes',
+          },
         },
         {
           businessImpact: 'critical',
@@ -883,15 +886,15 @@ describe('WorkflowGateRequest System', () => {
               type: 'blocking',
               reference: 'staging-tests-workflow',
               criticality: 'critical',
-              description: 'All staging tests must pass'
+              description: 'All staging tests must pass',
             },
             {
               id: 'database-backup',
               type: 'blocking',
               reference: 'backup-workflow',
               criticality: 'critical',
-              description: 'Production database backup must be completed'
-            }
+              description: 'Production database backup must be completed',
+            },
           ],
           impactEstimates: [
             {
@@ -899,15 +902,15 @@ describe('WorkflowGateRequest System', () => {
               timeImpact: 2, // 2 hours
               costImpact: 5000, // $5000 in opportunity cost
               qualityImpact: 0.95, // High quality expected
-              confidence: 0.9
+              confidence: 0.9,
             },
             {
               outcome: 'reject',
               timeImpact: 24, // 24 hours delay
               costImpact: 15000, // $15000 in delayed features
               qualityImpact: 0.8, // Some technical debt accumulation
-              confidence: 0.85
-            }
+              confidence: 0.85,
+            },
           ],
           riskFactors: [
             {
@@ -916,7 +919,7 @@ describe('WorkflowGateRequest System', () => {
               severity: 'high',
               probability: 0.2,
               description: 'Database migration could fail or take longer than expected',
-              mitigation: ['full backup', 'rollback procedure', 'monitoring']
+              mitigation: ['full backup', 'rollback procedure', 'monitoring'],
             },
             {
               id: 'user-impact-risk',
@@ -924,21 +927,21 @@ describe('WorkflowGateRequest System', () => {
               severity: 'medium',
               probability: 0.3,
               description: 'User sessions may be disrupted during deployment',
-              mitigation: ['off-peak deployment', 'user notifications']
-            }
-          ]
+              mitigation: ['off-peak deployment', 'user notifications'],
+            },
+          ],
         },
         {
           priority: 'critical',
           timeoutConfig: {
             initialTimeout: 1800000, // 30 minutes initial
             escalationTimeouts: [1800000, 1800000, 1800000], // 30min each level
-            maxTotalTimeout: 7200000 // 2 hours total
+            maxTotalTimeout: 7200000, // 2 hours total
           },
           integrationConfig: {
             domainValidation: true,
-            enableMetrics: true
-          }
+            enableMetrics: true,
+          },
         }
       );
 
@@ -949,7 +952,7 @@ describe('WorkflowGateRequest System', () => {
       expect(result.success).toBe(true);
       expect(result.gateId).toBe(complexGateRequest.id);
       expect(result.processingTime).toBeGreaterThan(0);
-      
+
       // Verify complex workflow context was preserved
       expect(complexGateRequest.workflowContext.businessImpact).toBe('critical');
       expect(complexGateRequest.workflowContext.dependencies).toHaveLength(2);

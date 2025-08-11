@@ -1,6 +1,6 @@
 /**
  * @file Product Workflow Engine with Gates Integration Tests
- * 
+ *
  * Tests the enhanced ProductWorkflowEngine with AGUI gate capabilities including:
  * - Gate injection at key workflow steps
  * - AGUI adapter integration
@@ -9,26 +9,34 @@
  * - Gate timeout and escalation handling
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { EventEmitter } from 'events';
-import { ProductWorkflowEngine, type ProductWorkflowState } from '../../../coordination/orchestration/product-workflow-engine';
-import { WorkflowAGUIAdapter } from '../../../interfaces/agui/workflow-agui-adapter';
-import { TypeSafeEventBus, createTypeSafeEventBus } from '../../../core/type-safe-event-system';
-import type { MemorySystem } from '../../../core/memory-system';
-import type { DocumentManager } from '../../../database/managers/document-manager';
-import type { WorkflowGateRequest, WorkflowGateResult } from '../../../coordination/workflows/workflow-gate-request';
-import { GateEscalationLevel } from '../../../coordination/workflows/workflow-gate-request';
+
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  ProductWorkflowEngine,
+  type ProductWorkflowState,
+} from '../../../coordination/orchestration/product-workflow-engine.ts';
+import type {
+  WorkflowGateRequest,
+} from '../../../coordination/workflows/workflow-gate-request.ts';
+import { GateEscalationLevel } from '../../../coordination/workflows/workflow-gate-request.ts';
+import type { MemorySystem } from '../../../core/memory-system.ts';
+import {
+  createTypeSafeEventBus,
+  type TypeSafeEventBus,
+} from '../../../core/type-safe-event-system.ts';
+import type { DocumentManager } from '../../../database/managers/document-manager.ts';
+import { WorkflowAGUIAdapter } from '../../../interfaces/agui/workflow-agui-adapter.ts';
 
 // Mock implementations
 const mockMemorySystem: Partial<MemorySystem> = {
   initialize: vi.fn().mockResolvedValue(undefined),
   store: vi.fn().mockResolvedValue(undefined),
   search: vi.fn().mockResolvedValue({}),
-  retrieve: vi.fn().mockResolvedValue(null)
+  retrieve: vi.fn().mockResolvedValue(null),
 };
 
 const mockDocumentService: Partial<DocumentManager> = {
-  initialize: vi.fn().mockResolvedValue(undefined)
+  initialize: vi.fn().mockResolvedValue(undefined),
 };
 
 describe('ProductWorkflowEngine with Gates Integration', () => {
@@ -37,11 +45,55 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
   let aguiAdapter: WorkflowAGUIAdapter;
   let mockProcessWorkflowGate: any;
 
+  // Helper function to create complete ProductWorkflowState
+  function createMockWorkflowState(overrides: Partial<ProductWorkflowState> = {}): ProductWorkflowState {
+    return {
+      id: 'test-workflow',
+      status: 'running',
+      definition: { name: 'test-workflow', steps: [] },
+      context: {},
+      currentStepIndex: 0,
+      steps: [],
+      stepResults: {},
+      completedSteps: [],
+      startTime: new Date(),
+      progress: {
+        percentage: 0,
+        completedSteps: 0,
+        totalSteps: 1,
+      },
+      metrics: {
+        totalDuration: 0,
+        avgStepDuration: 0,
+        successRate: 0,
+        retryRate: 0,
+        resourceUsage: {
+          cpuTime: 0,
+          memoryPeak: 0,
+          diskIo: 0,
+          networkRequests: 0,
+        },
+        throughput: 0,
+      },
+      productFlow: {
+        currentStep: 'vision-analysis',
+        completedSteps: [],
+        documents: { vision: undefined, adrs: [], prds: [], epics: [], features: [], tasks: [] },
+      },
+      sparcIntegration: {
+        sparcProjects: new Map(),
+        activePhases: new Map(),
+        completedPhases: new Map(),
+      },
+      ...overrides,
+    } as ProductWorkflowState;
+  }
+
   beforeEach(async () => {
     // Create event bus
     eventBus = createTypeSafeEventBus({
       enableMetrics: true,
-      domainValidation: true
+      domainValidation: true,
     });
     await eventBus.initialize();
 
@@ -58,8 +110,8 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
         escalationTimeouts: [10000],
         maxTotalTimeout: 30000,
         enableAutoEscalation: false,
-        notifyOnTimeout: false
-      }
+        notifyOnTimeout: false,
+      },
     });
 
     // Mock the processWorkflowGate method
@@ -74,10 +126,10 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       aguiAdapter,
       {
         enableSPARCIntegration: true,
+        sparcDomainMapping: {},
         sparcQualityGates: true, // Enable gates
         autoTriggerSPARC: false,
         maxConcurrentWorkflows: 1,
-        enableMetrics: true
       }
     );
 
@@ -92,7 +144,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
   describe('Gate Initialization', () => {
     it('should initialize gate definitions', () => {
       const gateDefinitions = engine.getGateDefinitions();
-      
+
       expect(gateDefinitions.size).toBeGreaterThan(0);
       expect(gateDefinitions.has('vision-analysis')).toBe(true);
       expect(gateDefinitions.has('prd-creation')).toBe(true);
@@ -103,10 +155,12 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
     it('should have proper gate configuration', () => {
       const visionGate = engine.getGateDefinitions().get('vision-analysis');
-      
+
       expect(visionGate).toBeDefined();
       expect(visionGate!.title).toBe('Vision Analysis Gate');
-      expect(visionGate!.description).toContain('Strategic gate to validate vision document analysis');
+      expect(visionGate!.description).toContain(
+        'Strategic gate to validate vision document analysis'
+      );
       expect(visionGate!.subtype).toBe('vision-analysis');
       expect(visionGate!.priority).toBeDefined();
     });
@@ -121,22 +175,22 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     it('should execute gate before vision analysis', async () => {
       const workflowResult = await engine.startProductWorkflow('complete-product-flow', {
         workspaceId: 'test-workspace',
-        variables: { testMode: true }
+        variables: { testMode: true },
       });
 
       expect(workflowResult.success).toBe(true);
       expect(workflowResult.workflowId).toBeDefined();
 
       // Wait a bit for workflow to start and potentially execute gates
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Check if gates were executed
       expect(mockProcessWorkflowGate).toHaveBeenCalled();
-      
+
       // Verify gate request structure
       const gateCall = mockProcessWorkflowGate.mock.calls[0];
       const gateRequest: WorkflowGateRequest = gateCall[0];
-      
+
       expect(gateRequest.workflowContext.stepName).toBe('vision-analysis');
       expect(gateRequest.gateType).toBe('checkpoint');
       expect(gateRequest.question).toContain('vision analysis');
@@ -145,7 +199,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     it('should pause workflow when gate is pending', async () => {
       // Mock AGUI adapter to simulate pending gate (not resolving immediately)
       mockProcessWorkflowGate.mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve('approved'), 1000))
+        () => new Promise((resolve) => setTimeout(() => resolve('approved'), 1000))
       );
 
       const workflowResult = await engine.startProductWorkflow('complete-product-flow');
@@ -154,7 +208,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       const workflowId = workflowResult.workflowId!;
 
       // Wait for gate to be triggered
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Check if workflow is paused
       const workflowStatus = await engine.getProductWorkflowStatus(workflowId);
@@ -172,11 +226,11 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       expect(workflowResult.success).toBe(true);
 
       // Wait for workflow execution
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       const workflowId = workflowResult.workflowId!;
       const workflowStatus = await engine.getProductWorkflowStatus(workflowId);
-      
+
       // Workflow should either fail or be in error state due to gate rejection
       if (workflowStatus) {
         expect(['failed', 'paused']).toContain(workflowStatus.status);
@@ -188,12 +242,12 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     it('should track pending gates', async () => {
       // Start workflow
       await engine.startProductWorkflow('complete-product-flow');
-      
+
       // Wait for gates to be created
-      await new Promise(resolve => setTimeout(resolve, 50));
-      
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
       const pendingGates = await engine.getPendingGates();
-      
+
       // Should have gates if workflow is running and gates are enabled
       expect(pendingGates).toBeDefined();
       expect(pendingGates instanceof Map).toBe(true);
@@ -201,7 +255,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
     it('should provide gate statistics', () => {
       const stats = engine.getGateStatistics();
-      
+
       expect(stats).toBeDefined();
       expect(typeof stats.totalDecisionAudits).toBe('number');
       expect(typeof stats.activeGates).toBe('number');
@@ -211,18 +265,18 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     it('should cancel gates', async () => {
       // Mock a pending gate scenario
       mockProcessWorkflowGate.mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve('approved'), 2000))
+        () => new Promise((resolve) => setTimeout(() => resolve('approved'), 2000))
       );
 
       await engine.startProductWorkflow('complete-product-flow');
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       const pendingGates = await engine.getPendingGates();
-      
+
       if (pendingGates.size > 0) {
         const gateId = Array.from(pendingGates.keys())[0]!;
         const result = await engine.cancelGate(gateId, 'Test cancellation');
-        
+
         // Result depends on implementation, but should not throw
         expect(result).toBeDefined();
         expect(typeof result.success).toBe('boolean');
@@ -234,20 +288,16 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     it('should handle approval decision', async () => {
       mockProcessWorkflowGate.mockResolvedValue('approved');
 
-      const result = await engine.executeWorkflowGate('test-step', {
-        id: 'test-workflow',
-        status: 'running',
-        productFlow: {
-          currentStep: 'vision-analysis',
-          completedSteps: [],
-          documents: { adrs: [], prds: [], epics: [], features: [], tasks: [] }
+      const result = await engine.executeWorkflowGate(
+        'test-step',
+        createMockWorkflowState(),
+        {
+          question: 'Test gate question',
+          businessImpact: 'medium',
+          stakeholders: ['test-user'],
+          gateType: 'approval',
         }
-      } as ProductWorkflowState, {
-        question: 'Test gate question',
-        businessImpact: 'medium',
-        stakeholders: ['test-user'],
-        gateType: 'approval'
-      });
+      );
 
       expect(result.success).toBe(true);
       expect(result.approved).toBe(true);
@@ -257,20 +307,16 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     it('should handle rejection decision', async () => {
       mockProcessWorkflowGate.mockResolvedValue('rejected');
 
-      const result = await engine.executeWorkflowGate('test-step', {
-        id: 'test-workflow',
-        status: 'running',
-        productFlow: {
-          currentStep: 'vision-analysis',
-          completedSteps: [],
-          documents: { adrs: [], prds: [], epics: [], features: [], tasks: [] }
+      const result = await engine.executeWorkflowGate(
+        'test-step',
+        createMockWorkflowState(),
+        {
+          question: 'Test gate question',
+          businessImpact: 'medium',
+          stakeholders: ['test-user'],
+          gateType: 'approval',
         }
-      } as ProductWorkflowState, {
-        question: 'Test gate question',
-        businessImpact: 'medium',
-        stakeholders: ['test-user'],
-        gateType: 'approval'
-      });
+      );
 
       expect(result.success).toBe(true);
       expect(result.approved).toBe(false);
@@ -281,30 +327,27 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
         { businessImpact: 'critical' as const, expectedLevel: GateEscalationLevel.DIRECTOR },
         { businessImpact: 'high' as const, expectedLevel: GateEscalationLevel.MANAGER },
         { businessImpact: 'medium' as const, expectedLevel: GateEscalationLevel.TEAM_LEAD },
-        { businessImpact: 'low' as const, expectedLevel: GateEscalationLevel.NONE }
+        { businessImpact: 'low' as const, expectedLevel: GateEscalationLevel.NONE },
       ];
 
       for (const testCase of testCases) {
         mockProcessWorkflowGate.mockResolvedValue('approved');
 
-        const result = await engine.executeWorkflowGate('test-step', {
-          id: 'test-workflow',
-          status: 'running',
-          productFlow: {
-            currentStep: 'vision-analysis',
-            completedSteps: [],
-            documents: { adrs: [], prds: [], epics: [], features: [], tasks: [] }
+        const result = await engine.executeWorkflowGate(
+          'test-step',
+          createMockWorkflowState(),
+          {
+            question: 'Test gate question',
+            businessImpact: testCase.businessImpact,
+            stakeholders: ['test-user'],
+            gateType: 'approval',
           }
-        } as ProductWorkflowState, {
-          question: 'Test gate question',
-          businessImpact: testCase.businessImpact,
-          stakeholders: ['test-user'],
-          gateType: 'approval'
-        });
+        );
 
         // The gate request should have been created with the appropriate approval level
         expect(mockProcessWorkflowGate).toHaveBeenCalled();
-        const gateRequest = mockProcessWorkflowGate.mock.calls[mockProcessWorkflowGate.mock.calls.length - 1][0];
+        const gateRequest =
+          mockProcessWorkflowGate.mock.calls[mockProcessWorkflowGate.mock.calls.length - 1][0];
         expect(gateRequest.requiredApprovalLevel).toBe(testCase.expectedLevel);
       }
     });
@@ -328,7 +371,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
       // Pause workflow
       await engine.pauseProductWorkflow(workflowId, 'Test pause');
-      
+
       // Resume workflow
       const resumeResult = await engine.resumeProductWorkflow(workflowId, 'Test resume');
       expect(resumeResult.success).toBe(true);
@@ -342,20 +385,16 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     it('should handle AGUI adapter errors gracefully', async () => {
       mockProcessWorkflowGate.mockRejectedValue(new Error('AGUI adapter error'));
 
-      const result = await engine.executeWorkflowGate('test-step', {
-        id: 'test-workflow',
-        status: 'running',
-        productFlow: {
-          currentStep: 'vision-analysis',
-          completedSteps: [],
-          documents: { adrs: [], prds: [], epics: [], features: [], tasks: [] }
+      const result = await engine.executeWorkflowGate(
+        'test-step',
+        createMockWorkflowState(),
+        {
+          question: 'Test gate question',
+          businessImpact: 'medium',
+          stakeholders: ['test-user'],
+          gateType: 'approval',
         }
-      } as ProductWorkflowState, {
-        question: 'Test gate question',
-        businessImpact: 'medium',
-        stakeholders: ['test-user'],
-        gateType: 'approval'
-      });
+      );
 
       expect(result.success).toBe(false);
       expect(result.error).toBeDefined();
@@ -364,7 +403,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
     it('should handle gate cancellation errors', async () => {
       const result = await engine.cancelGate('non-existent-gate', 'Test cancellation');
-      
+
       expect(result.success).toBe(false);
       expect(result.error).toBe('Gate not found');
     });
@@ -375,13 +414,13 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       const gateDefinitions = engine.getGateDefinitions();
       const expectedSteps = [
         'vision-analysis',
-        'prd-creation', 
+        'prd-creation',
         'epic-breakdown',
         'feature-definition',
-        'sparc-integration'
+        'sparc-integration',
       ];
 
-      expectedSteps.forEach(step => {
+      expectedSteps.forEach((step) => {
         expect(gateDefinitions.has(step)).toBe(true);
       });
     });
@@ -396,7 +435,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
         {
           enableSPARCIntegration: true,
           sparcQualityGates: false, // Disable gates
-          autoTriggerSPARC: false
+          autoTriggerSPARC: false,
         }
       );
 
@@ -404,13 +443,13 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
       // Start workflow - should not trigger gates
       await engineWithoutGates.startProductWorkflow('complete-product-flow');
-      
+
       // Wait for potential gate execution
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // AGUI adapter should not have been called since gates are disabled
       expect(mockProcessWorkflowGate).not.toHaveBeenCalled();
-      
+
       await engineWithoutGates.shutdownGates();
     });
   });
@@ -419,20 +458,16 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     it('should log workflow decisions', async () => {
       mockProcessWorkflowGate.mockResolvedValue('approved with rationale: looks good');
 
-      await engine.executeWorkflowGate('test-step', {
-        id: 'test-workflow-audit',
-        status: 'running',
-        productFlow: {
-          currentStep: 'vision-analysis',
-          completedSteps: [],
-          documents: { adrs: [], prds: [], epics: [], features: [], tasks: [] }
+      await engine.executeWorkflowGate(
+        'test-step',
+        createMockWorkflowState({ id: 'test-workflow-audit' }),
+        {
+          question: 'Test audit gate',
+          businessImpact: 'high',
+          stakeholders: ['test-approver'],
+          gateType: 'approval',
         }
-      } as ProductWorkflowState, {
-        question: 'Test audit gate',
-        businessImpact: 'high',
-        stakeholders: ['test-approver'],
-        gateType: 'approval'
-      });
+      );
 
       // Check decision history
       const history = engine.getWorkflowDecisionHistory('test-workflow-audit');
@@ -441,7 +476,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
     it('should provide comprehensive statistics', () => {
       const stats = engine.getGateStatistics();
-      
+
       expect(stats).toHaveProperty('totalDecisionAudits');
       expect(stats).toHaveProperty('activeGates');
       expect(stats).toHaveProperty('config');

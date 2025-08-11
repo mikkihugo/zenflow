@@ -4,10 +4,10 @@
  */
 
 import { StdioMcpServer } from '../../coordination/mcp/mcp-server';
-import { HttpMcpServer } from '../../interfaces/mcp/http-mcp-server';
-import type { MCPRequest } from '../../interfaces/mcp/types';
-import { IntegrationTestSetup } from '../helpers/integration-test-setup';
-import { NetworkTestHelper } from '../helpers/network-test-helper';
+import { HttpMcpServer } from '../../interfaces/mcp/http-mcp-server.ts';
+import type { MCPRequest } from '../../interfaces/mcp/types.ts';
+import { IntegrationTestSetup } from '../helpers/integration-test-setup.ts';
+import { NetworkTestHelper } from '../helpers/network-test-helper.ts';
 
 describe('MCP Protocol Compliance Integration Tests', () => {
   let httpMcpServer: HttpMcpServer;

@@ -8,10 +8,10 @@
  * @file Error-system-integration implementation.
  */
 
-import { getLogger } from '../config/logging-config';
-import { mcpErrorHandler } from '../coordination/swarm/mcp/error-handler';
-import { errorMonitor } from './error-monitoring';
-import { errorRecoveryOrchestrator } from './error-recovery';
+import { getLogger } from '../config/logging-config.ts';
+import { mcpErrorHandler } from '../coordination/swarm/mcp/error-handler.ts';
+import { errorMonitor } from './error-monitoring.ts';
+import { errorRecoveryOrchestrator } from './error-recovery.ts';
 import {
   BaseClaudeZenError,
   type ErrorContext,
@@ -21,8 +21,8 @@ import {
   SwarmError,
   SystemError,
   WASMError,
-} from './errors';
-import { systemResilienceOrchestrator } from './system-resilience';
+} from './errors.ts';
+import { systemResilienceOrchestrator } from './system-resilience.ts';
 
 const logger = getLogger('ErrorSystemIntegration');
 
@@ -131,7 +131,10 @@ export class IntegratedErrorHandler {
   private setupMonitoring(): void {
     // Add custom alert handlers
     errorMonitor.addAlertHandler(async (alert, message) => {
-      logger.warn(`Alert triggered: ${alert.name}`, { severity: alert.severity, message });
+      logger.warn(`Alert triggered: ${alert.name}`, {
+        severity: alert.severity,
+        message,
+      });
 
       // Check emergency thresholds
       if (alert.severity === 'critical') {
@@ -571,7 +574,11 @@ export function getErrorHandler(): IntegratedErrorHandler {
 export async function handleErrorGlobally(
   error: Error,
   context?: Partial<ErrorContext>
-): Promise<{ recovered: boolean; result?: any; finalError?: BaseClaudeZenError }> {
+): Promise<{
+  recovered: boolean;
+  result?: any;
+  finalError?: BaseClaudeZenError;
+}> {
   return getErrorHandler().handleError(error, context);
 }
 export async function executeWithErrorHandling<T>(
@@ -597,8 +604,8 @@ export async function shutdownErrorHandling(): Promise<void> {
 // Export Everything
 // ===============================
 // IntegratedErrorHandler already exported above
-export * from './error-monitoring';
-export * from './error-recovery';
+export * from './error-monitoring.ts';
+export * from './error-recovery.ts';
 // Re-export all error types and utilities
-export * from './errors';
-export * from './system-resilience';
+export * from './errors.ts';
+export * from './system-resilience.ts';

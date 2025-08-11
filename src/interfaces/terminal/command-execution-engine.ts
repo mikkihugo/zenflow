@@ -7,7 +7,7 @@
 
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('CommandEngine');
 
@@ -572,7 +572,7 @@ export class CommandExecutionEngine {
 
       // Try to use the enhanced DiscoverCommand class for full functionality
       try {
-        const { CLICommandRegistry } = await import('./adapters/cli-adapters');
+        const { CLICommandRegistry } = await import('./adapters/cli-adapters.ts');
         const registry = CLICommandRegistry.getInstance();
 
         logger.info('🚀 Using enhanced Progressive Confidence Building System');

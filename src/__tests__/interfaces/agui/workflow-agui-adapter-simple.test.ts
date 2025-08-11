@@ -1,26 +1,26 @@
 /**
  * @file Simple WorkflowAGUIAdapter Tests - Phase 1, Task 1.3
- * 
+ *
  * Basic testing of WorkflowAGUIAdapter core functionality without complex
  * workflow processing to verify the implementation works.
  */
 
-import { describe, test, expect, beforeEach, afterEach } from 'vitest';
-import {
-  WorkflowAGUIAdapter,
-  createWorkflowAGUIAdapter,
-  createTestWorkflowAGUIAdapter,
-  type WorkflowAGUIConfig
-} from '../../../interfaces/agui/workflow-agui-adapter';
-import {
-  TypeSafeEventBus,
-  createTypeSafeEventBus,
-} from '../../../core/type-safe-event-system';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import {
   createApprovalGate,
   createCheckpointGate,
-  GateEscalationLevel
-} from '../../../coordination/workflows/workflow-gate-request';
+  GateEscalationLevel,
+} from '../../../coordination/workflows/workflow-gate-request.ts';
+import {
+  createTypeSafeEventBus,
+  type TypeSafeEventBus,
+} from '../../../core/type-safe-event-system.ts';
+import {
+  createTestWorkflowAGUIAdapter,
+  createWorkflowAGUIAdapter,
+  WorkflowAGUIAdapter,
+  type WorkflowAGUIConfig,
+} from '../../../interfaces/agui/workflow-agui-adapter.ts';
 
 describe('WorkflowAGUIAdapter - Simple Tests', () => {
   let eventBus: TypeSafeEventBus;
@@ -30,7 +30,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
     eventBus = createTypeSafeEventBus({
       enableMetrics: false,
       enableCaching: false,
-      domainValidation: false
+      domainValidation: false,
     });
     adapter = createTestWorkflowAGUIAdapter(eventBus);
   });
@@ -44,7 +44,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
     test('should initialize with default configuration', () => {
       const defaultAdapter = createWorkflowAGUIAdapter(eventBus);
       const stats = defaultAdapter.getStatistics();
-      
+
       expect(stats.totalDecisionAudits).toBe(0);
       expect(stats.activeGates).toBe(0);
       expect(stats.config.enableRichPrompts).toBe(true);
@@ -56,12 +56,12 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
         enableRichPrompts: false,
         enableDecisionLogging: false,
         auditRetentionDays: 30,
-        maxAuditRecords: 500
+        maxAuditRecords: 500,
       };
-      
+
       const customAdapter = new WorkflowAGUIAdapter(eventBus, customConfig);
       const stats = customAdapter.getStatistics();
-      
+
       expect(stats.config.enableRichPrompts).toBe(false);
       expect(stats.config.enableDecisionLogging).toBe(false);
       expect(stats.config.auditRetentionDays).toBe(30);
@@ -83,7 +83,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
         ['product-manager', 'tech-lead'],
         {
           businessImpact: 'medium',
-          priority: 'high'
+          priority: 'high',
         }
       );
 
@@ -99,7 +99,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
     test('should create checkpoint gates with correct structure', () => {
       const checkpointData = {
         confidence: 0.95,
-        validationResults: ['all tests passed', 'code coverage > 90%']
+        validationResults: ['all tests passed', 'code coverage > 90%'],
       };
 
       const checkpointGate = createCheckpointGate(
@@ -108,7 +108,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
         checkpointData,
         {
           autoApprovalThreshold: 0.9,
-          businessImpact: 'low'
+          businessImpact: 'low',
         }
       );
 
@@ -130,7 +130,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
         type: 'relevance' as const,
         question: 'Standard question?',
         context: {},
-        confidence: 0.8
+        confidence: 0.8,
       };
 
       // Test the type guard logic
@@ -142,12 +142,16 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
 
     test('should validate required workflow context fields', () => {
       const validGate = createApprovalGate('valid-wf', 'valid-step', 'Valid?', ['user']);
-      
+
       expect(validGate.workflowContext.workflowId).toBe('valid-wf');
       expect(validGate.workflowContext.stepName).toBe('valid-step');
       expect(validGate.workflowContext.stakeholders).toEqual(['user']);
-      expect(['low', 'medium', 'high', 'critical']).toContain(validGate.workflowContext.businessImpact);
-      expect(['task', 'feature', 'epic', 'prd', 'portfolio']).toContain(validGate.workflowContext.decisionScope);
+      expect(['low', 'medium', 'high', 'critical']).toContain(
+        validGate.workflowContext.businessImpact
+      );
+      expect(['task', 'feature', 'epic', 'prd', 'portfolio']).toContain(
+        validGate.workflowContext.decisionScope
+      );
     });
   });
 
@@ -155,12 +159,12 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
     test('should maintain audit statistics', () => {
       const initialStats = adapter.getStatistics();
       expect(initialStats.totalDecisionAudits).toBe(0);
-      
+
       // Verify audit methods exist and work
       const allAudits = adapter.getAllDecisionAudits();
       expect(Array.isArray(allAudits)).toBe(true);
       expect(allAudits.length).toBe(0);
-      
+
       const workflowHistory = adapter.getWorkflowDecisionHistory('non-existent');
       expect(Array.isArray(workflowHistory)).toBe(true);
       expect(workflowHistory.length).toBe(0);
@@ -171,7 +175,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
       const auditData = JSON.parse(jsonExport);
       expect(Array.isArray(auditData)).toBe(true);
       expect(auditData.length).toBe(0);
-      
+
       const csvExport = adapter.exportAuditTrail('csv');
       const lines = csvExport.split('\n');
       expect(lines.length).toBe(1); // Only header row
@@ -183,7 +187,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
     test('should create test adapter with appropriate config', () => {
       const testAdapter = createTestWorkflowAGUIAdapter(eventBus);
       const stats = testAdapter.getStatistics();
-      
+
       expect(stats.config.enableRichPrompts).toBe(false);
       expect(stats.config.enableTimeoutHandling).toBe(false);
       expect(stats.config.auditRetentionDays).toBe(1);
@@ -193,7 +197,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
     test('should create standard adapter with default config', () => {
       const standardAdapter = createWorkflowAGUIAdapter(eventBus);
       const stats = standardAdapter.getStatistics();
-      
+
       expect(stats.config.enableRichPrompts).toBe(true);
       expect(stats.config.enableDecisionLogging).toBe(true);
       expect(stats.config.auditRetentionDays).toBe(90);

@@ -18,7 +18,7 @@ import type {
   ConversationPattern,
   ConversationSession,
   ModerationAction,
-} from './types';
+} from './types.ts';
 
 /**
  * Implementation of the conversation orchestrator.

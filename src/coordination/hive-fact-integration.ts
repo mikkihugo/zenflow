@@ -7,14 +7,18 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
-import type { FACTSearchQuery, FACTStorageStats, FACTKnowledgeEntry } from '../knowledge/types/fact-types';
-import type { HiveSwarmCoordinatorInterface } from './shared-types';
+import { getLogger } from '../config/logging-config.ts';
+import type {
+  FACTKnowledgeEntry,
+  FACTSearchQuery,
+  FACTStorageStats,
+} from '../knowledge/types/fact-types.ts';
+import type { HiveSwarmCoordinatorInterface } from './shared-types.ts';
 
 // Type alias for backward compatibility
 type HiveSwarmCoordinator = HiveSwarmCoordinatorInterface;
 
-import type { HiveFACTConfig, UniversalFact } from './hive-types';
+import type { HiveFACTConfig, UniversalFact } from './hive-types.ts';
 
 // import { FACTExternalOrchestrator } from './mcp/tools/fact-external-integration'; // TODO: Migrate to unified MCP
 
@@ -172,7 +176,7 @@ export class HiveFACTSystem extends EventEmitter {
    */
   async storeFact(fact: UniversalFact): Promise<void> {
     const factKey = `${fact.type}:${fact.subject}`;
-    
+
     // Ensure fact has required metadata
     const storedFact: UniversalFact = {
       ...fact,
@@ -181,13 +185,13 @@ export class HiveFACTSystem extends EventEmitter {
       swarmAccess: fact.swarmAccess || new Set(),
       freshness: fact.freshness || 'fresh',
     };
-    
+
     // Store in local cache
     this.universalFacts.set(factKey, storedFact);
-    
+
     // Emit update event for coordination
     this.emit('factStored', storedFact);
-    
+
     logger.debug(`Stored fact: ${factKey}`);
   }
 
@@ -219,7 +223,7 @@ export class HiveFACTSystem extends EventEmitter {
       .slice(0, query.limit || 10);
 
     // Convert to FACTKnowledgeEntry format
-    return sortedResults.map(fact => this.convertToFACTKnowledgeEntry(fact, query));
+    return sortedResults.map((fact) => this.convertToFACTKnowledgeEntry(fact, query));
   }
 
   /**
@@ -469,9 +473,10 @@ export class HiveFACTSystem extends EventEmitter {
     try {
       if (this.factOrchestrator && typeof this.factOrchestrator.gatherKnowledge === 'function') {
         // Use buildQueryForFactType if we have a specific type
-        const searchQuery = query.type && query.query
-          ? this.buildQueryForFactType(query.type as UniversalFact['type'], query.query)
-          : query.query || '';
+        const searchQuery =
+          query.type && query.query
+            ? this.buildQueryForFactType(query.type as UniversalFact['type'], query.query)
+            : query.query || '';
 
         const result = await this.factOrchestrator.gatherKnowledge(searchQuery, {
           sources: this.config.knowledgeSources || ['web', 'internal'],
@@ -608,16 +613,20 @@ export class HiveFACTSystem extends EventEmitter {
 
   /**
    * Convert UniversalFact to FACTKnowledgeEntry format for interface compatibility.
-   * 
+   *
    * @param fact Universal fact to convert
    * @param query Original query for context
    */
-  private convertToFACTKnowledgeEntry(fact: UniversalFact, query: FACTSearchQuery): FACTKnowledgeEntry {
+  private convertToFACTKnowledgeEntry(
+    fact: UniversalFact,
+    query: FACTSearchQuery
+  ): FACTKnowledgeEntry {
     return {
       query: query.query || fact.subject || '',
-      result: typeof fact.content === 'object' 
-        ? JSON.stringify(fact.content)
-        : String(fact.content || ''),
+      result:
+        typeof fact.content === 'object'
+          ? JSON.stringify(fact.content)
+          : String(fact.content || ''),
       ttl: fact.metadata?.ttl || this.getTTLForFactType(fact.type),
       lastAccessed: Date.now(),
       metadata: {
@@ -626,8 +635,8 @@ export class HiveFACTSystem extends EventEmitter {
         confidence: fact.confidence || 0.5,
         factId: fact.id,
         factType: fact.type,
-        subject: fact.subject
-      }
+        subject: fact.subject,
+      },
     };
   }
 
@@ -742,6 +751,6 @@ export const HiveFACTHelpers = {
 };
 
 // Export types from hive-types
-export type { UniversalFact } from './hive-types';
+export type { UniversalFact } from './hive-types.ts';
 
 export default HiveFACTSystem;

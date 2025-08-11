@@ -31,8 +31,8 @@ const logger = getLogger('interfaces-clients-adapters-websocket-client-adapter')
  * - Authentication over WebSocket (query, headers, protocols)
  * @example
  * ```typescript.
- * import { WebSocketClientAdapter } from './websocket-client-adapter';
- * import type { WebSocketClientConfig } from './websocket-client-adapter';
+ * import { WebSocketClientAdapter } from './websocket-client-adapter.ts';
+ * import type { WebSocketClientConfig } from './websocket-client-adapter.ts';
  *
  * // Basic real-time client
  * const realtimeClient = new WebSocketClientAdapter({
@@ -165,7 +165,7 @@ import type {
   IClient,
   RequestOptions,
   RetryConfig,
-} from '../core/interfaces';
+} from '../core/interfaces.ts';
 
 /**
  * WebSocket-specific authentication configuration.

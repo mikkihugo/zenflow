@@ -53,10 +53,10 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     // Use config to determine analysis depth and thresholds
     const complexityThreshold = (this.config['complexityThreshold'] as number) ?? 50;
     const analysisDepth = (this.config['analysisDepth'] as string) ?? 'moderate';
-    
+
     // Adjust complexity based on config
     const baseComplexity = analysisDepth === 'deep' ? 75 : analysisDepth === 'shallow' ? 25 : 50;
-    
+
     return {
       domainPath,
       complexity: baseComplexity,

@@ -8,7 +8,7 @@
  * - Verify the conversation between components
  */
 
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 

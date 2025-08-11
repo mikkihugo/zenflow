@@ -5,14 +5,14 @@
  * Fails fast if configuration is invalid for deployment.
  */
 
-import { getLogger } from './logging-config';
+import { getLogger } from './logging-config.ts';
 
 const logger = getLogger('src-config-startup-validator');
 
 import * as process from 'node:process';
-import { configHealthChecker } from './health-checker';
-import { configManager } from './manager';
-import type { ValidationResult } from './types';
+import { configHealthChecker } from './health-checker.ts';
+import { configManager } from './manager.ts';
+import type { ValidationResult } from './types.ts';
 
 /**
  * Startup validation options.
@@ -43,7 +43,11 @@ export interface StartupValidationResult {
   environment: string;
   timestamp: number;
   validationDetails: ValidationResult;
-  portConflicts: Array<{ port: number; services: string[]; severity: 'error' | 'warning' }>;
+  portConflicts: Array<{
+    port: number;
+    services: string[];
+    severity: 'error' | 'warning';
+  }>;
   exitCode: number;
 }
 
@@ -126,8 +130,11 @@ export async function runStartupValidation(
     }
 
     // 4. Port conflict validation (unless skipped)
-    let portConflicts: Array<{ port: number; services: string[]; severity: 'error' | 'warning' }> =
-      [];
+    let portConflicts: Array<{
+      port: number;
+      services: string[];
+      severity: 'error' | 'warning';
+    }> = [];
     if (!skipValidation.includes('ports')) {
       if (outputFormat === 'console') {
         process.stdout.write('🌐 Validating port configuration... ');

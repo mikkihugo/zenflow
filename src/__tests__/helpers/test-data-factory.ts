@@ -10,7 +10,7 @@ import type {
   SwarmTestData,
   TestDataOptions,
   UserTestData,
-} from './types';
+} from './types.ts';
 
 export class TestDataFactory {
   private seed: number;
@@ -196,7 +196,7 @@ export class TestDataFactory {
   createFileSystemStructure() {
     return {
       'src/': {
-        'index.ts': 'export * from "./lib";',
+        'index.ts': 'export * from \'./lib\'',
         'lib/': {
           'core.ts': this.generateCode('typescript'),
           'utils.ts': this.generateCode('typescript'),
@@ -346,10 +346,10 @@ export class TestDataFactory {
     const result = [];
 
     for (let i = 0; i < length; i++) {
-      result?.push(this.randomChoice(words));
+      result.push(this.randomChoice(words));
     }
 
-    return result?.join(' ');
+    return result.join(' ');
   }
 
   private generateCode(language: 'typescript' | 'javascript' | 'python' | 'rust'): string {

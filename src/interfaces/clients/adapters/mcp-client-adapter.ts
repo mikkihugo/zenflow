@@ -2,7 +2,7 @@
  * @file Mcp-client adapter implementation.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('interfaces-clients-adapters-mcp-client-adapter');
 
@@ -26,7 +26,7 @@ import {
   type IClientFactory,
   type RequestOptions,
   TimeoutError,
-} from '../core/interfaces.js';
+} from '../core/interfaces.ts';
 
 /**
  * MCP-specific client configuration.

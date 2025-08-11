@@ -2,8 +2,8 @@
  * @file Test suite for comprehensive-sparc-test.
  */
 
-import { getLogger } from './config/logging-config';
-import type { Priority, RiskLevel } from './coordination/swarm/sparc/types/sparc-types';
+import { getLogger } from './config/logging-config.js';
+import type { Priority, RiskLevel } from './coordination/swarm/sparc/types/sparc-types.js';
 
 const logger = getLogger('comprehensive-sparc-test');
 
@@ -57,7 +57,7 @@ async function runComprehensiveTest() {
 async function testCoreEngine() {
   try {
     const { PseudocodePhaseEngine } = await import(
-      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.js'
     );
     const engine = new PseudocodePhaseEngine();
 
@@ -70,7 +70,7 @@ async function testCoreEngine() {
           title: 'Core Algorithm Test',
           description: 'Test core algorithm generation',
           type: 'algorithmic',
-          priority: 'HIGH' satisfies Priority,
+          priority: 'HIGH' as Priority,
           testCriteria: ['Algorithm generates correctly'],
         },
       ],
@@ -82,7 +82,7 @@ async function testCoreEngine() {
       riskAssessment: {
         risks: [],
         mitigationStrategies: [],
-        overallRisk: 'LOW' satisfies RiskLevel,
+        overallRisk: 'LOW' as RiskLevel,
       },
       successMetrics: [],
     };
@@ -128,7 +128,7 @@ async function testCLIIntegration() {
           title: 'CLI Memory Algorithm',
           description: 'Test memory algorithm via CLI',
           type: 'algorithmic',
-          priority: 'HIGH' satisfies Priority,
+          priority: 'HIGH' as Priority,
           testCriteria: ['CLI generation works'],
         },
       ],
@@ -140,7 +140,7 @@ async function testCLIIntegration() {
       riskAssessment: {
         risks: [],
         mitigationStrategies: [],
-        overallRisk: 'LOW' satisfies RiskLevel,
+        overallRisk: 'LOW' as RiskLevel,
       },
       successMetrics: [],
     };
@@ -177,7 +177,7 @@ async function testCLIIntegration() {
 
 async function testMCPIntegration() {
   try {
-    const createSPARCTools = (await import('./interfaces/mcp/tools/sparc-integration-tools'))
+    const createSPARCTools = (await import('./interfaces/mcp/tools/sparc-integration-tools.js'))
       .default;
     const tools = createSPARCTools({} as any);
 
@@ -201,7 +201,7 @@ async function testMCPIntegration() {
           title: 'MCP Neural Algorithm',
           description: 'Test neural algorithm via MCP',
           type: 'algorithmic',
-          priority: 'HIGH' satisfies Priority,
+          priority: 'HIGH' as Priority,
           testCriteria: ['MCP generation works'],
         },
       ],
@@ -213,7 +213,7 @@ async function testMCPIntegration() {
       riskAssessment: {
         risks: [],
         mitigationStrategies: [],
-        overallRisk: 'LOW' satisfies RiskLevel,
+        overallRisk: 'LOW' as RiskLevel,
       },
       successMetrics: [],
     };
@@ -267,7 +267,7 @@ async function testEndToEndFlow() {
           title: 'E2E Data Processing',
           description: 'End-to-end data processing algorithm',
           type: 'algorithmic',
-          priority: 'HIGH' satisfies Priority,
+          priority: 'HIGH' as Priority,
           testCriteria: ['Processes data correctly', 'Handles edge cases'],
         },
         {
@@ -275,7 +275,7 @@ async function testEndToEndFlow() {
           title: 'E2E Validation',
           description: 'Data validation and error handling',
           type: 'algorithmic',
-          priority: 'MEDIUM' satisfies Priority,
+          priority: 'MEDIUM' as Priority,
           testCriteria: ['Validates input', 'Reports errors clearly'],
         },
       ],
@@ -285,7 +285,7 @@ async function testEndToEndFlow() {
           title: 'Performance',
           description: 'System performance requirements',
           metrics: { latency: '<50ms', throughput: '>2000/sec' },
-          priority: 'HIGH' satisfies Priority,
+          priority: 'HIGH' as Priority,
         },
       ],
       constraints: [
@@ -302,7 +302,7 @@ async function testEndToEndFlow() {
       riskAssessment: {
         risks: [],
         mitigationStrategies: [],
-        overallRisk: 'LOW' satisfies RiskLevel,
+        overallRisk: 'LOW' as RiskLevel,
       },
       successMetrics: [
         {
@@ -317,7 +317,7 @@ async function testEndToEndFlow() {
 
     // Phase 2 Processing (Pseudocode Generation)
     const { PseudocodePhaseEngine } = await import(
-      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
+      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.js'
     );
     const engine = new PseudocodePhaseEngine();
 

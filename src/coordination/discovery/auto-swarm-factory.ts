@@ -10,11 +10,11 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { HiveSwarmCoordinator } from '@coordination/hive-swarm-sync';
-import type { SwarmCoordinator } from '@coordination/swarm/core/swarm-coordinator';
-import type { AGUIInterface } from '@interfaces/agui/agui-adapter';
-import type { SessionMemoryStore } from '@memory/memory';
-import { getLogger } from '../../config/logging-config';
+import type { HiveSwarmCoordinator } from '../hive-swarm-sync.ts';
+import type { SwarmCoordinator } from '../swarm/core/swarm-coordinator.ts';
+import type { AGUIInterface } from '../../interfaces/agui/agui-adapter.ts';
+import type { SessionMemoryStore } from '../../memory/memory.ts';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('AutoSwarmFactory');
 

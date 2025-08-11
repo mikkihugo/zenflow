@@ -163,7 +163,7 @@ class DocsCoverageReporter {
       await this.generateMarkdownReport();
       return this.coverage;
     } catch (error) {
-      console.error('❌ Coverage report generation failed:', error.message);
+      // console.error('❌ Coverage report generation failed:', error.message);
       throw error;
     }
   }
@@ -1148,7 +1148,7 @@ async function main() {
     const exitCode = results.overall.percentage < 50 ? 1 : 0;
     process.exit(exitCode);
   } catch (error) {
-    console.error('💥 Coverage report generation failed:', error.message);
+    // console.error('💥 Coverage report generation failed:', error.message);
     process.exit(1);
   }
 }

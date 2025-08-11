@@ -1,6 +1,6 @@
 /**
  * @fileoverview Neural Domain Types - Single Source of Truth
- * 
+ *
  * All neural network, AI model, and cognitive pattern types.
  * Following Google TypeScript style guide and domain architecture standard.
  */
@@ -44,7 +44,12 @@ export interface OptimizerConfig {
 }
 
 export interface LossConfig {
-  readonly type: 'mse' | 'mae' | 'categorical_crossentropy' | 'binary_crossentropy' | 'sparse_categorical_crossentropy';
+  readonly type:
+    | 'mse'
+    | 'mae'
+    | 'categorical_crossentropy'
+    | 'binary_crossentropy'
+    | 'sparse_categorical_crossentropy';
   readonly reduction?: 'mean' | 'sum' | 'none';
   readonly weights?: readonly number[];
 }
@@ -52,10 +57,10 @@ export interface LossConfig {
 export interface RegularizationConfig {
   readonly l1?: number;
   readonly l2?: number;
-  readonly elasticNet?: {l1: number; l2: number};
+  readonly elasticNet?: { l1: number; l2: number };
 }
 
-export type ActivationFunction = 
+export type ActivationFunction =
   | 'relu'
   | 'sigmoid'
   | 'tanh'
@@ -67,7 +72,7 @@ export type ActivationFunction =
   | 'linear';
 
 // Cognitive pattern types
-export type CognitivePatternType = 
+export type CognitivePatternType =
   | 'convergent'
   | 'divergent'
   | 'lateral'
@@ -191,12 +196,15 @@ export interface EvaluationResult {
   readonly f1Score: number;
   readonly loss: number;
   readonly confusionMatrix?: readonly number[][];
-  readonly classificationReport?: Record<string, {
-    precision: number;
-    recall: number;
-    f1Score: number;
-    support: number;
-  }>;
+  readonly classificationReport?: Record<
+    string,
+    {
+      precision: number;
+      recall: number;
+      f1Score: number;
+      support: number;
+    }
+  >;
 }
 
 // DAA (Decentralized Autonomous Agents) types
@@ -243,7 +251,7 @@ export interface DAAExperience {
   readonly learned: boolean;
 }
 
-export type DAAAgentStatus = 
+export type DAAAgentStatus =
   | 'idle'
   | 'learning'
   | 'processing'
@@ -399,7 +407,7 @@ export class CognitivePatternError extends NeuralError {
 
 // Event types for neural operations
 export interface NeuralEvent {
-  readonly type: 
+  readonly type:
     | 'model_created'
     | 'training_started'
     | 'training_completed'
@@ -423,8 +431,19 @@ export type MetaLearningTaskId = string;
 // Re-export utility functions types
 export interface NeuralUtilities {
   activationFunction(type: ActivationFunction, input: number): number;
-  lossFunction(type: LossConfig['type'], predictions: readonly number[], targets: readonly number[]): number;
-  optimizerStep(type: OptimizerConfig['type'], gradients: readonly number[], config: OptimizerConfig): readonly number[];
+  lossFunction(
+    type: LossConfig['type'],
+    predictions: readonly number[],
+    targets: readonly number[]
+  ): number;
+  optimizerStep(
+    type: OptimizerConfig['type'],
+    gradients: readonly number[],
+    config: OptimizerConfig
+  ): readonly number[];
   normalizeData(data: readonly number[][]): readonly number[][];
-  splitTrainValidation(data: TrainingData, split: number): {train: TrainingData; validation: TrainingData};
+  splitTrainValidation(
+    data: TrainingData,
+    split: number
+  ): { train: TrainingData; validation: TrainingData };
 }

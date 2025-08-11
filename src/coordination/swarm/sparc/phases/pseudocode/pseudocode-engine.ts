@@ -26,7 +26,7 @@ import type {
   PseudocodeValidation,
   ReturnDefinition,
   ValidationResult,
-} from '../types/sparc-types';
+} from '../../types/sparc-types.ts';
 
 export class PseudocodePhaseEngine implements PseudocodeEngine {
   /**

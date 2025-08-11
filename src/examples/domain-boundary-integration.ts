@@ -1,27 +1,27 @@
 /**
  * @file Domain Boundary Integration Examples
- * 
+ *
  * Comprehensive examples showing how the domain boundary validator integrates
  * with existing domain types and provides runtime validation for the entire system.
- * 
+ *
  * These examples demonstrate real-world usage patterns for Phase 0 foundation.
  */
 
-import {
-  DomainBoundaryValidator,
-  Domain,
-  DomainOperation,
-  ContractRule,
-  TypeSchema,
-  CommonSchemas,
-  getDomainValidator,
-  validateCrossDomain,
-  domainValidatorRegistry
-} from '../core/domain-boundary-validator';
+import { getLogger } from '../config/logging-config.ts';
 
-import type { Agent, Task, PhaseAssignment, ExecutionPlan } from '../coordination/types';
-import type { WorkflowDefinition, WorkflowExecution, WorkflowEvent } from '../workflows/types';
-import { getLogger } from '../config/logging-config';
+import type { Agent, ExecutionPlan, PhaseAssignment, Task } from '../coordination/types.ts';
+import {
+  CommonSchemas,
+  type ContractRule,
+  Domain,
+  DomainBoundaryValidator,
+  type DomainOperation,
+  domainValidatorRegistry,
+  getDomainValidator,
+  type TypeSchema,
+  validateCrossDomain,
+} from '../core/domain-boundary-validator.ts';
+import type { WorkflowDefinition, WorkflowEvent, WorkflowExecution } from '../workflows/types.ts';
 
 const logger = getLogger('domain-boundary-examples');
 
@@ -42,17 +42,17 @@ export const ExtendedSchemas = {
     properties: {
       phase: { type: 'string', required: true },
       agentId: { type: 'string', required: true },
-      capabilities: { 
-        type: 'array', 
+      capabilities: {
+        type: 'array',
         required: true,
-        items: { type: 'string' }
+        items: { type: 'string' },
       },
-      status: { 
-        type: 'string', 
+      status: {
+        type: 'string',
         required: true,
-        enum: ['pending', 'in_progress', 'completed', 'failed']
-      }
-    }
+        enum: ['pending', 'in_progress', 'completed', 'failed'],
+      },
+    },
   } as TypeSchema<PhaseAssignment>,
 
   /**
@@ -63,19 +63,19 @@ export const ExtendedSchemas = {
     required: true,
     properties: {
       taskId: { type: 'string', required: true },
-      phases: { 
-        type: 'array', 
+      phases: {
+        type: 'array',
         required: true,
-        items: { type: 'string' }
+        items: { type: 'string' },
       },
-      phaseAssignments: { 
-        type: 'array', 
+      phaseAssignments: {
+        type: 'array',
         required: true,
-        items: ExtendedSchemas.PhaseAssignment
+        items: ExtendedSchemas.PhaseAssignment,
       },
       parallelizable: { type: 'boolean', required: true },
-      checkpoints: { type: 'array', required: true }
-    }
+      checkpoints: { type: 'array', required: true },
+    },
   } as TypeSchema<ExecutionPlan>,
 
   /**
@@ -87,10 +87,10 @@ export const ExtendedSchemas = {
     properties: {
       id: { type: 'string', required: true },
       workflowId: { type: 'string', required: true },
-      status: { 
-        type: 'string', 
+      status: {
+        type: 'string',
         required: true,
-        enum: ['queued', 'running', 'paused', 'completed', 'failed', 'cancelled']
+        enum: ['queued', 'running', 'paused', 'completed', 'failed', 'cancelled'],
       },
       startTime: { type: 'string', required: true },
       endTime: { type: 'string', required: false },
@@ -104,10 +104,10 @@ export const ExtendedSchemas = {
           duration: { type: 'number', required: false },
           stepsCompleted: { type: 'number', required: true },
           stepsFailed: { type: 'number', required: true },
-          resourcesUsed: { type: 'object', required: true }
-        }
-      }
-    }
+          resourcesUsed: { type: 'object', required: true },
+        },
+      },
+    },
   } as TypeSchema<WorkflowExecution>,
 
   /**
@@ -117,24 +117,24 @@ export const ExtendedSchemas = {
     type: 'object',
     required: true,
     properties: {
-      type: { 
-        type: 'string', 
+      type: {
+        type: 'string',
         required: true,
         enum: [
-          'workflow.started', 
-          'workflow.completed', 
-          'workflow.failed', 
-          'step.started', 
-          'step.completed', 
-          'step.failed'
-        ]
+          'workflow.started',
+          'workflow.completed',
+          'workflow.failed',
+          'step.started',
+          'step.completed',
+          'step.failed',
+        ],
       },
       workflowId: { type: 'string', required: true },
       stepIndex: { type: 'number', required: false },
       data: { type: 'object', required: false },
-      timestamp: { type: 'string', required: true }
-    }
-  } as TypeSchema<WorkflowEvent>
+      timestamp: { type: 'string', required: true },
+    },
+  } as TypeSchema<WorkflowEvent>,
 } as const;
 
 // ============================================================================
@@ -154,11 +154,13 @@ export const ContractRules = {
     validator: async (operation: DomainOperation, context) => {
       // This would typically access the actual data being validated
       // For demonstration, we'll validate the operation structure
-      return operation.sourceDomain === Domain.COORDINATION && 
-             operation.targetDomain === Domain.WORKFLOWS;
+      return (
+        operation.sourceDomain === Domain.COORDINATION &&
+        operation.targetDomain === Domain.WORKFLOWS
+      );
     },
     severity: 'error' as const,
-    errorMessage: 'Agent does not have required capabilities for task'
+    errorMessage: 'Agent does not have required capabilities for task',
   },
 
   /**
@@ -171,12 +173,12 @@ export const ContractRules = {
       // In a real implementation, this would check against a rate limiter
       const now = Date.now();
       const rateLimit = operation.metadata.rateLimit || 100; // requests per minute
-      
+
       // Simple demonstration - always allow for examples
       return true;
     },
     severity: 'warning' as const,
-    errorMessage: 'Rate limit exceeded for cross-domain operation'
+    errorMessage: 'Rate limit exceeded for cross-domain operation',
   },
 
   /**
@@ -194,7 +196,7 @@ export const ContractRules = {
       return true;
     },
     severity: 'error' as const,
-    errorMessage: 'Security validation failed for sensitive operation'
+    errorMessage: 'Security validation failed for sensitive operation',
   },
 
   /**
@@ -212,8 +214,8 @@ export const ContractRules = {
       return operation.inputSchema.type === operation.outputSchema.type;
     },
     severity: 'warning' as const,
-    errorMessage: 'Data consistency issue detected between input and output schemas'
-  }
+    errorMessage: 'Data consistency issue detected between input and output schemas',
+  },
 } as const;
 
 // ============================================================================
@@ -232,7 +234,7 @@ export async function coordinationDomainExample(): Promise<void> {
   const agentData: Agent = {
     id: 'agent-coordination-001',
     capabilities: ['task-planning', 'resource-allocation', 'workflow-orchestration'],
-    status: 'idle'
+    status: 'idle',
   };
 
   try {
@@ -251,11 +253,11 @@ export async function coordinationDomainExample(): Promise<void> {
     dependencies: [],
     requiredCapabilities: ['task-planning', 'workflow-orchestration'],
     maxAgents: 3,
-    requireConsensus: false
+    requireConsensus: false,
   };
 
   const validatedTask = coordValidator.validateInput(taskData, CommonSchemas.Task);
-  
+
   // 3. Track cross-domain operation to workflows
   coordValidator.trackCrossings(Domain.COORDINATION, Domain.WORKFLOWS, 'task-assignment');
 
@@ -264,18 +266,18 @@ export async function coordinationDomainExample(): Promise<void> {
     phase: 'specification',
     agentId: agentData.id,
     capabilities: agentData.capabilities,
-    status: 'pending'
+    status: 'pending',
   };
 
   const validatedPhaseAssignment = coordValidator.validateInput(
-    phaseAssignment, 
+    phaseAssignment,
     ExtendedSchemas.PhaseAssignment
   );
 
   logger.info('Coordination domain validation completed successfully', {
     agent: validatedAgent.id,
     task: validatedTask.id,
-    phase: validatedPhaseAssignment.phase
+    phase: validatedPhaseAssignment.phase,
   });
 }
 
@@ -301,19 +303,19 @@ export async function workflowsDomainExample(): Promise<void> {
       stepsFailed: 0,
       resourcesUsed: {
         agents: 2,
-        computeTime: 150
-      }
-    }
+        computeTime: 150,
+      },
+    },
   };
 
   try {
     const validatedExecution = workflowsValidator.validateInput(
-      workflowExecution, 
+      workflowExecution,
       ExtendedSchemas.WorkflowExecution
     );
-    logger.info('Workflow execution validation successful', { 
+    logger.info('Workflow execution validation successful', {
       executionId: validatedExecution.id,
-      status: validatedExecution.status 
+      status: validatedExecution.status,
     });
   } catch (error) {
     logger.error('Workflow execution validation failed', { error });
@@ -326,11 +328,11 @@ export async function workflowsDomainExample(): Promise<void> {
     workflowId: workflowExecution.workflowId,
     stepIndex: 0,
     data: { stepName: 'specification', result: 'success' },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   const validatedEvent = workflowsValidator.validateInput(
-    workflowEvent, 
+    workflowEvent,
     ExtendedSchemas.WorkflowEvent
   );
 
@@ -339,7 +341,7 @@ export async function workflowsDomainExample(): Promise<void> {
 
   logger.info('Workflows domain validation completed successfully', {
     execution: validatedExecution.id,
-    event: validatedEvent.type
+    event: validatedEvent.type,
   });
 }
 
@@ -362,28 +364,28 @@ export async function contractEnforcementExample(): Promise<void> {
     contractValidation: [
       ContractRules.agentCapabilityValidation,
       ContractRules.rateLimitValidation,
-      ContractRules.dataConsistencyValidation
+      ContractRules.dataConsistencyValidation,
     ],
     metadata: {
       description: 'Execute workflow from coordination domain',
       version: '1.0.0',
       rateLimit: 50,
-      timeout: 30000
-    }
+      timeout: 30000,
+    },
   };
 
   try {
     const result = await coordValidator.enforceContract(crossDomainOperation);
-    
+
     if (result.success) {
       logger.info('Contract enforcement successful', {
         operationId: crossDomainOperation.id,
-        validationTime: result.metadata?.validationTime
+        validationTime: result.metadata?.validationTime,
       });
     } else {
       logger.error('Contract enforcement failed', {
         operationId: crossDomainOperation.id,
-        error: result.error.message
+        error: result.error.message,
       });
     }
   } catch (error) {
@@ -399,20 +401,20 @@ export async function performanceMonitoringExample(): Promise<void> {
 
   // Perform multiple validations to generate metrics
   const domains = [Domain.COORDINATION, Domain.WORKFLOWS, Domain.NEURAL, Domain.MEMORY];
-  const schema: TypeSchema<string> = { 
-    type: 'string', 
+  const schema: TypeSchema<string> = {
+    type: 'string',
     required: true,
-    description: 'performance-test'
+    description: 'performance-test',
   };
 
   for (const domain of domains) {
     const validator = getDomainValidator(domain);
-    
+
     // Perform multiple validations
     for (let i = 0; i < 10; i++) {
       validator.validateInput(`test-data-${i}`, schema);
     }
-    
+
     // Add some domain crossings
     for (let i = 0; i < 5; i++) {
       const targetDomain = domains[(domains.indexOf(domain) + 1) % domains.length];
@@ -422,12 +424,12 @@ export async function performanceMonitoringExample(): Promise<void> {
 
   // Get system-wide statistics
   const systemStats = domainValidatorRegistry.getSystemStatistics();
-  
+
   logger.info('System validation statistics', {
     totalDomains: systemStats.totalDomains,
     totalValidations: systemStats.systemTotalValidations,
     errorRate: systemStats.systemErrorRate,
-    averageValidationTime: systemStats.systemAverageValidationTime
+    averageValidationTime: systemStats.systemAverageValidationTime,
   });
 
   // Get detailed statistics for each domain
@@ -438,7 +440,7 @@ export async function performanceMonitoringExample(): Promise<void> {
       errorRate: stats.errorRate,
       avgTime: stats.averageValidationTime,
       cacheSize: stats.cacheSize,
-      crossings: stats.crossingCount
+      crossings: stats.crossingCount,
     });
   }
 }
@@ -458,23 +460,23 @@ export async function complexMultiDomainExample(): Promise<void> {
         phase: 'specification',
         agentId: 'agent-spec-001',
         capabilities: ['requirements-analysis', 'user-story-creation'],
-        status: 'completed'
+        status: 'completed',
       },
       {
         phase: 'architecture',
-        agentId: 'agent-arch-001', 
+        agentId: 'agent-arch-001',
         capabilities: ['system-design', 'architecture-review'],
-        status: 'in_progress'
-      }
+        status: 'in_progress',
+      },
     ],
     parallelizable: false,
-    checkpoints: []
+    checkpoints: [],
   };
 
   // Validate in coordination domain
   const coordValidator = getDomainValidator(Domain.COORDINATION);
   const validatedPlan = coordValidator.validateInput(executionPlan, ExtendedSchemas.ExecutionPlan);
-  
+
   // 2. Cross-domain validation to workflows
   const workflowData = validateCrossDomain(
     validatedPlan,
@@ -495,17 +497,17 @@ export async function complexMultiDomainExample(): Promise<void> {
     totalSteps: validatedPlan.phases.length,
     results: {},
     metrics: {
-      stepsCompleted: validatedPlan.phaseAssignments.filter(p => p.status === 'completed').length,
-      stepsFailed: validatedPlan.phaseAssignments.filter(p => p.status === 'failed').length,
+      stepsCompleted: validatedPlan.phaseAssignments.filter((p) => p.status === 'completed').length,
+      stepsFailed: validatedPlan.phaseAssignments.filter((p) => p.status === 'failed').length,
       resourcesUsed: {
         agents: validatedPlan.phaseAssignments.length,
-        phases: validatedPlan.phases.length
-      }
-    }
+        phases: validatedPlan.phases.length,
+      },
+    },
   };
 
   const validatedExecution = workflowsValidator.validateInput(
-    workflowExecution, 
+    workflowExecution,
     ExtendedSchemas.WorkflowExecution
   );
 
@@ -516,15 +518,18 @@ export async function complexMultiDomainExample(): Promise<void> {
     targetDomain: Domain.NEURAL,
     operationType: 'transform',
     inputSchema: ExtendedSchemas.WorkflowExecution,
-    outputSchema: { type: 'object', properties: { optimizationMetrics: { type: 'object' } } },
+    outputSchema: {
+      type: 'object',
+      properties: { optimizationMetrics: { type: 'object' } },
+    },
     contractValidation: [
       ContractRules.dataConsistencyValidation,
-      ContractRules.rateLimitValidation
+      ContractRules.rateLimitValidation,
     ],
     metadata: {
       description: 'Neural optimization of workflow execution',
-      version: '1.0.0'
-    }
+      version: '1.0.0',
+    },
   };
 
   const neuralValidator = getDomainValidator(Domain.NEURAL);
@@ -534,11 +539,11 @@ export async function complexMultiDomainExample(): Promise<void> {
     logger.info('Complex multi-domain workflow validation completed successfully', {
       planId: validatedPlan.taskId,
       executionId: validatedExecution.id,
-      neuralIntegration: 'success'
+      neuralIntegration: 'success',
     });
   } else {
     logger.warn('Neural integration contract failed', {
-      error: neuralResult.error.message
+      error: neuralResult.error.message,
     });
   }
 
@@ -546,7 +551,7 @@ export async function complexMultiDomainExample(): Promise<void> {
   const finalStats = domainValidatorRegistry.getSystemStatistics();
   logger.info('Final system statistics', {
     totalValidations: finalStats.systemTotalValidations,
-    averageTime: finalStats.systemAverageValidationTime
+    averageTime: finalStats.systemAverageValidationTime,
   });
 }
 
@@ -565,7 +570,7 @@ export async function errorHandlingExample(): Promise<void> {
   } catch (error) {
     logger.info('Caught expected validation error', {
       errorType: error.constructor.name,
-      message: error.message
+      message: error.message,
     });
   }
 
@@ -575,7 +580,7 @@ export async function errorHandlingExample(): Promise<void> {
     description: 'Rule that always fails for testing',
     validator: async () => false,
     severity: 'error',
-    errorMessage: 'Test contract violation'
+    errorMessage: 'Test contract violation',
   };
 
   const failingOperation: DomainOperation = {
@@ -588,30 +593,30 @@ export async function errorHandlingExample(): Promise<void> {
     contractValidation: [failingRule],
     metadata: {
       description: 'Operation designed to fail',
-      version: '1.0.0'
-    }
+      version: '1.0.0',
+    },
   };
 
   const contractResult = await validator.enforceContract(failingOperation);
   if (!contractResult.success) {
     logger.info('Caught expected contract violation', {
       operationId: failingOperation.id,
-      error: contractResult.error.message
+      error: contractResult.error.message,
     });
   }
 
   // 3. Recovery and continued operation
   logger.info('Demonstrating system resilience - continuing after errors');
-  
+
   const validData: Agent = {
     id: 'recovery-agent',
     capabilities: ['error-recovery'],
-    status: 'idle'
+    status: 'idle',
   };
 
   const recoveredAgent = validator.validateInput(validData, CommonSchemas.Agent);
-  logger.info('System recovered successfully', { 
-    agentId: recoveredAgent.id 
+  logger.info('System recovered successfully', {
+    agentId: recoveredAgent.id,
   });
 }
 
@@ -643,11 +648,10 @@ export async function runAllExamples(): Promise<void> {
     logger.info('-'.repeat(40));
 
     logger.info('All integration examples completed successfully');
-    
+
     // Final system reset for cleanup
     domainValidatorRegistry.resetAll();
     logger.info('System reset completed');
-
   } catch (error) {
     logger.error('Integration examples failed', { error });
     throw error;
@@ -657,7 +661,4 @@ export async function runAllExamples(): Promise<void> {
 }
 
 // Export for use in other parts of the system
-export {
-  ContractRules,
-  ExtendedSchemas
-};
+export { ContractRules, ExtendedSchemas };

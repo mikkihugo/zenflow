@@ -7,12 +7,12 @@
  * - Integration tests validate seamless coordination between both systems
  */
 
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { nanoid } from 'nanoid';
-import { ProductWorkflowEngine } from '../../coordination/orchestration/product-workflow-engine';
-import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine';
-import { MemorySystem } from '../../core/memory-system';
-import { ProductFlowSystem } from '../../core/product-flow-system';
+import { ProductWorkflowEngine } from '../../coordination/orchestration/product-workflow-engine.ts';
+import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine.ts';
+import { MemorySystem } from '../../core/memory-system.ts';
+import { ProductFlowSystem } from '../../core/product-flow-system.ts';
 import { DatabaseCoordinator } from '../../database/core/database-coordinator';
 
 describe('Product Flow + SPARC Integration', () => {

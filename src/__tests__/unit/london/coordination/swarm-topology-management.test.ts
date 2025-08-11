@@ -1,5 +1,5 @@
-import { SwarmTopologyManager } from '../../../../coordination/swarm/core/topology-manager';
-import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers';
+import { SwarmTopologyManager } from '../../../../coordination/swarm/core/topology-manager.ts';
+import { CoordinationTestHelpers } from '../../../helpers/coordination-test-helpers.ts';
 
 describe('Swarm Topology Management (London TDD)', () => {
   let topologyManager: SwarmTopologyManager;

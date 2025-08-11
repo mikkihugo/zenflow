@@ -2,7 +2,7 @@
  * @file Interface implementation: monitoring-usage-example.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('interfaces-events-adapters-monitoring-usage-example');
 
@@ -18,8 +18,8 @@ import {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
   MonitoringEventHelpers,
-} from './monitoring-event-adapter';
-import { MonitoringEventRegistry } from './monitoring-event-factory';
+} from './monitoring-event-adapter.ts';
+import { MonitoringEventRegistry } from './monitoring-event-factory.ts';
 
 /**
  * Example 1: Basic Monitoring Event Adapter Setup.
@@ -415,7 +415,15 @@ async function comprehensiveMonitoringExample(): Promise<void> {
       component: 'web-cluster',
       correlationId: scenarioId,
       details: {
-        performanceData: { cpu: 85, memory: 78, disk: 45, network: 28, latency: 150, throughput: 1200, errorRate: 0.05 },
+        performanceData: {
+          cpu: 85,
+          memory: 78,
+          disk: 45,
+          network: 28,
+          latency: 150,
+          throughput: 1200,
+          errorRate: 0.05,
+        },
       },
     });
 
@@ -575,8 +583,12 @@ async function highPerformanceExample(): Promise<void> {
     let throughputEvents = 0;
     let latencyEvents = 0;
 
-    throughputAdapter.subscribe(['monitoring:metrics'], () => { throughputEvents++; });
-    latencyAdapter.subscribe(['monitoring:performance'], () => { latencyEvents++; });
+    throughputAdapter.subscribe(['monitoring:metrics'], () => {
+      throughputEvents++;
+    });
+    latencyAdapter.subscribe(['monitoring:performance'], () => {
+      latencyEvents++;
+    });
 
     const startTime = Date.now();
 

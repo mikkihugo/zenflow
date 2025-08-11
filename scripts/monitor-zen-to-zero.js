@@ -41,7 +41,7 @@ class ZenMonitor {
   }
 
   async runZenFixer() {
-    console.log(`🚀 Starting Zen AI Fixer - Iteration ${this.currentIteration + 1}`);
+    // console.log(`🚀 Starting Zen AI Fixer - Iteration ${this.currentIteration + 1}`);
 
     return new Promise((resolve, reject) => {
       const zenProcess = spawn('npm', ['run', 'fix:zen:compile'], {
@@ -62,7 +62,7 @@ class ZenMonitor {
           text.includes('ROOT CAUSE') ||
           text.includes('Batched code fixing complete')
         ) {
-          console.log(text.trim());
+          // console.log(text.trim());
         }
       });
 
@@ -74,7 +74,7 @@ class ZenMonitor {
         if (code === 0) {
           resolve({ output, errorOutput, success: true });
         } else {
-          console.log(`⚠️ Zen fixer exited with code ${code}`);
+          // console.log(`⚠️ Zen fixer exited with code ${code}`);
           resolve({ output, errorOutput, success: false, code });
         }
       });
@@ -92,18 +92,18 @@ class ZenMonitor {
   }
 
   async monitorToZero() {
-    console.log('🎯 Zen AI Fixer Monitor - Running Until Zero Errors');
-    console.log('='.repeat(60));
+    // console.log('🎯 Zen AI Fixer Monitor - Running Until Zero Errors');
+    // console.log('='.repeat(60));
 
     while (this.currentIteration < this.maxIterations) {
       this.currentIteration++;
 
       // Check current error count before fixing
       const errorsBefore = await this.checkTypeScriptErrors();
-      console.log(`📊 Current TypeScript errors: ${errorsBefore}`);
+      // console.log(`📊 Current TypeScript errors: ${errorsBefore}`);
 
       if (errorsBefore === 0) {
-        console.log('🎉 SUCCESS! Zero TypeScript errors achieved!');
+        // console.log('🎉 SUCCESS! Zero TypeScript errors achieved!');
         this.logSummary(0);
         return;
       }
@@ -112,10 +112,10 @@ class ZenMonitor {
       if (this.lastErrorCount === errorsBefore) {
         this.stuckCount++;
         if (this.stuckCount >= 3) {
-          console.log(
-            '⚠️ Stuck at same error count for 3 iterations - may need manual intervention'
-          );
-          console.log(`💡 Try running: npm run fix:zen:eslint or npm run fix:zen:warnings`);
+          // console.log(
+          ('⚠️ Stuck at same error count for 3 iterations - may need manual intervention');
+          )
+          // console.log(`💡 Try running: npm run fix:zen:eslint or npm run fix:zen:warnings`);
           break;
         }
       } else {
@@ -128,49 +128,49 @@ class ZenMonitor {
       const result = await this.runZenFixer();
 
       if (result.timeout) {
-        console.log('⏰ Zen fixer timed out - continuing with next iteration');
+        // console.log('⏰ Zen fixer timed out - continuing with next iteration');
       }
 
       // Check errors after fixing
       const errorsAfter = await this.checkTypeScriptErrors();
       const fixed = errorsBefore - errorsAfter;
 
-      console.log(`📈 Progress: ${errorsBefore} → ${errorsAfter} (fixed: ${fixed})`);
+      // console.log(`📈 Progress: ${errorsBefore} → ${errorsAfter} (fixed: ${fixed})`);
 
       if (errorsAfter === 0) {
-        console.log('🎉 SUCCESS! Zero TypeScript errors achieved!');
+        // console.log('🎉 SUCCESS! Zero TypeScript errors achieved!');
         this.logSummary(errorsAfter);
         return;
       }
 
       if (fixed <= 0) {
-        console.log('⚠️ No progress made this iteration');
+        // console.log('⚠️ No progress made this iteration');
       }
 
       // Short break between iterations
       await new Promise((resolve) => setTimeout(resolve, 5000));
     }
 
-    console.log(`⚠️ Maximum iterations (${this.maxIterations}) reached`);
+    // console.log(`⚠️ Maximum iterations (${this.maxIterations}) reached`);
     const finalErrors = await this.checkTypeScriptErrors();
     this.logSummary(finalErrors);
   }
 
   logSummary(finalErrors) {
     const totalTime = Math.round((Date.now() - this.startTime) / 1000 / 60);
-    console.log('\n🏁 ZEN AI FIXER MONITORING COMPLETE');
-    console.log('='.repeat(50));
-    console.log(`⏱️ Total time: ${totalTime} minutes`);
-    console.log(`🔄 Iterations completed: ${this.currentIteration}`);
-    console.log(`🎯 Final error count: ${finalErrors}`);
-    console.log(`✅ Success: ${finalErrors === 0 ? 'YES' : 'NO'}`);
+    // console.log('\n🏁 ZEN AI FIXER MONITORING COMPLETE');
+    // console.log('='.repeat(50));
+    // console.log(`⏱️ Total time: ${totalTime} minutes`);
+    // console.log(`🔄 Iterations completed: ${this.currentIteration}`);
+    // console.log(`🎯 Final error count: ${finalErrors}`);
+    // console.log(`✅ Success: ${finalErrors === 0 ? 'YES' : 'NO'}`);
 
     if (finalErrors === 0) {
-      console.log('🎊 CONGRATULATIONS! All TypeScript errors have been eliminated!');
+      // console.log('🎊 CONGRATULATIONS! All TypeScript errors have been eliminated!');
     } else {
-      console.log(
-        `💡 ${finalErrors} errors remaining - may need manual review or different fixing strategy`
-      );
+      // console.log(
+      `💡 ${finalErrors} errors remaining - may need manual review or different fixing strategy`;
+      )
     }
   }
 }
@@ -178,6 +178,6 @@ class ZenMonitor {
 // Run the monitor
 const monitor = new ZenMonitor();
 monitor.monitorToZero().catch((error) => {
-  console.error('❌ Monitor failed:', error);
+  // console.error('❌ Monitor failed:', error);
   process.exit(1);
 });

@@ -9,14 +9,14 @@
  */
 
 import { nanoid } from 'nanoid';
-import { ArchitectureStorageService } from '../database/architecture-storage';
-import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
+import { ArchitectureStorageService } from '../database/architecture-storage.ts';
+import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine.ts';
 import type {
   ArchitecturalValidation,
   ArchitectureDesign,
   DetailedSpecification,
   PseudocodeStructure,
-} from '../types/sparc-types';
+} from '../types/sparc-types.ts';
 
 /**
  * MCP Tool definitions for SPARC Architecture operations.

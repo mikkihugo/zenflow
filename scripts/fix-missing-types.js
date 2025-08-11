@@ -165,7 +165,7 @@ class MissingTypesGenerator {
   }
 
   async generate() {
-    console.log('🔧 Auto-Generating Missing Type Definitions...');
+    // console.log('🔧 Auto-Generating Missing Type Definitions...');
 
     // Ensure types directory exists
     if (!fs.existsSync(this.typesDir)) {
@@ -186,7 +186,7 @@ class MissingTypesGenerator {
     // Update main types index
     await this.updateTypesIndex();
 
-    console.log(`✅ Generated ${this.generatedFiles.length} type definition files:`);
+    // console.log(`✅ Generated ${this.generatedFiles.length} type definition files:`);
     this.generatedFiles.forEach((file) => console.log(`   📁 ${file}`));
   }
 
@@ -246,7 +246,7 @@ class MissingTypesGenerator {
 
     fs.writeFileSync(filePath, content);
     this.generatedFiles.push(fileName);
-    console.log(`   ✅ Generated ${fileName} (${typeNames.length} types)`);
+    // console.log(`   ✅ Generated ${fileName} (${typeNames.length} types)`);
   }
 
   async generateSingletonsFile() {
@@ -288,7 +288,7 @@ export {
 
     fs.writeFileSync(filePath, content);
     this.generatedFiles.push(fileName);
-    console.log(`   ✅ Generated ${fileName} (3 singletons)`);
+    // console.log(`   ✅ Generated ${fileName} (3 singletons)`);
   }
 
   async updateTypesIndex() {
@@ -309,7 +309,7 @@ export {
     if (newExports) {
       const updatedContent = existingContent + '\n' + newExports;
       fs.writeFileSync(indexPath, updatedContent);
-      console.log(`   ✅ Updated types/index.ts with ${this.generatedFiles.length} new exports`);
+      // console.log(`   ✅ Updated types/index.ts with ${this.generatedFiles.length} new exports`);
     }
   }
 }
@@ -320,13 +320,13 @@ async function main() {
     const generator = new MissingTypesGenerator();
     await generator.generate();
 
-    console.log('\n🎉 Missing types generation complete!');
-    console.log('\n💡 Next steps:');
-    console.log('   1. Review generated types in src/types/');
-    console.log('   2. Replace placeholder implementations with actual logic');
-    console.log('   3. Run TypeScript compilation to verify fixes');
+    // console.log('\n🎉 Missing types generation complete!');
+    // console.log('\n💡 Next steps:');
+    // console.log('   1. Review generated types in src/types/');
+    // console.log('   2. Replace placeholder implementations with actual logic');
+    // console.log('   3. Run TypeScript compilation to verify fixes');
   } catch (error) {
-    console.error('❌ Type generation failed:', error.message);
+    // console.error('❌ Type generation failed:', error.message);
     process.exit(1);
   }
 }

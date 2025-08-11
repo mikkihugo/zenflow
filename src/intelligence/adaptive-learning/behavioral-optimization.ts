@@ -9,7 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ExecutionPattern } from './pattern-recognition-engine';
+import type { ExecutionPattern } from './pattern-recognition-engine.ts';
 
 export interface AgentBehavior {
   agentId: string;
@@ -1560,7 +1560,7 @@ export class BehavioralOptimization extends EventEmitter {
           const value = b.performance[key as keyof BehaviorPerformance];
           return sum + (typeof value === 'number' ? value : 0);
         }, 0) / behaviors.length;
-      (centroid.performance as any)[key] = perfValue;
+      (centroid.performance)[key] = perfValue;
     });
 
     centroid.agentId = `centroid_${Date.now()}`;

@@ -10,17 +10,17 @@ import { getLogger } from '../config/logging-config';
 const logger = getLogger('interfaces-mcp-tool-registry');
 
 import type { DocumentService } from '../services/document-service';
-import coordinationTools from './tools/coordination-tools';
-import githubIntegrationTools from './tools/github-integration-tools';
-import memoryNeuralTools from './tools/memory-neural-tools';
-import monitoringTools from './tools/monitoring-tools';
-import orchestrationTools from './tools/orchestration-tools';
-import { createSPARCIntegrationTools } from './tools/sparc-integration-tools';
-import systemTools from './tools/system-tools';
-import type { MCPTool } from './types';
+import coordinationTools from './tools/coordination-tools.ts';
+import githubIntegrationTools from './tools/github-integration-tools.ts';
+import memoryNeuralTools from './tools/memory-neural-tools.ts';
+import monitoringTools from './tools/monitoring-tools.ts';
+import orchestrationTools from './tools/orchestration-tools.ts';
+import { createSPARCIntegrationTools } from './tools/sparc-integration-tools.ts';
+import systemTools from './tools/system-tools.ts';
+import type { MCPTool } from './types.ts';
 
 // Re-export for backward compatibility
-export type { MCPTool } from './types';
+export type { MCPTool } from './types.ts';
 
 /**
  * Simple tool registry.

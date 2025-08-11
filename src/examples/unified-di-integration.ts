@@ -13,14 +13,14 @@
 import {
   initializeSwarmStorage,
   registerSwarmProviders,
-} from '../coordination/swarm/storage/swarm-providers.js';
+} from '../coordination/swarm/storage/swarm-providers.ts';
 // Database domain
-import { DALFactory } from '../database/factory.js';
-import { DatabaseProviderFactory } from '../database/providers/database-providers.js';
-import { DIContainer } from '../di/container/di-container.js';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens.js';
+import { DALFactory } from '../database/factory.ts';
+import { DatabaseProviderFactory } from '../database/providers/database-providers.ts';
+import { DIContainer } from '../di/container/di-container.ts';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens.ts';
 // Memory domain
-import { initializeMemorySystem, registerMemoryProviders } from '../memory/memory-integration.js';
+import { initializeMemorySystem, registerMemoryProviders } from '../memory/memory-integration.ts';
 
 /**
  * Complete system integration example.
@@ -240,15 +240,24 @@ export function productionDeploymentExample(): void {
   const productionConfig = {
     memory: {
       cache: { type: 'memory' as const, maxSize: 100000 },
-      session: { type: 'sqlite' as const, path: '/var/lib/claude-zen/memory/sessions.db' },
-      semantic: { type: 'lancedb' as const, path: '/var/lib/claude-zen/memory/vectors' },
+      session: {
+        type: 'sqlite' as const,
+        path: '/var/lib/claude-zen/memory/sessions.db',
+      },
+      semantic: {
+        type: 'lancedb' as const,
+        path: '/var/lib/claude-zen/memory/vectors',
+      },
     },
     swarm: {
       basePath: '/var/lib/claude-zen/swarms',
       backup: { backupsPath: '/var/lib/claude-zen/backups', retentionDays: 30 },
     },
     database: {
-      central: { type: 'sqlite' as const, database: '/var/lib/claude-zen/central.db' },
+      central: {
+        type: 'sqlite' as const,
+        database: '/var/lib/claude-zen/central.db',
+      },
     },
   };
 }

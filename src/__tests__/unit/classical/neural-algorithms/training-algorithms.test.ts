@@ -3,8 +3,8 @@
  * Classical TDD approach - testing mathematical correctness and computational results
  */
 
-import { NeuralNetwork } from '../../../../neural/core/neural-network';
-import { PerformanceMeasurement } from '../../../helpers/performance-measurement';
+import { NeuralNetwork } from '../../../../neural/core/neural-network.ts';
+import { PerformanceMeasurement } from '../../../helpers/performance-measurement.ts';
 
 describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
   let network: NeuralNetwork;

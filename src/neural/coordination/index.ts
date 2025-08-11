@@ -5,5 +5,5 @@
  * @file Coordination module exports.
  */
 
-export * from './neural-coordination-protocol';
-export { NeuralCoordinationProtocol as default } from './neural-coordination-protocol';
+export * from './neural-coordination-protocol.ts';
+export { NeuralCoordinationProtocol as default } from './neural-coordination-protocol.ts';

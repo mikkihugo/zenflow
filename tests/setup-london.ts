@@ -8,7 +8,7 @@
 
 import 'jest-extended';
 // Explicit import for ESM environment to ensure jest global is bound
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 /**
  * Expected call structure for interaction verification
@@ -55,10 +55,10 @@ __protocolTypesIdentity<ProtocolMessage | ProtocolResponse | ExpectedCall | unde
 // Enhanced mock configuration for London TDD
 beforeEach(() => {
   // Clear all mocks before each test to ensure isolation
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   // Reset module registry for clean imports
-  jest.resetModules();
+  vi.resetModules();
 
   // Setup default mock behaviors for common interactions
   setupDefaultMocks();
@@ -66,7 +66,7 @@ beforeEach(() => {
 
 afterEach(() => {
   // Verify all mocks were called as expected
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 /**
@@ -74,12 +74,12 @@ afterEach(() => {
  */
 function setupDefaultMocks(): void {
   // Mock console methods to reduce noise in tests
-  jest.spyOn(console, 'log').mockImplementation(() => {});
-  jest.spyOn(console, 'warn').mockImplementation(() => {});
-  jest.spyOn(console, 'error').mockImplementation(() => {});
+  vi.spyOn(console, 'log').mockImplementation(() => {});
+  vi.spyOn(console, 'warn').mockImplementation(() => {});
+  vi.spyOn(console, 'error').mockImplementation(() => {});
 
   // Mock timers for deterministic testing
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 }
 
 // London TDD helper for creating interaction spies
@@ -89,8 +89,8 @@ function setupDefaultMocks(): void {
  * @param name - Name for the spy function
  * @returns Jest mock function
  */
-createInteractionSpy = (name: string): jest.Mock => {
-  return jest.fn().mockName(name);
+createInteractionSpy = (name: string): vi.Mock => {
+  return vi.fn().mockName(name);
 };
 
 // London TDD helper for verifying interaction patterns
@@ -100,7 +100,7 @@ createInteractionSpy = (name: string): jest.Mock => {
  * @param spy - Jest mock to verify
  * @param expectedCalls - Array of expected call arguments
  */
-verifyInteractions = (spy: jest.Mock, expectedCalls: ExpectedCall[]): void => {
+verifyInteractions = (spy: vi.Mock, expectedCalls: ExpectedCall[]): void => {
   expect(spy).toHaveBeenCalledTimes(expectedCalls.length);
   expectedCalls.forEach((call, index) => {
     expect(spy).toHaveBeenNthCalledWith(index + 1, ...call.args);
@@ -130,7 +130,7 @@ createMockFactory = <T>(defaults: Partial<T> = {}) => {
  * @param timeout - Maximum time to wait in milliseconds
  * @throws Error if interaction doesn't occur within timeout
  */
-waitForInteraction = async (spy: jest.Mock, timeout = 1000): Promise<void> => {
+waitForInteraction = async (spy: vi.Mock, timeout = 1000): Promise<void> => {
   const start = Date.now();
   while (spy.mock.calls.length === 0 && Date.now() - start < timeout) {
     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -146,7 +146,7 @@ waitForInteraction = async (spy: jest.Mock, timeout = 1000): Promise<void> => {
  *
  * @param mockProtocol - Mock protocol function to configure
  */
-simulateProtocolHandshake = (mockProtocol: jest.Mock): void => {
+simulateProtocolHandshake = (mockProtocol: vi.Mock): void => {
   // Relax typing because jest v30 mockImplementation expects (...args: unknown[]) => unknown
   mockProtocol.mockImplementation((message: unknown): Promise<ProtocolResponse> => {
     if (message && message.type === 'handshake') {
@@ -159,19 +159,19 @@ simulateProtocolHandshake = (mockProtocol: jest.Mock): void => {
 declare global {
   namespace NodeJS {
     interface Global {
-      createInteractionSpy(name: string): jest.Mock;
-      verifyInteractions(spy: jest.Mock, expectedCalls: ExpectedCall[]): void;
+      createInteractionSpy(name: string): vi.Mock;
+      verifyInteractions(spy: vi.Mock, expectedCalls: ExpectedCall[]): void;
       createMockFactory<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
-      waitForInteraction(spy: jest.Mock, timeout?: number): Promise<void>;
-      simulateProtocolHandshake(mockProtocol: jest.Mock): void;
+      waitForInteraction(spy: vi.Mock, timeout?: number): Promise<void>;
+      simulateProtocolHandshake(mockProtocol: vi.Mock): void;
     }
   }
   // Modern typing for globalThis augmentation to avoid TS7017
   interface GlobalThis {
-    createInteractionSpy(name: string): jest.Mock;
-    verifyInteractions(spy: jest.Mock, expectedCalls: ExpectedCall[]): void;
+    createInteractionSpy(name: string): vi.Mock;
+    verifyInteractions(spy: vi.Mock, expectedCalls: ExpectedCall[]): void;
     createMockFactory<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
-    waitForInteraction(spy: jest.Mock, timeout?: number): Promise<void>;
-    simulateProtocolHandshake(mockProtocol: jest.Mock): void;
+    waitForInteraction(spy: vi.Mock, timeout?: number): Promise<void>;
+    simulateProtocolHandshake(mockProtocol: vi.Mock): void;
   }
 }

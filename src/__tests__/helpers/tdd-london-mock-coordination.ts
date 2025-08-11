@@ -5,7 +5,7 @@
  * that focuses on interaction testing rather than state testing.
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // ============================================================================
 // ❌ BEFORE: Basic Object Mock (avoid this pattern)
@@ -13,7 +13,7 @@ import { jest } from '@jest/globals';
 
 // This is what we found in integration-features-coverage.test.js
 const OLD_PATTERN_mockCoordination = {
-  coordinateAgents: jest.fn().mockResolvedValue({
+  coordinateAgents: vi.fn().mockResolvedValue({
     success: true,
     coordinationId: 'coord-123',
     memoryAllocations: [],
@@ -30,19 +30,19 @@ const OLD_PATTERN_mockCoordination = {
  */
 export class MockCoordinationService {
   // Jest spies for interaction testing (TDD London approach) - properly typed
-  coordinateAgents: jest.MockedFunction<
+  coordinateAgents: vi.MockedFunction<
     (agentIds: string[], topology: string, task?: string) => Promise<CoordinationResult>
-  > = jest.fn();
+  > = vi.fn();
 
-  releaseCoordination: jest.MockedFunction<(coordinationId: string) => Promise<void>> = jest.fn();
+  releaseCoordination: vi.MockedFunction<(coordinationId: string) => Promise<void>> = vi.fn();
 
-  getCoordinationStatus: jest.MockedFunction<
+  getCoordinationStatus: vi.MockedFunction<
     (coordinationId: string) => Promise<CoordinationStatus>
-  > = jest.fn();
+  > = vi.fn();
 
-  updateCoordinationMetrics: jest.MockedFunction<
+  updateCoordinationMetrics: vi.MockedFunction<
     (coordinationId: string, metrics: CoordinationMetrics) => Promise<void>
-  > = jest.fn();
+  > = vi.fn();
 
   constructor() {
     // Configure default return values for London TDD - with correct types
@@ -123,7 +123,7 @@ export class MockCoordinationService {
    */
   expectCallOrder(methods: (keyof this)[]) {
     const calls = methods.map((method) => {
-      const mockMethod = this[method] as jest.MockedFunction<any>;
+      const mockMethod = this[method] as vi.MockedFunction<any>;
       return mockMethod.mock.invocationCallOrder[0];
     });
 
@@ -159,7 +159,7 @@ export class MockCoordinationService {
    * Clear all mocks for clean test separation
    */
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }
@@ -196,15 +196,15 @@ export interface CoordinationMetrics {
 // ============================================================================
 
 export class MockMemoryPool {
-  allocate: jest.MockedFunction<
+  allocate: vi.MockedFunction<
     (type: string, size: number) => { success: boolean; ptr: ArrayBuffer; id: string }
-  > = jest.fn();
+  > = vi.fn();
 
-  deallocate: jest.MockedFunction<(id: string) => boolean> = jest.fn();
+  deallocate: vi.MockedFunction<(id: string) => boolean> = vi.fn();
 
-  getStats: jest.MockedFunction<
+  getStats: vi.MockedFunction<
     () => { totalMemory: number; usedMemory: number; fragmentation: number }
-  > = jest.fn();
+  > = vi.fn();
 
   constructor() {
     this.allocate.mockReturnValue({
@@ -238,7 +238,7 @@ export class MockMemoryPool {
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }
@@ -304,4 +304,3 @@ describe('Coordination Service - TDD London Example', () => {
 });
 `;
 }
-`;

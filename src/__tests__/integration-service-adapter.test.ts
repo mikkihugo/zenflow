@@ -3,7 +3,7 @@ import {
   createIntegrationServiceAdapter,
   IntegrationServiceHelper,
   IntegrationServiceUtils,
-} from '../interfaces/services/adapters/integration-service-adapter';
+} from '../interfaces/services/adapters/integration-service-adapter.ts';
 
 // ============================================
 // Test Data and Mocks
@@ -87,7 +87,10 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
     adapter = createTestAdapter({
       architectureStorage: { enabled: true },
       safeAPI: { enabled: true, baseURL: 'http://test-api.com' },
-      protocolManagement: { enabled: true, supportedProtocols: ['http', 'websocket'] },
+      protocolManagement: {
+        enabled: true,
+        supportedProtocols: ['http', 'websocket'],
+      },
     });
   });
 
@@ -157,7 +160,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: 'arch-001',
-        metadata: { duration: 100, timestamp: new Date(), operationId: 'op-001' },
+        metadata: {
+          duration: 100,
+          timestamp: new Date(),
+          operationId: 'op-001',
+        },
       });
 
       const result = await adapter.execute('architecture-save', {
@@ -183,12 +190,21 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
         .mockResolvedValueOnce({
           success: true,
           data: mockArchitectureDesign,
-          metadata: { duration: 150, timestamp: new Date(), operationId: 'op-002' },
+          metadata: {
+            duration: 150,
+            timestamp: new Date(),
+            operationId: 'op-002',
+          },
         })
         .mockResolvedValueOnce({
           success: true,
           data: mockArchitectureDesign,
-          metadata: { duration: 5, timestamp: new Date(), operationId: 'op-003', cacheHit: true },
+          metadata: {
+            duration: 5,
+            timestamp: new Date(),
+            operationId: 'op-003',
+            cacheHit: true,
+          },
         });
 
       // First call - should hit database
@@ -213,7 +229,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: [mockArchitectureDesign],
-        metadata: { duration: 200, timestamp: new Date(), operationId: 'op-004' },
+        metadata: {
+          duration: 200,
+          timestamp: new Date(),
+          operationId: 'op-004',
+        },
       });
 
       const searchCriteria = {
@@ -223,7 +243,9 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
         limit: 10,
       };
 
-      await adapter.execute('architecture-search', { criteria: searchCriteria });
+      await adapter.execute('architecture-search', {
+        criteria: searchCriteria,
+      });
 
       expect(executeSpy).toHaveBeenCalledWith('architecture-search', {
         criteria: searchCriteria,
@@ -237,7 +259,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: undefined,
-        metadata: { duration: 80, timestamp: new Date(), operationId: 'op-005' },
+        metadata: {
+          duration: 80,
+          timestamp: new Date(),
+          operationId: 'op-005',
+        },
       });
 
       await adapter.execute('architecture-validation-save', {
@@ -269,7 +295,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
         .mockResolvedValueOnce({
           success: true,
           data: mockAPIResponse,
-          metadata: { duration: 120, timestamp: new Date(), operationId: 'op-006' },
+          metadata: {
+            duration: 120,
+            timestamp: new Date(),
+            operationId: 'op-006',
+          },
         })
         .mockResolvedValueOnce({
           success: false,
@@ -278,7 +308,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
             message: 'Resource not found',
             details: { status: 404, url: '/api/users/999' },
           },
-          metadata: { duration: 80, timestamp: new Date(), operationId: 'op-007' },
+          metadata: {
+            duration: 80,
+            timestamp: new Date(),
+            operationId: 'op-007',
+          },
         });
 
       // Successful request
@@ -306,7 +340,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: { ...mockAPIResponse, data: { id: 2, name: 'New Resource' } },
-        metadata: { duration: 200, timestamp: new Date(), operationId: 'op-008' },
+        metadata: {
+          duration: 200,
+          timestamp: new Date(),
+          operationId: 'op-008',
+        },
       });
 
       const postData = { name: 'New Resource', type: 'test' };
@@ -334,7 +372,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       executeSpy.mockResolvedValueOnce({
         success: true,
         data: mockAPIResponse,
-        metadata: { duration: 150, timestamp: new Date(), operationId: 'op-009' },
+        metadata: {
+          duration: 150,
+          timestamp: new Date(),
+          operationId: 'op-009',
+        },
       });
 
       await adapter.execute('api-create-resource', {
@@ -346,7 +388,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       executeSpy.mockResolvedValueOnce({
         success: true,
         data: mockAPIResponse,
-        metadata: { duration: 75, timestamp: new Date(), operationId: 'op-010' },
+        metadata: {
+          duration: 75,
+          timestamp: new Date(),
+          operationId: 'op-010',
+        },
       });
 
       await adapter.execute('api-get-resource', {
@@ -358,7 +404,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       executeSpy.mockResolvedValueOnce({
         success: true,
         data: mockAPIResponse,
-        metadata: { duration: 125, timestamp: new Date(), operationId: 'op-011' },
+        metadata: {
+          duration: 125,
+          timestamp: new Date(),
+          operationId: 'op-011',
+        },
       });
 
       await adapter.execute('api-update-resource', {
@@ -371,7 +421,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       executeSpy.mockResolvedValueOnce({
         success: true,
         data: { deleted: true },
-        metadata: { duration: 90, timestamp: new Date(), operationId: 'op-012' },
+        metadata: {
+          duration: 90,
+          timestamp: new Date(),
+          operationId: 'op-012',
+        },
       });
 
       await adapter.execute('api-delete-resource', {
@@ -395,7 +449,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: undefined,
-        metadata: { duration: 100, timestamp: new Date(), operationId: 'op-013' },
+        metadata: {
+          duration: 100,
+          timestamp: new Date(),
+          operationId: 'op-013',
+        },
       });
 
       await adapter.execute('protocol-connect', {
@@ -416,7 +474,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
       const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
         success: true,
         data: { messageId: 'msg-001', acknowledged: true },
-        metadata: { duration: 50, timestamp: new Date(), operationId: 'op-014' },
+        metadata: {
+          duration: 50,
+          timestamp: new Date(),
+          operationId: 'op-014',
+        },
       });
 
       const message = { type: 'heartbeat', data: { timestamp: Date.now() } };
@@ -442,10 +504,17 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
           { protocol: 'http', success: true, result: { sent: true } },
           { protocol: 'websocket', success: true, result: { sent: true } },
         ],
-        metadata: { duration: 150, timestamp: new Date(), operationId: 'op-015' },
+        metadata: {
+          duration: 150,
+          timestamp: new Date(),
+          operationId: 'op-015',
+        },
       });
 
-      const broadcastMessage = { type: 'announcement', content: 'System maintenance' };
+      const broadcastMessage = {
+        type: 'announcement',
+        content: 'System maintenance',
+      };
 
       await adapter.execute('protocol-broadcast', {
         message: broadcastMessage,
@@ -467,20 +536,32 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
         .mockResolvedValueOnce({
           success: true,
           data: true,
-          metadata: { duration: 25, timestamp: new Date(), operationId: 'op-016' },
+          metadata: {
+            duration: 25,
+            timestamp: new Date(),
+            operationId: 'op-016',
+          },
         })
         .mockResolvedValueOnce({
           success: false,
           error: { code: 'CONNECTION_FAILED', message: 'Protocol unreachable' },
-          metadata: { duration: 5000, timestamp: new Date(), operationId: 'op-017' },
+          metadata: {
+            duration: 5000,
+            timestamp: new Date(),
+            operationId: 'op-017',
+          },
         });
 
       // Healthy protocol
-      const healthyResult = await adapter.execute('protocol-health-check', { protocol: 'http' });
+      const healthyResult = await adapter.execute('protocol-health-check', {
+        protocol: 'http',
+      });
       expect(healthyResult?.success).toBe(true);
 
       // Unhealthy protocol
-      const unhealthyResult = await adapter.execute('protocol-health-check', { protocol: 'tcp' });
+      const unhealthyResult = await adapter.execute('protocol-health-check', {
+        protocol: 'tcp',
+      });
       expect(unhealthyResult?.success).toBe(false);
 
       executeSpy.mockRestore();
@@ -511,7 +592,12 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
         .mockResolvedValueOnce({
           success: true,
           data: 'success-after-retries',
-          metadata: { duration: 100, timestamp: new Date(), operationId: 'op-018', retryCount: 2 },
+          metadata: {
+            duration: 100,
+            timestamp: new Date(),
+            operationId: 'op-018',
+            retryCount: 2,
+          },
         });
 
       // This would internally retry based on configuration
@@ -657,7 +743,10 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
             { category: 'database', name: 'PostgreSQL', version: '14.0' },
           ],
           architecturalPatterns: [
-            { name: 'Microservices', description: 'Distributed architecture pattern' },
+            {
+              name: 'Microservices',
+              description: 'Distributed architecture pattern',
+            },
           ],
         },
         components: [
@@ -673,10 +762,18 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         ],
         qualityAttributes: [{ name: 'Scalability', value: 'High', priority: 1 }],
         securityRequirements: [
-          { name: 'Authentication', description: 'JWT-based auth', priority: 'High' },
+          {
+            name: 'Authentication',
+            description: 'JWT-based auth',
+            priority: 'High',
+          },
         ],
         scalabilityRequirements: [
-          { name: 'Load Balancing', description: 'Auto-scaling', priority: 'Medium' },
+          {
+            name: 'Load Balancing',
+            description: 'Auto-scaling',
+            priority: 'Medium',
+          },
         ],
       };
 
@@ -820,17 +917,29 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         {
           success: true,
           data: 'result1',
-          metadata: { duration: 100, timestamp: new Date(), operationId: 'op1' },
+          metadata: {
+            duration: 100,
+            timestamp: new Date(),
+            operationId: 'op1',
+          },
         },
         {
           success: false,
           error: { code: 'ERROR1', message: 'Failed' },
-          metadata: { duration: 200, timestamp: new Date(), operationId: 'op2' },
+          metadata: {
+            duration: 200,
+            timestamp: new Date(),
+            operationId: 'op2',
+          },
         },
         {
           success: true,
           data: 'result3',
-          metadata: { duration: 150, timestamp: new Date(), operationId: 'op3' },
+          metadata: {
+            duration: 150,
+            timestamp: new Date(),
+            operationId: 'op3',
+          },
         },
         {
           success: true,
@@ -933,7 +1042,11 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
             avgLatency: 120,
             errorRate: 5,
           },
-          metadata: { duration: 10, timestamp: new Date(), operationId: 'stats-1' },
+          metadata: {
+            duration: 10,
+            timestamp: new Date(),
+            operationId: 'stats-1',
+          },
         })
         .mockResolvedValueOnce({
           success: true,
@@ -943,7 +1056,11 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
             hitRate: 85.5,
             memoryUsage: 2048,
           },
-          metadata: { duration: 5, timestamp: new Date(), operationId: 'stats-2' },
+          metadata: {
+            duration: 5,
+            timestamp: new Date(),
+            operationId: 'stats-2',
+          },
         })
         .mockResolvedValueOnce({
           success: true,
@@ -951,15 +1068,31 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
             { protocol: 'http', status: 'healthy', latency: 50 },
             { protocol: 'websocket', status: 'healthy', latency: 25 },
           ],
-          metadata: { duration: 15, timestamp: new Date(), operationId: 'stats-3' },
+          metadata: {
+            duration: 15,
+            timestamp: new Date(),
+            operationId: 'stats-3',
+          },
         })
         .mockResolvedValueOnce({
           success: true,
           data: [
-            { endpoint: '/api/users', requestCount: 150, averageResponseTime: 100 },
-            { endpoint: '/api/posts', requestCount: 200, averageResponseTime: 80 },
+            {
+              endpoint: '/api/users',
+              requestCount: 150,
+              averageResponseTime: 100,
+            },
+            {
+              endpoint: '/api/posts',
+              requestCount: 200,
+              averageResponseTime: 80,
+            },
           ],
-          metadata: { duration: 8, timestamp: new Date(), operationId: 'stats-4' },
+          metadata: {
+            duration: 8,
+            timestamp: new Date(),
+            operationId: 'stats-4',
+          },
         });
 
       const stats = await helper.getServiceStatistics();
@@ -984,7 +1117,11 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         .mockResolvedValueOnce({
           success: true,
           data: { size: 900, maxSize: 1000 }, // High cache utilization
-          metadata: { duration: 5, timestamp: new Date(), operationId: 'val-1' },
+          metadata: {
+            duration: 5,
+            timestamp: new Date(),
+            operationId: 'val-1',
+          },
         })
         .mockResolvedValueOnce({
           success: true,
@@ -992,7 +1129,11 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
             { protocol: 'http', status: 'healthy' },
             { protocol: 'websocket', status: 'degraded' }, // One degraded protocol
           ],
-          metadata: { duration: 10, timestamp: new Date(), operationId: 'val-2' },
+          metadata: {
+            duration: 10,
+            timestamp: new Date(),
+            operationId: 'val-2',
+          },
         });
 
       const validation = await helper.validateConfiguration();
@@ -1026,7 +1167,10 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     adapter = createTestAdapter({
       architectureStorage: { enabled: true, cachingEnabled: true },
       safeAPI: { enabled: true, baseURL: 'http://test-api.com' },
-      protocolManagement: { enabled: true, supportedProtocols: ['http', 'websocket'] },
+      protocolManagement: {
+        enabled: true,
+        supportedProtocols: ['http', 'websocket'],
+      },
       cache: { enabled: true, defaultTTL: 60000, maxSize: 100 },
       retry: { enabled: true, maxAttempts: 3, backoffMultiplier: 2 },
     });
@@ -1048,7 +1192,11 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: 'arch-workflow-001',
-      metadata: { duration: 200, timestamp: new Date(), operationId: 'workflow-1' },
+      metadata: {
+        duration: 200,
+        timestamp: new Date(),
+        operationId: 'workflow-1',
+      },
     });
 
     const saveResult = await adapter.execute('architecture-save', {
@@ -1063,7 +1211,11 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: mockArchitectureDesign,
-      metadata: { duration: 150, timestamp: new Date(), operationId: 'workflow-2' },
+      metadata: {
+        duration: 150,
+        timestamp: new Date(),
+        operationId: 'workflow-2',
+      },
     });
 
     const retrieveResult = await adapter.execute('architecture-retrieve', {
@@ -1077,7 +1229,11 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: undefined,
-      metadata: { duration: 100, timestamp: new Date(), operationId: 'workflow-3' },
+      metadata: {
+        duration: 100,
+        timestamp: new Date(),
+        operationId: 'workflow-3',
+      },
     });
 
     const validationResult = await adapter.execute('architecture-validation-save', {
@@ -1092,7 +1248,11 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: [mockArchitectureDesign],
-      metadata: { duration: 180, timestamp: new Date(), operationId: 'workflow-4' },
+      metadata: {
+        duration: 180,
+        timestamp: new Date(),
+        operationId: 'workflow-4',
+      },
     });
 
     const searchResult = await adapter.execute('architecture-search', {
@@ -1150,7 +1310,11 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
     executeSpy.mockResolvedValueOnce({
       success: true,
       data: undefined,
-      metadata: { duration: 100, timestamp: new Date(), operationId: 'protocol-1' },
+      metadata: {
+        duration: 100,
+        timestamp: new Date(),
+        operationId: 'protocol-1',
+      },
     });
 
     const connectResult = await adapter.execute('protocol-connect', {
@@ -1167,7 +1331,11 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
         // Switch succeeds
         success: true,
         data: undefined,
-        metadata: { duration: 120, timestamp: new Date(), operationId: 'protocol-2' },
+        metadata: {
+          duration: 120,
+          timestamp: new Date(),
+          operationId: 'protocol-2',
+        },
       });
 
     const switchResult = await adapter.execute('protocol-switch', {
@@ -1211,7 +1379,11 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
       success: true,
       data: 'concurrent-result',
-      metadata: { duration: 50, timestamp: new Date(), operationId: 'concurrent' },
+      metadata: {
+        duration: 50,
+        timestamp: new Date(),
+        operationId: 'concurrent',
+      },
     });
 
     const concurrentOperations = Array.from({ length: 50 }, (_, i) =>
@@ -1242,7 +1414,12 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     const executeSpy = vi.spyOn(adapter, 'execute').mockResolvedValue({
       success: true,
       data: mockArchitectureDesign,
-      metadata: { duration: 5, timestamp: new Date(), operationId: 'cache-test', cacheHit: true },
+      metadata: {
+        duration: 5,
+        timestamp: new Date(),
+        operationId: 'cache-test',
+        cacheHit: true,
+      },
     });
 
     // Simulate repeated access to same resource

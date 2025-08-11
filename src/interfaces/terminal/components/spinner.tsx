@@ -109,6 +109,8 @@ export const LoadingSpinner: React.FC<{ text?: string }> = ({ text }) => (
 export const SwarmSpinner: React.FC<{
   text?: string;
   type?: 'swarm' | 'neural' | 'coordination' | 'processing';
-}> = ({ text, type = 'swarm' }) => <Spinner type={type} text={text ?? undefined} color="cyan" speed={120} />;
+}> = ({ text, type = 'swarm' }) => (
+  <Spinner type={type} text={text ?? undefined} color="cyan" speed={120} />
+);
 
 export default Spinner;

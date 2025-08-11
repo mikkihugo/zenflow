@@ -2,7 +2,7 @@
  * @file Interface implementation: mcp-integration-example.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('interfaces-clients-adapters-mcp-integration-example');
 
@@ -14,14 +14,14 @@ const logger = getLogger('interfaces-clients-adapters-mcp-integration-example');
  */
 
 import { EventEmitter } from 'node:events';
-import type { IClient } from '../core/interfaces.js';
+import type { IClient } from '../core/interfaces.ts';
 // Note: ExternalMCPClient import commented out as it doesn't exist
-// import { ExternalMCPClient } from '../mcp/external-mcp-client.js';
+// import { ExternalMCPClient } from '../mcp/external-mcp-client';
 import {
   createMCPConfigFromLegacy,
   type MCPClientConfig,
   MCPClientFactory,
-} from './mcp-client-adapter.js';
+} from './mcp-client-adapter.ts';
 
 // Mock ExternalMCPClient for demonstration purposes
 class ExternalMCPClient {

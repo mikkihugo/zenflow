@@ -9,8 +9,8 @@
 
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus';
-import type { ILogger } from '../../../core/interfaces/base-interfaces';
+import type { ILogger } from '../../../core/interfaces/base-interfaces.ts';
+import type { EventBusInterface as IEventBus } from '../../core/event-bus.ts';
 
 // Core coordination types
 export interface CoordinationNode {
@@ -893,7 +893,7 @@ class LeaderElection extends EventEmitter {
 
     return results
       ?.filter((result) => result?.status === 'fulfilled')
-      .map((result) => (result as PromiseFulfilledResult<any>).value);
+      .map((result) => (result).value);
   }
 
   private async sendElectionMessage(nodeId: string): Promise<any> {

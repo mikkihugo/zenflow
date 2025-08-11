@@ -10,13 +10,13 @@ import path from 'path';
 function parseLogFiles() {
   const logsDir = path.resolve('logs');
   if (!fs.existsSync(logsDir)) {
-    console.log('❌ No logs directory found');
+    // console.log('❌ No logs directory found');
     return null;
   }
 
   const logFile = path.join(logsDir, 'ai-fixing-detailed.log');
   if (!fs.existsSync(logFile)) {
-    console.log('❌ No detailed log file found');
+    // console.log('❌ No detailed log file found');
     return null;
   }
 
@@ -48,7 +48,7 @@ function parseLogFiles() {
       metricsData: metrics,
     };
   } catch (error) {
-    console.error('Error parsing log file:', error.message);
+    // console.error('Error parsing log file:', error.message);
     return null;
   }
 }
@@ -86,59 +86,59 @@ function estimateProgress() {
 }
 
 function main() {
-  console.log('📊 Claude-Zen TypeScript Fixing Progress Monitor\n');
+  // console.log('📊 Claude-Zen TypeScript Fixing Progress Monitor\n');
 
   const logData = parseLogFiles();
   const progress = estimateProgress();
 
-  console.log('📈 Progress Summary:');
-  console.log(`   Total cost so far: $${progress.totalCost}`);
-  console.log(`   Errors fixed: ${progress.totalErrorsFixed}`);
-  console.log(`   Average cost per error: $${progress.avgCostPerError}`);
-  console.log(`   Average cost per iteration: $${progress.avgCostPerIteration}`);
-  console.log(`   Remaining errors (last known): ${progress.remainingErrors}`);
-  console.log(`   Estimated iterations remaining: ${progress.estimatedIterationsRemaining}`);
-  console.log(`   Estimated remaining cost: $${progress.estimatedCostRemaining}`);
+  // console.log('📈 Progress Summary:');
+  // console.log(`   Total cost so far: $${progress.totalCost}`);
+  // console.log(`   Errors fixed: ${progress.totalErrorsFixed}`);
+  // console.log(`   Average cost per error: $${progress.avgCostPerError}`);
+  // console.log(`   Average cost per iteration: $${progress.avgCostPerIteration}`);
+  // console.log(`   Remaining errors (last known): ${progress.remainingErrors}`);
+  // console.log(`   Estimated iterations remaining: ${progress.estimatedIterationsRemaining}`);
+  // console.log(`   Estimated remaining cost: $${progress.estimatedCostRemaining}`);
 
-  console.log('\n🔍 Recent Iteration Performance:');
+  // console.log('\n🔍 Recent Iteration Performance:');
   const recentIterations = progress.knownIterations.slice(-3);
   for (const iter of recentIterations) {
     const fixed = iter.errors.before - iter.errors.after;
     const costPerError = (iter.cost / fixed).toFixed(3);
-    console.log(
-      `   Iteration ${iter.iteration}: ${fixed} errors fixed for $${iter.cost} ($${costPerError}/error)`
-    );
+    // console.log(
+    `   Iteration ${iter.iteration}: ${fixed} errors fixed for $${iter.cost} ($${costPerError}/error)`;
+    )
   }
 
   if (logData) {
-    console.log('\n📋 Logging Status:');
-    console.log(`   Total log entries: ${logData.totalEntries}`);
-    console.log(`   Structured metrics entries: ${logData.metricsEntries}`);
-    console.log(`   Latest entry: ${logData.latestEntry.slice(0, 100)}...`);
+    // console.log('\n📋 Logging Status:');
+    // console.log(`   Total log entries: ${logData.totalEntries}`);
+    // console.log(`   Structured metrics entries: ${logData.metricsEntries}`);
+    // console.log(`   Latest entry: ${logData.latestEntry.slice(0, 100)}...`);
 
     if (logData.metricsEntries === 0) {
-      console.log('   ⚠️  No structured metrics found - logging may need fixes');
+      // console.log('   ⚠️  No structured metrics found - logging may need fixes');
     } else {
-      console.log('   ✅ Structured logging working');
+      // console.log('   ✅ Structured logging working');
     }
   }
 
-  console.log('\n💡 Recommendations:');
+  // console.log('\n💡 Recommendations:');
   if (parseFloat(progress.avgCostPerIteration) > 2.0) {
-    console.log(
-      '   ⚠️  High average cost per iteration - consider optimizing prompts or targeting simpler files'
-    );
+    // console.log(
+    ('   ⚠️  High average cost per iteration - consider optimizing prompts or targeting simpler files');
+    )
   }
   if (progress.remainingErrors > 1500) {
-    console.log(
-      '   📊 Large number of errors remaining - consider parallel processing or different strategy'
-    );
+    // console.log(
+    ('   📊 Large number of errors remaining - consider parallel processing or different strategy');
+    )
   }
   if (logData && logData.metricsEntries < 3) {
-    console.log('   🔧 Structured logging needs improvement for better cost visibility');
+    // console.log('   🔧 Structured logging needs improvement for better cost visibility');
   }
 
-  console.log('\n✅ Monitor script completed');
+  // console.log('\n✅ Monitor script completed');
 }
 
 main();

@@ -34,7 +34,7 @@ class DocumentationGenerator {
 
       return this.outputFile;
     } catch (error) {
-      console.error('Documentation generation failed:', error.message);
+      // console.error('Documentation generation failed:', error.message);
       throw error;
     }
   }

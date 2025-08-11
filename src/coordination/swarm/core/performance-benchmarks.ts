@@ -2,7 +2,7 @@
  * @file Coordination system: performance-benchmarks.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('coordination-swarm-core-performance-benchmarks');
 
@@ -13,9 +13,9 @@ const logger = getLogger('coordination-swarm-core-performance-benchmarks');
  * WASM loading, memory management, and Claude Code Flow coordination.
  */
 
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader';
+import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.ts';
 // import { getClaudeFlow } from './claude-flow-enhanced';
-import { ZenSwarm } from './base-swarm';
+import { ZenSwarm } from './base-swarm.ts';
 
 interface Recommendation {
   category: string;
@@ -718,8 +718,8 @@ class PerformanceBenchmarks {
     for (const [category, weight] of Object.entries(weights)) {
       const score = benchmarks[category]?.performanceScore;
       if (typeof score === 'number' && !Number.isNaN(score)) {
-        totalScore += score * (weight as number);
-        totalWeight += weight as number;
+        totalScore += score * (weight);
+        totalWeight += weight;
       }
     }
 

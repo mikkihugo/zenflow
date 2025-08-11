@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { BackendInterface } from '../core/memory-system';
+import type { BackendInterface } from '../core/memory-system.ts';
 
 export interface PerformanceMetrics {
   operationsPerSecond: number;

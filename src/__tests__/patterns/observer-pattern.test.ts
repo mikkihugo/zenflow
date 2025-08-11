@@ -10,25 +10,25 @@ import {
   MetricsObserver,
   SystemEventManager,
   WebSocketObserver,
-} from '../../interfaces/events/observer-system';
+} from '../../interfaces/events/observer-system.ts';
 
 // Mock dependencies for testing
 interface MockLogger {
-  info: jest.Mock;
-  warn: jest.Mock;
-  error: jest.Mock;
-  debug: jest.Mock;
+  info: vi.Mock;
+  warn: vi.Mock;
+  error: vi.Mock;
+  debug: vi.Mock;
 }
 
 interface MockWebSocket {
-  send: jest.Mock;
+  send: vi.Mock;
   readyState: number;
 }
 
 interface MockDatabase {
-  insert: jest.Mock;
-  update: jest.Mock;
-  query: jest.Mock;
+  insert: vi.Mock;
+  update: vi.Mock;
+  query: vi.Mock;
 }
 
 describe('Observer Pattern Implementation', () => {
@@ -384,7 +384,7 @@ describe('Observer Pattern Implementation', () => {
   describe('Observer Management (London TDD)', () => {
     let eventManager: SystemEventManager;
     let mockLogger: MockLogger;
-    let mockObserver: jest.Mocked<SystemObserver>;
+    let mockObserver: vi.Mocked<SystemObserver>;
 
     beforeEach(() => {
       mockLogger = {
@@ -987,7 +987,7 @@ describe('Observer Pattern Implementation', () => {
 
     it('should handle shutdown gracefully even with pending events', async () => {
       const slowObserver: SystemObserver = {
-        update: jest
+        update: vi
           .fn()
           .mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100))),
         getInterests: () => ['swarm'],

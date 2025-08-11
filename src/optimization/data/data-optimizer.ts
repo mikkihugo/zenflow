@@ -6,8 +6,8 @@
  * @file Data-optimizer implementation.
  */
 
-import { getLogger } from '../../config/logging-config';
-import type { DataOptimizer } from '../interfaces/optimization-interfaces';
+import { getLogger } from '../../config/logging-config.ts';
+import type { DataOptimizer } from '../interfaces/optimization-interfaces.ts';
 
 export interface DataOptimizationConfig {
   enableQueryOptimization: boolean;

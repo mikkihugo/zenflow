@@ -2,7 +2,7 @@
  * @file Memory management: safe-memory-store
  */
 
-import { getLogger } from '../core/logger';
+import { getLogger } from '../core/logger.ts';
 
 const logger = getLogger('src-memory-safe-memory-store');
 
@@ -22,7 +22,7 @@ import {
   type MemoryNotFound,
   type MemoryResult,
   type MemorySuccess,
-} from '../utils/type-guards';
+} from '../utils/type-guards.ts';
 
 export interface SafeMemoryStoreOptions {
   namespace?: string;
@@ -132,7 +132,7 @@ export class SafeMemoryStore extends EventEmitter {
 
       return {
         found: true,
-        data: undefined as undefined,
+        data: undefined,
         key: fullKey,
         timestamp: now,
         ttl: newMetadata?.ttl,
@@ -175,10 +175,13 @@ export class SafeMemoryStore extends EventEmitter {
       // Update access information
       const now = new Date();
       metadata.accessed = now;
-      metadata?.accessCount++;
+      metadata.accessCount++;
       this.metadata.set(fullKey, metadata);
 
-      this.emit('accessed', { key: fullKey, accessCount: metadata?.accessCount });
+      this.emit('accessed', {
+        key: fullKey,
+        accessCount: metadata?.accessCount,
+      });
 
       return {
         found: true,
@@ -437,7 +440,10 @@ export async function safeMemoryUsageExample(): Promise<void> {
   await store.initialize();
 
   // Store some data
-  const storeResult = await store.storeData('user:123', { name: 'Alice', age: 30 });
+  const storeResult = await store.storeData('user:123', {
+    name: 'Alice',
+    age: 30,
+  });
 
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {

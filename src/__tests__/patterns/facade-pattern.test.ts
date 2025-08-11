@@ -12,33 +12,33 @@ import {
   type ISwarmService,
   type IWorkflowService,
   type ProjectInitConfig,
-} from '../../core/facade';
+} from '../../core/facade.ts';
 
-import { SystemEventManager } from '../../interfaces/events/observer-system';
-import { MCPCommandQueue } from '../../interfaces/mcp/command-system';
+import { SystemEventManager } from '../../interfaces/events/observer-system.ts';
+import { MCPCommandQueue } from '../../interfaces/mcp/command-system.ts';
 
 // Mock service implementations for testing
 interface MockServices {
-  swarmService: jest.Mocked<ISwarmService>;
-  neuralService: jest.Mocked<INeuralService>;
-  memoryService: jest.Mocked<IMemoryService>;
-  databaseService: jest.Mocked<IDatabaseService>;
-  interfaceService: jest.Mocked<IInterfaceService>;
-  workflowService: jest.Mocked<IWorkflowService>;
+  swarmService: vi.Mocked<ISwarmService>;
+  neuralService: vi.Mocked<INeuralService>;
+  memoryService: vi.Mocked<IMemoryService>;
+  databaseService: vi.Mocked<IDatabaseService>;
+  interfaceService: vi.Mocked<IInterfaceService>;
+  workflowService: vi.Mocked<IWorkflowService>;
 }
 
 interface MockLogger {
-  info: jest.Mock;
-  warn: jest.Mock;
-  error: jest.Mock;
-  debug: jest.Mock;
+  info: vi.Mock;
+  warn: vi.Mock;
+  error: vi.Mock;
+  debug: vi.Mock;
 }
 
 interface MockMetrics {
-  record: jest.Mock;
-  increment: jest.Mock;
-  gauge: jest.Mock;
-  histogram: jest.Mock;
+  record: vi.Mock;
+  increment: vi.Mock;
+  gauge: vi.Mock;
+  histogram: vi.Mock;
 }
 
 describe('Facade Pattern Implementation', () => {
@@ -972,8 +972,8 @@ describe('Facade Pattern Implementation', () => {
     let mockServices: MockServices;
     let mockLogger: MockLogger;
     let mockMetrics: MockMetrics;
-    let mockEventManager: jest.Mocked<SystemEventManager>;
-    let mockCommandQueue: jest.Mocked<MCPCommandQueue>;
+    let mockEventManager: vi.Mocked<SystemEventManager>;
+    let mockCommandQueue: vi.Mocked<MCPCommandQueue>;
 
     beforeEach(() => {
       mockLogger = {
@@ -996,7 +996,7 @@ describe('Facade Pattern Implementation', () => {
         unsubscribe: vi.fn(),
         shutdown: vi.fn(),
         getObserverStats: vi.fn().mockReturnValue([]),
-        getQueueStats: jest
+        getQueueStats: vi
           .fn()
           .mockReturnValue({ queueSize: 0, processedCount: 0, averageProcessingTime: 0 }),
       } as any;
@@ -1006,7 +1006,7 @@ describe('Facade Pattern Implementation', () => {
         executeTransaction: vi.fn(),
         undo: vi.fn(),
         getHistory: vi.fn().mockReturnValue([]),
-        getMetrics: jest
+        getMetrics: vi
           .fn()
           .mockReturnValue({ totalCommands: 0, successfulCommands: 0, failedCommands: 0 }),
         shutdown: vi.fn(),
@@ -1337,8 +1337,8 @@ describe('Facade Pattern Implementation', () => {
   describe('Facade Shutdown and Cleanup (London TDD)', () => {
     let facade: ClaudeZenFacade;
     let mockServices: MockServices;
-    let mockEventManager: jest.Mocked<SystemEventManager>;
-    let mockCommandQueue: jest.Mocked<MCPCommandQueue>;
+    let mockEventManager: vi.Mocked<SystemEventManager>;
+    let mockCommandQueue: vi.Mocked<MCPCommandQueue>;
 
     beforeEach(() => {
       const mockLogger = { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() };
@@ -1355,7 +1355,7 @@ describe('Facade Pattern Implementation', () => {
         subscribe: vi.fn(),
         unsubscribe: vi.fn(),
         getObserverStats: vi.fn().mockReturnValue([]),
-        getQueueStats: jest
+        getQueueStats: vi
           .fn()
           .mockReturnValue({ queueSize: 0, processedCount: 0, averageProcessingTime: 0 }),
       } as any;
@@ -1366,7 +1366,7 @@ describe('Facade Pattern Implementation', () => {
         executeTransaction: vi.fn(),
         undo: vi.fn(),
         getHistory: vi.fn().mockReturnValue([]),
-        getMetrics: jest
+        getMetrics: vi
           .fn()
           .mockReturnValue({ totalCommands: 0, successfulCommands: 0, failedCommands: 0 }),
       } as any;

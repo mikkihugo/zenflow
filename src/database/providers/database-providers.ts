@@ -10,7 +10,7 @@
  * @since 1.0.0
  * @example Basic Database Provider Usage
  * ```typescript
- * import { DatabaseProviderFactory, DatabaseConfig } from './database-providers';
+ * import { DatabaseProviderFactory, DatabaseConfig } from './database-providers.ts';
  *
  * const factory = new DatabaseProviderFactory(logger, config);
  *
@@ -57,9 +57,9 @@ import type {
   QueryResult,
   SchemaInfo,
   TransactionContext,
-} from '../../core/interfaces/base-interfaces';
-import { injectable } from '../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
+} from '../../core/interfaces/base-interfaces.ts';
+import { injectable } from '../../di/decorators/injectable.ts';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens.ts';
 
 import {
   type DatabaseResult,
@@ -67,10 +67,10 @@ import {
   isQuerySuccess,
   type QueryError,
   type QuerySuccess,
-} from '../../utils/type-guards';
+} from '../../utils/type-guards.ts';
 
 // Re-export DatabaseAdapter for external use
-export { DatabaseAdapter } from '../../core/interfaces/base-interfaces';
+export { DatabaseAdapter } from '../../core/interfaces/base-interfaces.ts';
 
 /**
  * Graph Database Query Result Interface.
@@ -497,7 +497,7 @@ export interface DatabaseConfig {
  * @since 1.0.0
  * @example Factory Initialization and Usage
  * ```typescript
- * import { DatabaseProviderFactory } from './database-providers';
+ * import { DatabaseProviderFactory } from './database-providers.ts';
  * import { DIContainer } from '../di/container/di-container';
  * import { CORE_TOKENS } from '../di/tokens/core-tokens';
  *
@@ -1582,7 +1582,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     try {
       // TODO: TypeScript error TS2339 - createRepository/createDAO do not exist on import (AI unsure of safe fix - human review needed)
       // Initialize DAL repository and DAO for LanceDB
-      // const { createRepository, createDAO, DatabaseTypes, EntityTypes } = await import('../index');
+      // const { createRepository, createDAO, DatabaseTypes, EntityTypes } = await import('../index.ts');
 
       const dalConfig = {
         database: this.config.database || './data/vectors.lance',

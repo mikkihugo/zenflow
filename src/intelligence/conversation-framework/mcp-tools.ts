@@ -8,15 +8,15 @@
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { ConversationMemoryFactory } from './memory';
-import { ConversationOrchestratorImpl } from './orchestrator';
+import { ConversationMemoryFactory } from './memory.ts';
+import { ConversationOrchestratorImpl } from './orchestrator.ts';
 import type {
   ConversationConfig,
   ConversationMCPTools as ConversationMCPToolsInterface,
   ConversationMessage,
   ConversationQuery,
   MessageType,
-} from './types';
+} from './types.ts';
 
 /**
  * MCP tools for conversation management.

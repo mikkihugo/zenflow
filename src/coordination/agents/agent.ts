@@ -2,7 +2,7 @@
  * @file Coordination system: agent.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('coordination-agents-agent');
 
@@ -10,6 +10,7 @@ const logger = getLogger('coordination-agents-agent');
  * Agent implementation and wrappers.
  */
 
+import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils.ts';
 import type {
   Agent,
   AgentConfig,
@@ -21,8 +22,7 @@ import type {
   Message,
   MessageType,
   Task,
-} from '../types';
-import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils';
+} from '../types.ts';
 
 export class BaseAgent implements Agent {
   id: string;

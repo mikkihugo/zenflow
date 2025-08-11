@@ -14,24 +14,24 @@ import {
   CommunicationEventAdapter,
   CommunicationEventAdapterConfig,
   CommunicationEventHelpers,
-} from './communication-event-adapter';
-import { CommunicationEventFactory } from './communication-event-factory';
+} from './communication-event-adapter.ts';
+import { CommunicationEventFactory } from './communication-event-factory.ts';
 import {
   createCoordinationEventAdapter as _createCoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig as _createDefaultCoordinationEventAdapterConfig,
   CoordinationEventAdapter,
   CoordinationEventAdapterConfig,
   CoordinationEventHelpers,
-} from './coordination-event-adapter';
-import { CoordinationEventManagerFactory } from './coordination-event-factory';
+} from './coordination-event-adapter.ts';
+import { CoordinationEventManagerFactory } from './coordination-event-factory.ts';
 import {
   createDefaultMonitoringEventAdapterConfig as _createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter as _createMonitoringEventAdapter,
   MonitoringEventAdapter,
   MonitoringEventAdapterConfig,
   MonitoringEventHelpers,
-} from './monitoring-event-adapter';
-import { MonitoringEventFactory } from './monitoring-event-factory';
+} from './monitoring-event-adapter.ts';
+import { MonitoringEventFactory } from './monitoring-event-factory.ts';
 // Import functions and types for local use in EventAdapterUtils
 import {
   createDefaultSystemEventAdapterConfig as _createDefaultSystemEventAdapterConfig,
@@ -39,9 +39,9 @@ import {
   SystemEventAdapter,
   SystemEventAdapterConfig,
   SystemEventHelpers,
-} from './system-event-adapter';
+} from './system-event-adapter.ts';
 // Import factory classes first to ensure they're available
-import { SystemEventManagerFactory } from './system-event-factory';
+import { SystemEventManagerFactory } from './system-event-factory.ts';
 
 // Type exports for convenience
 export type {
@@ -59,19 +59,19 @@ export type {
   EventTransform,
   IEventManager,
   SystemEvent,
-} from '../core/interfaces';
+} from '../core/interfaces.ts';
 // Re-export UEL core for adapter integration
 export {
   EventManagerPresets,
   EventManagerTypes,
   EventTypeGuards,
-} from '../core/interfaces';
+} from '../core/interfaces.ts';
 export type {
   CommunicationEvent,
   CoordinationEvent,
   MonitoringEvent,
   SystemLifecycleEvent,
-} from '../types';
+} from '../types.ts';
 export {
   DefaultEventManagerConfigs,
   EventCategories,
@@ -79,15 +79,15 @@ export {
   EventPriorityMap,
   EventSources,
   UELTypeGuards,
-} from '../types';
+} from '../types.ts';
 
 // Communication Event Adapter - Main export
 export {
   createCommunicationEventAdapter,
   createDefaultCommunicationEventAdapterConfig,
-} from './communication-event-adapter';
+} from './communication-event-adapter.ts';
 export { CommunicationEventAdapter, CommunicationEventAdapterConfig, CommunicationEventHelpers };
-export type { CommunicationEventAdapterConfig as CommunicationEventAdapterConfigType } from './communication-event-adapter';
+export type { CommunicationEventAdapterConfig as CommunicationEventAdapterConfigType } from './communication-event-adapter.ts';
 // Communication Event Factory - Factory pattern
 // Re-export CommunicationEventFactory for compatibility
 export {
@@ -99,14 +99,14 @@ export {
   createMCPCommunicationAdapter,
   createProtocolCommunicationAdapter,
   createWebSocketCommunicationAdapter,
-} from './communication-event-factory';
+} from './communication-event-factory.ts';
 // Coordination Event Adapter - Main export
 export {
   createCoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
-} from './coordination-event-adapter';
+} from './coordination-event-adapter.ts';
 export { CoordinationEventAdapter, CoordinationEventAdapterConfig, CoordinationEventHelpers };
-export type { CoordinationEventAdapterConfig as CoordinationEventAdapterConfigType } from './coordination-event-adapter';
+export type { CoordinationEventAdapterConfig as CoordinationEventAdapterConfigType } from './coordination-event-adapter.ts';
 // Coordination Event Factory - Factory pattern
 export {
   CoordinationEventManagerFactory,
@@ -118,14 +118,14 @@ export {
   createProtocolManagementEventManager,
   createSwarmCoordinationEventManager,
   createTaskOrchestrationEventManager,
-} from './coordination-event-factory';
+} from './coordination-event-factory.ts';
 // Monitoring Event Adapter - Main export
 export {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
-} from './monitoring-event-adapter';
+} from './monitoring-event-adapter.ts';
 export { MonitoringEventAdapter, MonitoringEventAdapterConfig, MonitoringEventHelpers };
-export type { MonitoringEventAdapterConfig as MonitoringEventAdapterConfigType } from './monitoring-event-adapter';
+export type { MonitoringEventAdapterConfig as MonitoringEventAdapterConfigType } from './monitoring-event-adapter.ts';
 // Monitoring Event Factory - Factory pattern
 export {
   MonitoringEventAdapterFactory,
@@ -133,14 +133,14 @@ export {
   MonitoringEventFactory,
   MonitoringEventManager,
   MonitoringEventRegistry,
-} from './monitoring-event-factory';
+} from './monitoring-event-factory.ts';
 // System Event Adapter - Main export
 export {
   createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter,
-} from './system-event-adapter';
+} from './system-event-adapter.ts';
 export { SystemEventAdapter, SystemEventAdapterConfig, SystemEventHelpers };
-export type { SystemEventAdapterConfig as SystemEventAdapterConfigType } from './system-event-adapter';
+export type { SystemEventAdapterConfig as SystemEventAdapterConfigType } from './system-event-adapter.ts';
 // System Event Factory - Factory pattern
 export {
   createApplicationCoordinatorEventManager,
@@ -149,7 +149,7 @@ export {
   createErrorRecoveryEventManager,
   createSystemEventManager,
   SystemEventManagerFactory,
-} from './system-event-factory';
+} from './system-event-factory.ts';
 
 /**
  * Adapter type registry for type-safe adapter creation.

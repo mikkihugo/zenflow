@@ -12,57 +12,20 @@
  * 4. Neural integration testing with ruv-FANN-zen
  */
 
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   clearAllClaudeZenMocks,
   createClaudeZenMocks,
-} from './helpers/claude-zen-tdd-london-mocks';
+  MockHiveMindService,
+  MockQueensService,
+  MockNeuralFrameworkService,
+  MockClaudeZenApiService,
+} from './helpers/claude-zen-tdd-london-mocks.ts';
 
 // === CLAUDE-ZEN ARCHITECTURE MOCKS ===
 
 // Mock Claude-Zen Hive Mind - The central coordination system
-const mockHiveMind = {
-  initialize: vi.fn(),
-  spawnQueen: vi.fn(),
-  coordinateQueens: vi.fn(),
-  processTask: vi.fn(),
-  getQueenStatus: vi.fn(),
-};
 
-// Mock Queen Agents - Specialized AI agents
-const mockQueens = {
-  architectQueen: {
-    analyze: vi.fn(),
-    design: vi.fn(),
-    coordinate: vi.fn(),
-  },
-  codeQueen: {
-    generate: vi.fn(),
-    refactor: vi.fn(),
-    optimize: vi.fn(),
-  },
-  debugQueen: {
-    diagnose: vi.fn(),
-    fix: vi.fn(),
-    validate: vi.fn(),
-  },
-};
-
-// Mock ruv-FANN Neural Integration (should be ruv-FANN-zen)
-const mockNeuralFramework = {
-  initializeNetwork: vi.fn(),
-  trainModel: vi.fn(),
-  predict: vi.fn(),
-  optimizeWeights: vi.fn(),
-};
-
-// Mock Web API Layer - REST endpoints for Claude-Zen
-const mockClaudeZenApi = {
-  startServer: vi.fn(),
-  registerQueenEndpoints: vi.fn(),
-  handleTaskRequest: vi.fn(),
-  streamResults: vi.fn(),
-};
 
 // Mock MCP Server - Model Context Protocol integration
 const mockMcpServer = {
@@ -145,9 +108,9 @@ describe('Claude-Zen TDD London School Architecture', () => {
           neuralFramework: true,
         });
 
-        const architectQueenId = await mockHiveMind.spawnQueen('architect', {});
-        const codeQueenId = await mockHiveMind.spawnQueen('code', {});
-        const debugQueenId = await mockHiveMind.spawnQueen('debug', {});
+        await mockHiveMind.spawnQueen('architect', {});
+        await mockHiveMind.spawnQueen('code', {});
+        await mockHiveMind.spawnQueen('debug', {});
 
         const result = await mockHiveMind.coordinateQueens(complexTask);
 
@@ -242,7 +205,7 @@ describe('Claude-Zen TDD London School Architecture', () => {
         ]);
 
         // Act - Test Queen lifecycle
-        const queenId = await mockHiveMind.spawnQueen('architect', {
+        await mockHiveMind.spawnQueen('architect', {
           specialization: 'microservices',
           experience: 'senior',
         });

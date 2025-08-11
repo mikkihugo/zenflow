@@ -25,7 +25,7 @@ import type {
   WASMPredictionInput,
   WASMPredictionOutput,
   WASMTrainingData,
-} from '../types/wasm-types.js';
+} from '../types/wasm-types.ts';
 
 /**
  * WASM-powered neural network accelerator.

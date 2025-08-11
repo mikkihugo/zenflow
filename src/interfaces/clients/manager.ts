@@ -9,10 +9,10 @@
 
 import { EventEmitter } from 'node:events';
 // Import actual client implementations
-import { createAPIClient } from '../api/http/client';
-import { WebSocketClient } from '../api/websocket/client';
+import { createAPIClient } from '../api/http/client.ts';
+import { WebSocketClient } from '../api/websocket/client.ts';
 import { FACTIntegration } from '../knowledge/knowledge-client';
-import { ExternalMCPClient } from '../mcp/external-mcp-client';
+import { ExternalMCPClient } from '../mcp/external-mcp-client.ts';
 import {
   type ClientConfig,
   type ClientFactory,
@@ -23,7 +23,7 @@ import {
   type KnowledgeClientConfig,
   type MCPClientConfig,
   type WebSocketClientConfig,
-} from './registry';
+} from './registry.ts';
 
 /**
  * Manager configuration options.
@@ -88,7 +88,7 @@ class HTTPClientFactory implements ClientFactory {
       throw new Error('Invalid client type for HTTP factory');
     }
 
-    const httpConfig = config as HTTPClientConfig;
+    const httpConfig = config;
     const apiClient = createAPIClient({
       baseURL: httpConfig?.baseURL,
       timeout: httpConfig?.timeout,
@@ -110,7 +110,7 @@ class HTTPClientFactory implements ClientFactory {
 
   validate(config: ClientConfig): boolean {
     if (config?.type !== ClientType.HTTP) return false;
-    const httpConfig = config as HTTPClientConfig;
+    const httpConfig = config;
     return !!(httpConfig?.baseURL && httpConfig?.id);
   }
 
@@ -152,7 +152,7 @@ class WebSocketClientFactory implements ClientFactory {
       throw new Error('Invalid client type for WebSocket factory');
     }
 
-    const wsConfig = config as WebSocketClientConfig;
+    const wsConfig = config;
     const wsClient = new WebSocketClient(wsConfig?.url, {
       reconnect: wsConfig?.reconnect,
       reconnectInterval: wsConfig?.reconnectInterval,
@@ -172,7 +172,7 @@ class WebSocketClientFactory implements ClientFactory {
 
   validate(config: ClientConfig): boolean {
     if (config?.type !== ClientType.WEBSOCKET) return false;
-    const wsConfig = config as WebSocketClientConfig;
+    const wsConfig = config;
     return !!(wsConfig?.url && wsConfig?.id);
   }
 
@@ -216,7 +216,7 @@ class KnowledgeClientFactory implements ClientFactory {
       throw new Error('Invalid client type for Knowledge factory');
     }
 
-    const knowledgeConfig = config as KnowledgeClientConfig;
+    const knowledgeConfig = config;
     const factClient = new FACTIntegration({
       factRepoPath: knowledgeConfig?.factRepoPath,
       anthropicApiKey: knowledgeConfig?.anthropicApiKey,
@@ -237,7 +237,7 @@ class KnowledgeClientFactory implements ClientFactory {
 
   validate(config: ClientConfig): boolean {
     if (config?.type !== ClientType.KNOWLEDGE) return false;
-    const knowledgeConfig = config as KnowledgeClientConfig;
+    const knowledgeConfig = config;
     return !!(
       knowledgeConfig?.factRepoPath &&
       knowledgeConfig?.anthropicApiKey &&
@@ -284,7 +284,7 @@ class MCPClientFactory implements ClientFactory {
       throw new Error('Invalid client type for MCP factory');
     }
 
-    const _mcpConfig = config as MCPClientConfig;
+    const _mcpConfig = config;
     const mcpClient = new ExternalMCPClient();
 
     return {
@@ -299,7 +299,7 @@ class MCPClientFactory implements ClientFactory {
 
   validate(config: ClientConfig): boolean {
     if (config?.type !== ClientType.MCP) return false;
-    const mcpConfig = config as MCPClientConfig;
+    const mcpConfig = config;
     return !!(mcpConfig?.servers && Object.keys(mcpConfig?.servers).length > 0 && mcpConfig?.id);
   }
 

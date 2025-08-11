@@ -48,12 +48,12 @@ export {
   type CoordinationServiceAdapterConfig,
   createCoordinationServiceAdapter,
   createDefaultCoordinationServiceAdapterConfig,
-} from './coordination-service-adapter';
+} from './coordination-service-adapter.ts';
 export {
   CoordinationServiceFactory,
   coordinationServiceFactory,
-} from './coordination-service-factory';
-export * from './coordination-service-helpers';
+} from './coordination-service-factory.ts';
+export * from './coordination-service-helpers.ts';
 // Data service adapter exports
 // Factory integration
 export {
@@ -61,8 +61,8 @@ export {
   createDefaultDataServiceAdapterConfig,
   DataServiceAdapter,
   type DataServiceAdapterConfig,
-} from './data-service-adapter';
-export { DataServiceFactory, globalDataServiceFactory } from './data-service-factory';
+} from './data-service-adapter.ts';
+export { DataServiceFactory, globalDataServiceFactory } from './data-service-factory.ts';
 // Re-export types for convenience
 export type {
   BatchOperationConfig,
@@ -71,52 +71,52 @@ export type {
   DataValidationResult,
   EnhancedSearchOptions,
   TransformationStep,
-} from './data-service-helpers';
+} from './data-service-helpers.ts';
 export {
   DataServiceHelper,
   DataServiceUtils,
-} from './data-service-helpers';
+} from './data-service-helpers.ts';
 // Infrastructure service adapter exports
 export {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
   InfrastructureServiceAdapter,
   type InfrastructureServiceAdapterConfig,
-} from './infrastructure-service-adapter';
+} from './infrastructure-service-adapter.ts';
 export {
   createInfrastructureService,
   createInfrastructureServiceFactory,
   getInfrastructureServiceFactory,
   InfrastructureServiceFactory,
-} from './infrastructure-service-factory';
-export * from './infrastructure-service-helpers';
+} from './infrastructure-service-factory.ts';
+export * from './infrastructure-service-helpers.ts';
 // Integration service adapter exports
 export {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,
   IntegrationServiceAdapter,
   type IntegrationServiceAdapterConfig,
-} from './integration-service-adapter';
+} from './integration-service-adapter.ts';
 export {
   IntegrationServiceFactory,
   integrationServiceFactory,
-} from './integration-service-factory';
-export * from './integration-service-helpers';
+} from './integration-service-factory.ts';
+export * from './integration-service-helpers.ts';
 
+import type { IServiceFactory, ServiceConfig } from '../core/interfaces.ts';
 // Integration with global service registry
-import { globalServiceRegistry } from '../factories';
-import { ServiceType } from '../types';
-import { type IServiceFactory, type ServiceConfig } from '../core/interfaces';
-import { CoordinationServiceAdapter } from './coordination-service-adapter';
-import { coordinationServiceFactory } from './coordination-service-factory';
+import { globalServiceRegistry } from '../factories.ts';
+import { ServiceType } from '../types.ts';
+import { CoordinationServiceAdapter } from './coordination-service-adapter.ts';
+import { coordinationServiceFactory } from './coordination-service-factory.ts';
 // Additional imports for default export
-import { DataServiceAdapter } from './data-service-adapter';
-import { globalDataServiceFactory } from './data-service-factory';
-import { DataServiceHelper, DataServiceUtils } from './data-service-helpers';
-import { InfrastructureServiceAdapter } from './infrastructure-service-adapter';
-import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
-import { IntegrationServiceAdapter } from './integration-service-adapter';
-import { integrationServiceFactory } from './integration-service-factory';
+import { DataServiceAdapter } from './data-service-adapter.ts';
+import { globalDataServiceFactory } from './data-service-factory.ts';
+import { DataServiceHelper, DataServiceUtils } from './data-service-helpers.ts';
+import { InfrastructureServiceAdapter } from './infrastructure-service-adapter.ts';
+import { getInfrastructureServiceFactory } from './infrastructure-service-factory.ts';
+import { IntegrationServiceAdapter } from './integration-service-adapter.ts';
+import { integrationServiceFactory } from './integration-service-factory.ts';
 
 /**
  * Register data service factory with global registry.

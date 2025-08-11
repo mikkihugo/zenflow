@@ -9,7 +9,7 @@
  * - src/__tests__/swarm-zen/integration-features-coverage.test.js - Dynamic import testing.
  *
  * Static analysis misses usage because:
- * 1. Dynamic imports: await import('../src/claude-integration/core.js')
+ * 1. Dynamic imports: await import('../src/claude-integration/core')
  * 2. Test file integration patterns
  * 3. Coverage runner module loading.
  *

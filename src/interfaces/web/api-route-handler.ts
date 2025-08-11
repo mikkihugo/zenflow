@@ -9,8 +9,8 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { getLogger } from '../../config/logging-config';
-import type { WebSocketCoordinator } from './web-socket-coordinator';
+import { getLogger } from '../../config/logging-config.ts';
+import type { WebSocketCoordinator } from './web-socket-coordinator.ts';
 
 export interface ApiConfig {
   prefix: string;

@@ -14,15 +14,15 @@
  * @file Interface implementation: coordination-event-factory.
  */
 
-import { getLogger } from '../../../config/logging-config';
-import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces';
-import type { IEventManager, IEventManagerFactory } from '../core/interfaces';
-import { EventManagerTypes } from '../core/interfaces';
-import type { CoordinationEventAdapterConfig } from './coordination-event-adapter';
+import { getLogger } from '../../../config/logging-config.ts';
+import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces.ts';
+import type { IEventManager, IEventManagerFactory } from '../core/interfaces.ts';
+import { EventManagerTypes } from '../core/interfaces.ts';
+import type { CoordinationEventAdapterConfig } from './coordination-event-adapter.ts';
 import {
   CoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
-} from './coordination-event-adapter';
+} from './coordination-event-adapter.ts';
 
 /**
  * Coordination Event Manager Factory.

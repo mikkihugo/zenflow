@@ -3,13 +3,13 @@
  */
 
 import { config } from '../config';
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config.ts';
 import { HTTPMCPServer as MCPServer } from '../interfaces/mcp';
 import { TerminalManager } from '../interfaces/terminal';
-import { MemoryManager } from '../memory/index';
-import type { CoordinationProvider } from '../types/shared-types';
-import { EventBus } from './event-bus';
-import { Orchestrator } from './orchestrator';
+import { MemoryManager } from '../memory/index.ts';
+import type { CoordinationProvider } from '../types/shared-types.ts';
+import { EventBus } from './event-bus.ts';
+import { Orchestrator } from './orchestrator.ts';
 
 let orchestratorInstance: Orchestrator | null = null;
 let coordinationProvider: CoordinationProvider | null = null;
@@ -75,7 +75,7 @@ export function getOrchestratorInstance(): Orchestrator {
     // Lazy load coordination manager only when needed
     if (!coordinationProvider) {
       // Dynamic import to break circular dependency
-      import('../coordination/manager')
+      import('../coordination/manager.ts')
         .then(({ CoordinationManager }) => {
           const coordinationConfig = config?.getSection('coordination');
           const logger = getLogger('coordination');

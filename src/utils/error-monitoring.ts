@@ -7,7 +7,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../core/interfaces/base-interfaces';
+import type { ILogger } from '../core/interfaces/base-interfaces.ts';
 
 export interface ErrorContext {
   component: string;
@@ -241,7 +241,11 @@ export class ErrorMonitoring extends EventEmitter {
     recentAlerts: ErrorAlert[];
   } {
     const trends = this.getErrorTrends(undefined, timeWindow);
-    const topErrors: Array<{ error: string; count: number; component: string }> = [];
+    const topErrors: Array<{
+      error: string;
+      count: number;
+      component: string;
+    }> = [];
 
     // Find top errors
     const errorCounts = new Map<string, { count: number; component: string }>();

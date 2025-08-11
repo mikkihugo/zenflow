@@ -8,7 +8,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../core/interfaces/base-interfaces';
+import type { ILogger } from '../core/interfaces/base-interfaces.ts';
 
 @injectable
 export class MultiSystemCoordinator extends EventEmitter {
@@ -21,7 +21,7 @@ export class MultiSystemCoordinator extends EventEmitter {
     private config: any = {},
   ) {
     super();
-    this["_logger"]?.info('MultiSystemCoordinator created');
+    this["_logger"]?.info("MultiSystemCoordinator created");
   }
 
   /**
@@ -52,10 +52,16 @@ export class MultiSystemCoordinator extends EventEmitter {
     }
 
     const operationId = `op_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-    this.activeOperations.set(operationId, { operation, data, startTime: Date.now() });
+    this.activeOperations.set(operationId, {
+      operation,
+      data,
+      startTime: Date.now(),
+    });
 
     try {
-      this['_logger']?.debug(`Coordinating operation: ${operation}`, { operationId });
+      this['_logger']?.debug(`Coordinating operation: ${operation}`, {
+        operationId,
+      });
 
       // Placeholder coordination logic
       const result = { operationId, operation, status: 'completed', data };

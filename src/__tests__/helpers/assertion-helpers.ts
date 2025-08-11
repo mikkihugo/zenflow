@@ -4,8 +4,8 @@
  * Custom assertions for both London and Classical TDD approaches
  */
 
-import { expect } from '@jest/globals';
-import type { AssertionOptions, PerformanceMetrics } from './types';
+import { expect } from 'vitest';
+import type { AssertionOptions, PerformanceMetrics } from './types.ts';
 
 export class AssertionHelpers {
   private options: AssertionOptions;

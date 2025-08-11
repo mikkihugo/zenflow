@@ -1,0 +1,127 @@
+/**
+ * Web Dashboard Server - Express.js HTTP server setup.
+ *
+ * Handles Express server initialization, middleware, and core HTTP functionality.
+ * Separated from business logic for better maintainability.
+ */
+/**
+ * @file Interface implementation: web-dashboard-server.
+ */
+import { existsSync } from 'node:fs';
+import { createServer } from 'node:http';
+import express from 'express';
+import { Server as SocketIOServer } from 'socket.io';
+import { getLogger } from '../../config/logging-config.ts';
+export class WebDashboardServer {
+    logger = getLogger('WebServer');
+    app;
+    server;
+    io;
+    config;
+    constructor(config) {
+        this.config = config;
+        this.app = express();
+        this.server = createServer(this.app);
+        this.io = new SocketIOServer(this.server, {
+            cors: {
+                origin: '*',
+                methods: ['GET', 'POST'],
+            },
+        });
+    }
+    /**
+     * Get Express app instance.
+     */
+    getApp() {
+        return this.app;
+    }
+    /**
+     * Get HTTP server instance.
+     */
+    getServer() {
+        return this.server;
+    }
+    /**
+     * Get Socket.IO instance.
+     */
+    getSocketIO() {
+        return this.io;
+    }
+    /**
+     * Setup Express middleware.
+     */
+    setupMiddleware() {
+        // CORS
+        if (this.config.cors) {
+            this.app.use((req, res, next) => {
+                res.header('Access-Control-Allow-Origin', '*');
+                res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+                res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+                if (req.method === 'OPTIONS') {
+                    res.sendStatus(200);
+                }
+                else {
+                    next();
+                }
+            });
+        }
+        // Body parsing
+        this.app.use(express.json({ limit: '10mb' }));
+        this.app.use(express.urlencoded({ extended: true }));
+        // Static files (serve React build)
+        if (existsSync(this.config.staticDir)) {
+            this.app.use(express.static(this.config.staticDir));
+        }
+    }
+    /**
+     * Start the HTTP server.
+     */
+    async start() {
+        return new Promise((resolve, reject) => {
+            this.server.listen(this.config.port, this.config.host, () => {
+                const url = `http://${this.config.host === '0.0.0.0' ? 'localhost' : this.config.host}:${this.config.port}`;
+                this.logger.info(`🌐 Web dashboard server running at ${url}`);
+                if (!this.config.daemon) {
+                }
+                resolve();
+            });
+            this.server.on('error', (error) => {
+                if (error.code === 'EADDRINUSE') {
+                    reject(new Error(`Port ${this.config.port} is already in use`));
+                }
+                else {
+                    reject(error);
+                }
+            });
+        });
+    }
+    /**
+     * Stop the HTTP server.
+     */
+    async stop() {
+        this.io.close();
+        this.server.close();
+        this.logger.info('Web dashboard server stopped');
+    }
+    /**
+     * Get server capabilities.
+     */
+    static getCapabilities() {
+        return {
+            supportsRealTime: true,
+            supportsWebSocket: true,
+            supportsRESTAPI: true,
+            supportsDaemon: true,
+            supportsThemes: true,
+            features: [
+                'responsive-design',
+                'real-time-updates',
+                'rest-api',
+                'websocket-updates',
+                'session-management',
+                'command-execution',
+                'mobile-friendly',
+            ],
+        };
+    }
+}

@@ -2,7 +2,7 @@
  * @file Project-context-analyzer implementation.
  */
 
-import { Logger } from '../core/logger';
+import { Logger } from '../core/logger.ts';
 
 const logger = new Logger('src-knowledge-project-context-analyzer');
 
@@ -28,7 +28,7 @@ import { EventEmitter } from 'node:events';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { KnowledgeSwarm } from './knowledge-swarm';
+import { KnowledgeSwarm } from './knowledge-swarm.ts';
 
 const execAsync = promisify(exec);
 
@@ -507,12 +507,20 @@ export class ProjectContextAnalyzer extends EventEmitter {
     moduleInfo?: {
       name: string;
       version?: string;
-      dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+      dependencies: Array<{
+        name: string;
+        version: string;
+        repo_name?: string;
+      }>;
     };
   }> {
     const result = {
       workspaceName: undefined as string | undefined,
-      externalDeps: [] as Array<{ name: string; type: string; version?: string }>,
+      externalDeps: [] as Array<{
+        name: string;
+        type: string;
+        version?: string;
+      }>,
       languages: [] as string[],
       toolchains: [] as string[],
       bzlmodEnabled: false,
@@ -520,7 +528,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
         | {
             name: string;
             version?: string;
-            dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+            dependencies: Array<{
+              name: string;
+              version: string;
+              repo_name?: string;
+            }>;
           }
         | undefined,
     };
@@ -563,7 +575,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
         moduleInfo?: {
           name: string;
           version?: string;
-          dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+          dependencies: Array<{
+            name: string;
+            version: string;
+            repo_name?: string;
+          }>;
         };
       } = {
         externalDeps: result.externalDeps,
@@ -643,7 +659,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
       moduleInfo?: {
         name: string;
         version?: string;
-        dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+        dependencies: Array<{
+          name: string;
+          version: string;
+          repo_name?: string;
+        }>;
       };
     } = {
       externalDeps: result.externalDeps,
@@ -1263,7 +1283,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
     const result: {
       name: string;
       version?: string;
-      dependencies: Array<{ name: string; version: string; repo_name?: string }>;
+      dependencies: Array<{
+        name: string;
+        version: string;
+        repo_name?: string;
+      }>;
     } = {
       name: '',
       dependencies: [],
@@ -1431,7 +1455,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
       const completed = missions.filter((m) => m.status === 'completed').length;
       const failed = missions.filter((m) => m.status === 'failed').length;
-      this.emit('missionsExecuted', { completed, failed, total: missions.length });
+      this.emit('missionsExecuted', {
+        completed,
+        failed,
+        total: missions.length,
+      });
     } catch (error) {
       logger.error('❌ Mission execution failed:', error);
     }

@@ -7,7 +7,7 @@
  */
 
 // Enhanced matchers from jest-extended (similar functionality for vitest)
-import { expect } from 'vitest';
+import { expect, vi } from 'vitest';
 
 // Add custom matchers for better test assertions
 expect.extend({
@@ -129,3 +129,8 @@ process.env.CLAUDE_ZEN_TEST_MODE = 'true';
 
 // Global timeout for async operations in tests
 vi.setConfig({ testTimeout: 30000 });
+
+// Add custom domain matchers
+import { domainMatchers } from '../src/__tests__/helpers/test-utils';
+
+expect.extend(domainMatchers);

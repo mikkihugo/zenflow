@@ -2,32 +2,32 @@
  * Test suite for MCP server implementation
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, , vi } from 'vitest';
 import WebSocket from 'ws';
 
 // Mock WebSocket
-jest.mock('ws');
+vi.mock('ws');
 
 // Mock the swarm module
-jest.mock('../src/index.js', () => ({
+vi.mock('../src/index.js', () => ({
   default: {
-    init: jest.fn(),
-    spawnAgent: jest.fn(),
-    executeTask: jest.fn(),
-    getSwarmStatus: jest.fn(),
-    listAgents: jest.fn(),
-    getAgentMetrics: jest.fn(),
-    getTaskStatus: jest.fn(),
-    getTaskResults: jest.fn(),
-    runBenchmark: jest.fn(),
-    detectSystemFeatures: jest.fn(),
-    monitorSwarm: jest.fn(),
-    storeMemory: jest.fn(),
-    retrieveMemory: jest.fn(),
-    listMemoryKeys: jest.fn(),
-    getNeuralStatus: jest.fn(),
-    trainNeuralAgent: jest.fn(),
-    getNeuralPatterns: jest.fn(),
+    init: vi.fn(),
+    spawnAgent: vi.fn(),
+    executeTask: vi.fn(),
+    getSwarmStatus: vi.fn(),
+    listAgents: vi.fn(),
+    getAgentMetrics: vi.fn(),
+    getTaskStatus: vi.fn(),
+    getTaskResults: vi.fn(),
+    runBenchmark: vi.fn(),
+    detectSystemFeatures: vi.fn(),
+    monitorSwarm: vi.fn(),
+    storeMemory: vi.fn(),
+    retrieveMemory: vi.fn(),
+    listMemoryKeys: vi.fn(),
+    getNeuralStatus: vi.fn(),
+    trainNeuralAgent: vi.fn(),
+    getNeuralPatterns: vi.fn(),
   },
 }));
 
@@ -42,24 +42,24 @@ describe('MCPServer', () => {
 
   beforeEach(() => {
     mockWsServer = {
-      on: jest.fn(),
-      close: jest.fn(),
+      on: vi.fn(),
+      close: vi.fn(),
     };
     WebSocket.Server.mockReturnValue(mockWsServer);
 
     mockClient = {
-      on: jest.fn(),
-      send: jest.fn(),
-      close: jest.fn(),
+      on: vi.fn(),
+      send: vi.fn(),
+      close: vi.fn(),
       readyState: WebSocket.OPEN,
     };
 
     server = new MCPServer();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('constructor', () => {
@@ -387,7 +387,7 @@ describe('MCPServer', () => {
 
       const errorHandler = mockClient.on.mock.calls.find((call) => call[0] === 'error')[1];
 
-      const consoleError = jest.spyOn(console, 'error').mockImplementation();
+      const consoleError = vi.spyOn(console, 'error').mockImplementation();
       errorHandler(new Error('Client error'));
 
       expect(consoleError).toHaveBeenCalledWith('Client error:', expect.any(Error));
@@ -421,7 +421,7 @@ describe('MCPServer', () => {
 
       const errorHandler = mockWsServer.on.mock.calls.find((call) => call[0] === 'error')[1];
 
-      const consoleError = jest.spyOn(console, 'error').mockImplementation();
+      const consoleError = vi.spyOn(console, 'error').mockImplementation();
       errorHandler(new Error('Server error'));
 
       expect(consoleError).toHaveBeenCalledWith('WebSocket server error:', expect.any(Error));

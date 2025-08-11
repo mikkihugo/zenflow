@@ -10,11 +10,11 @@
  */
 export function createMockWasmModule(overrides = {}) {
   const defaultMocks = {
-    init: jest.fn().mockResolvedValue(undefined),
-    createSwarm: jest.fn().mockReturnValue(1),
-    addAgent: jest.fn().mockReturnValue(1),
-    assignTask: jest.fn(),
-    getState: jest.fn().mockReturnValue({
+    init: vi.fn().mockResolvedValue(undefined),
+    createSwarm: vi.fn().mockReturnValue(1),
+    addAgent: vi.fn().mockReturnValue(1),
+    assignTask: vi.fn(),
+    getState: vi.fn().mockReturnValue({
       agents: new Map(),
       tasks: new Map(),
       topology: 'mesh',
@@ -28,10 +28,10 @@ export function createMockWasmModule(overrides = {}) {
         throughput: 0,
       },
     }),
-    destroy: jest.fn(),
-    detectSIMDSupport: jest.fn().mockReturnValue(true),
-    getVersion: jest.fn().mockReturnValue('1.0.0'),
-    getMemoryUsage: jest.fn().mockReturnValue({
+    destroy: vi.fn(),
+    detectSIMDSupport: vi.fn().mockReturnValue(true),
+    getVersion: vi.fn().mockReturnValue('1.0.0'),
+    getMemoryUsage: vi.fn().mockReturnValue({
       heapUsed: 1024,
       heapTotal: 4096,
     }),
@@ -52,11 +52,11 @@ export function createMockWasmLoader(moduleOverrides = {}) {
   const mockModule = createMockWasmModule(moduleOverrides);
 
   return {
-    loadModule: jest.fn().mockResolvedValue({
+    loadModule: vi.fn().mockResolvedValue({
       exports: mockModule,
     }),
-    cleanup: jest.fn().mockResolvedValue(undefined),
-    isLoaded: jest.fn().mockReturnValue(true),
+    cleanup: vi.fn().mockResolvedValue(undefined),
+    isLoaded: vi.fn().mockReturnValue(true),
   };
 }
 
@@ -78,25 +78,25 @@ export function createWasmModuleSpy() {
   };
 
   const mockModule = {
-    init: jest.fn((...args) => {
+    init: vi.fn((...args) => {
       const result = Promise.resolve(undefined);
       recordInteraction('init', args, result);
       return result;
     }),
-    createSwarm: jest.fn((...args) => {
+    createSwarm: vi.fn((...args) => {
       const result = 1;
       recordInteraction('createSwarm', args, result);
       return result;
     }),
-    addAgent: jest.fn((...args) => {
+    addAgent: vi.fn((...args) => {
       const result = 1;
       recordInteraction('addAgent', args, result);
       return result;
     }),
-    assignTask: jest.fn((...args) => {
+    assignTask: vi.fn((...args) => {
       recordInteraction('assignTask', args, undefined);
     }),
-    getState: jest.fn((...args) => {
+    getState: vi.fn((...args) => {
       const result = {
         agents: new Map(),
         tasks: new Map(),
@@ -114,7 +114,7 @@ export function createWasmModuleSpy() {
       recordInteraction('getState', args, result);
       return result;
     }),
-    destroy: jest.fn((...args) => {
+    destroy: vi.fn((...args) => {
       recordInteraction('destroy', args, undefined);
     }),
   };
@@ -180,7 +180,7 @@ export class WasmModuleTestDouble {
 
     const module = {};
     methods.forEach((method) => {
-      module[method] = jest.fn((...args) => {
+      module[method] = vi.fn((...args) => {
         this.actualCalls.push({ method, args });
         const key = `${method}-${JSON.stringify(args)}`;
         return this.stubs.get(key) ?? undefined;

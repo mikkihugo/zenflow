@@ -8,9 +8,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
-import type { Document, DocumentProcessor } from './document-processor';
-import type { WorkflowEngine } from './workflow-engine';
+import { getLogger } from '../config/logging-config.ts';
+import type { Document, DocumentProcessor } from './document-processor.ts';
+import type { WorkflowEngine } from './workflow-engine.ts';
 
 const logger = getLogger('ADRCreationWorkflow');
 

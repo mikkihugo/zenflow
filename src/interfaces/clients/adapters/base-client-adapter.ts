@@ -1,8 +1,17 @@
 /**
- * @file base-client adapter implementation
+ * @fileoverview Provides foundational interfaces and abstract classes for client adapters
+ *               within the Universal Abstraction and Client Layer (UACL).
+ *               Ensures consistent client management and interoperability across the system.
  */
 
 import { getLogger } from '../config/logging-config';
+import { EventEmitter } from 'node:events';
+import type { 
+  ClientConfig, 
+  ClientMetrics, 
+  IClient, 
+  IClientFactory 
+} from '../core/interfaces.ts';
 
 const logger = getLogger('interfaces-clients-adapters-base-client-adapter');
 
@@ -13,44 +22,41 @@ const logger = getLogger('interfaces-clients-adapters-base-client-adapter');
  * Following UACL architecture for consistent client management across the system.
  */
 
-import { EventEmitter } from 'node:events';
+// ClientConfig is now imported from '../core/interfaces.ts'
 
 /**
- * Base configuration interface that all client configurations extend.
+ * Represents the result of a client operation.
  *
+ * @interface ClientResult
+ * @template T The type of the data returned by the operation.
+ * @property {string} operationId - Unique identifier for this operation.
+ * @property {boolean} success - Operation success status.
+ * @property {T} [data] - Result data (if successful).
+ * @property {object} [error] - Error information (if failed).
+ * @property {string} [error.code] - Error code.
+ * @property {string} [error.message] - Error message.
+ * @property {any} [error.details] - Optional additional error details.
+ * @property {object} metadata - Operation metadata.
+ * @property {number} metadata.duration - Duration of the operation in milliseconds.
+ * @property {string} metadata.timestamp - Timestamp when operation started.
+ * @property {boolean} [metadata.cached] - Whether result came from cache.
+ * @property {any} [metadata.additional] - Additional operation-specific metadata.
  * @example
- */
-export interface ClientConfig {
-  /** Unique identifier for this client instance */
-  id?: string;
-  /** Environment (development, staging, production) */
-  environment?: 'development' | 'staging' | 'production';
-  /** Timeout configuration in milliseconds */
-  timeout?: number;
-  /** Retry configuration */
-  retries?: {
-    max: number;
-    backoff: 'linear' | 'exponential';
-    baseDelay: number;
-  };
-  /** Logging configuration */
-  logging?: {
-    enabled: boolean;
-    level: 'debug' | 'info' | 'warn' | 'error';
-    prefix?: string;
-  };
-  /** Metrics collection configuration */
-  metrics?: {
-    enabled: boolean;
-    prefix: string;
-    tags?: Record<string, string>;
-  };
-}
-
-/**
- * Client operation result interface.
+ * ```typescript
+ * const successResult: ClientResult<string> = {
+ *   operationId: 'op-123',
+ *   success: true,
+ *   data: 'Operation successful',
+ *   metadata: { duration: 150, timestamp: new Date().toISOString() }
+ * };
  *
- * @example
+ * const errorResult: ClientResult = {
+ *   operationId: 'op-456',
+ *   success: false,
+ *   error: { code: 'AUTH_ERROR', message: 'Authentication failed' },
+ *   metadata: { duration: 50, timestamp: new Date().toISOString() }
+ * };
+ * ```
  */
 export interface ClientResult<T = any> {
   /** Unique identifier for this operation */
@@ -79,9 +85,32 @@ export interface ClientResult<T = any> {
 }
 
 /**
- * Client health status.
+ * Represents the overall health status of a client.
  *
+ * @interface ClientHealth
+ * @property {'healthy' | 'degraded' | 'unhealthy'} status - Overall health status.
+ * @property {string} timestamp - Health check timestamp in ISO 8601 format.
+ * @property {object} components - Detailed health status of individual client components.
+ * @property {ClientComponentHealth} components.connectivity - Health of client connectivity.
+ * @property {ClientComponentHealth} components.performance - Health of client performance.
+ * @property {ClientComponentHealth} [components.cache] - Optional health of client cache.
+ * @property {object} metrics - Summary of health-related metrics.
+ * @property {number} metrics.uptime - Client uptime in milliseconds.
+ * @property {number} metrics.errorRate - Error rate (e.g., failed operations / total operations).
+ * @property {number} metrics.averageLatency - Average operation latency in milliseconds.
+ * @property {number} metrics.throughput - Operations per second.
  * @example
+ * ```typescript
+ * const health: ClientHealth = {
+ *   status: 'healthy',
+ *   timestamp: new Date().toISOString(),
+ *   components: {
+ *     connectivity: { status: 'healthy' },
+ *     performance: { status: 'healthy' }
+ *   },
+ *   metrics: { uptime: 120000, errorRate: 0.01, averageLatency: 50, throughput: 100 }
+ * };
+ * ```
  */
 export interface ClientHealth {
   /** Overall health status */
@@ -104,120 +133,46 @@ export interface ClientHealth {
   };
 }
 
+/**
+ * Represents the health status of a specific component within a client.
+ */
 export interface ClientComponentHealth {
+  /** The overall status of the component. */
   status: 'healthy' | 'degraded' | 'unhealthy';
+  /** An optional message providing more details about the component's status. */
   message?: string;
+  /** Optional additional details about the component's health. */
   details?: any;
 }
 
-/**
- * Client metrics interface.
- *
- * @example
- */
-export interface ClientMetrics {
-  /** Total operations executed */
-  totalOperations: number;
-  /** Successful operations count */
-  successfulOperations: number;
-  /** Failed operations count */
-  failedOperations: number;
-  /** Cache hit ratio (0-1) */
-  cacheHitRatio: number;
-  /** Average operation latency in milliseconds */
-  averageLatency: number;
-  /** Operations per second */
-  throughput: number;
-  /** Current concurrent operations */
-  concurrentOperations: number;
-  /** Uptime in milliseconds */
-  uptime: number;
-  /** Custom metrics */
-  custom: Record<string, number>;
-}
+// ClientMetrics is now imported from '../core/interfaces.ts'
 
 /**
- * Universal Client Interface (IClient)
- *
- * All client adapters must implement this interface to ensure consistency.
- * and interoperability across the UACL system.
- *
- * @example
+ * Adapter-specific client interface that bridges between core IClient and implementation needs.
+ * Extends the core IClient pattern with operation execution and adapter-specific methods.
  */
-export interface IClient extends EventEmitter {
-  /** Client configuration */
+export interface IClientAdapter extends EventEmitter {
   readonly config: ClientConfig;
-
-  /** Client type identifier */
   readonly type: string;
-
-  /** Client version */
   readonly version: string;
-
-  /** Initialization status */
   readonly isInitialized: boolean;
-
-  /**
-   * Initialize the client.
-   */
+  
   initialize(): Promise<void>;
-
-  /**
-   * Execute a client operation.
-   */
   execute<T = any>(operation: string, params?: any): Promise<ClientResult<T>>;
-
-  /**
-   * Check client health.
-   */
   healthCheck(): Promise<ClientHealth>;
-
-  /**
-   * Get client metrics.
-   */
   getMetrics(): Promise<ClientMetrics>;
-
-  /**
-   * Shutdown the client gracefully.
-   */
   shutdown(): Promise<void>;
 }
 
 /**
- * Client Factory Interface.
- *
- * Defines the contract for creating client instances with proper configuration.
- * and lifecycle management.
- *
- * @example
+ * Adapter-specific factory interface for creating and managing client adapters.
  */
-export interface IClientFactory<TConfig extends ClientConfig = ClientConfig> {
-  /** Factory type identifier */
+export interface IClientAdapterFactory<TConfig extends ClientConfig = ClientConfig> {
   readonly type: string;
-
-  /**
-   * Create a new client instance.
-   */
-  createClient(config: TConfig): Promise<IClient>;
-
-  /**
-   * Get or create a cached client instance.
-   */
-  getClient(id: string, config: TConfig): Promise<IClient>;
-
-  /**
-   * Validate client configuration.
-   */
+  createClient(config: TConfig): Promise<IClientAdapter>;
+  getClient(id: string, config: TConfig): Promise<IClientAdapter>;
   validateConfig(config: TConfig): boolean;
-
-  /**
-   * Get all active client instances.
-   */
-  getActiveClients(): IClient[];
-
-  /**
-   * Shutdown all clients managed by this factory.
-   */
+  getActiveClients(): IClientAdapter[];
   shutdownAll(): Promise<void>;
 }
 
@@ -229,7 +184,7 @@ export interface IClientFactory<TConfig extends ClientConfig = ClientConfig> {
  *
  * @example
  */
-export abstract class BaseClientAdapter extends EventEmitter implements IClient {
+export abstract class BaseClientAdapter extends EventEmitter implements IClientAdapter {
   protected _isInitialized = false;
   protected _metrics: ClientMetrics;
   protected _startTime: number;
@@ -438,16 +393,16 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClient 
  * @example
  */
 export abstract class BaseClientFactory<TConfig extends ClientConfig = ClientConfig>
-  implements IClientFactory<TConfig>
+  implements IClientAdapterFactory<TConfig>
 {
-  protected clients = new Map<string, IClient>();
+  protected clients = new Map<string, IClientAdapter>();
 
   constructor(public readonly type: string) {}
 
   /**
    * Create a new client instance (abstract - must be implemented by subclasses)
    */
-  abstract createClient(config: TConfig): Promise<IClient>;
+  abstract createClient(config: TConfig): Promise<IClientAdapter>;
 
   /**
    * Get or create a cached client instance.
@@ -455,7 +410,7 @@ export abstract class BaseClientFactory<TConfig extends ClientConfig = ClientCon
    * @param id
    * @param config
    */
-  async getClient(id: string, config: TConfig): Promise<IClient> {
+  async getClient(id: string, config: TConfig): Promise<IClientAdapter> {
     if (this.clients.has(id)) {
       return this.clients.get(id)!;
     }
@@ -483,7 +438,7 @@ export abstract class BaseClientFactory<TConfig extends ClientConfig = ClientCon
   /**
    * Get all active client instances.
    */
-  getActiveClients(): IClient[] {
+  getActiveClients(): IClientAdapter[] {
     return Array.from(this.clients.values());
   }
 

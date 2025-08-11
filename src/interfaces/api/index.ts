@@ -15,13 +15,13 @@
 import { getWebDashboardURL } from '../config/url-builder';
 
 // HTTP API (REST/GraphQL - consolidated from src/api/)
-export * from './http/index';
+export * from './http/index.ts';
 
 // WebSocket API (real-time communication)
-export * from './websocket/index';
+export * from './websocket/index.ts';
 
 // Import WebSocketClient for internal use in this file
-import { WebSocketClient } from './websocket/client';
+import { WebSocketClient } from './websocket/client.ts';
 export { WebSocketClient };
 
 // API interface configuration

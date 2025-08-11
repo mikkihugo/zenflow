@@ -5,7 +5,7 @@
  * Tests all aspects of the new error handling system
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // Test suite configuration
 const _testConfig = {
@@ -309,8 +309,8 @@ async function testValidationSystem(results) {
 async function testMCPIntegration(results) {
   // Mock the dependencies
   const mockZenSwarm = {
-    initialize: jest.fn(),
-    createSwarm: jest.fn(),
+    initialize: vi.fn(),
+    createSwarm: vi.fn(),
     features: {
       neural_networks: true,
       forecasting: true,
@@ -318,16 +318,16 @@ async function testMCPIntegration(results) {
       simd_support: true,
     },
     wasmLoader: {
-      getTotalMemoryUsage: jest.fn(() => 1024 * 1024),
-      getModuleStatus: jest.fn(() => ({ core: { loaded: true } })),
+      getTotalMemoryUsage: vi.fn(() => 1024 * 1024),
+      getModuleStatus: vi.fn(() => ({ core: { loaded: true } })),
     },
   };
 
   const _mockPersistence = {
-    createSwarm: jest.fn(),
-    createAgent: jest.fn(),
-    getActiveSwarms: jest.fn(() => []),
-    getSwarmAgents: jest.fn(() => []),
+    createSwarm: vi.fn(),
+    createAgent: vi.fn(),
+    getActiveSwarms: vi.fn(() => []),
+    getSwarmAgents: vi.fn(() => []),
   };
 
   // Test MCP tools initialization
@@ -352,7 +352,7 @@ async function testMCPIntegration(results) {
     const tools = new EnhancedMCPTools();
 
     // Mock to throw error
-    tools.validateToolParams = jest.fn().mockImplementation(() => {
+    tools.validateToolParams = vi.fn().mockImplementation(() => {
       throw new ValidationError('Invalid topology', 'topology', 'invalid', 'string');
     });
 

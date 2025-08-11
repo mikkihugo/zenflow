@@ -5,7 +5,7 @@
  * No mocks - verify real training algorithms and convergence behavior
  */
 
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
   ACTIVATION_FUNCTIONS,
   createNeuralNetwork,
@@ -15,7 +15,7 @@ import {
   TRAINING_ALGORITHMS,
   type TrainingConfig,
   type TrainingDataConfig,
-} from '../../../../neural/core/neural-network';
+} from '../../../../neural/core/neural-network.ts';
 
 describe('Training Convergence - Classical TDD', () => {
   let wasmModule: any;

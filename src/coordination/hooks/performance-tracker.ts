@@ -2,7 +2,7 @@
  * @file Coordination system: performance-tracker.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('coordination-hooks-performance-tracker');
 
@@ -11,7 +11,7 @@ const logger = getLogger('coordination-hooks-performance-tracker');
  * Tracks operation performance, collects metrics, and provides optimization suggestions.
  */
 
-import type { AgentType } from '../types';
+import type { AgentType } from '../types.ts';
 import type {
   AgentPerformanceSummary,
   Bottleneck,
@@ -33,7 +33,7 @@ import type {
   TimeFrame,
   TrendAnalysis,
   TrendData,
-} from './hook-system-core';
+} from './hook-system-core.ts';
 
 export class HookPerformanceTracker implements MetricsTracker {
   private readonly metricsStore: Map<string, OperationMetrics>;
@@ -54,11 +54,11 @@ export class HookPerformanceTracker implements MetricsTracker {
     const metrics: OperationMetrics = {
       operationId: operation.id,
       type: operation.type,
-      startTime: result?.startTime!,
-      endTime: result?.endTime!,
-      duration: result?.endTime!.getTime() - result?.startTime!.getTime(),
-      success: result?.success!,
-      resourceUsage: result?.resourceUsage!,
+      startTime: result?.startTime,
+      endTime: result?.endTime,
+      duration: result?.endTime.getTime() - result?.startTime.getTime(),
+      success: result?.success,
+      resourceUsage: result?.resourceUsage,
       ...(result?.error?.type ? { errorType: result.error.type } : {}),
       ...(result?.agentMetrics ? { agentPerformance: result.agentMetrics } : {}),
       qualityScore: await this.calculateQualityScore(operation, result),

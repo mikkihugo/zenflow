@@ -7,9 +7,10 @@
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { IEventBus } from '../../core/event-bus';
-import type { ILogger } from '../../core/logger';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
+import type { IEventBus } from '../../core/event-bus.ts';
+import type { ILogger } from '../../core/logger.ts';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
+import { generateId } from '../swarm/core/utils.ts';
 import type {
   AgentCapabilities,
   AgentConfig,
@@ -20,8 +21,7 @@ import type {
   AgentState,
   AgentStatus,
   AgentType,
-} from '../types';
-import { generateId } from '../swarm/core/utils';
+} from '../types.ts';
 
 export interface AgentManagerConfig {
   maxAgents: number;
@@ -937,7 +937,6 @@ export class AgentManager extends EventEmitter {
         toolConfigs: template.environment.toolConfigs ?? {},
         ...overrides.environment,
       },
-      endpoints: [],
       lastHeartbeat: new Date(),
       taskHistory: [],
       errorHistory: [],
@@ -1003,6 +1002,7 @@ export class AgentManager extends EventEmitter {
       const errorMessage = error instanceof Error ? error.message : String(error);
       agent.status = 'error';
       this.addAgentError(agentId, {
+        code: 'STARTUP_FAILED',
         timestamp: new Date(),
         type: 'startup_failed',
         message: errorMessage,
@@ -1144,12 +1144,7 @@ export class AgentManager extends EventEmitter {
         name: `${name}-${i + 1}`,
       });
       await this.startAgent(agentId);
-      pool.availableAgents.push({
-        id: agentId,
-        swarmId: 'default',
-        type: template.type,
-        instance: i + 1,
-      });
+      pool.availableAgents.push(agentId);
       pool.currentSize++;
     }
 
@@ -1181,19 +1176,14 @@ export class AgentManager extends EventEmitter {
           name: `${pool.name}-${currentSize + i + 1}`,
         });
         await this.startAgent(agentId);
-        pool.availableAgents.push({
-          id: agentId,
-          swarmId: 'default',
-          type: pool.type,
-          instance: currentSize + i + 1,
-        });
+        pool.availableAgents.push(agentId);
       }
     } else if (delta < 0) {
       // Scale down
       const agentsToRemove = pool.availableAgents.slice(0, Math.abs(delta));
       for (const agentId of agentsToRemove) {
-        await this.removeAgent(agentId.id);
-        pool.availableAgents = pool.availableAgents.filter((a) => a.id !== agentId.id);
+        await this.removeAgent(agentId);
+        pool.availableAgents = pool.availableAgents.filter((a) => a !== agentId);
       }
     }
 

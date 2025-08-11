@@ -8,9 +8,9 @@
  * @file Database layer: adr-proposal-system.
  */
 
-import type { ADRDocumentEntity } from '../entities/document-entities';
-import { adrManager } from './adr-manager';
-import { documentManager } from './document-manager';
+import type { ADRDocumentEntity } from '../entities/document-entities.ts';
+import { adrManager } from './adr-manager.ts';
+import { documentManager } from './document-manager.ts';
 
 export interface ADRProposal {
   title: string;

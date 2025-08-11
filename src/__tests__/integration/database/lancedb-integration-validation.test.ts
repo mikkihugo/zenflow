@@ -3,7 +3,7 @@
  * Validates that our implementation is correctly integrated
  */
 
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('LanceDB Integration Validation', () => {
   it('should have LanceDB dependency available', async () => {
@@ -31,7 +31,7 @@ describe('LanceDB Integration Validation', () => {
 
   it('should have LanceDBAdapter available with vector operations', async () => {
     // Test that our adapter has the required vector methods
-    const { LanceDBAdapter } = await import('../../../database/providers/database-providers');
+    const { LanceDBAdapter } = await import('../../../database/providers/database-providers.ts');
     expect(LanceDBAdapter).toBeDefined();
 
     const mockLogger = {
@@ -63,7 +63,7 @@ describe('LanceDB Integration Validation', () => {
   it('should have database controller with vector endpoints', async () => {
     // Test that the controller has vector methods
     const { DatabaseController } = await import(
-      '../../../database/controllers/database-controller'
+      '../../../database/controllers/database-controller.ts'
     );
     expect(DatabaseController).toBeDefined();
 
@@ -76,7 +76,7 @@ describe('LanceDB Integration Validation', () => {
 
   it('should have proper vector interfaces defined', async () => {
     // Test that vector interfaces are properly exported
-    const module = await import('../../../database/providers/database-providers');
+    const module = await import('../../../database/providers/database-providers.ts');
 
     // These should be available as types, but we can test the class implements them
     expect(module['LanceDBAdapter']).toBeDefined();

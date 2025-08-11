@@ -7,18 +7,22 @@
  */
 
 // Import for internal use
-import { AdvancedCLIEngine, AdvancedCommandRegistry } from './advanced-cli-engine';
+import { AdvancedCLIEngine, AdvancedCommandRegistry } from './advanced-cli-engine.ts';
 import EnhancedTerminalRouter from './enhanced-terminal-router';
 
 // Re-export for external use
-export { AdvancedCLIEngine, AdvancedCommandRegistry } from './advanced-cli-engine';
+export { AdvancedCLIEngine, AdvancedCommandRegistry } from './advanced-cli-engine.ts';
 export { default as EnhancedTerminalRouter } from './enhanced-terminal-router';
 
 // SPARC Swarm Commands
-export { createSPARCSwarmCommands } from './sparc-swarm-commands';
+export { createSPARCSwarmCommands } from './sparc-swarm-commands.ts';
+
+// Advanced Workflow Commands
+export { handleWorkflowCommand, createWorkflowCLI, workflowCommands } from './commands/workflow.ts';
+export { handleKanbanCommand, createKanbanCLI } from './commands/kanban.ts';
 
 // Type Definitions
-export * from './types/advanced-cli-types';
+export * from './types/advanced-cli-types.ts';
 
 // CLI Configuration and Utilities
 export interface CLIModuleConfig {

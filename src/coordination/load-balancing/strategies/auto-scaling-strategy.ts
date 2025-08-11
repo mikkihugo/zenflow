@@ -7,7 +7,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { AutoScaler } from '../interfaces';
+import type { AutoScaler } from '../interfaces.ts';
 
 interface ScalingDecision {
   action: 'scale_up' | 'scale_down' | 'no_action';

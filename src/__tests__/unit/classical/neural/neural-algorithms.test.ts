@@ -8,7 +8,7 @@
 import {
   createNeuralTestSuite,
   NeuralTestDataGenerator,
-} from '../../../helpers/neural-test-helpers';
+} from '../../../helpers/neural-test-helpers.ts';
 
 describe('Advanced Neural Algorithms - Classical TDD', () => {
   let _neuralSuite: ReturnType<typeof createNeuralTestSuite>;

@@ -1,4 +1,4 @@
-import { BatchPerformanceMonitor } from '../../../../coordination/batch/performance-monitor';
+import { BatchPerformanceMonitor } from '../../../../coordination/batch/performance-monitor.ts';
 
 describe('BatchPerformanceMonitor - Claude-zen Performance Tracking', () => {
   let monitor: BatchPerformanceMonitor;

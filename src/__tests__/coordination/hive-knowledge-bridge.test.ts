@@ -4,8 +4,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { HiveKnowledgeBridge } from '../../coordination/hive-knowledge-bridge';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { HiveKnowledgeBridge, type KnowledgeRequest } from '../../coordination/hive-knowledge-bridge.ts';
 
 // Mock dependencies
 const mockHiveFACT = {

@@ -1,13 +1,103 @@
 /**
- * Error Recovery System.
- * Handles automatic error recovery and system resilience.
- */
-/**
- * @file Error-recovery implementation.
+ * @fileoverview Error Recovery System for Claude Code Zen
+ * 
+ * Comprehensive error recovery and system resilience framework that provides
+ * automatic recovery strategies, retry mechanisms, and failover capabilities
+ * for distributed systems and neural network operations.
+ * 
+ * Key Features:
+ * - Multi-strategy error recovery with configurable policies
+ * - Exponential backoff with jitter for retry mechanisms
+ * - Circuit breaker pattern for failing services
+ * - Automatic failover and load balancing
+ * - Comprehensive error classification and routing
+ * - Recovery action orchestration with rollback capabilities
+ * - Metrics collection and health monitoring
+ * - Event-driven recovery notifications
+ * 
+ * Recovery Strategies:
+ * - Restart: Component/service restart with graceful shutdown
+ * - Rollback: Version rollback to last known good state
+ * - Failover: Automatic failover to backup systems
+ * - Scale: Dynamic scaling based on error patterns
+ * - Notify: Alert and notification management
+ * - Repair: Self-healing and automatic repair actions
+ * 
+ * @author Claude Code Zen Team
+ * @since 1.0.0-alpha.43
+ * @version 1.0.0-alpha.43
+ * 
+ * @see {@link https://martinfowler.com/bliki/CircuitBreaker.html} Circuit Breaker Pattern
+ * @see {@link https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/} Retry Strategies
+ * 
+ * @requires node:events - For event-driven recovery notifications
+ * @requires @utils/type-guards - For safe error type handling
+ * 
+ * @example
+ * ```typescript
+ * const recovery = new ErrorRecoverySystem({
+ *   strategies: [
+ *     {
+ *       id: 'neural-restart',
+ *       name: 'Neural Network Restart',
+ *       severity: 'high',
+ *       timeout: 30000,
+ *       maxRetries: 3,
+ *       backoffStrategy: 'exponential',
+ *       actions: [{ type: 'restart', target: 'neural-engine' }]
+ *     }
+ *   ]
+ * });
+ * 
+ * // Handle error with automatic recovery
+ * const result = await recovery.handleError({
+ *   errorId: 'neural-training-failure',
+ *   component: 'neural-network',
+ *   operation: 'train',
+ *   errorType: 'timeout',
+ *   severity: 'high'
+ * });
+ * ```
  */
 
 import { EventEmitter } from 'node:events';
 
+/**
+ * Recovery strategy configuration interface.
+ * 
+ * Defines the complete configuration for an error recovery strategy,
+ * including retry policies, backoff strategies, and recovery actions.
+ * 
+ * @interface RecoveryStrategy
+ * 
+ * @property {string} id - Unique identifier for the recovery strategy
+ * @property {string} name - Human-readable name for the strategy
+ * @property {string} description - Detailed description of strategy purpose
+ * @property {'low' | 'medium' | 'high' | 'critical'} severity - Error severity level this strategy handles
+ * @property {number} timeout - Maximum time to wait for recovery completion (ms)
+ * @property {number} maxRetries - Maximum number of retry attempts
+ * @property {'linear' | 'exponential' | 'fixed'} backoffStrategy - Delay strategy between retries
+ * @property {string[]} conditions - Conditions that must be met to trigger this strategy
+ * @property {RecoveryAction[]} actions - List of recovery actions to execute
+ * 
+ * @example
+ * ```typescript
+ * const neuralRecoveryStrategy: RecoveryStrategy = {
+ *   id: 'neural-training-recovery',
+ *   name: 'Neural Training Recovery',
+ *   description: 'Recovers from neural network training failures',
+ *   severity: 'high',
+ *   timeout: 300000, // 5 minutes
+ *   maxRetries: 3,
+ *   backoffStrategy: 'exponential',
+ *   conditions: ['training_timeout', 'memory_overflow'],
+ *   actions: [
+ *     { type: 'restart', target: 'neural-engine', required: true },
+ *     { type: 'scale', target: 'memory', required: false }
+ *   ]
+ * };
+ * ```
+ */
 export interface RecoveryStrategy {
   id: string;
   name: string;
@@ -20,6 +110,47 @@ export interface RecoveryStrategy {
   actions: RecoveryAction[];
 }
 
+/**
+ * Recovery action configuration interface.
+ * 
+ * Defines a specific recovery action that can be executed as part of
+ * an error recovery strategy. Each action has a type, target, and configuration.
+ * 
+ * @interface RecoveryAction
+ * 
+ * @property {'restart' | 'rollback' | 'failover' | 'scale' | 'notify' | 'repair'} type - Type of recovery action
+ * @property {string} target - Target component, service, or resource for the action
+ * @property {Record<string, any>} parameters - Action-specific parameters and configuration
+ * @property {number} timeout - Maximum time to wait for action completion (ms)
+ * @property {boolean} required - Whether action failure should fail the entire recovery
+ * 
+ * @example
+ * ```typescript
+ * const restartAction: RecoveryAction = {
+ *   type: 'restart',
+ *   target: 'neural-engine',
+ *   parameters: {
+ *     gracefulShutdown: true,
+ *     preserveState: false,
+ *     restartDelay: 5000
+ *   },
+ *   timeout: 30000,
+ *   required: true
+ * };
+ * 
+ * const scaleAction: RecoveryAction = {
+ *   type: 'scale',
+ *   target: 'worker-pool',
+ *   parameters: {
+ *     direction: 'up',
+ *     factor: 1.5,
+ *     maxInstances: 10
+ *   },
+ *   timeout: 60000,
+ *   required: false
+ * };
+ * ```
+ */
 export interface RecoveryAction {
   type: 'restart' | 'rollback' | 'failover' | 'scale' | 'notify' | 'repair';
   target: string;
@@ -28,6 +159,42 @@ export interface RecoveryAction {
   required: boolean;
 }
 
+/**
+ * Recovery context information interface.
+ * 
+ * Contains comprehensive information about an error that needs recovery,
+ * including error details, component information, and recovery state.
+ * 
+ * @interface RecoveryContext
+ * 
+ * @property {string} errorId - Unique identifier for this specific error instance
+ * @property {string} component - Component or service where the error occurred
+ * @property {string} operation - Specific operation that failed
+ * @property {string} errorType - Classification of the error type
+ * @property {'low' | 'medium' | 'high' | 'critical'} severity - Error severity level
+ * @property {Record<string, any>} metadata - Additional error context and data
+ * @property {Date} timestamp - When the error occurred
+ * @property {number} retryCount - Number of recovery attempts so far
+ * 
+ * @example
+ * ```typescript
+ * const errorContext: RecoveryContext = {
+ *   errorId: 'neural-train-001',
+ *   component: 'neural-network',
+ *   operation: 'train_model',
+ *   errorType: 'timeout',
+ *   severity: 'high',
+ *   metadata: {
+ *     modelId: 'cnn-v2',
+ *     batchSize: 32,
+ *     epoch: 15,
+ *     lastLoss: 0.0234
+ *   },
+ *   timestamp: new Date(),
+ *   retryCount: 0
+ * };
+ * ```
+ */
 export interface RecoveryContext {
   errorId: string;
   component: string;
@@ -98,7 +265,9 @@ export class ErrorRecoverySystem extends EventEmitter {
         actionsExecuted: result?.actionsExecuted,
         duration,
         ...(result?.error !== undefined && { error: result?.error }),
-        ...(result?.nextRetryAt !== undefined && { nextRetryAt: result?.nextRetryAt }),
+        ...(result?.nextRetryAt !== undefined && {
+          nextRetryAt: result?.nextRetryAt,
+        }),
       };
 
       this.recordRecovery(context, recoveryResult);

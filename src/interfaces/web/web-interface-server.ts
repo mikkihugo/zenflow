@@ -14,10 +14,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express, { type Express } from 'express';
 import { Server as SocketIOServer } from 'socket.io';
-import { getLogger } from '../../config/logging-config';
-import { ApiRouteHandler } from './api-route-handler';
-import { DaemonProcessManager } from './daemon-process-manager';
-import { WebSocketCoordinator } from './web-socket-coordinator';
+import { getLogger } from '../../config/logging-config.ts';
+import { ApiRouteHandler } from './api-route-handler.ts';
+import { DaemonProcessManager } from './daemon-process-manager.ts';
+import { WebSocketCoordinator } from './web-socket-coordinator.ts';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

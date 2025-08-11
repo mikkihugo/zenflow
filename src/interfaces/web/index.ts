@@ -8,26 +8,26 @@
  * @file Web module exports.
  */
 
-export { type ApiConfig, ApiRouteHandler, type SystemStatus } from './api-route-handler';
+export { type ApiConfig, ApiRouteHandler, type SystemStatus } from './api-route-handler.ts';
 export {
   type DaemonConfig,
   DaemonProcessManager,
   type ProcessInfo,
-} from './daemon-process-manager';
+} from './daemon-process-manager.ts';
 // Performance dashboard (renamed from unified-performance-dashboard.ts)
-export { UnifiedPerformanceDashboard as SystemMetricsDashboard } from './system-metrics-dashboard';
+export { UnifiedPerformanceDashboard as SystemMetricsDashboard } from './system-metrics-dashboard.ts';
 // Main web server (renamed from web-interface.ts)
-export { type WebConfig, WebInterfaceServer } from './web-interface-server';
+export { type WebConfig, WebInterfaceServer } from './web-interface-server.ts';
 // Focused modules (newly created)
 export {
   type WebSession,
   type WebSocketConfig,
   WebSocketCoordinator,
-} from './web-socket-coordinator';
+} from './web-socket-coordinator.ts';
 
 // Import the types for internal use
-import type { WebConfig } from './web-interface-server';
-import { WebInterfaceServer } from './web-interface-server';
+import type { WebConfig } from './web-interface-server.ts';
+import { WebInterfaceServer } from './web-interface-server.ts';
 
 // Re-export convenience functions
 export const createWebServer = (config?: WebConfig) => {

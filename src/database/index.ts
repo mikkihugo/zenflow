@@ -4,12 +4,12 @@
  * @file Central export point for all database functionality including types,
  * entities, managers, and API controllers. This module serves as the single source
  * of truth for all database operations and type definitions.
- * 
+ *
  * Following domain architecture standard with consolidated types.
  */
 
 // Export all database types (Single Source of Truth)
-export * from './types';
+export * from './types.ts';
 
 /**
  * @deprecated Legacy export structure - use domain types instead
@@ -17,7 +17,7 @@ export * from './types';
  * ```typescript
  * import { createDao, EntityTypes, DatabaseTypes } from './database';
  *
- * // Create a PostgreSQL DAO for user entities  
+ * // Create a PostgreSQL DAO for user entities
  * const userDao = await createDao<User>(
  *   EntityTypes.User,
  *   DatabaseTypes.PostgreSQL,
@@ -49,13 +49,13 @@ export * from './types';
  */
 
 // Base implementations
-export { BaseDao, BaseManager } from './base.dao';
-export { CoordinationDao } from './dao/coordination.dao';
-export { GraphDao } from './dao/graph.dao';
-export { MemoryDao } from './dao/memory.dao';
+export { BaseDao, BaseManager } from './base.dao.ts';
+export { CoordinationDao } from './dao/coordination.dao.ts';
+export { GraphDao } from './dao/graph.dao.ts';
+export { MemoryDao } from './dao/memory.dao.ts';
 // DAO implementations
-export { RelationalDao } from './dao/relational.dao';
-export { VectorDao } from './dao/vector.dao';
+export { RelationalDao } from './dao/relational.dao.ts';
+export { VectorDao } from './dao/vector.dao.ts';
 // Factory and configuration
 export {
   DALFactory,
@@ -65,10 +65,10 @@ export {
   // type DaoType,
   type EntityTypeRegistry,
   MultiDatabaseDAO,
-} from './factory';
+} from './factory.ts';
 
 // Import interfaces for use in functions below
-import type { IDao, IManager } from './interfaces';
+import type { IDao, IManager } from './interfaces.ts';
 
 // Core interfaces
 export type {
@@ -116,12 +116,15 @@ export type {
   VectorSearchOptions,
   VectorSearchResult,
   VectorStats,
-} from './interfaces';
+} from './interfaces.ts';
 
 // Export enums from interfaces
-export { DatabaseTypes as DatabaseTypesEnum, EntityTypes as EntityTypesEnum } from './interfaces';
+export {
+  DatabaseTypes as DatabaseTypesEnum,
+  EntityTypes as EntityTypesEnum,
+} from './interfaces.ts';
 // Manager implementations
-export { DocumentManager } from './managers/document-manager';
+export { DocumentManager } from './managers/document-manager.ts';
 
 // Re-export database provider types for convenience
 export type {
@@ -133,7 +136,7 @@ export type {
   VectorData,
   VectorDatabaseAdapter,
   VectorResult,
-} from './providers/database-providers';
+} from './providers/database-providers.ts';
 
 /**
  * Convenience functions for quick DAL setup.
@@ -192,7 +195,7 @@ export type {
  * ```
  */
 // Re-export from dao-factory to break circular dependency
-export { createDao } from './core/dao-factory';
+export { createDao } from './core/dao-factory.ts';
 
 /**
  * Create a Manager instance for high-level entity operations.
@@ -246,9 +249,9 @@ export async function createManager<T>(
   databaseType: 'postgresql' | 'sqlite' | 'kuzu' | 'lancedb' | 'mysql' | 'memory' | 'coordination',
   config?: any
 ): Promise<IManager<T>> {
-  const { DALFactory } = await import('./factory');
-  const { DIContainer } = await import('../di/container/di-container');
-  const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
+  const { DALFactory } = await import('./factory.ts');
+  const { DIContainer } = await import('../di/container/di-container.ts');
+  const { CORE_TOKENS } = await import('../di/tokens/core-tokens.ts');
 
   const container = new DIContainer();
 
@@ -264,9 +267,9 @@ export async function createManager<T>(
   container.register(CORE_TOKENS.Config, (() => ({})) as any);
 
   // TODO: TypeScript error TS2345/TS18046 - DALFactory DI token type mismatch (AI unsure of safe fix - human review needed)
-  const factory = container.resolve(DALFactory as any) as any;
+  const factory = container.resolve(DALFactory as any);
 
-  return await (factory as any).createManager({
+  return await (factory).createManager({
     databaseType,
     entityType,
     databaseConfig: config || getDefaultConfig(databaseType),
@@ -368,10 +371,10 @@ export async function createMultiDatabaseSetup<T>(
       | 'coordination';
     config?: any;
   }>
-): Promise<import('./factory').MultiDatabaseDAO<T>> {
-  const { DALFactory } = await import('./factory');
-  const { DIContainer } = await import('../di/container/di-container');
-  const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
+): Promise<import('./factory.ts').MultiDatabaseDAO<T>> {
+  const { DALFactory } = await import('./factory.ts');
+  const { DIContainer } = await import('../di/container/di-container.ts');
+  const { CORE_TOKENS } = await import('../di/tokens/core-tokens.ts');
 
   const container = new DIContainer();
 
@@ -387,7 +390,7 @@ export async function createMultiDatabaseSetup<T>(
   container.register(CORE_TOKENS.Config, (() => ({})) as any);
 
   // TODO: TypeScript error TS2345/TS18046 - DALFactory DI token type mismatch (AI unsure of safe fix - human review needed)
-  const factory = container.resolve(DALFactory as any) as any;
+  const factory = container.resolve(DALFactory as any);
 
   const primaryDaoConfig = {
     databaseType: primaryConfig?.databaseType,
@@ -401,7 +404,7 @@ export async function createMultiDatabaseSetup<T>(
     databaseConfig: sc.config || getDefaultConfig(sc.databaseType),
   }));
 
-  return await (factory as any).createMultiDatabaseDAO(
+  return await (factory).createMultiDatabaseDAO(
     entityType,
     primaryDaoConfig,
     secondaryDaoConfigs
@@ -551,7 +554,7 @@ function getDefaultConfig(databaseType: string): any {
  * ```
  */
 // Re-export EntityTypes from dao-factory to break circular dependency
-export { EntityTypeValues as EntityTypes } from './core/dao-factory';
+export { EntityTypeValues as EntityTypes } from './core/dao-factory.ts';
 
 /**
  * Supported Database Type Constants.
@@ -671,7 +674,7 @@ export const QuickSetup = {
    * Create a typical swarm coordination setup.
    */
   async swarmCoordination() {
-    const { createDao: createDaoFn } = await import('./core/dao-factory');
+    const { createDao: createDaoFn } = await import('./core/dao-factory.ts');
     return {
       agents: await createDaoFn<any>(
         'agent',
@@ -697,7 +700,7 @@ export const QuickSetup = {
    * Create a typical AI/ML data setup.
    */
   async aimlData() {
-    const { createDao: createDaoFn } = await import('./core/dao-factory');
+    const { createDao: createDaoFn } = await import('./core/dao-factory.ts');
     return {
       documents: await createDaoFn<any>(
         'document',
@@ -727,4 +730,4 @@ export const QuickSetup = {
 };
 
 // Default export is the factory
-export { DALFactory as default } from './factory';
+export { DALFactory as default } from './factory.ts';

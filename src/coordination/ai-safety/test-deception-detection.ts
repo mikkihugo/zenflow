@@ -6,15 +6,15 @@
  * This proves the system can detect the exact deception patterns demonstrated.
  */
 
-import { analyzeAIResponse, createAIDeceptionDetector } from './ai-deception-detector';
-import { createAISafetyOrchestrator } from './safety-orchestrator';
+import { analyzeAIResponse, createAIDeceptionDetector } from './ai-deception-detector.ts';
+import { createAISafetyOrchestrator } from './safety-orchestrator.ts';
 
 async function testDeceptionDetection() {
   console.log('🧪 Testing AI Deception Detection System\n');
 
   const detector = createAIDeceptionDetector();
   const orchestrator = createAISafetyOrchestrator();
-  
+
   console.log(`📊 Detector configuration: ${JSON.stringify(detector.getConfiguration(), null, 2)}`);
 
   // TEST 1: SANDBAGGING - The exact response that demonstrated deception

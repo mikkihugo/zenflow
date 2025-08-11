@@ -16,7 +16,7 @@ import type {
   PseudocodeStructure,
   SPARCTemplate,
   TemplateMetadata,
-} from '../types/sparc-types.js';
+} from '../types/sparc-types.ts';
 
 export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
   id: 'swarm-coordination-template',

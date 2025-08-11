@@ -9,7 +9,11 @@
  */
 
 import { nanoid } from 'nanoid';
-import type { ArchitecturalValidation, ArchitectureDesign, Component } from '../types/sparc-types';
+import type {
+  ArchitecturalValidation,
+  ArchitectureDesign,
+  Component,
+} from '../types/sparc-types.ts';
 
 // Database interfaces
 export interface ArchitectureRecord {
@@ -471,7 +475,7 @@ export class ArchitectureStorageService {
     // Filter by validation score if specified
     if (criteria.minScore !== undefined) {
       architectures = architectures.filter((arch) => {
-        const validation = arch.validationResults as any;
+        const validation = arch.validationResults;
         return validation && validation.overallScore >= criteria.minScore!;
       });
     }

@@ -1146,4 +1146,4 @@ export const EventTypeGuards = {
 } as const;
 
 // Re-export types for compatibility
-export type { SystemEvent as BaseSystemEvent } from '../observer-system';
+export type { SystemEvent as BaseSystemEvent } from '../observer-system.ts';

@@ -13,13 +13,13 @@ import { type ChildProcess, execSync, spawn } from 'child_process';
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import path from 'path';
-import { getConsoleReplacementLogger } from './config/logging-config';
-import type { logger } from './core/logger';
+import { getConsoleReplacementLogger } from './config/logging-config.ts';
+import type { logger } from './core/logger.ts';
 
 // Import existing coordination infrastructure (will be dynamically imported)
-// import { SwarmCoordinator } from './coordination/swarm/core/swarm-coordinator.js';
-// import { ApplicationCoordinator } from './core/application-coordinator.js';
-// import { Logger } from './core/logger.js';
+// import { SwarmCoordinator } from './coordination/swarm/core/swarm-coordinator.ts';
+// import { ApplicationCoordinator } from './core/application-coordinator.ts';
+// import { Logger } from './core/logger.ts';
 
 // Temporary type definition until proper import is available
 type SwarmCoordinator = any;

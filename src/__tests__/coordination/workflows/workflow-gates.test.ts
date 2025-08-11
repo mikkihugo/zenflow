@@ -1,6 +1,6 @@
 /**
  * @file Workflow Gates System Unit Tests
- * 
+ *
  * Comprehensive unit tests for the workflow gates system including:
  * - Gate creation and management
  * - Trigger system and condition evaluation
@@ -10,51 +10,51 @@
  * - AGUI integration
  */
 
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { EventEmitter } from 'events';
 import { promises as fs } from 'fs';
 import { join } from 'path';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
-  WorkflowGatesManager,
-  GatePersistenceManager,
-  WorkflowHumanGateType,
-  WorkflowHumanGateStatus,
-  WorkflowGatePriority,
-  GateTriggerUrgency,
-  StrategicGateFactory,
   ArchitecturalGateFactory,
-  QualityGateFactory,
   BusinessGateFactory,
+  type ComplianceImpact,
+  type CreateGateOptions,
   EthicalGateFactory,
-  type WorkflowHumanGate,
+  GatePersistenceManager,
+  type GateTrigger,
+  GateTriggerUrgency,
+  type ImpactAssessment,
+  QualityGateFactory,
+  type ResourceImpact,
+  StrategicGateFactory,
   type WorkflowGateContext,
   type WorkflowGateData,
-  type GateTrigger,
-  type CreateGateOptions,
-  type ImpactAssessment,
-  type ComplianceImpact,
-  type ResourceImpact
-} from '../../../coordination/orchestration/workflow-gates';
+  WorkflowGatePriority,
+  WorkflowGatesManager,
+  type WorkflowHumanGate,
+  WorkflowHumanGateStatus,
+  WorkflowHumanGateType,
+} from '../../../coordination/orchestration/workflow-gates.ts';
 import {
-  TypeSafeEventBus,
-  createTypeSafeEventBus
-} from '../../../core/type-safe-event-system';
+  createTypeSafeEventBus,
+  type TypeSafeEventBus,
+} from '../../../core/type-safe-event-system.ts';
 
 // Mock better-sqlite3
 const mockDatabase = {
-  exec: jest.fn(),
-  prepare: jest.fn(),
-  close: jest.fn()
+  exec: vi.fn(),
+  prepare: vi.fn(),
+  close: vi.fn(),
 };
 
 const mockStatement = {
-  run: jest.fn(),
-  get: jest.fn(),
-  all: jest.fn()
+  run: vi.fn(),
+  get: vi.fn(),
+  all: vi.fn(),
 };
 
-jest.mock('better-sqlite3', () => {
-  return jest.fn(() => mockDatabase);
+vi.mock('better-sqlite3', () => {
+  return vi.fn(() => mockDatabase);
 });
 
 // Test data factories
@@ -69,8 +69,8 @@ const createMockWorkflowContext = (): WorkflowGateContext => ({
     previousDecisions: [],
     successPatterns: [],
     failurePatterns: [],
-    lessonsLearned: []
-  }
+    lessonsLearned: [],
+  },
 });
 
 const createMockImpactAssessment = (): ImpactAssessment => ({
@@ -79,26 +79,26 @@ const createMockImpactAssessment = (): ImpactAssessment => ({
   riskImpact: 0.6,
   resourceImpact: createMockResourceImpact(),
   complianceImpact: createMockComplianceImpact(),
-  userExperienceImpact: 0.5
+  userExperienceImpact: 0.5,
 });
 
 const createMockResourceImpact = (): ResourceImpact => ({
   timeHours: 40,
   costImpact: 10000,
   teamSize: 3,
-  criticality: 'high'
+  criticality: 'high',
 });
 
 const createMockComplianceImpact = (): ComplianceImpact => ({
   regulations: ['GDPR', 'SOX'],
   riskLevel: 'medium',
   requiredReviews: ['legal', 'privacy'],
-  deadlines: [new Date(Date.now() + 86400000 * 30)] // 30 days from now
+  deadlines: [new Date(Date.now() + 86400000 * 30)], // 30 days from now
 });
 
 const createMockGateData = (): WorkflowGateData => ({
   payload: {
-    testData: 'mock-data'
+    testData: 'mock-data',
   },
   structured: {
     type: 'strategic',
@@ -109,11 +109,11 @@ const createMockGateData = (): WorkflowGateData => ({
       userStories: ['As a user, I want to...'],
       acceptanceCriteria: ['Given when then...'],
       estimatedEffort: 40,
-      riskFactors: ['Technical complexity']
-    }
+      riskFactors: ['Technical complexity'],
+    },
   },
   attachments: [],
-  externalReferences: []
+  externalReferences: [],
 });
 
 const createMockTrigger = (): GateTrigger => ({
@@ -127,8 +127,8 @@ const createMockTrigger = (): GateTrigger => ({
     phases: ['design'],
     stakeholders: ['product-manager'],
     category: 'strategic',
-    properties: {}
-  }
+    properties: {},
+  },
 });
 
 describe('WorkflowGatesManager', () => {
@@ -139,14 +139,14 @@ describe('WorkflowGatesManager', () => {
   beforeEach(async () => {
     // Setup test database path
     testDbPath = join(__dirname, '..', '..', '..', '..', 'test-data', 'workflow-gates-test.db');
-    
+
     // Create test directory
     await fs.mkdir(join(testDbPath, '..'), { recursive: true }).catch(() => {});
 
     // Setup event bus
     eventBus = createTypeSafeEventBus({
       enableMetrics: false,
-      domainValidation: false
+      domainValidation: false,
     });
     await eventBus.initialize();
 
@@ -162,14 +162,14 @@ describe('WorkflowGatesManager', () => {
       persistencePath: testDbPath,
       queueProcessingInterval: 100, // Fast processing for tests
       maxConcurrentGates: 10,
-      enableMetrics: true
+      enableMetrics: true,
     });
   });
 
   afterEach(async () => {
     await gatesManager.shutdown();
     await eventBus.shutdown();
-    
+
     // Clean up test database
     try {
       await fs.unlink(testDbPath);
@@ -184,7 +184,7 @@ describe('WorkflowGatesManager', () => {
     });
 
     it('should emit initialized event', async () => {
-      const initPromise = new Promise<void>(resolve => {
+      const initPromise = new Promise<void>((resolve) => {
         gatesManager.once('initialized', resolve);
       });
 
@@ -206,7 +206,7 @@ describe('WorkflowGatesManager', () => {
     it('should create a strategic gate', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const gate = await gatesManager.createGate(
         WorkflowHumanGateType.STRATEGIC,
         'prd-approval',
@@ -225,7 +225,7 @@ describe('WorkflowGatesManager', () => {
     it('should create an architectural gate', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const gate = await gatesManager.createGate(
         WorkflowHumanGateType.ARCHITECTURAL,
         'system-design-review',
@@ -240,7 +240,7 @@ describe('WorkflowGatesManager', () => {
     it('should create a quality gate', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const gate = await gatesManager.createGate(
         WorkflowHumanGateType.QUALITY,
         'security-review',
@@ -255,7 +255,7 @@ describe('WorkflowGatesManager', () => {
     it('should create a business gate', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const gate = await gatesManager.createGate(
         WorkflowHumanGateType.BUSINESS,
         'feature-validation',
@@ -270,7 +270,7 @@ describe('WorkflowGatesManager', () => {
     it('should create an ethical gate', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const gate = await gatesManager.createGate(
         WorkflowHumanGateType.ETHICAL,
         'ai-behavior-review',
@@ -285,8 +285,8 @@ describe('WorkflowGatesManager', () => {
     it('should emit gate-created event', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
-      const eventPromise = new Promise<WorkflowHumanGate>(resolve => {
+
+      const eventPromise = new Promise<WorkflowHumanGate>((resolve) => {
         gatesManager.once('gate-created', resolve);
       });
 
@@ -304,13 +304,13 @@ describe('WorkflowGatesManager', () => {
     it('should create gate with custom options', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const options: CreateGateOptions = {
         title: 'Custom Gate Title',
         description: 'Custom gate description',
         priority: WorkflowGatePriority.CRITICAL,
         approvers: ['custom-approver'],
-        triggers: [createMockTrigger()]
+        triggers: [createMockTrigger()],
       };
 
       const gate = await gatesManager.createGate(
@@ -331,21 +331,16 @@ describe('WorkflowGatesManager', () => {
     it('should throw error for unsupported gate type', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       // Create a manager with no factories registered
       const emptyManager = new WorkflowGatesManager(eventBus, {
-        persistencePath: testDbPath + '-empty'
+        persistencePath: testDbPath + '-empty',
       });
-      
+
       await expect(
-        emptyManager.createGate(
-          'unsupported' as WorkflowHumanGateType,
-          'test',
-          context,
-          data
-        )
+        emptyManager.createGate('unsupported' as WorkflowHumanGateType, 'test', context, data)
       ).rejects.toThrow();
-      
+
       await emptyManager.shutdown();
     });
   });
@@ -355,10 +350,10 @@ describe('WorkflowGatesManager', () => {
 
     beforeEach(async () => {
       await gatesManager.initialize();
-      
+
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       gate = await gatesManager.createGate(
         WorkflowHumanGateType.STRATEGIC,
         'test-gate',
@@ -370,31 +365,26 @@ describe('WorkflowGatesManager', () => {
     it('should update gate', async () => {
       const updates = {
         title: 'Updated Title',
-        description: 'Updated description'
+        description: 'Updated description',
       };
 
-      const eventPromise = new Promise<WorkflowHumanGate>(resolve => {
+      const eventPromise = new Promise<WorkflowHumanGate>((resolve) => {
         gatesManager.once('gate-updated', resolve);
       });
 
       await gatesManager.updateGate(gate.id, updates);
-      
+
       const updatedGate = await eventPromise;
       expect(updatedGate.title).toBe(updates.title);
       expect(updatedGate.description).toBe(updates.description);
     });
 
     it('should resolve gate with approval', async () => {
-      const eventPromise = new Promise<any>(resolve => {
+      const eventPromise = new Promise<any>((resolve) => {
         gatesManager.once('gate-resolved', resolve);
       });
 
-      await gatesManager.resolveGate(
-        gate.id,
-        'approved',
-        'test-user',
-        'Test resolution rationale'
-      );
+      await gatesManager.resolveGate(gate.id, 'approved', 'test-user', 'Test resolution rationale');
 
       const resolvedEvent = await eventPromise;
       expect(resolvedEvent.gateId).toBe(gate.id);
@@ -403,23 +393,18 @@ describe('WorkflowGatesManager', () => {
     });
 
     it('should resolve gate with rejection', async () => {
-      const eventPromise = new Promise<any>(resolve => {
+      const eventPromise = new Promise<any>((resolve) => {
         gatesManager.once('gate-resolved', resolve);
       });
 
-      await gatesManager.resolveGate(
-        gate.id,
-        'rejected',
-        'test-user',
-        'Test rejection rationale'
-      );
+      await gatesManager.resolveGate(gate.id, 'rejected', 'test-user', 'Test rejection rationale');
 
       const resolvedEvent = await eventPromise;
       expect(resolvedEvent.decision).toBe('rejected');
     });
 
     it('should cancel gate', async () => {
-      const eventPromise = new Promise<any>(resolve => {
+      const eventPromise = new Promise<any>((resolve) => {
         gatesManager.once('gate-cancelled', resolve);
       });
 
@@ -432,9 +417,9 @@ describe('WorkflowGatesManager', () => {
     });
 
     it('should throw error when updating non-existent gate', async () => {
-      await expect(
-        gatesManager.updateGate('non-existent-gate', { title: 'Test' })
-      ).rejects.toThrow('Gate not found');
+      await expect(gatesManager.updateGate('non-existent-gate', { title: 'Test' })).rejects.toThrow(
+        'Gate not found'
+      );
     });
 
     it('should throw error when resolving non-existent gate', async () => {
@@ -452,7 +437,7 @@ describe('WorkflowGatesManager', () => {
     it('should process triggers on gate creation', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const trigger: GateTrigger = {
         id: 'immediate-trigger',
         event: 'prd-generated',
@@ -464,11 +449,11 @@ describe('WorkflowGatesManager', () => {
           phases: ['design'],
           stakeholders: ['product-manager'],
           category: 'strategic',
-          properties: {}
-        }
+          properties: {},
+        },
       };
 
-      const eventPromise = new Promise<any>(resolve => {
+      const eventPromise = new Promise<any>((resolve) => {
         gatesManager.once('gate-triggered', resolve);
       });
 
@@ -487,7 +472,7 @@ describe('WorkflowGatesManager', () => {
     it('should not trigger gates when conditions are not met', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const trigger: GateTrigger = {
         id: 'never-trigger',
         event: 'prd-generated',
@@ -499,8 +484,8 @@ describe('WorkflowGatesManager', () => {
           phases: ['design'],
           stakeholders: ['product-manager'],
           category: 'strategic',
-          properties: {}
-        }
+          properties: {},
+        },
       };
 
       let triggered = false;
@@ -517,15 +502,15 @@ describe('WorkflowGatesManager', () => {
       );
 
       // Wait a bit to ensure trigger processing is complete
-      await new Promise(resolve => setTimeout(resolve, 50));
-      
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
       expect(triggered).toBe(false);
     });
 
     it('should handle trigger condition errors gracefully', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const trigger: GateTrigger = {
         id: 'error-trigger',
         event: 'prd-generated',
@@ -539,8 +524,8 @@ describe('WorkflowGatesManager', () => {
           phases: ['design'],
           stakeholders: ['product-manager'],
           category: 'strategic',
-          properties: {}
-        }
+          properties: {},
+        },
       };
 
       await expect(
@@ -563,7 +548,7 @@ describe('WorkflowGatesManager', () => {
     it('should add gate to queue', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const gate = await gatesManager.createGate(
         WorkflowHumanGateType.STRATEGIC,
         'queue-test',
@@ -571,22 +556,17 @@ describe('WorkflowGatesManager', () => {
         data
       );
 
-      await gatesManager.addToQueue(
-        gate.id,
-        1,
-        GateTriggerUrgency.WITHIN_HOUR,
-        new Date()
-      );
+      await gatesManager.addToQueue(gate.id, 1, GateTriggerUrgency.WITHIN_HOUR, new Date());
 
       const queuedGates = await gatesManager.getQueuedGates();
       expect(queuedGates.length).toBeGreaterThan(0);
-      expect(queuedGates.find(item => item.gate.id === gate.id)).toBeDefined();
+      expect(queuedGates.find((item) => item.gate.id === gate.id)).toBeDefined();
     });
 
     it('should process queue on interval', async () => {
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       const trigger: GateTrigger = {
         id: 'queue-trigger',
         event: 'prd-generated',
@@ -598,11 +578,11 @@ describe('WorkflowGatesManager', () => {
           phases: ['design'],
           stakeholders: ['product-manager'],
           category: 'strategic',
-          properties: {}
-        }
+          properties: {},
+        },
       };
 
-      const readyPromise = new Promise<any>(resolve => {
+      const readyPromise = new Promise<any>((resolve) => {
         gatesManager.once('gate-ready-for-review', resolve);
       });
 
@@ -626,34 +606,25 @@ describe('WorkflowGatesManager', () => {
 
     beforeEach(async () => {
       await gatesManager.initialize();
-      
+
       const context = createMockWorkflowContext();
       const data = createMockGateData();
-      
+
       gates = [];
-      
+
       // Create gates of different types and statuses
-      gates.push(await gatesManager.createGate(
-        WorkflowHumanGateType.STRATEGIC,
-        'strategic-1',
-        context,
-        data
-      ));
-      
-      gates.push(await gatesManager.createGate(
-        WorkflowHumanGateType.ARCHITECTURAL,
-        'arch-1',
-        context,
-        data
-      ));
-      
-      gates.push(await gatesManager.createGate(
-        WorkflowHumanGateType.QUALITY,
-        'quality-1',
-        context,
-        data
-      ));
-      
+      gates.push(
+        await gatesManager.createGate(WorkflowHumanGateType.STRATEGIC, 'strategic-1', context, data)
+      );
+
+      gates.push(
+        await gatesManager.createGate(WorkflowHumanGateType.ARCHITECTURAL, 'arch-1', context, data)
+      );
+
+      gates.push(
+        await gatesManager.createGate(WorkflowHumanGateType.QUALITY, 'quality-1', context, data)
+      );
+
       // Resolve one gate
       await gatesManager.resolveGate(gates[0]!.id, 'approved', 'test-user');
     });
@@ -672,29 +643,25 @@ describe('WorkflowGatesManager', () => {
     it('should get gates by status', async () => {
       // Mock the persistence layer return
       mockStatement.all.mockReturnValue([]);
-      
-      const pendingGates = await gatesManager.getGatesByStatus([
-        WorkflowHumanGateStatus.PENDING
-      ]);
-      
+
+      const pendingGates = await gatesManager.getGatesByStatus([WorkflowHumanGateStatus.PENDING]);
+
       expect(Array.isArray(pendingGates)).toBe(true);
     });
 
     it('should get gates by type', async () => {
       // Mock the persistence layer return
       mockStatement.all.mockReturnValue([]);
-      
-      const strategicGates = await gatesManager.getGatesByType(
-        WorkflowHumanGateType.STRATEGIC
-      );
-      
+
+      const strategicGates = await gatesManager.getGatesByType(WorkflowHumanGateType.STRATEGIC);
+
       expect(Array.isArray(strategicGates)).toBe(true);
     });
 
     it('should get pending gates', async () => {
       // Mock the persistence layer return
       mockStatement.all.mockReturnValue([]);
-      
+
       const pendingGates = await gatesManager.getPendingGates();
       expect(Array.isArray(pendingGates)).toBe(true);
     });
@@ -702,7 +669,7 @@ describe('WorkflowGatesManager', () => {
     it('should get gate history', async () => {
       // Mock the persistence layer return
       mockStatement.all.mockReturnValue([]);
-      
+
       const history = await gatesManager.getGateHistory(gates[0]!.id);
       expect(Array.isArray(history)).toBe(true);
     });
@@ -718,11 +685,11 @@ describe('WorkflowGatesManager', () => {
       mockStatement.get.mockReturnValue({ count: 5 });
       mockStatement.all.mockReturnValue([
         { status: 'pending', count: 2 },
-        { status: 'approved', count: 3 }
+        { status: 'approved', count: 3 },
       ]);
 
       const metrics = await gatesManager.getMetrics();
-      
+
       expect(metrics).toBeDefined();
       expect(typeof metrics.totalGates).toBe('number');
       expect(typeof metrics.queuedGatesCount).toBe('number');
@@ -733,15 +700,15 @@ describe('WorkflowGatesManager', () => {
     it('should get metrics with time range', async () => {
       const timeRange = {
         from: new Date(Date.now() - 86400000),
-        to: new Date()
+        to: new Date(),
       };
-      
+
       // Mock persistence metrics
       mockStatement.get.mockReturnValue({ count: 3 });
       mockStatement.all.mockReturnValue([]);
 
       const metrics = await gatesManager.getMetrics(timeRange);
-      
+
       expect(metrics).toBeDefined();
       expect(metrics.timeRange).toEqual(timeRange);
     });
@@ -754,9 +721,9 @@ describe('GatePersistenceManager', () => {
 
   beforeEach(async () => {
     testDbPath = join(__dirname, '..', '..', '..', '..', 'test-data', 'persistence-test.db');
-    
+
     await fs.mkdir(join(testDbPath, '..'), { recursive: true }).catch(() => {});
-    
+
     // Setup mocks
     mockDatabase.exec.mockClear();
     mockDatabase.prepare.mockReturnValue(mockStatement);
@@ -769,7 +736,7 @@ describe('GatePersistenceManager', () => {
 
   afterEach(async () => {
     await persistenceManager.shutdown();
-    
+
     try {
       await fs.unlink(testDbPath);
     } catch (error) {
@@ -785,12 +752,12 @@ describe('GatePersistenceManager', () => {
 
     it('should create database tables', async () => {
       await persistenceManager.initialize();
-      
+
       // Check that table creation SQL was executed
       const execCalls = mockDatabase.exec.mock.calls;
-      expect(execCalls.some((call: any) => 
-        call[0].includes('CREATE TABLE IF NOT EXISTS workflow_gates')
-      )).toBe(true);
+      expect(
+        execCalls.some((call: any) => call[0].includes('CREATE TABLE IF NOT EXISTS workflow_gates'))
+      ).toBe(true);
     });
   });
 
@@ -815,7 +782,7 @@ describe('GatePersistenceManager', () => {
         priority: WorkflowGatePriority.HIGH,
         approvalConfig: {
           approvers: ['test-approver'],
-          requiredApprovals: 1
+          requiredApprovals: 1,
         },
         metrics: {
           createdAt: new Date(),
@@ -827,20 +794,20 @@ describe('GatePersistenceManager', () => {
             successRate: 0,
             escalationRate: 0,
             timeoutRate: 0,
-            resourceUtilization: 0
+            resourceUtilization: 0,
           },
           quality: {
             decisionAccuracy: 0,
             stakeholderSatisfaction: 0,
             processEfficiency: 0,
             outcomeQuality: 0,
-            complianceScore: 0
-          }
-        }
+            complianceScore: 0,
+          },
+        },
       };
 
       await persistenceManager.saveGate(gate);
-      
+
       expect(mockStatement.run).toHaveBeenCalled();
     });
 
@@ -860,7 +827,7 @@ describe('GatePersistenceManager', () => {
         priority: 'high',
         approval_config: JSON.stringify({
           approvers: ['test-approver'],
-          requiredApprovals: 1
+          requiredApprovals: 1,
         }),
         timeout_config: null,
         resolution: null,
@@ -874,23 +841,23 @@ describe('GatePersistenceManager', () => {
             successRate: 0,
             escalationRate: 0,
             timeoutRate: 0,
-            resourceUtilization: 0
+            resourceUtilization: 0,
           },
           quality: {
             decisionAccuracy: 0,
             stakeholderSatisfaction: 0,
             processEfficiency: 0,
             outcomeQuality: 0,
-            complianceScore: 0
-          }
+            complianceScore: 0,
+          },
         }),
-        workflow_gate_request: null
+        workflow_gate_request: null,
       };
 
       mockStatement.get.mockReturnValue(mockGateRow);
 
       const gate = await persistenceManager.getGate('test-gate-001');
-      
+
       expect(gate).toBeDefined();
       expect(gate?.id).toBe('test-gate-001');
       expect(gate?.type).toBe(WorkflowHumanGateType.STRATEGIC);
@@ -900,7 +867,7 @@ describe('GatePersistenceManager', () => {
       mockStatement.get.mockReturnValue(undefined);
 
       const gate = await persistenceManager.getGate('non-existent');
-      
+
       expect(gate).toBeNull();
     });
 
@@ -908,7 +875,7 @@ describe('GatePersistenceManager', () => {
       const resolution = {
         resolvedAt: new Date(),
         decision: 'approved' as const,
-        resolvedBy: 'test-user'
+        resolvedBy: 'test-user',
       };
 
       await persistenceManager.updateGateStatus(
@@ -916,7 +883,7 @@ describe('GatePersistenceManager', () => {
         WorkflowHumanGateStatus.APPROVED,
         resolution
       );
-      
+
       expect(mockStatement.run).toHaveBeenCalledWith(
         WorkflowHumanGateStatus.APPROVED,
         expect.any(Number),
@@ -938,7 +905,7 @@ describe('GatePersistenceManager', () => {
       const scheduledAt = new Date();
 
       await persistenceManager.addToQueue(gateId, priority, urgency, scheduledAt);
-      
+
       expect(mockStatement.run).toHaveBeenCalledWith(
         gateId,
         priority,
@@ -974,27 +941,27 @@ describe('GatePersistenceManager', () => {
               successRate: 0,
               escalationRate: 0,
               timeoutRate: 0,
-              resourceUtilization: 0
+              resourceUtilization: 0,
             },
             quality: {
               decisionAccuracy: 0,
               stakeholderSatisfaction: 0,
               processEfficiency: 0,
               outcomeQuality: 0,
-              complianceScore: 0
-            }
+              complianceScore: 0,
+            },
           }),
           queue_id: 1,
           queue_priority: 1,
           queue_urgency: 'immediate',
-          queue_scheduled_at: Date.now()
-        }
+          queue_scheduled_at: Date.now(),
+        },
       ];
 
       mockStatement.all.mockReturnValue(mockQueueRows);
 
       const queuedGates = await persistenceManager.getQueuedGates();
-      
+
       expect(queuedGates).toHaveLength(1);
       expect(queuedGates[0]?.gate.id).toBe('test-gate-001');
       expect(queuedGates[0]?.queueItem.id).toBe(1);
@@ -1002,7 +969,7 @@ describe('GatePersistenceManager', () => {
 
     it('should mark queue item as processed', async () => {
       await persistenceManager.markQueueItemProcessed(1);
-      
+
       expect(mockStatement.run).toHaveBeenCalledWith(1);
     });
   });
@@ -1019,7 +986,7 @@ describe('GatePersistenceManager', () => {
       const data = { test: 'data' };
 
       await persistenceManager.addHistoryEntry(gateId, action, actor, data);
-      
+
       expect(mockStatement.run).toHaveBeenCalledWith(
         gateId,
         action,
@@ -1037,14 +1004,14 @@ describe('GatePersistenceManager', () => {
           action: 'created',
           actor: 'test-user',
           timestamp: Date.now(),
-          data: JSON.stringify({ test: 'data' })
-        }
+          data: JSON.stringify({ test: 'data' }),
+        },
       ];
 
       mockStatement.all.mockReturnValue(mockHistoryRows);
 
       const history = await persistenceManager.getGateHistory('test-gate-001');
-      
+
       expect(history).toHaveLength(1);
       expect(history[0]?.action).toBe('created');
       expect(history[0]?.actor).toBe('test-user');
@@ -1060,42 +1027,44 @@ describe('GatePersistenceManager', () => {
       mockStatement.get
         .mockReturnValueOnce({ count: 10 }) // total gates
         .mockReturnValueOnce({ avg_time: 3600000 }); // avg resolution time
-      
+
       mockStatement.all
-        .mockReturnValueOnce([ // gates by status
+        .mockReturnValueOnce([
+          // gates by status
           { status: 'pending', count: 3 },
-          { status: 'approved', count: 7 }
+          { status: 'approved', count: 7 },
         ])
-        .mockReturnValueOnce([ // gates by type
+        .mockReturnValueOnce([
+          // gates by type
           { type: 'strategic', count: 5 },
-          { type: 'quality', count: 5 }
+          { type: 'quality', count: 5 },
         ]);
 
       const metrics = await persistenceManager.getMetrics();
-      
+
       expect(metrics.totalGates).toBe(10);
       expect(metrics.averageResolutionTime).toBe(3600000);
       expect(metrics.gatesByStatus).toEqual({
         pending: 3,
-        approved: 7
+        approved: 7,
       });
       expect(metrics.gatesByType).toEqual({
         strategic: 5,
-        quality: 5
+        quality: 5,
       });
     });
 
     it('should get metrics with time range', async () => {
       const timeRange = {
         from: new Date(Date.now() - 86400000),
-        to: new Date()
+        to: new Date(),
       };
 
       mockStatement.get.mockReturnValue({ count: 5 });
       mockStatement.all.mockReturnValue([]);
 
       const metrics = await persistenceManager.getMetrics(timeRange);
-      
+
       expect(metrics.timeRange).toEqual(timeRange);
     });
   });
@@ -1107,14 +1076,14 @@ describe('Gate Factories', () => {
   const options: CreateGateOptions = {
     title: 'Test Gate',
     description: 'Test description',
-    priority: WorkflowGatePriority.HIGH
+    priority: WorkflowGatePriority.HIGH,
   };
 
   describe('StrategicGateFactory', () => {
     it('should create strategic gate', () => {
       const factory = new StrategicGateFactory();
       const gate = factory.createGate('test-strategic', context, data, options);
-      
+
       expect(gate.type).toBe(WorkflowHumanGateType.STRATEGIC);
       expect(gate.subtype).toBe('test-strategic');
       expect(gate.title).toBe(options.title);
@@ -1127,7 +1096,7 @@ describe('Gate Factories', () => {
     it('should create architectural gate', () => {
       const factory = new ArchitecturalGateFactory();
       const gate = factory.createGate('test-arch', context, data, options);
-      
+
       expect(gate.type).toBe(WorkflowHumanGateType.ARCHITECTURAL);
       expect(gate.subtype).toBe('test-arch');
       expect(gate.approvalConfig.approvers).toContain('lead-architect');
@@ -1138,7 +1107,7 @@ describe('Gate Factories', () => {
     it('should create quality gate', () => {
       const factory = new QualityGateFactory();
       const gate = factory.createGate('test-quality', context, data, options);
-      
+
       expect(gate.type).toBe(WorkflowHumanGateType.QUALITY);
       expect(gate.subtype).toBe('test-quality');
       expect(gate.approvalConfig.approvers).toContain('qa-lead');
@@ -1149,7 +1118,7 @@ describe('Gate Factories', () => {
     it('should create business gate', () => {
       const factory = new BusinessGateFactory();
       const gate = factory.createGate('test-business', context, data, options);
-      
+
       expect(gate.type).toBe(WorkflowHumanGateType.BUSINESS);
       expect(gate.subtype).toBe('test-business');
       expect(gate.approvalConfig.approvers).toContain('product-manager');
@@ -1160,7 +1129,7 @@ describe('Gate Factories', () => {
     it('should create ethical gate', () => {
       const factory = new EthicalGateFactory();
       const gate = factory.createGate('test-ethical', context, data, options);
-      
+
       expect(gate.type).toBe(WorkflowHumanGateType.ETHICAL);
       expect(gate.subtype).toBe('test-ethical');
       expect(gate.approvalConfig.approvers).toContain('ethics-officer');

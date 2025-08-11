@@ -32,11 +32,7 @@
  * @file TypeScript type definitions.
  */
 
-export {
-  GenerationOptions,
-  LMDriver,
-  LMError,
-} from 'dspy.ts';
+export { GenerationOptions, LMDriver, LMError } from 'dspy.ts';
 
 // ============================================================================
 // CORE DSPy WRAPPER TYPES

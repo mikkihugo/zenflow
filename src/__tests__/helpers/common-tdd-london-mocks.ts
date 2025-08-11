@@ -7,7 +7,7 @@
  * with 225+ mock patterns that need conversion.
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // ============================================================================
 // Most Common Mock Patterns (from scanner results)
@@ -15,18 +15,18 @@ import { jest } from '@jest/globals';
 
 /**
  * MockCoordinationService - Found 15+ times across files
- * Replaces: mockCoordination = { coordinateAgents: jest.fn()... }
+ * Replaces: mockCoordination = { coordinateAgents: vi.fn()... }
  */
 export class MockCoordinationService {
-  coordinateAgents: jest.MockedFunction<
+  coordinateAgents: vi.MockedFunction<
     (agentIds: string[], topology: string, task?: string) => Promise<CoordinationResult>
-  > = jest.fn();
+  > = vi.fn();
 
-  releaseCoordination: jest.MockedFunction<(coordinationId: string) => Promise<void>> = jest.fn();
+  releaseCoordination: vi.MockedFunction<(coordinationId: string) => Promise<void>> = vi.fn();
 
-  getCoordinationStatus: jest.MockedFunction<
+  getCoordinationStatus: vi.MockedFunction<
     (coordinationId: string) => Promise<CoordinationStatus>
-  > = jest.fn();
+  > = vi.fn();
 
   constructor() {
     this.coordinateAgents.mockResolvedValue({
@@ -67,22 +67,22 @@ export class MockCoordinationService {
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }
 
 /**
  * MockMemoryStoreService - Found 12+ times across files
- * Replaces: mockMemoryStore = { store: jest.fn(), retrieve: jest.fn()... }
+ * Replaces: mockMemoryStore = { store: vi.fn(), retrieve: vi.fn()... }
  */
 export class MockMemoryStoreService {
-  store: jest.MockedFunction<(key: string, value: any) => Promise<void>> = jest.fn();
-  retrieve: jest.MockedFunction<(key: string) => Promise<any>> = jest.fn();
-  delete: jest.MockedFunction<(key: string) => Promise<boolean>> = jest.fn();
-  query: jest.MockedFunction<(pattern: string) => Promise<any[]>> = jest.fn();
-  close: jest.MockedFunction<() => Promise<void>> = jest.fn();
-  initialize: jest.MockedFunction<() => Promise<void>> = jest.fn();
+  store: vi.MockedFunction<(key: string, value: any) => Promise<void>> = vi.fn();
+  retrieve: vi.MockedFunction<(key: string) => Promise<any>> = vi.fn();
+  delete: vi.MockedFunction<(key: string) => Promise<boolean>> = vi.fn();
+  query: vi.MockedFunction<(pattern: string) => Promise<any[]>> = vi.fn();
+  close: vi.MockedFunction<() => Promise<void>> = vi.fn();
+  initialize: vi.MockedFunction<() => Promise<void>> = vi.fn();
 
   constructor() {
     this.store.mockResolvedValue(undefined);
@@ -120,20 +120,20 @@ export class MockMemoryStoreService {
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }
 
 /**
  * MockLoggerService - Found 10+ times across files
- * Replaces: mockLogger = { info: jest.fn(), error: jest.fn()... }
+ * Replaces: mockLogger = { info: vi.fn(), error: vi.fn()... }
  */
 export class MockLoggerService {
-  info: jest.MockedFunction<(message: string, meta?: any) => void> = jest.fn();
-  error: jest.MockedFunction<(message: string, error?: Error, meta?: any) => void> = jest.fn();
-  warn: jest.MockedFunction<(message: string, meta?: any) => void> = jest.fn();
-  debug: jest.MockedFunction<(message: string, meta?: any) => void> = jest.fn();
+  info: vi.MockedFunction<(message: string, meta?: any) => void> = vi.fn();
+  error: vi.MockedFunction<(message: string, error?: Error, meta?: any) => void> = vi.fn();
+  warn: vi.MockedFunction<(message: string, meta?: any) => void> = vi.fn();
+  debug: vi.MockedFunction<(message: string, meta?: any) => void> = vi.fn();
 
   constructor() {
     // No return values needed for logger methods
@@ -164,21 +164,21 @@ export class MockLoggerService {
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }
 
 /**
  * MockSwarmService - Found 8+ times across files
- * Replaces: mockSwarm = { initialize: jest.fn(), spawnAgent: jest.fn()... }
+ * Replaces: mockSwarm = { initialize: vi.fn(), spawnAgent: vi.fn()... }
  */
 export class MockSwarmService {
-  initialize: jest.MockedFunction<() => Promise<void>> = jest.fn();
-  spawnAgent: jest.MockedFunction<(config: any) => Promise<string>> = jest.fn();
-  terminateAgent: jest.MockedFunction<(agentId: string) => Promise<void>> = jest.fn();
-  getSwarmStatus: jest.MockedFunction<() => Promise<SwarmStatus>> = jest.fn();
-  orchestrateTask: jest.MockedFunction<(task: any) => Promise<any>> = jest.fn();
+  initialize: vi.MockedFunction<() => Promise<void>> = vi.fn();
+  spawnAgent: vi.MockedFunction<(config: any) => Promise<string>> = vi.fn();
+  terminateAgent: vi.MockedFunction<(agentId: string) => Promise<void>> = vi.fn();
+  getSwarmStatus: vi.MockedFunction<() => Promise<SwarmStatus>> = vi.fn();
+  orchestrateTask: vi.MockedFunction<(task: any) => Promise<any>> = vi.fn();
 
   constructor() {
     this.initialize.mockResolvedValue(undefined);
@@ -212,27 +212,27 @@ export class MockSwarmService {
   }
 
   setupSwarmFailure(method: keyof MockSwarmService, error: string) {
-    (this[method] as jest.MockedFunction<any>).mockRejectedValueOnce(new Error(error));
+    (this[method] as vi.MockedFunction<any>).mockRejectedValueOnce(new Error(error));
     return this;
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }
 
 /**
  * MockDatabaseService - Found 6+ times across files
- * Replaces: mockDatabase = { query: jest.fn(), transaction: jest.fn()... }
+ * Replaces: mockDatabase = { query: vi.fn(), transaction: vi.fn()... }
  */
 export class MockDatabaseService {
-  query: jest.MockedFunction<(sql: string, params?: any[]) => Promise<any[]>> = jest.fn();
-  execute: jest.MockedFunction<(sql: string, params?: any[]) => Promise<{ affectedRows: number }>> =
-    jest.fn();
-  transaction: jest.MockedFunction<(fn: (tx: any) => Promise<any>) => Promise<any>> = jest.fn();
-  connect: jest.MockedFunction<() => Promise<void>> = jest.fn();
-  disconnect: jest.MockedFunction<() => Promise<void>> = jest.fn();
+  query: vi.MockedFunction<(sql: string, params?: any[]) => Promise<any[]>> = vi.fn();
+  execute: vi.MockedFunction<(sql: string, params?: any[]) => Promise<{ affectedRows: number }>> =
+    vi.fn();
+  transaction: vi.MockedFunction<(fn: (tx: any) => Promise<any>) => Promise<any>> = vi.fn();
+  connect: vi.MockedFunction<() => Promise<void>> = vi.fn();
+  disconnect: vi.MockedFunction<() => Promise<void>> = vi.fn();
 
   constructor() {
     this.query.mockResolvedValue([]);
@@ -264,20 +264,20 @@ export class MockDatabaseService {
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }
 
 /**
  * MockMCPServerService - Found 6+ times across files
- * Replaces: mockMcpServer = { initialize: jest.fn(), handleMessage: jest.fn()... }
+ * Replaces: mockMcpServer = { initialize: vi.fn(), handleMessage: vi.fn()... }
  */
 export class MockMCPServerService {
-  initialize: jest.MockedFunction<() => Promise<void>> = jest.fn();
-  handleMessage: jest.MockedFunction<(message: unknown) => Promise<any>> = jest.fn();
-  registerTool: jest.MockedFunction<(tool: any) => Promise<void>> = jest.fn();
-  shutdown: jest.MockedFunction<() => Promise<void>> = jest.fn();
+  initialize: vi.MockedFunction<() => Promise<void>> = vi.fn();
+  handleMessage: vi.MockedFunction<(message: unknown) => Promise<any>> = vi.fn();
+  registerTool: vi.MockedFunction<(tool: any) => Promise<void>> = vi.fn();
+  shutdown: vi.MockedFunction<() => Promise<void>> = vi.fn();
 
   constructor() {
     this.initialize.mockResolvedValue(undefined);
@@ -306,7 +306,7 @@ export class MockMCPServerService {
   }
 
   clearAllMocks() {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     return this;
   }
 }
@@ -406,4 +406,3 @@ describe('System Integration - TDD London Style', () => {
 });
 `;
 }
-`;

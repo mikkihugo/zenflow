@@ -32,12 +32,12 @@ claude-zen workflow status
 - Strict domain isolation (dependency-cruiser rules enforce). Don’t import deep neural internals from coordination; go through façades/interfaces.
 - Performance targets (must respect): coordination_latency <100ms, api_response <50ms, mcp_tool_execution <10ms, concurrent_agents >1000.
 - Hybrid TDD: 70% London (interaction/mocks) via `tests/setup-london.ts`; 30% Classical (state/algorithms) via `tests/setup-classical.ts`; hybrid dispatcher in `tests/setup-hybrid.ts`.
-- Use existing path aliases (`@core/`, `@coordination/`, etc.) per `jest.config.ts` & tsconfig paths.
+- Use existing path aliases (`@core/`, `@coordination/`, etc.) per `vitest.config.ts` & tsconfig paths.
 - For new neural features: create Rust → wasm-pack build (see `build-wasm.sh`) then expose through gateway; do NOT bypass optimizer/memory management.
 
 ## 4. Testing & Quality Gates
-- Jest (ESM) for existing suites + Vitest for fast domain/unit runs (`npm run test:jest`, `npm run test:unit`).
-- Setup files auto-augment globals—import `{ jest }` from `@jest/globals` in any new ESM test utilities.
+- Vitest for all testing suites with modern ESM support (`npm run test`, `npm run test:unit`).
+- Setup files auto-augment globals—import `{ vi }` from `vitest` in any new ESM test utilities.
 - Add London interaction helpers instead of manual spy plumbing.
 - Coverage target 85%; prefer adding focused tests beside feature entry point under `src/__tests__/...`.
 
@@ -71,7 +71,7 @@ claude-zen workflow status
 ## 11. Quick Commands
 ```
 npm ci && npm run build
-npm run test:jest   # full jest suites
+npm run test        # full vitest suites
 npm run test:unit   # vitest unit focus
 npm run deps:circular
 npm run build:wasm

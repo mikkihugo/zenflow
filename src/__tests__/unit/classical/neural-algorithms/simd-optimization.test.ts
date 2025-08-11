@@ -6,7 +6,7 @@
  */
 
 import { performance } from 'node:perf_hooks';
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 // Mock SIMD operations interface to match Rust implementation structure
 interface SimdConfig {

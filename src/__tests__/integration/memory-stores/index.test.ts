@@ -6,7 +6,7 @@
  * with both London School (mocked dependencies) and Classical School (real operations).
  */
 
-import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 // Test configuration and utilities
 interface TestSuiteMetrics {

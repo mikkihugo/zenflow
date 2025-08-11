@@ -2,7 +2,7 @@
  * @file TypeScript type definitions for coordination.
  */
 
-import type { AgentId, AgentMetrics, AgentStatus, AgentType } from '../types/agent-types';
+import type { AgentId, AgentMetrics, AgentStatus, AgentType } from '../types/agent-types.ts';
 export interface HiveFACTConfig {
   enableCache?: boolean;
   cacheSize?: number;

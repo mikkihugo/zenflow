@@ -8,7 +8,7 @@
  * @file Coordination system: gap-analysis.
  */
 
-import type { AgentType } from '../types';
+import type { AgentType } from '../types.ts';
 
 // claude-zen's 54 agent types (from their documentation)
 export const CLAUDE_FLOW_AGENTS: Record<string, string[]> = {

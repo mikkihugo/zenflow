@@ -5,8 +5,8 @@
  * Contains factory functions and entity type definitions.
  */
 
-import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces';
-import type { DatabaseTypes, EntityTypes as EntityTypesEnum, IDao } from '../interfaces';
+import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces.ts';
+import type { DatabaseTypes, EntityTypes as EntityTypesEnum, IDao } from '../interfaces.ts';
 
 /**
  * Multi-database DAO interface for cross-database operations.
@@ -28,10 +28,10 @@ export interface IMultiDatabaseDao<T> {
   count(filter?: Partial<T>): Promise<number>;
 }
 
-import { BaseDao } from '../base.dao';
-import { CoordinationDao } from '../dao/coordination.dao';
-import { GraphDao } from '../dao/graph.dao';
-import { MemoryDao } from '../dao/memory.dao';
+import { BaseDao } from '../base.dao.ts';
+import { CoordinationDao } from '../dao/coordination.dao.ts';
+import { GraphDao } from '../dao/graph.dao.ts';
+import { MemoryDao } from '../dao/memory.dao.ts';
 
 /**
  * Entity type constant mapping for type safety.

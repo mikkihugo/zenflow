@@ -16,7 +16,7 @@ import type {
   PseudocodeStructure,
   SPARCTemplate,
   TemplateMetadata,
-} from '../types/sparc-types.js';
+} from '../types/sparc-types.ts';
 
 export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
   id: 'memory-systems-template',

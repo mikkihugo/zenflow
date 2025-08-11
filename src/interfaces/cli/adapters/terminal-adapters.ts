@@ -12,7 +12,7 @@ import type {
   ExecutionContext,
   TerminalApplication,
   TerminalMode,
-} from '../../shared/command-interfaces';
+} from '../../shared/command-interfaces.ts';
 
 /**
  * Command Execution Renderer Adapter
@@ -105,7 +105,7 @@ export class ModeDetectorAdapter {
   static async detectMode(args: string[], flags: Record<string, any>): Promise<TerminalMode> {
     try {
       // Dynamic import to avoid circular dependency
-      const { detectMode } = await import('../../terminal/utils/mode-detector');
+      const { detectMode } = await import('../../terminal/utils/mode-detector.ts');
       return detectMode(args, flags);
     } catch (error) {
       console.warn('Mode detection failed, defaulting to interactive:', error);

@@ -1,20 +1,183 @@
 /**
  * @file Coordination Domain Types - Comprehensive Agent and Swarm Types
- * 
+ *
  * Single source of truth for all coordination-related types including the comprehensive
  * AgentType enumeration (140+ types), swarm configurations, and task orchestration.
- * 
+ *
  * Following domain architecture standard with complete type definitions.
  */
 
 // Re-export comprehensive AgentType from master registry (140+ types)
 // This prevents "Type X is not assignable" errors in coordination domain
-export type {AgentType} from '../types/agent-types';
+export type { AgentType } from '../types/agent-types.ts';
+
+// Additional agent-related types
+export type AgentId = string;
+export type AgentStatus =
+  | 'idle'
+  | 'busy'
+  | 'active'
+  | 'inactive'
+  | 'error'
+  | 'initializing'
+  | 'offline'
+  | 'terminated';
+export interface AgentCapabilities {
+  codeGeneration: boolean;
+  codeReview: boolean;
+  testing: boolean;
+  documentation: boolean;
+  research: boolean;
+  analysis: boolean;
+  webSearch: boolean;
+  apiIntegration: boolean;
+  fileSystem: boolean;
+  terminalAccess: boolean;
+  languages: string[];
+  frameworks: string[];
+  domains: string[];
+  tools: string[];
+  maxConcurrentTasks: number;
+  maxMemoryUsage: number;
+  maxExecutionTime: number;
+  reliability: number;
+  speed: number;
+  quality: number;
+}
+
+export interface AgentMetrics {
+  tasksCompleted: number;
+  averageResponseTime: number;
+  errorRate: number;
+  uptime: number;
+  lastActivity: Date;
+  tasksFailed: number;
+  averageExecutionTime?: number;
+  tasksInProgress?: number;
+  successRate?: number;
+  resourceUsage?: {
+    memory?: number;
+    cpu?: number;
+    disk?: number;
+  };
+}
+
+export interface AgentState {
+  status: AgentStatus;
+  currentTask?: string | null;
+  lastUpdate: Date;
+  health: 'healthy' | 'degraded' | 'error' | number;
+  lastHeartbeat?: Date;
+  metrics?: AgentMetrics;
+  name?: string;
+  type?: AgentType;
+  id?: { id: string; swarmId?: string; type?: AgentType; instance?: number };
+  environment?: AgentEnvironment;
+  config?: AgentConfig;
+  workload?: number;
+  errorHistory?: AgentError[];
+  performance?: Record<string, any>;
+  capabilities?: AgentCapabilities;
+  load?: number;
+}
+
+export interface AgentEnvironment {
+  workingDirectory?: string;
+  environment?: Record<string, string>;
+  resources?: {
+    memory?: number;
+    cpu?: number;
+  };
+  runtime?: string;
+  version?: string;
+  tempDirectory?: string;
+  logDirectory?: string;
+  apiEndpoints?: Record<string, any>;
+  credentials?: Record<string, any>;
+  availableTools?: string[];
+  toolConfigs?: Record<string, any>;
+}
+
+export interface AgentError {
+  code: string;
+  message: string;
+  timestamp: Date;
+  stack?: string;
+  type?: string;
+  severity?: 'low' | 'medium' | 'high' | 'critical';
+  context?: Record<string, any>;
+  resolved?: boolean;
+}
+
+export interface AgentConfig {
+  id?: string;
+  type?: AgentType;
+  name?: string;
+  swarmId?: string;
+  autonomyLevel?: number;
+  learningEnabled?: boolean;
+  adaptationEnabled?: boolean;
+  maxTasksPerHour?: number;
+  maxConcurrentTasks?: number;
+  timeoutThreshold?: number;
+  reportingInterval?: number;
+  heartbeatInterval?: number;
+  permissions?: string[];
+  trustedAgents?: string[];
+  expertise?: Record<string, any>;
+  preferences?: Record<string, any>;
+  cognitiveProfile?: any;
+  memory?: any;
+  capabilities?: AgentCapabilities;
+}
+
+export interface Message {
+  id: string;
+  type: MessageType;
+  payload: any;
+  timestamp: Date;
+  sender?: string;
+  recipient?: string;
+  fromAgentId?: string;
+  toAgentId?: string;
+  swarmId?: string;
+}
+
+export type MessageType =
+  | 'task'
+  | 'response'
+  | 'error'
+  | 'status'
+  | 'heartbeat'
+  | 'task_assignment'
+  | 'coordination'
+  | 'knowledge_share'
+  | 'status_update'
+  | 'result';
+
+export interface ExecutionResult {
+  success: boolean;
+  result?: any;
+  error?: string;
+  timestamp: Date;
+  metrics?: {
+    duration: number;
+    memoryUsage?: number;
+    cpuUsage?: number;
+  };
+  data?: any;
+  executionTime?: number;
+  agentId?: string;
+  metadata?: Record<string, any>;
+}
 
 export interface Agent {
   id: string;
-  capabilities: string[];
-  status: 'idle' | 'busy';
+  capabilities: AgentCapabilities;
+  status: AgentStatus;
+  state?: AgentState;
+  config?: AgentConfig;
+  shutdown?: () => Promise<void>;
 }
 
 export interface Task {
@@ -30,7 +193,7 @@ export interface Task {
 export interface PhaseAssignment {
   phase: string;
   agentId: string;
-  capabilities: string[];
+  capabilities: AgentCapabilities;
   status: 'pending' | 'in_progress' | 'completed' | 'failed';
 }
 
@@ -51,16 +214,9 @@ export interface ExecutionPlan {
 }
 
 // Import SwarmAgent type from shared types
-import type { SwarmAgent } from '../types/shared-types';
+import type { SwarmAgent } from '../types/shared-types.ts';
 
-// Agent configuration interface
-export interface AgentConfig {
-  id?: string;
-  name?: string;
-  type?: string;
-  capabilities?: string[];
-  metadata?: Record<string, unknown>;
-}
+// Agent configuration interface (duplicate removed - using main definition above)
 
 // Union type for agent compatibility
 export type CompatibleAgent = Agent | SwarmAgent;

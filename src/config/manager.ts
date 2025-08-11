@@ -4,17 +4,17 @@
  * Central configuration management with hot-reloading, validation, and event system.
  */
 
-import { getLogger } from './logging-config';
+import { getLogger } from './logging-config.ts';
 
 const logger = getLogger('src-config-manager');
 
 import { EventEmitter } from 'node:events';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { DEFAULT_CONFIG } from './defaults';
-import { ConfigurationLoader } from './loader';
-import type { ConfigChangeEvent, ConfigValidationResult, SystemConfiguration } from './types';
-import { ConfigValidator } from './validator';
+import { DEFAULT_CONFIG } from './defaults.ts';
+import { ConfigurationLoader } from './loader.ts';
+import type { ConfigChangeEvent, ConfigValidationResult, SystemConfiguration } from './types.ts';
+import { ConfigValidator } from './validator.ts';
 
 /**
  * Unified Configuration Manager.
@@ -98,7 +98,10 @@ export class ConfigurationManager extends EventEmitter {
       // Add to history
       this.addToHistory(this.config);
 
-      this.emit('config:loaded', { config: this.config, validation: result?.validation });
+      this.emit('config:loaded', {
+        config: this.config,
+        validation: result?.validation,
+      });
 
       return result?.validation;
     } finally {

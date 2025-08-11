@@ -8,8 +8,8 @@
  * @file Generic service implementation.
  */
 
-import type { ServiceConfig, ServiceOperationOptions } from '../core/interfaces';
-import { BaseService } from './base-service';
+import type { ServiceConfig, ServiceOperationOptions } from '../core/interfaces.ts';
+import { BaseService } from './base-service.ts';
 
 /**
  * Generic service that provides basic functionality.

@@ -8,7 +8,7 @@
  * - Focus on interaction patterns and communication flow
  */
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
   MCPContext,
   MCPError,

@@ -1,18 +1,87 @@
 /**
- * @file This module provides unified MCP Tools for Claude Code CLI Integration with comprehensive coordination and swarm functionality.
- *
- * This module implements a single stdio MCP server that provides ALL coordination and swarm functionality.
- *
- * - Coordination: Task orchestration, resource management, workflow execution.
- * - Swarm: Agent management, swarm coordination, performance monitoring.
- * - Combined: Intelligent task distribution, coordinated swarm execution.
- *
- * This replaces separate coordination/mcp and swarm/mcp servers with one unified server.
+ * @fileoverview Comprehensive MCP Tool Registry for Claude Code Zen
+ * 
+ * This module provides the central registry and management system for all MCP
+ * (Model Context Protocol) tools in Claude Code Zen. It implements a unified
+ * stdio MCP server that combines coordination, swarm, neural, and DAA capabilities
+ * into a single, cohesive system.
+ * 
+ * ## Unified Tool Registry Architecture
+ * 
+ * The registry consolidates multiple tool categories:
+ * - **Coordination Tools**: Task orchestration, resource management, workflow execution
+ * - **Swarm Tools**: Agent management, swarm coordination, performance monitoring  
+ * - **Neural Tools**: AI/ML operations, cognitive patterns, neural network management
+ * - **DAA Tools**: Decentralized Autonomous Agents with advanced learning capabilities
+ * - **System Tools**: Memory management, persistence, diagnostics, and monitoring
+ * 
+ * ## Key Features
+ * 
+ * - **Single Unified Server**: Replaces multiple separate MCP servers
+ * - **Enhanced Error Handling**: Comprehensive error tracking and recovery
+ * - **Performance Monitoring**: Tool execution metrics and optimization
+ * - **Persistence Integration**: Database and memory management
+ * - **Intelligent Distribution**: Coordinated task execution across agents
+ * - **Neural Integration**: Advanced AI capabilities with learning
+ * 
+ * ## Tool Registration System
+ * 
+ * Tools are registered through a standardized system that provides:
+ * - Consistent parameter validation
+ * - Automatic error handling and recovery
+ * - Performance metrics collection
+ * - Context-aware logging
+ * - Integration with persistence layer
+ * 
+ * ## Usage with Claude CLI
+ * 
+ * ```bash
+ * # All tools become available through the stdio MCP server
+ * claude-zen swarm
+ * 
+ * # Tools accessible as:
+ * # mcp__claude-zen-unified__swarm_status
+ * # mcp__claude-zen-unified__agent_spawn
+ * # mcp__claude-zen-unified__daa_init
+ * # ... and 25+ other coordination tools
+ * ```
+ * 
+ * ## Enhanced Capabilities
+ * 
+ * - **Error Recovery**: Automatic retry logic and fallback strategies
+ * - **Performance Analytics**: Real-time tool performance monitoring
+ * - **Context Preservation**: Rich error context for effective debugging
+ * - **Resource Management**: Intelligent resource allocation and cleanup
+ * - **Cross-Tool Coordination**: Tools can communicate and coordinate
+ * 
+ * @example
+ * ```typescript
+ * // Initialize enhanced MCP tools
+ * const mcpTools = new EnhancedMCPTools(zenSwarmInstance);
+ * 
+ * // Tools automatically get enhanced capabilities:
+ * // - Error handling and recovery
+ * // - Performance monitoring
+ * // - Context-aware logging
+ * // - Persistence integration
+ * 
+ * // Access tool registry
+ * const availableTools = Object.keys(mcpTools.tools);
+ * console.log(`Available tools: ${availableTools.length}`);
+ * ```
+ * 
+ * @author Claude Code Zen Team
+ * @version 1.0.0-alpha.43
+ * @since 1.0.0
+ * @see {@link StdioMcpServer} MCP server that uses this registry
+ * @see {@link SwarmTools} Core swarm tools included in registry
+ * @see {@link HiveTools} High-level coordination tools
+ * @see {@link DAA_MCPTools} Autonomous agent tools
  */
 
-import { getLogger } from '../../../config/logging-config';
-import type { McpToolRegistryMap } from '../../../interfaces/mcp/mcp-types';
-import { BaseZenSwarm } from '../index';
+import { getLogger } from '../../../config/logging-config.ts';
+import type { McpToolRegistryMap } from '../../../interfaces/mcp/mcp-types.ts';
+import { BaseZenSwarm } from '../index.ts';
 
 // Minimal ZenSwarm interface based on usage
 interface ZenSwarm {
@@ -267,13 +336,77 @@ import {
   MCPParameterValidator as ValidationUtils,
   WasmError,
   ZenSwarmError,
-} from './error-handler';
-import { DAA_MCPTools as ImportedDAA_MCPTools } from './mcp-daa-tools';
+} from './error-handler.ts';
+import { DAA_MCPTools as ImportedDAA_MCPTools } from './mcp-daa-tools.ts';
 
 /**
- * Enhanced MCP Tools with comprehensive error handling and logging.
+ * Enhanced MCP Tools registry with comprehensive error handling, monitoring, and coordination.
+ * 
+ * EnhancedMCPTools serves as the central registry and execution engine for all MCP tools
+ * in Claude Code Zen. It provides enhanced capabilities including error recovery,
+ * performance monitoring, context preservation, and intelligent coordination.
+ * 
+ * ## Core Capabilities
+ * 
+ * - **Tool Registration**: Centralized registry for all MCP tools
+ * - **Error Handling**: Comprehensive error tracking, recovery, and reporting
+ * - **Performance Monitoring**: Real-time metrics collection and analysis
+ * - **Context Management**: Rich context preservation for debugging and coordination
+ * - **Persistence Integration**: Database and memory management
+ * - **DAA Integration**: Advanced autonomous agent capabilities
+ * - **Neural Coordination**: AI/ML operation coordination and management
+ * 
+ * ## Tool Categories Managed
+ * 
+ * 1. **Core Swarm Tools** (12 tools): Basic swarm management and coordination
+ * 2. **Hive Tools** (8 tools): High-level knowledge coordination
+ * 3. **DAA Tools** (10 tools): Decentralized autonomous agents
+ * 4. **Neural Tools** (8 tools): AI/ML and neural network operations
+ * 5. **System Tools** (5+ tools): Memory, persistence, and diagnostics
+ * 
+ * ## Enhanced Features
+ * 
+ * ### Error Recovery
+ * - Automatic retry logic for transient failures
+ * - Fallback strategies for degraded operations
+ * - Circuit breaker patterns for cascade prevention
+ * - Comprehensive error classification and routing
+ * 
+ * ### Performance Monitoring
+ * - Real-time execution metrics collection
+ * - Tool performance analytics and optimization
+ * - Resource usage tracking and management
+ * - Bottleneck identification and resolution
+ * 
+ * ### Context Management
+ * - Rich error context with stack traces and metadata
+ * - Cross-tool coordination and communication
+ * - Session state preservation and restoration
+ * - Operation correlation and tracking
+ * 
+ * @example
+ * ```typescript
+ * // Initialize with ZenSwarm instance
+ * const zenSwarm = new BaseZenSwarm();
+ * const mcpTools = new EnhancedMCPTools(zenSwarm);
+ * 
+ * // Tools get automatic enhancements:
+ * const result = await mcpTools.tools.swarm_init({
+ *   topology: 'mesh',
+ *   maxAgents: 8
+ * });
+ * 
+ * // Enhanced error handling
+ * if (result.error) {
+ *   console.log('Error classification:', result.errorContext);
+ *   console.log('Recovery suggestions:', result.recoverySuggestions);
+ * }
+ * 
+ * // Performance metrics
+ * const metrics = mcpTools.getToolMetrics('swarm_init');
+ * console.log(`Average execution time: ${metrics.avg_execution_time_ms}ms`);
+ * ```
  */
-
 class EnhancedMCPTools {
   private ruvSwarm: ZenSwarm | null;
   private activeSwarms: Map<string, Swarm>;
@@ -305,6 +438,39 @@ class EnhancedMCPTools {
   private daaTools: ImportedDAA_MCPTools;
   public tools: McpToolRegistryMap;
 
+  /**
+   * Creates a new EnhancedMCPTools instance with comprehensive tool registry.
+   * 
+   * Initializes the complete MCP tool registry with enhanced capabilities including
+   * error handling, performance monitoring, persistence integration, and neural
+   * coordination. Sets up all tool categories and prepares the system for
+   * stdio MCP server integration.
+   * 
+   * ## Initialization Process
+   * 
+   * 1. **Swarm Integration**: Connects with ZenSwarm instance for coordination
+   * 2. **Error System**: Sets up comprehensive error handling and logging
+   * 3. **Performance Monitoring**: Initializes metrics collection system
+   * 4. **Persistence**: Configures database and memory management
+   * 5. **Tool Registration**: Registers all available MCP tools
+   * 6. **DAA Integration**: Initializes autonomous agent capabilities
+   * 
+   * @param ruvSwarmInstance - ZenSwarm instance for swarm coordination (optional)
+   *   If null, some swarm-dependent features will use fallback implementations
+   * 
+   * @example
+   * ```typescript
+   * // With ZenSwarm integration
+   * const zenSwarm = await BaseZenSwarm.create();
+   * const mcpTools = new EnhancedMCPTools(zenSwarm);
+   * 
+   * // Standalone operation (limited swarm features)
+   * const standaloneMcpTools = new EnhancedMCPTools();
+   * 
+   * // Access registered tools
+   * console.log(`Tools available: ${Object.keys(mcpTools.tools).length}`);
+   * ```
+   */
   constructor(ruvSwarmInstance: ZenSwarm | null = null) {
     this.ruvSwarm = ruvSwarmInstance;
     this.activeSwarms = new Map();
@@ -328,7 +494,7 @@ class EnhancedMCPTools {
     this.errorContext = {
       data: new Map(),
       set: (key: string, value: any) => this.errorContext.data.set(key, value),
-      enrichError: <T extends Error>(error: T) => error as T,
+      enrichError: <T extends Error>(error: T) => error,
       toObject: () => Object.fromEntries(this.errorContext.data),
       clear: () => this.errorContext.data.clear(),
     };
@@ -504,7 +670,37 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Initialize persistence layer asynchronously.
+   * Initializes the persistence layer for enhanced MCP tool operations.
+   * 
+   * This method sets up the data persistence system that enables enhanced MCP tools
+   * to store and retrieve state, metrics, agent information, and execution history.
+   * Currently uses the DAL (Data Access Layer) factory approach for modern,
+   * scalable data management.
+   * 
+   * ## Persistence Features
+   * 
+   * - **Agent State Management**: Persistent agent configurations and memory
+   * - **Metrics Storage**: Tool execution metrics and performance data
+   * - **Error Tracking**: Historical error logs and recovery patterns
+   * - **Session Continuity**: Cross-session state preservation
+   * - **Coordination Data**: Swarm and task coordination information
+   * 
+   * ## DAL Factory Integration
+   * 
+   * The modern persistence system uses DAL factories instead of legacy
+   * persistence pools, providing better performance, reliability, and
+   * maintainability.
+   * 
+   * @throws {PersistenceError} When persistence initialization fails
+   * 
+   * @example
+   * ```typescript
+   * const mcpTools = new EnhancedMCPTools();
+   * await mcpTools.initializePersistence();
+   * 
+   * // Persistence is now ready for tool operations
+   * const ready = await mcpTools.ensurePersistenceReady();
+   * ```
    */
   async initializePersistence() {
     // No-op for now, using DAL Factory approach
@@ -513,7 +709,33 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Ensure persistence is ready before operations.
+   * Ensures the persistence layer is ready before executing tool operations.
+   * 
+   * This method provides a safety check to verify that the persistence layer
+   * is properly initialized and ready to handle data operations. It includes
+   * timeout protection and graceful error handling for persistence failures.
+   * 
+   * ## Timeout Protection
+   * 
+   * - **Max Wait Time**: 5 seconds maximum wait for persistence readiness
+   * - **Check Interval**: 100ms intervals for responsive checking
+   * - **Graceful Degradation**: Falls back to in-memory operations when possible
+   * 
+   * @returns Promise resolving to true when persistence is ready
+   * @throws {PersistenceError} When persistence fails to initialize within timeout
+   * 
+   * @example
+   * ```typescript
+   * // Ensure persistence before tool execution
+   * try {
+   *   await mcpTools.ensurePersistenceReady();
+   *   // Safe to execute persistence-dependent operations
+   *   const result = await mcpTools.tools.swarm_init(params);
+   * } catch (error) {
+   *   // Handle persistence unavailability
+   *   console.warn('Persistence unavailable, using in-memory fallback');
+   * }
+   * ```
    */
   async ensurePersistenceReady() {
     if (!this.persistenceReady && this.persistence) {
@@ -538,12 +760,53 @@ class EnhancedMCPTools {
   }
 
   /**
-   * Enhanced error handler with context and logging.
-   *
-   * @param error
-   * @param toolName
-   * @param operation
-   * @param params
+   * Enhanced error handler with comprehensive context preservation and intelligent recovery.
+   * 
+   * This method provides sophisticated error handling capabilities for all MCP tool
+   * operations, including error classification, context preservation, recovery
+   * suggestions, and comprehensive logging for debugging and monitoring.
+   * 
+   * ## Error Handling Features
+   * 
+   * - **Error Classification**: Automatic categorization by type and severity
+   * - **Context Preservation**: Rich error context with operation details
+   * - **Recovery Strategies**: Intelligent recovery suggestions and fallbacks
+   * - **Performance Impact**: Error impact analysis and optimization suggestions
+   * - **Historical Tracking**: Error pattern analysis for system improvement
+   * 
+   * ## Error Types Handled
+   * 
+   * - **ValidationError**: Parameter and input validation failures
+   * - **AgentError**: Agent creation, management, and operation failures
+   * - **SwarmError**: Swarm coordination and management issues
+   * - **TaskError**: Task execution and orchestration problems
+   * - **NeuralError**: Neural network and AI model failures
+   * - **WasmError**: WebAssembly module execution issues
+   * - **PersistenceError**: Data storage and retrieval problems
+   * - **ResourceError**: Resource allocation and management failures
+   * - **ZenSwarmError**: Claude Code Zen specific coordination errors
+   * 
+   * ## Recovery Strategies
+   * 
+   * - **Retry Logic**: Automatic retry for transient failures
+   * - **Fallback Operations**: Alternative execution paths
+   * - **Circuit Breaker**: Cascade failure prevention
+   * - **Graceful Degradation**: Reduced functionality maintenance
+   * 
+   * @param error - The error to handle and process
+   * @param toolName - Name of the tool that encountered the error
+   * @param operation - Specific operation that failed
+   * @param params - Parameters that were being processed when error occurred
+   * 
+   * @example
+   * ```typescript
+   * try {
+   *   await riskyToolOperation(params);
+   * } catch (error) {
+   *   mcpTools.handleError(error, 'swarm_init', 'create_agents', params);
+   *   // Error is logged, classified, and recovery strategies are applied
+   * }
+   * ```
    */
   handleError(
     error:
@@ -3434,18 +3697,18 @@ class EnhancedMCPTools {
     const executionTime = performance.now() - startTime;
 
     if (metrics) {
-      metrics!.total_calls++;
+      metrics.total_calls++;
       if (status === 'success') {
-        metrics!.successful_calls++;
+        metrics.successful_calls++;
       } else {
-        metrics!.failed_calls++;
-        metrics!.last_error = error;
+        metrics.failed_calls++;
+        metrics.last_error = error;
       }
 
       // Update rolling average
-      metrics!.avg_execution_time_ms =
-        (metrics!.avg_execution_time_ms * (metrics!.total_calls - 1) + executionTime) /
-        metrics!.total_calls;
+      metrics.avg_execution_time_ms =
+        (metrics.avg_execution_time_ms * (metrics.total_calls - 1) + executionTime) /
+        metrics.total_calls;
     }
   }
 

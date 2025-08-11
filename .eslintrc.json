@@ -1,64 +1,27 @@
 {
-  "root": true,
-  "parser": "@typescript-eslint/parser",
+  "extends": "./node_modules/gts/",
   "parserOptions": {
-    "ecmaVersion": 2022,
-    "sourceType": "module"
+    "project": "./tsconfig.json",
+    "createDefaultProgram": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended"
+  "ignorePatterns": [
+    "build/",
+    "dist/",
+    "node_modules/",
+    "coverage/",
+    "docs/",
+    "scripts/",
+    "security/",
+    "templates/",
+    "tests/",
+    "bin/",
+    "config/",
+    "*.config.js",
+    "*.config.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts"
   ],
-  "plugins": ["@typescript-eslint", "react"],
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
-  "env": {
-    "node": true,
-    "es2022": true
-  },
   "rules": {
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-    "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "prefer-const": "error",
-    "no-var": "error"
-  },
-  "ignorePatterns": ["dist/", "node_modules/", "coverage/", "test-*/", "temp-*/"],
-  "overrides": [
-    {
-      "files": ["**/*.ts", "**/*.tsx"],
-      "excludedFiles": ["ruv-FANN/ruv-swarm/npm/**/*", "ruv-FANN/cuda-wasm/**/*"],
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "project": "./tsconfig.json"
-      },
-      "rules": {
-        "@typescript-eslint/no-explicit-any": "warn"
-      }
-    },
-    {
-      "files": ["ruv-FANN/ruv-swarm/npm/**/*.ts", "ruv-FANN/ruv-swarm/npm/**/*.tsx"],
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "project": "./ruv-FANN/ruv-swarm/npm/tsconfig.json"
-      },
-      "rules": {
-        "@typescript-eslint/no-explicit-any": "warn"
-      }
-    },
-    {
-      "files": ["ruv-FANN/cuda-wasm/**/*.ts", "ruv-FANN/cuda-wasm/**/*.tsx"],
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "project": "./ruv-FANN/cuda-wasm/tsconfig.json"
-      },
-      "rules": {
-        "@typescript-eslint/no-explicit-any": "warn"
-      }
-    }
-  ]
+    "@typescript-eslint/no-floating-promises": "off"
+  }
 }

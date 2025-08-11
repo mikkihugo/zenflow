@@ -10,7 +10,7 @@ import {
   StarStrategy,
   StrategyFactory,
   SwarmCoordinator,
-} from '../../coordination/swarm/core/strategy';
+} from '../../coordination/swarm/core/strategy.ts';
 
 // Mock agent type for testing
 interface MockAgent {

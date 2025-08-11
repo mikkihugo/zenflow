@@ -12,9 +12,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../config/logging-config';
+import type { Logger } from '../../../config/logging-config.ts';
 // Import logger (using relative path)
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 // Import types (will be set as any for now to fix type resolution issues)
 // import type { ApplicationCoordinator } from '../core/application-coordinator';
 // import type { CoreSystem } from '../core/core-system';
@@ -32,10 +32,10 @@ import type {
   EventTransform,
   IEventManager,
   SystemEvent,
-} from '../core/interfaces';
-import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces';
-import type { SystemLifecycleEvent } from '../types';
-import { EventPriorityMap } from '../types';
+} from '../core/interfaces.ts';
+import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces.ts';
+import type { SystemLifecycleEvent } from '../types.ts';
+import { EventPriorityMap } from '../types.ts';
 
 /**
  * System event adapter configuration extending UEL EventManagerConfig.
@@ -935,8 +935,8 @@ export class SystemEventAdapter implements IEventManager {
         // Get component-specific health data if available
         if (wrapped.component && typeof (wrapped.component as any).getStatus === 'function') {
           const status = await (wrapped.component as any).getStatus();
-          isHealthy = (status as any).status === 'ready' || (status as any).status === 'healthy';
-          errorRate = (status as any).errorRate || 0;
+          isHealthy = (status).status === 'ready' || (status).status === 'healthy';
+          errorRate = (status).errorRate || 0;
         }
 
         const responseTime = Date.now() - startTime;

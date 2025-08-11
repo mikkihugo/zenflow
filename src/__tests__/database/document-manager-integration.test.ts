@@ -6,7 +6,7 @@
  */
 
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/core';
-import { DocumentManager } from '../../database/managers/document-manager';
+import { DocumentManager } from '../../database/managers/document-manager.ts';
 
 describe('DocumentManager Integration Tests', () => {
   let documentManager: DocumentManager;

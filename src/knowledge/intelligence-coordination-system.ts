@@ -14,8 +14,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
-import type { CoordinationEvent } from '../interfaces/events/types';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { CoordinationEvent } from '../interfaces/events/types.ts';
 
 /**
  * Expertise Discovery Engine.
@@ -3670,7 +3670,9 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       this.emit('shutdown:complete');
       this.logger.info('Intelligence coordination system shutdown complete');
     } catch (error) {
-      this.logger.error('Error during intelligence coordination shutdown', { error });
+      this.logger.error('Error during intelligence coordination shutdown', {
+        error,
+      });
       throw error;
     }
   }
@@ -5370,12 +5372,28 @@ class ExpertiseDiscoverySystemImpl extends EventEmitter implements ExpertiseDisc
           },
         ],
         skills: specialization.skills || [],
-        experience: specialization.experience || { totalTime: 0, completedTasks: 0, domains: [] },
-        reputation: specialization.reputation || { score: 0.5, feedback: [], trustLevel: 'medium' },
-        availability: specialization.availability || { status: 'available', capacity: 100 },
-        preferences: specialization.preferences || { collaborationStyle: 'adaptive' },
+        experience: specialization.experience || {
+          totalTime: 0,
+          completedTasks: 0,
+          domains: [],
+        },
+        reputation: specialization.reputation || {
+          score: 0.5,
+          feedback: [],
+          trustLevel: 'medium',
+        },
+        availability: specialization.availability || {
+          status: 'available',
+          capacity: 100,
+        },
+        preferences: specialization.preferences || {
+          collaborationStyle: 'adaptive',
+        },
         learningHistory: [],
-        performanceMetrics: specialization.performanceMetrics || { accuracy: 0.5, efficiency: 0.5 },
+        performanceMetrics: specialization.performanceMetrics || {
+          accuracy: 0.5,
+          efficiency: 0.5,
+        },
       };
       this.expertiseProfiles.set(agentId, profile);
     }

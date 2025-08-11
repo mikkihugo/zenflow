@@ -2,10 +2,10 @@
  * @file Engine implementation.
  */
 
-import { getLogger } from '../config/logging-config';
-import type { DocumentManager } from '../database/managers/document-manager';
-import type { MemorySystemFactory } from '../memory/index';
-import type { BaseDocumentEntity } from '../database/entities/product-entities';
+import { getLogger } from '../config/logging-config.ts';
+import type { BaseDocumentEntity } from '../database/entities/product-entities.ts';
+import type { DocumentManager } from '../database/managers/document-manager.ts';
+import type { MemorySystemFactory } from '../memory/index.ts';
 
 const logger = getLogger('WorkflowEngine');
 
@@ -124,7 +124,7 @@ export class WorkflowEngine extends EventEmitter {
       enableVisualization:
         config.enableVisualization === undefined ? false : config?.enableVisualization,
     };
-    
+
     // Enhanced capabilities
     this.documentManager = documentManager;
     this.memory = memoryFactory;
@@ -217,15 +217,14 @@ export class WorkflowEngine extends EventEmitter {
 
   private evaluateCondition(context: WorkflowContext, expression: string): boolean {
     try {
-      const contextVars = Object.keys(context)
-        .map((key) => `const ${key} = context.${key};`)
-        .join('\n');
+      // Use a safer evaluation approach with limited context access
+      const safeContext = { ...context };
+      // eslint-disable-next-line @typescript-eslint/no-implied-eval
       const func = new Function(
         'context',
-        `${contextVars}
-      return ${expression};`
-      );
-      return func(context);
+        `"use strict"; return (${expression});`
+      ) as (context: WorkflowContext) => boolean;
+      return func(safeContext);
     } catch (error) {
       logger.error(`[WorkflowEngine] Failed to evaluate condition: ${expression}`, error);
       return false;

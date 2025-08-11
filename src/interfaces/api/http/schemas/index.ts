@@ -19,8 +19,8 @@ export type {
   Task,
 } from '../coordination/schemas';
 // Import domain-specific schemas
-export * from './common';
-export * from './neural';
+export * from './common.ts';
+export * from './neural.ts';
 
 /**
  * Complete OpenAPI 3.0 Schema Definition

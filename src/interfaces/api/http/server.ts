@@ -6,7 +6,7 @@
  * Clean separation: REST API layer independent from business domains.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger('interfaces-api-http-server');
 
@@ -18,7 +18,7 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 
 // Import centralized configuration
-import { DEFAULT_CONFIG, getCORSOrigins } from '../../../config/defaults';
+import { DEFAULT_CONFIG, getCORSOrigins } from '../../../config/defaults.ts';
 
 // Optional dependencies - handle missing gracefully
 let compression: any = null;
@@ -46,15 +46,15 @@ try {
 }
 
 import { config as getConfig } from '../../../config';
-import { authMiddleware } from './middleware/auth';
+import { authMiddleware } from './middleware/auth.ts';
 // Import middleware
-import { errorHandler } from './middleware/errors';
-import { requestLogger } from './middleware/logging';
+import { errorHandler } from './middleware/errors.ts';
+import { requestLogger } from './middleware/logging.ts';
 // Import modular route handlers
-import { createCoordinationRoutes } from './v1/coordination';
-import { createDatabaseRoutes } from './v1/database';
-import { createMemoryRoutes } from './v1/memory';
-import { createNeuralRoutes } from './v1/neural';
+import { createCoordinationRoutes } from './v1/coordination.ts';
+import { createDatabaseRoutes } from './v1/database.ts';
+import { createMemoryRoutes } from './v1/memory.ts';
+import { createNeuralRoutes } from './v1/neural.ts';
 
 /**
  * Main API Server Configuration.
@@ -138,8 +138,8 @@ const swaggerOptions = (() => {
       servers: [
         {
           url: 'http://localhost:3456',
-          description: 'Development server'
-        }
+          description: 'Development server',
+        },
       ],
       components: {
         securitySchemes: {
