@@ -8,12 +8,17 @@
 import { Box, Text, useInput } from 'ink';
 import React from 'react';
 import { useCallback, useEffect, useState } from 'react';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
+import { readFile } from 'node:fs/promises';
 import {
   Header,
   InteractiveFooter,
   StatusBadge,
   type SwarmStatus,
 } from '../components/index/index.js';
+
+const execAsync = promisify(exec);
 
 export interface SystemMetrics {
   cpu: {
@@ -88,6 +93,150 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   >('overview');
   const [metricsHistory, setMetricsHistory] = useState<SystemMetrics[]>([]);
   const [alerts, setAlerts] = useState<string[]>([]);
+  const [networkBaseline, setNetworkBaseline] = useState<{
+    bytesIn: number;
+    bytesOut: number;
+    packetsIn: number;
+    packetsOut: number;
+  } | null>(null);
+
+  // Get real CPU usage from system
+  const getCpuUsage = async (): Promise<number> => {
+    try {
+      // Use top command to get CPU usage
+      const { stdout } = await execAsync(
+        "top -bn1 | grep '%Cpu' | head -n1 | awk '{print $2}' | awk '{print $1}' | tr -d '%'"
+      );
+      const cpuUsage = parseFloat(stdout.trim());
+      return isNaN(cpuUsage) ? 0 : cpuUsage;
+    } catch (error) {
+      // Fallback: calculate from load average
+      const os = await import('node:os');
+      const loadAvg = os.loadavg()[0];
+      const cores = os.cpus().length;
+      return Math.min((loadAvg / cores) * 100, 100);
+    }
+  };
+
+  // Get real network statistics
+  const getNetworkStats = async (): Promise<{
+    bytesIn: number;
+    bytesOut: number;
+    packetsIn: number;
+    packetsOut: number;
+  }> => {
+    try {
+      const netDev = await readFile('/proc/net/dev', 'utf8');
+      const lines = netDev.split('\n');
+      
+      let totalBytesIn = 0;
+      let totalBytesOut = 0;
+      let totalPacketsIn = 0;
+      let totalPacketsOut = 0;
+
+      // Skip header lines and parse network interfaces
+      for (let i = 2; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        const parts = line.split(/\s+/);
+        if (parts.length < 10) continue;
+        
+        const interface_ = parts[0].replace(':', '');
+        // Skip loopback interface
+        if (interface_ === 'lo') continue;
+        
+        const bytesIn = parseInt(parts[1], 10) || 0;
+        const packetsIn = parseInt(parts[2], 10) || 0;
+        const bytesOut = parseInt(parts[9], 10) || 0;
+        const packetsOut = parseInt(parts[10], 10) || 0;
+        
+        totalBytesIn += bytesIn;
+        totalBytesOut += bytesOut;
+        totalPacketsIn += packetsIn;
+        totalPacketsOut += packetsOut;
+      }
+      
+      return {
+        bytesIn: totalBytesIn,
+        bytesOut: totalBytesOut,
+        packetsIn: totalPacketsIn,
+        packetsOut: totalPacketsOut,
+      };
+    } catch (error) {
+      // Fallback to netstat if /proc/net/dev is not available
+      try {
+        const { stdout } = await execAsync('netstat -i | tail -n +3');
+        const lines = stdout.split('\n');
+        let totalBytesIn = 0;
+        let totalBytesOut = 0;
+        
+        for (const line of lines) {
+          const parts = line.trim().split(/\s+/);
+          if (parts.length >= 7 && parts[0] !== 'lo') {
+            totalBytesIn += parseInt(parts[3], 10) || 0;
+            totalBytesOut += parseInt(parts[7], 10) || 0;
+          }
+        }
+        
+        return {
+          bytesIn: totalBytesIn,
+          bytesOut: totalBytesOut,
+          packetsIn: 0,
+          packetsOut: 0,
+        };
+      } catch (fallbackError) {
+        return { bytesIn: 0, bytesOut: 0, packetsIn: 0, packetsOut: 0 };
+      }
+    }
+  };
+
+  // Get real swarm metrics from MCP tools or system state
+  const getSwarmMetrics = async () => {
+    if (!swarmStatus) return undefined;
+    
+    try {
+      // Try to get real swarm metrics from ruv-swarm
+      const { stdout: statusOutput } = await execAsync(
+        'npx ruv-swarm memory list --pattern "swarm/*" 2>/dev/null || echo "{}"'
+      );
+      
+      let tasksInQueue = 0;
+      let completedTasks = 0;
+      let averageResponseTime = 200;
+      
+      try {
+        const memoryData = JSON.parse(statusOutput.trim() || '{}');
+        // Parse memory data to extract real metrics
+        if (memoryData.tasks) {
+          tasksInQueue = memoryData.tasks.pending || 0;
+          completedTasks = memoryData.tasks.completed || 0;
+        }
+        if (memoryData.performance) {
+          averageResponseTime = memoryData.performance.avgResponseTime || 200;
+        }
+      } catch (parseError) {
+        // Use reasonable defaults if parsing fails
+      }
+      
+      return {
+        activeAgents: swarmStatus.activeAgents || 0,
+        totalAgents: swarmStatus.totalAgents || 0,
+        tasksInQueue,
+        completedTasks,
+        averageResponseTime,
+      };
+    } catch (error) {
+      // Fallback to basic swarm status info
+      return {
+        activeAgents: swarmStatus.activeAgents || 0,
+        totalAgents: swarmStatus.totalAgents || 0,
+        tasksInQueue: 0,
+        completedTasks: 0,
+        averageResponseTime: 200,
+      };
+    }
+  };
 
   // Collect real system metrics
   const collectMetrics = useCallback(async (): Promise<SystemMetrics> => {
@@ -95,14 +244,20 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     const processMemory = process.memoryUsage();
     const processCpu = process.cpuUsage();
 
-    // Mock some metrics that aren't available in Node.js
+    // Get real system metrics
     const totalMem = os.totalmem();
     const freeMem = os.freemem();
     const usedMem = totalMem - freeMem;
+    
+    const [cpuUsage, networkStats, swarmMetrics] = await Promise.all([
+      getCpuUsage(),
+      getNetworkStats(),
+      getSwarmMetrics(),
+    ]);
 
     return {
       cpu: {
-        usage: Math.random() * 100, // Mock CPU usage
+        usage: cpuUsage,
         loadAvg: os.loadavg(),
         cores: os.cpus().length,
       },
@@ -119,21 +274,8 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
         memoryUsage: processMemory,
         cpuUsage: processCpu,
       },
-      network: {
-        bytesIn: Math.floor(Math.random() * 1000000),
-        bytesOut: Math.floor(Math.random() * 1000000),
-        packetsIn: Math.floor(Math.random() * 10000),
-        packetsOut: Math.floor(Math.random() * 10000),
-      },
-      swarm: swarmStatus
-        ? {
-            activeAgents: swarmStatus.activeAgents || 0,
-            totalAgents: swarmStatus.totalAgents || 0,
-            tasksInQueue: Math.floor(Math.random() * 20),
-            completedTasks: Math.floor(Math.random() * 100),
-            averageResponseTime: 150 + Math.random() * 300,
-          }
-        : undefined,
+      network: networkStats,
+      swarm: swarmMetrics,
     };
   }, [swarmStatus]);
 
@@ -141,10 +283,33 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   useEffect(() => {
     const updateMetrics = async () => {
       const newMetrics = await collectMetrics();
-      setMetrics(newMetrics);
-
-      // Store history (keep last 60 entries)
-      setMetricsHistory((prev) => [...prev.slice(-59), newMetrics]);
+      
+      // Calculate network deltas for more realistic I/O display
+      if (networkBaseline) {
+        const deltaMetrics = {
+          ...newMetrics,
+          network: {
+            bytesIn: Math.max(0, newMetrics.network.bytesIn - networkBaseline.bytesIn),
+            bytesOut: Math.max(0, newMetrics.network.bytesOut - networkBaseline.bytesOut),
+            packetsIn: Math.max(0, newMetrics.network.packetsIn - networkBaseline.packetsIn),
+            packetsOut: Math.max(0, newMetrics.network.packetsOut - networkBaseline.packetsOut),
+          },
+        };
+        setMetrics(deltaMetrics);
+        
+        // Store history (keep last 60 entries)
+        setMetricsHistory((prev) => [...prev.slice(-59), deltaMetrics]);
+      } else {
+        // First run - establish baseline
+        setNetworkBaseline({
+          bytesIn: newMetrics.network.bytesIn,
+          bytesOut: newMetrics.network.bytesOut,
+          packetsIn: newMetrics.network.packetsIn,
+          packetsOut: newMetrics.network.packetsOut,
+        });
+        setMetrics(newMetrics);
+        setMetricsHistory((prev) => [...prev.slice(-59), newMetrics]);
+      }
 
       // Check for alerts
       const newAlerts: string[] = [];
@@ -160,7 +325,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     updateMetrics();
     const interval = setInterval(updateMetrics, refreshRate);
     return () => clearInterval(interval);
-  }, [collectMetrics, refreshRate]);
+  }, [collectMetrics, refreshRate, networkBaseline]);
 
   // Handle keyboard input
   useInput((input, key) => {
@@ -361,12 +526,27 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
           >
             <Box width="50%">
               <Text>Bytes In: </Text>
-              <Text color="green">{formatBytes(metrics.network.bytesIn)}</Text>
+              <Text color="green">{formatBytes(metrics.network.bytesIn)}/s</Text>
             </Box>
             <Box width="50%">
               <Text>Bytes Out: </Text>
               <Text color="yellow">
-                {formatBytes(metrics.network.bytesOut)}
+                {formatBytes(metrics.network.bytesOut)}/s
+              </Text>
+            </Box>
+          </Box>
+          <Box
+            flexDirection="row"
+            marginTop={1}
+          >
+            <Box width="50%">
+              <Text>Packets In: </Text>
+              <Text color="blue">{metrics.network.packetsIn.toLocaleString()}/s</Text>
+            </Box>
+            <Box width="50%">
+              <Text>Packets Out: </Text>
+              <Text color="magenta">
+                {metrics.network.packetsOut.toLocaleString()}/s
               </Text>
             </Box>
           </Box>

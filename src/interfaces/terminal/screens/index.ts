@@ -35,6 +35,7 @@ export {
   type MenuProps as MainMenuProps,
 } from './main-menu.tsx';
 // Additional screens
+export { default as ADRManager } from './adr-manager.tsx';
 export { default as MCPServers, type MCPServersProps } from './mcp-servers.tsx';
 export { default as MCPTester, type MCPTesterProps } from './mcp-tester.tsx';
 export { default as NixManager, type NixManagerProps } from './nix-manager.tsx';
@@ -74,7 +75,7 @@ export type ScreenType =
   | 'mcp-tester'
   | 'llm-statistics'
   | 'document-ai'
-  | 'adr-generator'
+  | 'adr-manager'
   | 'nix-manager';
 
 // Screen configuration interface

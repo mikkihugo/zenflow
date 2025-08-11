@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node dist/claude-zen.js core",
     "dev": "npx tsx src/main.ts integrated --port 3000",
-    "dev:tui": "npx tsx src/main.ts tui",
+    "dev:tui": "npx tsx src/interfaces/terminal/main.ts --interactive",
     "dev:web": "npx tsx src/main.ts web --port 3000",
     "dev:full": "concurrently \"npm:dev\" \"npm:type-check:watch\" \"npm:test:watch\"",
     "dev:fast": "npm run build:watch",

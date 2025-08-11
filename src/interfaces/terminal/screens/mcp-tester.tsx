@@ -9,13 +9,14 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import TextInput from 'ink-text-input';
 import React from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import {
   Header,
   InteractiveFooter,
   StatusBadge,
   type SwarmStatus,
 } from '../components/index/index.js';
+import { mcpClient } from '../services/mcp-client.js';
 
 export interface MCPTool {
   name: string;
@@ -71,9 +72,30 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [resultIndex, setResultIndex] = useState<number>(0);
+  const [mcpConnectionStatus, setMcpConnectionStatus] = useState<'unknown' | 'connected' | 'disconnected'>('unknown');
+  const [availableTools, setAvailableTools] = useState<MCPTool[]>([]);
+
+  // Test MCP connection and load available tools on mount
+  useEffect(() => {
+    const initializeMCP = async () => {
+      try {
+        const isConnected = await mcpClient.testConnection();
+        setMcpConnectionStatus(isConnected ? 'connected' : 'disconnected');
+        
+        if (isConnected) {
+          const tools = await mcpClient.getAvailableTools();
+          setAvailableTools(tools);
+        }
+      } catch (error) {
+        setMcpConnectionStatus('disconnected');
+      }
+    };
+    
+    initializeMCP();
+  }, []);
 
   // Available MCP tools (mock data)
-  const availableTools: MCPTool[] = [
+  const mockAvailableTools: MCPTool[] = [
     {
       name: 'swarm_init',
       description:
@@ -294,6 +316,8 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
         executeTool();
       } else if (input === 'e' || input === 'E') {
         loadExample();
+      } else if (input === 'c' || input === 'C') {
+        testMCPConnection();
       }
     } else if (currentView === 'results') {
       if (key.upArrow) {
@@ -353,45 +377,46 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
     }
   };
 
+  const testMCPConnection = useCallback(async () => {
+    try {
+      setMcpConnectionStatus('unknown');
+      const isConnected = await mcpClient.testConnection();
+      setMcpConnectionStatus(isConnected ? 'connected' : 'disconnected');
+      
+      if (isConnected) {
+        const tools = await mcpClient.getAvailableTools();
+        setAvailableTools(tools);
+      }
+    } catch (error) {
+      setMcpConnectionStatus('disconnected');
+    }
+  }, []);
+
   const executeTool = useCallback(async () => {
     if (!selectedTool) return;
 
     setIsExecuting(true);
-    const startTime = Date.now();
 
     try {
-      // Mock MCP tool execution
-      await new Promise((resolve) =>
-        setTimeout(resolve, 1000 + Math.random() * 2000),
-      );
-
-      // Generate mock successful result
-      const mockResult: TestResult = {
-        success: Math.random() > 0.2, // 80% success rate
-        data: {
-          toolName: selectedTool.name,
-          parameters: parameterValues,
-          result: `Mock result for ${selectedTool.name}`,
-          timestamp: new Date().toISOString(),
-          executionId: `exec-${Date.now()}`,
-        },
-        duration: Date.now() - startTime,
-        timestamp: new Date(),
+      // Execute real MCP tool using our client
+      const toolResult = await mcpClient.executeTool(selectedTool.name, parameterValues);
+      
+      const result: TestResult = {
+        success: toolResult.success,
+        data: toolResult.data,
+        error: toolResult.error,
+        duration: toolResult.duration || 0,
+        timestamp: toolResult.timestamp || new Date(),
       };
 
-      if (!mockResult.success) {
-        mockResult.error = 'Mock error: Invalid parameter configuration';
-        mockResult.data = undefined;
-      }
-
-      setTestResults((prev) => [mockResult, ...prev.slice(0, 19)]); // Keep last 20 results
+      setTestResults((prev) => [result, ...prev.slice(0, 19)]); // Keep last 20 results
       setCurrentView('results');
       setResultIndex(0);
     } catch (error) {
       const errorResult: TestResult = {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        duration: Date.now() - startTime,
+        duration: 0,
         timestamp: new Date(),
       };
       setTestResults((prev) => [errorResult, ...prev.slice(0, 19)]);
@@ -408,19 +433,28 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
       paddingX={2}
       paddingY={1}
     >
-      <Text
-        bold
-        color="cyan"
-        marginBottom={1}
-      >
-        🛠️ Available MCP Tools
-      </Text>
+      <Box flexDirection="row" alignItems="center" marginBottom={1}>
+        <Text bold color="cyan">
+          🛠️ Available MCP Tools
+        </Text>
+        <Text color={mcpConnectionStatus === 'connected' ? 'green' : 'red'} marginLeft={2}>
+          [{mcpConnectionStatus === 'connected' ? '✓ CONNECTED' : '✗ DISCONNECTED'}]
+        </Text>
+        {mcpConnectionStatus === 'connected' && (
+          <Text color="gray" marginLeft={1}>
+            ({availableTools.length} real tools)
+          </Text>
+        )}
+      </Box>
 
       <SelectInput
-        items={availableTools.map((tool, index) => ({
-          label: `${tool.name} - ${tool.description}`,
-          value: index,
-        }))}
+        items={availableTools.map((tool, index) => {
+          const isRealTool = availableTools.includes(tool.name);
+          return {
+            label: `${isRealTool ? '🟢' : '🔴'} ${tool.name} - ${tool.description}`,
+            value: index,
+          };
+        })}
         onSelect={(item) => {
           const tool = availableTools[item.value];
           setSelectedTool(tool);
@@ -600,7 +634,13 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
             • Press 'T' to execute tool with current parameters
           </Text>
           <Text color="gray">• Press 'E' to load example parameters</Text>
+          <Text color="gray">• Press 'C' to test MCP connection</Text>
           <Text color="gray">• Use ↑↓ to navigate parameters</Text>
+          {mcpConnectionStatus === 'disconnected' && (
+            <Text color="red" marginTop={1}>
+              ⚠️ MCP server not connected - using fallback mode
+            </Text>
+          )}
         </Box>
       </Box>
     </Box>
@@ -683,14 +723,27 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
                           color="green"
                           bold
                         >
-                          Response Data:
+                          MCP Response:
                         </Text>
                         <Text
                           color="white"
                           wrap="wrap"
                         >
-                          {JSON.stringify(result.data, null, 2)}
+                          {typeof result.data === 'object' 
+                            ? JSON.stringify(result.data, null, 2)
+                            : String(result.data)
+                          }
                         </Text>
+                        {result.data?.id && (
+                          <Text color="cyan" marginTop={1}>
+                            ID: {result.data.id}
+                          </Text>
+                        )}
+                        {result.data?.status && (
+                          <Text color="yellow" marginTop={1}>
+                            Status: {result.data.status}
+                          </Text>
+                        )}
                       </Box>
                     )}
 
@@ -739,7 +792,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
       {/* Header */}
       <Header
         title="MCP Tool Tester"
-        subtitle={getCurrentScreenTitle()}
+        subtitle={`${getCurrentScreenTitle()} | MCP: ${mcpConnectionStatus.toUpperCase()}`}
         swarmStatus={swarmStatus}
         mode="standard"
         showBorder={true}
@@ -771,6 +824,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
                     { key: '↑↓', name: 'Navigate Params' },
                     { key: 'T', name: 'Execute Tool' },
                     { key: 'E', name: 'Load Example' },
+                    { key: 'C', name: 'Test Connection' },
                     { key: 'Type', name: 'Edit Value' },
                     { key: 'Q/Esc', name: 'Back to Tools' },
                   ]
@@ -781,10 +835,10 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
           }
           status={
             currentView === 'tools'
-              ? `${availableTools.length} tools available`
+              ? `${availableTools.length} tools available | MCP: ${mcpConnectionStatus} | Real tools: ${availableTools.length}`
               : currentView === 'parameters'
-                ? `${selectedTool?.parameters.length || 0} parameters`
-                : `${testResults.length} test results`
+                ? `${selectedTool?.parameters.length || 0} parameters | MCP: ${mcpConnectionStatus}`
+                : `${testResults.length} test results | MCP: ${mcpConnectionStatus}`
           }
         />
       </Box>

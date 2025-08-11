@@ -14,10 +14,12 @@ import React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ErrorMessage,
+  Header,
   SwarmSpinner,
   type SwarmStatus,
 } from './components/index/index.js';
 import {
+  ADRManager,
   CommandPalette,
   FileBrowser,
   Help,
@@ -299,8 +301,8 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
       case 'document-ai':
         navigateToScreen('document-ai');
         break;
-      case 'adr-generator':
-        navigateToScreen('adr-generator');
+      case 'adr-manager':
+        navigateToScreen('adr-manager');
         break;
       case 'nix-manager':
         navigateToScreen('nix-manager');
@@ -563,115 +565,13 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
           </Box>
         );
 
-      case 'adr-generator':
+      case 'adr-manager':
         return (
-          <Box
-            flexDirection="column"
-            height="100%"
-          >
-            <Header
-              title="ADR Generator - Architecture Decisions"
-              swarmStatus={state.swarmStatus}
-              showBorder={true}
-            />
-            <Box
-              flexGrow={1}
-              padding={2}
-            >
-              <Box flexDirection="column">
-                <Text
-                  bold
-                  color="cyan"
-                >
-                  🏗️ Architecture Decision Records Generator
-                </Text>
-                <Box marginY={1} />
-
-                <Box
-                  borderStyle="single"
-                  borderColor="green"
-                  padding={2}
-                >
-                  <Text
-                    bold
-                    color="green"
-                  >
-                    🧠 Code Knowledge Analysis:
-                  </Text>
-                  <Box
-                    flexDirection="column"
-                    marginTop={1}
-                  >
-                    <Text>• Scan codebase for architectural patterns</Text>
-                    <Text>• Identify design decisions from code structure</Text>
-                    <Text>• Detect technology choices and frameworks</Text>
-                    <Text>• Analyze dependency relationships</Text>
-                    <Text>• Extract implicit architectural decisions</Text>
-                  </Box>
-                </Box>
-
-                <Box
-                  marginTop={2}
-                  borderStyle="single"
-                  borderColor="magenta"
-                  padding={2}
-                >
-                  <Text
-                    bold
-                    color="magenta"
-                  >
-                    📋 ADR Generation:
-                  </Text>
-                  <Box
-                    flexDirection="column"
-                    marginTop={1}
-                  >
-                    <Text>• Generate formal Architecture Decision Records</Text>
-                    <Text>• Include context, decision, and consequences</Text>
-                    <Text>• Suggest alternative approaches considered</Text>
-                    <Text>• Document rationale based on code evidence</Text>
-                    <Text>• Create templates for future decisions</Text>
-                  </Box>
-                </Box>
-
-                <Box
-                  marginTop={2}
-                  borderStyle="single"
-                  borderColor="cyan"
-                  padding={2}
-                >
-                  <Text
-                    bold
-                    color="cyan"
-                  >
-                    🎯 Smart Suggestions:
-                  </Text>
-                  <Box
-                    flexDirection="column"
-                    marginTop={1}
-                  >
-                    <Text>• Identify missing ADRs for existing decisions</Text>
-                    <Text>• Suggest documentation for implicit choices</Text>
-                    <Text>
-                      • Recommend decision review based on code changes
-                    </Text>
-                    <Text>• Generate decision trees for complex choices</Text>
-                  </Box>
-                </Box>
-
-                <Box marginTop={2}>
-                  <Text color="gray">
-                    Press 'Esc' or 'Q' to return to main menu
-                  </Text>
-                </Box>
-              </Box>
-            </Box>
-            <InteractiveFooter
-              currentScreen="ADR Generator"
-              availableScreens={[{ key: 'Esc/Q', name: 'Back' }]}
-              status="Ready to generate ADRs from code knowledge"
-            />
-          </Box>
+          <ADRManager
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
         );
 
       case 'nix-manager':

@@ -138,9 +138,9 @@ export const Menu: React.FC<MenuProps> = ({
         'AI-powered document analysis, rewriting, and organization suggestions',
     },
     {
-      label: '🏗️ ADR Generator',
-      value: 'adr-generator',
-      description: 'Generate Architecture Decision Records from code knowledge',
+      label: '📋 ADR Manager',
+      value: 'adr-manager',
+      description: 'View and manage Architecture Decision Records with comments and approvals',
     },
     {
       label: '⚙️ Settings',
@@ -503,3 +503,34 @@ export const Menu: React.FC<MenuProps> = ({
     </Box>
   );
 };
+
+// Export the missing function that creates default menu items
+export const createDefaultMenuItems = (): MenuItem[] => [
+  {
+    label: 'Start Development Server',
+    value: 'start-server',
+    description: 'Launch the web server on port 3000',
+  },
+  {
+    label: 'MCP Servers',
+    value: 'mcp-servers',
+    description: 'Manage Model Context Protocol servers',
+  },
+  {
+    label: 'System Status',
+    value: 'system-status',
+    description: 'View system health and metrics',
+  },
+  {
+    label: 'Configuration',
+    value: 'config',
+    description: 'Manage system configuration',
+  },
+  {
+    label: 'Exit',
+    value: 'exit',
+    description: 'Exit Claude Code Zen',
+  },
+];
+
+export default Menu;

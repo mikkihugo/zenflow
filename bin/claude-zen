@@ -70,9 +70,8 @@ should_use_dev_fallback() {
 
 # Use Node.js - unified web+terminal experience
 if [ "$1" = "web" ]; then
-  # Use minimal server for web mode only (browser access)
-  echo "🧠 Claude-Zen v$VERSION: Starting web interface"
-  cd "$ROOT_DIR" && exec npx tsx minimal-server.ts
+  # Use wrapper script with proper startup messages
+  cd "$ROOT_DIR" && exec node claude-zen-wrapper.js "$@"
 elif [ -z "$1" ] || [ "$1" = "tui" ]; then
   # Use proper React TUI with Ink (as originally intended)
   echo "🧠 Claude-Zen v$VERSION: Starting terminal interface"

@@ -7,7 +7,7 @@
     "moduleResolution": "Bundler",
     "types": ["vitest/globals", "node", "@types/jest"],
     "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
