@@ -433,11 +433,11 @@ class MockMCPStreamingHandler
 
   private setupStreamEventHandlers(streamId: string): void {
     // Setup event handlers for stream lifecycle
-    this.eventEmitter.on(`stream:${streamId}:data`, (data) => {
+    this.eventEmitter.on(`stream:${streamId}:data`, (data: any) => {
       this.handleStreamData(streamId, data);
     });
 
-    this.eventEmitter.on(`stream:${streamId}:error`, (error) => {
+    this.eventEmitter.on(`stream:${streamId}:error`, (error: any) => {
       this.handleStreamError(streamId, error);
     });
 

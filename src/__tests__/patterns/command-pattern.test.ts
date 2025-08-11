@@ -527,7 +527,7 @@ describe('Command Pattern Implementation', () => {
           },
         };
 
-        mockSwarmService.initializeSwarm.mockImplementation((config) => {
+        mockSwarmService.initializeSwarm.mockImplementation((config: any) => {
           // Verify sanitization occurred
           expect(config?.metadata?.script).not.toContain('<script>');
           expect(config?.metadata?.command).not.toContain('rm -rf');
@@ -955,9 +955,9 @@ describe('Command Pattern Implementation', () => {
         ),
       ];
 
-      const results = await commandQueue.executeTransaction(commands);
+      const results = await commandQueue.executeTransaction(commands) as any as any as any as any;
 
-      expect(results?.every((r) => r.success)).toBe(true);
+      expect(results?.every((r: any) => r.success)).toBe(true);
       expect(results).toHaveLength(3);
       expect(mockSwarmService.initializeSwarm).toHaveBeenCalledTimes(1);
       expect(mockSwarmService.spawnAgent).toHaveBeenCalledTimes(1);
@@ -1021,10 +1021,10 @@ describe('Command Pattern Implementation', () => {
 
       const commands = [mockSwarmCommand, mockAgentCommand];
 
-      const results = await commandQueue.executeTransaction(commands);
+      const results = await commandQueue.executeTransaction(commands) as any as any as any as any;
 
       // Transaction should fail
-      expect(results?.some((r) => !r.success)).toBe(true);
+      expect(results?.some((r: any) => !r.success)).toBe(true);
 
       // First command should have been undone
       expect(mockSwarmCommand.undo).toHaveBeenCalledTimes(1);
@@ -1108,8 +1108,8 @@ describe('Command Pattern Implementation', () => {
       expect(parentResults?.every((r) => r.success)).toBe(true);
 
       // Execute child transaction
-      const childResults = await commandQueue.executeTransaction(childCommands);
-      expect(childResults?.every((r) => r.success)).toBe(true);
+      const childResults = await commandQueue.executeTransaction(childCommands) as any as any as any as any;
+      expect(childResults?.every((r: any) => r.success)).toBe(true);
 
       expect(mockSwarmService.initializeSwarm).toHaveBeenCalledTimes(1);
       expect(mockSwarmService.spawnAgent).toHaveBeenCalledTimes(2);

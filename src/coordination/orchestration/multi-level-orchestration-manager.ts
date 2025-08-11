@@ -685,7 +685,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
 
       // Resolve auto-resolvable inconsistencies
       const autoResolved = await this.resolveStateInconsistencies(
-        inconsistencies.filter((inc) => inc.autoResolvable),
+        inconsistencies.filter((inc: any) => inc.autoResolvable),
       );
 
       // Update workflow synchronization state
@@ -694,7 +694,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
         programState,
         swarmState,
         crossLevelMappings: await this.generateCrossLevelMappings(),
-        inconsistencies: inconsistencies.filter((inc) => !inc.autoResolvable),
+        inconsistencies: inconsistencies.filter((inc: any) => !inc.autoResolvable),
         lastSyncAt: new Date(),
       };
 
@@ -802,7 +802,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
 
     if (loadMetrics.balanceScore < 0.7) {
       const recommendations = loadMetrics.rebalanceRecommendations
-        .filter((rec) => rec.expectedImprovement > 0.1)
+        .filter((rec: any) => rec.expectedImprovement > 0.1)
         .sort((a, b) => b.expectedImprovement - a.expectedImprovement);
 
       for (const recommendation of recommendations.slice(0, 3)) {

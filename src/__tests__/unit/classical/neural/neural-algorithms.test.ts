@@ -46,7 +46,7 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
 
       // Test gradient magnitudes are reasonable
       const flatGradients = computedGradients.weights.flat(2);
-      flatGradients.forEach((gradient) => {
+      flatGradients.forEach((gradient: any) => {
         expect(Number.isFinite(gradient)).toBe(true);
         expect(Number.isNaN(gradient)).toBe(false);
         expect(Math.abs(gradient)).toBeGreaterThan(1e-15);
@@ -193,9 +193,9 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
           );
 
           // Verify delta bounds
-          rpropState?.deltas?.weights?.forEach((layerDeltas) => {
-            layerDeltas.forEach((neuronDeltas) => {
-              neuronDeltas.forEach((delta) => {
+          rpropState?.deltas?.weights?.forEach((layerDeltas: any) => {
+            layerDeltas.forEach((neuronDeltas: any) => {
+              neuronDeltas.forEach((delta: any) => {
                 expect(delta).toBeGreaterThanOrEqual(rpropConfig?.deltaMin);
                 expect(delta).toBeLessThanOrEqual(rpropConfig?.deltaMax);
                 expect(Number.isFinite(delta)).toBe(true);
@@ -297,9 +297,9 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
             );
 
             // Verify weight update magnitudes are reasonable
-            weightUpdates.weights.forEach((layerUpdates) => {
-              layerUpdates.forEach((neuronUpdates) => {
-                neuronUpdates.forEach((update) => {
+            weightUpdates.weights.forEach((layerUpdates: any) => {
+              layerUpdates.forEach((neuronUpdates: any) => {
+                neuronUpdates.forEach((update: any) => {
                   expect(Number.isFinite(update)).toBe(true);
                   expect(Math.abs(update)).toBeLessThan(10); // Prevent exploding weights
                 });
@@ -574,12 +574,12 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
           // Check weight precision
           const flatWeights = network.weights.flat(2);
           const minPrecision = Math.min(
-            ...flatWeights.map((w) => (Math.abs(w) > 1e-15 ? Math.abs(w) : 1)),
+            ...flatWeights.map((w: any) => (Math.abs(w) > 1e-15 ? Math.abs(w) : 1)),
           );
           weightPrecisionHistory.push(minPrecision);
 
           // Verify no weights become NaN or infinite
-          flatWeights.forEach((weight) => {
+          flatWeights.forEach((weight: any) => {
             expect(Number.isFinite(weight)).toBe(true);
             expect(Number.isNaN(weight)).toBe(false);
           });
@@ -662,9 +662,9 @@ describe('Advanced Neural Algorithms - Classical TDD', () => {
         testOutput,
       );
 
-      gradients.weights.forEach((layerGrads) => {
-        layerGrads.forEach((neuronGrads) => {
-          neuronGrads.forEach((grad) => {
+      gradients.weights.forEach((layerGrads: any) => {
+        layerGrads.forEach((neuronGrads: any) => {
+          neuronGrads.forEach((grad: any) => {
             expect(Number.isFinite(grad)).toBe(true);
             expect(Number.isNaN(grad)).toBe(false);
           });
@@ -934,7 +934,7 @@ function calculateAverageGradientMagnitude(gradients: unknown): number {
   const flatGradients = gradients.weights.flat(2);
   if (flatGradients.length === 0) return 0;
 
-  const validGradients = flatGradients.filter((g) => Number.isFinite(g));
+  const validGradients = flatGradients.filter((g: any) => Number.isFinite(g));
   if (validGradients.length === 0) return 0;
 
   return (
@@ -1092,7 +1092,7 @@ function trainWithBackpropagation(
       const prediction =
         activations.activations[activations.activations.length - 1];
 
-      const sampleError = calculateSampleError(prediction, sample.output);
+      const sampleError = calculateSampleError(prediction, sample.output) as any;
       epochError += sampleError;
 
       const gradients = backpropagateGradients(
@@ -1148,7 +1148,7 @@ function trainWithRPROP(
       const prediction =
         activations.activations[activations.activations.length - 1];
 
-      const sampleError = calculateSampleError(prediction, sample.output);
+      const sampleError = calculateSampleError(prediction, sample.output) as any;
       epochError += sampleError;
 
       const gradients = backpropagateGradients(

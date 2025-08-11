@@ -329,7 +329,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
     if (!pattern) {
       // Look for similar patterns
-      pattern = this.findSimilarPattern(context);
+      pattern = this.findSimilarPattern(context) as any;
     }
 
     return pattern;

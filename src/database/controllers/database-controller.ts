@@ -1564,8 +1564,8 @@ export class DatabaseController {
           query: request.cypher,
           parameters: request.params,
           results: [
-            ...graphResponse?.data?.nodes?.map((node) => ({ type: 'node', ...node })),
-            ...graphResponse?.data?.relationships?.map((rel) => ({ type: 'relationship', ...rel })),
+            ...graphResponse?.data?.nodes?.map((node: any) => ({ type: 'node', ...node })),
+            ...graphResponse?.data?.relationships?.map((rel: any) => ({ type: 'relationship', ...rel })),
           ],
           fields: [
             { name: 'type', type: 'string', nullable: false },
@@ -1765,8 +1765,8 @@ export class DatabaseController {
       }
 
       // Find vector tables in schema
-      const vectorTables = schema.tables.filter((table) =>
-        table.columns.some((col) => col.type.includes('VECTOR'))
+      const vectorTables = schema.tables.filter((table: any) =>
+        table.columns.some((col: any) => col.type.includes('VECTOR'))
       );
 
       const executionTime = Date.now() - startTime;
@@ -1776,9 +1776,9 @@ export class DatabaseController {
         success: true,
         data: {
           vectorTables: vectorTables.length,
-          tables: vectorTables.map((table) => ({
+          tables: vectorTables.map((table: any) => ({
             name: table.name,
-            vectorColumns: table.columns.filter((col) => col.type.includes('VECTOR')),
+            vectorColumns: table.columns.filter((col: any) => col.type.includes('VECTOR')),
             indexes: table.indexes,
           })),
           connectionStats,

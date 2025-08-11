@@ -101,11 +101,11 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       // Classical TDD: Test neural forward pass performance
       const networkSize = [784, 256, 128, 10]; // MNIST-like network
       const batchSize = 100;
-      const inputBatch = generateRandomBatch(batchSize, networkSize[0]);
+      const inputBatch = generateRandomBatch(batchSize, networkSize[0]) as any;
 
       // JavaScript neural forward pass
       const jsForwardPass = () => {
-        return inputBatch.map((input) =>
+        return inputBatch.map((input: any) =>
           jsNeuralForwardPass(input, networkSize),
         );
       };
@@ -117,7 +117,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
             return jsNeuralForwardPass(input, topology);
           },
         );
-        return inputBatch.map((input) =>
+        return inputBatch.map((input: any) =>
           mockWasmModule.neuralForwardPass(input, networkSize),
         );
       };
@@ -237,7 +237,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       const simdOperation = () => {
         mockWasmModule.simdVectorMultiply.mockImplementation(
           (vec, _scalarVec) => {
-            return vec.map((x) => x * scalar);
+            return vec.map((x: any) => x * scalar);
           },
         );
         const scalarVector = new Array(largeVector.length).fill(scalar);
@@ -335,7 +335,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
         const computeStart = performance.now();
         mockWasmModule.simdVectorMultiply.mockImplementation(
           (vec, _multiplier) => {
-            return vec.map((x) => x * 2.0);
+            return vec.map((x: any) => x * 2.0);
           },
         );
         const result = mockWasmModule.simdVectorMultiply(wasmData, [2.0]);
@@ -389,7 +389,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       // Perform tensor operation in WASM
       mockWasmModule.neuralForwardPass.mockImplementation((data, _dims) => {
         // Simulate tensor convolution or similar operation
-        return data?.map((x) => Math.tanh(x * 0.5));
+        return data?.map((x: any) => Math.tanh(x * 0.5));
       });
 
       const processedTensor = mockWasmModule.neuralForwardPass(

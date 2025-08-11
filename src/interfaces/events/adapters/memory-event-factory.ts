@@ -73,7 +73,7 @@ import type {
   IEventManager,
   IEventManagerFactory,
 } from '../core/interfaces.ts';
-import type { IMemoryEventManager } from '../factories.ts';
+import type { IMemoryEventManager } from '../event-manager-types.ts';
 import type { MemoryEvent } from '../types.ts';
 
 /**

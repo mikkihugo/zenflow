@@ -253,7 +253,7 @@ export class VectorDao<T = any> extends BaseDao<T> {
 
       // Apply diversity if requested
       if (options?.diversityFactor && options?.diversityFactor > 0) {
-        filtered = this.applyDiversity(filtered, options?.diversityFactor);
+        filtered = this.applyDiversity(filtered, options?.diversityFactor) as any as any as any as any;
       }
 
       // Limit results

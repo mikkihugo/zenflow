@@ -187,7 +187,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       performance.end('filtered-search');
 
       // Verify all results match filter criteria
-      results?.forEach((result) => {
+      results?.forEach((result: any) => {
         expect(result?.metadata?.category).toBe(targetCategory);
         expect(result?.metadata?.value).toBeGreaterThanOrEqual(50);
       });
@@ -211,7 +211,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       performance.end('range-query');
 
       // Verify all results are within specified radius
-      results?.forEach((result) => {
+      results?.forEach((result: any) => {
         expect(result?.similarity).toBeGreaterThanOrEqual(radius);
       });
 
@@ -250,9 +250,9 @@ describe('Vector Database Performance (Classical TDD)', () => {
       expect(approxTime).toBeLessThan(exactTime * 0.5);
 
       // Approximate results should be reasonably similar to exact
-      const topExact = exactResults?.slice(0, 5).map((r) => r.metadata.id);
-      const topApprox = approxResults?.slice(0, 5).map((r) => r.metadata.id);
-      const overlap = topExact.filter((id) => topApprox.includes(id)).length;
+      const topExact = exactResults?.slice(0, 5).map((r: any) => r.metadata.id);
+      const topApprox = approxResults?.slice(0, 5).map((r: any) => r.metadata.id);
+      const overlap = topExact.filter((id: any) => topApprox.includes(id)).length;
 
       expect(overlap).toBeGreaterThanOrEqual(3); // At least 60% overlap in top 5
     });
@@ -479,7 +479,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       // All reads should succeed
       expect(results.length).toBe(concurrentReads);
-      results?.forEach((result) => {
+      results?.forEach((result: any) => {
         expect(result.length).toBeGreaterThan(0);
         expect(result.length).toBeLessThanOrEqual(5);
       });

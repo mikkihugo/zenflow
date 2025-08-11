@@ -184,7 +184,7 @@ describe('Observer Pattern Implementation', () => {
 
         const processedEvents: AllSystemEvents[] = [];
         const mockObserver: SystemObserver = {
-          update: (event) => {
+          update: (event: any) => {
             processedEvents.push(event);
           },
           getInterests: () => ['swarm'],

@@ -342,7 +342,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         );
 
         expect(filteredResults.length).toBeLessThanOrEqual(10);
-        filteredResults?.forEach((result) => {
+        filteredResults?.forEach((result: any) => {
           expect(result?.metadata?.category).toBe('even');
         });
       } catch {

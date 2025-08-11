@@ -376,7 +376,7 @@ export class PersistentLearningSystem extends EventEmitter {
       .map((a) => a.action)
       .join(' -> ');
 
-    let pattern = knowledge.patterns.find((p) => p.pattern === actionSequence);
+    let pattern = knowledge.patterns.find((p: any) => p.pattern === actionSequence);
     if (pattern) {
       pattern.frequency++;
       pattern.lastReinforced = new Date();
@@ -418,7 +418,7 @@ export class PersistentLearningSystem extends EventEmitter {
     for (const action of agentResult?.actions) {
       if (action.success && action.impact > 0.7) {
         let skill = knowledge.capabilities.acquiredSkills.find(
-          (s) => s.skill === action.action,
+          (s: any) => s.skill === action.action,
         );
 
         if (skill) {
@@ -451,7 +451,7 @@ export class PersistentLearningSystem extends EventEmitter {
     // Update specializations
     const domain = agentResult?.context?.domain;
     let specialization = knowledge.capabilities.specializations.find(
-      (s) => s.domain === domain,
+      (s: any) => s.domain === domain,
     );
 
     if (specialization) {
@@ -495,7 +495,7 @@ export class PersistentLearningSystem extends EventEmitter {
 
     for (const partnerType of otherAgentTypes) {
       let collaboration = knowledge.relationships.collaborations.find(
-        (c) => c.partnerAgentType === partnerType,
+        (c: any) => c.partnerAgentType === partnerType,
       );
 
       if (collaboration) {
@@ -536,20 +536,20 @@ export class PersistentLearningSystem extends EventEmitter {
   ): any {
     // Get most relevant experiences (recent + successful)
     const relevantExperiences = knowledge.experiences
-      .filter((exp) => exp.confidence > 0.7)
+      .filter((exp: any) => exp.confidence > 0.7)
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
       .slice(0, 10); // Top 10 most recent relevant experiences
 
     // Get proven patterns (high success rate)
     const relevantPatterns = knowledge.patterns
-      .filter((pattern) => pattern.successRate > 0.8 && pattern.frequency > 2)
+      .filter((pattern: any) => pattern.successRate > 0.8 && pattern.frequency > 2)
       .sort((a, b) => b.successRate - a.successRate)
       .slice(0, 5); // Top 5 most successful patterns
 
     // Extract best practices
     const bestPractices = knowledge.capabilities.specializations
-      .flatMap((spec) => spec.bestPractices)
-      .concat(relevantExperiences.flatMap((exp) => exp.lessons))
+      .flatMap((spec: any) => spec.bestPractices)
+      .concat(relevantExperiences.flatMap((exp: any) => exp.lessons))
       .filter((practice, index, arr) => arr.indexOf(practice) === index) // Unique
       .slice(0, 10); // Top 10 best practices
 

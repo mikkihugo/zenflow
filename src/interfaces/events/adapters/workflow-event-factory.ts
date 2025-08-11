@@ -73,7 +73,7 @@ import type {
   IEventManager,
   IEventManagerFactory,
 } from '../core/interfaces.ts';
-import type { IWorkflowEventManager } from '../factories.ts';
+import type { IWorkflowEventManager } from '../event-manager-types.ts';
 import type { WorkflowEvent } from '../types.ts';
 
 /**

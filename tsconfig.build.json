@@ -5,8 +5,10 @@
     "tsBuildInfoFile": ".tsbuildinfo",
     "skipLibCheck": true,
     "noEmit": false,
+    "allowImportingTsExtensions": false,
     "outDir": "./dist",
     "declaration": false,
+    "declarationMap": false,
     "sourceMap": false,
     "removeComments": true
   },

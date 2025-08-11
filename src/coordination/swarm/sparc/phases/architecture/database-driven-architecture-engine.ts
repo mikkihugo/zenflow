@@ -237,7 +237,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
 
     const diagrams: ComponentDiagram[] = [
       // High-level system overview
-      architecture.components.map((component) => ({
+      architecture.components.map((component: any) => ({
         id: component.id || nanoid(),
         name: component.name,
         type: component.type,
@@ -335,10 +335,10 @@ export class DatabaseDrivenArchitecturePhaseEngine
   ): Promise<DeploymentPlan> {
     this.logger?.info('Planning deployment architecture');
 
-    const deploymentUnits = system.deploymentUnits.map((unit) => ({
+    const deploymentUnits = system.deploymentUnits.map((unit: any) => ({
       name: unit.name,
       components: unit.components,
-      infrastructure: unit.infrastructure.map((infra) => ({
+      infrastructure: unit.infrastructure.map((infra: any) => ({
         type: infra.type,
         specification: infra.specification,
         constraints: infra.constraints || [],
@@ -1048,7 +1048,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       architecture.interfaces && architecture.interfaces.length > 0;
     const interfaceConsistency = hasInterfaces
       ? architecture.interfaces.every(
-          (iface) => iface.methods && iface.methods.length > 0,
+          (iface: any) => iface.methods && iface.methods.length > 0,
         )
       : false;
 
@@ -1070,7 +1070,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       architecture.dataFlow && architecture.dataFlow.length > 0;
     const dataFlowComplete = hasDataFlow
       ? architecture.dataFlow.every(
-          (flow) => flow.from && flow.to && flow.protocol,
+          (flow: any) => flow.from && flow.to && flow.protocol,
         )
       : false;
 
@@ -1093,7 +1093,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       architecture.architecturalPatterns.length > 0;
     const patternsApplied = hasPatterns
       ? architecture.architecturalPatterns.every(
-          (pattern) =>
+          (pattern: any) =>
             pattern.applicability && pattern.applicability.length > 0,
         )
       : false;
@@ -1117,7 +1117,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       architecture.qualityAttributes.length >= 3;
     const qualityAttrsComplete = hasQualityAttrs
       ? architecture.qualityAttributes.every(
-          (attr) => attr.target && attr.measurement && attr.criteria,
+          (attr: any) => attr.target && attr.measurement && attr.criteria,
         )
       : false;
 
@@ -1178,7 +1178,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
         name: `${algorithm.name}Processor`,
         type: 'processor',
         description: algorithm.purpose,
-        responsibilities: algorithm.steps.map((step) => step.description),
+        responsibilities: algorithm.steps.map((step: any) => step.description),
         interfaces: [`I${algorithm.name}Processor`],
         dependencies: this.extractDependenciesFromAlgorithm(algorithm),
       });
@@ -1336,7 +1336,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
 
     // Analyze functional requirements to suggest patterns
     const hasRealtimeReqs = spec.functionalRequirements.some(
-      (req) =>
+      (req: any) =>
         req.description.toLowerCase().includes('real-time') ||
         req.description.toLowerCase().includes('event'),
     );
@@ -1371,7 +1371,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
 
     // Database selection based on requirements
     const needsGraph = spec.functionalRequirements.some(
-      (req) =>
+      (req: any) =>
         req.description.toLowerCase().includes('relationship') ||
         req.description.toLowerCase().includes('network'),
     );
@@ -1459,7 +1459,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
     const dependencies: string[] = [];
 
     // Extract dependencies from inputs and steps
-    algorithm.inputs.forEach((input) => {
+    algorithm.inputs.forEach((input: any) => {
       if (input.type.includes('Agent')) dependencies.push('AgentService');
       if (input.type.includes('Task')) dependencies.push('TaskManager');
       if (input.type.includes('Memory')) dependencies.push('MemoryService');

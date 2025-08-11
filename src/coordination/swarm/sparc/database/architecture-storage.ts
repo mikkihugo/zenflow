@@ -491,7 +491,7 @@ export class ArchitectureStorageService {
 
     // Filter by validation score if specified
     if (criteria.minScore !== undefined) {
-      architectures = architectures.filter((arch) => {
+      architectures = architectures.filter((arch: any) => {
         const validation = arch.validationResults;
         return validation && validation.overallScore >= criteria.minScore!;
       });

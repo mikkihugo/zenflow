@@ -641,7 +641,7 @@ describe('Advanced Neural Training Techniques - Classical TDD', () => {
       const allIndices = new Set();
       folds.forEach((fold) => {
         fold.forEach((sample) => {
-          const index = fullDataset?.indexOf(sample);
+          const index = fullDataset?.indexOf(sample) as any as any as any as any;
           expect(allIndices.has(index)).toBe(false);
           allIndices.add(index);
         });

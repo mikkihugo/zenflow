@@ -14,7 +14,7 @@ const logger = getLogger('coordination-swarm-sparc-core-sparc-engine');
  *
  * DEEP INTEGRATION with existing Claude-Zen infrastructure:
  * - DocumentDrivenSystem: Vision → ADRs → PRDs → Epics → Features → Tasks → Code
- * - UnifiedWorkflowEngine: Automated workflow execution
+ * - UnifiedProductWorkflowEngine: Automated workflow execution
  * - SwarmCoordination: Distributed SPARC development using existing agents.
  * - TaskAPI & TaskCoordinator: Task management and execution.
  */
@@ -22,7 +22,7 @@ const logger = getLogger('coordination-swarm-sparc-core-sparc-engine');
 import { nanoid } from 'nanoid';
 import { DocumentDrivenSystem } from '../../../../core/document-driven-system.ts';
 import { MemorySystem } from '../../../../core/memory-system.ts';
-import { WorkflowEngine } from '../../../../core/workflow-engine.ts';
+import { ProductProductWorkflowEngine } from '../../../orchestration/product-workflow-engine.ts';
 // Real implementations - no more mocks!
 import { CoordinationAPI } from '../../../api.ts';
 
@@ -65,7 +65,7 @@ export class SPARCEngineCore implements SPARCEngine {
 
   // Deep infrastructure integration - REAL implementations
   private readonly documentDrivenSystem: DocumentDrivenSystem;
-  private readonly workflowEngine: WorkflowEngine;
+  private readonly workflowEngine: ProductWorkflowEngine;
   private readonly swarmCoordinator: SPARCSwarmCoordinator;
   private readonly memorySystem: MemorySystem;
   private readonly taskCoordinator: TaskCoordinator;
@@ -83,7 +83,7 @@ export class SPARCEngineCore implements SPARCEngine {
       backend: 'json',
       path: './data/sparc-engine-memory',
     });
-    this.workflowEngine = new WorkflowEngine(this.memorySystem);
+    this.workflowEngine = new ProductWorkflowEngine(this.memorySystem);
     this.swarmCoordinator = new SPARCSwarmCoordinator();
     this.taskCoordinator = new TaskCoordinator();
     this.taskAPI = new TaskAPI();
@@ -1242,7 +1242,7 @@ ${spec.constraints?.join('\n- ') || 'None specified'}
   }
 
   /**
-   * Execute existing document workflows using UnifiedWorkflowEngine.
+   * Execute existing document workflows using UnifiedProductWorkflowEngine.
    *
    * @param workspaceId
    * @param project

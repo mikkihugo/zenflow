@@ -193,7 +193,7 @@ function handleMissingValues(
           result[i] = 0;
           break;
         case 'forward_fill':
-          result[i] = i > 0 ? result?.[i - 1] : 0;
+          result[i] = i > 0 ? result?.[i - 1] : 0 as any;
           break;
       }
     }
@@ -205,7 +205,7 @@ describe('Neural Network Model Invariants', () => {
   test('output dimensions match configuration', () => {
     fc.assert(
       fc.property(networkConfig(), (config) => {
-        const network = new MockNeuralNetwork(config);
+        const network = new MockNeuralNetwork(config) as any as any as any as any;
         const input = new Array(config?.inputSize).fill(0.5);
         const output = network.predict(input);
 
@@ -217,7 +217,7 @@ describe('Neural Network Model Invariants', () => {
   test('network info consistency', () => {
     fc.assert(
       fc.property(networkConfig(), (config) => {
-        const network = new MockNeuralNetwork(config);
+        const network = new MockNeuralNetwork(config) as any as any as any as any;
         const info = network.getInfo();
 
         // Input/output sizes should match config
@@ -275,7 +275,7 @@ describe('Neural Network Model Invariants', () => {
               .map(() => Math.random() * 2 - 1),
           );
 
-        const network = new MockNeuralNetwork(config);
+        const network = new MockNeuralNetwork(config) as any as any as any as any;
         const result = network.train({ inputs, outputs });
 
         // Training should converge

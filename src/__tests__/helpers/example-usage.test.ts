@@ -302,8 +302,8 @@ describe('Test Helper Utilities - Example Usage', () => {
       expect(results?.[1]?.ranking).toBeLessThanOrEqual(2);
 
       // Binary search should be faster (lower ranking = better performance)
-      const binaryResult = results?.find((r) => r.name === 'Binary Search');
-      const linearResult = results?.find((r) => r.name === 'Linear Search');
+      const binaryResult = results?.find((r: any) => r.name === 'Binary Search');
+      const linearResult = results?.find((r: any) => r.name === 'Linear Search');
 
       expect(binaryResult?.ranking).toBeLessThan(linearResult?.ranking);
 
@@ -357,7 +357,7 @@ describe('Test Helper Utilities - Example Usage', () => {
 
       // Verify data structure
       expect(users).toHaveLength(5);
-      users.forEach((user) => {
+      users.forEach((user: any) => {
         expect(user).toHaveProperty('id');
         expect(user).toHaveProperty('name');
         expect(user).toHaveProperty('email');
@@ -390,20 +390,20 @@ describe('Test Helper Utilities - Example Usage', () => {
       const trainingData = testDataFactory?.createNeuralTrainingData(100);
 
       expect(trainingData).toHaveLength(100);
-      trainingData?.forEach((sample) => {
+      trainingData?.forEach((sample: any) => {
         expect(sample).toHaveProperty('input');
         expect(sample).toHaveProperty('output');
         expect(sample.input).toHaveLength(3);
         expect(sample.output).toHaveLength(2);
 
         // Verify input range [-1, 1]
-        sample.input.forEach((value) => {
+        sample.input.forEach((value: any) => {
           expect(value).toBeGreaterThanOrEqual(-1);
           expect(value).toBeLessThanOrEqual(1);
         });
 
         // Verify output range [0, 1]
-        sample.output.forEach((value) => {
+        sample.output.forEach((value: any) => {
           expect(value).toBeGreaterThanOrEqual(0);
           expect(value).toBeLessThanOrEqual(1);
         });

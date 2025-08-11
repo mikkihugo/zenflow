@@ -122,7 +122,7 @@ describe('Comprehensive Error Handling System Integration', () => {
       errorRecoveryOrchestrator.addFallbackStrategy('test_operation', {
         name: 'test_fallback',
         handler: async () => 'Fallback result',
-        condition: (error) => error instanceof NetworkError,
+        condition: (error: any) => error instanceof NetworkError,
         priority: 1,
       });
 
@@ -258,7 +258,7 @@ describe('Comprehensive Error Handling System Integration', () => {
       }
 
       const trends = errorMonitor.getErrorTrends();
-      const trendTestTrend = trends.find((t) => t.component === 'TrendTest');
+      const trendTestTrend = trends.find((t: any) => t.component === 'TrendTest');
 
       expect(trendTestTrend).toBeDefined();
       expect(trendTestTrend?.errorCount).toBeGreaterThanOrEqual(5);
@@ -353,10 +353,10 @@ describe('Comprehensive Error Handling System Integration', () => {
       expect(endTime - startTime).toBeLessThan(5000); // Should complete within 5 seconds
 
       // Check that some operations succeeded and some were handled
-      const successCount = results?.filter((r) =>
+      const successCount = results?.filter((r: any) =>
         r.startsWith('Success'),
       ).length;
-      const handledCount = results?.filter((r) =>
+      const handledCount = results?.filter((r: any) =>
         r.startsWith('Handled'),
       ).length;
 
@@ -418,7 +418,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             'exhaustion_test',
             1024 * 1024, // 1MB each
           )
-          .catch((error) => error),
+          .catch((error: any) => error),
       );
 
       const results = await Promise.allSettled(resourcePromises);
@@ -528,7 +528,7 @@ describe('MCP Error Handling Integration', () => {
     );
     expect(typeResult?.valid).toBe(false);
     expect(
-      typeResult?.errors?.some((e) => e.includes('expected type string')),
+      typeResult?.errors?.some((e: any) => e.includes('expected type string')),
     ).toBe(true);
 
     // Test parameter constraints
@@ -539,7 +539,7 @@ describe('MCP Error Handling Integration', () => {
     );
     expect(constraintResult?.valid).toBe(false);
     expect(
-      constraintResult?.errors?.some((e) => e.includes('must be at most 100')),
+      constraintResult?.errors?.some((e: any) => e.includes('must be at most 100')),
     ).toBe(true);
   });
 });

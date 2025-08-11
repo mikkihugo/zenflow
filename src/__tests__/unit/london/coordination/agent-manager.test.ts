@@ -12,7 +12,7 @@ describe('Simple Agent Manager - London TDD', () => {
 
   beforeEach(() => {
     // Create interaction-focused mocks (London TDD)
-    mockEventEmitter = vi.fn();
+    mockEventEmitter = vi.fn() as any;
 
     // Mock AgentManager with focus on interactions
     mockAgentManager = {

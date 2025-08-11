@@ -74,7 +74,7 @@ import type {
   IEventManager,
   IEventManagerFactory,
 } from '../core/interfaces.ts';
-import type { IDatabaseEventManager } from '../factories.ts';
+import type { IDatabaseEventManager } from '../event-manager-types.ts';
 import type { DatabaseEvent } from '../types.ts';
 
 /**

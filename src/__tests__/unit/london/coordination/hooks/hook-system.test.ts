@@ -48,7 +48,7 @@ describe('Enhanced Hook System - London TDD', () => {
 
         // Assert
         expect(registeredHooks).toHaveLength(5); // 4 default + 1 registered
-        expect(registeredHooks.some((h) => h.id === 'test-hook')).toBe(true);
+        expect(registeredHooks.some((h: any) => h.id === 'test-hook')).toBe(true);
       });
 
       it('should handle hook registration failure gracefully', async () => {
@@ -76,7 +76,7 @@ describe('Enhanced Hook System - London TDD', () => {
 
         // Assert
         const hooks = await hookManager.getHooks('PreToolUse');
-        const targetHook = hooks.find((h) => h.id === 'lifecycle-hook');
+        const targetHook = hooks.find((h: any) => h.id === 'lifecycle-hook');
         expect(targetHook?.enabled).toBe(true);
       });
 
@@ -94,7 +94,7 @@ describe('Enhanced Hook System - London TDD', () => {
         const hooks = await hookManager.getHooks('PreToolUse');
 
         // Assert
-        expect(hooks.some((h) => h.id === 'temp-hook')).toBe(false);
+        expect(hooks.some((h: any) => h.id === 'temp-hook')).toBe(false);
       });
     });
   });
@@ -128,7 +128,7 @@ describe('Enhanced Hook System - London TDD', () => {
         );
 
         // Assert
-        const safetyResult = results?.find((r) => !r.allowed);
+        const safetyResult = results?.find((r: any) => !r.allowed);
         expect(safetyResult).toBeDefined();
         expect(safetyResult?.errors).toHaveLength(1);
         expect(safetyResult?.errors[0].type).toBe('COMMAND_BLOCKED');
@@ -185,7 +185,7 @@ describe('Enhanced Hook System - London TDD', () => {
         // Assert
         expect(results.length).toBeGreaterThan(0);
         // Should complete without blocking (mock doesn't return critical)
-        expect(results?.every((r) => r.allowed)).toBe(true);
+        expect(results?.every((r: any) => r.allowed)).toBe(true);
       });
     });
   });
@@ -236,7 +236,7 @@ describe('Enhanced Hook System - London TDD', () => {
         );
 
         // Assert
-        const assignmentResult = results?.find((r) => r.data?.agentAssignment);
+        const assignmentResult = results?.find((r: any) => r.data?.agentAssignment);
         expect(assignmentResult).toBeDefined();
         expect(assignmentResult?.data.agentAssignment.agent.type).toBe(
           'frontend-dev',
@@ -255,8 +255,8 @@ describe('Enhanced Hook System - London TDD', () => {
         const results = await hookManager.executeHooks('PreToolUse', context);
 
         // Assert
-        const assignmentResult = results?.find((r) =>
-          r.warnings.some((w) => w.type === 'ASSIGNMENT_WARNING'),
+        const assignmentResult = results?.find((r: any) =>
+          r.warnings.some((w: any) => w.type === 'ASSIGNMENT_WARNING'),
         );
         expect(assignmentResult).toBeDefined();
         expect(assignmentResult?.success).toBe(false);
@@ -275,8 +275,8 @@ describe('Enhanced Hook System - London TDD', () => {
         const results = await hookManager.executeHooks('PostToolUse', context);
 
         // Assert
-        const trackingResult = results?.find((r) =>
-          r.suggestions.some((s) => s.type === 'PERFORMANCE_TRACKING'),
+        const trackingResult = results?.find((r: any) =>
+          r.suggestions.some((s: any) => s.type === 'PERFORMANCE_TRACKING'),
         );
         expect(trackingResult).toBeDefined();
         expect(trackingResult?.success).toBe(true);
@@ -290,7 +290,7 @@ describe('Enhanced Hook System - London TDD', () => {
         const results = await hookManager.executeHooks('PostToolUse', context);
 
         // Assert
-        results?.forEach((result) => {
+        results?.forEach((result: any) => {
           expect(result?.metrics).toBeDefined();
           expect(result?.metrics?.operationId).toBeDefined();
           expect(result?.metrics?.resourceUsage).toBeDefined();
@@ -309,7 +309,7 @@ describe('Enhanced Hook System - London TDD', () => {
         const results = await hookManager.executeHooks('PreToolUse', context);
 
         // Assert
-        const contextResult = results?.find((r) => r.data?.loadedContext);
+        const contextResult = results?.find((r: any) => r.data?.loadedContext);
         expect(contextResult).toBeDefined();
         expect(contextResult?.data.loadedContext).toBeDefined();
       });
@@ -323,7 +323,7 @@ describe('Enhanced Hook System - London TDD', () => {
 
         // Assert
         // Should complete without errors even if context loading fails
-        expect(results?.every((r) => r.allowed)).toBe(true);
+        expect(results?.every((r: any) => r.allowed)).toBe(true);
       });
     });
   });
@@ -344,8 +344,8 @@ describe('Enhanced Hook System - London TDD', () => {
         );
 
         // Assert
-        const formatResult = results?.find((r) =>
-          r.suggestions.some((s) => s.type === 'AUTO_FORMAT'),
+        const formatResult = results?.find((r: any) =>
+          r.suggestions.some((s: any) => s.type === 'AUTO_FORMAT'),
         );
         expect(formatResult).toBeDefined();
         expect(formatResult?.suggestions[0].message).toContain('prettier');
@@ -365,8 +365,8 @@ describe('Enhanced Hook System - London TDD', () => {
         );
 
         // Assert
-        const formatResult = results?.find((r) =>
-          r.suggestions.some((s) => s.type === 'AUTO_FORMAT'),
+        const formatResult = results?.find((r: any) =>
+          r.suggestions.some((s: any) => s.type === 'AUTO_FORMAT'),
         );
         expect(formatResult).toBeDefined();
         expect(formatResult?.suggestions[0].message).toContain('black');
@@ -402,11 +402,11 @@ describe('Enhanced Hook System - London TDD', () => {
       // Assert
       expect(preResults.length).toBeGreaterThan(0);
       expect(postResults.length).toBeGreaterThan(0);
-      expect(preResults?.every((r) => r.allowed)).toBe(true);
-      expect(postResults?.every((r) => r.success)).toBe(true);
+      expect(preResults?.every((r: any) => r.allowed)).toBe(true);
+      expect(postResults?.every((r: any) => r.success)).toBe(true);
 
       // Verify hook execution order (by priority)
-      const hookIds = preResults?.map((r) => r.metrics.type);
+      const hookIds = preResults?.map((r: any) => r.metrics.type);
       expect(hookIds).toContain('safety-validation');
       expect(hookIds).toContain('context-loading');
       expect(hookIds).toContain('agent-assignment');

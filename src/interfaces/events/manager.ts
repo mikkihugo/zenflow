@@ -869,7 +869,7 @@ export class EventManager {
       switch (type) {
         case EventManagerTypes.SYSTEM: {
           const { SystemEventManagerFactory } = await import('./adapters/system-event-factory.ts');
-          FactoryClass = SystemEventManagerFactory;
+          FactoryClass = SystemEventManagerFactory as any;
           break;
         }
 
@@ -877,7 +877,7 @@ export class EventManager {
           const { CoordinationEventManagerFactory } = await import(
             './adapters/coordination-event-factory.ts'
           );
-          FactoryClass = CoordinationEventManagerFactory;
+          FactoryClass = CoordinationEventManagerFactory as any;
           break;
         }
 
@@ -894,7 +894,7 @@ export class EventManager {
           // MonitoringEventFactory is static, wrap it in a compatible interface
           FactoryClass = class implements IEventManagerFactory {
             async create(config: EventManagerConfig) {
-              const adapter = MonitoringEventFactory.create(config.name, config);
+              const adapter = MonitoringEventFactory.create(config.name, config) as any as any as any;
               return adapter as any; // Type assertion for compatibility
             }
           };

@@ -24,7 +24,7 @@ import { getLogger } from '../../config/logging-config.ts';
 import { DocumentProcessor } from '../core/document-processor';
 import { EventBus } from '../core/event-bus.ts';
 import { MemorySystem } from '../core/memory-system';
-import { WorkflowEngine } from '../core/workflow-engine';
+import { WorkflowEngine } from '../../workflows/workflow-engine.ts';
 import { IntelligenceCoordinationSystem } from '../knowledge/intelligence-coordination-system';
 import ProjectContextAnalyzer from '../knowledge/project-context-analyzer';
 import { DomainAnalysisEngine } from '../tools/domain-splitting/analyzers/domain-analyzer';

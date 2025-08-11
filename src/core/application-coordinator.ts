@@ -204,7 +204,7 @@ export class ApplicationCoordinator extends EventEmitter {
     });
 
     // Workflow engine events
-    this.workflowEngine.on('workflow:completed', async (event) => {
+    this.workflowEngine.on('workflow:completed', async (event: any) => {
       logger.info(`Workflow completed: ${event.workflowId}`);
 
       // Auto-export workflow results if configured

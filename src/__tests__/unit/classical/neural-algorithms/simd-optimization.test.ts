@@ -267,18 +267,18 @@ class SimdMatrixOps {
         break;
       case ActivationFunction.Tanh:
         for (let i = 0; i < data.length; i++) {
-          data[i] = Math.tanh(data?.[i]);
+          data[i] = Math.tanh(data?.[i]) as any;
         }
         break;
       case ActivationFunction.Relu:
         for (let i = 0; i < data.length; i++) {
-          data[i] = Math.max(0, data?.[i]);
+          data[i] = Math.max(0, data?.[i]) as any;
         }
         break;
       case ActivationFunction.LeakyRelu: {
         const alpha = 0.01;
         for (let i = 0; i < data.length; i++) {
-          data[i] = data?.[i] > 0 ? data?.[i] : alpha * data?.[i];
+          data[i] = data?.[i] > 0 ? data?.[i] : alpha * data?.[i] as any;
         }
         break;
       }
@@ -309,14 +309,14 @@ class SimdMatrixOps {
       // Process in chunks (simulated SIMD)
       while (i + SIMD_WIDTH <= data.length) {
         for (let idx = 0; idx < SIMD_WIDTH; idx++) {
-          data[i + idx] = Math.max(0, data?.[i + idx]);
+          data[i + idx] = Math.max(0, data?.[i + idx]) as any;
         }
         i += SIMD_WIDTH;
       }
 
       // Handle remaining elements
       while (i < data.length) {
-        data[i] = Math.max(0, data?.[i]);
+        data[i] = Math.max(0, data?.[i]) as any;
         i++;
       }
     } else {

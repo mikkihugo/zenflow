@@ -106,7 +106,7 @@ export class HybridTestUtility {
     };
 
     const key = Object.keys(behaviors).find((k) => dependency.includes(k));
-    return key ? behaviors[key] : () => ({ result: 'mock' });
+    return key ? behaviors[key] : () => ({ result: 'mock' }) as any;
   }
 
   /**

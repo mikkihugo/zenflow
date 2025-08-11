@@ -83,7 +83,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     for (let i = 0; i < path.length - 1; i++) {
       const fromNode = path[i];
       const toNode = path[i + 1];
-      const hopLatency = this.getHopLatency(fromNode, toNode);
+      const hopLatency = this.getHopLatency(fromNode, toNode) as any;
       totalLatency += hopLatency;
     }
 

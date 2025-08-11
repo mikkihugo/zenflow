@@ -268,7 +268,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
     // This would modify the actual biome.json configuration
     // For now, just update our in-memory config
     if (!this.biomeConfig.linter.rules[rule.category]) {
-      this.biomeConfig.linter.rules[rule.category] = {};
+      this.biomeConfig.linter.rules[rule.category] = {} as any;
     }
 
     this.biomeConfig.linter.rules[rule.category][rule.name] = {

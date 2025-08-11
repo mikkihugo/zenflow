@@ -10,7 +10,15 @@
 
 import { EventEmitter } from 'node:events';
 import type { MemoryConfig } from '../providers/memory-providers.ts';
-import type { BackendCapabilities } from './factory.ts';
+
+// Define BackendCapabilities here to avoid circular dependency
+export interface BackendCapabilities {
+  persistent: boolean;
+  searchable: boolean;
+  transactional: boolean;
+  vectorized: boolean;
+  distributed: boolean;
+}
 
 // Additional types needed for base backend
 export interface MemoryEntry {

@@ -20,7 +20,8 @@ import {
   createCompatibleMCPClient,
   createCompatibleWebSocketClient,
 } from './compatibility.ts';
-import { ClientType, UACLHelpers, uacl } from './index.ts';
+import { ClientType } from './types.ts';
+import { uacl, UACLHelpers } from './instance.ts';
 
 export interface ValidationResult {
   component: string;

@@ -35,7 +35,7 @@ class SQLiteMemoryStore {
 
   async initialize(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.db = new Database(this.dbPath, (err) => {
+      this.db = new Database(this.dbPath, (err: any) => {
         if (err) {
           reject(err);
           return;
@@ -150,7 +150,7 @@ class SQLiteMemoryStore {
   async close(): Promise<void> {
     if (this.db) {
       return new Promise((resolve, reject) => {
-        this.db?.close((err) => {
+        this.db?.close((err: any) => {
           if (err) reject(err);
           else {
             this.isInitialized = false;

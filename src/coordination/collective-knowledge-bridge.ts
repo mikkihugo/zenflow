@@ -310,7 +310,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
         source: 'hive-fact',
         timestamp: Date.now(),
         confidence: this.calculateAverageConfidence(searchResults ?? []),
-        cacheHit: searchResults?.some((r) => (r.accessCount ?? 0) > 1) ?? false,
+        cacheHit: searchResults?.some((r: any) => (r.accessCount ?? 0) > 1) ?? false,
       },
     };
   }
@@ -558,7 +558,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   private setupEventHandlers(): void {
     // Listen for HiveFACT updates
     if (this.hiveFact) {
-      this.hiveFact.on('fact-updated', (data) => {
+      this.hiveFact.on('fact-updated', (data: any) => {
         this.distributeKnowledgeUpdate({
           updateId: `fact-update-${Date.now()}`,
           type: 'fact-updated',
@@ -569,7 +569,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
         });
       });
 
-      this.hiveFact.on('fact-refreshed', (data) => {
+      this.hiveFact.on('fact-refreshed', (data: any) => {
         this.distributeKnowledgeUpdate({
           updateId: `fact-refresh-${Date.now()}`,
           type: 'fact-updated',
@@ -583,7 +583,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
 
     // Listen for hive coordinator events
     if (this.hiveCoordinator) {
-      this.hiveCoordinator.on('swarm:registered', (data) => {
+      this.hiveCoordinator.on('swarm:registered', (data: any) => {
         this.registerSwarm(data?.swarmId, []).catch((error) => {
           logger.error(`Failed to register swarm ${data?.swarmId}:`, error);
         });

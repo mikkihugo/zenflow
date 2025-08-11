@@ -89,53 +89,26 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <Box
-      flexDirection="column"
-      borderStyle={showBorder ? 'double' : undefined}
-      borderColor="cyan"
-      paddingX={3}
-      paddingY={1}
-      marginBottom={1}
+      borderStyle={showBorder ? 'single' : undefined}
+      borderColor="cyan" 
+      paddingX={1}
     >
-      {/* Main title line */}
-      <Box justifyContent={centerAlign ? 'center' : 'flex-start'}>
-        <Text
-          bold
-          color="cyan"
-        >
-          {mode === 'swarm' ? '🐝 ' : ''}
-          {titleText}
+      <Text bold color="cyan">
+        {mode === 'swarm' ? '🐝 ' : ''}
+        {titleText}
+      </Text>
+      {swarmStatus && (
+        <Text color="gray">
+          {' '}{getStatusIcon(swarmStatus.status)} {swarmStatus.status}
+          {mode === 'swarm' && (
+            <Text dimColor>
+              {' • '}{swarmStatus.activeAgents}/{swarmStatus.totalAgents} agents
+            </Text>
+          )}
         </Text>
-        {swarmStatus && (
-          <Text color="gray">
-            {' '}
-            {getStatusIcon(swarmStatus.status)} {swarmStatus.status}
-          </Text>
-        )}
-      </Box>
-
-      {/* Swarm status line */}
-      {swarmStatus && mode === 'swarm' && (
-        <Box
-          justifyContent={centerAlign ? 'center' : 'flex-start'}
-          marginTop={0}
-        >
-          <Text dimColor>
-            Topology: {swarmStatus.topology} • Agents:{' '}
-            {swarmStatus.activeAgents}/{swarmStatus.totalAgents}
-            {swarmStatus.uptime > 0 &&
-              ` • Uptime: ${formatUptime(swarmStatus.uptime)}`}
-          </Text>
-        </Box>
       )}
-
-      {/* Subtitle */}
       {subtitle && (
-        <Box
-          justifyContent={centerAlign ? 'center' : 'flex-start'}
-          marginTop={0}
-        >
-          <Text dimColor>{subtitle}</Text>
-        </Box>
+        <Text dimColor> • {subtitle}</Text>
       )}
     </Box>
   );

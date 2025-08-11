@@ -73,7 +73,7 @@ import type {
   IEventManager,
   IEventManagerFactory,
 } from '../core/interfaces.ts';
-import type { INeuralEventManager } from '../factories.ts';
+import type { INeuralEventManager } from '../event-manager-types.ts';
 import type { NeuralEvent } from '../types.ts';
 
 /**

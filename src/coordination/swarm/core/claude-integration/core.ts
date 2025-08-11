@@ -48,8 +48,8 @@ class ClaudeIntegrationCore {
   private workingDir: string;
 
   constructor(options: ClaudeIntegrationOptions = {}) {
-    this._autoSetup = options?.autoSetup;
-    this.forceSetup = options?.forceSetup;
+    this._autoSetup = options?.autoSetup as any;
+    this.forceSetup = options?.forceSetup as any;
     this.workingDir = options?.workingDir || process.cwd();
   }
 

@@ -89,7 +89,7 @@ export function registerSwarmProviders(
   // Register storage path for convenience
   container.register(SWARM_TOKENS.StoragePath, {
     type: 'singleton',
-    create: (container) => {
+    create: (container: any) => {
       const config = container.resolve(
         SWARM_TOKENS.Config,
       ) as SwarmDatabaseConfig;
@@ -100,7 +100,7 @@ export function registerSwarmProviders(
   // Register swarm database manager
   container.register(SWARM_TOKENS.DatabaseManager, {
     type: 'singleton',
-    create: (container) =>
+    create: (container: any) =>
       new SwarmDatabaseManager(
         container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig,
         container.resolve(DATABASE_TOKENS?.DALFactory),
@@ -111,7 +111,7 @@ export function registerSwarmProviders(
   // Register maintenance manager
   container.register(SWARM_TOKENS.MaintenanceManager, {
     type: 'singleton',
-    create: (container) => {
+    create: (container: any) => {
       const config = container.resolve(
         SWARM_TOKENS.Config,
       ) as SwarmDatabaseConfig;
@@ -125,7 +125,7 @@ export function registerSwarmProviders(
   // Register backup manager
   container.register(SWARM_TOKENS.BackupManager, {
     type: 'singleton',
-    create: (container) => {
+    create: (container: any) => {
       const config = container.resolve(
         SWARM_TOKENS.Config,
       ) as SwarmDatabaseConfig;
@@ -205,7 +205,7 @@ export function createSwarmContainer(
   // Register DAL Factory (would normally come from database domain)
   container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
-    create: (container) => {
+    create: (container: any) => {
       const { DALFactory } = require('../../../database/factory.js');
       const {
         DatabaseProviderFactory,

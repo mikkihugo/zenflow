@@ -729,7 +729,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           results?.push(batchTime);
 
           // All requests in batch should succeed
-          batchResponses?.forEach((response) => {
+          batchResponses?.forEach((response: any) => {
             expect(response?.status).toBe(200);
             expect(response?.data?.result).toBeDefined();
           });

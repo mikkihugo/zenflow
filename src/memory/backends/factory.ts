@@ -10,19 +10,10 @@
 
 import type { BackendInterface } from '../core/memory-system.ts';
 import type { MemoryConfig } from '../providers/memory-providers.ts';
-import { BaseMemoryBackend } from './base-backend.ts';
+import { BaseMemoryBackend, type BackendCapabilities } from './base-backend.ts';
 
 // Additional types needed for factory
 export type MemoryBackendType = 'memory' | 'file' | 'sqlite' | 'jsonb';
-
-export interface BackendCapabilities {
-  persistent: boolean;
-  searchable: boolean;
-  transactional: boolean;
-  concurrent: boolean;
-  compression: boolean;
-  encryption: boolean;
-}
 
 // Backend registry for dynamic loading
 const backendRegistry = new Map<

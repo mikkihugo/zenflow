@@ -1373,7 +1373,7 @@ export class DynamicResourceManager extends EventEmitter {
       .slice(0, count);
 
     for (const agent of swarmAgents) {
-      agent.swarmId = undefined;
+      agent?.swarmId = undefined;
       swarm.currentAgents--;
 
       // Optionally remove agent entirely if surplus
@@ -2381,7 +2381,7 @@ export class DynamicResourceManager extends EventEmitter {
       );
 
       // Clear agent allocation
-      agent.allocation = undefined;
+      agent?.allocation = undefined;
       agent.currentLoad = Math.max(0, agent.currentLoad - 0.2);
 
       // Complete transfer

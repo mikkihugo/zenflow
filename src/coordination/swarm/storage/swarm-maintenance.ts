@@ -172,7 +172,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
         path.dirname(activeDir),
         swarmId,
       ]);
-      tar.on('close', (code) =>
+      tar.on('close', (code: any) =>
         code === 0 ? resolve(void 0) : reject(new Error(`tar failed: ${code}`)),
       );
     });
@@ -260,10 +260,10 @@ export class SwarmMaintenanceManager extends EventEmitter {
     const sizeResult = await new Promise<string>((resolve, reject) => {
       const du = spawn('du', ['-sb', this.swarmsPath]);
       let output = '';
-      du.stdout.on('data', (data) => {
+      du.stdout.on('data', (data: any) => {
         output += data;
       });
-      du.on('close', (code) =>
+      du.on('close', (code: any) =>
         code === 0 ? resolve(output) : reject(new Error(`du failed: ${code}`)),
       );
     });

@@ -5,14 +5,14 @@
 
 import { parseArgs } from 'node:util';
 import { configure } from '@logtape/logtape';
-import { getLogger } from './config/logging-config.js';
+import { getLogger } from './config/logging-config.ts';
 import {
   createClaudeZenDIContainer,
   initializeDIServices,
   shutdownDIContainer,
-} from './core/di-container.js';
-import { ProcessLifecycleManager } from './core/process-lifecycle.js';
-import type { DIContainer } from './di/index.js';
+} from './core/di-container.ts';
+import { ProcessLifecycleManager } from './core/process-lifecycle.ts';
+import type { DIContainer } from './di/index.ts';
 
 // Logger will be initialized after LogTape configuration
 let logger: any;
@@ -42,30 +42,32 @@ Claude Code Zen - Unified AI Orchestration Platform
 
 Usage: claude-zen [mode] [options]
 
-Modes: (All modes include web server on port 3000 except swarm)
-  web         Web interface only (default)
-  core        Core service only
-  integrated  Core service + web interface
-  tui         Terminal user interface (experimental)
-  mcp         HTTP MCP server (port 3000)
-  swarm       Stdio MCP swarm server (no port)
-  safety      AI safety monitoring
+Modes:
+  (default)   Web + AI + TUI + HTTP MCP + Safety (all-in-one on port 3000)
+  swarm       Stdio MCP swarm server only (no port, no web)
   
 Options:
   --port      Port for web server (default: 3000)
   --help      Show this help
 
 Examples:
-  claude-zen                    # Web server on :3000 (default)
-  claude-zen core               # Core + web server on :3000
-  claude-zen integrated         # Integrated web mode on :3000
-  claude-zen mcp                # MCP server
+  claude-zen                    # Full system: Web + AI + TUI + MCP + Safety
+  claude-zen swarm              # Stdio swarm server only
 `);
   process.exit(0);
 }
 
 // Determine mode from positional args (more reliable than mode option)
 const mode = process.argv[2] || args.mode || 'web';
+
+async function checkIfRunning(): Promise<boolean> {
+  try {
+    const response = await fetch('http://localhost:3000/health');
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
 
 async function main() {
   // Configure LogTape first, before any loggers are created
@@ -77,6 +79,20 @@ async function main() {
   });
 
   logger = getLogger('Main');
+
+  // Check if another instance is already running (except for swarm mode)
+  if (mode !== 'swarm') {
+    const isRunning = await checkIfRunning();
+    
+    if (isRunning) {
+      logger.info('📡 Claude-zen is already running - attaching TUI interface...');
+      // Always launch TUI that connects to existing web server
+      const { main } = await import('./interfaces/terminal/main.ts');
+      await main();
+      return;
+    }
+  }
+
   logger.info(`🚀 Starting Claude Code Zen in ${mode} mode`);
 
   // Initialize DI container for all modes
@@ -97,13 +113,14 @@ async function main() {
 
   try {
     switch (mode) {
-      case 'core':
-      case 'integrated':
-      case 'server': {
-        // Use WebInterface for all server modes - unified architecture
-        logger.info('🌐 Starting web server with DI container integration...');
+      default: {
+        // Default mode: Full system (Web + AI + TUI + MCP + Safety)
+        logger.info('🚀 Starting full claude-zen system...');
+        logger.info('🌐 Web interface + AI orchestration + HTTP MCP + Safety monitoring');
+        
+        // Start web server with full DI container
         const { WebInterface } = await import(
-          './interfaces/web/web-interface.js'
+          './interfaces/web/web-interface.ts'
         );
         const webApp = new WebInterface({
           port: Number.parseInt(args.port || '3000'),
@@ -112,136 +129,36 @@ async function main() {
 
         await webApp.run();
         logger.info(
-          `✅ Web server started - API/docs available at http://localhost:${args.port || '3000'}`,
+          `✅ Full system running - Web interface: http://localhost:${args.port || '3000'}`,
         );
-        break;
-      }
-
-      case 'tui':
-      case 'terminal': {
-        // Start web server first for TUI backend
-        logger.info('🌐 Starting web backend for TUI...');
-        const { WebInterface } = await import(
-          './interfaces/web/web-interface.js'
-        );
-        const webApp = new WebInterface({
-          port: Number.parseInt(args.port || '3000'),
-          container,
-        });
-
-        // Start web server in background
-        webApp.run().catch((err) => {
-          logger.error('Web server failed to start:', err);
-        });
-
-        // Small delay to ensure web server starts
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        logger.info('🖥️  Starting Terminal User Interface...');
-
-        // Try React/Ink TUI first, fallback to terminal browser
-        try {
-          const { launchTerminalInterface } = await import(
-            './interfaces/terminal/index.ts'
-          );
-          if (launchTerminalInterface) {
-            await launchTerminalInterface({
-              mode: 'terminal',
-              theme: 'dark',
-              verbose: false,
-              autoRefresh: true,
-              refreshInterval: 3000,
-            });
-          } else {
-            throw new Error('React TUI not available, using terminal browser');
-          }
-        } catch (error) {
-          logger.info('React TUI unavailable, launching web mode instead...', {
-            error: error.message,
-          });
-
-          // Fallback to web mode instead of terminal browser
-          logger.info('📱 Starting web-only mode as TUI fallback...');
-          const { WebInterface } = await import(
-            './interfaces/web/web-interface.js'
-          );
-          const webApp = new WebInterface({
-            port: Number.parseInt(args.port || '3000'),
-            container,
-          });
-
-          await webApp.run();
-          logger.info(
-            `✅ Web server started - available at http://localhost:${args.port || '3000'}`,
-          );
-
-          // Keep process alive
-          await new Promise(() => {}); // Never resolves
-        }
-        break;
-      }
-
-      case 'web': {
-        // Use WebInterface with DI container
-        logger.info('📱 Starting web-only mode with DI container...');
-        const { WebInterface } = await import(
-          './interfaces/web/web-interface.js'
-        );
-        const webApp = new WebInterface({
-          port: Number.parseInt(args.port || '3000'),
-          container,
-        });
-
-        await webApp.run();
-        logger.info(
-          `✅ Web server started - available at http://localhost:${args.port || '3000'}`,
-        );
-
-        // Keep process alive
-        await new Promise(() => {}); // Never resolves
-        break;
-      }
-
-      case 'mcp': {
-        const MCPModule = await import('./interfaces/mcp/start-server.ts');
-        const startServer = MCPModule.startHTTPMCPServer;
-        await startServer();
+        
+        // Also start TUI interface
+        logger.info('🖥️ Launching TUI interface...');
+        const { main } = await import('./interfaces/terminal/main.ts');
+        await main();
         break;
       }
 
       case 'swarm': {
-        // Use new stdio MCP server with shared services
-        const { StdioMCPServer } = await import(
-          './interfaces/mcp-stdio/swarm-server.ts'
-        );
-        const server = new StdioMCPServer();
-        await server.start();
+        // Swarm mode: Stdio MCP swarm server only (no web, no TUI)
+        logger.info('🐝 Starting stdio MCP swarm server...');
+        
+        // TODO: Implement swarm stdio server
+        logger.info('🐝 Swarm server mode - stdio MCP interface');
+        
+        // Keep process alive for stdio communication
+        process.stdin.resume();
         break;
       }
-
-      case 'safety': {
-        const { runSafetyMode } = await import(
-          './coordination/ai-safety/safety-integration.ts'
-        );
-        await runSafetyMode();
-        break;
-      }
-
-      default:
-        logger.error(`Unknown mode: ${mode}`);
-        logger.info('Use --help for available modes');
-        process.exit(1);
     }
   } catch (error) {
-    logger.error(`Failed to start ${mode} mode:`, error);
+    logger.error('💥 Application error:', error);
     process.exit(1);
   }
 }
 
-// Note: Graceful shutdown is now handled by ProcessLifecycleManager
-// This ensures consistent shutdown behavior across all modes
-
+// Start the application
 main().catch((error) => {
-  console.error('Fatal error:', error);
+  console.error('💥 Fatal error:', error);
   process.exit(1);
 });

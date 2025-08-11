@@ -784,11 +784,11 @@ class ZenSwarmHooks {
    * Get count of modified files.
    */
   getModifiedFilesCount(): number {
-    const fileOps = this.sessionData.operations.filter((op) =>
+    const fileOps = this.sessionData.operations.filter((op: any) =>
       ['edit', 'write', 'create'].includes(op.type),
     );
 
-    const uniqueFiles = new Set(fileOps.map((op) => op.file).filter(Boolean));
+    const uniqueFiles = new Set(fileOps.map((op: any) => op.file).filter(Boolean));
     return uniqueFiles.size;
   }
 
@@ -796,12 +796,12 @@ class ZenSwarmHooks {
    * Get list of modified files.
    */
   getModifiedFilesList(): string {
-    const fileOps = this.sessionData.operations.filter((op) =>
+    const fileOps = this.sessionData.operations.filter((op: any) =>
       ['edit', 'write', 'create'].includes(op.type),
     );
 
     const fileMap = new Map();
-    fileOps.forEach((op) => {
+    fileOps.forEach((op: any) => {
       if (op.file) {
         if (!fileMap.has(op.file)) {
           fileMap.set(op.file, []);
@@ -1359,7 +1359,7 @@ ${this.sessionData.learnings
     relatedFiles.forEach((related) => {
       if (
         !graph.edges.find(
-          (e) =>
+          (e: any) =>
             (e.from === nodeId && e.to === related) ||
             (e.from === related && e.to === nodeId),
         )
@@ -1524,7 +1524,7 @@ ${this.sessionData.learnings
     // Extract file type patterns
     const fileTypes = query.match(/\.(js|ts|py|go|rs|md|json|yaml)\b/gi);
     if (fileTypes) {
-      patterns.push(...fileTypes.map((ft) => `filetype:${ft}`));
+      patterns.push(...fileTypes.map((ft: any) => `filetype:${ft}`));
     }
 
     // Extract function/class patterns
@@ -1532,13 +1532,13 @@ ${this.sessionData.learnings
       /\b(function|class|interface|struct|impl)\s+\w+/gi,
     );
     if (codePatterns) {
-      patterns.push(...codePatterns.map((cp) => `code:${cp}`));
+      patterns.push(...codePatterns.map((cp: any) => `code:${cp}`));
     }
 
     // Extract scope patterns
     const scopePatterns = query.match(/\b(src|test|lib|bin|docs?)\//gi);
     if (scopePatterns) {
-      patterns.push(...scopePatterns.map((sp) => `scope:${sp}`));
+      patterns.push(...scopePatterns.map((sp: any) => `scope:${sp}`));
     }
 
     return patterns;
@@ -1581,7 +1581,7 @@ ${this.sessionData.learnings
       if (!kb.patterns) {
         kb.patterns = {};
       }
-      data?.patterns.forEach((pattern) => {
+      data?.patterns.forEach((pattern: any) => {
         kb.patterns[pattern] = (kb.patterns[pattern] || 0) + 1;
       });
     }
@@ -1654,7 +1654,7 @@ ${this.sessionData.learnings
     return {
       agents: this.sessionData.agents,
       activeTasks: this.sessionData.operations.filter(
-        (op) => Date.now() - op.timestamp < 300000, // Last 5 minutes
+        (op: any) => Date.now() - op.timestamp < 300000, // Last 5 minutes
       ).length,
       health: 'operational',
     };
@@ -1822,7 +1822,7 @@ ${this.sessionData.learnings
     const recentOps = this.sessionData.operations.slice(-10);
     const agentCounts = {};
 
-    recentOps.forEach((op) => {
+    recentOps.forEach((op: any) => {
       if (op.agent) {
         agentCounts[op.agent] = (agentCounts[op.agent] || 0) + 1;
       }

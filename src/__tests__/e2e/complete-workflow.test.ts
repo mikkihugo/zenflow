@@ -60,7 +60,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(initResult.isError).toBe(false);
-      const initData = JSON.parse(initResult.content[0].text);
+      const initData = JSON.parse(initResult.content[0].text) as any as any as any as any;
       expect(initData.success).toBe(true);
       expect(initData.repository.topology).toBe('hierarchical');
       expect(initData.features.advancedKanbanFlow).toBe(true);
@@ -72,7 +72,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(monitorResult.isError).toBe(false);
-      const monitorData = JSON.parse(monitorResult.content[0].text);
+      const monitorData = JSON.parse(monitorResult.content[0].text) as any as any as any as any;
       expect(monitorData.success).toBe(true);
       expect(monitorData.allocation).toBeDefined();
       expect(monitorData.components.flowManager).toMatch(/✅ ACTIVE/);
@@ -90,7 +90,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(testResult.isError).toBe(false);
-      const testData = JSON.parse(testResult.content[0].text);
+      const testData = JSON.parse(testResult.content[0].text) as any as any as any as any;
       expect(testData.success).toBe(true);
       expect(testData.test.status).toBe('PASSED');
       expect(testData.components.flowManager).toBe('✅ PASSED');
@@ -111,7 +111,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(scaleResult.isError).toBe(false);
-      const scaleData = JSON.parse(scaleResult.content[0].text);
+      const scaleData = JSON.parse(scaleResult.content[0].text) as any as any as any as any;
       expect(scaleData.success).toBe(true);
       expect(scaleData.operation.direction).toBe('up');
       expect(scaleData.operation.amount).toBe('25%');
@@ -203,7 +203,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(stressResult.isError).toBe(false);
-      const stressData = JSON.parse(stressResult.content[0].text);
+      const stressData = JSON.parse(stressResult.content[0].text) as any as any as any as any;
       expect(stressData.success).toBe(true);
       expect(stressData.test.type).toBe('stress');
       expect(stressData.performance.errorRate).toBe('1.000%'); // Expected stress test error rate
@@ -240,7 +240,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(sysInfoResult.isError).toBe(false);
-      const sysData = JSON.parse(sysInfoResult.content[0].text);
+      const sysData = JSON.parse(sysInfoResult.content[0].text) as any as any as any as any;
       expect(sysData.success).toBe(true);
       expect(sysData.system.memory).toBeDefined();
       expect(sysData.recommendations).toBeDefined();
@@ -360,7 +360,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
         }
 
         expect(result.isError).toBe(false);
-        const data = JSON.parse(result.content[0].text);
+        const data = JSON.parse(result.content[0].text) as any as any as any as any;
         expect(data.success).toBe(true);
 
         logger.info(`✅ MCP tool ${tool} validated successfully`);
@@ -394,7 +394,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       );
       expect(unknownToolResult.isError).toBe(true);
 
-      const errorData = JSON.parse(unknownToolResult.content[0].text);
+      const errorData = JSON.parse(unknownToolResult.content[0].text) as any as any as any as any;
       expect(errorData.success).toBe(false);
       expect(errorData.error).toContain('Unknown tool');
 

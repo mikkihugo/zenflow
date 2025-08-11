@@ -565,7 +565,7 @@ describe('Swarm Topology Management (London TDD)', () => {
 
       // Mock agent voting responses
       mockAgents.forEach((agent, index) => {
-        agent.receiveMessage.mockImplementation((message) => {
+        agent.receiveMessage.mockImplementation((message: any) => {
           if (message.type === 'consensus_vote_request') {
             return Promise.resolve({
               vote: index < 3 ? 'approve' : 'reject',

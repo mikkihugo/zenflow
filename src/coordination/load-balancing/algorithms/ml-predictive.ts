@@ -737,7 +737,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   private generateModelVersion(currentVersion: string): string {
     const parts = currentVersion?.split('.');
-    const patch = Number.parseInt(parts[2]) + 1;
+    const patch = Number.parseInt(parts[2]) + 1 as any;
     return `${parts[0]}.${parts[1]}.${patch}`;
   }
 

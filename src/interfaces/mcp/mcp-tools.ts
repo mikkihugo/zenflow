@@ -358,7 +358,7 @@ class FindSimilarDiscoveryPatternsHandler extends AdvancedToolHandler {
       // Assuming allPatternsRaw.metadata contains the data
       const allPatterns = allPatternsRaw.metadata?.data || [];
 
-      const similarPatterns = allPatterns.filter((p) => {
+      const similarPatterns = allPatterns.filter((p: any) => {
         const jaccardIndex = this.calculateJaccardIndex(pattern.files, p.files);
         return jaccardIndex >= similarityThreshold;
       });

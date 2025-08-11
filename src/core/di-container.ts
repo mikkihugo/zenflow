@@ -6,7 +6,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.js';
+import { getLogger } from '../config/logging-config.ts';
 import {
   CORE_TOKENS,
   createContainerBuilder,
@@ -17,7 +17,7 @@ import {
   type IEventBus,
   type ILogger,
   SWARM_TOKENS,
-} from '../di/index.js';
+} from '../di/index.ts';
 
 const logger = getLogger('DIContainer');
 

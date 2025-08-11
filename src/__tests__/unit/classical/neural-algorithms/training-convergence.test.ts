@@ -235,7 +235,7 @@ describe('Training Convergence - Classical TDD', () => {
 
       // Test predictions on training data
       for (let i = 0; i < linearData?.inputs.length; i++) {
-        const prediction = await network.run(linearData?.inputs?.[i]);
+        const prediction = await network.run(linearData?.inputs?.[i]) as any;
         expect(prediction[0]).toBeCloseTo(linearData?.outputs?.[i]?.[0], 1);
       }
 
@@ -589,7 +589,7 @@ describe('Training Convergence - Classical TDD', () => {
 
         // Calculate error on training data
         for (let i = 0; i < noisyData?.inputs.length; i++) {
-          const prediction = await freshNetwork.run(noisyData?.inputs?.[i]);
+          const prediction = await freshNetwork.run(noisyData?.inputs?.[i]) as any;
           totalError += Math.abs(prediction[0] - noisyData?.outputs?.[i]?.[0]);
         }
 

@@ -332,7 +332,7 @@ export class MCPToAPIConverter {
       };
 
       // Extract handler code if present
-      const handler = this.findHandlerForTool(content, toolName);
+      const handler = this.findHandlerForTool(content, toolName) as any;
 
       return {
         name: toolName,
@@ -1163,7 +1163,7 @@ export default router;
   }
 
   private async generateMCPClients(apis: GeneratedAPI[]): Promise<void> {
-    const clientDir = join(this.config.apiOutputDir, '../mcp-clients');
+    const clientDir = join(this.config.apiOutputDir, '../mcp-clients') as any as any as any as any;
     await mkdir(clientDir, { recursive: true });
 
     for (const api of apis) {

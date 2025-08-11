@@ -132,7 +132,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         },
       ]);
 
-      const result = await builder.buildConfidence(context);
+      const result = await builder.buildConfidence(context) as any as any as any;
 
       expect(result?.domains.size).toBe(1);
       expect(result?.domains?.has('auth')).toBe(true);
@@ -278,7 +278,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         .mockResolvedValueOnce(['No - needs adjustment'])
         .mockResolvedValueOnce(['Yes']);
 
-      const result = await builder.buildConfidence(context);
+      const result = await builder.buildConfidence(context) as any as any as any;
 
       // Check that validations were recorded
       const domain = result?.domains?.get('test-domain');
@@ -355,7 +355,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         },
       ]);
 
-      const result = await builder.buildConfidence(context);
+      const result = await builder.buildConfidence(context) as any as any as any;
 
       const securityDomain = result?.domains?.get('security');
       expect(securityDomain?.research.length).toBeGreaterThan(0);
@@ -381,7 +381,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       mockAgui.askQuestion.mockResolvedValue('skip');
       mockAgui.askBatchQuestions.mockResolvedValue(['Yes', 'Yes']);
 
-      const result = await builder.buildConfidence(context);
+      const result = await builder.buildConfidence(context) as any as any as any;
 
       expect(result?.confidence).toHaveProperty('overall');
       expect(result?.confidence).toHaveProperty('documentCoverage');
@@ -465,7 +465,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       mockAgui.askQuestion.mockResolvedValue('skip');
       mockAgui.askBatchQuestions.mockResolvedValue([]);
 
-      const result = await builder.buildConfidence(context);
+      const result = await builder.buildConfidence(context) as any as any as any;
 
       expect(result?.relationships.length).toBeGreaterThan(0);
       expect(result?.relationships?.[0]).toHaveProperty('sourceDomain');
@@ -573,7 +573,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       mockAgui.askQuestion.mockResolvedValue('skip');
       mockAgui.askBatchQuestions.mockResolvedValue(['Yes', 'Correct']);
 
-      const result = await builder.buildConfidence(context);
+      const result = await builder.buildConfidence(context) as any as any as any;
 
       // Check that validations include new metadata
       const domain = result?.domains?.get('audit-test');

@@ -657,12 +657,12 @@ export class ProgramOrchestrator extends EventEmitter {
 
     if (issues.length > 0) {
       // Create coordination gates for critical issues
-      for (const issue of issues.filter((i) => i.urgency === 'critical')) {
+      for (const issue of issues.filter((i: any) => i.urgency === 'critical')) {
         await this.createCoordinationGate(coordination, issue);
       }
 
       // Escalate high priority issues
-      const highPriorityIssues = issues.filter((i) => i.urgency === 'high');
+      const highPriorityIssues = issues.filter((i: any) => i.urgency === 'high');
       if (highPriorityIssues.length > 0) {
         await this.escalateCoordinationIssues(coordination, highPriorityIssues);
       }

@@ -158,7 +158,7 @@ async function retryConfiguration() {
       maxDelay: 10000,
       retryStatusCodes: [408, 429, 500, 502, 503, 504],
       retryMethods: ['GET', 'POST', 'PUT'],
-      retryCondition: (error) => {
+      retryCondition: (error: any) => {
         // Custom retry logic
         return error.response?.status >= 500 || !error.response;
       },
@@ -166,7 +166,7 @@ async function retryConfiguration() {
   });
 
   // Listen for retry events
-  client.on('retry', (info) => {});
+  client.on('retry', (info: any) => {});
 
   try {
     const data = await client.get('/unreliable-endpoint');
@@ -207,7 +207,7 @@ async function monitoringExample() {
 
   client.on('disconnect', () => {});
 
-  client.on('error', (error) => {
+  client.on('error', (error: any) => {
     console.error('Client error:', error);
   });
 
@@ -365,7 +365,7 @@ async function loadBalancingExample() {
       }
     }
   } finally {
-    await Promise.all(clients.map((client) => client.destroy()));
+    await Promise.all(clients.map((client: any) => client.destroy()));
   }
 }
 

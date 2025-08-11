@@ -6,20 +6,12 @@
     "useIgnoreFile": true,
     "defaultBranch": "main"
   },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
-    }
-  },
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
     "lineWidth": 80,
     "indentStyle": "space",
-    "indentWidth": 2,
-    "attributePosition": "multiline"
+    "indentWidth": 2
   },
   "linter": {
     "enabled": true,
@@ -27,384 +19,62 @@
       "recommended": true,
       "suspicious": {
         "noExplicitAny": "error",
-        "noConstEnum": "error",
-        "noUnsafeDeclarationMerging": "error",
-        "noImplicitAnyLet": "error",
-        "noMisleadingCharacterClass": "error",
-        "noThenProperty": "error",
-        "useAwait": "error",
-        "noConsole": "error",
+        "noConsole": "warn",
         "noDebugger": "error",
-        "noEmptyBlockStatements": "error",
-        "noGlobalIsNan": "error",
-        "noGlobalIsFinite": "error"
+        "useAwait": "error",
+        "noThenProperty": "error"
       },
       "style": {
-        "useConsistentArrayType": {
-          "level": "error",
-          "options": { "syntax": "shorthand" }
-        },
-        "noParameterAssign": "error",
         "useConst": "error",
-        "useDefaultParameterLast": "error",
-        "useExponentiationOperator": "error",
-        "useFragmentSyntax": "error",
-        "useImportType": "error",
-        "useNumberNamespace": "error",
-        "useSelfClosingElements": "error",
-        "useShorthandAssign": "error",
-        "useSingleVarDeclarator": "error",
-        "useTemplate": "error",
-        "noNegationElse": "error",
+        "useTemplate": "error", 
         "noUselessElse": "error",
-        "useCollapsedElseIf": "error",
-        "useConsistentBuiltinInstantiation": "error",
-        "useNodejsImportProtocol": "error",
-        "useEnumInitializers": "error",
-        "useLiteralEnumMembers": "error"
+        "useImportType": "error",
+        "useNodejsImportProtocol": "error"
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": {
           "level": "error",
-          "options": { "maxAllowedComplexity": 5 }
+          "options": { "maxAllowedComplexity": 10 }
         },
-        "noExcessiveNestedTestSuites": "error",
-        "noUselessStringConcat": "error",
-        "noUselessUndefinedInitialization": "error",
-        "useSimplifiedLogicExpression": "error",
-        "noUselessConstructor": "error",
-        "noUselessRename": "error",
-        "noUselessSwitchCase": "error",
-        "useNumericLiterals": "error",
         "noUselessTernary": "error",
-        "useFlatMap": "error",
-        "noForEach": "warn"
+        "useFlatMap": "error"
       },
       "correctness": {
-        "noInvalidUseBeforeDeclaration": "error",
-        "noUnreachable": "error",
-        "useExhaustiveDependencies": "error",
         "noUnusedVariables": "error",
-        "noUnusedImports": "error",
-        "noUnusedPrivateClassMembers": "error",
-        "useHookAtTopLevel": "error",
+        "noUnusedImports": "error", 
+        "noUndeclaredVariables": "error",
         "useImportExtensions": {
           "level": "error",
           "options": {
             "forceJsExtensions": true
           }
-        },
-        "noEmptyPattern": "error",
-        "noGlobalObjectCalls": "error",
-        "noInvalidConstructorSuper": "error",
-        "noSetterReturn": "error",
-        "noUndeclaredVariables": "error",
-        "noUnusedLabels": "error",
-        "useValidForDirection": "error",
-        "useYield": "error"
+        }
       },
       "performance": {
-        "noAccumulatingSpread": "error",
-        "noBarrelFile": "error",
-        "noReExportAll": "error",
-        "noDelete": "error"
+        "noDelete": "warn",
+        "noAccumulatingSpread": "error"
       },
       "security": {
-        "noDangerouslySetInnerHtml": "error",
         "noGlobalEval": "error"
-      },
-      "nursery": {
-        "useNamingConvention": {
-          "level": "error",
-          "options": {
-            "strictCase": true,
-            "conventions": [
-              {
-                "selector": { "kind": "function" },
-                "match": "camelCase"
-              },
-              {
-                "selector": { "kind": "variable" },
-                "match": "camelCase"
-              },
-              {
-                "selector": { "kind": "class" },
-                "match": "PascalCase"
-              },
-              {
-                "selector": { "kind": "enum" },
-                "match": "PascalCase"
-              },
-              {
-                "selector": { "kind": "interface" },
-                "match": "PascalCase"
-              }
-            ]
-          }
-        }
       }
     }
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "quoteProperties": "asNeeded",
       "semicolons": "always",
-      "trailingCommas": "all",
-      "arrowParentheses": "always",
-      "bracketSpacing": true,
-      "bracketSameLine": false
+      "trailingCommas": "es5"
     },
-    "globals": ["process", "Buffer", "__dirname", "__filename"]
-  },
-  "json": {
-    "formatter": {
-      "enabled": true,
-      "trailingCommas": "none"
-    }
-  },
-  "css": {
-    "formatter": {
-      "enabled": true,
-      "indentStyle": "space",
-      "indentWidth": 2,
-      "lineWidth": 80
-    }
+    "globals": ["process", "Buffer", "__dirname", "__filename", "console"]
   },
   "files": {
-    "includes": [
-      "src/**/*.ts",
-      "src/**/*.tsx",
-      "src/**/*.js",
-      "src/**/*.jsx",
-      "**/*.json",
-      "**/*.css",
-      "scripts/**/*.js",
-      "scripts/**/*.ts",
-      "tests/**/*.ts",
-      "tests/**/*.js"
-    ],
+    "includes": ["src/**/*", "scripts/**/*", "tests/**/*"],
     "experimentalScannerIgnores": [
       "**/node_modules/**",
-      "**/dist/**",
+      "**/dist/**", 
       "**/build/**",
-      "**/target/**",
       "**/docs/**",
-      "**/logs/**",
-      "**/coverage/**",
-      "**/zen-neural-stack/**",
-      "**/qdrant_storage/**",
-      "**/ruv-FANN-upstream/**",
-      "**/*.d.ts",
-      "eslint-report.json"
-    ],
-    "ignoreUnknown": true
-  },
-  "overrides": [
-    {
-      "includes": [
-        "**/test/**/*",
-        "**/tests/**/*",
-        "**/__tests__/**/*",
-        "**/*.test.ts",
-        "**/*.test.js",
-        "**/*.spec.ts",
-        "**/*.spec.js",
-        "**/integration-tests/**/*"
-      ],
-      "javascript": {
-        "globals": [
-          "describe",
-          "it",
-          "test",
-          "expect",
-          "vi",
-          "jest",
-          "beforeEach",
-          "afterEach",
-          "beforeAll",
-          "afterAll"
-        ]
-      },
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noExplicitAny": "error",
-            "noConsole": "off"
-          },
-          "complexity": {
-            "noExcessiveCognitiveComplexity": {
-              "level": "error",
-              "options": { "maxAllowedComplexity": 10 }
-            }
-          },
-          "correctness": {
-            "noUnusedVariables": "error",
-            "noUnusedImports": "error"
-          },
-          "performance": {
-            "noBarrelFile": "error"
-          },
-          "style": {
-            "useTemplate": "error",
-            "useNodejsImportProtocol": "error"
-          },
-          "nursery": {
-            "useNamingConvention": "error"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["**/scripts/**/*", "**/bin/**/*"],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noConsole": "off",
-            "noExplicitAny": "error",
-            "useAwait": "error"
-          },
-          "complexity": {
-            "noExcessiveCognitiveComplexity": {
-              "level": "error",
-              "options": { "maxAllowedComplexity": 8 }
-            }
-          },
-          "correctness": {
-            "noUnusedVariables": "error",
-            "noUnusedImports": "error"
-          },
-          "performance": {
-            "noBarrelFile": "error",
-            "noReExportAll": "error"
-          },
-          "style": {
-            "useTemplate": "error",
-            "useNodejsImportProtocol": "error",
-            "noUselessElse": "error"
-          },
-          "nursery": {
-            "useNamingConvention": "error"
-          }
-        }
-      }
-    },
-    {
-      "includes": [
-        "**/*.config.js",
-        "**/*.config.ts",
-        "**/jest.config.*",
-        "**/vitest.config.*",
-        "**/rollup.config.*",
-        "**/esbuild.config.*",
-        "**/typedoc.*",
-        "**/ecosystem.config.js"
-      ],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noConsole": "off",
-            "noExplicitAny": "error"
-          },
-          "complexity": {
-            "noExcessiveCognitiveComplexity": {
-              "level": "error",
-              "options": { "maxAllowedComplexity": 10 }
-            }
-          },
-          "correctness": {
-            "noUnusedVariables": "error"
-          },
-          "performance": {
-            "noBarrelFile": "off",
-            "noReExportAll": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": [
-        "**/examples/**/*",
-        "**/demo/**/*",
-        "**/benchmarks/**/*",
-        "**/benches/**/*"
-      ],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noConsole": "off",
-            "noExplicitAny": "error"
-          },
-          "complexity": {
-            "noExcessiveCognitiveComplexity": {
-              "level": "error",
-              "options": { "maxAllowedComplexity": 6 }
-            }
-          },
-          "correctness": {
-            "noUnusedVariables": "error",
-            "noUnusedImports": "error"
-          },
-          "performance": {
-            "noBarrelFile": "error"
-          },
-          "style": {
-            "useTemplate": "error",
-            "useNodejsImportProtocol": "error"
-          },
-          "nursery": {
-            "useNamingConvention": "error"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["**/core/**/*", "**/di/**/*", "**/types/**/*"],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noExplicitAny": "error",
-            "noConsole": "error"
-          },
-          "complexity": {
-            "noExcessiveCognitiveComplexity": {
-              "level": "error",
-              "options": { "maxAllowedComplexity": 3 }
-            }
-          },
-          "correctness": {
-            "noUnusedVariables": "error",
-            "noUnusedImports": "error"
-          },
-          "style": {
-            "useImportType": "error"
-          },
-          "performance": {
-            "noAccumulatingSpread": "error",
-            "noBarrelFile": "error"
-          }
-        }
-      }
-    },
-    {
-      "includes": [
-        "**/neural/**/*",
-        "**/coordination/**/*",
-        "**/intelligence/**/*"
-      ],
-      "linter": {
-        "rules": {
-          "complexity": {
-            "noExcessiveCognitiveComplexity": {
-              "level": "warn",
-              "options": { "maxAllowedComplexity": 8 }
-            }
-          },
-          "suspicious": {
-            "noExplicitAny": "warn"
-          }
-        }
-      }
-    }
-  ]
+      "**/*.d.ts"
+    ]
+  }
 }

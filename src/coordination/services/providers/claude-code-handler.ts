@@ -142,7 +142,7 @@ export function filterMessagesForClaudeCode(
     if (Array.isArray(message.content)) {
       // Filter out image blocks since Claude Code doesn't support them
       const textContent = message.content.filter(
-        (content) => content.type === 'text',
+        (content: any) => content.type === 'text',
       );
       return {
         ...message,

@@ -72,7 +72,7 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
     this.parser = parser;
     this.formatter = formatter;
     this.errorHandler = errorHandler;
-    this.mockExecute = mockExecute || vi.fn();
+    this.mockExecute = mockExecute || vi.fn() as any;
   }
 
   async initialize(): Promise<void> {
@@ -162,7 +162,7 @@ describe('CLI Commands Integration - TDD London', () => {
       handle: vi.fn(),
     };
 
-    mockExecute = vi.fn();
+    mockExecute = vi.fn() as any;
 
     // Create integrated system
     cliSystem = new MockCLICommandSystem(

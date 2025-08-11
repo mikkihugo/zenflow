@@ -564,11 +564,11 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       const connectionEvents: unknown[] = [];
 
       // Monitor connection events
-      wsManager.on('client_connected', (clientInfo) => {
+      wsManager.on('client_connected', (clientInfo: any) => {
         connectionEvents.push({ type: 'connected', ...clientInfo });
       });
 
-      wsManager.on('client_disconnected', (clientInfo) => {
+      wsManager.on('client_disconnected', (clientInfo: any) => {
         connectionEvents.push({ type: 'disconnected', ...clientInfo });
       });
 

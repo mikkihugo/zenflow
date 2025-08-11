@@ -1537,7 +1537,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
 
     // Use existing AGUI interface for actual validation
     try {
-      const response = await this.aguiInterface.askQuestion(gateRequest);
+      const response = await this.aguiInterface.askQuestion(gateRequest) as any as any as any as any;
 
       return {
         approved: this.interpretResponse(response),

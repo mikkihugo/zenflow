@@ -319,10 +319,10 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
 
         // Should have both functional and non-functional requirements
         const functionalReqs = requirements.filter(
-          (req) => 'testCriteria' in req,
+          (req: any) => 'testCriteria' in req,
         );
         const nonFunctionalReqs = requirements.filter(
-          (req) => 'metrics' in req,
+          (req: any) => 'metrics' in req,
         );
 
         expect(functionalReqs.length).toBeGreaterThan(0);
@@ -335,10 +335,10 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
           await specificationEngine.gatherRequirements(context);
 
         const functionalReqs = requirements.filter(
-          (req) => 'testCriteria' in req,
+          (req: any) => 'testCriteria' in req,
         );
         const swarmSpecificReqs = functionalReqs.filter(
-          (req) =>
+          (req: any) =>
             req.id.includes('SWM') ||
             req.title.toLowerCase().includes('agent') ||
             req.title.toLowerCase().includes('swarm'),
@@ -368,10 +368,10 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
 
         // Should identify technical and performance constraints
         const technicalConstraints = constraints.filter(
-          (c) => 'type' in c && c.type === 'technical',
+          (c: any) => 'type' in c && c.type === 'technical',
         );
         const performanceConstraints = constraints.filter(
-          (c) => 'type' in c && c.type === 'performance',
+          (c: any) => 'type' in c && c.type === 'performance',
         );
 
         expect(technicalConstraints.length).toBeGreaterThan(0);
@@ -481,7 +481,7 @@ describe('SPARC Methodology System - Integration Tests (London TDD)', () => {
 
         expect(validation.overall).toBe(true);
         expect(validation.score).toBeGreaterThan(0.8);
-        expect(validation.results.every((r) => r.passed)).toBe(true);
+        expect(validation.results.every((r: any) => r.passed)).toBe(true);
         expect(validation.recommendations).toContain(
           'Specification is complete - proceed to pseudocode phase',
         );

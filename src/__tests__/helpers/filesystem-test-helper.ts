@@ -144,7 +144,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
       } catch {
         // Fallback to basic fs.watch if chokidar not available
         try {
-          watcher = fs.watch(path, (event) => callback(event));
+          watcher = fs.watch(path, (event: any) => callback(event));
         } catch {
           // File watching not available
         }

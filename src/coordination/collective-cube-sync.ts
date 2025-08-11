@@ -243,7 +243,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
    */
   private async optimizeTaskDistribution(): Promise<void> {
     const pendingTasks = this.hiveRegistry.globalTaskQueue.filter(
-      (t) => t.assignedAgents.length === 0,
+      (t: any) => t.assignedAgents.length === 0,
     );
     const availableAgents = Array.from(
       this.hiveRegistry.availableAgents.values(),
@@ -252,7 +252,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
       .sort((a, b) => a.currentWorkload - b.currentWorkload); // Least loaded first
 
     for (const task of pendingTasks) {
-      const suitableAgent = this.findBestAgentForTask(task, availableAgents);
+      const suitableAgent = this.findBestAgentForTask(task, availableAgents) as any as any as any as any;
 
       if (suitableAgent) {
         // Assign task to agent
@@ -582,12 +582,12 @@ export class CollectiveCubeCoordinator extends EventEmitter {
 
     // Handle FACT updates from HiveFACT
     if (this.hiveFact) {
-      this.hiveFact.on('fact-updated', (data) => {
+      this.hiveFact.on('fact-updated', (data: any) => {
         // Notify all swarms about updated facts
         (this.eventBus as any).emit('hive:fact:updated', data);
       });
 
-      this.hiveFact.on('fact-refreshed', (data) => {
+      this.hiveFact.on('fact-refreshed', (data: any) => {
         // Notify interested swarms about refreshed facts
         (this.eventBus as any).emit('hive:fact:refreshed', data);
       });

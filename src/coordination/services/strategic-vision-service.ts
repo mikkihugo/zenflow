@@ -127,7 +127,7 @@ export class StrategicVisionService {
 
       const existingTypes = new Set(
         existingDocs.success && existingDocs.data?.documents
-          ? existingDocs.data.documents.map((doc) => doc.type)
+          ? existingDocs.data.documents.map((doc: any) => doc.type)
           : [],
       );
 

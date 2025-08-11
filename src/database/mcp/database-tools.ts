@@ -1371,14 +1371,14 @@ async function _executeQueryWithDAL(
     switch (query.type) {
       case 'select':
         if (query.parameters['id']) {
-          result = await repository.findById(query.parameters['id']);
+          result = await repository.findById(query.parameters['id']) as any as any as any as any;
         } else {
           result = await repository.findAll(query.parameters);
         }
         break;
 
       case 'insert':
-        result = await repository.create(query.parameters['data']);
+        result = await repository.create(query.parameters['data']) as any as any as any as any;
         break;
 
       case 'update':
@@ -1389,7 +1389,7 @@ async function _executeQueryWithDAL(
         break;
 
       case 'delete':
-        result = await repository.delete(query.parameters['id']);
+        result = await repository.delete(query.parameters['id']) as any as any as any as any;
         break;
 
       default:

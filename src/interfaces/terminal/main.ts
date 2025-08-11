@@ -28,9 +28,12 @@ async function main() {
     if (flags.verbose || flags.debug) {
     }
 
-    // Launch the terminal interface
+    // Launch the terminal interface using Ink (like Claude CLI does)
+    logger.info('🚀 Launching Ink-based terminal interface...');
+
+    // Launch the terminal interface - default to interactive mode
     await launchTerminalInterface({
-      mode: flags.mode || modeResult?.mode,
+      mode: flags.mode || modeResult?.mode || 'interactive',
       theme: flags.theme || 'dark',
       verbose: flags.verbose,
       autoRefresh: !flags['no-refresh'],

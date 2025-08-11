@@ -360,7 +360,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     if (!tableMatch) return [];
 
     const tableName = tableMatch?.[1];
-    const tableData = this.storage.get(tableName);
+    const tableData = this.storage.get(tableName) as any;
     if (!tableData) return [];
 
     return Array.from(tableData?.values());
@@ -376,8 +376,8 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
       this.sequences.set(tableName, 0);
     }
 
-    const tableData = this.storage.get(tableName)!;
-    const id = this.getNextId(tableName);
+    const tableData = this.storage.get(tableName)! as any;
+    const id = this.getNextId(tableName) as any;
 
     // Simple parameter binding
     const columnsMatch = sql.match(/\(([^)]+)\)/);
@@ -402,7 +402,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     if (!tableMatch) return;
 
     const tableName = tableMatch?.[1];
-    const tableData = this.storage.get(tableName);
+    const tableData = this.storage.get(tableName) as any;
     if (!tableData) return;
 
     // For simplicity, update all records
@@ -417,7 +417,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     if (!tableMatch) return;
 
     const tableName = tableMatch?.[1];
-    const tableData = this.storage.get(tableName);
+    const tableData = this.storage.get(tableName) as any;
     if (tableData) {
       tableData?.clear();
     }

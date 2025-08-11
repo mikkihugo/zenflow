@@ -325,7 +325,7 @@ export class SafeAPIService {
 
   constructor(baseURL: string, apiKey?: string) {
     const headers = apiKey ? { Authorization: `Bearer ${apiKey}` } : {};
-    this.client = new SafeAPIClient(baseURL, headers);
+    this.client = new SafeAPIClient(baseURL, headers) as any as any as any;
   }
 
   /**
@@ -483,7 +483,7 @@ export async function safeAPIUsageExample(): Promise<void> {
   });
 
   if (isAPISuccess(listResult)) {
-    listResult?.data?.items.forEach((_user) => {});
+    listResult?.data?.items.forEach((_user: any) => {});
   } else if (isAPIError(listResult)) {
     logger.error('❌ Failed to list users:', extractErrorMessage(listResult));
   }

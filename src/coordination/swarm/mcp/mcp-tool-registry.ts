@@ -1154,7 +1154,7 @@ class EnhancedMCPTools {
         notifications.push(...agentNotifications);
       }
 
-      return notifications.sort((a, b) => b.timestamp - a.timestamp);
+      return notifications.sort((a, b) => b.timestamp - a.timestamp) as any;
     } catch (error) {
       this.logger.error(
         '❌ Failed to retrieve cross-agent notifications:',
@@ -2052,7 +2052,7 @@ class EnhancedMCPTools {
                     WHERE tr.task_id = ?
                     ORDER BY tr.created_at DESC
                 `);
-          dbTaskResults = taskResultsQuery?.all(taskId);
+          dbTaskResults = taskResultsQuery?.all(taskId) as any;
         } else {
           // Create mock results for testing
           dbTaskResults = [
@@ -3153,7 +3153,7 @@ class EnhancedMCPTools {
       }
     }
 
-    const calculateStats = (times) => {
+    const calculateStats = (times: any) => {
       if (times.length === 0) {
         return { avg_ms: 0, min_ms: 0, max_ms: 0 };
       }
@@ -3248,7 +3248,7 @@ class EnhancedMCPTools {
     }
 
     // Calculate statistics
-    const calculateStats = (data) => ({
+    const calculateStats = (data: any) => ({
       avg_ms: data?.reduce((a, b) => a + b, 0) / data.length,
       min_ms: Math.min(...data),
       max_ms: Math.max(...data),
@@ -3391,7 +3391,7 @@ class EnhancedMCPTools {
       }
     }
 
-    const calculateStats = (data) => {
+    const calculateStats = (data: any) => {
       if (data.length === 0) {
         this.logger.warn('Swarm benchmark: No data collected for timing');
         return { avg_ms: 0, min_ms: 0, max_ms: 0 };
@@ -3546,7 +3546,7 @@ class EnhancedMCPTools {
       }
     }
 
-    const calculateStats = (data) => {
+    const calculateStats = (data: any) => {
       if (data.length === 0) {
         return { avg_ms: 0, min_ms: 0, max_ms: 0 };
       }
@@ -3674,7 +3674,7 @@ class EnhancedMCPTools {
         const visiting = new Set();
         const visited = new Set();
 
-        const visit = (taskId) => {
+        const visit = (taskId: any) => {
           if (visited.has(taskId)) {
             return;
           }
@@ -3705,7 +3705,7 @@ class EnhancedMCPTools {
       }
     }
 
-    const calculateStats = (data) => {
+    const calculateStats = (data: any) => {
       if (data.length === 0) {
         return { avg_ms: 0, min_ms: 0, max_ms: 0 };
       }
@@ -4051,7 +4051,7 @@ class EnhancedMCPTools {
             (1024 * 1024) || 0,
         system_uptime_ms: 0, // System uptime not tracked
         features_available: Object.keys(this.ruvSwarm?.features || {}).filter(
-          (f) => this.ruvSwarm?.features?.[f],
+          (f: any) => this.ruvSwarm?.features?.[f],
         ).length,
       };
 

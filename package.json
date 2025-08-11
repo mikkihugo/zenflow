@@ -1,6 +1,7 @@
 {
   "name": "claude-code-zen",
   "version": "1.0.0-alpha.43",
+  "type": "module",
   "description": "Claude Code Zen: Unified AI swarm orchestration platform with neural networks and direct integration",
   "main": "dist/claude-zen-core.js",
   "bin": {

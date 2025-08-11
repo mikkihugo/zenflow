@@ -710,7 +710,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
       // Update weight based on performance (simplified)
       const newWeight = Math.max(0.1, perf?.accuracy || 0.5);
-      const modelData = this.models.get(modelId);
+      const modelData = this.models.get(modelId) as any;
       if (modelData) {
         modelData.weight = newWeight;
         this.totalWeight += newWeight;

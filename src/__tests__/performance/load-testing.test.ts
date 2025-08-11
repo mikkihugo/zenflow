@@ -145,7 +145,7 @@ describe('Performance and Load Testing Suite', () => {
       });
 
       expect(stressResult.isError).toBe(false);
-      const stressData = JSON.parse(stressResult.content[0].text);
+      const stressData = JSON.parse(stressResult.content[0].text) as any as any as any as any;
       expect(stressData.success).toBe(true);
 
       // System should still provide recommendations under stress

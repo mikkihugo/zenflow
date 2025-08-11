@@ -291,7 +291,7 @@ describe('MonitoringEventAdapter', () => {
       // Verify subscriptions are active
       const activeSubscriptions = adapter.getSubscriptions();
       expect(activeSubscriptions).toHaveLength(4);
-      expect(activeSubscriptions.every((sub) => sub.active)).toBe(true);
+      expect(activeSubscriptions.every((sub: any) => sub.active)).toBe(true);
     });
 
     it('should apply filters correctly to monitoring events', async () => {
@@ -341,7 +341,7 @@ describe('MonitoringEventAdapter', () => {
 
       // Add transform to enrich events
       const transformId = adapter.addTransform({
-        enricher: async (event) => ({
+        enricher: async (event: any) => ({
           ...event,
           metadata: {
             ...event['metadata'],
@@ -677,7 +677,7 @@ describe('MonitoringEventAdapter', () => {
       // Subscribe to all monitoring events
       adapter.subscribe(
         ['monitoring:metrics', 'monitoring:health', 'monitoring:alert'],
-        (event) => {
+        (event: any) => {
           workflowEvents.push(event);
         },
       );
@@ -747,7 +747,7 @@ describe('MonitoringEventAdapter', () => {
         const eventCount = 200;
         const receivedEvents: unknown[] = [];
 
-        htAdapter.subscribe(['monitoring:metrics'], (event) => {
+        htAdapter.subscribe(['monitoring:metrics'], (event: any) => {
           receivedEvents.push(event);
         });
 

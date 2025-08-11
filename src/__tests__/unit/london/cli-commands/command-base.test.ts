@@ -74,7 +74,7 @@ describe('BaseCommand - TDD London', () => {
     };
 
     command = new TestCommand(config);
-    mockEventHandler = vi.fn();
+    mockEventHandler = vi.fn() as any;
 
     // Listen to command events
     command.on('start', mockEventHandler);

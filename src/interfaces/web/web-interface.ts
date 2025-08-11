@@ -12,8 +12,8 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getLogger } from '../../config/logging-config.ts';
-import { ProcessLifecycleManager } from '../../core/process-lifecycle.js';
-import type { DIContainer } from '../../di/index.js';
+import { ProcessLifecycleManager } from '../../core/process-lifecycle.ts';
+import type { DIContainer } from '../../di/index.ts';
 import { WebApiRoutes } from './web-api-routes.ts';
 // Import modular components
 import { createWebConfig, type WebConfig } from './web-config.ts';

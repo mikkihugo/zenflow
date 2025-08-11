@@ -109,7 +109,7 @@ class SessionManager extends EventEmitter {
 
     // Try storage if not in memory
     if (!session && this.storage) {
-      session = await this.storage.getSession(sessionId);
+      session = await this.storage.getSession(sessionId) as any;
       if (session) {
         this.sessions.set(sessionId, session);
       }
@@ -147,7 +147,7 @@ class SessionManager extends EventEmitter {
     if (merge && typeof data === 'object' && data !== null) {
       session.data = { ...session.data, ...data };
     } else {
-      session.data = data;
+      session.data = data as any;
     }
 
     // Update metadata

@@ -92,7 +92,7 @@ export class UELIntegrationExample {
     // Subscribe to events
     const systemSubscription = systemManager.subscribe(
       ['system:*'],
-      (event) => {
+      (event: any) => {
         this.logger.info(
           `System event received: ${event.type}`,
           event['details'],
@@ -102,7 +102,7 @@ export class UELIntegrationExample {
 
     const coordSubscription = coordManager.subscribe(
       ['coordination:*'],
-      (event) => {
+      (event: any) => {
         this.logger.info(
           `Coordination event received: ${event.type}`,
           event['details'],

@@ -141,13 +141,13 @@ export function createSPARCTemplateCommands(): Command {
           await specEngine.validateSpecificationCompleteness(specification);
 
         if (validation.results.length > 0) {
-          validation.results.forEach((result) => {
+          validation.results.forEach((result: any) => {
             const _status = result?.passed ? '✅' : '❌';
           });
         }
 
         if (validation.recommendations.length > 0) {
-          validation.recommendations.forEach((_rec) => {});
+          validation.recommendations.forEach((_rec: any) => {});
         }
 
         process.exit(validation.overall ? 0 : 1);

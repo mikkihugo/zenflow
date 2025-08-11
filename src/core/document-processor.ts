@@ -27,7 +27,7 @@ import { basename, dirname, join } from 'node:path';
 import { getLogger } from '../config/logging-config.ts';
 import type { BaseDocumentEntity } from '../database/entities/product-entities.ts';
 import type { MemorySystem } from './memory-system.ts';
-import type { WorkflowEngine } from './workflow-engine.ts';
+import type { WorkflowCoordinationContext } from '../workflows/workflow-coordination-types.ts';
 
 const logger = getLogger('DocumentProcessor');
 
@@ -172,7 +172,7 @@ export interface DocumentStats {
  */
 export class DocumentProcessor extends EventEmitter {
   private memory: MemorySystem;
-  private workflowEngine: WorkflowEngine;
+  private workflowEngine: any; // Dynamic import to break circular dependency
   private config: Required<DocumentProcessorConfig>;
   private workspaces: Map<string, ProcessingContext> = new Map();
   private documentWatchers: Map<string, any> = new Map();
@@ -193,7 +193,7 @@ export class DocumentProcessor extends EventEmitter {
    */
   constructor(
     memory: MemorySystem,
-    workflowEngine: WorkflowEngine,
+    workflowEngine: any,
     config: DocumentProcessorConfig = {},
   ) {
     super();
@@ -343,14 +343,18 @@ export class DocumentProcessor extends EventEmitter {
       await this.processDocumentByType(workspaceId, document);
 
       // Trigger workflows if enabled
-      if (this.config.enableWorkflows) {
-        await this.workflowEngine.processDocumentEvent(
-          'document:created',
-          document as unknown as BaseDocumentEntity,
-          {
-            workspaceId,
-          } as any,
-        );
+      if (this.config.enableWorkflows && this.workflowEngine) {
+        try {
+          await this.workflowEngine.processDocumentEvent(
+            'document:created',
+            document as unknown as BaseDocumentEntity,
+            {
+              workspaceId,
+            } as any,
+          );
+        } catch (error) {
+          logger.warn('Workflow processing failed:', error);
+        }
       }
 
       this.emit('document:processed', {

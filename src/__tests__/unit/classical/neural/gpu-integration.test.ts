@@ -609,8 +609,8 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       }> = [];
 
       for (const test of performanceTests) {
-        const matrixA = generateTestMatrix(test.size[0], test.size[1]);
-        const matrixB = generateTestMatrix(test.size[1], test.size[0]);
+        const matrixA = generateTestMatrix(test.size[0], test.size[1]) as any;
+        const matrixB = generateTestMatrix(test.size[1], test.size[0]) as any;
 
         // CPU benchmark
         const cpuStart = performance.now();

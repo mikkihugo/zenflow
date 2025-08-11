@@ -128,7 +128,7 @@ export class MockMemoryStoreService {
   }
 
   setupRetrieveValue(key: string, value: unknown) {
-    this.retrieve.mockImplementationOnce((k) =>
+    this.retrieve.mockImplementationOnce((k: any) =>
       k === key ? Promise.resolve(value) : Promise.resolve(null),
     );
     return this;
@@ -275,7 +275,7 @@ export class MockDatabaseService {
   constructor() {
     this.query.mockResolvedValue([]);
     this.execute.mockResolvedValue({ affectedRows: 1 });
-    this.transaction.mockImplementation(async (fn) => fn(this));
+    this.transaction.mockImplementation(async (fn: any) => fn(this));
     this.connect.mockResolvedValue(undefined);
     this.disconnect.mockResolvedValue(undefined);
   }
@@ -295,7 +295,7 @@ export class MockDatabaseService {
   }
 
   setupQueryResult(sql: string, result: unknown[]) {
-    this.query.mockImplementationOnce((querySql) =>
+    this.query.mockImplementationOnce((querySql: any) =>
       querySql.includes(sql) ? Promise.resolve(result) : Promise.resolve([]),
     );
     return this;

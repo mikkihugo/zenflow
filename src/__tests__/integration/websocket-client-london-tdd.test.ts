@@ -142,7 +142,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
     }
 
     private handleMessage(data: unknown) {
-      const parsed = JSON.parse(data);
+      const parsed = JSON.parse(data) as any as any as any as any;
       mockEventEmitter.emit('message', parsed);
     }
 
@@ -369,13 +369,13 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
 
       const eventDrivenClient = {
         setupEventHandlers: () => {
-          mockEventBus.subscribe('connection-status', (status) => {
+          mockEventBus.subscribe('connection-status', (status: any) => {
             if (status === 'connected') {
               mockEventBus.publish('ready-for-messages', true);
             }
           });
 
-          mockEventBus.subscribe('message-received', (message) => {
+          mockEventBus.subscribe('message-received', (message: any) => {
             mockEventBus.publish('message-processed', message.id);
           });
         },

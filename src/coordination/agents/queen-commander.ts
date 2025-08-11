@@ -1254,7 +1254,7 @@ export class QueenCommander extends EventEmitter {
       for (const agentId of agentsToRemove) {
         await this.removeAgent(agentId);
         pool.availableAgents = pool.availableAgents.filter(
-          (a) => a !== agentId,
+          (a: any) => a !== agentId,
         );
       }
     }
@@ -1747,15 +1747,15 @@ export class QueenCommander extends EventEmitter {
     // Remove from pools
     for (const pool of Array.from(this.pools.values())) {
       pool.availableAgents = pool.availableAgents.filter(
-        (a) => a.id !== agentId,
+        (a: any) => a.id !== agentId,
       );
-      pool.busyAgents = pool.busyAgents.filter((a) => a.id !== agentId);
+      pool.busyAgents = pool.busyAgents.filter((a: any) => a.id !== agentId);
       pool.currentSize = pool.availableAgents.length + pool.busyAgents.length;
     }
 
     // Remove from clusters
     for (const cluster of Array.from(this.clusters.values())) {
-      cluster.agents = cluster.agents.filter((a) => a.id !== agentId);
+      cluster.agents = cluster.agents.filter((a: any) => a.id !== agentId);
     }
   }
 

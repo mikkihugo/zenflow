@@ -94,8 +94,8 @@ export async function* runClaudeCode(
     for (const message of messages) {
       const content = Array.isArray(message.content)
         ? message.content
-            .filter((c) => c.type === 'text')
-            .map((c) => (c as any).text)
+            .filter((c: any) => c.type === 'text')
+            .map((c: any) => (c as any).text)
             .join('')
         : message.content;
 

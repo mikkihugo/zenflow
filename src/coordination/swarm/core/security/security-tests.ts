@@ -251,7 +251,7 @@ class SecurityTester {
       });
 
       const hasInjection = args.some(
-        (arg) => arg.includes(';') || arg.includes('|') || arg.includes('&'),
+        (arg: any) => arg.includes(';') || arg.includes('|') || arg.includes('&'),
       );
       this.logTest(
         'GitHub Args Construction',
@@ -273,7 +273,7 @@ class SecurityTester {
       });
 
       const hasInjection = args.some(
-        (arg) => arg.includes(';') || arg.includes('$('),
+        (arg: any) => arg.includes(';') || arg.includes('$('),
       );
       this.logTest(
         'Git Args Construction',

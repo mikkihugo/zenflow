@@ -752,7 +752,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
 
     const bestScore = viableAgents[0]?.score;
     const secondBestScore = viableAgents[1]?.score;
-    const advantage = (bestScore - secondBestScore) / Math.max(bestScore, 0.1);
+    const advantage = (bestScore - secondBestScore) / Math.max(bestScore, 0.1) as any;
 
     return Math.min(1.0, Math.max(0.3, advantage + 0.5));
   }

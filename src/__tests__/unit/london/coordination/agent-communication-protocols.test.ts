@@ -421,7 +421,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
       );
 
       const criticalCall = mockMessageBroker.sendDirectMessage.mock.calls.find(
-        (call) => call[2]?.priority === 'critical',
+        (call: any) => call[2]?.priority === 'critical',
       );
 
       expect(criticalCall[2]).toMatchObject({

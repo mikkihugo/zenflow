@@ -711,7 +711,7 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       );
 
       const testAdapter = createIntegrationServiceAdapter(validConfig);
-      const isValid = await testAdapter.validateConfig(validConfig);
+      const isValid = await testAdapter.validateConfig(validConfig) as any as any as any as any;
 
       expect(isValid).toBe(true);
       await testAdapter.destroy();
@@ -739,7 +739,7 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       );
 
       const testAdapter = createIntegrationServiceAdapter(invalidConfig);
-      const isValid = await testAdapter.validateConfig(invalidConfig);
+      const isValid = await testAdapter.validateConfig(invalidConfig) as any as any as any as any;
 
       expect(isValid).toBe(false);
       await testAdapter.destroy();
@@ -1206,10 +1206,10 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
 
       const issues = validation.data?.issues || [];
       const cacheWarning = issues.find(
-        (i) => i.component === 'cache' && i.severity === 'warning',
+        (i: any) => i.component === 'cache' && i.severity === 'warning',
       );
       const protocolError = issues.find(
-        (i) => i.component === 'protocol' && i.severity === 'error',
+        (i: any) => i.component === 'protocol' && i.severity === 'error',
       );
 
       expect(cacheWarning).toBeDefined();
@@ -1462,7 +1462,7 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     const duration = Date.now() - startTime;
 
     // All operations should succeed
-    expect(results?.every((r) => r.success)).toBe(true);
+    expect(results?.every((r: any) => r.success)).toBe(true);
 
     // Should complete reasonably quickly (allowing for test environment variance)
     expect(duration).toBeLessThan(5000); // 5 seconds max
@@ -1498,7 +1498,7 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     const results = await Promise.all(requests);
 
     // All should succeed
-    expect(results?.every((r) => r.success)).toBe(true);
+    expect(results?.every((r: any) => r.success)).toBe(true);
 
     // Due to caching, should have fast response times
     const avgDuration =

@@ -22,6 +22,18 @@ import type {
   IEventManagerRegistry,
   SystemEvent,
 } from './core/interfaces.ts';
+
+// Re-export event manager types for backward compatibility
+export type {
+  IWorkflowEventManager,
+  INeuralEventManager, 
+  IMemoryEventManager,
+  IInterfaceEventManager,
+  IDatabaseEventManager,
+  ISystemEventManager,
+  ICommunicationEventManager,
+  ICoordinationEventManager
+} from './event-manager-types.ts';
 import { EventManagerPresets, EventManagerTypes, EventTypeGuards } from './core/interfaces.ts';
 import type {
   CommunicationEvent,
@@ -777,7 +789,7 @@ export class UELFactory {
     switch (managerType) {
       case EventManagerTypes.SYSTEM: {
         const { SystemEventManagerFactory } = await import('./adapters/system-event-factory.ts');
-        FactoryClass = SystemEventManagerFactory;
+        FactoryClass = SystemEventManagerFactory as any;
         break;
       }
 
@@ -785,7 +797,7 @@ export class UELFactory {
         const { CoordinationEventManagerFactory } = await import(
           './adapters/coordination-event-factory.ts'
         );
-        FactoryClass = CoordinationEventManagerFactory;
+        FactoryClass = CoordinationEventManagerFactory as any;
         break;
       }
 
@@ -801,37 +813,37 @@ export class UELFactory {
         const { MonitoringEventFactory: MonitoringEventManagerFactory } = await import(
           './adapters/monitoring-event-factory.ts'
         );
-        FactoryClass = MonitoringEventManagerFactory;
+        FactoryClass = MonitoringEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.INTERFACE: {
         const { InterfaceEventManagerFactory } = await import('./adapters/interface-event-factory.ts');
-        FactoryClass = InterfaceEventManagerFactory;
+        FactoryClass = InterfaceEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.NEURAL: {
         const { NeuralEventManagerFactory } = await import('./adapters/neural-event-factory.ts');
-        FactoryClass = NeuralEventManagerFactory;
+        FactoryClass = NeuralEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.DATABASE: {
         const { DatabaseEventManagerFactory } = await import('./adapters/database-event-factory.ts');
-        FactoryClass = DatabaseEventManagerFactory;
+        FactoryClass = DatabaseEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.MEMORY: {
         const { MemoryEventManagerFactory } = await import('./adapters/memory-event-factory.ts');
-        FactoryClass = MemoryEventManagerFactory;
+        FactoryClass = MemoryEventManagerFactory as any;
         break;
       }
 
       case EventManagerTypes.WORKFLOW: {
         const { WorkflowEventManagerFactory } = await import('./adapters/workflow-event-factory.ts');
-        FactoryClass = WorkflowEventManagerFactory;
+        FactoryClass = WorkflowEventManagerFactory as any;
         break;
       }
 
@@ -1089,7 +1101,7 @@ export async function createEventManager<T extends EventManagerType>(
   name: string,
   config?: Partial<EventManagerConfig>
 ): Promise<EventManagerTypeMap<T>> {
-  const { UELFactory } = await import('./factories.ts');
+  // Use the UELFactory class directly (no self-import needed)
   const { DIContainer } = await import('../../di/container/di-container.ts');
   const { CORE_TOKENS } = await import('../../di/tokens/core-tokens.ts');
 

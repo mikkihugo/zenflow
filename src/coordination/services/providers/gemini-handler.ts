@@ -202,8 +202,8 @@ function convertMessagesToGemini(
     } else if (Array.isArray(message.content)) {
       // Extract text from content blocks, skip images
       text = message.content
-        .filter((c) => c.type === 'text')
-        .map((c) => (c as any).text)
+        .filter((c: any) => c.type === 'text')
+        .map((c: any) => (c as any).text)
         .join('\n');
     }
 

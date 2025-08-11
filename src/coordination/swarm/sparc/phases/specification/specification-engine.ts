@@ -516,7 +516,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
     // Add constraints based on requirements analysis
     const hasPerformanceReqs = requirements.some(
-      (req) =>
+      (req: any) =>
         'metrics' in req &&
         Object.keys(req.metrics).some(
           (key) =>
@@ -571,7 +571,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       return 'automated';
     }
     if (
-      requirement.testCriteria.some((criteria) =>
+      requirement.testCriteria.some((criteria: any) =>
         criteria.includes('integration'),
       )
     ) {
@@ -793,10 +793,10 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     spec: DetailedSpecification,
   ): boolean {
     const highPriorityReqs = spec.functionalRequirements.filter(
-      (req) => req.priority === 'HIGH',
+      (req: any) => req.priority === 'HIGH',
     );
-    return highPriorityReqs.every((req) =>
-      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id),
+    return highPriorityReqs.every((req: any) =>
+      spec.acceptanceCriteria.some((ac: any) => ac.requirement === req.id),
     );
   }
 
@@ -804,12 +804,12 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     spec: DetailedSpecification,
   ): number {
     const highPriorityReqs = spec.functionalRequirements.filter(
-      (req) => req.priority === 'HIGH',
+      (req: any) => req.priority === 'HIGH',
     );
     if (highPriorityReqs.length === 0) return 1.0;
 
-    const completedHighPriority = highPriorityReqs.filter((req) =>
-      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id),
+    const completedHighPriority = highPriorityReqs.filter((req: any) =>
+      spec.acceptanceCriteria.some((ac: any) => ac.requirement === req.id),
     );
 
     return completedHighPriority.length / highPriorityReqs.length;

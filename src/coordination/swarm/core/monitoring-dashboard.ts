@@ -131,11 +131,11 @@ export class MonitoringDashboard extends EventEmitter {
     this.healthMonitor = healthMonitor;
 
     // Subscribe to health monitor events
-    healthMonitor.on('health:check', (result) => {
+    healthMonitor.on('health:check', (result: any) => {
       this.recordHealthMetric(result);
     });
 
-    healthMonitor.on('health:alert', (alert) => {
+    healthMonitor.on('health:alert', (alert: any) => {
       this.recordAlert(alert);
     });
 
@@ -146,15 +146,15 @@ export class MonitoringDashboard extends EventEmitter {
     this.recoveryWorkflows = recoveryWorkflows;
 
     // Subscribe to recovery events
-    recoveryWorkflows.on('recovery:started', (event) => {
+    recoveryWorkflows.on('recovery:started', (event: any) => {
       this.recordRecoveryMetric('started', event);
     });
 
-    recoveryWorkflows.on('recovery:completed', (event) => {
+    recoveryWorkflows.on('recovery:completed', (event: any) => {
       this.recordRecoveryMetric('completed', event);
     });
 
-    recoveryWorkflows.on('recovery:failed', (event) => {
+    recoveryWorkflows.on('recovery:failed', (event: any) => {
       this.recordRecoveryMetric('failed', event);
     });
 
@@ -165,15 +165,15 @@ export class MonitoringDashboard extends EventEmitter {
     this.connectionManager = connectionManager;
 
     // Subscribe to connection events
-    connectionManager.on('connection:established', (event) => {
+    connectionManager.on('connection:established', (event: any) => {
       this.recordConnectionMetric('established', event);
     });
 
-    connectionManager.on('connection:failed', (event) => {
+    connectionManager.on('connection:failed', (event: any) => {
       this.recordConnectionMetric('failed', event);
     });
 
-    connectionManager.on('connection:closed', (event) => {
+    connectionManager.on('connection:closed', (event: any) => {
       this.recordConnectionMetric('closed', event);
     });
 
@@ -1017,7 +1017,7 @@ export class MonitoringDashboard extends EventEmitter {
     const connectionData = this.connectionManager.exportConnectionData();
     const healthStatus = {};
 
-    connectionData?.connections?.forEach((connection) => {
+    connectionData?.connections?.forEach((connection: any) => {
       healthStatus[connection.id] = {
         status: connection.health?.status || 'unknown',
         latency: connection.health?.latency,

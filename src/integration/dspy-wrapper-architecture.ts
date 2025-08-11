@@ -544,7 +544,7 @@ export class DSPy {
 
     // Match field name to recognized entities
     const relevantEntities = entities.filter(
-      (entity) =>
+      (entity: any) =>
         this.calculateSimilarity(
           entity.label.toLowerCase(),
           fieldName.toLowerCase(),

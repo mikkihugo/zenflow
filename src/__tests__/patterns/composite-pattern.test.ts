@@ -174,7 +174,7 @@ describe('Composite Pattern Implementation', () => {
         );
         const totalTime = Date.now() - startTime;
 
-        expect(results?.every((r) => r.success)).toBe(true);
+        expect(results?.every((r: any) => r.success)).toBe(true);
         expect(totalTime).toBeLessThan(600); // Should be < 3 * 200ms due to concurrency
         expect(totalTime).toBeGreaterThan(400); // Should be > 2 * 200ms due to queue limit
 
@@ -303,10 +303,10 @@ describe('Composite Pattern Implementation', () => {
           tasks.map((task) => agentGroup.executeTask(task)),
         );
 
-        expect(results?.every((r) => r.success)).toBe(true);
+        expect(results?.every((r: any) => r.success)).toBe(true);
 
         // Verify distribution - each agent should have handled some tasks
-        const agentExecutions = new Set(results?.map((r) => r.agentId));
+        const agentExecutions = new Set(results?.map((r: any) => r.agentId));
         expect(agentExecutions.size).toBeGreaterThan(1); // Multiple agents used
 
         const groupStatus = agentGroup.getStatus();
@@ -350,7 +350,7 @@ describe('Composite Pattern Implementation', () => {
           const results = await Promise.all(
             tasks.map((task) => testGroup.executeTask(task)),
           );
-          expect(results?.every((r) => r.success)).toBe(true);
+          expect(results?.every((r: any) => r.success)).toBe(true);
 
           await testGroup.shutdown();
         }
@@ -382,14 +382,14 @@ describe('Composite Pattern Implementation', () => {
         );
 
         // Some tasks should succeed (handled by working agents)
-        const successfulTasks = results?.filter((r) => r.success);
-        const failedTasks = results?.filter((r) => !r.success);
+        const successfulTasks = results?.filter((r: any) => r.success);
+        const failedTasks = results?.filter((r: any) => !r.success);
 
         expect(successfulTasks.length).toBeGreaterThan(0);
         expect(failedTasks.length).toBeGreaterThan(0);
 
         // Failed tasks should have error information
-        failedTasks.forEach((result) => {
+        failedTasks.forEach((result: any) => {
           expect(result?.error).toBeDefined();
           expect(result?.error?.message).toContain('failed');
         });
@@ -400,18 +400,18 @@ describe('Composite Pattern Implementation', () => {
 
         // Should include common capabilities
         expect(
-          groupCapabilities.some((cap) => cap.name === 'data-processing'),
+          groupCapabilities.some((cap: any) => cap.name === 'data-processing'),
         ).toBe(true);
 
         // Should include specialized capabilities from all members
         expect(
-          groupCapabilities.some((cap) => cap.name === 'specialized-0'),
+          groupCapabilities.some((cap: any) => cap.name === 'specialized-0'),
         ).toBe(true);
         expect(
-          groupCapabilities.some((cap) => cap.name === 'specialized-1'),
+          groupCapabilities.some((cap: any) => cap.name === 'specialized-1'),
         ).toBe(true);
         expect(
-          groupCapabilities.some((cap) => cap.name === 'specialized-2'),
+          groupCapabilities.some((cap: any) => cap.name === 'specialized-2'),
         ).toBe(true);
 
         expect(groupCapabilities.length).toBeGreaterThan(3); // At least 4 capabilities
@@ -549,7 +549,7 @@ describe('Composite Pattern Implementation', () => {
           tasks.map((task) => hierarchicalGroup.executeTask(task)),
         );
 
-        expect(results?.every((r) => r.success)).toBe(true);
+        expect(results?.every((r: any) => r.success)).toBe(true);
 
         // Verify tasks were routed to appropriate tier agents
         results?.forEach((result, index) => {
@@ -599,7 +599,7 @@ describe('Composite Pattern Implementation', () => {
         );
 
         // Some tasks should succeed (handled by working sub-groups)
-        const successfulTasks = results?.filter((r) => r.success);
+        const successfulTasks = results?.filter((r: any) => r.success);
         expect(successfulTasks.length).toBeGreaterThan(0);
 
         // Failed tasks should be redistributed to working sub-groups
@@ -651,12 +651,12 @@ describe('Composite Pattern Implementation', () => {
         );
         const totalTime = Date.now() - startTime;
 
-        expect(results?.every((r) => r.success)).toBe(true);
+        expect(results?.every((r: any) => r.success)).toBe(true);
         expect(totalTime).toBeLessThan(300); // Should be efficient due to parallel processing
 
         // Verify load distribution
         const agentUsage = new Map<string, number>();
-        results?.forEach((result) => {
+        results?.forEach((result: any) => {
           const count = agentUsage.get(result?.agentId) || 0;
           agentUsage.set(result?.agentId, count + 1);
         });
@@ -738,7 +738,7 @@ describe('Composite Pattern Implementation', () => {
         );
         const totalTime = Date.now() - startTime;
 
-        expect(results?.every((r) => r.success)).toBe(true);
+        expect(results?.every((r: any) => r.success)).toBe(true);
         expect(results).toHaveLength(taskCount);
 
         // Should process very quickly due to parallelization
@@ -749,7 +749,7 @@ describe('Composite Pattern Implementation', () => {
 
         // Verify load distribution
         const agentUsage = new Map<string, number>();
-        results?.forEach((result) => {
+        results?.forEach((result: any) => {
           const count = agentUsage.get(result?.agentId) || 0;
           agentUsage.set(result?.agentId, count + 1);
         });
@@ -1039,7 +1039,7 @@ describe('Composite Pattern Implementation', () => {
           metadata: { source: 'compatibility-test', timestamp: new Date() },
         };
 
-        mockAgent.canHandleTask.mockImplementation((task) =>
+        mockAgent.canHandleTask.mockImplementation((task: any) =>
           task.requirements.capabilities.includes('existing-capability'),
         );
 
@@ -1086,10 +1086,10 @@ describe('Composite Pattern Implementation', () => {
 
         expect(agentCaps).toHaveLength(2);
         expect(groupCaps).toHaveLength(2);
-        expect(agentCaps.some((cap) => cap.name === 'agent-capability')).toBe(
+        expect(agentCaps.some((cap: any) => cap.name === 'agent-capability')).toBe(
           true,
         );
-        expect(groupCaps.some((cap) => cap.name === 'group-capability')).toBe(
+        expect(groupCaps.some((cap: any) => cap.name === 'group-capability')).toBe(
           true,
         );
       });

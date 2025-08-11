@@ -237,7 +237,7 @@ export async function executeSwarmCommand(): Promise<void> {
   const startTime = performance.now();
   const { input, flags } = swarmCLI;
   const command = input[0];
-  const options: SwarmOptions = flags;
+  const options: SwarmOptions = flags as any;
 
   if (!command) {
     swarmCLI.showHelp();

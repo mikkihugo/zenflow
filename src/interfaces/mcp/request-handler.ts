@@ -380,7 +380,7 @@ export class MCPRequestHandler {
 
     return {
       totalTools: tools.length,
-      tools: tools.map((tool) => ({
+      tools: tools.map((tool: any) => ({
         ...tool,
         stats: stats[tool.name] || {
           calls: 0,

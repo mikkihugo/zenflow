@@ -486,7 +486,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       // High priority workflows should be allocated first
       const highPriorityAllocations = allocationResult?.allocations?.filter(
-        (allocation) => allocation.priority <= 2,
+        (allocation: any) => allocation.priority <= 2,
       );
       expect(highPriorityAllocations.length).toBe(2);
     });

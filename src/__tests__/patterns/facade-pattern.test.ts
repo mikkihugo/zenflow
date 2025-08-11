@@ -860,9 +860,9 @@ describe('Facade Pattern Implementation', () => {
 
         // After threshold failures, circuit should be open
         const laterResults = results?.slice(-3);
-        expect(laterResults?.every((r) => !r.success)).toBe(true);
+        expect(laterResults?.every((r: any) => !r.success)).toBe(true);
         expect(
-          laterResults?.some((r) => r.error?.type === 'CIRCUIT_BREAKER_OPEN'),
+          laterResults?.some((r: any) => r.error?.type === 'CIRCUIT_BREAKER_OPEN'),
         ).toBe(true);
 
         // Verify circuit breaker status
@@ -946,7 +946,7 @@ describe('Facade Pattern Implementation', () => {
           query: 'SELECT status FROM swarms WHERE active = true',
         }));
 
-        mockServices.databaseService.query.mockImplementation((_query) => {
+        mockServices.databaseService.query.mockImplementation((_query: any) => {
           return Promise.resolve([
             { swarmId: 'batch-swarm-0', status: 'active' },
             { swarmId: 'batch-swarm-1', status: 'active' },
@@ -957,14 +957,14 @@ describe('Facade Pattern Implementation', () => {
           requests.map((req) => facade.queryDatabase(req.query, [])),
         );
 
-        expect(results?.every((r) => r.success)).toBe(true);
+        expect(results?.every((r: any) => r.success)).toBe(true);
 
         // Due to batching and caching, database should be called fewer times
         expect(mockServices.databaseService.query).toHaveBeenCalledTimes(1);
 
         // Results should indicate cache hits
         const cachedResults = results?.slice(1);
-        expect(cachedResults?.every((r) => r.cached)).toBe(true);
+        expect(cachedResults?.every((r: any) => r.cached)).toBe(true);
       });
 
       it('should load balance requests across service instances', async () => {
@@ -998,7 +998,7 @@ describe('Facade Pattern Implementation', () => {
 
         const results = await Promise.all(requestPromises);
 
-        expect(results?.every((r) => r.success)).toBe(true);
+        expect(results?.every((r: any) => r.success)).toBe(true);
 
         // Verify load balancing - each instance should handle 3 requests
         swarmInstances.forEach((instance) => {
@@ -1022,7 +1022,7 @@ describe('Facade Pattern Implementation', () => {
         const maxConcurrentOperations = 2;
 
         mockServices.neuralService.trainModel.mockImplementation(
-          async (_config) => {
+          async (_config: any) => {
             if (activeOperations >= maxConcurrentOperations) {
               throw new Error('Resource pool exhausted');
             }

@@ -126,7 +126,7 @@ export class CoordinationTestBuilder {
             agent.connections = agentIds.slice(1);
           } else {
             // Leaf nodes connect to root
-            agent.connections = [agentIds[0]];
+            agent.connections = [agentIds[0]] as any;
           }
         });
         break;
@@ -137,7 +137,7 @@ export class CoordinationTestBuilder {
           const agent = this.agents.get(agentId)!;
           const nextIndex = (index + 1) % agentIds.length;
           const prevIndex = (index - 1 + agentIds.length) % agentIds.length;
-          agent.connections = [agentIds[nextIndex], agentIds[prevIndex]];
+          agent.connections = [agentIds[nextIndex], agentIds[prevIndex]] as any as any;
         });
         break;
 
@@ -151,7 +151,7 @@ export class CoordinationTestBuilder {
             agent.connections = agentIds.slice(1);
           } else {
             // Spoke nodes connect only to center
-            agent.connections = [central];
+            agent.connections = [central] as any;
           }
         });
         break;

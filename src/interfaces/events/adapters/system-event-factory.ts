@@ -41,7 +41,7 @@ export class SystemEventManagerFactory
 
   constructor(logger?: ILogger, config?: IConfig) {
     this.logger = logger || getLogger('SystemEventManagerFactory');
-    this.config = config || {};
+    this.config = config || {} as any;
     this.logger.debug('SystemEventManagerFactory initialized');
   }
 

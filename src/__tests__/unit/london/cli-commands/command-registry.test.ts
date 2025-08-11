@@ -202,7 +202,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify filtering behavior
       expect(coreCommands).toHaveLength(2);
-      expect(coreCommands.map((cmd) => cmd.config.name)).toEqual(
+      expect(coreCommands.map((cmd: any) => cmd.config.name)).toEqual(
         expect.arrayContaining(['status', 'init']),
       );
       expect(utilityCommands).toHaveLength(1);
@@ -232,7 +232,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify listing behavior
       expect(allCommands).toHaveLength(4);
-      const names = allCommands.map((cmd) => cmd.config.name);
+      const names = allCommands.map((cmd: any) => cmd.config.name);
       expect(names).toEqual([
         'deploy',
         'experimental-feature',
@@ -465,7 +465,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify usage tracking behavior
       const stats = registry.getUsageStats();
-      const cmdStats = stats.find((s) => s.name === 'tracked-cmd');
+      const cmdStats = stats.find((s: any) => s.name === 'tracked-cmd');
 
       expect(cmdStats).toBeDefined();
       expect(cmdStats?.usageCount).toBe(2);

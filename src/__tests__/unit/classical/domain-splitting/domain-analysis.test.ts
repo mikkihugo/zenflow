@@ -140,7 +140,7 @@ describe('Domain Splitting - Classical TDD', () => {
       expect(analysis.dependencies.edges.length).toBeGreaterThanOrEqual(2);
 
       // Check specific dependencies
-      const moduleANode = analysis.dependencies.nodes.find((n) =>
+      const moduleANode = analysis.dependencies.nodes.find((n: any) =>
         n.file.includes('moduleA.ts'),
       );
       expect(moduleANode).toBeDefined();
@@ -163,7 +163,7 @@ describe('Domain Splitting - Classical TDD', () => {
       expect(plans.length).toBeGreaterThan(0);
 
       const categoryPlan = plans.find((p) =>
-        p.targetSubDomains.some((s) => s.name.includes('core')),
+        p.targetSubDomains.some((s: any) => s.name.includes('core')),
       );
       expect(categoryPlan).toBeDefined();
       expect(categoryPlan?.targetSubDomains.length).toBeGreaterThan(1);
@@ -196,7 +196,7 @@ describe('Domain Splitting - Classical TDD', () => {
 
       // Check required sub-domains
       const subdomainNames = NEURAL_SPLITTING_PLAN.targetSubDomains.map(
-        (s) => s.name,
+        (s: any) => s.name,
       );
       expect(subdomainNames).toContain('neural-core');
       expect(subdomainNames).toContain('neural-models');
@@ -220,7 +220,7 @@ describe('Domain Splitting - Classical TDD', () => {
 
       // Bridge should depend on core, models, and wasm
       const bridge = NEURAL_SPLITTING_PLAN.targetSubDomains.find(
-        (s) => s.name === 'neural-bridge',
+        (s: any) => s.name === 'neural-bridge',
       );
       expect(bridge?.dependencies).toContain('neural-core');
       expect(bridge?.dependencies).toContain('neural-models');

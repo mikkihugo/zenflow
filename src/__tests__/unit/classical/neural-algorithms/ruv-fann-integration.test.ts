@@ -376,7 +376,7 @@ describe('ruv-FANN Integration - Classical TDD', () => {
       for (const network of networks) {
         const result = await network.run([0.1, 0.2, 0.3, 0.4, 0.5]);
         expect(result).toHaveLength(3);
-        expect(result?.every((val) => Number.isFinite(val))).toBe(true);
+        expect(result?.every((val: any) => Number.isFinite(val))).toBe(true);
       }
     });
 

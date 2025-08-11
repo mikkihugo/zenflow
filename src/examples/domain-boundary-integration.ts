@@ -554,10 +554,10 @@ export async function complexMultiDomainExample(): Promise<void> {
     results: {},
     metrics: {
       stepsCompleted: validatedPlan.phaseAssignments.filter(
-        (p) => p.status === 'completed',
+        (p: any) => p.status === 'completed',
       ).length,
       stepsFailed: validatedPlan.phaseAssignments.filter(
-        (p) => p.status === 'failed',
+        (p: any) => p.status === 'failed',
       ).length,
       resourcesUsed: {
         agents: validatedPlan.phaseAssignments.length,

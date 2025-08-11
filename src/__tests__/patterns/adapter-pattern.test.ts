@@ -559,7 +559,7 @@ describe('Adapter Pattern Implementation', () => {
         };
 
         const releaseConnection = (conn: unknown) => {
-          const index = connectionPool.busyConnections.indexOf(conn);
+          const index = connectionPool.busyConnections.indexOf(conn) as any as any as any as any;
           if (index > -1) {
             connectionPool.busyConnections.splice(index, 1);
             conn.inUse = false;

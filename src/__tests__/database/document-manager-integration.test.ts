@@ -657,7 +657,7 @@ describe('DocumentManager Integration Tests', () => {
       expect(workflow['generated_artifacts']).toBeDefined();
       expect(workflow['generated_artifacts'].length).toBeGreaterThan(0);
       expect(
-        workflow['generated_artifacts']?.some((artifact) =>
+        workflow['generated_artifacts']?.some((artifact: any) =>
           artifact.includes('summary_report'),
         ),
       ).toBe(true);

@@ -373,15 +373,15 @@ export class IntelligenceMCPTools {
       implementationPlan: {
         immediate:
           suggestionsByArea[focusArea]?.suggestions.filter(
-            (s) => s.effort === 'low',
+            (s: any) => s.effort === 'low',
           ) || [],
         shortTerm:
           suggestionsByArea[focusArea]?.suggestions.filter(
-            (s) => s.effort === 'medium',
+            (s: any) => s.effort === 'medium',
           ) || [],
         longTerm:
           suggestionsByArea[focusArea]?.suggestions.filter(
-            (s) => s.effort === 'high',
+            (s: any) => s.effort === 'high',
           ) || [],
       },
     };

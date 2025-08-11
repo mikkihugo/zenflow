@@ -65,9 +65,9 @@ export class MockBuilder {
     Object.keys(overrides).forEach((key) => {
       const value = overrides[key as keyof T];
       if (typeof value === 'function') {
-        mockObj[key] = vi.fn(value as any);
+        mockObj[key] = vi.fn(value as any) as any;
       } else {
-        mockObj[key] = value;
+        mockObj[key] = value as any;
       }
     });
 
@@ -289,7 +289,7 @@ export class MockBuilder {
 
   private addInteractionTracking(mockObj: MockObject) {
     const interactions: unknown[] = [];
-    mockObj.__interactions = interactions;
+    mockObj.__interactions = interactions as any;
 
     // Wrap all mock functions to track interactions
     Object.keys(mockObj).forEach((key) => {

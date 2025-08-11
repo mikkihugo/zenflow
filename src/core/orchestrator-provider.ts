@@ -44,7 +44,7 @@ export function createOrchestratorInstance(
   const mcpConfig = config?.getSection('interfaces').mcp.http;
 
   const terminalManager = new TerminalManager(terminalConfig, logger, eventBus);
-  const memoryManager = new MemoryManager(memoryConfig);
+  const memoryManager = new MemoryManager(memoryConfig) as any as any as any as any;
 
   // Use injected coordination provider or fall back to lazy loading
   const coordinationManagerProvider =

@@ -3,7 +3,7 @@
  * Unified types for all workflow operations across the system
  */
 
-// Re-export all workflow-related types from the unified engine
+// Re-export all workflow-related types from the base types (avoids circular dependency)
 export type {
   DocumentContent,
   StepExecutionResult,
@@ -13,7 +13,7 @@ export type {
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-} from './workflow-engine.ts';
+} from './workflow-base-types.ts';
 
 // Additional workflow types for advanced functionality
 export interface WorkflowTemplate {

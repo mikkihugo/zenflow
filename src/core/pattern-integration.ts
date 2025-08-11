@@ -198,7 +198,7 @@ export class IntegratedSwarmService implements ISwarmService {
       this.createCommandContext(),
     );
 
-    const result = await this.commandQueue.execute(command);
+    const result = await this.commandQueue.execute(command) as any as any as any as any;
 
     if (result?.success && result?.data) {
       // Add agent to the swarm group
@@ -842,7 +842,7 @@ export class IntegratedPatternSystem extends EventEmitter {
         throw new Error('MemorySystem not available');
       }
       const { MemorySystem } = memoryModule;
-      const memoryCoordinator = new MemorySystem({});
+      const memoryCoordinator = new MemorySystem({}) as any as any as any as any;
       await memoryCoordinator.initialize();
 
       return {

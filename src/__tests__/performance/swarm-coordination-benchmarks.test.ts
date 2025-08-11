@@ -376,7 +376,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       // Track task execution order
       const executionOrder: unknown[] = [];
 
-      taskOrchestrator.on('task_started', (task) => {
+      taskOrchestrator.on('task_started', (task: any) => {
         executionOrder.push({
           id: task.id,
           priority: task.priority,
@@ -473,7 +473,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         performance.start(`broadcast-${size}`);
 
         const result = await swarmCoordinator.broadcastMessage(
-          targetAgents?.map((a) => a.id),
+          targetAgents?.map((a: any) => a.id),
           broadcastMessage,
         );
 

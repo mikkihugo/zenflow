@@ -128,7 +128,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
     // Generate data access layer
     const dataComponents = refinement.refinedArchitecture.components.filter(
-      (c) => c.type === 'database',
+      (c: any) => c.type === 'database',
     );
     for (const component of dataComponents) {
       artifacts.push(await this.generateRepositoryCode(component));
@@ -1381,7 +1381,7 @@ export class SecurityFramework {
     reports: ProductionReadinessReport[],
   ): ProductionReadinessCheck[] {
     return reports.flatMap((report) =>
-      report.validations.map((validation) => ({
+      report.validations.map((validation: any) => ({
         name: validation.criterion,
         type: 'security' as const,
         passed: validation.passed,

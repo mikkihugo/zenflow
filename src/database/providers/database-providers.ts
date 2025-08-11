@@ -1677,7 +1677,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         if (vectorMatch && tableMatch) {
           const vectorStr = vectorMatch?.[1];
           const tableName = tableMatch?.[1] || 'default';
-          const limit = limitMatch ? Number.parseInt(limitMatch[1], 10) : 10;
+          const limit = limitMatch ? Number.parseInt(limitMatch[1], 10) : 10 as any;
 
           // Parse vector from string - fix for possible undefined
           if (vectorStr !== undefined) {

@@ -853,7 +853,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
 
     // Assess dependency risk
     const highDependencyComponents = architecture.components.filter(
-      (c) => c.dependencies.length > 5,
+      (c: any) => c.dependencies.length > 5,
     );
     if (highDependencyComponents.length > 0) {
       risks.push({
@@ -868,7 +868,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
 
     // Assess performance risk
     const hasPerformanceCriticalComponents =
-      architecture.qualityAttributes.some((qa) =>
+      architecture.qualityAttributes.some((qa: any) =>
         qa.name.toLowerCase().includes('performance'),
       );
     if (hasPerformanceCriticalComponents) {
@@ -1176,19 +1176,19 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
 
     // Group related components into deployment units
     const serviceComponents = system.components.filter(
-      (c) => c.type === 'service',
+      (c: any) => c.type === 'service',
     );
     const databaseComponents = system.components.filter(
-      (c) => c.type === 'database',
+      (c: any) => c.type === 'database',
     );
     const gatewayComponents = system.components.filter(
-      (c) => c.type === 'gateway',
+      (c: any) => c.type === 'gateway',
     );
 
     if (serviceComponents.length > 0) {
       deploymentUnits.push({
         name: 'services',
-        components: serviceComponents.map((c) => c.name),
+        components: serviceComponents.map((c: any) => c.name),
         infrastructure: [
           {
             type: 'compute',
@@ -1207,7 +1207,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     if (databaseComponents.length > 0) {
       deploymentUnits.push({
         name: 'database',
-        components: databaseComponents?.map((c) => c.name),
+        components: databaseComponents?.map((c: any) => c.name),
         infrastructure: [
           {
             type: 'storage',
@@ -1226,7 +1226,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     if (gatewayComponents.length > 0) {
       deploymentUnits.push({
         name: 'gateway',
-        components: gatewayComponents.map((c) => c.name),
+        components: gatewayComponents.map((c: any) => c.name),
         infrastructure: [
           {
             type: 'network',
@@ -1259,7 +1259,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     for (const component of architecture.components) {
       for (const dependency of component.dependencies) {
         const dependentComponent = architecture.components.find(
-          (c) => c.name === dependency || c.interfaces.includes(dependency),
+          (c: any) => c.name === dependency || c.interfaces.includes(dependency),
         );
 
         validationResults.push({
@@ -1274,7 +1274,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     }
 
     // Validate interface consistency
-    const allInterfaces = architecture.interfaces.map((i) => i.name);
+    const allInterfaces = architecture.interfaces.map((i: any) => i.name);
     for (const component of architecture.components) {
       for (const interfaceName of component.interfaces) {
         const hasInterface = allInterfaces.includes(interfaceName);

@@ -620,7 +620,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
         opt.targetComponent !== 'communication'
       ) {
         const component = refinedArchitecture.components.find(
-          (c) => c.id === opt.targetComponent,
+          (c: any) => c.id === opt.targetComponent,
         );
         if (component) {
           component.performance = {
@@ -660,7 +660,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
     // Update quality attributes with improvements
     refinedArchitecture.qualityAttributes =
-      refinedArchitecture.qualityAttributes.map((qa) => ({
+      refinedArchitecture.qualityAttributes.map((qa: any) => ({
         ...qa,
         criteria: [
           ...qa.criteria,
@@ -977,7 +977,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
     // Validate performance improvements
     const performanceImprovement = refinement.improvementMetrics.find(
-      (m) => m.category === 'performance',
+      (m: any) => m.category === 'performance',
     );
     validationResults.push({
       criterion: 'Performance improvements',
@@ -998,7 +998,7 @@ export class RefinementPhaseEngine implements RefinementEngine {
 
     // Validate security enhancements
     const securityImprovement = refinement.improvementMetrics.find(
-      (m) => m.category === 'security',
+      (m: any) => m.category === 'security',
     );
     validationResults.push({
       criterion: 'Security enhancements',

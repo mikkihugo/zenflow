@@ -388,7 +388,7 @@ export class UnifiedClaudeZenServer {
         );
 
         resolve();
-      }).on('error', (err) => {
+      }).on('error', (err: any) => {
         logger.error('Server failed to start', {
           error: err.message,
           stack: err.stack,

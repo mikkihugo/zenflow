@@ -335,6 +335,13 @@ export class UELEnhancedEventBus extends EventEmitter {
  */
 export class UELEnhancedApplicationCoordinator extends EventEmitter {
   private uelSystem?: any;
+  
+  /**
+   * Set UEL system instance to avoid circular dependency.
+   */
+  public setUELSystem(uelSystem: any): void {
+    this.uelSystem = uelSystem;
+  }
   private eventBus?: UELEnhancedEventBus;
   private systemManagers = new Map<string, IEventManager>();
   private logger?: any;
@@ -373,9 +380,11 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
     healthMonitoring?: boolean;
   }): Promise<void> {
     try {
-      // Import UEL directly to avoid circular dependency
-      const { UEL } = await import('./core/uel-singleton.ts');
-      this.uelSystem = UEL.getInstance();
+      // Use lazy initialization to avoid circular dependency
+      // UEL instance will be set via setUELSystem method
+      if (!this.uelSystem) {
+        throw new Error('UEL system not initialized. Call setUELSystem() first.');
+      }
 
       await this.uelSystem.initialize({
         enableValidation: config?.enableValidation !== false,

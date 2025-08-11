@@ -69,7 +69,7 @@ import type {
   IEventManager,
   IEventManagerFactory,
 } from '../core/interfaces.ts';
-import type { IInterfaceEventManager } from '../factories.ts';
+import type { IInterfaceEventManager } from '../event-manager-types.ts';
 import type { InterfaceEvent } from '../types.ts';
 
 /**

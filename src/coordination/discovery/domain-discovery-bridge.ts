@@ -38,11 +38,23 @@
 import { EventEmitter } from 'node:events';
 import { basename } from 'node:path';
 import { getLogger } from '../../config/logging-config.ts';
-import type {
-  Document,
-  DocumentProcessor,
-  DocumentType,
-} from '../../core/document-processor.ts';
+// Break circular dependency - use interface instead of direct import
+interface DocumentProcessorLike {
+  on: (event: string, listener: (...args: any[]) => void) => void;
+  off?: (event: string, listener: (...args: any[]) => void) => void;
+  getWorkspaceDocuments?: (workspaceId: string) => Map<string, any>;
+  getWorkspaces?: () => string[];
+}
+
+export interface Document {
+  type: 'vision' | 'adr' | 'prd' | 'epic' | 'feature' | 'task' | 'spec';
+  path: string;
+  content?: string;
+  metadata?: any;
+  id?: string;
+}
+
+type DocumentType = Document['type'];
 import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system.ts';
 import type {
   MonorepoInfo,
@@ -193,7 +205,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @param config - Optional configuration settings.
    */
   constructor(
-    private docProcessor: DocumentProcessor,
+    private docProcessor: DocumentProcessorLike,
     private domainAnalyzer: DomainAnalysisEngine,
     private projectAnalyzer: ProjectContextAnalyzer,
     _intelligenceCoordinator: IntelligenceCoordinationSystem, // xxx NEEDS_HUMAN: Parameter not used - confirm if needed for future features

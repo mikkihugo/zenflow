@@ -452,9 +452,9 @@ export class ESLintSwarmCoordinator extends EventEmitter {
 
       // Show real-time output with timestamps and agent identification
       const timestamp = new Date().toLocaleTimeString();
-      const lines = output.split('\n').filter((line) => line.trim());
+      const lines = output.split('\n').filter((line: any) => line.trim());
 
-      lines.forEach((line) => {
+      lines.forEach((line: any) => {
         if (line.trim()) {
           this.logger.info('Agent output', {
             agent: config?.name,

@@ -80,11 +80,11 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     }
 
     if (!selectedAgent) {
-      selectedAgent = availableAgents[0];
+      selectedAgent = availableAgents[0] as any;
     }
 
     // Decrease the current weight of selected agent
-    const selectedWeight = this.weights.get(selectedAgent?.id)!;
+    const selectedWeight = this.weights.get(selectedAgent?.id)! as any as any as any as any;
     selectedWeight.currentWeight -= totalWeight;
 
     // Calculate confidence and alternatives

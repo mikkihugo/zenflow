@@ -162,7 +162,7 @@ describe('Strategy Pattern Implementation', () => {
 
         while (!visited.has(current)) {
           visited.add(current);
-          current = result?.connections?.[current][0];
+          current = result?.connections?.[current][0] as any;
         }
 
         expect(visited.size).toBe(mockAgents.length);
