@@ -8,6 +8,7 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { getLogger } from '../../config/logging-config.ts';
+import { getVersion } from './utils/version-utils.js';
 
 const logger = getLogger('CommandEngine');
 
@@ -69,7 +70,7 @@ export class CommandExecutionEngine {
     command: string,
     args: string[],
     flags: Record<string, any>,
-    context?: Partial<ExecutionContext>
+    context?: Partial<ExecutionContext>,
   ): Promise<CommandResult> {
     const startTime = Date.now();
     const executionContext: ExecutionContext = {
@@ -90,7 +91,7 @@ export class CommandExecutionEngine {
           command,
           args,
           flags,
-          startTime
+          startTime,
         );
       }
 
@@ -98,46 +99,64 @@ export class CommandExecutionEngine {
       let result: CommandResult;
       switch (command) {
         case 'init':
-          result = await CommandExecutionEngine.handleInitCommand(executionContext);
+          result =
+            await CommandExecutionEngine.handleInitCommand(executionContext);
           break;
         case 'status':
-          result = await CommandExecutionEngine.handleStatusCommand(executionContext);
+          result =
+            await CommandExecutionEngine.handleStatusCommand(executionContext);
           break;
         case 'query':
-          result = await CommandExecutionEngine.handleHiveQuery(executionContext);
+          result =
+            await CommandExecutionEngine.handleHiveQuery(executionContext);
           break;
         case 'agents':
-          result = await CommandExecutionEngine.handleHiveAgents(executionContext);
+          result =
+            await CommandExecutionEngine.handleHiveAgents(executionContext);
           break;
         case 'tasks':
-          result = await CommandExecutionEngine.handleHiveTasks(executionContext);
+          result =
+            await CommandExecutionEngine.handleHiveTasks(executionContext);
           break;
         case 'knowledge':
-          result = await CommandExecutionEngine.handleHiveKnowledge(executionContext);
+          result =
+            await CommandExecutionEngine.handleHiveKnowledge(executionContext);
           break;
         case 'health':
-          result = await CommandExecutionEngine.handleHiveHealth(executionContext);
+          result =
+            await CommandExecutionEngine.handleHiveHealth(executionContext);
           break;
         case 'sync':
-          result = await CommandExecutionEngine.handleHiveSync(executionContext);
+          result =
+            await CommandExecutionEngine.handleHiveSync(executionContext);
           break;
         case 'contribute':
-          result = await CommandExecutionEngine.handleHiveContribute(executionContext);
+          result =
+            await CommandExecutionEngine.handleHiveContribute(executionContext);
           break;
         case 'swarm':
-          result = await CommandExecutionEngine.handleSwarmCommand(executionContext);
+          result =
+            await CommandExecutionEngine.handleSwarmCommand(executionContext);
           break;
         case 'mcp':
-          result = await CommandExecutionEngine.handleMcpCommand(executionContext);
+          result =
+            await CommandExecutionEngine.handleMcpCommand(executionContext);
           break;
         case 'workspace':
-          result = await CommandExecutionEngine.handleWorkspaceCommand(executionContext);
+          result =
+            await CommandExecutionEngine.handleWorkspaceCommand(
+              executionContext,
+            );
           break;
         case 'discover':
-          result = await CommandExecutionEngine.handleDiscoverCommand(executionContext);
+          result =
+            await CommandExecutionEngine.handleDiscoverCommand(
+              executionContext,
+            );
           break;
         case 'help':
-          result = await CommandExecutionEngine.handleHelpCommand(executionContext);
+          result =
+            await CommandExecutionEngine.handleHelpCommand(executionContext);
           break;
         default:
           result = CommandExecutionEngine.createErrorResult(
@@ -145,7 +164,7 @@ export class CommandExecutionEngine {
             command,
             args,
             flags,
-            startTime
+            startTime,
           );
       }
 
@@ -171,7 +190,7 @@ export class CommandExecutionEngine {
         command,
         args,
         flags,
-        startTime
+        startTime,
       );
     }
   }
@@ -181,16 +200,21 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleInitCommand(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleInitCommand(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     const projectName = context.args[0] || 'claude-zen-project';
     const template = context.flags.template || 'basic';
 
-    logger.debug(`Initializing project: ${projectName} with template: ${template}`);
+    logger.debug(
+      `Initializing project: ${projectName} with template: ${template}`,
+    );
 
     // Simulate project initialization
     await CommandExecutionEngine.simulateAsyncOperation(1000);
 
-    const projectStructure = CommandExecutionEngine.generateProjectStructure(template);
+    const projectStructure =
+      CommandExecutionEngine.generateProjectStructure(template);
 
     return {
       success: true,
@@ -210,12 +234,14 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleStatusCommand(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleStatusCommand(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     logger.debug('Retrieving system status');
 
     // Gather system information
     const systemStatus = {
-      version: '2.0.0-alpha.73',
+      version: getVersion(),
       status: 'healthy',
       uptime: process.uptime() * 1000,
       components: {
@@ -251,7 +277,10 @@ export class CommandExecutionEngine {
       },
       performance: {
         cpuUsage: process.cpuUsage(),
-        loadAverage: process.platform !== 'win32' ? (await import('node:os')).loadavg() : [0, 0, 0],
+        loadAverage:
+          process.platform !== 'win32'
+            ? (await import('node:os')).loadavg()
+            : [0, 0, 0],
       },
     };
 
@@ -275,7 +304,9 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleSwarmCommand(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmCommand(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     const action = context.args[0];
 
     if (!action) {
@@ -322,13 +353,16 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleMcpCommand(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleMcpCommand(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     const action = context.args[0];
 
     if (!action) {
       return {
         success: false,
-        error: 'MCP action required. Available actions: start, stop, status, tools',
+        error:
+          'MCP action required. Available actions: start, stop, status, tools',
       };
     }
 
@@ -394,17 +428,41 @@ export class CommandExecutionEngine {
                 category: 'swarm',
                 description: 'Initialize coordination topology',
               },
-              { name: 'agent_spawn', category: 'swarm', description: 'Create specialized agents' },
+              {
+                name: 'agent_spawn',
+                category: 'swarm',
+                description: 'Create specialized agents',
+              },
               {
                 name: 'task_orchestrate',
                 category: 'swarm',
                 description: 'Coordinate complex tasks',
               },
-              { name: 'system_info', category: 'system', description: 'Get system information' },
-              { name: 'project_init', category: 'system', description: 'Initialize new projects' },
-              { name: 'memory_usage', category: 'memory', description: 'Manage persistent memory' },
-              { name: 'neural_status', category: 'neural', description: 'Neural network status' },
-              { name: 'neural_train', category: 'neural', description: 'Train neural patterns' },
+              {
+                name: 'system_info',
+                category: 'system',
+                description: 'Get system information',
+              },
+              {
+                name: 'project_init',
+                category: 'system',
+                description: 'Initialize new projects',
+              },
+              {
+                name: 'memory_usage',
+                category: 'memory',
+                description: 'Manage persistent memory',
+              },
+              {
+                name: 'neural_status',
+                category: 'neural',
+                description: 'Neural network status',
+              },
+              {
+                name: 'neural_train',
+                category: 'neural',
+                description: 'Train neural patterns',
+              },
             ],
           },
         };
@@ -422,13 +480,16 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleWorkspaceCommand(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleWorkspaceCommand(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     const action = context.args[0];
 
     if (!action) {
       return {
         success: false,
-        error: 'Workspace action required. Available actions: init, process, status, generate',
+        error:
+          'Workspace action required. Available actions: init, process, status, generate',
       };
     }
 
@@ -503,7 +564,11 @@ export class CommandExecutionEngine {
             featuresImplemented: 12,
             implementationProgress: 0.65,
             lastUpdate: new Date().toISOString(),
-            activeWorkflows: ['vision-to-prd', 'epic-breakdown', 'feature-implementation'],
+            activeWorkflows: [
+              'vision-to-prd',
+              'epic-breakdown',
+              'feature-implementation',
+            ],
           },
         };
 
@@ -520,31 +585,42 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleDiscoverCommand(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleDiscoverCommand(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       const projectPath = context.args[0] || context.cwd;
 
       // Parse discover options from flags
       const options = {
         project: projectPath,
-        confidence: parseFloat(context.flags.confidence || context.flags.c) || 0.95,
+        confidence:
+          Number.parseFloat(context.flags.confidence || context.flags.c) ||
+          0.95,
         maxIterations:
-          parseInt(
-            context.flags.maxIterations || context.flags['max-iterations'] || context.flags.i
+          Number.parseInt(
+            context.flags.maxIterations ||
+              context.flags['max-iterations'] ||
+              context.flags.i,
           ) || 5,
         autoSwarms:
           context.flags.autoSwarms !== false &&
           context.flags['auto-swarms'] !== false &&
           context.flags.s !== false, // default true
-        skipValidation: context.flags.skipValidation || context.flags['skip-validation'] || false,
+        skipValidation:
+          context.flags.skipValidation || context.flags['skip-validation'],
         topology: context.flags.topology || context.flags.t || 'auto',
         maxAgents:
-          parseInt(context.flags.maxAgents || context.flags['max-agents'] || context.flags.a) || 20,
+          Number.parseInt(
+            context.flags.maxAgents ||
+              context.flags['max-agents'] ||
+              context.flags.a,
+          ) || 20,
         output: context.flags.output || context.flags.o || 'console',
         saveResults: context.flags.saveResults || context.flags['save-results'],
-        verbose: context.flags.verbose || context.flags.v || false,
-        dryRun: context.flags.dryRun || context.flags['dry-run'] || false,
-        interactive: context.flags.interactive || false,
+        verbose: context.flags.verbose || context.flags.v,
+        dryRun: context.flags.dryRun || context.flags['dry-run'],
+        interactive: context.flags.interactive,
       };
 
       // Validate confidence range
@@ -572,7 +648,9 @@ export class CommandExecutionEngine {
 
       // Try to use the enhanced DiscoverCommand class for full functionality
       try {
-        const { CLICommandRegistry } = await import('./adapters/cli-adapters.ts');
+        const { CLICommandRegistry } = await import(
+          './adapters/cli-adapters.ts'
+        );
         const registry = CLICommandRegistry.getInstance();
 
         logger.info('🚀 Using enhanced Progressive Confidence Building System');
@@ -584,7 +662,9 @@ export class CommandExecutionEngine {
         return result.success
           ? {
               success: true,
-              message: result.message || 'Progressive confidence building completed successfully',
+              message:
+                result.message ||
+                'Progressive confidence building completed successfully',
               data: {
                 enhanced: true,
                 projectPath,
@@ -599,16 +679,23 @@ export class CommandExecutionEngine {
               message: result.message || 'Failed to execute discover command',
             };
       } catch (enhancedError) {
-        logger.warn('Enhanced discover failed, using fallback implementation:', enhancedError);
+        logger.warn(
+          'Enhanced discover failed, using fallback implementation:',
+          enhancedError,
+        );
 
         // Fallback to simplified implementation
-        return CommandExecutionEngine.handleDiscoverFallback(projectPath, options);
+        return CommandExecutionEngine.handleDiscoverFallback(
+          projectPath,
+          options,
+        );
       }
     } catch (error) {
       logger.error('Discover command failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown discover error',
+        error:
+          error instanceof Error ? error.message : 'Unknown discover error',
         data: { command: 'discover', context },
       };
     }
@@ -622,7 +709,7 @@ export class CommandExecutionEngine {
    */
   private static async handleDiscoverFallback(
     projectPath: string,
-    options: any
+    options: any,
   ): Promise<CommandResult> {
     try {
       logger.info('🔧 Using simplified discovery implementation');
@@ -674,7 +761,9 @@ export class CommandExecutionEngine {
           topology: 0.95,
           resourceAllocation: 0.87,
         },
-        swarmsCreated: options?.autoSwarms ? Math.floor(Math.random() * 3) + 1 : 0,
+        swarmsCreated: options?.autoSwarms
+          ? Math.floor(Math.random() * 3) + 1
+          : 0,
         agentsDeployed: options?.autoSwarms
           ? Math.floor(Math.random() * options?.maxAgents) + 4
           : 0,
@@ -730,7 +819,8 @@ export class CommandExecutionEngine {
       logger.error('Fallback discover command failed', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown discovery error',
+        error:
+          error instanceof Error ? error.message : 'Unknown discovery error',
       };
     }
   }
@@ -740,10 +830,12 @@ export class CommandExecutionEngine {
    *
    * @param _context
    */
-  private static async handleHelpCommand(_context: ExecutionContext): Promise<CommandResult> {
+  private static async handleHelpCommand(
+    _context: ExecutionContext,
+  ): Promise<CommandResult> {
     const helpContent = {
       title: 'Claude Code Flow - Command Reference',
-      version: '2.0.0-alpha.73',
+      version: getVersion(),
       commands: [
         {
           name: 'init [name]',
@@ -788,7 +880,11 @@ export class CommandExecutionEngine {
         {
           name: 'contribute',
           description: 'Contribute knowledge to the system',
-          options: ['--type <type>', '--content <text>', '--confidence <float>'],
+          options: [
+            '--type <type>',
+            '--content <text>',
+            '--confidence <float>',
+          ],
         },
         // swarm commands hidden from help but remain functional for hooks/MCP integration
         {
@@ -805,7 +901,8 @@ export class CommandExecutionEngine {
         },
         {
           name: 'discover [project-path]',
-          description: 'Neural auto-discovery system for zero-manual-initialization',
+          description:
+            'Neural auto-discovery system for zero-manual-initialization',
           options: [
             '--confidence <0.0-1.0>',
             '--max-iterations <number>',
@@ -834,8 +931,10 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleSwarmStart(context: ExecutionContext): Promise<CommandResult> {
-    const agents = parseInt(context.flags.agents) || 4;
+  private static async handleSwarmStart(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
+    const agents = Number.parseInt(context.flags.agents) || 4;
     const topology = context.flags.topology || 'mesh';
 
     await CommandExecutionEngine.simulateAsyncOperation(2000);
@@ -853,7 +952,9 @@ export class CommandExecutionEngine {
     };
   }
 
-  private static async handleSwarmStop(_context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmStop(
+    _context: ExecutionContext,
+  ): Promise<CommandResult> {
     return {
       success: true,
       message: 'All swarms stopped successfully',
@@ -861,7 +962,9 @@ export class CommandExecutionEngine {
     };
   }
 
-  private static async handleSwarmList(_context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmList(
+    _context: ExecutionContext,
+  ): Promise<CommandResult> {
     return {
       success: true,
       message: 'Available swarms retrieved',
@@ -902,13 +1005,17 @@ export class CommandExecutionEngine {
    */
   private static async callMcpTool(
     toolName: string,
-    params: any = {}
+    params: any = {},
   ): Promise<{ success: boolean; data?: any; error?: string }> {
     return new Promise((resolve) => {
-      const mcpProcess = spawn('npx', ['tsx', 'src/coordination/swarm/mcp/mcp-server.ts'], {
-        stdio: ['pipe', 'pipe', 'pipe'],
-        cwd: process.cwd(),
-      });
+      const mcpProcess = spawn(
+        'npx',
+        ['tsx', 'src/coordination/swarm/mcp/mcp-server.ts'],
+        {
+          stdio: ['pipe', 'pipe', 'pipe'],
+          cwd: process.cwd(),
+        },
+      );
 
       let stdout = '';
       let stderr = '';
@@ -970,7 +1077,10 @@ export class CommandExecutionEngine {
           isResolved = true;
           clearTimeout(timeout);
           if (code !== 0) {
-            resolve({ success: false, error: `MCP process exited with code ${code}: ${stderr}` });
+            resolve({
+              success: false,
+              error: `MCP process exited with code ${code}: ${stderr}`,
+            });
           } else {
             resolve({ success: false, error: 'No response from MCP server' });
           }
@@ -981,7 +1091,10 @@ export class CommandExecutionEngine {
         if (!isResolved) {
           isResolved = true;
           clearTimeout(timeout);
-          resolve({ success: false, error: `Failed to start MCP process: ${error.message}` });
+          resolve({
+            success: false,
+            error: `Failed to start MCP process: ${error.message}`,
+          });
         }
       });
 
@@ -993,16 +1106,24 @@ export class CommandExecutionEngine {
         if (!isResolved) {
           isResolved = true;
           clearTimeout(timeout);
-          resolve({ success: false, error: `Failed to send MCP request: ${error.message}` });
+          resolve({
+            success: false,
+            error: `Failed to send MCP request: ${error.message}`,
+          });
         }
       }
     });
   }
 
-  private static async handleSwarmStatus(_context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmStatus(
+    _context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       // Call the swarm MCP tool for real status
-      const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_status', {});
+      const mcpResult = await CommandExecutionEngine.callMcpTool(
+        'swarm_status',
+        {},
+      );
 
       if (mcpResult?.success) {
         return {
@@ -1010,28 +1131,27 @@ export class CommandExecutionEngine {
           message: 'Swarm system status retrieved from MCP',
           data: mcpResult?.data,
         };
-      } else {
-        // Fallback to mock data if MCP call fails
-        logger.warn('MCP swarm_status failed, using mock data');
-        return {
-          success: true,
-          message: 'Swarm system status retrieved (mock data - MCP unavailable)',
-          data: {
-            totalSwarms: 0,
-            activeSwarms: 0,
-            totalAgents: 0,
-            activeAgents: 0,
-            averageUptime: 0,
-            systemLoad: 0,
-            coordination: {
-              messagesProcessed: 0,
-              averageLatency: 0,
-              errorRate: 0,
-            },
-            note: 'MCP server not available, showing mock data',
-          },
-        };
       }
+      // Fallback to mock data if MCP call fails
+      logger.warn('MCP swarm_status failed, using mock data');
+      return {
+        success: true,
+        message: 'Swarm system status retrieved (mock data - MCP unavailable)',
+        data: {
+          totalSwarms: 0,
+          activeSwarms: 0,
+          totalAgents: 0,
+          activeAgents: 0,
+          averageUptime: 0,
+          systemLoad: 0,
+          coordination: {
+            messagesProcessed: 0,
+            averageLatency: 0,
+            errorRate: 0,
+          },
+          note: 'MCP server not available, showing mock data',
+        },
+      };
     } catch (error) {
       logger.error('Error calling swarm MCP tool:', error);
       return {
@@ -1041,9 +1161,11 @@ export class CommandExecutionEngine {
     }
   }
 
-  private static async handleSwarmCreate(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmCreate(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     const name = context.args[1] || 'New Swarm';
-    const agents = parseInt(context.flags.agents) || 4;
+    const agents = Number.parseInt(context.flags.agents) || 4;
     const topology = context.flags.topology || 'mesh';
 
     return {
@@ -1065,10 +1187,13 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleSwarmInit(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmInit(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       const topology = context.flags.topology || context.flags.t || 'auto';
-      const maxAgents = parseInt(context.flags.agents || context.flags.a) || 4;
+      const maxAgents =
+        Number.parseInt(context.flags.agents || context.flags.a) || 4;
       const name = context.args[1] || 'New Swarm';
 
       // Call the swarm MCP tool for real initialization
@@ -1084,12 +1209,11 @@ export class CommandExecutionEngine {
           message: `Swarm "${name}" initialized successfully with ${topology} topology`,
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to initialize swarm: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to initialize swarm: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling swarm_init MCP tool:', error);
       return {
@@ -1104,16 +1228,21 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleSwarmSpawn(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmSpawn(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       const agentType = context.args[1] || 'general';
       const agentName = context.args[2] || `${agentType}-${Date.now()}`;
 
       // Call the swarm MCP tool for real agent spawning
-      const mcpResult = await CommandExecutionEngine.callMcpTool('agent_spawn', {
-        type: agentType,
-        name: agentName,
-      });
+      const mcpResult = await CommandExecutionEngine.callMcpTool(
+        'agent_spawn',
+        {
+          type: agentType,
+          name: agentName,
+        },
+      );
 
       if (mcpResult?.success) {
         return {
@@ -1121,12 +1250,11 @@ export class CommandExecutionEngine {
           message: `Agent "${agentName}" of type "${agentType}" spawned successfully`,
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to spawn agent: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to spawn agent: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling agent_spawn MCP tool:', error);
       return {
@@ -1142,10 +1270,15 @@ export class CommandExecutionEngine {
    * @param context
    * @param _context
    */
-  private static async handleSwarmMonitor(_context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmMonitor(
+    _context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       // Call the swarm MCP tool for real monitoring data
-      const mcpResult = await CommandExecutionEngine.callMcpTool('swarm_monitor', {});
+      const mcpResult = await CommandExecutionEngine.callMcpTool(
+        'swarm_monitor',
+        {},
+      );
 
       if (mcpResult?.success) {
         return {
@@ -1153,12 +1286,11 @@ export class CommandExecutionEngine {
           message: 'Real-time swarm monitoring data retrieved',
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to get monitoring data: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to get monitoring data: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling swarm_monitor MCP tool:', error);
       return {
@@ -1174,10 +1306,15 @@ export class CommandExecutionEngine {
    * @param context
    * @param _context
    */
-  private static async handleSwarmMetrics(_context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmMetrics(
+    _context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       // Call the swarm MCP tool for real agent metrics
-      const mcpResult = await CommandExecutionEngine.callMcpTool('agent_metrics', {});
+      const mcpResult = await CommandExecutionEngine.callMcpTool(
+        'agent_metrics',
+        {},
+      );
 
       if (mcpResult?.success) {
         return {
@@ -1185,12 +1322,11 @@ export class CommandExecutionEngine {
           message: 'Agent performance metrics retrieved',
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to get agent metrics: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to get agent metrics: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling agent_metrics MCP tool:', error);
       return {
@@ -1205,16 +1341,21 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleSwarmOrchestrate(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleSwarmOrchestrate(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       const task = context.args[1] || 'Generic Task';
       const strategy = context.flags.strategy || context.flags.s || 'auto';
 
       // Call the swarm MCP tool for real task orchestration
-      const mcpResult = await CommandExecutionEngine.callMcpTool('task_orchestrate', {
-        task,
-        strategy,
-      });
+      const mcpResult = await CommandExecutionEngine.callMcpTool(
+        'task_orchestrate',
+        {
+          task,
+          strategy,
+        },
+      );
 
       if (mcpResult?.success) {
         return {
@@ -1222,12 +1363,11 @@ export class CommandExecutionEngine {
           message: `Task "${task}" orchestrated successfully using ${strategy} strategy`,
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to orchestrate task: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to orchestrate task: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling task_orchestrate MCP tool:', error);
       return {
@@ -1242,11 +1382,14 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleHiveQuery(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleHiveQuery(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       const query = context.args[1] || '';
       const domain = context.flags.domain || context.flags.d || 'all';
-      const confidence = parseFloat(context.flags.confidence || context.flags.c) || 0.7;
+      const confidence =
+        Number.parseFloat(context.flags.confidence || context.flags.c) || 0.7;
 
       const mcpResult = await CommandExecutionEngine.callMcpTool('hive_query', {
         query,
@@ -1260,12 +1403,11 @@ export class CommandExecutionEngine {
           message: `Hive knowledge query completed: "${query}"`,
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to query Hive knowledge: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to query Hive knowledge: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling hive_query MCP tool:', error);
       return {
@@ -1280,9 +1422,14 @@ export class CommandExecutionEngine {
    *
    * @param _context
    */
-  private static async handleHiveAgents(_context: ExecutionContext): Promise<CommandResult> {
+  private static async handleHiveAgents(
+    _context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
-      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_agents', {});
+      const mcpResult = await CommandExecutionEngine.callMcpTool(
+        'hive_agents',
+        {},
+      );
 
       if (mcpResult?.success) {
         return {
@@ -1290,12 +1437,11 @@ export class CommandExecutionEngine {
           message: 'Hive agent overview retrieved successfully',
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to get Hive agents: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to get Hive agents: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling hive_agents MCP tool:', error);
       return {
@@ -1310,7 +1456,9 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleHiveTasks(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleHiveTasks(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       const status = context.flags.status || context.flags.s || 'all';
 
@@ -1324,12 +1472,11 @@ export class CommandExecutionEngine {
           message: 'Hive task overview retrieved successfully',
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to get Hive tasks: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to get Hive tasks: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling hive_tasks MCP tool:', error);
       return {
@@ -1344,9 +1491,14 @@ export class CommandExecutionEngine {
    *
    * @param _context
    */
-  private static async handleHiveKnowledge(_context: ExecutionContext): Promise<CommandResult> {
+  private static async handleHiveKnowledge(
+    _context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
-      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_knowledge', {});
+      const mcpResult = await CommandExecutionEngine.callMcpTool(
+        'hive_knowledge',
+        {},
+      );
 
       if (mcpResult?.success) {
         return {
@@ -1354,12 +1506,11 @@ export class CommandExecutionEngine {
           message: 'Hive knowledge base overview retrieved successfully',
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to get Hive knowledge: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to get Hive knowledge: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling hive_knowledge MCP tool:', error);
       return {
@@ -1374,7 +1525,9 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleHiveSync(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleHiveSync(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       const sources = context.args.slice(1);
 
@@ -1388,12 +1541,11 @@ export class CommandExecutionEngine {
           message: 'Hive synchronization completed successfully',
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to sync Hive: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to sync Hive: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling hive_sync MCP tool:', error);
       return {
@@ -1408,9 +1560,14 @@ export class CommandExecutionEngine {
    *
    * @param _context
    */
-  private static async handleHiveHealth(_context: ExecutionContext): Promise<CommandResult> {
+  private static async handleHiveHealth(
+    _context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
-      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_health', {});
+      const mcpResult = await CommandExecutionEngine.callMcpTool(
+        'hive_health',
+        {},
+      );
 
       if (mcpResult?.success) {
         return {
@@ -1418,12 +1575,11 @@ export class CommandExecutionEngine {
           message: 'Hive health metrics retrieved successfully',
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to get Hive health: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to get Hive health: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling hive_health MCP tool:', error);
       return {
@@ -1438,14 +1594,16 @@ export class CommandExecutionEngine {
    *
    * @param context
    */
-  private static async handleHiveContribute(context: ExecutionContext): Promise<CommandResult> {
+  private static async handleHiveContribute(
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     try {
       const subject = context.args[1] || '';
       const type = context.flags.type || context.flags.t || 'general';
       const content = context.flags.content || context.flags.c || '';
-      const confidence = parseFloat(context.flags.confidence) || 0.8;
+      const confidence = Number.parseFloat(context.flags.confidence) || 0.8;
 
-      if (!subject || !content) {
+      if (!(subject && content)) {
         return {
           success: false,
           error:
@@ -1453,12 +1611,15 @@ export class CommandExecutionEngine {
         };
       }
 
-      const mcpResult = await CommandExecutionEngine.callMcpTool('hive_contribute', {
-        type,
-        subject,
-        content,
-        confidence,
-      });
+      const mcpResult = await CommandExecutionEngine.callMcpTool(
+        'hive_contribute',
+        {
+          type,
+          subject,
+          content,
+          confidence,
+        },
+      );
 
       if (mcpResult?.success) {
         return {
@@ -1466,12 +1627,11 @@ export class CommandExecutionEngine {
           message: `Knowledge contributed to Hive: "${subject}"`,
           data: mcpResult?.data,
         };
-      } else {
-        return {
-          success: false,
-          error: `Failed to contribute to Hive: ${mcpResult?.error}`,
-        };
       }
+      return {
+        success: false,
+        error: `Failed to contribute to Hive: ${mcpResult?.error}`,
+      };
     } catch (error) {
       logger.error('Error calling hive_contribute MCP tool:', error);
       return {
@@ -1495,7 +1655,7 @@ export class CommandExecutionEngine {
     command: string,
     args: string[],
     flags: Record<string, any>,
-    startTime: number
+    startTime: number,
   ): CommandResult {
     return {
       success: false,

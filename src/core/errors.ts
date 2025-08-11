@@ -171,7 +171,7 @@ export abstract class BaseClaudeZenError extends Error {
     category: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
     context: Partial<ErrorContext> = {},
-    recoverable: boolean = true
+    recoverable: boolean = true,
   ) {
     super(message);
     this.category = category;
@@ -190,7 +190,11 @@ export abstract class BaseClaudeZenError extends Error {
 
   private logError(): void {
     const logLevel =
-      this.severity === 'critical' ? 'error' : this.severity === 'high' ? 'warn' : 'info';
+      this.severity === 'critical'
+        ? 'error'
+        : this.severity === 'high'
+          ? 'warn'
+          : 'info';
 
     logger[logLevel](`[${this.category}] ${this.message}`, {
       severity: this.severity,
@@ -252,7 +256,7 @@ export class FACTError extends BaseClaudeZenError {
   constructor(
     message: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
+    context: Partial<ErrorContext> = {},
   ) {
     super(message, 'FACT', severity, context);
     this.name = 'FACTError';
@@ -287,7 +291,7 @@ export class FACTStorageError extends FACTError {
     message: string,
     public readonly backend: string,
     public readonly operation: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, severity, { operation, metadata: { backend } });
     this.name = 'FACTStorageError';
@@ -299,7 +303,7 @@ export class FACTGatheringError extends FACTError {
     message: string,
     public readonly query: string,
     public readonly sources: string[],
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, severity, { metadata: { query, sources } });
     this.name = 'FACTGatheringError';
@@ -311,7 +315,7 @@ export class FACTProcessingError extends FACTError {
     message: string,
     public readonly processType: string,
     public readonly dataId?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, severity, { metadata: { processType, dataId } });
     this.name = 'FACTProcessingError';
@@ -347,7 +351,7 @@ export class RAGError extends BaseClaudeZenError {
   constructor(
     message: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
+    context: Partial<ErrorContext> = {},
   ) {
     super(message, 'RAG', severity, context);
     this.name = 'RAGError';
@@ -359,7 +363,7 @@ export class RAGVectorError extends RAGError {
     message: string,
     public readonly operation: 'embed' | 'search' | 'index' | 'delete',
     public readonly vectorDimension?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, severity, { operation, metadata: { vectorDimension } });
     this.name = 'RAGVectorError';
@@ -371,7 +375,7 @@ export class RAGEmbeddingError extends RAGError {
     message: string,
     public readonly modelName: string,
     public readonly textLength?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, severity, { metadata: { modelName, textLength } });
     this.name = 'RAGEmbeddingError';
@@ -383,7 +387,7 @@ export class RAGRetrievalError extends RAGError {
     message: string,
     public readonly query: string,
     public readonly similarityThreshold?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, severity, { metadata: { query, similarityThreshold } });
     this.name = 'RAGRetrievalError';
@@ -422,7 +426,7 @@ export class SwarmError extends BaseClaudeZenError {
     message: string,
     public readonly swarmId?: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
+    context: Partial<ErrorContext> = {},
   ) {
     super(message, 'Swarm', severity, { ...context, metadata: { swarmId } });
     this.name = 'SwarmError';
@@ -457,7 +461,7 @@ export class AgentError extends BaseClaudeZenError {
     message: string,
     public readonly agentId?: string,
     public readonly agentType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, 'Agent', severity, { metadata: { agentId, agentType } });
     this.name = 'AgentError';
@@ -470,7 +474,7 @@ export class SwarmCommunicationError extends SwarmError {
     public readonly fromAgent: string,
     public readonly toAgent: string,
     public readonly messageType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, undefined, severity, {
       metadata: { fromAgent, toAgent, messageType },
@@ -484,7 +488,7 @@ export class SwarmCoordinationError extends SwarmError {
     message: string,
     public readonly coordinationType: string,
     public readonly participantCount?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, undefined, severity, {
       metadata: { coordinationType, participantCount },
@@ -525,7 +529,7 @@ export class MCPError extends BaseClaudeZenError {
     message: string,
     public readonly toolName?: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
+    context: Partial<ErrorContext> = {},
   ) {
     super(message, 'MCP', severity, { ...context, metadata: { toolName } });
     this.name = 'MCPError';
@@ -538,7 +542,7 @@ export class MCPValidationError extends MCPError {
     public readonly parameterName: string,
     public readonly expectedType: string,
     public readonly actualValue: any,
-    toolName?: string
+    toolName?: string,
   ) {
     super(message, toolName, 'medium', {
       metadata: { parameterName, expectedType, actualValue },
@@ -553,7 +557,7 @@ export class MCPExecutionError extends MCPError {
     toolName: string,
     public readonly executionPhase: 'pre' | 'during' | 'post',
     public readonly originalError?: Error,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, toolName, severity, {
       metadata: { executionPhase, originalError: originalError?.message },
@@ -567,7 +571,7 @@ export class MCPTimeoutError extends MCPError {
     message: string,
     toolName: string,
     public readonly timeoutMs: number,
-    public readonly actualTimeMs?: number
+    public readonly actualTimeMs?: number,
   ) {
     super(message, toolName, 'high', { metadata: { timeoutMs, actualTimeMs } });
     this.name = 'MCPTimeoutError';
@@ -603,7 +607,7 @@ export class WASMError extends BaseClaudeZenError {
   constructor(
     message: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
+    context: Partial<ErrorContext> = {},
   ) {
     super(message, 'WASM', severity, context);
     this.name = 'WASMError';
@@ -615,7 +619,7 @@ export class WASMLoadingError extends WASMError {
     message: string,
     public readonly moduleName: string,
     public readonly moduleSize?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'critical'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'critical',
   ) {
     super(message, severity, { metadata: { moduleName, moduleSize } });
     this.name = 'WASMLoadingError';
@@ -627,7 +631,7 @@ export class WASMExecutionError extends WASMError {
     message: string,
     public readonly functionName: string,
     public readonly parameters?: any[],
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, severity, { metadata: { functionName, parameters } });
     this.name = 'WASMExecutionError';
@@ -639,7 +643,7 @@ export class WASMMemoryError extends WASMError {
     message: string,
     public readonly memoryUsage: number,
     public readonly memoryLimit?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'critical'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'critical',
   ) {
     super(message, severity, { metadata: { memoryUsage, memoryLimit } });
     this.name = 'WASMMemoryError';
@@ -678,7 +682,7 @@ export class SystemError extends BaseClaudeZenError {
     message: string,
     public readonly code?: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
-    context: Partial<ErrorContext> = {}
+    context: Partial<ErrorContext> = {},
   ) {
     super(message, 'System', severity, { ...context, metadata: { code } });
     this.name = 'SystemError';
@@ -713,7 +717,7 @@ export class ValidationError extends BaseClaudeZenError {
     message: string,
     public readonly field?: string,
     public readonly expectedValue?: any,
-    public readonly actualValue?: any
+    public readonly actualValue?: any,
   ) {
     super(message, 'Validation', 'medium', {
       metadata: { field, expectedValue, actualValue },
@@ -726,7 +730,7 @@ export class NotFoundError extends BaseClaudeZenError {
   constructor(
     message: string,
     public readonly resource?: string,
-    public readonly resourceId?: string
+    public readonly resourceId?: string,
   ) {
     super(message, 'NotFound', 'medium', {
       metadata: { resource, resourceId },
@@ -763,9 +767,15 @@ export class TimeoutError extends BaseClaudeZenError {
     message: string,
     public readonly timeoutMs?: number,
     public readonly actualTimeMs?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
-    super(message, 'Timeout', severity, { metadata: { timeoutMs, actualTimeMs } }, false);
+    super(
+      message,
+      'Timeout',
+      severity,
+      { metadata: { timeoutMs, actualTimeMs } },
+      false,
+    );
     this.name = 'TimeoutError';
   }
 }
@@ -774,9 +784,15 @@ export class ConfigurationError extends BaseClaudeZenError {
   constructor(
     message: string,
     public readonly configKey?: string,
-    public readonly configValue?: any
+    public readonly configValue?: any,
   ) {
-    super(message, 'Configuration', 'high', { metadata: { configKey, configValue } }, false);
+    super(
+      message,
+      'Configuration',
+      'high',
+      { metadata: { configKey, configValue } },
+      false,
+    );
     this.name = 'ConfigurationError';
   }
 }
@@ -786,7 +802,7 @@ export class NetworkError extends BaseClaudeZenError {
     message: string,
     public readonly statusCode?: number,
     public readonly endpoint?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, 'Network', severity, { metadata: { statusCode, endpoint } });
     this.name = 'NetworkError';
@@ -798,7 +814,7 @@ export class TaskError extends BaseClaudeZenError {
     message: string,
     public readonly taskId?: string,
     public readonly taskType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, 'Task', severity, { metadata: { taskId, taskType } });
     this.name = 'TaskError';
@@ -812,9 +828,14 @@ export class TaskError extends BaseClaudeZenError {
 export class StorageError extends BaseClaudeZenError {
   constructor(
     message: string,
-    public readonly storageType: 'sqlite' | 'memory' | 'file' | 'lancedb' | 'vector',
+    public readonly storageType:
+      | 'sqlite'
+      | 'memory'
+      | 'file'
+      | 'lancedb'
+      | 'vector',
     public readonly operation: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, 'Storage', severity, {
       operation,
@@ -829,7 +850,7 @@ export class DatabaseError extends StorageError {
     message: string,
     public readonly query?: string,
     public readonly connectionId?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, 'sqlite', 'database', severity);
     this.context.metadata = { ...this.context.metadata, query, connectionId };
@@ -841,7 +862,7 @@ export class TransactionError extends DatabaseError {
   constructor(
     message: string,
     public readonly transactionId: string,
-    public readonly rollbackSuccess: boolean = false
+    public readonly rollbackSuccess: boolean = false,
   ) {
     super(message, undefined, undefined, 'critical');
     this.context.metadata = {
@@ -910,7 +931,9 @@ export function isRecoverableError(error: Error): boolean {
  * }
  * ```
  */
-export function getErrorSeverity(error: Error): 'low' | 'medium' | 'high' | 'critical' {
+export function getErrorSeverity(
+  error: Error,
+): 'low' | 'medium' | 'high' | 'critical' {
   if (error instanceof BaseClaudeZenError) {
     return error.severity;
   }
@@ -951,7 +974,11 @@ export function getErrorSeverity(error: Error): 'low' | 'medium' | 'high' | 'cri
  * }
  * ```
  */
-export function shouldRetry(error: Error, attempt: number, maxRetries: number = 3): boolean {
+export function shouldRetry(
+  error: Error,
+  attempt: number,
+  maxRetries: number = 3,
+): boolean {
   if (attempt >= maxRetries) return false;
   if (!isRecoverableError(error)) return false;
 

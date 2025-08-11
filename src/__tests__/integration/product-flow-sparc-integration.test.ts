@@ -7,8 +7,8 @@
  * - Integration tests validate seamless coordination between both systems
  */
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { nanoid } from 'nanoid';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ProductWorkflowEngine } from '../../coordination/orchestration/product-workflow-engine.ts';
 import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine.ts';
 import { MemorySystem } from '../../core/memory-system.ts';
@@ -35,13 +35,20 @@ describe('Product Flow + SPARC Integration', () => {
     await documentService.initialize();
 
     // Initialize main systems
-    productWorkflowEngine = new ProductWorkflowEngine(memorySystem, documentService, {
-      enableSPARCIntegration: true,
-      autoTriggerSPARC: true,
-      sparcQualityGates: true,
-    });
+    productWorkflowEngine = new ProductWorkflowEngine(
+      memorySystem,
+      documentService,
+      {
+        enableSPARCIntegration: true,
+        autoTriggerSPARC: true,
+        sparcQualityGates: true,
+      },
+    );
 
-    productFlowSystem = new ProductFlowSystem(productWorkflowEngine, documentService);
+    productFlowSystem = new ProductFlowSystem(
+      productWorkflowEngine,
+      documentService,
+    );
     sparcEngine = new SPARCEngineCore();
 
     await productWorkflowEngine.initialize();
@@ -95,10 +102,26 @@ describe('Product Flow + SPARC Integration', () => {
           sparc_project_id: undefined, // Will be set during integration
           sparc_phases: {
             specification: { status: 'not_started', deliverables: [] },
-            pseudocode: { status: 'not_started', deliverables: [], algorithms: [] },
-            architecture: { status: 'not_started', deliverables: [], components: [] },
-            refinement: { status: 'not_started', deliverables: [], optimizations: [] },
-            completion: { status: 'not_started', deliverables: [], artifacts: [] },
+            pseudocode: {
+              status: 'not_started',
+              deliverables: [],
+              algorithms: [],
+            },
+            architecture: {
+              status: 'not_started',
+              deliverables: [],
+              components: [],
+            },
+            refinement: {
+              status: 'not_started',
+              deliverables: [],
+              optimizations: [],
+            },
+            completion: {
+              status: 'not_started',
+              deliverables: [],
+              artifacts: [],
+            },
           },
           current_sparc_phase: 'specification',
           sparc_progress_percentage: 0,
@@ -114,8 +137,12 @@ describe('Product Flow + SPARC Integration', () => {
 
       // Validate SPARC integration structure
       expect(feature['sparc_implementation']).toBeDefined();
-      expect(feature['sparc_implementation']?.['use_sparc_methodology']).toBe(true);
-      expect(feature['sparc_implementation']?.['current_sparc_phase']).toBe('specification');
+      expect(feature['sparc_implementation']?.['use_sparc_methodology']).toBe(
+        true,
+      );
+      expect(feature['sparc_implementation']?.['current_sparc_phase']).toBe(
+        'specification',
+      );
 
       // Validate all SPARC phases are defined
       const sparcPhases = feature['sparc_implementation']?.['sparc_phases'];
@@ -184,26 +211,37 @@ describe('Product Flow + SPARC Integration', () => {
 
       // Validate SPARC task integration
       expect(task['sparc_implementation_details']).toBeDefined();
-      expect(task['sparc_implementation_details']?.['sparc_phase_assignment']).toBe('completion');
-      expect(task['sparc_implementation_details']?.['sparc_deliverable_type']).toBe(
-        'production_code'
-      );
-      expect(task['sparc_implementation_details']?.['sparc_quality_gates']).toHaveLength(2);
+      expect(
+        task['sparc_implementation_details']?.['sparc_phase_assignment'],
+      ).toBe('completion');
+      expect(
+        task['sparc_implementation_details']?.['sparc_deliverable_type'],
+      ).toBe('production_code');
+      expect(
+        task['sparc_implementation_details']?.['sparc_quality_gates'],
+      ).toHaveLength(2);
     });
   });
 
   describe('🚀 Complete Product Flow Workflow', () => {
     it('should execute full Product Flow with SPARC integration', async () => {
-      const workspaceId = await productFlowSystem.loadWorkspace('./test-workspace');
+      const workspaceId =
+        await productFlowSystem.loadWorkspace('./test-workspace');
 
       // Start complete Product Flow workflow
-      const result = await productWorkflowEngine.startProductWorkflow('complete-product-flow', {
-        workspaceId,
-        variables: {
-          visionTitle: 'E-commerce Platform',
-          businessObjectives: ['Increase online sales', 'Improve user experience'],
+      const result = await productWorkflowEngine.startProductWorkflow(
+        'complete-product-flow',
+        {
+          workspaceId,
+          variables: {
+            visionTitle: 'E-commerce Platform',
+            businessObjectives: [
+              'Increase online sales',
+              'Improve user experience',
+            ],
+          },
         },
-      });
+      );
 
       expect(result?.success).toBe(true);
       expect(result?.workflowId).toBeDefined();
@@ -219,13 +257,19 @@ describe('Product Flow + SPARC Integration', () => {
     });
 
     it('should properly sequence Product Flow steps', async () => {
-      const workspaceId = await productFlowSystem.loadWorkspace('./test-workspace');
+      const workspaceId =
+        await productFlowSystem.loadWorkspace('./test-workspace');
 
-      const result = await productWorkflowEngine.startProductWorkflow('complete-product-flow', {
-        workspaceId,
-      });
+      const result = await productWorkflowEngine.startProductWorkflow(
+        'complete-product-flow',
+        {
+          workspaceId,
+        },
+      );
 
-      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result?.workflowId!);
+      const workflow = await productWorkflowEngine.getProductWorkflowStatus(
+        result?.workflowId!,
+      );
       expect(workflow).toBeDefined();
 
       // Verify Product Flow step sequencing
@@ -252,7 +296,8 @@ describe('Product Flow + SPARC Integration', () => {
 
   describe('🔧 SPARC Integration for Features', () => {
     it('should create SPARC projects for technical features', async () => {
-      const workspaceId = await productFlowSystem.loadWorkspace('./test-workspace');
+      const workspaceId =
+        await productFlowSystem.loadWorkspace('./test-workspace');
 
       // Mock a workflow with features that need SPARC
       const workflow = await createMockWorkflowWithFeatures(workspaceId);
@@ -265,11 +310,15 @@ describe('Product Flow + SPARC Integration', () => {
 
       // Check that API feature got SPARC project
       const apiFeature = workflow.productFlow.documents.features.find(
-        (f) => f['feature_type'] === 'api'
+        (f) => f['feature_type'] === 'api',
       );
       if (apiFeature) {
-        expect(workflow.sparcIntegration.sparcProjects.has(apiFeature.id)).toBe(true);
-        expect(workflow.sparcIntegration.activePhases.get(apiFeature.id)).toBe('specification');
+        expect(workflow.sparcIntegration.sparcProjects.has(apiFeature.id)).toBe(
+          true,
+        );
+        expect(workflow.sparcIntegration.activePhases.get(apiFeature.id)).toBe(
+          'specification',
+        );
       }
     });
 
@@ -278,7 +327,11 @@ describe('Product Flow + SPARC Integration', () => {
         name: 'Test Feature Implementation',
         domain: 'rest-api',
         complexity: 'moderate',
-        requirements: ['Secure API endpoints', 'Data validation', 'Error handling'],
+        requirements: [
+          'Secure API endpoints',
+          'Data validation',
+          'Error handling',
+        ],
       });
 
       // Execute all SPARC phases
@@ -308,7 +361,11 @@ describe('Product Flow + SPARC Integration', () => {
         name: 'Production Ready Feature',
         domain: 'rest-api',
         complexity: 'moderate',
-        requirements: ['Complete implementation', 'Full test coverage', 'Documentation'],
+        requirements: [
+          'Complete implementation',
+          'Full test coverage',
+          'Documentation',
+        ],
       });
 
       // Execute all phases to completion
@@ -340,8 +397,10 @@ describe('Product Flow + SPARC Integration', () => {
 
   describe('📊 Integration Health and Monitoring', () => {
     it('should track Product Flow + SPARC integration health', async () => {
-      const workspaceId = await productFlowSystem.loadWorkspace('./test-workspace');
-      const workspaceStatus = await productFlowSystem.getWorkspaceStatus(workspaceId);
+      const workspaceId =
+        await productFlowSystem.loadWorkspace('./test-workspace');
+      const workspaceStatus =
+        await productFlowSystem.getWorkspaceStatus(workspaceId);
 
       expect(workspaceStatus.sparcIntegration).toBe(true);
       expect(workspaceStatus.workspaceId).toBe(workspaceId);
@@ -351,45 +410,69 @@ describe('Product Flow + SPARC Integration', () => {
       const workflow = await createMockWorkflowWithFeatures('test-workspace');
 
       // Mock some SPARC integration
-      workflow.sparcIntegration.sparcProjects.set('feature-1', {} as SPARCProject);
+      workflow.sparcIntegration.sparcProjects.set(
+        'feature-1',
+        {} as SPARCProject,
+      );
       workflow.sparcIntegration.activePhases.set('feature-1', 'architecture');
-      workflow.sparcIntegration.completedPhases.set('feature-1', ['specification', 'pseudocode']);
+      workflow.sparcIntegration.completedPhases.set('feature-1', [
+        'specification',
+        'pseudocode',
+      ]);
 
       // Verify integration state
       expect(workflow.sparcIntegration.sparcProjects.size).toBe(1);
-      expect(workflow.sparcIntegration.activePhases.get('feature-1')).toBe('architecture');
-      expect(workflow.sparcIntegration.completedPhases.get('feature-1')).toHaveLength(2);
+      expect(workflow.sparcIntegration.activePhases.get('feature-1')).toBe(
+        'architecture',
+      );
+      expect(
+        workflow.sparcIntegration.completedPhases.get('feature-1'),
+      ).toHaveLength(2);
     });
   });
 
   describe('🎛️ Workflow Control Operations', () => {
     it('should support pause/resume of Product Flow workflows', async () => {
-      const workspaceId = await productFlowSystem.loadWorkspace('./test-workspace');
+      const workspaceId =
+        await productFlowSystem.loadWorkspace('./test-workspace');
 
-      const result = await productWorkflowEngine.startProductWorkflow('complete-product-flow', {
-        workspaceId,
-      });
+      const result = await productWorkflowEngine.startProductWorkflow(
+        'complete-product-flow',
+        {
+          workspaceId,
+        },
+      );
 
       // Pause workflow
-      const pauseResult = await productWorkflowEngine.pauseProductWorkflow(result?.workflowId!);
+      const pauseResult = await productWorkflowEngine.pauseProductWorkflow(
+        result?.workflowId!,
+      );
       expect(pauseResult?.success).toBe(true);
 
       // Verify paused status
-      const workflow = await productWorkflowEngine.getProductWorkflowStatus(result?.workflowId!);
+      const workflow = await productWorkflowEngine.getProductWorkflowStatus(
+        result?.workflowId!,
+      );
       expect(workflow?.status).toBe('paused');
 
       // Resume workflow
-      const resumeResult = await productWorkflowEngine.resumeProductWorkflow(result?.workflowId!);
+      const resumeResult = await productWorkflowEngine.resumeProductWorkflow(
+        result?.workflowId!,
+      );
       expect(resumeResult?.success).toBe(true);
     });
 
     it('should handle workflow errors gracefully', async () => {
-      const workspaceId = await productFlowSystem.loadWorkspace('./test-workspace');
+      const workspaceId =
+        await productFlowSystem.loadWorkspace('./test-workspace');
 
       // Start workflow with invalid configuration to trigger error
-      const result = await productWorkflowEngine.startProductWorkflow('nonexistent-workflow', {
-        workspaceId,
-      });
+      const result = await productWorkflowEngine.startProductWorkflow(
+        'nonexistent-workflow',
+        {
+          workspaceId,
+        },
+      );
 
       expect(result?.success).toBe(false);
       expect(result?.error).toBeDefined();
@@ -405,7 +488,11 @@ describe('Product Flow + SPARC Integration', () => {
         title: 'User Management API',
         content: 'REST API for user operations',
         feature_type: 'api', // Technical - should get SPARC
-        acceptance_criteria: ['CRUD operations', 'Authentication', 'Validation'],
+        acceptance_criteria: [
+          'CRUD operations',
+          'Authentication',
+          'Validation',
+        ],
         technical_approach: 'REST with JWT',
         status: 'draft',
         priority: 'high',
@@ -449,7 +536,12 @@ describe('Product Flow + SPARC Integration', () => {
 
     return {
       id: 'mock-workflow',
-      definition: { name: 'test', description: 'test', version: '1.0', steps: [] },
+      definition: {
+        name: 'test',
+        description: 'test',
+        version: '1.0',
+        steps: [],
+      },
       status: 'running' as const,
       context: {
         workspaceId,
@@ -488,7 +580,12 @@ describe('Product Flow + SPARC Integration', () => {
         avgStepDuration: 0,
         successRate: 0,
         retryRate: 0,
-        resourceUsage: { cpuTime: 0, memoryPeak: 0, diskIo: 0, networkRequests: 0 },
+        resourceUsage: {
+          cpuTime: 0,
+          memoryPeak: 0,
+          diskIo: 0,
+          networkRequests: 0,
+        },
         throughput: 0,
       },
       productFlow: {

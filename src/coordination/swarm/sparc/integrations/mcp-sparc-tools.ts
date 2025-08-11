@@ -58,7 +58,8 @@ export class SPARCMCPTools {
   private createProjectTool(): Tool {
     return {
       name: 'sparc_create_project',
-      description: 'Initialize a new SPARC project with comprehensive development methodology',
+      description:
+        'Initialize a new SPARC project with comprehensive development methodology',
       inputSchema: {
         type: 'object',
         properties: {
@@ -77,7 +78,8 @@ export class SPARCMCPTools {
               'interfaces',
               'general',
             ],
-            description: 'Project domain for specialized templates and patterns',
+            description:
+              'Project domain for specialized templates and patterns',
           },
           complexity: {
             type: 'string',
@@ -114,7 +116,13 @@ export class SPARCMCPTools {
           },
           phase: {
             type: 'string',
-            enum: ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'],
+            enum: [
+              'specification',
+              'pseudocode',
+              'architecture',
+              'refinement',
+              'completion',
+            ],
             description: 'SPARC phase to execute',
           },
           options: {
@@ -277,9 +285,18 @@ export class SPARCMCPTools {
               performanceMetrics: {
                 type: 'object',
                 properties: {
-                  latency: { type: 'number', description: 'Current latency in ms' },
-                  throughput: { type: 'number', description: 'Current throughput in requests/sec' },
-                  errorRate: { type: 'number', description: 'Current error rate (0-1)' },
+                  latency: {
+                    type: 'number',
+                    description: 'Current latency in ms',
+                  },
+                  throughput: {
+                    type: 'number',
+                    description: 'Current throughput in requests/sec',
+                  },
+                  errorRate: {
+                    type: 'number',
+                    description: 'Current error rate (0-1)',
+                  },
                 },
                 description: 'Current performance metrics',
               },
@@ -288,9 +305,15 @@ export class SPARCMCPTools {
                 items: {
                   type: 'object',
                   properties: {
-                    metric: { type: 'string', description: 'Performance metric name' },
+                    metric: {
+                      type: 'string',
+                      description: 'Performance metric name',
+                    },
                     target: { type: 'number', description: 'Target value' },
-                    priority: { type: 'string', enum: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] },
+                    priority: {
+                      type: 'string',
+                      enum: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'],
+                    },
                   },
                   required: ['metric', 'target', 'priority'],
                 },
@@ -431,8 +454,10 @@ export class SPARCMCPTools {
         ...basicStatus,
         phaseStatus: project.progress.phaseStatus,
         specification: {
-          functionalRequirements: project.specification.functionalRequirements.length,
-          nonFunctionalRequirements: project.specification.nonFunctionalRequirements.length,
+          functionalRequirements:
+            project.specification.functionalRequirements.length,
+          nonFunctionalRequirements:
+            project.specification.nonFunctionalRequirements.length,
           risksIdentified: project.specification.riskAssessment.risks.length,
         },
         refinements: project.refinements.length,
@@ -526,7 +551,10 @@ export class SPARCMCPTools {
       throw new Error(`Project not found: ${args.projectId}`);
     }
 
-    const refinementResult = await this.sparcEngine.refineImplementation(project, args.feedback);
+    const refinementResult = await this.sparcEngine.refineImplementation(
+      project,
+      args.feedback,
+    );
 
     return {
       success: true,
@@ -538,7 +566,8 @@ export class SPARCMCPTools {
         scalabilityIncrease: `${refinementResult?.scalabilityIncrease}x`,
         maintainabilityImprovement: `${(refinementResult?.maintainabilityImprovement * 100).toFixed(1)}%`,
       },
-      message: 'Implementation refined successfully with performance optimizations',
+      message:
+        'Implementation refined successfully with performance optimizations',
       nextSteps: [
         'Test refined implementation',
         'Validate performance improvements',
@@ -550,7 +579,8 @@ export class SPARCMCPTools {
   private applyTemplateTool(): Tool {
     return {
       name: 'sparc_apply_template',
-      description: 'Apply a pre-built SPARC template to accelerate project development',
+      description:
+        'Apply a pre-built SPARC template to accelerate project development',
       inputSchema: {
         type: 'object',
         properties: {
@@ -560,7 +590,12 @@ export class SPARCMCPTools {
           },
           templateType: {
             type: 'string',
-            enum: ['swarm-coordination', 'neural-networks', 'memory-systems', 'rest-api'],
+            enum: [
+              'swarm-coordination',
+              'neural-networks',
+              'memory-systems',
+              'rest-api',
+            ],
             description: 'Type of template to apply',
           },
           customizations: {
@@ -585,7 +620,8 @@ export class SPARCMCPTools {
   private executeFullWorkflowTool(): Tool {
     return {
       name: 'sparc_execute_full_workflow',
-      description: 'Execute complete SPARC workflow from specification to completion',
+      description:
+        'Execute complete SPARC workflow from specification to completion',
       inputSchema: {
         type: 'object',
         properties: {
@@ -653,7 +689,11 @@ export class SPARCMCPTools {
     for (const phase of phases) {
       try {
         const phaseResult = await this.sparcEngine.executePhase(project, phase);
-        results?.push({ phase, success: true, duration: phaseResult?.metrics?.duration });
+        results?.push({
+          phase,
+          success: true,
+          duration: phaseResult?.metrics?.duration,
+        });
       } catch (error) {
         results?.push({
           phase,
@@ -678,7 +718,8 @@ export class SPARCMCPTools {
   private generateProjectManagementArtifactsTool(): Tool {
     return {
       name: 'sparc_generate_pm_artifacts',
-      description: 'Generate project management artifacts (tasks, ADRs, PRDs) from SPARC project',
+      description:
+        'Generate project management artifacts (tasks, ADRs, PRDs) from SPARC project',
       inputSchema: {
         type: 'object',
         properties: {
@@ -703,7 +744,8 @@ export class SPARCMCPTools {
   private createEpicFromProjectTool(): Tool {
     return {
       name: 'sparc_create_epic',
-      description: 'Create an epic and features from a SPARC project for strategic planning',
+      description:
+        'Create an epic and features from a SPARC project for strategic planning',
       inputSchema: {
         type: 'object',
         properties: {
@@ -792,7 +834,9 @@ export class SPARCMCPTools {
    *
    * @param args
    */
-  public async handleGenerateProjectManagementArtifacts(args: any): Promise<any> {
+  public async handleGenerateProjectManagementArtifacts(
+    args: any,
+  ): Promise<any> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -803,10 +847,11 @@ export class SPARCMCPTools {
       await this.projectManagement.initialize();
 
       // Use comprehensive artifact generation with enhanced infrastructure
-      const results = await this.projectManagement.createAllProjectManagementArtifacts(
-        project,
-        args.artifactTypes || ['all']
-      );
+      const results =
+        await this.projectManagement.createAllProjectManagementArtifacts(
+          project,
+          args.artifactTypes || ['all'],
+        );
 
       return {
         success: true,
@@ -842,12 +887,21 @@ export class SPARCMCPTools {
         },
         integration: {
           adr_governance: 'independent', // ADRs are independent architectural governance, not workflow-generated
-          prd_workflow: results?.workflowResults?.['vision-to-prds'] ? 'executed' : 'failed',
-          epic_workflow: results?.workflowResults?.['prd-to-epics'] ? 'executed' : 'failed',
-          feature_workflow: results?.workflowResults?.['epic-to-features'] ? 'executed' : 'failed',
-          task_workflow: results?.workflowResults?.['feature-to-tasks'] ? 'executed' : 'failed',
+          prd_workflow: results?.workflowResults?.['vision-to-prds']
+            ? 'executed'
+            : 'failed',
+          epic_workflow: results?.workflowResults?.['prd-to-epics']
+            ? 'executed'
+            : 'failed',
+          feature_workflow: results?.workflowResults?.['epic-to-features']
+            ? 'executed'
+            : 'failed',
+          task_workflow: results?.workflowResults?.['feature-to-tasks']
+            ? 'executed'
+            : 'failed',
         },
-        message: 'Successfully integrated SPARC with existing Claude-Zen infrastructure',
+        message:
+          'Successfully integrated SPARC with existing Claude-Zen infrastructure',
       };
     } catch (error) {
       return {
@@ -903,11 +957,13 @@ export class SPARCMCPTools {
     }
 
     try {
-      const epic = await this.roadmapManager.generateEpicFromSPARCProject(project);
+      const epic =
+        await this.roadmapManager.generateEpicFromSPARCProject(project);
 
       let features: Array<{ id: string; title: string; status: string }> = [];
       if (args.includeFeatures) {
-        features = await this.roadmapManager.generateFeaturesFromProject(project);
+        features =
+          await this.roadmapManager.generateFeaturesFromProject(project);
       }
 
       await this.roadmapManager.saveProjectArtifacts(project);
@@ -931,7 +987,7 @@ export class SPARCMCPTools {
       };
     } catch (error) {
       throw new Error(
-        `Failed to create epic: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Failed to create epic: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -948,7 +1004,10 @@ export class SPARCMCPTools {
     }
 
     try {
-      await this.roadmapManager.addProjectToRoadmap(project, args.targetQuarter);
+      await this.roadmapManager.addProjectToRoadmap(
+        project,
+        args.targetQuarter,
+      );
 
       return {
         success: true,
@@ -960,7 +1019,7 @@ export class SPARCMCPTools {
       };
     } catch (error) {
       throw new Error(
-        `Failed to add to roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Failed to add to roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -972,10 +1031,13 @@ export class SPARCMCPTools {
    */
   public async handleGenerateDomainRoadmap(args: any): Promise<any> {
     try {
-      const roadmap = await this.roadmapManager.generateDomainRoadmap(args.domain, {
-        start: args.timeframe.startQuarter,
-        end: args.timeframe.endQuarter,
-      });
+      const roadmap = await this.roadmapManager.generateDomainRoadmap(
+        args.domain,
+        {
+          start: args.timeframe.startQuarter,
+          end: args.timeframe.endQuarter,
+        },
+      );
 
       return {
         success: true,
@@ -999,7 +1061,7 @@ export class SPARCMCPTools {
       };
     } catch (error) {
       throw new Error(
-        `Failed to generate domain roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Failed to generate domain roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -1046,7 +1108,8 @@ export class SPARCMCPTools {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
         toolName,
         args,
       };

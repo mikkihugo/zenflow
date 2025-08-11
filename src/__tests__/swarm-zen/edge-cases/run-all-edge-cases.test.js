@@ -146,7 +146,10 @@ describe('Edge Case Test Suite - Complete Coverage', () => {
         errorHandling: 13,
       };
 
-      const totalCoverage = Object.values(totalEdgeCases).reduce((sum, count) => sum + count, 0);
+      const totalCoverage = Object.values(totalEdgeCases).reduce(
+        (sum, count) => sum + count,
+        0,
+      );
 
       expect(totalCoverage).toBe(66);
       expect(totalCoverage).toBeGreaterThan(50); // Significant edge case coverage

@@ -8,7 +8,11 @@
  * @file TypeScript API client with full type safety.
  */
 
-import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import axios, {
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+} from 'axios';
 import { getMCPServerURL } from '../../../config/defaults.ts';
 import type {
   Agent,
@@ -93,7 +97,9 @@ export class APIClient {
   private createHttpClient(): AxiosInstance {
     const client = axios.create({
       baseURL: this.config.baseURL,
-      ...(this.config.timeout !== undefined && { timeout: this.config.timeout }),
+      ...(this.config.timeout !== undefined && {
+        timeout: this.config.timeout,
+      }),
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -129,7 +135,10 @@ export class APIClient {
       async (error) => {
         const config = error.config;
 
-        if (!config || config?.__retryCount >= (this.config.retryAttempts || 3)) {
+        if (
+          !config ||
+          config?.__retryCount >= (this.config.retryAttempts || 3)
+        ) {
           return Promise.reject(error);
         }
 
@@ -141,13 +150,15 @@ export class APIClient {
           error.code === 'NETWORK_ERROR' ||
           (error.response && error.response.status >= 500)
         ) {
-          await new Promise((resolve) => setTimeout(resolve, this.config.retryDelay || 1000));
+          await new Promise((resolve) =>
+            setTimeout(resolve, this.config.retryDelay || 1000),
+          );
 
           return client(config);
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -172,7 +183,7 @@ export class APIClient {
           throw clientError;
         }
         throw error;
-      }
+      },
     );
   }
 
@@ -188,7 +199,7 @@ export class APIClient {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     endpoint: string,
     data?: unknown,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<T> {
     const config: AxiosRequestConfig = {
       method,
@@ -225,7 +236,7 @@ export class APIClient {
         limit?: number;
         offset?: number;
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ) => {
       const queryParams = new URLSearchParams();
       if (params?.status) queryParams?.set('status', params?.status);
@@ -238,7 +249,12 @@ export class APIClient {
         total: number;
         offset: number;
         limit: number;
-      }>('GET', `/api/v1/coordination/agents?${queryParams}`, undefined, options);
+      }>(
+        'GET',
+        `/api/v1/coordination/agents?${queryParams}`,
+        undefined,
+        options,
+      );
     },
 
     /**
@@ -254,9 +270,14 @@ export class APIClient {
         type: Agent['type'];
         capabilities: string[];
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ) => {
-      return this.request<Agent>('POST', '/api/v1/coordination/agents', data, options);
+      return this.request<Agent>(
+        'POST',
+        '/api/v1/coordination/agents',
+        data,
+        options,
+      );
     },
 
     /**
@@ -270,7 +291,7 @@ export class APIClient {
         'GET',
         `/api/v1/coordination/agents/${agentId}`,
         undefined,
-        options
+        options,
       );
     },
 
@@ -285,7 +306,7 @@ export class APIClient {
         'DELETE',
         `/api/v1/coordination/agents/${agentId}`,
         undefined,
-        options
+        options,
       );
     },
 
@@ -306,9 +327,14 @@ export class APIClient {
         priority: number;
         deadline?: Date;
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ) => {
-      return this.request<Task>('POST', '/api/v1/coordination/tasks', data, options);
+      return this.request<Task>(
+        'POST',
+        '/api/v1/coordination/tasks',
+        data,
+        options,
+      );
     },
 
     /**
@@ -318,7 +344,12 @@ export class APIClient {
      * @param options
      */
     getTask: async (taskId: string, options?: RequestOptions) => {
-      return this.request<Task>('GET', `/api/v1/coordination/tasks/${taskId}`, undefined, options);
+      return this.request<Task>(
+        'GET',
+        `/api/v1/coordination/tasks/${taskId}`,
+        undefined,
+        options,
+      );
     },
 
     /**
@@ -331,7 +362,7 @@ export class APIClient {
         'GET',
         '/api/v1/coordination/swarm/config',
         undefined,
-        options
+        options,
       );
     },
 
@@ -341,8 +372,16 @@ export class APIClient {
      * @param config
      * @param options
      */
-    updateSwarmConfig: async (config: SwarmConfig, options?: RequestOptions) => {
-      return this.request<SwarmConfig>('PUT', '/api/v1/coordination/swarm/config', config, options);
+    updateSwarmConfig: async (
+      config: SwarmConfig,
+      options?: RequestOptions,
+    ) => {
+      return this.request<SwarmConfig>(
+        'PUT',
+        '/api/v1/coordination/swarm/config',
+        config,
+        options,
+      );
     },
 
     /**
@@ -351,7 +390,12 @@ export class APIClient {
      * @param options
      */
     getHealth: async (options?: RequestOptions) => {
-      return this.request<HealthStatus>('GET', '/api/v1/coordination/health', undefined, options);
+      return this.request<HealthStatus>(
+        'GET',
+        '/api/v1/coordination/health',
+        undefined,
+        options,
+      );
     },
 
     /**
@@ -360,13 +404,16 @@ export class APIClient {
      * @param timeRange
      * @param options
      */
-    getMetrics: async (timeRange?: '1h' | '24h' | '7d' | '30d', options?: RequestOptions) => {
+    getMetrics: async (
+      timeRange?: '1h' | '24h' | '7d' | '30d',
+      options?: RequestOptions,
+    ) => {
       const queryParams = timeRange ? `?timeRange=${timeRange}` : '';
       return this.request<PerformanceMetrics>(
         'GET',
         `/api/v1/coordination/metrics${queryParams}`,
         undefined,
-        options
+        options,
       );
     },
   };
@@ -390,7 +437,7 @@ export class APIClient {
         type?: NeuralNetwork['type'];
         status?: NeuralNetwork['status'];
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ) => {
       const queryParams = new URLSearchParams();
       if (params?.type) queryParams?.set('type', params?.type);
@@ -414,9 +461,14 @@ export class APIClient {
         type: NeuralNetwork['type'];
         layers: NeuralNetwork['layers'];
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ) => {
-      return this.request<NeuralNetwork>('POST', '/api/v1/neural/networks', data, options);
+      return this.request<NeuralNetwork>(
+        'POST',
+        '/api/v1/neural/networks',
+        data,
+        options,
+      );
     },
 
     /**
@@ -430,7 +482,7 @@ export class APIClient {
         'GET',
         `/api/v1/neural/networks/${networkId}`,
         undefined,
-        options
+        options,
       );
     },
 
@@ -441,7 +493,11 @@ export class APIClient {
      * @param data
      * @param options
      */
-    trainNetwork: async (networkId: string, data: TrainingRequest, options?: RequestOptions) => {
+    trainNetwork: async (
+      networkId: string,
+      data: TrainingRequest,
+      options?: RequestOptions,
+    ) => {
       return this.request<{
         trainingId: string;
         status: 'started';
@@ -455,12 +511,16 @@ export class APIClient {
      * @param data
      * @param options
      */
-    predict: async (networkId: string, data: PredictionRequest, options?: RequestOptions) => {
+    predict: async (
+      networkId: string,
+      data: PredictionRequest,
+      options?: RequestOptions,
+    ) => {
       return this.request<PredictionResponse>(
         'POST',
         `/api/v1/neural/networks/${networkId}/predict`,
         data,
-        options
+        options,
       );
     },
 
@@ -471,7 +531,11 @@ export class APIClient {
      * @param trainingId
      * @param options
      */
-    getTrainingStatus: async (networkId: string, trainingId: string, options?: RequestOptions) => {
+    getTrainingStatus: async (
+      networkId: string,
+      trainingId: string,
+      options?: RequestOptions,
+    ) => {
       return this.request<{
         id: string;
         networkId: string;
@@ -479,7 +543,12 @@ export class APIClient {
         progress: number;
         currentEpoch?: number;
         totalEpochs: number;
-      }>('GET', `/api/v1/neural/networks/${networkId}/training/${trainingId}`, undefined, options);
+      }>(
+        'GET',
+        `/api/v1/neural/networks/${networkId}/training/${trainingId}`,
+        undefined,
+        options,
+      );
     },
 
     /**
@@ -489,12 +558,16 @@ export class APIClient {
      * @param trainingId
      * @param options
      */
-    cancelTraining: async (networkId: string, trainingId: string, options?: RequestOptions) => {
+    cancelTraining: async (
+      networkId: string,
+      trainingId: string,
+      options?: RequestOptions,
+    ) => {
       return this.request<void>(
         'DELETE',
         `/api/v1/neural/networks/${networkId}/training/${trainingId}`,
         undefined,
-        options
+        options,
       );
     },
   };
@@ -539,7 +612,12 @@ export class APIClient {
         exists: boolean;
         ttl?: number;
         retrieved: string;
-      }>('GET', `/api/v1/memory/stores/${storeId}/keys/${key}`, undefined, options);
+      }>(
+        'GET',
+        `/api/v1/memory/stores/${storeId}/keys/${key}`,
+        undefined,
+        options,
+      );
     },
 
     /**
@@ -561,7 +639,7 @@ export class APIClient {
         ttl?: number;
         metadata?: Record<string, unknown>;
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ) => {
       return this.request<{
         storeId: string;
@@ -584,7 +662,7 @@ export class APIClient {
         'DELETE',
         `/api/v1/memory/stores/${storeId}/keys/${key}`,
         undefined,
-        options
+        options,
       );
     },
 
@@ -648,7 +726,7 @@ export class APIClient {
         limit?: number;
         filter?: Record<string, unknown>;
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ) => {
       return this.request<{
         collection: string;
@@ -657,7 +735,12 @@ export class APIClient {
           score: number;
           metadata: Record<string, unknown>;
         }>;
-      }>('POST', `/api/v1/database/vector/collections/${collection}/search`, data, options);
+      }>(
+        'POST',
+        `/api/v1/database/vector/collections/${collection}/search`,
+        data,
+        options,
+      );
     },
 
     /**
@@ -673,7 +756,7 @@ export class APIClient {
         query: string;
         parameters?: Record<string, unknown>;
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ) => {
       return this.request<{
         results: unknown[];
@@ -694,7 +777,7 @@ export class APIClient {
         query: string;
         parameters?: unknown[];
       },
-      options?: RequestOptions
+      options?: RequestOptions,
     ) => {
       return this.request<{
         rows: unknown[];
@@ -796,7 +879,12 @@ export class APIClient {
    */
   public async ping(options?: RequestOptions): Promise<boolean> {
     try {
-      await this.request<{ status: string }>('GET', '/health', undefined, options);
+      await this.request<{ status: string }>(
+        'GET',
+        '/health',
+        undefined,
+        options,
+      );
       return true;
     } catch {
       return false;
@@ -809,7 +897,9 @@ export class APIClient {
  *
  * @param config
  */
-export const createAPIClient = (config?: Partial<APIClientConfig>): APIClient => {
+export const createAPIClient = (
+  config?: Partial<APIClientConfig>,
+): APIClient => {
   return new APIClient(config);
 };
 

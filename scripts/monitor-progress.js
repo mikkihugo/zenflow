@@ -71,7 +71,8 @@ function estimateProgress() {
 
   const remainingErrors = 2175; // Last known count
   const estimatedIterationsRemaining = Math.ceil(remainingErrors / 25); // ~25 errors per iteration average
-  const estimatedCostRemaining = estimatedIterationsRemaining * avgCostPerIteration;
+  const estimatedCostRemaining =
+    estimatedIterationsRemaining * avgCostPerIteration;
 
   return {
     totalCost: totalCost.toFixed(2),
@@ -106,8 +107,8 @@ function main() {
     const fixed = iter.errors.before - iter.errors.after;
     const costPerError = (iter.cost / fixed).toFixed(3);
     // console.log(
-    `   Iteration ${iter.iteration}: ${fixed} errors fixed for $${iter.cost} ($${costPerError}/error)`;
-    )
+    //   `   Iteration ${iter.iteration}: ${fixed} errors fixed for $${iter.cost} ($${costPerError}/error)`
+    // );
   }
 
   if (logData) {
@@ -124,15 +125,14 @@ function main() {
   }
 
   // console.log('\n💡 Recommendations:');
-  if (parseFloat(progress.avgCostPerIteration) > 2.0) {
+  if (Number.parseFloat(progress.avgCostPerIteration) > 2.0) {
     // console.log(
-    ('   ⚠️  High average cost per iteration - consider optimizing prompts or targeting simpler files');
-    )
+    //   '   ⚠️  High average cost per iteration - consider optimizing prompts or targeting simpler files'
+    // );
   }
   if (progress.remainingErrors > 1500) {
     // console.log(
     ('   📊 Large number of errors remaining - consider parallel processing or different strategy');
-    )
   }
   if (logData && logData.metricsEntries < 3) {
     // console.log('   🔧 Structured logging needs improvement for better cost visibility');

@@ -8,7 +8,10 @@ import type {
 } from '../database/entities/product-entities.ts';
 import type { AgentType } from '../types/agent-types.ts';
 import type { DatabaseSPARCBridge } from './database-sparc-bridge.ts';
-import { generateSubAgentConfig, mapToClaudeSubAgent } from './sub-agent-generator.ts';
+import {
+  generateSubAgentConfig,
+  mapToClaudeSubAgent,
+} from './sub-agent-generator.ts';
 import type { SPARCSwarmCoordinator } from './swarm/core/sparc-swarm-coordinator.ts';
 
 export interface TaskConfig {
@@ -66,7 +69,7 @@ export class TaskCoordinator {
    */
   async initializeSPARCIntegration(
     sparcBridge: DatabaseSPARCBridge,
-    sparcSwarm: SPARCSwarmCoordinator
+    sparcSwarm: SPARCSwarmCoordinator,
   ): Promise<void> {
     this.sparcBridge = sparcBridge;
     this.sparcSwarm = sparcSwarm;
@@ -115,9 +118,9 @@ export class TaskCoordinator {
   private async executeWithSPARC(
     config: TaskConfig,
     _startTime: number,
-    taskId: string
+    taskId: string,
   ): Promise<TaskResult> {
-    if (!this.sparcBridge || !this.sparcSwarm) {
+    if (!(this.sparcBridge && this.sparcSwarm)) {
       throw new Error('SPARC integration not initialized');
     }
 
@@ -128,11 +131,11 @@ export class TaskCoordinator {
       // Use existing document
       if (config?.source_document?.type === 'feature') {
         assignmentId = await this.sparcBridge.assignFeatureToSparcs(
-          config?.source_document
+          config?.source_document,
         );
       } else {
         assignmentId = await this.sparcBridge.assignTaskToSparcs(
-          config?.source_document
+          config?.source_document,
         );
       }
     } else {
@@ -151,7 +154,9 @@ export class TaskCoordinator {
       execution_time_ms: result?.metrics?.totalTimeMs,
       tools_used: ['sparc-methodology'],
       sparc_task_id: result?.sparcTaskId,
-      implementation_artifacts: Object.values(result?.artifacts).flat() as string[],
+      implementation_artifacts: Object.values(
+        result?.artifacts,
+      ).flat() as string[],
       methodology_applied: 'sparc',
     };
 
@@ -169,13 +174,16 @@ export class TaskCoordinator {
   private async executeDirectly(
     config: TaskConfig,
     startTime: number,
-    taskId: string
+    taskId: string,
   ): Promise<TaskResult> {
     // Determine optimal agent strategy
     const agentStrategy = this.selectAgentStrategy(config);
 
     // Prepare task execution context
-    const executionContext = this.prepareExecutionContext(config, agentStrategy);
+    const executionContext = this.prepareExecutionContext(
+      config,
+      agentStrategy,
+    );
 
     // Execute with appropriate agent
     const result = await this.executeWithAgent(executionContext);
@@ -206,7 +214,8 @@ export class TaskCoordinator {
       config.use_sparc_methodology === true ||
       config.priority === 'high' ||
       config.priority === 'critical' ||
-      (config?.source_document && this.isComplexDocument(config?.source_document)) ||
+      (config?.source_document &&
+        this.isComplexDocument(config?.source_document)) ||
       config?.description.length > 200
     );
   }
@@ -216,9 +225,12 @@ export class TaskCoordinator {
    *
    * @param document
    */
-  private isComplexDocument(document: FeatureDocumentEntity | TaskDocumentEntity): boolean {
+  private isComplexDocument(
+    document: FeatureDocumentEntity | TaskDocumentEntity,
+  ): boolean {
     return (
-      ('acceptance_criteria' in document && (document as any).acceptance_criteria?.length > 3) ||
+      ('acceptance_criteria' in document &&
+        (document as any).acceptance_criteria?.length > 3) ||
       document.tags?.includes('complex') ||
       document.tags?.includes('architecture') ||
       ('technical_approach' in document &&
@@ -254,7 +266,9 @@ export class TaskCoordinator {
       checksum: 'temp-checksum',
       metadata: {}, // Fixed: Added missing metadata property
       task_type: 'development',
-      estimated_hours: config?.timeout_minutes ? config?.timeout_minutes / 60 : 8,
+      estimated_hours: config?.timeout_minutes
+        ? config?.timeout_minutes / 60
+        : 8,
       implementation_details: {
         files_to_create: [],
         files_to_modify: [],
@@ -313,7 +327,8 @@ export class TaskCoordinator {
 
     // Determine if Claude Code sub-agent should be used
     const useClaudeSubAgent =
-      config?.use_claude_subagent !== false && this.isClaudeSubAgentOptimal(config);
+      config?.use_claude_subagent !== false &&
+      this.isClaudeSubAgentOptimal(config);
 
     return {
       agent_type: config?.subagent_type,
@@ -360,7 +375,10 @@ export class TaskCoordinator {
    * @param config
    * @param strategy
    */
-  private prepareExecutionContext(config: TaskConfig, strategy: AgentStrategy): ExecutionContext {
+  private prepareExecutionContext(
+    config: TaskConfig,
+    strategy: AgentStrategy,
+  ): ExecutionContext {
     let enhancedPrompt = config?.prompt;
 
     // Add domain context if provided
@@ -396,7 +414,9 @@ export class TaskCoordinator {
    *
    * @param context
    */
-  private async executeWithAgent(context: ExecutionContext): Promise<{ output: string }> {
+  private async executeWithAgent(
+    context: ExecutionContext,
+  ): Promise<{ output: string }> {
     // Track active sub-agent
     this.activeSubAgents.add(context.agent_strategy.agent_name);
 
@@ -465,7 +485,8 @@ export class TaskCoordinator {
       success_rate: tasks.length > 0 ? successful.length / tasks.length : 0,
       average_execution_time_ms:
         successful.length > 0
-          ? successful.reduce((sum, t) => sum + t.execution_time_ms, 0) / successful.length
+          ? successful.reduce((sum, t) => sum + t.execution_time_ms, 0) /
+            successful.length
           : 0,
       most_used_agents: this.getMostUsedAgents(tasks),
       tools_usage: this.getToolsUsage(tasks),
@@ -537,7 +558,9 @@ export async function executeTask(config: TaskConfig): Promise<TaskResult> {
  * @param configs
  * @example
  */
-export async function executeBatchTasks(configs: TaskConfig[]): Promise<TaskResult[]> {
+export async function executeBatchTasks(
+  configs: TaskConfig[],
+): Promise<TaskResult[]> {
   const taskCoordinator = TaskCoordinator.getInstance();
 
   // Execute tasks in parallel for better performance

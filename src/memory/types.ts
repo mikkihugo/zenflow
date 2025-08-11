@@ -83,6 +83,13 @@ export interface CacheStats {
   readonly averageAccessTime: number;
 }
 
+// Store options interface
+export interface StoreOptions {
+  ttl?: number;
+  compress?: boolean;
+  metadata?: Record<string, any>;
+}
+
 // Memory backend interfaces
 export interface MemoryBackend {
   store(key: string, value: unknown, options?: StoreOptions): Promise<void>;
@@ -298,7 +305,7 @@ export class MemoryError extends Error {
   constructor(
     message: string,
     public readonly code?: string,
-    public readonly details?: Record<string, unknown>
+    public readonly details?: Record<string, unknown>,
   ) {
     super(message);
     this.name = 'MemoryError';
@@ -308,7 +315,7 @@ export class MemoryError extends Error {
 export class MemoryConnectionError extends MemoryError {
   constructor(
     message: string,
-    public readonly backend: string
+    public readonly backend: string,
   ) {
     super(message, 'MEMORY_CONNECTION_ERROR');
     this.name = 'MemoryConnectionError';
@@ -319,7 +326,7 @@ export class MemoryStorageError extends MemoryError {
   constructor(
     message: string,
     public readonly key?: string,
-    public readonly operation?: string
+    public readonly operation?: string,
   ) {
     super(message, 'MEMORY_STORAGE_ERROR');
     this.name = 'MemoryStorageError';
@@ -330,7 +337,7 @@ export class MemoryCapacityError extends MemoryError {
   constructor(
     message: string,
     public readonly currentSize: number,
-    public readonly maxSize: number
+    public readonly maxSize: number,
   ) {
     super(message, 'MEMORY_CAPACITY_ERROR');
     this.name = 'MemoryCapacityError';
@@ -346,26 +353,47 @@ export interface MemoryBackendFactory {
   getAvailableBackends(): readonly MemoryBackendType[];
 }
 
+// Base memory store interface
+export interface IMemoryStore {
+  store(key: string, value: unknown, options?: StoreOptions): Promise<void>;
+  retrieve(key: string): Promise<unknown>;
+  delete(key: string): Promise<boolean>;
+  clear(): Promise<void>;
+  size(): Promise<number>;
+  health(): Promise<boolean>;
+  stats(): Promise<MemoryBackendStats>;
+}
+
 // Memory system factory type (for DI)
 export interface MemorySystemFactory {
   createMemoryStore(config: MemoryConfig): Promise<IMemoryStore>;
-  createSessionStore(options: SessionMemoryStoreOptions): Promise<SessionMemoryStore>;
+  createSessionStore(
+    options: SessionMemoryStoreOptions,
+  ): Promise<SessionMemoryStore>;
   createVectorStore(
-    config: MemoryConfig & { vectorDimensions: number }
+    config: MemoryConfig & { vectorDimensions: number },
   ): Promise<VectorMemoryStore>;
 }
 
 // Additional specialized store interfaces
 export interface SessionMemoryStore extends IMemoryStore {
   getSession(sessionId: string): Promise<SessionState | null>;
-  updateSession(sessionId: string, updates: Partial<SessionState['data']>): Promise<void>;
+  updateSession(
+    sessionId: string,
+    updates: Partial<SessionState['data']>,
+  ): Promise<void>;
   deleteSession(sessionId: string): Promise<boolean>;
-  listSessions(options?: { limit?: number; offset?: number }): Promise<readonly SessionState[]>;
+  listSessions(options?: {
+    limit?: number;
+    offset?: number;
+  }): Promise<readonly SessionState[]>;
 }
 
 export interface VectorMemoryStore {
   storeVector(data: VectorData): Promise<void>;
-  searchVectors(options: VectorSearchOptions): Promise<readonly VectorSearchResult[]>;
+  searchVectors(
+    options: VectorSearchOptions,
+  ): Promise<readonly VectorSearchResult[]>;
   deleteVector(id: string): Promise<boolean>;
   updateVector(id: string, updates: Partial<VectorData>): Promise<void>;
   getVector(id: string): Promise<VectorData | null>;

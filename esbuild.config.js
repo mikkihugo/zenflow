@@ -18,12 +18,12 @@ const config = {
   format: 'esm',
   platform: 'node',
   target: 'node18',
-  sourcemap: !isProduction,
-  minify: isProduction,
+  sourcemap: true, // Always enable for TS linking
+  minify: false, // Disable for better TS linking and debugging
   keepNames: true,
   treeShaking: true,
-  splitting: true,
-  chunkNames: 'chunks/[name]-[hash]',
+  splitting: false, // Disable to avoid linking issues
+  // chunkNames: 'chunks/[name]-[hash]',
 
   // TypeScript support
   loader: {
@@ -33,14 +33,23 @@ const config = {
     '.jsx': 'jsx',
   },
 
-  // External dependencies (don't bundle node_modules)
+  // External dependencies (don't bundle node_modules - better for TS linking)
   external: [
+    // Native/binary dependencies
     'better-sqlite3',
     'kuzu',
     '@lancedb/lancedb',
-    'canvas', // if used
-    'sharp', // if used
-    'fsevents', // Mac-specific
+    'canvas',
+    'sharp',
+    'fsevents',
+    
+    // Terminal/UI dependencies
+    'term.js',
+    'pty.js', 
+    'blessed',
+    'terminal-kit',
+    'ink',
+    'react',
   ],
 
   // Advanced optimizations
@@ -55,29 +64,49 @@ const config = {
   // Handle path resolution
   resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
 
-  // Banner for Node.js ESM compatibility
-  banner: {
-    js: `
-    import { createRequire } from 'module';
-    import { fileURLToPath } from 'url';
-    import { dirname } from 'path';
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    const require = createRequire(import.meta.url);
-    `,
-  },
+  // No banner needed when everything is external
 
   // Plugin for handling dynamic imports
   plugins: [
     {
       name: 'node-externals',
       setup(build) {
-        // Mark certain packages as external
-        build.onResolve({ filter: /^(sqlite3|better-sqlite3|kuzu)$/ }, (args) => {
+        // External all node_modules for better TS linking
+        build.onResolve({ filter: /^[^.\/]/ }, (args) => {
+          // Skip if it's already in explicit external list
+          if (args.path.startsWith('.') || args.path.startsWith('/')) return;
           return { path: args.path, external: true };
+        });
+        
+        // Handle terminal-kit README files that contain XML-like syntax
+        build.onLoad({ filter: /terminal-kit.*\/README$/ }, () => {
+          return {
+            contents: '// Terminal-kit README file ignored during build',
+            loader: 'js'
+          };
         });
       },
     },
+    {
+      name: 'transform-dynamic-imports',
+      setup(build) {
+        // Transform TypeScript dynamic imports to JavaScript
+        build.onLoad({ filter: /\.(ts|tsx)$/ }, async (args) => {
+          const fs = await import('fs');
+          const contents = await fs.promises.readFile(args.path, 'utf8');
+          
+          // Transform .ts/.tsx imports to .js in dynamic imports
+          const transformedContents = contents
+            .replace(/await import\(\s*['"`]([^'"`]+)\.ts['"`]\s*\)/g, "await import('$1.js')")
+            .replace(/await import\(\s*['"`]([^'"`]+)\.tsx['"`]\s*\s*\)/g, "await import('$1.js')");
+          
+          return {
+            contents: transformedContents,
+            loader: args.path.endsWith('.tsx') ? 'tsx' : 'ts'
+          };
+        });
+      }
+    }
   ],
 };
 

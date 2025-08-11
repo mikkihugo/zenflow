@@ -290,9 +290,18 @@ describe('Swarm Class Tests', () => {
 
   describe('Agent Selection', () => {
     beforeEach(async () => {
-      await swarm.spawn({ type: 'researcher', capabilities: ['research', 'analysis'] });
-      await swarm.spawn({ type: 'coder', capabilities: ['javascript', 'python'] });
-      await swarm.spawn({ type: 'analyst', capabilities: ['analysis', 'reporting'] });
+      await swarm.spawn({
+        type: 'researcher',
+        capabilities: ['research', 'analysis'],
+      });
+      await swarm.spawn({
+        type: 'coder',
+        capabilities: ['javascript', 'python'],
+      });
+      await swarm.spawn({
+        type: 'analyst',
+        capabilities: ['analysis', 'reporting'],
+      });
     });
 
     it('should select available agents', () => {
@@ -462,7 +471,10 @@ describe('Task Class Tests', () => {
 
       const executionTime = task.endTime - task.startTime;
       assert(executionTime > 0);
-      assert.strictEqual(task.result.execution_summary.execution_time_ms, executionTime);
+      assert.strictEqual(
+        task.result.execution_summary.execution_time_ms,
+        executionTime,
+      );
     });
   });
 

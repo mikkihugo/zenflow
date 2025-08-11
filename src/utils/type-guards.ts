@@ -1,10 +1,10 @@
 /**
  * @fileoverview Comprehensive Type Guards Utility Module for Claude Code Zen
- * 
+ *
  * Provides a complete set of type guard functions for safe union type property access
  * throughout the claude-code-zen codebase. This module addresses TypeScript strict mode
  * compilation issues with union type handling and provides runtime type safety.
- * 
+ *
  * Key Features:
  * - Database result type guards with discriminant unions
  * - Memory store operation result guards
@@ -15,24 +15,24 @@
  * - Generic Result<T, E> pattern implementation
  * - Utility functions for safe property access
  * - Specialized type guards for system components
- * 
+ *
  * Type Safety Benefits:
  * - Eliminates unsafe union type access
  * - Provides compile-time type narrowing
  * - Runtime type validation with proper error handling
  * - Consistent error message extraction across result types
  * - Safe property access patterns
- * 
+ *
  * @author Claude Code Zen Team
  * @since 1.0.0-alpha.43
  * @version 1.0.0-alpha.43
- * 
+ *
  * @see {@link https://www.typescriptlang.org/docs/handbook/2/narrowing.html} TypeScript Type Narrowing
  * @see {@link https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates} Type Predicates
- * 
+ *
  * @requires typescript >= 4.0 - For discriminant union support
  * @requires @types/node - For Node.js type definitions
- * 
+ *
  * @example
  * ```typescript
  * // Database result handling
@@ -42,13 +42,13 @@
  * } else if (isQueryError(dbResult)) {
  *   console.error('Error:', dbResult.error.message); // Type-safe error handling
  * }
- * 
+ *
  * // Memory store result handling
  * const memResult = await memoryStore.get('key');
  * if (isMemorySuccess(memResult)) {
  *   processData(memResult.data); // Guaranteed to exist
  * }
- * 
+ *
  * // Neural network result handling
  * const neuralResult = await trainNetwork();
  * if (isTrainingResult(neuralResult)) {
@@ -63,13 +63,13 @@
 
 /**
  * Union type for database query operations.
- * 
+ *
  * Discriminant union that represents the result of any database query operation.
  * Uses the `success` property as a discriminant for type narrowing.
- * 
+ *
  * @template T - The type of data returned on successful queries
  * @type {QuerySuccess<T> | QueryError}
- * 
+ *
  * @example
  * ```typescript
  * async function getUserById(id: string): Promise<DatabaseResult<User>> {
@@ -128,14 +128,14 @@ export interface QueryError {
 
 /**
  * Type guard for successful database query results.
- * 
+ *
  * Narrows a DatabaseResult union type to QuerySuccess<T> by checking
  * the discriminant property and ensuring data property exists.
- * 
+ *
  * @template T - The expected data type for successful queries
  * @param {DatabaseResult<T>} result - The database result to check
  * @returns {result is QuerySuccess<T>} True if result is a successful query
- * 
+ *
  * @example
  * ```typescript
  * const result = await getUserById('123');
@@ -146,11 +146,13 @@ export interface QueryError {
  *   console.log('Rows returned:', result.rowCount);
  * }
  * ```
- * 
+ *
  * @see {@link QuerySuccess} Success result interface
  * @see {@link DatabaseResult} Union type definition
  */
-export function isQuerySuccess<T = any>(result: DatabaseResult<T>): result is QuerySuccess<T> {
+export function isQuerySuccess<T = any>(
+  result: DatabaseResult<T>,
+): result is QuerySuccess<T> {
   return result?.success === true && 'data' in result;
 }
 
@@ -171,7 +173,10 @@ export function isQueryError(result: DatabaseResult): result is QueryError {
 /**
  * Union type for memory store operations.
  */
-export type MemoryResult<T = any> = MemorySuccess<T> | MemoryNotFound | MemoryError;
+export type MemoryResult<T = any> =
+  | MemorySuccess<T>
+  | MemoryNotFound
+  | MemoryError;
 
 /**
  * Successful memory retrieval with discriminant property.
@@ -218,7 +223,9 @@ export interface MemoryError {
  * @param result
  * @example
  */
-export function isMemorySuccess<T = any>(result: MemoryResult<T>): result is MemorySuccess<T> {
+export function isMemorySuccess<T = any>(
+  result: MemoryResult<T>,
+): result is MemorySuccess<T> {
   return result?.found === true && 'data' in result;
 }
 
@@ -228,7 +235,9 @@ export function isMemorySuccess<T = any>(result: MemoryResult<T>): result is Mem
  * @param result
  * @example
  */
-export function isMemoryNotFound(result: MemoryResult): result is MemoryNotFound {
+export function isMemoryNotFound(
+  result: MemoryResult,
+): result is MemoryNotFound {
   return result?.found === false && 'reason' in result;
 }
 
@@ -302,7 +311,9 @@ export interface NeuralError {
  * @param result
  * @example
  */
-export function isTrainingResult(result: NeuralResult): result is TrainingResult {
+export function isTrainingResult(
+  result: NeuralResult,
+): result is TrainingResult {
   return result?.type === 'training' && result?.success === true;
 }
 
@@ -312,7 +323,9 @@ export function isTrainingResult(result: NeuralResult): result is TrainingResult
  * @param result
  * @example
  */
-export function isInferenceResult(result: NeuralResult): result is InferenceResult {
+export function isInferenceResult(
+  result: NeuralResult,
+): result is InferenceResult {
   return result?.type === 'inference' && result?.success === true;
 }
 
@@ -376,7 +389,9 @@ export interface APIError {
  * @param result
  * @example
  */
-export function isAPISuccess<T = any>(result: APIResult<T>): result is APISuccess<T> {
+export function isAPISuccess<T = any>(
+  result: APIResult<T>,
+): result is APISuccess<T> {
   return result?.success === true && 'data' in result;
 }
 
@@ -432,7 +447,9 @@ export interface WasmError {
  * @param result
  * @example
  */
-export function isWasmSuccess<T = any>(result: WasmResult<T>): result is WasmSuccess<T> {
+export function isWasmSuccess<T = any>(
+  result: WasmResult<T>,
+): result is WasmSuccess<T> {
   return result?.wasmSuccess === true && 'result' in result;
 }
 
@@ -453,7 +470,9 @@ export function isWasmError(result: WasmResult): result is WasmError {
 /**
  * Union type for coordination operations.
  */
-export type CoordinationResult<T = any> = CoordinationSuccess<T> | CoordinationError;
+export type CoordinationResult<T = any> =
+  | CoordinationSuccess<T>
+  | CoordinationError;
 
 /**
  * Successful coordination operation with discriminant property.
@@ -491,7 +510,7 @@ export interface CoordinationError {
  * @example
  */
 export function isCoordinationSuccess<T = any>(
-  result: CoordinationResult<T>
+  result: CoordinationResult<T>,
 ): result is CoordinationSuccess<T> {
   return result?.coordinated === true && 'result' in result;
 }
@@ -502,7 +521,9 @@ export function isCoordinationSuccess<T = any>(
  * @param result
  * @example
  */
-export function isCoordinationError(result: CoordinationResult): result is CoordinationError {
+export function isCoordinationError(
+  result: CoordinationResult,
+): result is CoordinationError {
   return result?.coordinated === false && 'error' in result;
 }
 
@@ -541,7 +562,9 @@ export interface Failure<E = Error> {
  * @param result
  * @example
  */
-export function isSuccess<T, E = Error>(result: Result<T, E>): result is Success<T> {
+export function isSuccess<T, E = Error>(
+  result: Result<T, E>,
+): result is Success<T> {
   return result?.ok === true && 'value' in result;
 }
 
@@ -551,7 +574,9 @@ export function isSuccess<T, E = Error>(result: Result<T, E>): result is Success
  * @param result
  * @example
  */
-export function isFailure<T, E = Error>(result: Result<T, E>): result is Failure<E> {
+export function isFailure<T, E = Error>(
+  result: Result<T, E>,
+): result is Failure<E> {
   return result?.ok === false && 'error' in result;
 }
 
@@ -561,19 +586,19 @@ export function isFailure<T, E = Error>(result: Result<T, E>): result is Failure
 
 /**
  * Safely extract data from a database result union type.
- * 
+ *
  * Uses type guards internally to safely extract data from successful
  * database operations, returning null for error cases.
- * 
+ *
  * @template T - The expected data type
  * @param {DatabaseResult<T>} result - The database result to extract data from
  * @returns {T | null} The extracted data or null if the operation failed
- * 
+ *
  * @example
  * ```typescript
  * const dbResult = await getUserById('123');
  * const userData = extractData(dbResult);
- * 
+ *
  * if (userData) {
  *   // userData is guaranteed to be of type T
  *   console.log('User:', userData.name);
@@ -583,7 +608,7 @@ export function isFailure<T, E = Error>(result: Result<T, E>): result is Failure
  *   console.error('Failed to get user:', errorMsg);
  * }
  * ```
- * 
+ *
  * @see {@link isQuerySuccess} Type guard used internally
  * @see {@link extractErrorMessage} For error message extraction
  */
@@ -601,7 +626,13 @@ export function extractData<T>(result: DatabaseResult<T>): T | null {
  * @example
  */
 export function extractErrorMessage(
-  result: DatabaseResult | MemoryResult | NeuralResult | APIResult | WasmResult | CoordinationResult
+  result:
+    | DatabaseResult
+    | MemoryResult
+    | NeuralResult
+    | APIResult
+    | WasmResult
+    | CoordinationResult,
 ): string | null {
   if ('success' in result && !result?.success && 'error' in result) {
     return result?.error?.message;
@@ -616,7 +647,9 @@ export function extractErrorMessage(
     return result?.error?.message;
   }
   if ('ok' in result && !result?.ok && 'error' in result) {
-    return result?.error instanceof Error ? result?.error?.message : String(result?.error);
+    return result?.error instanceof Error
+      ? result?.error?.message
+      : String(result?.error);
   }
   return null;
 }
@@ -630,23 +663,25 @@ export function extractErrorMessage(
  */
 export function hasProperty<T, K extends PropertyKey>(
   obj: T,
-  prop: K
+  prop: K,
 ): obj is T & Record<K, unknown> {
-  return obj !== null && obj !== undefined && typeof obj === 'object' && prop in obj;
+  return (
+    obj !== null && obj !== undefined && typeof obj === 'object' && prop in obj
+  );
 }
 
 /**
  * Safe property access with comprehensive type checking.
- * 
+ *
  * Provides null-safe property access with TypeScript type preservation.
  * Handles null, undefined, and non-object values gracefully.
- * 
+ *
  * @template T - The object type to access properties from
  * @template K - The property key type (must be keyof T)
  * @param {T | null | undefined} obj - The object to access properties from
  * @param {K} prop - The property key to access
  * @returns {T[K] | undefined} The property value or undefined if access is unsafe
- * 
+ *
  * @example
  * ```typescript
  * interface User {
@@ -654,33 +689,38 @@ export function hasProperty<T, K extends PropertyKey>(
  *   name: string;
  *   email?: string;
  * }
- * 
+ *
  * const user: User | null = await getUser();
  * const userName = safePropertyAccess(user, 'name');
  * const userEmail = safePropertyAccess(user, 'email');
- * 
+ *
  * if (userName) {
  *   console.log('User name:', userName); // Type is string
  * }
- * 
+ *
  * if (userEmail) {
  *   console.log('User email:', userEmail); // Type is string
  * }
  * ```
- * 
+ *
  * @safety
  * - Handles null and undefined objects gracefully
  * - Validates object type before property access
  * - Preserves TypeScript type information
  * - Never throws runtime errors
- * 
+ *
  * @see {@link hasProperty} For existence checking without value extraction
  */
 export function safePropertyAccess<T, K extends keyof T>(
   obj: T | null | undefined,
-  prop: K
+  prop: K,
 ): T[K] | undefined {
-  if (obj !== null && obj !== undefined && typeof obj === 'object' && prop in obj) {
+  if (
+    obj !== null &&
+    obj !== undefined &&
+    typeof obj === 'object' &&
+    prop in obj
+  ) {
     return obj[prop];
   }
   return undefined;
@@ -707,7 +747,9 @@ export function isNeuralNetworkConfig(obj: any): obj is {
     Array.isArray(obj['layers']) &&
     obj['layers']?.['every']((layer: any) => typeof layer === 'number') &&
     Array.isArray(obj['activationFunctions']) &&
-    obj['activationFunctions']?.['every']((fn: any) => typeof fn === 'string') &&
+    obj['activationFunctions']?.['every'](
+      (fn: any) => typeof fn === 'string',
+    ) &&
     typeof obj['learningRate'] === 'number'
   );
 }
@@ -739,7 +781,10 @@ export function isActivationFunction(value: any): value is string {
  * @param requiredProps
  * @example
  */
-export function isObjectArrayWithProps<T>(arr: any, requiredProps: string[]): arr is T[] {
+export function isObjectArrayWithProps<T>(
+  arr: any,
+  requiredProps: string[],
+): arr is T[] {
   if (!Array.isArray(arr)) {
     return false;
   }
@@ -771,7 +816,9 @@ export function isNonEmptyString(value: any): value is string {
  * @example
  */
 export function isValidNumber(value: any): value is number {
-  return typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
+  return (
+    typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value)
+  );
 }
 
 /**

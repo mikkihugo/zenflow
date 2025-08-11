@@ -25,7 +25,10 @@ export interface BackendCapabilities {
 }
 
 // Backend registry for dynamic loading
-const backendRegistry = new Map<MemoryBackendType, () => Promise<typeof BaseMemoryBackend>>();
+const backendRegistry = new Map<
+  MemoryBackendType,
+  () => Promise<typeof BaseMemoryBackend>
+>();
 
 /**
  * Memory Backend Factory Class.
@@ -68,7 +71,7 @@ export class MemoryBackendFactory {
   public async createBackend(
     type: MemoryBackendType,
     config: Partial<MemoryConfig> = {},
-    instanceId?: string
+    instanceId?: string,
   ): Promise<BaseMemoryBackend & BackendInterface> {
     const fullConfig = this.mergeConfig(config);
     const id = instanceId || `${type}-${Date.now()}`;
@@ -82,7 +85,8 @@ export class MemoryBackendFactory {
     const BackendClass = await this.getBackendClass(type);
 
     // Create backend instance
-    const backend = new BackendClass(fullConfig) as BaseMemoryBackend & BackendInterface;
+    const backend = new BackendClass(fullConfig) as BaseMemoryBackend &
+      BackendInterface;
 
     // Initialize backend
     await backend.initialize();
@@ -110,7 +114,11 @@ export class MemoryBackendFactory {
   /**
    * List all active backend instances.
    */
-  public listBackends(): Array<{ id: string; type: string; config: MemoryConfig }> {
+  public listBackends(): Array<{
+    id: string;
+    type: string;
+    config: MemoryConfig;
+  }> {
     return Array.from(this.backends.entries()).map(([id, backend]) => ({
       id,
       type: backend.constructor.name,
@@ -137,7 +145,9 @@ export class MemoryBackendFactory {
    * Close all backend instances.
    */
   public async closeAllBackends(): Promise<void> {
-    const closePromises = Array.from(this.backends.values()).map((backend) => backend.close());
+    const closePromises = Array.from(this.backends.values()).map((backend) =>
+      backend.close(),
+    );
     await Promise.all(closePromises);
     this.backends.clear();
   }
@@ -147,7 +157,9 @@ export class MemoryBackendFactory {
    *
    * @param type
    */
-  public async getBackendCapabilities(type: MemoryBackendType): Promise<BackendCapabilities> {
+  public async getBackendCapabilities(
+    type: MemoryBackendType,
+  ): Promise<BackendCapabilities> {
     const BackendClass = await this.getBackendClass(type);
     const tempBackend = new BackendClass(this.defaultConfig);
     return tempBackend.getCapabilities();
@@ -161,7 +173,7 @@ export class MemoryBackendFactory {
    */
   public registerBackend(
     type: MemoryBackendType,
-    loader: () => Promise<typeof BaseMemoryBackend>
+    loader: () => Promise<typeof BaseMemoryBackend>,
   ): void {
     backendRegistry.set(type, loader);
   }
@@ -187,7 +199,9 @@ export class MemoryBackendFactory {
    *
    * @param config
    */
-  public async createAutoBackend(config: Partial<MemoryConfig> = {}): Promise<BaseMemoryBackend> {
+  public async createAutoBackend(
+    config: Partial<MemoryConfig> = {},
+  ): Promise<BaseMemoryBackend> {
     const type = this.detectOptimalBackend(config);
     return this.createBackend(type, config);
   }
@@ -200,7 +214,7 @@ export class MemoryBackendFactory {
    */
   public static async createBackend(
     type: MemoryBackendType,
-    config: Partial<MemoryConfig> = {}
+    config: Partial<MemoryConfig> = {},
   ): Promise<BaseMemoryBackend> {
     return MemoryBackendFactory.getInstance().createBackend(type, config);
   }
@@ -236,7 +250,9 @@ export class MemoryBackendFactory {
     backendRegistry.set('jsonb', () => this.loadJSONBBackend());
   }
 
-  private async getBackendClass(type: MemoryBackendType): Promise<typeof BaseMemoryBackend> {
+  private async getBackendClass(
+    type: MemoryBackendType,
+  ): Promise<typeof BaseMemoryBackend> {
     const loader = backendRegistry.get(type);
     if (!loader) {
       throw new Error(`Unsupported backend type: ${type}`);
@@ -245,7 +261,9 @@ export class MemoryBackendFactory {
     try {
       return await loader();
     } catch (error) {
-      throw new Error(`Failed to load backend '${type}': ${(error as Error).message}`);
+      throw new Error(
+        `Failed to load backend '${type}': ${(error as Error).message}`,
+      );
     }
   }
 
@@ -257,10 +275,14 @@ export class MemoryBackendFactory {
     } as MemoryConfig;
   }
 
-  private detectOptimalBackend(config: Partial<MemoryConfig>): MemoryBackendType {
+  private detectOptimalBackend(
+    config: Partial<MemoryConfig>,
+  ): MemoryBackendType {
     // Auto-detect optimal backend based on requirements
     if (config?.persistent) {
-      return config?.maxSize && config?.maxSize > 50 * 1024 * 1024 ? 'sqlite' : 'file';
+      return config?.maxSize && config?.maxSize > 50 * 1024 * 1024
+        ? 'sqlite'
+        : 'file';
     }
 
     if (config?.maxSize && config?.maxSize > 100 * 1024 * 1024) {
@@ -280,7 +302,11 @@ export class MemoryBackendFactory {
         // No initialization needed for memory backend
       }
 
-      override async store(key: string, value: any, namespace?: string): Promise<void> {
+      override async store(
+        key: string,
+        value: any,
+        namespace?: string,
+      ): Promise<void> {
         this.validateKey(key);
         const finalKey = namespace ? `${namespace}:${key}` : key;
         this.dataStore.set(finalKey, this.createMemoryEntry(finalKey, value));
@@ -308,13 +334,18 @@ export class MemoryBackendFactory {
         if (existed) {
           const entry = this.dataStore.get(key);
           this.dataStore.delete(key);
-          this.updateStats('delete', entry ? this.calculateSize(entry.value) : 0);
+          this.updateStats(
+            'delete',
+            entry ? this.calculateSize(entry.value) : 0,
+          );
         }
         return existed;
       }
 
       override async list(pattern?: string): Promise<string[]> {
-        return Array.from(this.dataStore.keys()).filter((key) => this.matchesPattern(key, pattern));
+        return Array.from(this.dataStore.keys()).filter((key) =>
+          this.matchesPattern(key, pattern),
+        );
       }
 
       async search(): Promise<any[]> {
@@ -367,7 +398,11 @@ export class MemoryBackendFactory {
         // File backend initialization
       }
 
-      override async store(_key: string, _value: any, _namespace?: string): Promise<void> {
+      override async store(
+        _key: string,
+        _value: any,
+        _namespace?: string,
+      ): Promise<void> {
         throw new Error('FileBackend not implemented');
       }
 
@@ -431,7 +466,11 @@ export class MemoryBackendFactory {
         // SQLite backend initialization
       }
 
-      override async store(_key: string, _value: any, _namespace?: string): Promise<void> {
+      override async store(
+        _key: string,
+        _value: any,
+        _namespace?: string,
+      ): Promise<void> {
         throw new Error('SQLiteBackend not implemented');
       }
 
@@ -495,7 +534,11 @@ export class MemoryBackendFactory {
         // JSONB backend initialization
       }
 
-      override async store(_key: string, _value: any, _namespace?: string): Promise<void> {
+      override async store(
+        _key: string,
+        _value: any,
+        _namespace?: string,
+      ): Promise<void> {
         throw new Error('JSONBBackend not implemented');
       }
 

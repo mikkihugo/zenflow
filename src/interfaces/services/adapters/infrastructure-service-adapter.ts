@@ -74,7 +74,9 @@ class ServiceOperationError extends Error {
   public readonly cause: Error;
 
   constructor(serviceName: string, operation: string, cause: Error) {
-    super(`Operation '${operation}' failed in service '${serviceName}': ${cause.message}`);
+    super(
+      `Operation '${operation}' failed in service '${serviceName}': ${cause.message}`,
+    );
     this.name = 'ServiceOperationError';
     this.serviceName = serviceName;
     this.operation = operation;
@@ -89,7 +91,9 @@ class ServiceTimeoutError extends Error {
   public readonly code = 'SERVICE_TIMEOUT_ERROR';
 
   constructor(serviceName: string, operation: string, timeout: number) {
-    super(`Operation '${operation}' timed out after ${timeout}ms in service '${serviceName}'`);
+    super(
+      `Operation '${operation}' timed out after ${timeout}ms in service '${serviceName}'`,
+    );
     this.name = 'ServiceTimeoutError';
     this.serviceName = serviceName;
     this.operation = operation;
@@ -102,7 +106,8 @@ class ServiceTimeoutError extends Error {
  *
  * @example
  */
-export interface InfrastructureServiceAdapterConfig extends InfrastructureServiceConfig {
+export interface InfrastructureServiceAdapterConfig
+  extends InfrastructureServiceConfig {
   /** Claude Zen Facade integration settings */
   facade?: {
     enabled: boolean;
@@ -310,7 +315,10 @@ export class InfrastructureServiceAdapter implements IService {
   >();
 
   // Performance optimization.
-  private cache = new Map<string, { data: any; timestamp: Date; ttl: number }>();
+  private cache = new Map<
+    string,
+    { data: any; timestamp: Date; ttl: number }
+  >();
   private performanceStats = {
     lastHealthCheck: new Date(),
     consecutiveFailures: 0,
@@ -417,8 +425,12 @@ export class InfrastructureServiceAdapter implements IService {
    *
    * @param config
    */
-  async initialize(config?: Partial<InfrastructureServiceAdapterConfig>): Promise<void> {
-    this.logger.info(`Initializing infrastructure service adapter: ${this.name}`);
+  async initialize(
+    config?: Partial<InfrastructureServiceAdapterConfig>,
+  ): Promise<void> {
+    this.logger.info(
+      `Initializing infrastructure service adapter: ${this.name}`,
+    );
     this.lifecycleStatus = 'initializing';
     this.emit('initializing');
 
@@ -441,7 +453,7 @@ export class InfrastructureServiceAdapter implements IService {
         this.patternSystem = new IntegratedPatternSystem(
           this.integrationConfig,
           this.logger,
-          this.createMockMetrics()
+          this.createMockMetrics(),
         );
         await this.patternSystem.initialize();
 
@@ -510,11 +522,16 @@ export class InfrastructureServiceAdapter implements IService {
 
       this.lifecycleStatus = 'initialized';
       this.emit('initialized');
-      this.logger.info(`Infrastructure service adapter initialized successfully: ${this.name}`);
+      this.logger.info(
+        `Infrastructure service adapter initialized successfully: ${this.name}`,
+      );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
-      this.logger.error(`Failed to initialize infrastructure service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to initialize infrastructure service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -536,17 +553,25 @@ export class InfrastructureServiceAdapter implements IService {
       // Check dependencies before starting
       const dependenciesOk = await this.checkDependencies();
       if (!dependenciesOk) {
-        throw new ServiceDependencyError(this.name, 'One or more dependencies failed');
+        throw new ServiceDependencyError(
+          this.name,
+          'One or more dependencies failed',
+        );
       }
 
       this.startTime = new Date();
       this.lifecycleStatus = 'running';
       this.emit('started');
-      this.logger.info(`Infrastructure service adapter started successfully: ${this.name}`);
+      this.logger.info(
+        `Infrastructure service adapter started successfully: ${this.name}`,
+      );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
-      this.logger.error(`Failed to start infrastructure service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to start infrastructure service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -561,23 +586,32 @@ export class InfrastructureServiceAdapter implements IService {
 
     try {
       // Graceful shutdown with timeout
-      const shutdownTimeout = this.config.orchestration?.shutdownGracePeriod || 10000;
+      const shutdownTimeout =
+        this.config.orchestration?.shutdownGracePeriod || 10000;
       const shutdownPromise = this.performGracefulShutdown();
 
       await Promise.race([
         shutdownPromise,
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Shutdown timeout')), shutdownTimeout)
+          setTimeout(
+            () => reject(new Error('Shutdown timeout')),
+            shutdownTimeout,
+          ),
         ),
       ]);
 
       this.lifecycleStatus = 'stopped';
       this.emit('stopped');
-      this.logger.info(`Infrastructure service adapter stopped successfully: ${this.name}`);
+      this.logger.info(
+        `Infrastructure service adapter stopped successfully: ${this.name}`,
+      );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
-      this.logger.error(`Failed to stop infrastructure service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to stop infrastructure service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -622,9 +656,14 @@ export class InfrastructureServiceAdapter implements IService {
       this.eventEmitter.removeAllListeners();
 
       this.lifecycleStatus = 'destroyed';
-      this.logger.info(`Infrastructure service adapter destroyed successfully: ${this.name}`);
+      this.logger.info(
+        `Infrastructure service adapter destroyed successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to destroy infrastructure service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to destroy infrastructure service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -634,19 +673,28 @@ export class InfrastructureServiceAdapter implements IService {
    */
   async getStatus(): Promise<ServiceStatus> {
     const now = new Date();
-    const uptime = this.startTime ? now.getTime() - this.startTime.getTime() : 0;
-    const errorRate = this.operationCount > 0 ? (this.errorCount / this.operationCount) * 100 : 0;
+    const uptime = this.startTime
+      ? now.getTime() - this.startTime.getTime()
+      : 0;
+    const errorRate =
+      this.operationCount > 0
+        ? (this.errorCount / this.operationCount) * 100
+        : 0;
 
     // Check dependency statuses
     const dependencyStatuses: {
-      [serviceName: string]: { status: 'healthy' | 'unhealthy' | 'unknown'; lastCheck: Date };
+      [serviceName: string]: {
+        status: 'healthy' | 'unhealthy' | 'unknown';
+        lastCheck: Date;
+      };
     } = {};
 
     if (this.facade && this.config.facade?.enabled) {
       try {
         const systemStatus = await this.facade.getSystemStatus();
         dependencyStatuses['claude-zen-facade'] = {
-          status: systemStatus.overall.status === 'healthy' ? 'healthy' : 'unhealthy',
+          status:
+            systemStatus.overall.status === 'healthy' ? 'healthy' : 'unhealthy',
           lastCheck: now,
         };
       } catch {
@@ -685,8 +733,8 @@ export class InfrastructureServiceAdapter implements IService {
       metadata: {
         operationCount: this.operationCount,
         successCount: this.successCount,
-        facadeEnabled: this.config.facade?.enabled || false,
-        patternIntegrationEnabled: this.config.patternIntegration?.enabled || false,
+        facadeEnabled: this.config.facade?.enabled,
+        patternIntegrationEnabled: this.config.patternIntegration?.enabled,
         serviceRegistrySize: this.serviceRegistry.size,
         configVersionsCount: this.configVersions.length,
         resourceTrackerSize: this.resourceTracker.length,
@@ -704,14 +752,18 @@ export class InfrastructureServiceAdapter implements IService {
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
-    const avgLatency = this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
-    const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // ops per second
+    const avgLatency =
+      this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
+    const throughput =
+      recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // ops per second
 
     // Calculate percentile latencies from recent metrics
-    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics
+      .map((m) => m.executionTime)
+      .sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
@@ -742,8 +794,9 @@ export class InfrastructureServiceAdapter implements IService {
             this.performanceStats.resourceUtilization.storage) /
           4,
         eventProcessingRate: this.calculateEventProcessingRate(),
-        circuitBreakerActivations: Array.from(this.circuitBreakers.values()).filter((cb) => cb.open)
-          .length,
+        circuitBreakerActivations: Array.from(
+          this.circuitBreakers.values(),
+        ).filter((cb) => cb.open).length,
       },
       timestamp: now,
     };
@@ -809,7 +862,8 @@ export class InfrastructureServiceAdapter implements IService {
 
       // Check resource utilization
       if (this.config.resourceManagement?.enableResourceTracking) {
-        const latestResource = this.resourceTracker[this.resourceTracker.length - 1];
+        const latestResource =
+          this.resourceTracker[this.resourceTracker.length - 1];
         if (latestResource) {
           const thresholds = {
             cpu: this.config.resourceManagement.cpuThreshold || 0.8,
@@ -858,8 +912,12 @@ export class InfrastructureServiceAdapter implements IService {
    *
    * @param config
    */
-  async updateConfig(config: Partial<InfrastructureServiceAdapterConfig>): Promise<void> {
-    this.logger.info(`Updating configuration for infrastructure service adapter: ${this.name}`);
+  async updateConfig(
+    config: Partial<InfrastructureServiceAdapterConfig>,
+  ): Promise<void> {
+    this.logger.info(
+      `Updating configuration for infrastructure service adapter: ${this.name}`,
+    );
 
     try {
       // Validate the updated configuration
@@ -871,7 +929,10 @@ export class InfrastructureServiceAdapter implements IService {
 
       // Create configuration version if versioning is enabled
       if (this.config.configManagement?.enableVersioning) {
-        this.createConfigurationVersion(newConfig, 'Configuration update via updateConfig');
+        this.createConfigurationVersion(
+          newConfig,
+          'Configuration update via updateConfig',
+        );
       }
 
       // Apply the configuration
@@ -884,7 +945,10 @@ export class InfrastructureServiceAdapter implements IService {
 
       this.logger.info(`Configuration updated successfully for: ${this.name}`);
     } catch (error) {
-      this.logger.error(`Failed to update configuration for ${this.name}:`, error);
+      this.logger.error(
+        `Failed to update configuration for ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -894,11 +958,15 @@ export class InfrastructureServiceAdapter implements IService {
    *
    * @param config
    */
-  async validateConfig(config: InfrastructureServiceAdapterConfig): Promise<boolean> {
+  async validateConfig(
+    config: InfrastructureServiceAdapterConfig,
+  ): Promise<boolean> {
     try {
       // Basic validation
-      if (!config?.name || !config?.type) {
-        this.logger.error('Configuration missing required fields: name or type');
+      if (!(config?.name && config?.type)) {
+        this.logger.error(
+          'Configuration missing required fields: name or type',
+        );
         return false;
       }
 
@@ -908,7 +976,9 @@ export class InfrastructureServiceAdapter implements IService {
         config?.facade?.systemStatusInterval &&
         config?.facade?.systemStatusInterval < 1000
       ) {
-        this.logger.error('Facade system status interval must be at least 1000ms');
+        this.logger.error(
+          'Facade system status interval must be at least 1000ms',
+        );
         return false;
       }
 
@@ -976,7 +1046,7 @@ export class InfrastructureServiceAdapter implements IService {
         'document-processing',
         'system-status',
         'workflow-execution',
-        'batch-operations'
+        'batch-operations',
       );
     }
 
@@ -986,12 +1056,16 @@ export class InfrastructureServiceAdapter implements IService {
         'swarm-coordination',
         'event-management',
         'command-processing',
-        'protocol-adaptation'
+        'protocol-adaptation',
       );
     }
 
     if (this.config.orchestration?.enableServiceDiscovery) {
-      capabilities.push('service-orchestration', 'service-discovery', 'load-balancing');
+      capabilities.push(
+        'service-orchestration',
+        'service-discovery',
+        'load-balancing',
+      );
     }
 
     if (this.config.resourceManagement?.enableResourceTracking) {
@@ -1023,32 +1097,53 @@ export class InfrastructureServiceAdapter implements IService {
   async execute<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    options?: ServiceOperationOptions,
   ): Promise<ServiceOperationResponse<T>> {
     const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
 
-    this.logger.debug(`Executing operation: ${operation}`, { operationId, params });
+    this.logger.debug(`Executing operation: ${operation}`, {
+      operationId,
+      params,
+    });
 
     try {
       // Check if service is ready
       if (!this.isReady()) {
-        throw new ServiceOperationError(this.name, operation, new Error('Service not ready'));
+        throw new ServiceOperationError(
+          this.name,
+          operation,
+          new Error('Service not ready'),
+        );
       }
 
       // Check circuit breaker
-      if (this.config.orchestration?.enableCircuitBreaker && this.isCircuitBreakerOpen(operation)) {
-        throw new ServiceOperationError(this.name, operation, new Error('Circuit breaker is open'));
+      if (
+        this.config.orchestration?.enableCircuitBreaker &&
+        this.isCircuitBreakerOpen(operation)
+      ) {
+        throw new ServiceOperationError(
+          this.name,
+          operation,
+          new Error('Circuit breaker is open'),
+        );
       }
 
       // Apply timeout if specified
       const timeout = options?.timeout || this.config.timeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new ServiceTimeoutError(this.name, operation, timeout)), timeout);
+        setTimeout(
+          () => reject(new ServiceTimeoutError(this.name, operation, timeout)),
+          timeout,
+        );
       });
 
       // Execute operation with timeout
-      const operationPromise = this.executeOperationInternal<T>(operation, params, options);
+      const operationPromise = this.executeOperationInternal<T>(
+        operation,
+        params,
+        options,
+      );
       const result = await Promise.race([operationPromise, timeoutPromise]);
 
       const duration = Date.now() - startTime;
@@ -1072,7 +1167,12 @@ export class InfrastructureServiceAdapter implements IService {
         this.resetCircuitBreaker(operation);
       }
 
-      this.emit('operation', { operationId, operation, success: true, duration });
+      this.emit('operation', {
+        operationId,
+        operation,
+        success: true,
+        duration,
+      });
 
       return {
         success: true,
@@ -1105,7 +1205,13 @@ export class InfrastructureServiceAdapter implements IService {
         this.recordCircuitBreakerFailure(operation);
       }
 
-      this.emit('operation', { operationId, operation, success: false, duration, error });
+      this.emit('operation', {
+        operationId,
+        operation,
+        success: false,
+        duration,
+        error,
+      });
       this.emit('error', error);
 
       this.logger.error(`Operation ${operation} failed:`, error);
@@ -1165,7 +1271,9 @@ export class InfrastructureServiceAdapter implements IService {
   // ============================================
 
   async addDependency(dependency: ServiceDependencyConfig): Promise<void> {
-    this.logger.debug(`Adding dependency ${dependency.serviceName} for ${this.name}`);
+    this.logger.debug(
+      `Adding dependency ${dependency.serviceName} for ${this.name}`,
+    );
     this.dependencies.set(dependency.serviceName, dependency);
   }
 
@@ -1210,7 +1318,7 @@ export class InfrastructureServiceAdapter implements IService {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
             return !config?.required; // Return false only if dependency is required
           }
-        }
+        },
       );
 
       const results = await Promise.all(dependencyChecks);
@@ -1236,7 +1344,7 @@ export class InfrastructureServiceAdapter implements IService {
   private async executeOperationInternal<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     switch (operation) {
       // Facade operations
@@ -1247,13 +1355,19 @@ export class InfrastructureServiceAdapter implements IService {
         return (await this.getProjectStatus(params?.projectId)) as T;
 
       case 'document-process':
-        return (await this.processDocument(params?.documentPath, params?.options)) as T;
+        return (await this.processDocument(
+          params?.documentPath,
+          params?.options,
+        )) as T;
 
       case 'system-status':
         return (await this.getSystemStatus()) as T;
 
       case 'workflow-execute':
-        return (await this.executeWorkflow(params?.workflowId, params?.inputs)) as T;
+        return (await this.executeWorkflow(
+          params?.workflowId,
+          params?.inputs,
+        )) as T;
 
       case 'batch-execute':
         return (await this.executeBatch(params?.operations)) as T;
@@ -1266,17 +1380,26 @@ export class InfrastructureServiceAdapter implements IService {
         return (await this.getSwarmStatus(params?.swarmId)) as T;
 
       case 'swarm-coordinate':
-        return (await this.coordinateSwarm(params?.swarmId, params?.operation)) as T;
+        return (await this.coordinateSwarm(
+          params?.swarmId,
+          params?.operation,
+        )) as T;
 
       case 'agent-spawn':
-        return (await this.spawnAgent(params?.swarmId, params?.agentConfig)) as T;
+        return (await this.spawnAgent(
+          params?.swarmId,
+          params?.agentConfig,
+        )) as T;
 
       case 'pattern-status':
         return (await this.getPatternSystemStatus()) as T;
 
       // Service orchestration operations
       case 'service-register':
-        return (await this.registerService(params?.serviceId, params?.serviceInfo)) as T;
+        return (await this.registerService(
+          params?.serviceId,
+          params?.serviceInfo,
+        )) as T;
 
       case 'service-discover':
         return (await this.discoverServices(params?.serviceType)) as T;
@@ -1285,7 +1408,10 @@ export class InfrastructureServiceAdapter implements IService {
         return (await this.checkServiceHealth(params?.serviceId)) as T;
 
       case 'load-balance':
-        return (await this.performLoadBalancing(params?.serviceType, params?.operation)) as T;
+        return (await this.performLoadBalancing(
+          params?.serviceType,
+          params?.operation,
+        )) as T;
 
       // Resource management operations
       case 'resource-track':
@@ -1343,7 +1469,7 @@ export class InfrastructureServiceAdapter implements IService {
         throw new ServiceOperationError(
           this.name,
           operation,
-          new Error(`Unknown operation: ${operation}`)
+          new Error(`Unknown operation: ${operation}`),
         );
     }
   }
@@ -1366,7 +1492,8 @@ export class InfrastructureServiceAdapter implements IService {
         const systemStatus = await this.facade.getSystemStatus();
         return {
           projectId,
-          status: systemStatus.overall.status === 'healthy' ? 'active' : 'inactive',
+          status:
+            systemStatus.overall.status === 'healthy' ? 'active' : 'inactive',
           lastUpdated: new Date(),
           health: systemStatus.overall.status,
           components: systemStatus.components || {},
@@ -1396,7 +1523,10 @@ export class InfrastructureServiceAdapter implements IService {
         uptime: this.startTime ? Date.now() - this.startTime.getTime() : 0,
       };
     } catch (error) {
-      this.logger.warn('Failed to get real project status, using minimal data:', error);
+      this.logger.warn(
+        'Failed to get real project status, using minimal data:',
+        error,
+      );
       return {
         projectId,
         status: 'unknown',
@@ -1407,7 +1537,10 @@ export class InfrastructureServiceAdapter implements IService {
     }
   }
 
-  private async processDocument(documentPath: string, options?: any): Promise<any> {
+  private async processDocument(
+    documentPath: string,
+    options?: any,
+  ): Promise<any> {
     if (!this.facade) {
       throw new Error('Facade not available');
     }
@@ -1461,7 +1594,10 @@ export class InfrastructureServiceAdapter implements IService {
     return swarmGroup.getStatus();
   }
 
-  private async coordinateSwarm(swarmId: string, _operation: string): Promise<any> {
+  private async coordinateSwarm(
+    swarmId: string,
+    _operation: string,
+  ): Promise<any> {
     if (!this.patternSystem) {
       throw new Error('Pattern system not available');
     }
@@ -1529,7 +1665,10 @@ export class InfrastructureServiceAdapter implements IService {
   // Service Orchestration Methods
   // ============================================
 
-  private async registerService(serviceId: string, serviceInfo: any): Promise<any> {
+  private async registerService(
+    serviceId: string,
+    serviceInfo: any,
+  ): Promise<any> {
     const entry: ServiceOrchestrationEntry = {
       serviceId,
       serviceName: serviceInfo.name || serviceId,
@@ -1585,9 +1724,13 @@ export class InfrastructureServiceAdapter implements IService {
     };
   }
 
-  private async performLoadBalancing(serviceType: string, operation: string): Promise<any> {
+  private async performLoadBalancing(
+    serviceType: string,
+    operation: string,
+  ): Promise<any> {
     const services = Array.from(this.serviceRegistry.values()).filter(
-      (service) => service.serviceType === serviceType && service.status === 'running'
+      (service) =>
+        service.serviceType === serviceType && service.status === 'running',
     );
 
     if (services.length === 0) {
@@ -1595,7 +1738,8 @@ export class InfrastructureServiceAdapter implements IService {
     }
 
     // Simple round-robin load balancing
-    const selectedService = services[Math.floor(Math.random() * services.length)];
+    const selectedService =
+      services[Math.floor(Math.random() * services.length)];
 
     return {
       selectedService: selectedService?.serviceId,
@@ -1624,7 +1768,9 @@ export class InfrastructureServiceAdapter implements IService {
 
     const resourceEntry: ResourceTrackingEntry = {
       timestamp: new Date(),
-      cpu: systemLoad[0] ? systemLoad[0] / (await import('node:os')).cpus().length : 0.1, // Real CPU load with fallback
+      cpu: systemLoad[0]
+        ? systemLoad[0] / (await import('node:os')).cpus().length
+        : 0.1, // Real CPU load with fallback
       memory: memoryUsage.heapUsed / memoryUsage.heapTotal, // Real memory usage
       network: 0.05, // Network monitoring would need external tool
       storage: this.estimateStorageUsage(), // Calculate storage from actual data
@@ -1723,7 +1869,9 @@ export class InfrastructureServiceAdapter implements IService {
     // Clean old resource tracking entries
     const cutoff = new Date(Date.now() - 3600000); // 1 hour
     const originalCount = this.resourceTracker.length;
-    this.resourceTracker = this.resourceTracker.filter((entry) => entry.timestamp > cutoff);
+    this.resourceTracker = this.resourceTracker.filter(
+      (entry) => entry.timestamp > cutoff,
+    );
     cleaned += originalCount - this.resourceTracker.length;
 
     // Clean old metrics
@@ -1733,7 +1881,9 @@ export class InfrastructureServiceAdapter implements IService {
 
     // Clean old events
     const originalEventsCount = this.eventQueue.length;
-    this.eventQueue = this.eventQueue.filter((event) => event.timestamp > cutoff);
+    this.eventQueue = this.eventQueue.filter(
+      (event) => event.timestamp > cutoff,
+    );
     cleaned += originalEventsCount - this.eventQueue.length;
 
     return {
@@ -1773,7 +1923,9 @@ export class InfrastructureServiceAdapter implements IService {
 
   private async getConfigurationVersion(version?: string): Promise<any> {
     if (version) {
-      const configVersion = this.configVersions.find((cv) => cv.version === version);
+      const configVersion = this.configVersions.find(
+        (cv) => cv.version === version,
+      );
       if (!configVersion) {
         throw new Error(`Configuration version ${version} not found`);
       }
@@ -1788,7 +1940,9 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   private async rollbackConfiguration(version: string): Promise<any> {
-    const configVersion = this.configVersions.find((cv) => cv.version === version);
+    const configVersion = this.configVersions.find(
+      (cv) => cv.version === version,
+    );
     if (!configVersion) {
       throw new Error(`Configuration version ${version} not found`);
     }
@@ -1797,7 +1951,10 @@ export class InfrastructureServiceAdapter implements IService {
     Object.assign(this.config, configVersion?.config);
 
     // Create new version entry for rollback
-    this.createConfigurationVersion(this.config, `Rollback to version ${version}`);
+    this.createConfigurationVersion(
+      this.config,
+      `Rollback to version ${version}`,
+    );
 
     return {
       rolledBack: true,
@@ -1831,7 +1988,7 @@ export class InfrastructureServiceAdapter implements IService {
 
   private async getEventStats(): Promise<any> {
     const recentEvents = this.eventQueue.filter(
-      (entry) => Date.now() - entry.timestamp.getTime() < 300000 // Last 5 minutes
+      (entry) => Date.now() - entry.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
     return {
@@ -1839,7 +1996,8 @@ export class InfrastructureServiceAdapter implements IService {
       recentEvents: recentEvents.length,
       queueCapacity: this.config.eventCoordination?.maxEventQueueSize || 10000,
       processingRate: this.calculateEventProcessingRate(),
-      oldestEvent: this.eventQueue.length > 0 ? this.eventQueue[0]?.timestamp : null,
+      oldestEvent:
+        this.eventQueue.length > 0 ? this.eventQueue[0]?.timestamp : null,
     };
   }
 
@@ -1862,7 +2020,7 @@ export class InfrastructureServiceAdapter implements IService {
       serviceRegistry: {
         totalServices: this.serviceRegistry.size,
         runningServices: Array.from(this.serviceRegistry.values()).filter(
-          (service) => service.status === 'running'
+          (service) => service.status === 'running',
         ).length,
       },
       resourceTracking: {
@@ -1883,7 +2041,8 @@ export class InfrastructureServiceAdapter implements IService {
       },
       circuitBreakers: {
         total: this.circuitBreakers.size,
-        open: Array.from(this.circuitBreakers.values()).filter((cb) => cb.open).length,
+        open: Array.from(this.circuitBreakers.values()).filter((cb) => cb.open)
+          .length,
       },
     };
   }
@@ -1926,7 +2085,10 @@ export class InfrastructureServiceAdapter implements IService {
       },
       resources: resourceStats,
       infrastructure: infrastructureStats,
-      recommendations: this.generatePerformanceRecommendations(metrics, resourceStats),
+      recommendations: this.generatePerformanceRecommendations(
+        metrics,
+        resourceStats,
+      ),
       timestamp: new Date(),
     };
   }
@@ -1936,7 +2098,8 @@ export class InfrastructureServiceAdapter implements IService {
   // ============================================
 
   private createIntegrationConfig(): IntegrationConfig {
-    const profile = this.config.patternIntegration?.configProfile || 'development';
+    const profile =
+      this.config.patternIntegration?.configProfile || 'development';
 
     switch (profile) {
       case 'production':
@@ -1956,8 +2119,12 @@ export class InfrastructureServiceAdapter implements IService {
       getSystemMetrics: () => ({
         uptime: Date.now() - (this.startTime?.getTime() || Date.now()),
         totalRequests: this.operationCount,
-        errorRate: this.operationCount > 0 ? (this.errorCount / this.operationCount) * 100 : 0,
-        averageResponseTime: this.operationCount > 0 ? this.totalLatency / this.operationCount : 0,
+        errorRate:
+          this.operationCount > 0
+            ? (this.errorCount / this.operationCount) * 100
+            : 0,
+        averageResponseTime:
+          this.operationCount > 0 ? this.totalLatency / this.operationCount : 0,
         activeConnections: 0,
         memoryUsage: {
           cpu: this.performanceStats.resourceUtilization.cpu,
@@ -2011,7 +2178,13 @@ export class InfrastructureServiceAdapter implements IService {
         type: 'worker',
         capabilities: [],
         status: 'ready',
-        resourceAllocation: { cpu: 0, memory: 0, network: 0, storage: 0, timestamp: new Date() },
+        resourceAllocation: {
+          cpu: 0,
+          memory: 0,
+          network: 0,
+          storage: 0,
+          timestamp: new Date(),
+        },
       }),
       listSwarms: async () => [],
     };
@@ -2030,11 +2203,20 @@ export class InfrastructureServiceAdapter implements IService {
         modelId: 'mock',
         processingTime: 100,
       }),
-      evaluateModel: async () => ({ accuracy: 0.95, precision: 0.95, recall: 0.95, f1Score: 0.95 }),
+      evaluateModel: async () => ({
+        accuracy: 0.95,
+        precision: 0.95,
+        recall: 0.95,
+        f1Score: 0.95,
+      }),
       optimizeModel: async () => ({
         improvedAccuracy: 0.96,
         optimizationTime: 500,
-        strategy: { method: 'gradient', maxIterations: 100, targetMetric: 'accuracy' },
+        strategy: {
+          method: 'gradient',
+          maxIterations: 100,
+          targetMetric: 'accuracy',
+        },
         iterations: 50,
       }),
       listModels: async () => [],
@@ -2072,14 +2254,23 @@ export class InfrastructureServiceAdapter implements IService {
     };
 
     const mockInterfaceService: IInterfaceService = {
-      startHTTPMCP: async () => ({ serverId: 'mock', port: 3000, status: 'running', uptime: 0 }),
+      startHTTPMCP: async () => ({
+        serverId: 'mock',
+        port: 3000,
+        status: 'running',
+        uptime: 0,
+      }),
       startWebDashboard: async () => ({
         serverId: 'mock',
         port: 3456,
         status: 'running',
         activeConnections: 0,
       }),
-      startTUI: async () => ({ instanceId: 'mock', mode: 'swarm-overview', status: 'running' }),
+      startTUI: async () => ({
+        instanceId: 'mock',
+        mode: 'swarm-overview',
+        status: 'running',
+      }),
       startCLI: async () => ({ instanceId: 'mock', status: 'ready' }),
       stopInterface: async () => {},
       getInterfaceStatus: async () => [],
@@ -2133,7 +2324,7 @@ export class InfrastructureServiceAdapter implements IService {
       mockEventManager,
       mockCommandQueue,
       this.logger,
-      this.createMockMetrics()
+      this.createMockMetrics(),
     );
   }
 
@@ -2154,7 +2345,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   private async performHotReload(
-    config: Partial<InfrastructureServiceAdapterConfig>
+    config: Partial<InfrastructureServiceAdapterConfig>,
   ): Promise<void> {
     this.logger.info('Performing hot reload of configuration');
 
@@ -2281,18 +2472,20 @@ export class InfrastructureServiceAdapter implements IService {
     const thresholds = this.config.healthMonitoring?.performanceThresholds;
     if (!thresholds) return;
 
-    const avgLatency = this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
-    const errorRate = this.operationCount > 0 ? this.errorCount / this.operationCount : 0;
+    const avgLatency =
+      this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
+    const errorRate =
+      this.operationCount > 0 ? this.errorCount / this.operationCount : 0;
 
     if (thresholds.responseTime && avgLatency > thresholds.responseTime) {
       this.logger.warn(
-        `Performance alert: Response time ${avgLatency}ms exceeds threshold ${thresholds.responseTime}ms`
+        `Performance alert: Response time ${avgLatency}ms exceeds threshold ${thresholds.responseTime}ms`,
       );
     }
 
     if (thresholds.errorRate && errorRate > thresholds.errorRate) {
       this.logger.warn(
-        `Performance alert: Error rate ${errorRate} exceeds threshold ${thresholds.errorRate}`
+        `Performance alert: Error rate ${errorRate} exceeds threshold ${thresholds.errorRate}`,
       );
     }
   }
@@ -2321,7 +2514,10 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   private recordCircuitBreakerFailure(operation: string): void {
-    const breaker = this.circuitBreakers.get(operation) || { failures: 0, open: false };
+    const breaker = this.circuitBreakers.get(operation) || {
+      failures: 0,
+      open: false,
+    };
     breaker.failures++;
     breaker.lastFailure = new Date();
     breaker.open = breaker.failures > 5;
@@ -2393,7 +2589,9 @@ export class InfrastructureServiceAdapter implements IService {
     return services;
   }
 
-  private recordOperationMetrics(metrics: InfrastructureOperationMetrics): void {
+  private recordOperationMetrics(
+    metrics: InfrastructureOperationMetrics,
+  ): void {
     this.metrics.push(metrics);
 
     // Keep only recent metrics
@@ -2403,7 +2601,7 @@ export class InfrastructureServiceAdapter implements IService {
 
   private calculateOrchestrationEfficiency(): number {
     const runningServices = Array.from(this.serviceRegistry.values()).filter(
-      (service) => service.status === 'running'
+      (service) => service.status === 'running',
     ).length;
     const totalServices = this.serviceRegistry.size;
 
@@ -2416,14 +2614,18 @@ export class InfrastructureServiceAdapter implements IService {
     const recent = this.resourceTracker[this.resourceTracker.length - 1];
     const previous = this.resourceTracker[this.resourceTracker.length - 2];
 
-    if (!recent || !previous) {
+    if (!(recent && previous)) {
       return 100; // Default optimization ratio if insufficient data
     }
 
-    const currentTotal = recent.cpu + recent.memory + recent.network + recent.storage;
-    const previousTotal = previous.cpu + previous.memory + previous.network + previous.storage;
+    const currentTotal =
+      recent.cpu + recent.memory + recent.network + recent.storage;
+    const previousTotal =
+      previous.cpu + previous.memory + previous.network + previous.storage;
 
-    return previousTotal > 0 ? ((previousTotal - currentTotal) / previousTotal) * 100 : 0;
+    return previousTotal > 0
+      ? ((previousTotal - currentTotal) / previousTotal) * 100
+      : 0;
   }
 
   private calculateConfigEffectiveness(): number {
@@ -2433,33 +2635,46 @@ export class InfrastructureServiceAdapter implements IService {
 
   private calculateEventProcessingRate(): number {
     const recentEvents = this.eventQueue.filter(
-      (entry) => Date.now() - entry.timestamp.getTime() < 60000 // Last minute
+      (entry) => Date.now() - entry.timestamp.getTime() < 60000, // Last minute
     );
 
     return recentEvents.length; // Events per minute
   }
 
-  private generatePerformanceRecommendations(metrics: any, resourceStats: any): string[] {
+  private generatePerformanceRecommendations(
+    metrics: any,
+    resourceStats: any,
+  ): string[] {
     const recommendations: string[] = [];
 
     if (metrics.averageLatency > 1000) {
-      recommendations.push('Consider enabling caching to reduce response times');
+      recommendations.push(
+        'Consider enabling caching to reduce response times',
+      );
     }
 
     if (metrics.throughput < 10) {
-      recommendations.push('Consider increasing concurrency limits for better throughput');
+      recommendations.push(
+        'Consider increasing concurrency limits for better throughput',
+      );
     }
 
     if (resourceStats.memory?.avg > 0.8) {
-      recommendations.push('Memory usage is high - consider enabling garbage collection');
+      recommendations.push(
+        'Memory usage is high - consider enabling garbage collection',
+      );
     }
 
     if (resourceStats.cpu?.avg > 0.8) {
-      recommendations.push('CPU usage is high - consider load balancing or resource optimization');
+      recommendations.push(
+        'CPU usage is high - consider load balancing or resource optimization',
+      );
     }
 
     if (this.circuitBreakers.size > 5) {
-      recommendations.push('Multiple circuit breakers are active - check service health');
+      recommendations.push(
+        'Multiple circuit breakers are active - check service health',
+      );
     }
 
     return recommendations;
@@ -2530,17 +2745,18 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   private determineHealthStatus(
-    errorRate: number
+    errorRate: number,
   ): 'healthy' | 'degraded' | 'unhealthy' | 'unknown' {
     if (this.performanceStats.consecutiveFailures > 5) {
       return 'unhealthy';
-    } else if (errorRate > 10 || this.performanceStats.consecutiveFailures > 2) {
-      return 'degraded';
-    } else if (this.operationCount > 0) {
-      return 'healthy';
-    } else {
-      return 'unknown';
     }
+    if (errorRate > 10 || this.performanceStats.consecutiveFailures > 2) {
+      return 'degraded';
+    }
+    if (this.operationCount > 0) {
+      return 'healthy';
+    }
+    return 'unknown';
   }
 }
 
@@ -2551,7 +2767,7 @@ export class InfrastructureServiceAdapter implements IService {
  * @example
  */
 export function createInfrastructureServiceAdapter(
-  config: InfrastructureServiceAdapterConfig
+  config: InfrastructureServiceAdapterConfig,
 ): InfrastructureServiceAdapter {
   return new InfrastructureServiceAdapter(config);
 }
@@ -2565,7 +2781,7 @@ export function createInfrastructureServiceAdapter(
  */
 export function createDefaultInfrastructureServiceAdapterConfig(
   name: string,
-  overrides?: Partial<InfrastructureServiceAdapterConfig>
+  overrides?: Partial<InfrastructureServiceAdapterConfig>,
 ): InfrastructureServiceAdapterConfig {
   return {
     name,

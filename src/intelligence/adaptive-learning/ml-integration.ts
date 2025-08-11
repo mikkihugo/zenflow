@@ -51,7 +51,7 @@ export class ReinforcementLearningEngine
       explorationRate?: number;
       minExplorationRate?: number;
       explorationDecay?: number;
-    } = {}
+    } = {},
   ) {
     super();
     this.learningRate = config?.learningRate || 0.1;
@@ -88,20 +88,19 @@ export class ReinforcementLearningEngine
       });
 
       return action;
-    } else {
-      // Exploit: best known action
-      const action = this.getBestAction(state, availableActions);
-
-      this.emit('actionSelected', {
-        state,
-        action,
-        type: 'exploitation',
-        qValue: this.getQValue(state, action),
-        timestamp: Date.now(),
-      });
-
-      return action;
     }
+    // Exploit: best known action
+    const action = this.getBestAction(state, availableActions);
+
+    this.emit('actionSelected', {
+      state,
+      action,
+      type: 'exploitation',
+      qValue: this.getQValue(state, action),
+      timestamp: Date.now(),
+    });
+
+    return action;
   }
 
   /**
@@ -112,20 +111,26 @@ export class ReinforcementLearningEngine
    * @param reward
    * @param nextState
    */
-  updateQValue(state: string, action: string, reward: number, nextState: string): void {
+  updateQValue(
+    state: string,
+    action: string,
+    reward: number,
+    nextState: string,
+  ): void {
     const currentQ = this.getQValue(state, action);
     const maxNextQ = this.getMaxQValue(nextState);
 
     // Q-learning update rule
     const newQ =
-      currentQ + this.learningRate * (reward + this.discountFactor * maxNextQ - currentQ);
+      currentQ +
+      this.learningRate * (reward + this.discountFactor * maxNextQ - currentQ);
 
     this.setQValue(state, action, newQ);
 
     // Decay exploration rate
     this.explorationRate = Math.max(
       this.minExplorationRate,
-      this.explorationRate * this.explorationDecay
+      this.explorationRate * this.explorationDecay,
     );
 
     this.emit('qValueUpdated', {
@@ -158,7 +163,7 @@ export class ReinforcementLearningEngine
 
     for (const [state, actions] of this.qTable) {
       let bestAction = '';
-      let bestValue = -Infinity;
+      let bestValue = Number.NEGATIVE_INFINITY;
 
       for (const [action, value] of actions) {
         if (value > bestValue) {
@@ -187,14 +192,14 @@ export class ReinforcementLearningEngine
       reward: number;
       nextState: string;
       done: boolean;
-    }>
+    }>,
   ): void {
     for (const experience of experiences) {
       this.updateQValue(
         experience.state,
         experience.action,
         experience.reward,
-        experience.nextState
+        experience.nextState,
       );
     }
 
@@ -219,7 +224,7 @@ export class ReinforcementLearningEngine
     maxQValue: number;
   } {
     let totalQ = 0;
-    let maxQ = -Infinity;
+    let maxQ = Number.NEGATIVE_INFINITY;
     let valueCount = 0;
 
     for (const stateActions of this.qTable.values()) {
@@ -235,7 +240,7 @@ export class ReinforcementLearningEngine
       explorationRate: this.explorationRate,
       stateCount: this.qTable.size,
       averageQValue: valueCount > 0 ? totalQ / valueCount : 0,
-      maxQValue: maxQ === -Infinity ? 0 : maxQ,
+      maxQValue: maxQ === Number.NEGATIVE_INFINITY ? 0 : maxQ,
     };
   }
 
@@ -293,7 +298,10 @@ export class ReinforcementLearningEngine
 // Neural Network Predictor
 // ============================================
 
-export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetworkPredictor {
+export class NeuralNetworkPredictor
+  extends EventEmitter
+  implements INeuralNetworkPredictor
+{
   private model: any = null; // Placeholder for actual neural network
   private isTraining: boolean = false;
   private trainingHistory: TrainingResult[] = [];
@@ -301,7 +309,11 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
   private outputSize: number;
   private architecture: string;
 
-  constructor(config: { inputSize: number; outputSize: number; architecture?: string }) {
+  constructor(config: {
+    inputSize: number;
+    outputSize: number;
+    architecture?: string;
+  }) {
     super();
     this.inputSize = config?.inputSize;
     this.outputSize = config?.outputSize;
@@ -331,7 +343,8 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
     this.emit('predictionCompleted', {
       inputCount: data.length,
       outputCount: patterns.length,
-      averageConfidence: patterns.reduce((sum, p) => sum + p.confidence, 0) / patterns.length,
+      averageConfidence:
+        patterns.reduce((sum, p) => sum + p.confidence, 0) / patterns.length,
       timestamp: Date.now(),
     });
 
@@ -408,10 +421,12 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
       version: '1.0.0',
       architecture: this.architecture,
       parameters: this.inputSize * this.outputSize * 2, // Simplified parameter count
-      trainedOn: this.trainingHistory.length > 0 ? 'execution_data' : 'untrained',
+      trainedOn:
+        this.trainingHistory.length > 0 ? 'execution_data' : 'untrained',
       lastUpdated:
         this.trainingHistory.length > 0
-          ? (this.trainingHistory[this.trainingHistory.length - 1]?.trainingTime ?? Date.now())
+          ? (this.trainingHistory[this.trainingHistory.length - 1]
+              ?.trainingTime ?? Date.now())
           : Date.now(),
     };
   }
@@ -463,30 +478,35 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
     return labels.map((label) => {
       if (typeof label === 'number') {
         return [label];
-      } else if (typeof label === 'boolean') {
-        return [label ? 1 : 0];
-      } else {
-        // For complex labels, extract numeric features
-        return [Math.random()]; // Simplified
       }
+      if (typeof label === 'boolean') {
+        return [label ? 1 : 0];
+      }
+      // For complex labels, extract numeric features
+      return [Math.random()]; // Simplified
     });
   }
 
-  private async simulateModelPrediction(features: number[][]): Promise<number[][]> {
+  private async simulateModelPrediction(
+    features: number[][],
+  ): Promise<number[][]> {
     // Simulate neural network forward pass
     return new Promise((resolve) => {
       setTimeout(() => {
         const predictions = features.map(() =>
           Array(this.outputSize)
             .fill(0)
-            .map(() => Math.random())
+            .map(() => Math.random()),
         );
         resolve(predictions);
       }, 100); // Simulate computation time
     });
   }
 
-  private convertPredictionsToPatterns(predictions: number[][], data: ExecutionData[]): Pattern[] {
+  private convertPredictionsToPatterns(
+    predictions: number[][],
+    data: ExecutionData[],
+  ): Pattern[] {
     return predictions.map((prediction, index) => ({
       id: `neural_pattern_${Date.now()}_${index}`,
       type: 'optimization',
@@ -494,18 +514,30 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
         prediction,
         source: data[index],
       },
-      confidence: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
+      confidence:
+        prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
       frequency: 1,
       context: data[index]?.context || {},
       metadata: {
-        complexity: prediction && prediction.length > 0 ? prediction.length / this.outputSize : 0.5,
-        predictability: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
-        stability: prediction && prediction.length > 0 ? 1 - this.calculateStd(prediction) : 0.5,
+        complexity:
+          prediction && prediction.length > 0
+            ? prediction.length / this.outputSize
+            : 0.5,
+        predictability:
+          prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
+        stability:
+          prediction && prediction.length > 0
+            ? 1 - this.calculateStd(prediction)
+            : 0.5,
         anomalyScore:
-          prediction && prediction.length > 0 && Math.max(...prediction) > 0.9 ? 0.8 : 0.2,
+          prediction && prediction.length > 0 && Math.max(...prediction) > 0.9
+            ? 0.8
+            : 0.2,
         correlations: [],
-        quality: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
-        relevance: prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
+        quality:
+          prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
+        relevance:
+          prediction && prediction.length > 0 ? Math.max(...prediction) : 0.5,
       },
       timestamp: Date.now(),
     }));
@@ -513,7 +545,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   private async simulateTraining(
     _features: number[][],
-    _labels: number[][]
+    _labels: number[][],
   ): Promise<TrainingResult> {
     const startTime = Date.now();
     const epochs = 50 + Math.floor(Math.random() * 50);
@@ -537,7 +569,7 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   private async simulateEvaluation(
     _features: number[][],
-    _testData: ExecutionData[]
+    _testData: ExecutionData[],
   ): Promise<EvaluationMetrics> {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -560,7 +592,8 @@ export class NeuralNetworkPredictor extends EventEmitter implements INeuralNetwo
 
   private calculateStd(arr: number[]): number {
     const mean = arr.reduce((sum, val) => sum + val, 0) / arr.length;
-    const variance = arr.reduce((sum, val) => sum + (val - mean) ** 2, 0) / arr.length;
+    const variance =
+      arr.reduce((sum, val) => sum + (val - mean) ** 2, 0) / arr.length;
     return Math.sqrt(variance);
   }
 }
@@ -618,8 +651,14 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
     }
 
     // Combine predictions using weighted average
-    const combinedPrediction = this.combineN(modelPredictions, modelContributions);
-    const confidence = this.calculateEnsembleConfidence(modelPredictions, modelContributions);
+    const combinedPrediction = this.combineN(
+      modelPredictions,
+      modelContributions,
+    );
+    const confidence = this.calculateEnsembleConfidence(
+      modelPredictions,
+      modelContributions,
+    );
     const uncertainty = this.calculateUncertainty(modelPredictions);
 
     const ensemblePrediction: EnsemblePrediction = {
@@ -711,17 +750,22 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   // Private helper methods
 
-  private async getModelPrediction(model: any, data: ExecutionData[]): Promise<any> {
+  private async getModelPrediction(
+    model: any,
+    data: ExecutionData[],
+  ): Promise<any> {
     // Simulate model prediction
     if (model.predict && typeof model.predict === 'function') {
       return await model.predict(data);
-    } else {
-      // Fallback simulation
-      return data.map(() => Math.random());
     }
+    // Fallback simulation
+    return data.map(() => Math.random());
   }
 
-  private combineN(predictions: Map<string, any>, contributions: Map<string, number>): any {
+  private combineN(
+    predictions: Map<string, any>,
+    contributions: Map<string, number>,
+  ): any {
     // Simplified combination - assumes numeric predictions
     let total = 0;
     let weightSum = 0;
@@ -738,7 +782,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   private calculateEnsembleConfidence(
     predictions: Map<string, any>,
-    _contributions: Map<string, number>
+    _contributions: Map<string, number>,
   ): number {
     if (predictions.size === 0) return 0;
 
@@ -750,7 +794,8 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
     if (values.length === 0) return 0.5;
 
     const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
-    const variance = values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
+    const variance =
+      values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
 
     // Higher agreement (lower variance) = higher confidence
     return Math.max(0.1, 1 - Math.min(1, variance));
@@ -766,7 +811,8 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
     if (values.length <= 1) return 0.5;
 
     const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
-    const variance = values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
+    const variance =
+      values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
 
     return Math.min(1, variance);
   }
@@ -776,7 +822,10 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 // Online Learning System
 // ============================================
 
-export class OnlineLearningSystem extends EventEmitter implements IOnlineLearningSystem {
+export class OnlineLearningSystem
+  extends EventEmitter
+  implements IOnlineLearningSystem
+{
   private model: any = null;
   private accuracy: number = 0.5;
   private streamCount: number = 0;
@@ -788,7 +837,7 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
     config: {
       adaptationThreshold?: number;
       windowSize?: number;
-    } = {}
+    } = {},
   ) {
     super();
     this.adaptationThreshold = config?.adaptationThreshold || 0.1;
@@ -898,7 +947,11 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
 
     // Safe access to model weights
     if (this.model && this.model.weights && Array.isArray(this.model.weights)) {
-      for (let i = 0; i < this.model.weights.length && i < features.length; i++) {
+      for (
+        let i = 0;
+        i < this.model.weights.length && i < features.length;
+        i++
+      ) {
         this.model.weights[i] += this.model.learningRate * error * features[i]!;
       }
       this.model.bias += this.model.learningRate * error;
@@ -925,7 +978,9 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
     }
 
     // Simple distribution shift detection using feature means
-    const oldFeatures = this.recentData.slice(-100).map((d) => this.extractFeatures(d));
+    const oldFeatures = this.recentData
+      .slice(-100)
+      .map((d) => this.extractFeatures(d));
     const newFeatures = newData.map((d) => this.extractFeatures(d));
 
     const oldMeans = this.calculateFeatureMeans(oldFeatures);
@@ -957,9 +1012,18 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
         const error = targets?.[i]! - prediction;
 
         // Safe access to model weights
-        if (this.model && this.model.weights && Array.isArray(this.model.weights)) {
-          for (let j = 0; j < this.model.weights.length && j < currentFeatures.length; j++) {
-            this.model.weights[j] += this.model.learningRate * error * (currentFeatures?.[j] || 0);
+        if (
+          this.model &&
+          this.model.weights &&
+          Array.isArray(this.model.weights)
+        ) {
+          for (
+            let j = 0;
+            j < this.model.weights.length && j < currentFeatures.length;
+            j++
+          ) {
+            this.model.weights[j] +=
+              this.model.learningRate * error * (currentFeatures?.[j] || 0);
           }
           this.model.bias += this.model.learningRate * error;
         }
@@ -982,7 +1046,9 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
   }
 
   private predict(features: number[]): number {
-    if (!this.model || !this.model.weights || !Array.isArray(this.model.weights)) {
+    if (
+      !(this.model && this.model.weights && Array.isArray(this.model.weights))
+    ) {
       return 0.5; // Default prediction
     }
 
@@ -1003,7 +1069,10 @@ export class OnlineLearningSystem extends EventEmitter implements IOnlineLearnin
     return this.evaluateModelAccuracy(features, targets);
   }
 
-  private evaluateModelAccuracy(features: number[][], targets: number[]): number {
+  private evaluateModelAccuracy(
+    features: number[][],
+    targets: number[],
+  ): number {
     if (features.length === 0) return 0.5;
 
     let correct = 0;

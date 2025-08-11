@@ -76,7 +76,8 @@ export class SafeMemoryStore extends EventEmitter {
       this.initialized = true;
       this.emit('initialized');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown initialization error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown initialization error';
       throw new Error(`Failed to initialize SafeMemoryStore: ${errorMessage}`);
     }
   }
@@ -88,17 +89,25 @@ export class SafeMemoryStore extends EventEmitter {
    * @param data
    * @param ttl
    */
-  async storeData<T>(key: string, data: T, ttl?: number): Promise<MemoryResult<void>> {
+  async storeData<T>(
+    key: string,
+    data: T,
+    ttl?: number,
+  ): Promise<MemoryResult<void>> {
     try {
       if (!this.initialized) {
-        return this.createMemoryError(key, 'STORE_NOT_INITIALIZED', 'Memory store not initialized');
+        return this.createMemoryError(
+          key,
+          'STORE_NOT_INITIALIZED',
+          'Memory store not initialized',
+        );
       }
 
       if (this.store.size >= this.options.maxSize) {
         return this.createMemoryError(
           key,
           'STORE_FULL',
-          'Memory store has reached maximum capacity'
+          'Memory store has reached maximum capacity',
         );
       }
 
@@ -139,7 +148,8 @@ export class SafeMemoryStore extends EventEmitter {
         metadata: { operation: 'store', success: true },
       } as MemorySuccess<void>;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown storage error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown storage error';
       return this.createMemoryError(key, 'STORE_FAILED', errorMessage);
     }
   }
@@ -152,7 +162,11 @@ export class SafeMemoryStore extends EventEmitter {
   async retrieve<T>(key: string): Promise<MemoryResult<T>> {
     try {
       if (!this.initialized) {
-        return this.createMemoryError(key, 'STORE_NOT_INITIALIZED', 'Memory store not initialized');
+        return this.createMemoryError(
+          key,
+          'STORE_NOT_INITIALIZED',
+          'Memory store not initialized',
+        );
       }
 
       const fullKey = this.createKey(key);
@@ -169,7 +183,11 @@ export class SafeMemoryStore extends EventEmitter {
       const metadata = this.metadata.get(fullKey);
 
       if (!metadata) {
-        return this.createMemoryError(key, 'METADATA_MISSING', 'Metadata not found for key');
+        return this.createMemoryError(
+          key,
+          'METADATA_MISSING',
+          'Metadata not found for key',
+        );
       }
 
       // Update access information
@@ -197,7 +215,8 @@ export class SafeMemoryStore extends EventEmitter {
         },
       } as MemorySuccess<T>;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown retrieval error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown retrieval error';
       return this.createMemoryError(key, 'RETRIEVE_FAILED', errorMessage);
     }
   }
@@ -210,7 +229,11 @@ export class SafeMemoryStore extends EventEmitter {
   async delete(key: string): Promise<MemoryResult<boolean>> {
     try {
       if (!this.initialized) {
-        return this.createMemoryError(key, 'STORE_NOT_INITIALIZED', 'Memory store not initialized');
+        return this.createMemoryError(
+          key,
+          'STORE_NOT_INITIALIZED',
+          'Memory store not initialized',
+        );
       }
 
       const fullKey = this.createKey(key);
@@ -244,7 +267,8 @@ export class SafeMemoryStore extends EventEmitter {
         metadata: { operation: 'delete', success: true },
       } as MemorySuccess<boolean>;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown deletion error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown deletion error';
       return this.createMemoryError(key, 'DELETE_FAILED', errorMessage);
     }
   }
@@ -267,15 +291,17 @@ export class SafeMemoryStore extends EventEmitter {
           timestamp: new Date(),
           metadata: { operation: 'exists', result: true },
         } as MemorySuccess<boolean>;
-      } else {
-        return {
-          found: false,
-          key: fullKey,
-          reason: 'not_found',
-        } as MemoryNotFound;
       }
+      return {
+        found: false,
+        key: fullKey,
+        reason: 'not_found',
+      } as MemoryNotFound;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown existence check error';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Unknown existence check error';
       return this.createMemoryError(key, 'EXISTS_CHECK_FAILED', errorMessage);
     }
   }
@@ -326,7 +352,8 @@ export class SafeMemoryStore extends EventEmitter {
         metadata: { operation: 'stats' },
       } as MemorySuccess<typeof stats>;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown stats error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown stats error';
       return this.createMemoryError('stats', 'STATS_FAILED', errorMessage);
     }
   }
@@ -364,7 +391,11 @@ export class SafeMemoryStore extends EventEmitter {
     return `${this.options.namespace}:${key}`;
   }
 
-  private createMemoryError(key: string, code: string, message: string): MemoryError {
+  private createMemoryError(
+    key: string,
+    code: string,
+    message: string,
+  ): MemoryError {
     return {
       found: false,
       error: {
@@ -452,7 +483,9 @@ export async function safeMemoryUsageExample(): Promise<void> {
   }
 
   // Retrieve data with safe access
-  const retrieveResult = await store.retrieve<{ name: string; age: number }>('user:123');
+  const retrieveResult = await store.retrieve<{ name: string; age: number }>(
+    'user:123',
+  );
 
   if (isMemorySuccess(retrieveResult)) {
   } else if (isMemoryNotFound(retrieveResult)) {

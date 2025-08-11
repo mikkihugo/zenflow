@@ -2,7 +2,8 @@
 const coordinationTools: MCPTool[] = [
   {
     name: 'swarm_init',
-    description: 'Initialize a new swarm with specified topology and configuration',
+    description:
+      'Initialize a new swarm with specified topology and configuration',
     category: 'coordination',
     version: '1.0.0',
     priority: 1,
@@ -58,11 +59,14 @@ const coordinationTools: MCPTool[] = [
             'fault tolerance',
             'adaptive learning',
           ],
-          coordinationNodes: Array.from({ length: Math.min(maxAgents, 3) }, (_, i) => ({
-            id: `coord_${i + 1}`,
-            role: 'coordinator',
-            status: 'active',
-          })),
+          coordinationNodes: Array.from(
+            { length: Math.min(maxAgents, 3) },
+            (_, i) => ({
+              id: `coord_${i + 1}`,
+              role: 'coordinator',
+              status: 'active',
+            }),
+          ),
         },
       };
     },
@@ -79,7 +83,10 @@ const coordinationTools: MCPTool[] = [
       examples: [
         {
           name: 'Spawn research agent',
-          params: { type: 'researcher', capabilities: ['analysis', 'synthesis'] },
+          params: {
+            type: 'researcher',
+            capabilities: ['analysis', 'synthesis'],
+          },
         },
       ],
     },
@@ -162,7 +169,13 @@ const coordinationTools: MCPTool[] = [
       required: ['task'],
     },
     handler: async (params: any) => {
-      const { task, strategy = 'adaptive', assignees = [], deadline, priority = 'medium' } = params;
+      const {
+        task,
+        strategy = 'adaptive',
+        assignees = [],
+        deadline,
+        priority = 'medium',
+      } = params;
 
       const taskId = `task_${Date.now()}`;
 
@@ -177,7 +190,8 @@ const coordinationTools: MCPTool[] = [
           priority,
           status: 'orchestrating',
           createdAt: new Date().toISOString(),
-          estimatedCompletion: deadline || new Date(Date.now() + 3600000).toISOString(),
+          estimatedCompletion:
+            deadline || new Date(Date.now() + 3600000).toISOString(),
         },
       };
     },

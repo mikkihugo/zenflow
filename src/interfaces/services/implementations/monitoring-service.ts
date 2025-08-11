@@ -9,7 +9,10 @@
  */
 
 import type { IService } from '../core/interfaces.ts';
-import type { MonitoringServiceConfig, ServiceOperationOptions } from '../types.ts';
+import type {
+  MonitoringServiceConfig,
+  ServiceOperationOptions,
+} from '../types.ts';
 import { BaseService } from './base-service.ts';
 
 /**
@@ -48,7 +51,9 @@ export class MonitoringService extends BaseService implements IService {
     // Initialize alert configurations
     this.initializeAlertSystem();
 
-    this.logger.info(`Monitoring service ${this.name} initialized successfully`);
+    this.logger.info(
+      `Monitoring service ${this.name} initialized successfully`,
+    );
   }
 
   protected async doStart(): Promise<void> {
@@ -115,13 +120,18 @@ export class MonitoringService extends BaseService implements IService {
       const memoryUsage = this.estimateMemoryUsage();
       if (memoryUsage > 100 * 1024 * 1024) {
         // 100MB threshold
-        this.logger.warn(`High memory usage in monitoring service: ${memoryUsage} bytes`);
+        this.logger.warn(
+          `High memory usage in monitoring service: ${memoryUsage} bytes`,
+        );
         return false;
       }
 
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed for monitoring service ${this.name}:`, error);
+      this.logger.error(
+        `Health check failed for monitoring service ${this.name}:`,
+        error,
+      );
       return false;
     }
   }
@@ -129,7 +139,7 @@ export class MonitoringService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     this.logger.debug(`Executing monitoring operation: ${operation}`);
 
@@ -141,7 +151,11 @@ export class MonitoringService extends BaseService implements IService {
         return this.getMetrics(params?.metricName, params?.timeRange) as T;
 
       case 'record-metric':
-        return this.recordMetric(params?.name, params?.value, params?.timestamp) as T;
+        return this.recordMetric(
+          params?.name,
+          params?.value,
+          params?.timestamp,
+        ) as T;
 
       case 'create-alert':
         return this.createAlert(params) as T;
@@ -165,7 +179,10 @@ export class MonitoringService extends BaseService implements IService {
         return (await this.clearMetrics(params?.olderThan)) as T;
 
       case 'export-metrics':
-        return (await this.exportMetrics(params?.format, params?.timeRange)) as T;
+        return (await this.exportMetrics(
+          params?.format,
+          params?.timeRange,
+        )) as T;
 
       default:
         throw new Error(`Unknown monitoring operation: ${operation}`);
@@ -208,13 +225,16 @@ export class MonitoringService extends BaseService implements IService {
     return collectedMetrics;
   }
 
-  private getMetrics(metricName?: string, timeRange?: { start: number; end: number }): any {
+  private getMetrics(
+    metricName?: string,
+    timeRange?: { start: number; end: number },
+  ): any {
     if (metricName) {
       const metricData = this.metrics.get(metricName) || [];
 
       if (timeRange) {
         return metricData?.filter(
-          (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end
+          (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end,
         );
       }
 
@@ -226,7 +246,7 @@ export class MonitoringService extends BaseService implements IService {
     for (const [name, data] of this.metrics.entries()) {
       if (timeRange) {
         allMetrics[name] = data?.filter(
-          (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end
+          (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end,
         );
       } else {
         allMetrics[name] = data;
@@ -382,7 +402,7 @@ export class MonitoringService extends BaseService implements IService {
 
   private async exportMetrics(
     format: 'json' | 'csv' = 'json',
-    timeRange?: { start: number; end: number }
+    timeRange?: { start: number; end: number },
   ): Promise<any> {
     const metrics = this.getMetrics(undefined, timeRange);
 
@@ -393,7 +413,8 @@ export class MonitoringService extends BaseService implements IService {
         timeRange,
         data: metrics,
       };
-    } else if (format === 'csv') {
+    }
+    if (format === 'csv') {
       // Convert to CSV format
       const csvData = this.convertMetricsToCSV(metrics);
       return {
@@ -433,7 +454,8 @@ export class MonitoringService extends BaseService implements IService {
       errorCount: this.errorCount,
       averageLatency:
         this.latencyMetrics.length > 0
-          ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) / this.latencyMetrics.length
+          ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) /
+            this.latencyMetrics.length
           : 0,
     }));
 
@@ -451,15 +473,19 @@ export class MonitoringService extends BaseService implements IService {
 
     if (config?.alerts?.enabled && config?.alerts?.thresholds) {
       // Create default alerts based on thresholds
-      Object.entries(config?.alerts?.thresholds).forEach(([metric, threshold]) => {
-        this.createAlert({
-          name: `High ${metric}`,
-          metric,
-          condition: 'greater_than',
-          threshold,
-          channels: config?.alerts?.channels?.map((c) => c.type) || ['console'],
-        });
-      });
+      Object.entries(config?.alerts?.thresholds).forEach(
+        ([metric, threshold]) => {
+          this.createAlert({
+            name: `High ${metric}`,
+            metric,
+            condition: 'greater_than',
+            threshold,
+            channels: config?.alerts?.channels?.map((c) => c.type) || [
+              'console',
+            ],
+          });
+        },
+      );
     }
   }
 
@@ -563,7 +589,11 @@ export class MonitoringService extends BaseService implements IService {
     return notifications;
   }
 
-  private async sendNotification(channel: string, alert: any, data?: any): Promise<any> {
+  private async sendNotification(
+    channel: string,
+    alert: any,
+    data?: any,
+  ): Promise<any> {
     const message = `Alert: ${alert.name} - ${data?.value} ${alert.condition} ${alert.threshold}`;
 
     switch (channel) {
@@ -605,7 +635,9 @@ export class MonitoringService extends BaseService implements IService {
       if (Array.isArray(metricArray)) {
         for (const metric of metricArray) {
           const value =
-            typeof metric.value === 'object' ? JSON.stringify(metric.value) : metric.value;
+            typeof metric.value === 'object'
+              ? JSON.stringify(metric.value)
+              : metric.value;
           csvLines.push(`${metric.timestamp},${metricName},${value}`);
         }
       }

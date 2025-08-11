@@ -627,7 +627,9 @@ export interface GateTrigger {
   readonly event: GateTriggerEvent;
 
   /** Condition evaluation function */
-  readonly condition: (context: WorkflowGateContext) => Promise<boolean> | boolean;
+  readonly condition: (
+    context: WorkflowGateContext,
+  ) => Promise<boolean> | boolean;
 
   /** Urgency level for triggered gate */
   readonly urgency: GateTriggerUrgency;
@@ -830,7 +832,12 @@ export interface GateMetrics {
  */
 export interface StakeholderInteraction {
   readonly stakeholder: string;
-  readonly action: 'viewed' | 'commented' | 'approved' | 'rejected' | 'escalated';
+  readonly action:
+    | 'viewed'
+    | 'commented'
+    | 'approved'
+    | 'rejected'
+    | 'escalated';
   readonly timestamp: Date;
   readonly duration?: number;
   readonly data?: Record<string, unknown>;
@@ -901,9 +908,13 @@ export class GatePersistenceManager {
       this.db = new Database(this.dbPath);
       await this.createTables();
 
-      this.logger.info('Gate persistence manager initialized', { dbPath: this.dbPath });
+      this.logger.info('Gate persistence manager initialized', {
+        dbPath: this.dbPath,
+      });
     } catch (error) {
-      this.logger.error('Failed to initialize gate persistence manager', { error });
+      this.logger.error('Failed to initialize gate persistence manager', {
+        error,
+      });
       throw error;
     }
   }
@@ -1002,10 +1013,15 @@ export class GatePersistenceManager {
       gate.timeoutConfig ? JSON.stringify(gate.timeoutConfig) : null,
       gate.resolution ? JSON.stringify(gate.resolution) : null,
       JSON.stringify(gate.metrics),
-      gate.workflowGateRequest ? JSON.stringify(gate.workflowGateRequest) : null
+      gate.workflowGateRequest
+        ? JSON.stringify(gate.workflowGateRequest)
+        : null,
     );
 
-    this.logger.debug('Gate saved to database', { gateId: gate.id, status: gate.status });
+    this.logger.debug('Gate saved to database', {
+      gateId: gate.id,
+      status: gate.status,
+    });
   }
 
   async getGate(gateId: string): Promise<WorkflowHumanGate | null> {
@@ -1021,7 +1037,9 @@ export class GatePersistenceManager {
     return this.deserializeGate(row);
   }
 
-  async getGatesByStatus(status: WorkflowHumanGateStatus[]): Promise<WorkflowHumanGate[]> {
+  async getGatesByStatus(
+    status: WorkflowHumanGateStatus[],
+  ): Promise<WorkflowHumanGate[]> {
     if (!this.db) throw new Error('Database not initialized');
 
     const placeholders = status.map(() => '?').join(',');
@@ -1034,7 +1052,9 @@ export class GatePersistenceManager {
     return rows.map((row) => this.deserializeGate(row));
   }
 
-  async getGatesByType(type: WorkflowHumanGateType): Promise<WorkflowHumanGate[]> {
+  async getGatesByType(
+    type: WorkflowHumanGateType,
+  ): Promise<WorkflowHumanGate[]> {
     if (!this.db) throw new Error('Database not initialized');
 
     const stmt = this.db.prepare(`
@@ -1049,7 +1069,7 @@ export class GatePersistenceManager {
   async updateGateStatus(
     gateId: string,
     status: WorkflowHumanGateStatus,
-    resolution?: GateResolution
+    resolution?: GateResolution,
   ): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
@@ -1059,7 +1079,12 @@ export class GatePersistenceManager {
       WHERE id = ?
     `);
 
-    stmt.run(status, Date.now(), resolution ? JSON.stringify(resolution) : null, gateId);
+    stmt.run(
+      status,
+      Date.now(),
+      resolution ? JSON.stringify(resolution) : null,
+      gateId,
+    );
 
     this.logger.debug('Gate status updated', { gateId, status });
   }
@@ -1068,7 +1093,7 @@ export class GatePersistenceManager {
     gateId: string,
     priority: number,
     urgency: GateTriggerUrgency,
-    scheduledAt: Date
+    scheduledAt: Date,
   ): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
@@ -1082,7 +1107,7 @@ export class GatePersistenceManager {
   }
 
   async getQueuedGates(
-    limit: number = 50
+    limit: number = 50,
   ): Promise<Array<{ gate: WorkflowHumanGate; queueItem: any }>> {
     if (!this.db) throw new Error('Database not initialized');
 
@@ -1123,7 +1148,12 @@ export class GatePersistenceManager {
     stmt.run(queueItemId);
   }
 
-  async addHistoryEntry(gateId: string, action: string, actor: string, data?: any): Promise<void> {
+  async addHistoryEntry(
+    gateId: string,
+    action: string,
+    actor: string,
+    data?: unknown,
+  ): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     const stmt = this.db.prepare(`
@@ -1131,7 +1161,13 @@ export class GatePersistenceManager {
       VALUES (?, ?, ?, ?, ?)
     `);
 
-    stmt.run(gateId, action, actor, Date.now(), data ? JSON.stringify(data) : null);
+    stmt.run(
+      gateId,
+      action,
+      actor,
+      Date.now(),
+      data ? JSON.stringify(data) : null,
+    );
   }
 
   async getGateHistory(gateId: string): Promise<any[]> {
@@ -1153,11 +1189,14 @@ export class GatePersistenceManager {
     }));
   }
 
-  async getMetrics(timeRange?: { from: Date; to: Date }): Promise<GatePersistenceMetrics> {
+  async getMetrics(timeRange?: {
+    from: Date;
+    to: Date;
+  }): Promise<GatePersistenceMetrics> {
     if (!this.db) throw new Error('Database not initialized');
 
     let whereClause = '';
-    const params: any[] = [];
+    const params: unknown[] = [];
 
     if (timeRange) {
       whereClause = 'WHERE created_at BETWEEN ? AND ?';
@@ -1166,7 +1205,7 @@ export class GatePersistenceManager {
 
     // Total gates
     const totalStmt = this.db.prepare(
-      `SELECT COUNT(*) as count FROM workflow_gates ${whereClause}`
+      `SELECT COUNT(*) as count FROM workflow_gates ${whereClause}`,
     );
     const totalResult = totalStmt.get(...params) as any;
 
@@ -1211,7 +1250,7 @@ export class GatePersistenceManager {
     };
   }
 
-  private deserializeGate(row: any): WorkflowHumanGate {
+  private deserializeGate(row: unknown): WorkflowHumanGate {
     return {
       id: row.id,
       type: row.type as WorkflowHumanGateType,
@@ -1226,7 +1265,9 @@ export class GatePersistenceManager {
       triggers: JSON.parse(row.triggers),
       priority: row.priority as WorkflowGatePriority,
       approvalConfig: JSON.parse(row.approval_config),
-      timeoutConfig: row.timeout_config ? JSON.parse(row.timeout_config) : undefined,
+      timeoutConfig: row.timeout_config
+        ? JSON.parse(row.timeout_config)
+        : undefined,
       resolution: row.resolution ? JSON.parse(row.resolution) : undefined,
       metrics: JSON.parse(row.metrics),
       workflowGateRequest: row.workflow_gate_request
@@ -1266,15 +1307,24 @@ export class WorkflowGatesManager extends EventEmitter {
   private readonly logger: Logger;
   private readonly persistence: GatePersistenceManager;
   private readonly eventBus: TypeSafeEventBus;
-  private readonly gateFactories = new Map<WorkflowHumanGateType, GateFactory>();
-  private readonly triggerEvaluators = new Map<GateTriggerEvent, TriggerEvaluator>();
+  private readonly gateFactories = new Map<
+    WorkflowHumanGateType,
+    GateFactory
+  >();
+  private readonly triggerEvaluators = new Map<
+    GateTriggerEvent,
+    TriggerEvaluator
+  >();
   private queueProcessor: NodeJS.Timeout | null = null;
   private isInitialized = false;
 
   // Configuration
   private readonly config: WorkflowGatesManagerConfig;
 
-  constructor(eventBus: TypeSafeEventBus, config: WorkflowGatesManagerConfig = {}) {
+  constructor(
+    eventBus: TypeSafeEventBus,
+    config: WorkflowGatesManagerConfig = {},
+  ) {
     super();
 
     this.logger = getLogger('workflow-gates-manager');
@@ -1307,7 +1357,9 @@ export class WorkflowGatesManager extends EventEmitter {
       this.logger.info('Workflow Gates Manager initialized');
       this.emit('initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize workflow gates manager', { error });
+      this.logger.error('Failed to initialize workflow gates manager', {
+        error,
+      });
       throw error;
     }
   }
@@ -1335,7 +1387,7 @@ export class WorkflowGatesManager extends EventEmitter {
     subtype: string,
     workflowContext: WorkflowGateContext,
     gateData: WorkflowGateData,
-    options: CreateGateOptions = {}
+    options: CreateGateOptions = {},
   ): Promise<WorkflowHumanGate> {
     await this.ensureInitialized();
 
@@ -1344,7 +1396,12 @@ export class WorkflowGatesManager extends EventEmitter {
       throw new Error(`No factory registered for gate type: ${type}`);
     }
 
-    const gate = factory.createGate(subtype, workflowContext, gateData, options);
+    const gate = factory.createGate(
+      subtype,
+      workflowContext,
+      gateData,
+      options,
+    );
 
     // Save to persistence
     await this.persistence.saveGate(gate);
@@ -1370,7 +1427,10 @@ export class WorkflowGatesManager extends EventEmitter {
     return gate;
   }
 
-  async updateGate(gateId: string, updates: Partial<WorkflowHumanGate>): Promise<void> {
+  async updateGate(
+    gateId: string,
+    updates: Partial<WorkflowHumanGate>,
+  ): Promise<void> {
     const gate = await this.persistence.getGate(gateId);
     if (!gate) {
       throw new Error(`Gate not found: ${gateId}`);
@@ -1384,7 +1444,12 @@ export class WorkflowGatesManager extends EventEmitter {
     };
 
     await this.persistence.saveGate(updatedGate);
-    await this.persistence.addHistoryEntry(gateId, 'updated', 'system', updates);
+    await this.persistence.addHistoryEntry(
+      gateId,
+      'updated',
+      'system',
+      updates,
+    );
 
     this.logger.info('Gate updated', { gateId, updates: Object.keys(updates) });
     this.emit('gate-updated', updatedGate);
@@ -1395,7 +1460,7 @@ export class WorkflowGatesManager extends EventEmitter {
     decision: 'approved' | 'rejected' | 'deferred',
     resolvedBy: string,
     rationale?: string,
-    data?: Record<string, unknown>
+    data?: Record<string, unknown>,
   ): Promise<void> {
     const gate = await this.persistence.getGate(gateId);
     if (!gate) {
@@ -1418,12 +1483,16 @@ export class WorkflowGatesManager extends EventEmitter {
           : WorkflowHumanGateStatus.PENDING;
 
     await this.persistence.updateGateStatus(gateId, newStatus, resolution);
-    await this.persistence.addHistoryEntry(gateId, 'resolved', resolvedBy, { decision, rationale });
+    await this.persistence.addHistoryEntry(gateId, 'resolved', resolvedBy, {
+      decision,
+      rationale,
+    });
 
     // Update metrics
     const updatedGate = await this.persistence.getGate(gateId);
     if (updatedGate) {
-      updatedGate.metrics.timeToResolution = Date.now() - gate.createdAt.getTime();
+      updatedGate.metrics.timeToResolution =
+        Date.now() - gate.createdAt.getTime();
       await this.persistence.saveGate(updatedGate);
     }
 
@@ -1431,9 +1500,18 @@ export class WorkflowGatesManager extends EventEmitter {
     this.emit('gate-resolved', { gateId, decision, resolvedBy, resolution });
   }
 
-  async cancelGate(gateId: string, reason: string, cancelledBy: string): Promise<void> {
-    await this.persistence.updateGateStatus(gateId, WorkflowHumanGateStatus.CANCELLED);
-    await this.persistence.addHistoryEntry(gateId, 'cancelled', cancelledBy, { reason });
+  async cancelGate(
+    gateId: string,
+    reason: string,
+    cancelledBy: string,
+  ): Promise<void> {
+    await this.persistence.updateGateStatus(
+      gateId,
+      WorkflowHumanGateStatus.CANCELLED,
+    );
+    await this.persistence.addHistoryEntry(gateId, 'cancelled', cancelledBy, {
+      reason,
+    });
 
     this.logger.info('Gate cancelled', { gateId, reason, cancelledBy });
     this.emit('gate-cancelled', { gateId, reason, cancelledBy });
@@ -1447,15 +1525,22 @@ export class WorkflowGatesManager extends EventEmitter {
     gateId: string,
     priority: number,
     urgency: GateTriggerUrgency,
-    scheduledAt?: Date
+    scheduledAt?: Date,
   ): Promise<void> {
     const scheduled = scheduledAt || new Date();
     await this.persistence.addToQueue(gateId, priority, urgency, scheduled);
 
-    this.logger.debug('Gate added to queue', { gateId, priority, urgency, scheduledAt: scheduled });
+    this.logger.debug('Gate added to queue', {
+      gateId,
+      priority,
+      urgency,
+      scheduledAt: scheduled,
+    });
   }
 
-  async getQueuedGates(): Promise<Array<{ gate: WorkflowHumanGate; queueItem: any }>> {
+  async getQueuedGates(): Promise<
+    Array<{ gate: WorkflowHumanGate; queueItem: any }>
+  > {
     return this.persistence.getQueuedGates();
   }
 
@@ -1467,11 +1552,15 @@ export class WorkflowGatesManager extends EventEmitter {
     return this.persistence.getGate(gateId);
   }
 
-  async getGatesByStatus(status: WorkflowHumanGateStatus[]): Promise<WorkflowHumanGate[]> {
+  async getGatesByStatus(
+    status: WorkflowHumanGateStatus[],
+  ): Promise<WorkflowHumanGate[]> {
     return this.persistence.getGatesByStatus(status);
   }
 
-  async getGatesByType(type: WorkflowHumanGateType): Promise<WorkflowHumanGate[]> {
+  async getGatesByType(
+    type: WorkflowHumanGateType,
+  ): Promise<WorkflowHumanGate[]> {
     return this.persistence.getGatesByType(type);
   }
 
@@ -1491,17 +1580,24 @@ export class WorkflowGatesManager extends EventEmitter {
   // METRICS AND ANALYTICS
   // --------------------------------------------------------------------------
 
-  async getMetrics(timeRange?: { from: Date; to: Date }): Promise<WorkflowGatesMetrics> {
+  async getMetrics(timeRange?: {
+    from: Date;
+    to: Date;
+  }): Promise<WorkflowGatesMetrics> {
     const persistenceMetrics = await this.persistence.getMetrics(timeRange);
     const queuedGates = await this.getQueuedGates();
 
     return {
       ...persistenceMetrics,
       queuedGatesCount: queuedGates.length,
-      activeGatesCount: persistenceMetrics.gatesByStatus[WorkflowHumanGateStatus.TRIGGERED] || 0,
+      activeGatesCount:
+        persistenceMetrics.gatesByStatus[WorkflowHumanGateStatus.TRIGGERED] ||
+        0,
       completedGatesCount:
-        (persistenceMetrics.gatesByStatus[WorkflowHumanGateStatus.APPROVED] || 0) +
-        (persistenceMetrics.gatesByStatus[WorkflowHumanGateStatus.REJECTED] || 0),
+        (persistenceMetrics.gatesByStatus[WorkflowHumanGateStatus.APPROVED] ||
+          0) +
+        (persistenceMetrics.gatesByStatus[WorkflowHumanGateStatus.REJECTED] ||
+          0),
     };
   }
 
@@ -1527,13 +1623,22 @@ export class WorkflowGatesManager extends EventEmitter {
     }
   }
 
-  async triggerGate(gate: WorkflowHumanGate, trigger: GateTrigger): Promise<void> {
+  async triggerGate(
+    gate: WorkflowHumanGate,
+    trigger: GateTrigger,
+  ): Promise<void> {
     // Update gate status
-    await this.persistence.updateGateStatus(gate.id, WorkflowHumanGateStatus.TRIGGERED);
+    await this.persistence.updateGateStatus(
+      gate.id,
+      WorkflowHumanGateStatus.TRIGGERED,
+    );
 
     // Add to queue based on urgency
     const priority = this.urgencyToPriority(trigger.urgency);
-    const scheduledAt = this.calculateScheduledTime(trigger.urgency, trigger.delay);
+    const scheduledAt = this.calculateScheduledTime(
+      trigger.urgency,
+      trigger.delay,
+    );
 
     await this.addToQueue(gate.id, priority, trigger.urgency, scheduledAt);
 
@@ -1561,7 +1666,9 @@ export class WorkflowGatesManager extends EventEmitter {
   // AGUI INTEGRATION
   // --------------------------------------------------------------------------
 
-  async createWorkflowGateRequest(gate: WorkflowHumanGate): Promise<WorkflowGateRequest> {
+  async createWorkflowGateRequest(
+    gate: WorkflowHumanGate,
+  ): Promise<WorkflowGateRequest> {
     // Convert WorkflowHumanGate to WorkflowGateRequest format
     const workflowGateRequest: WorkflowGateRequest = createApprovalGate(
       gate.workflowContext.gateWorkflowId,
@@ -1569,9 +1676,11 @@ export class WorkflowGatesManager extends EventEmitter {
       `${gate.title}\n\n${gate.description}`,
       gate.workflowContext.stakeholderGroups,
       {
-        businessImpact: this.mapImpactToLevel(gate.workflowContext.impactAssessment.businessImpact),
+        businessImpact: this.mapImpactToLevel(
+          gate.workflowContext.impactAssessment.businessImpact,
+        ),
         priority: this.mapGatePriorityToValidationPriority(gate.priority),
-      }
+      },
     );
 
     // Update gate with the request
@@ -1591,11 +1700,26 @@ export class WorkflowGatesManager extends EventEmitter {
   }
 
   private registerGateFactories(): void {
-    this.gateFactories.set(WorkflowHumanGateType.STRATEGIC, new StrategicGateFactory());
-    this.gateFactories.set(WorkflowHumanGateType.ARCHITECTURAL, new ArchitecturalGateFactory());
-    this.gateFactories.set(WorkflowHumanGateType.QUALITY, new QualityGateFactory());
-    this.gateFactories.set(WorkflowHumanGateType.BUSINESS, new BusinessGateFactory());
-    this.gateFactories.set(WorkflowHumanGateType.ETHICAL, new EthicalGateFactory());
+    this.gateFactories.set(
+      WorkflowHumanGateType.STRATEGIC,
+      new StrategicGateFactory(),
+    );
+    this.gateFactories.set(
+      WorkflowHumanGateType.ARCHITECTURAL,
+      new ArchitecturalGateFactory(),
+    );
+    this.gateFactories.set(
+      WorkflowHumanGateType.QUALITY,
+      new QualityGateFactory(),
+    );
+    this.gateFactories.set(
+      WorkflowHumanGateType.BUSINESS,
+      new BusinessGateFactory(),
+    );
+    this.gateFactories.set(
+      WorkflowHumanGateType.ETHICAL,
+      new EthicalGateFactory(),
+    );
 
     this.logger.debug('Gate factories registered');
   }
@@ -1603,21 +1727,31 @@ export class WorkflowGatesManager extends EventEmitter {
   private registerTriggerEvaluators(): void {
     // Register trigger evaluators for each event type
     this.triggerEvaluators.set('prd-generated', async (context) => {
-      return context.phaseName === 'prd-generation' && context.businessDomain === 'product';
+      return (
+        context.phaseName === 'prd-generation' &&
+        context.businessDomain === 'product'
+      );
     });
 
     this.triggerEvaluators.set('epic-created', async (context) => {
-      return context.phaseName === 'epic-creation' && context.technicalDomain === 'development';
+      return (
+        context.phaseName === 'epic-creation' &&
+        context.technicalDomain === 'development'
+      );
     });
 
     this.triggerEvaluators.set('feature-designed', async (context) => {
       return (
-        context.phaseName === 'feature-design' && context.impactAssessment.technicalImpact > 0.7
+        context.phaseName === 'feature-design' &&
+        context.impactAssessment.technicalImpact > 0.7
       );
     });
 
     this.triggerEvaluators.set('sparc-phase-complete', async (context) => {
-      return context.phaseName.includes('sparc') && context.impactAssessment.businessImpact > 0.5;
+      return (
+        context.phaseName.includes('sparc') &&
+        context.impactAssessment.businessImpact > 0.5
+      );
     });
 
     // Add more trigger evaluators as needed...
@@ -1634,7 +1768,9 @@ export class WorkflowGatesManager extends EventEmitter {
       }
     }, this.config.queueProcessingInterval);
 
-    this.logger.debug('Queue processor started', { interval: this.config.queueProcessingInterval });
+    this.logger.debug('Queue processor started', {
+      interval: this.config.queueProcessingInterval,
+    });
   }
 
   private async processQueue(): Promise<void> {
@@ -1660,9 +1796,15 @@ export class WorkflowGatesManager extends EventEmitter {
     }
   }
 
-  private async processQueuedGate(gate: WorkflowHumanGate, queueItem: any): Promise<void> {
+  private async processQueuedGate(
+    gate: WorkflowHumanGate,
+    queueItem: unknown,
+  ): Promise<void> {
     // Update status to in review
-    await this.persistence.updateGateStatus(gate.id, WorkflowHumanGateStatus.IN_REVIEW);
+    await this.persistence.updateGateStatus(
+      gate.id,
+      WorkflowHumanGateStatus.IN_REVIEW,
+    );
 
     // Create AGUI request if not already created
     if (!gate.workflowGateRequest) {
@@ -1672,7 +1814,10 @@ export class WorkflowGatesManager extends EventEmitter {
     // Emit event for external processing
     this.emit('gate-ready-for-review', { gate, queueItem });
 
-    this.logger.info('Gate ready for review', { gateId: gate.id, priority: queueItem.priority });
+    this.logger.info('Gate ready for review', {
+      gateId: gate.id,
+      priority: queueItem.priority,
+    });
   }
 
   private urgencyToPriority(urgency: GateTriggerUrgency): number {
@@ -1692,7 +1837,10 @@ export class WorkflowGatesManager extends EventEmitter {
     }
   }
 
-  private calculateScheduledTime(urgency: GateTriggerUrgency, delay?: number): Date {
+  private calculateScheduledTime(
+    urgency: GateTriggerUrgency,
+    delay?: number,
+  ): Date {
     const now = new Date();
     const baseDelay = delay || 0;
 
@@ -1702,7 +1850,9 @@ export class WorkflowGatesManager extends EventEmitter {
       case GateTriggerUrgency.WITHIN_HOUR:
         return new Date(now.getTime() + Math.min(3600000, baseDelay + 1800000)); // 30min to 1hr
       case GateTriggerUrgency.WITHIN_DAY:
-        return new Date(now.getTime() + Math.min(86400000, baseDelay + 7200000)); // 2hr to 24hr
+        return new Date(
+          now.getTime() + Math.min(86400000, baseDelay + 7200000),
+        ); // 2hr to 24hr
       case GateTriggerUrgency.NEXT_REVIEW:
         return new Date(now.getTime() + 86400000 + baseDelay); // Next day + delay
       default:
@@ -1710,7 +1860,9 @@ export class WorkflowGatesManager extends EventEmitter {
     }
   }
 
-  private mapImpactToLevel(impact: number): 'low' | 'medium' | 'high' | 'critical' {
+  private mapImpactToLevel(
+    impact: number,
+  ): 'low' | 'medium' | 'high' | 'critical' {
     if (impact >= 0.9) return 'critical';
     if (impact >= 0.7) return 'high';
     if (impact >= 0.4) return 'medium';
@@ -1718,7 +1870,7 @@ export class WorkflowGatesManager extends EventEmitter {
   }
 
   private mapGatePriorityToValidationPriority(
-    priority: WorkflowGatePriority
+    priority: WorkflowGatePriority,
   ): 'critical' | 'high' | 'medium' | 'low' {
     switch (priority) {
       case WorkflowGatePriority.EMERGENCY:
@@ -1749,7 +1901,7 @@ export interface GateFactory {
     subtype: string,
     workflowContext: WorkflowGateContext,
     gateData: WorkflowGateData,
-    options: CreateGateOptions
+    options: CreateGateOptions,
   ): WorkflowHumanGate;
 }
 
@@ -1773,7 +1925,7 @@ export class StrategicGateFactory implements GateFactory {
     subtype: string,
     workflowContext: WorkflowGateContext,
     gateData: WorkflowGateData,
-    options: CreateGateOptions
+    options: CreateGateOptions,
   ): WorkflowHumanGate {
     const gateId = `strategic-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -1790,12 +1942,16 @@ export class StrategicGateFactory implements GateFactory {
       updatedAt: new Date(),
       workflowContext,
       gateData,
-      triggers: options.triggers || this.createDefaultStrategicTriggers(subtype),
+      triggers:
+        options.triggers || this.createDefaultStrategicTriggers(subtype),
       priority: options.priority || WorkflowGatePriority.HIGH,
       approvalConfig: {
         approvers: options.approvers || ['product-director', 'cto'],
         requiredApprovals: 1,
-        escalationChain: [GateEscalationLevel.DIRECTOR, GateEscalationLevel.EXECUTIVE],
+        escalationChain: [
+          GateEscalationLevel.DIRECTOR,
+          GateEscalationLevel.EXECUTIVE,
+        ],
       },
       timeoutConfig: options.timeoutConfig,
       metrics: this.createInitialMetrics(),
@@ -1855,7 +2011,7 @@ export class ArchitecturalGateFactory implements GateFactory {
     subtype: string,
     workflowContext: WorkflowGateContext,
     gateData: WorkflowGateData,
-    options: CreateGateOptions
+    options: CreateGateOptions,
   ): WorkflowHumanGate {
     const gateId = `arch-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -1864,18 +2020,26 @@ export class ArchitecturalGateFactory implements GateFactory {
       type: WorkflowHumanGateType.ARCHITECTURAL,
       subtype,
       title: options.title || `Architecture Review: ${subtype}`,
-      description: options.description || `Architectural gate for ${subtype} review`,
+      description:
+        options.description || `Architectural gate for ${subtype} review`,
       status: WorkflowHumanGateStatus.PENDING,
       createdAt: new Date(),
       updatedAt: new Date(),
       workflowContext,
       gateData,
-      triggers: options.triggers || this.createDefaultArchitecturalTriggers(subtype),
+      triggers:
+        options.triggers || this.createDefaultArchitecturalTriggers(subtype),
       priority: options.priority || WorkflowGatePriority.HIGH,
       approvalConfig: {
-        approvers: options.approvers || ['lead-architect', 'engineering-director'],
+        approvers: options.approvers || [
+          'lead-architect',
+          'engineering-director',
+        ],
         requiredApprovals: 1,
-        escalationChain: [GateEscalationLevel.MANAGER, GateEscalationLevel.DIRECTOR],
+        escalationChain: [
+          GateEscalationLevel.MANAGER,
+          GateEscalationLevel.DIRECTOR,
+        ],
       },
       timeoutConfig: options.timeoutConfig,
       metrics: this.createInitialMetrics(),
@@ -1938,7 +2102,7 @@ export class QualityGateFactory implements GateFactory {
     subtype: string,
     workflowContext: WorkflowGateContext,
     gateData: WorkflowGateData,
-    options: CreateGateOptions
+    options: CreateGateOptions,
   ): WorkflowHumanGate {
     const gateId = `quality-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -1947,7 +2111,8 @@ export class QualityGateFactory implements GateFactory {
       type: WorkflowHumanGateType.QUALITY,
       subtype,
       title: options.title || `Quality Gate: ${subtype}`,
-      description: options.description || `Quality assurance gate for ${subtype}`,
+      description:
+        options.description || `Quality assurance gate for ${subtype}`,
       status: WorkflowHumanGateStatus.PENDING,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -1958,7 +2123,10 @@ export class QualityGateFactory implements GateFactory {
       approvalConfig: {
         approvers: options.approvers || ['qa-lead', 'security-engineer'],
         requiredApprovals: 1,
-        escalationChain: [GateEscalationLevel.TEAM_LEAD, GateEscalationLevel.MANAGER],
+        escalationChain: [
+          GateEscalationLevel.TEAM_LEAD,
+          GateEscalationLevel.MANAGER,
+        ],
       },
       timeoutConfig: options.timeoutConfig,
       metrics: this.createInitialMetrics(),
@@ -2020,7 +2188,7 @@ export class BusinessGateFactory implements GateFactory {
     subtype: string,
     workflowContext: WorkflowGateContext,
     gateData: WorkflowGateData,
-    options: CreateGateOptions
+    options: CreateGateOptions,
   ): WorkflowHumanGate {
     const gateId = `business-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -2029,7 +2197,8 @@ export class BusinessGateFactory implements GateFactory {
       type: WorkflowHumanGateType.BUSINESS,
       subtype,
       title: options.title || `Business Review: ${subtype}`,
-      description: options.description || `Business validation gate for ${subtype}`,
+      description:
+        options.description || `Business validation gate for ${subtype}`,
       status: WorkflowHumanGateStatus.PENDING,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -2040,7 +2209,10 @@ export class BusinessGateFactory implements GateFactory {
       approvalConfig: {
         approvers: options.approvers || ['product-manager', 'business-analyst'],
         requiredApprovals: 1,
-        escalationChain: [GateEscalationLevel.MANAGER, GateEscalationLevel.DIRECTOR],
+        escalationChain: [
+          GateEscalationLevel.MANAGER,
+          GateEscalationLevel.DIRECTOR,
+        ],
       },
       timeoutConfig: options.timeoutConfig,
       metrics: this.createInitialMetrics(),
@@ -2054,7 +2226,8 @@ export class BusinessGateFactory implements GateFactory {
         event: 'metrics-threshold-reached',
         condition: async (context) => {
           return (
-            context.businessDomain === 'product' && context.impactAssessment.businessImpact > 0.6
+            context.businessDomain === 'product' &&
+            context.impactAssessment.businessImpact > 0.6
           );
         },
         urgency: GateTriggerUrgency.WITHIN_DAY,
@@ -2102,7 +2275,7 @@ export class EthicalGateFactory implements GateFactory {
     subtype: string,
     workflowContext: WorkflowGateContext,
     gateData: WorkflowGateData,
-    options: CreateGateOptions
+    options: CreateGateOptions,
   ): WorkflowHumanGate {
     const gateId = `ethical-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -2111,7 +2284,8 @@ export class EthicalGateFactory implements GateFactory {
       type: WorkflowHumanGateType.ETHICAL,
       subtype,
       title: options.title || `Ethics Review: ${subtype}`,
-      description: options.description || `Ethical compliance gate for ${subtype}`,
+      description:
+        options.description || `Ethical compliance gate for ${subtype}`,
       status: WorkflowHumanGateStatus.PENDING,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -2122,7 +2296,10 @@ export class EthicalGateFactory implements GateFactory {
       approvalConfig: {
         approvers: options.approvers || ['ethics-officer', 'legal-counsel'],
         requiredApprovals: 1,
-        escalationChain: [GateEscalationLevel.DIRECTOR, GateEscalationLevel.EXECUTIVE],
+        escalationChain: [
+          GateEscalationLevel.DIRECTOR,
+          GateEscalationLevel.EXECUTIVE,
+        ],
       },
       timeoutConfig: options.timeoutConfig,
       metrics: this.createInitialMetrics(),

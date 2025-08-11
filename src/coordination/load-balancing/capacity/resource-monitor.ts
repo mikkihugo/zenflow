@@ -45,14 +45,17 @@ export class ResourceMonitor implements ResourceMonitor {
 
   public async getHistoricalMetrics(
     agentId: string,
-    _timeRange: { start: Date; end: Date }
+    _timeRange: { start: Date; end: Date },
   ): Promise<LoadMetrics[]> {
     // In a real implementation, this would query a time-series database
     const current = this.metricsCache.get(agentId);
     return current ? [current] : [];
   }
 
-  public async setThresholds(agentId: string, thresholds: Record<string, number>): Promise<void> {
+  public async setThresholds(
+    agentId: string,
+    thresholds: Record<string, number>,
+  ): Promise<void> {
     this.thresholds.set(agentId, thresholds);
   }
 

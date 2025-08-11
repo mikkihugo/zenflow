@@ -25,7 +25,8 @@ export const WebSocketReadyState = {
   CLOSED: 3,
 } as const;
 
-export type WebSocketReadyState = (typeof WebSocketReadyState)[keyof typeof WebSocketReadyState];
+export type WebSocketReadyState =
+  (typeof WebSocketReadyState)[keyof typeof WebSocketReadyState];
 
 /**
  * WebSocket message types.
@@ -38,7 +39,8 @@ export const WebSocketMessageType = {
   CLOSE: 'close',
 } as const;
 
-export type WebSocketMessageType = (typeof WebSocketMessageType)[keyof typeof WebSocketMessageType];
+export type WebSocketMessageType =
+  (typeof WebSocketMessageType)[keyof typeof WebSocketMessageType];
 
 /**
  * WebSocket close codes (RFC 6455).
@@ -61,7 +63,8 @@ export const WebSocketCloseCode = {
   TLS_HANDSHAKE: 1015,
 } as const;
 
-export type WebSocketCloseCode = (typeof WebSocketCloseCode)[keyof typeof WebSocketCloseCode];
+export type WebSocketCloseCode =
+  (typeof WebSocketCloseCode)[keyof typeof WebSocketCloseCode];
 
 /**
  * WebSocket authentication methods.
@@ -75,7 +78,8 @@ export const WebSocketAuthMethod = {
   CUSTOM: 'custom',
 } as const;
 
-export type WebSocketAuthMethod = (typeof WebSocketAuthMethod)[keyof typeof WebSocketAuthMethod];
+export type WebSocketAuthMethod =
+  (typeof WebSocketAuthMethod)[keyof typeof WebSocketAuthMethod];
 
 /**
  * WebSocket authentication configuration.
@@ -98,7 +102,7 @@ export interface WebSocketAuthenticationConfig extends AuthenticationConfig {
   // Custom authentication function
   customAuth?: (
     url: string,
-    protocols?: string[]
+    protocols?: string[],
   ) => {
     url: string;
     protocols?: string[];
@@ -350,7 +354,10 @@ export interface WebSocketEvents {
   authenticationFailed: (error: Error) => void;
 
   // State events
-  stateChange: (oldState: WebSocketReadyState, newState: WebSocketReadyState) => void;
+  stateChange: (
+    oldState: WebSocketReadyState,
+    newState: WebSocketReadyState,
+  ) => void;
 
   // Custom events
   [eventName: string]: (...args: any[]) => void;
@@ -416,7 +423,11 @@ export interface WebSocketPoolConfig {
   idleTimeout: number;
 
   // Load balancing
-  loadBalancingStrategy: 'round-robin' | 'least-connections' | 'random' | 'weighted';
+  loadBalancingStrategy:
+    | 'round-robin'
+    | 'least-connections'
+    | 'random'
+    | 'weighted';
 
   // Health checks
   healthCheckInterval: number;
@@ -494,7 +505,10 @@ export const WebSocketTypeGuards = {
   },
 
   isValidCloseCode: (code: any): code is WebSocketCloseCode => {
-    return typeof code === 'number' && Object.values(WebSocketCloseCode).includes(code);
+    return (
+      typeof code === 'number' &&
+      Object.values(WebSocketCloseCode).includes(code)
+    );
   },
 };
 
@@ -528,7 +542,7 @@ export const WebSocketUtils = {
     attempt: number,
     baseDelay: number,
     maxDelay: number,
-    jitter = false
+    jitter = false,
   ): number => {
     let delay = Math.min(baseDelay * 2 ** attempt, maxDelay);
 

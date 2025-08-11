@@ -58,7 +58,7 @@ describe('Domain Splitting - Classical TDD', () => {
         export class NeuralNetwork {
           forward() { /* neural logic */ }
         }
-      `
+      `,
       );
 
       await fs.writeFile(
@@ -68,21 +68,21 @@ describe('Domain Splitting - Classical TDD', () => {
           train() { /* training logic */ }
           optimize() { /* optimization */ }
         }
-      `
+      `,
       );
 
       await fs.writeFile(
         path.join(testDomain, 'utils.ts'),
         `
         export function helper() { /* utility */ }
-      `
+      `,
       );
 
       await fs.writeFile(
         path.join(testDomain, 'config.ts'),
         `
         export const config = { /* configuration */ };
-      `
+      `,
       );
 
       // Act: Analyze domain
@@ -90,13 +90,17 @@ describe('Domain Splitting - Classical TDD', () => {
 
       // Assert: Check categorization
       expect(analysis.categories['core-algorithms']).toContain(
-        expect.stringContaining('neural-network.ts')
+        expect.stringContaining('neural-network.ts'),
       );
       expect(analysis.categories['training-systems']).toContain(
-        expect.stringContaining('trainer.ts')
+        expect.stringContaining('trainer.ts'),
       );
-      expect(analysis.categories.utilities).toContain(expect.stringContaining('utils.ts'));
-      expect(analysis.categories.configuration).toContain(expect.stringContaining('config.ts'));
+      expect(analysis.categories.utilities).toContain(
+        expect.stringContaining('utils.ts'),
+      );
+      expect(analysis.categories.configuration).toContain(
+        expect.stringContaining('config.ts'),
+      );
     });
 
     it('should build dependency graph correctly', async () => {
@@ -109,14 +113,14 @@ describe('Domain Splitting - Classical TDD', () => {
         `
         import { functionB } from './moduleB';
         export function functionA() { return functionB(); }
-      `
+      `,
       );
 
       await fs.writeFile(
         path.join(testDomain, 'moduleB.ts'),
         `
         export function functionB() { return 'B'; }
-      `
+      `,
       );
 
       await fs.writeFile(
@@ -125,7 +129,7 @@ describe('Domain Splitting - Classical TDD', () => {
         import { functionA } from './moduleA';
         import { functionB } from './moduleB';
         export function functionC() { return functionA() + functionB(); }
-      `
+      `,
       );
 
       // Act: Analyze domain
@@ -136,9 +140,13 @@ describe('Domain Splitting - Classical TDD', () => {
       expect(analysis.dependencies.edges.length).toBeGreaterThanOrEqual(2);
 
       // Check specific dependencies
-      const moduleANode = analysis.dependencies.nodes.find((n) => n.file.includes('moduleA.ts'));
+      const moduleANode = analysis.dependencies.nodes.find((n) =>
+        n.file.includes('moduleA.ts'),
+      );
       expect(moduleANode).toBeDefined();
-      expect(moduleANode?.imports).toContain(expect.stringContaining('moduleB'));
+      expect(moduleANode?.imports).toContain(
+        expect.stringContaining('moduleB'),
+      );
     });
 
     it('should identify sub-domains from analysis', async () => {
@@ -155,7 +163,7 @@ describe('Domain Splitting - Classical TDD', () => {
       expect(plans.length).toBeGreaterThan(0);
 
       const categoryPlan = plans.find((p) =>
-        p.targetSubDomains.some((s) => s.name.includes('core'))
+        p.targetSubDomains.some((s) => s.name.includes('core')),
       );
       expect(categoryPlan).toBeDefined();
       expect(categoryPlan?.targetSubDomains.length).toBeGreaterThan(1);
@@ -187,7 +195,9 @@ describe('Domain Splitting - Classical TDD', () => {
       expect(NEURAL_SPLITTING_PLAN.targetSubDomains.length).toBe(6);
 
       // Check required sub-domains
-      const subdomainNames = NEURAL_SPLITTING_PLAN.targetSubDomains.map((s) => s.name);
+      const subdomainNames = NEURAL_SPLITTING_PLAN.targetSubDomains.map(
+        (s) => s.name,
+      );
       expect(subdomainNames).toContain('neural-core');
       expect(subdomainNames).toContain('neural-models');
       expect(subdomainNames).toContain('neural-agents');
@@ -209,7 +219,9 @@ describe('Domain Splitting - Classical TDD', () => {
       }
 
       // Bridge should depend on core, models, and wasm
-      const bridge = NEURAL_SPLITTING_PLAN.targetSubDomains.find((s) => s.name === 'neural-bridge');
+      const bridge = NEURAL_SPLITTING_PLAN.targetSubDomains.find(
+        (s) => s.name === 'neural-bridge',
+      );
       expect(bridge?.dependencies).toContain('neural-core');
       expect(bridge?.dependencies).toContain('neural-models');
       expect(bridge?.dependencies).toContain('neural-wasm');
@@ -245,7 +257,7 @@ describe('Domain Splitting - Classical TDD', () => {
         export const testFunction = () => 'function';
         
         export default TestClass;
-      `
+      `,
       );
 
       // Act: Analyze file (using analyzer's private methods through reflection)
@@ -256,11 +268,15 @@ describe('Domain Splitting - Classical TDD', () => {
       expect(analysis.imports).toBeDefined();
       expect(analysis.imports.length).toBeGreaterThanOrEqual(3);
 
-      const reactImport = analysis.imports.find((imp: any) => imp.module === 'react');
+      const reactImport = analysis.imports.find(
+        (imp: unknown) => imp.module === 'react',
+      );
       expect(reactImport).toBeDefined();
       expect(reactImport.external).toBe(true);
 
-      const utilsImport = analysis.imports.find((imp: any) => imp.module === './utils');
+      const utilsImport = analysis.imports.find(
+        (imp: unknown) => imp.module === './utils',
+      );
       expect(utilsImport).toBeDefined();
       expect(utilsImport.isRelative).toBe(true);
 
@@ -268,13 +284,19 @@ describe('Domain Splitting - Classical TDD', () => {
       expect(analysis.exports).toBeDefined();
       expect(analysis.exports.length).toBeGreaterThanOrEqual(3);
 
-      const interfaceExport = analysis.exports.find((exp: any) => exp.name === 'TestInterface');
+      const interfaceExport = analysis.exports.find(
+        (exp: unknown) => exp.name === 'TestInterface',
+      );
       expect(interfaceExport).toBeDefined();
 
-      const classExport = analysis.exports.find((exp: any) => exp.name === 'TestClass');
+      const classExport = analysis.exports.find(
+        (exp: unknown) => exp.name === 'TestClass',
+      );
       expect(classExport).toBeDefined();
 
-      const functionExport = analysis.exports.find((exp: any) => exp.name === 'testFunction');
+      const functionExport = analysis.exports.find(
+        (exp: unknown) => exp.name === 'testFunction',
+      );
       expect(functionExport).toBeDefined();
     });
 
@@ -285,14 +307,14 @@ describe('Domain Splitting - Classical TDD', () => {
         simpleFile,
         `
         export const simple = () => 'simple';
-      `
+      `,
       );
 
       const complexFile = path.join(tempDir, 'complex.ts');
       await fs.writeFile(
         complexFile,
         `
-        export function complex(input: any) {
+        export function complex(input: unknown) {
           if (input.type === 'A') {
             for (let i = 0; i < input.count; i++) {
               if (input.items && input.items[i]) {
@@ -314,7 +336,7 @@ describe('Domain Splitting - Classical TDD', () => {
           }
           return null;
         }
-      `
+      `,
       );
 
       // Act: Analyze files
@@ -323,7 +345,9 @@ describe('Domain Splitting - Classical TDD', () => {
       const complexAnalysis = await analyzeFile(complexFile);
 
       // Assert: Complex file should have higher complexity
-      expect(complexAnalysis.complexity).toBeGreaterThan(simpleAnalysis.complexity);
+      expect(complexAnalysis.complexity).toBeGreaterThan(
+        simpleAnalysis.complexity,
+      );
       expect(simpleAnalysis.complexity).toBe(1); // Base complexity
       expect(complexAnalysis.complexity).toBeGreaterThan(5);
     });
@@ -340,7 +364,7 @@ describe('Domain Splitting - Classical TDD', () => {
       export class Core {
         process() { return 'core'; }
       }
-    `
+    `,
     );
 
     // Create model files
@@ -351,7 +375,7 @@ describe('Domain Splitting - Classical TDD', () => {
       export class Model extends Core {
         predict() { return 'prediction'; }
       }
-    `
+    `,
     );
 
     // Create utility files
@@ -359,7 +383,7 @@ describe('Domain Splitting - Classical TDD', () => {
       path.join(domainPath, 'utils.ts'),
       `
       export function helper() { return 'help'; }
-    `
+    `,
     );
 
     // Create test file
@@ -373,11 +397,13 @@ describe('Domain Splitting - Classical TDD', () => {
           expect(core.process()).toBe('core');
         });
       });
-    `
+    `,
     );
   }
 
-  async function createComplexDomainStructure(domainPath: string): Promise<void> {
+  async function createComplexDomainStructure(
+    domainPath: string,
+  ): Promise<void> {
     await fs.ensureDir(domainPath);
 
     // Create core directory
@@ -389,7 +415,7 @@ describe('Domain Splitting - Classical TDD', () => {
       export class Algorithm {
         execute() { return 'executed'; }
       }
-    `
+    `,
     );
     await fs.writeFile(
       path.join(coreDir, 'network.ts'),
@@ -397,7 +423,7 @@ describe('Domain Splitting - Classical TDD', () => {
       export class Network {
         forward() { return 'forward'; }
       }
-    `
+    `,
     );
 
     // Create models directory
@@ -410,7 +436,7 @@ describe('Domain Splitting - Classical TDD', () => {
       export class CNN extends Network {
         convolve() { return 'convolved'; }
       }
-    `
+    `,
     );
     await fs.writeFile(
       path.join(modelsDir, 'rnn.ts'),
@@ -419,7 +445,7 @@ describe('Domain Splitting - Classical TDD', () => {
       export class RNN extends Network {
         recur() { return 'recurred'; }
       }
-    `
+    `,
     );
 
     // Create agents directory
@@ -431,7 +457,7 @@ describe('Domain Splitting - Classical TDD', () => {
       export class NeuralAgent {
         decide() { return 'decision'; }
       }
-    `
+    `,
     );
 
     // Create wasm directory
@@ -443,7 +469,7 @@ describe('Domain Splitting - Classical TDD', () => {
       export class WasmLoader {
         load() { return 'loaded'; }
       }
-    `
+    `,
     );
 
     // Create utilities
@@ -451,7 +477,7 @@ describe('Domain Splitting - Classical TDD', () => {
       path.join(domainPath, 'utils.ts'),
       `
       export function helper() { return 'help'; }
-    `
+    `,
     );
 
     // Create bridge
@@ -463,7 +489,7 @@ describe('Domain Splitting - Classical TDD', () => {
       export class Bridge {
         connect() { return 'connected'; }
       }
-    `
+    `,
     );
   }
 });

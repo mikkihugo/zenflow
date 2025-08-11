@@ -6,7 +6,12 @@
  */
 
 import { EventEmitter } from 'events';
-import type { WorkflowStep, WorkflowState, QueueConfig, PerformanceMetrics } from '../types.ts';
+import type {
+  PerformanceMetrics,
+  QueueConfig,
+  WorkflowState,
+  WorkflowStep,
+} from '../types.ts';
 
 // Resource management interfaces
 export interface ResourceCapability {
@@ -23,7 +28,13 @@ export interface ResourceCapability {
 
 export interface AgentResource {
   id: string;
-  type: 'researcher' | 'coder' | 'analyst' | 'optimizer' | 'coordinator' | 'tester';
+  type:
+    | 'researcher'
+    | 'coder'
+    | 'analyst'
+    | 'optimizer'
+    | 'coordinator'
+    | 'tester';
   capabilities: ResourceCapability[];
   currentLoad: number; // 0-1
   maxConcurrency: number;
@@ -46,7 +57,7 @@ export interface AgentPerformance {
   efficiency: number; // 0-1
   successRate: number; // 0-1
   feedback?: string;
-  metrics?: any;
+  metrics?: unknown;
 }
 
 export interface AgentPreferences {
@@ -90,7 +101,7 @@ export interface ResourceAllocation {
 
 export interface AllocationConstraint {
   type: 'deadline' | 'dependency' | 'resource' | 'quality' | 'budget';
-  value: any;
+  value: unknown;
   importance: 'required' | 'preferred' | 'nice-to-have';
   impact: string;
 }
@@ -142,7 +153,7 @@ export interface ScalingAction {
 export interface ScalingCondition {
   type: 'time' | 'budget' | 'availability' | 'quality' | 'dependency';
   condition: string;
-  value: any;
+  value: unknown;
 }
 
 export interface PerformanceTarget {
@@ -154,7 +165,7 @@ export interface PerformanceTarget {
 
 export interface SwarmConstraint {
   type: 'budget' | 'time' | 'quality' | 'resource' | 'regulatory';
-  limit: any;
+  limit: unknown;
   enforcement: 'hard' | 'soft';
 }
 
@@ -200,7 +211,12 @@ export interface MatchConflict {
 }
 
 export interface MatchRecommendation {
-  type: 'skill_development' | 'scheduling' | 'pairing' | 'training' | 'tool_support';
+  type:
+    | 'skill_development'
+    | 'scheduling'
+    | 'pairing'
+    | 'training'
+    | 'tool_support';
   action: string;
   benefit: string;
   effort: number; // 0-1
@@ -246,7 +262,11 @@ export interface OptimizationImpact {
 }
 
 export interface OptimizationBenefit {
-  type: 'cost_savings' | 'time_savings' | 'quality_improvement' | 'capacity_increase';
+  type:
+    | 'cost_savings'
+    | 'time_savings'
+    | 'quality_improvement'
+    | 'capacity_increase';
   value: number;
   confidence: number; // 0-1
   timeframe: string;
@@ -312,7 +332,11 @@ export interface CapacityRecommendation {
 
 export interface ResourceConflict {
   id: string;
-  type: 'double_booking' | 'skill_mismatch' | 'capacity_exceeded' | 'priority_conflict';
+  type:
+    | 'double_booking'
+    | 'skill_mismatch'
+    | 'capacity_exceeded'
+    | 'priority_conflict';
   severity: 'critical' | 'high' | 'medium' | 'low';
   affectedResources: string[];
   affectedTasks: string[];
@@ -322,7 +346,12 @@ export interface ResourceConflict {
 
 export interface ConflictResolution {
   id: string;
-  type: 'reschedule' | 'reallocate' | 'prioritize' | 'split_task' | 'add_resource';
+  type:
+    | 'reschedule'
+    | 'reallocate'
+    | 'prioritize'
+    | 'split_task'
+    | 'add_resource';
   description: string;
   effort: number; // 0-1
   impact: ConflictImpact;
@@ -492,7 +521,13 @@ export interface CapacityScalingAction {
   timeline: string;
   approvalRequired: boolean;
   constraints: string[];
-  status: 'pending' | 'pending_approval' | 'approved' | 'in_progress' | 'completed' | 'failed';
+  status:
+    | 'pending'
+    | 'pending_approval'
+    | 'approved'
+    | 'in_progress'
+    | 'completed'
+    | 'failed';
 }
 
 export interface CapacityBuffer {
@@ -544,17 +579,30 @@ export interface HistoricalDemandData {
 }
 
 export interface ResourceEvents {
-  'resource-allocated': { agentId: string; taskId: string; allocation: ResourceAllocation };
+  'resource-allocated': {
+    agentId: string;
+    taskId: string;
+    allocation: ResourceAllocation;
+  };
   'resource-deallocated': { agentId: string; taskId: string };
   'resource-transferred': { transfer: ResourceTransfer };
   'resource-returned': { transferId: string; actualImpact: TransferImpact };
-  'swarm-scaled': { swarmId: string; oldSize: number; newSize: number; reason: string };
+  'swarm-scaled': {
+    swarmId: string;
+    oldSize: number;
+    newSize: number;
+    reason: string;
+  };
   'conflict-detected': { conflict: ResourceConflict };
   'conflict-resolved': { conflictId: string; resolution: ConflictResolution };
   'optimization-applied': { optimization: ResourceOptimization };
   'capacity-warning': { gap: CapacityGap };
   'performance-alert': { agentId: string; metric: string; value: number };
-  'cross-level-request': { fromLevel: string; toLevel: string; request: ResourceDemand };
+  'cross-level-request': {
+    fromLevel: string;
+    toLevel: string;
+    request: ResourceDemand;
+  };
   'skill-gap-identified': { gap: SkillGap; level: string };
   'capacity-scaled': { action: CapacityScalingAction };
   'buffer-adjusted': { adjustment: BufferAdjustment };
@@ -962,14 +1010,16 @@ export class DynamicResourceManager extends EventEmitter {
   async assignAgent(demand: ResourceDemand): Promise<ResourceMatch | null> {
     try {
       const availableAgents = Array.from(this.agents.values()).filter(
-        (agent) => agent.status === 'available' || agent.currentLoad < 0.8
+        (agent) => agent.status === 'available' || agent.currentLoad < 0.8,
       );
 
       if (availableAgents.length === 0) {
         return null;
       }
 
-      const matches = availableAgents.map((agent) => this.calculateAgentMatch(agent, demand));
+      const matches = availableAgents.map((agent) =>
+        this.calculateAgentMatch(agent, demand),
+      );
       const bestMatch = matches
         .filter((match) => match.score > 0.5)
         .sort((a, b) => b.score - a.score)[0];
@@ -989,7 +1039,10 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Calculate agent match score
    */
-  private calculateAgentMatch(agent: AgentResource, demand: ResourceDemand): ResourceMatch {
+  private calculateAgentMatch(
+    agent: AgentResource,
+    demand: ResourceDemand,
+  ): ResourceMatch {
     const reasons: MatchReason[] = [];
     const conflicts: MatchConflict[] = [];
     const recommendations: MatchRecommendation[] = [];
@@ -999,7 +1052,12 @@ export class DynamicResourceManager extends EventEmitter {
 
     // Capability matching
     const capabilityScore = this.calculateCapabilityMatch(agent, demand);
-    reasons.push({ type: 'capability', factor: 'skills', score: capabilityScore, weight: 0.4 });
+    reasons.push({
+      type: 'capability',
+      factor: 'skills',
+      score: capabilityScore,
+      weight: 0.4,
+    });
     score += capabilityScore * 0.4;
     totalWeight += 0.4;
 
@@ -1027,7 +1085,12 @@ export class DynamicResourceManager extends EventEmitter {
 
     // Cost efficiency
     const costScore = this.calculateCostEfficiency(agent, demand);
-    reasons.push({ type: 'cost', factor: 'cost_efficiency', score: costScore, weight: 0.1 });
+    reasons.push({
+      type: 'cost',
+      factor: 'cost_efficiency',
+      score: costScore,
+      weight: 0.1,
+    });
     score += costScore * 0.1;
     totalWeight += 0.1;
 
@@ -1063,7 +1126,10 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Calculate capability match
    */
-  private calculateCapabilityMatch(agent: AgentResource, demand: ResourceDemand): number {
+  private calculateCapabilityMatch(
+    agent: AgentResource,
+    demand: ResourceDemand,
+  ): number {
     if (demand.requiredCapabilities.length === 0) return 0.5;
 
     let totalScore = 0;
@@ -1071,7 +1137,7 @@ export class DynamicResourceManager extends EventEmitter {
 
     for (const required of demand.requiredCapabilities) {
       const agentCap = agent.capabilities.find((cap) =>
-        cap.domains.some((domain) => required.domains.includes(domain))
+        cap.domains.some((domain) => required.domains.includes(domain)),
       );
 
       if (agentCap) {
@@ -1094,15 +1160,17 @@ export class DynamicResourceManager extends EventEmitter {
 
     if (agentIndex >= requiredIndex) {
       return 1.0 - (agentIndex - requiredIndex) * 0.1;
-    } else {
-      return Math.max(0, 0.5 - (requiredIndex - agentIndex) * 0.2);
     }
+    return Math.max(0, 0.5 - (requiredIndex - agentIndex) * 0.2);
   }
 
   /**
    * Calculate experience match
    */
-  private calculateExperienceMatch(agent: AgentResource, demand: ResourceDemand): number {
+  private calculateExperienceMatch(
+    agent: AgentResource,
+    demand: ResourceDemand,
+  ): number {
     if (agent.performanceHistory.length === 0) return 0.5;
 
     const relevantHistory = agent.performanceHistory
@@ -1112,9 +1180,11 @@ export class DynamicResourceManager extends EventEmitter {
     if (relevantHistory.length === 0) return 0.3;
 
     const avgQuality =
-      relevantHistory.reduce((sum, perf) => sum + perf.quality, 0) / relevantHistory.length;
+      relevantHistory.reduce((sum, perf) => sum + perf.quality, 0) /
+      relevantHistory.length;
     const avgEfficiency =
-      relevantHistory.reduce((sum, perf) => sum + perf.efficiency, 0) / relevantHistory.length;
+      relevantHistory.reduce((sum, perf) => sum + perf.efficiency, 0) /
+      relevantHistory.length;
 
     return (avgQuality + avgEfficiency) / 2;
   }
@@ -1122,7 +1192,10 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Calculate cost efficiency
    */
-  private calculateCostEfficiency(agent: AgentResource, demand: ResourceDemand): number {
+  private calculateCostEfficiency(
+    agent: AgentResource,
+    demand: ResourceDemand,
+  ): number {
     const baseCost = agent.costPerHour || 100;
     const efficiency = agent.utilization?.efficiency || 0.8;
     const effectiveCost = baseCost / efficiency;
@@ -1143,7 +1216,10 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Allocate agent to task
    */
-  private async allocateAgent(agent: AgentResource, demand: ResourceDemand): Promise<void> {
+  private async allocateAgent(
+    agent: AgentResource,
+    demand: ResourceDemand,
+  ): Promise<void> {
     const allocation: ResourceAllocation = {
       taskId: demand.workflowId,
       workflowId: demand.workflowId,
@@ -1172,7 +1248,10 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Dynamic swarm scaling
    */
-  async scaleSwarm(swarmId: string, targetSize?: number): Promise<SwarmConfiguration> {
+  async scaleSwarm(
+    swarmId: string,
+    targetSize?: number,
+  ): Promise<SwarmConfiguration> {
     let swarm = this.swarms.get(swarmId);
     if (!swarm) {
       swarm = this.createDefaultSwarm(swarmId);
@@ -1212,21 +1291,41 @@ export class DynamicResourceManager extends EventEmitter {
       optimalAgents: 4,
       scalingRules: [
         {
-          trigger: { type: 'load', threshold: 0.8, duration: 5, direction: 'up' },
+          trigger: {
+            type: 'load',
+            threshold: 0.8,
+            duration: 5,
+            direction: 'up',
+          },
           action: { type: 'add_agent', magnitude: 1, priority: 1 },
           cooldown: 10,
           conditions: [],
         },
         {
-          trigger: { type: 'load', threshold: 0.3, duration: 15, direction: 'down' },
+          trigger: {
+            type: 'load',
+            threshold: 0.3,
+            duration: 15,
+            direction: 'down',
+          },
           action: { type: 'remove_agent', magnitude: 1, priority: 0.5 },
           cooldown: 20,
           conditions: [],
         },
       ],
       performanceTargets: [
-        { metric: 'utilization', target: 0.7, tolerance: 0.1, priority: 'high' },
-        { metric: 'efficiency', target: 0.85, tolerance: 0.05, priority: 'high' },
+        {
+          metric: 'utilization',
+          target: 0.7,
+          tolerance: 0.1,
+          priority: 'high',
+        },
+        {
+          metric: 'efficiency',
+          target: 0.85,
+          tolerance: 0.05,
+          priority: 'high',
+        },
       ],
       constraints: [
         { type: 'budget', limit: 10000, enforcement: 'hard' },
@@ -1238,7 +1337,10 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Add agents to swarm
    */
-  private async addAgentsToSwarm(swarm: SwarmConfiguration, count: number): Promise<void> {
+  private async addAgentsToSwarm(
+    swarm: SwarmConfiguration,
+    count: number,
+  ): Promise<void> {
     const availableAgents = Array.from(this.agents.values())
       .filter((agent) => !agent.swarmId && agent.status === 'available')
       .slice(0, count);
@@ -1260,9 +1362,14 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Remove agents from swarm
    */
-  private async removeAgentsFromSwarm(swarm: SwarmConfiguration, count: number): Promise<void> {
+  private async removeAgentsFromSwarm(
+    swarm: SwarmConfiguration,
+    count: number,
+  ): Promise<void> {
     const swarmAgents = Array.from(this.agents.values())
-      .filter((agent) => agent.swarmId === swarm.id && agent.status === 'available')
+      .filter(
+        (agent) => agent.swarmId === swarm.id && agent.status === 'available',
+      )
       .slice(0, count);
 
     for (const agent of swarmAgents) {
@@ -1316,7 +1423,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Generate default capabilities
    */
-  private generateDefaultCapabilities(type: AgentResource['type']): ResourceCapability[] {
+  private generateDefaultCapabilities(
+    type: AgentResource['type'],
+  ): ResourceCapability[] {
     const capabilityMap: Record<string, ResourceCapability[]> = {
       researcher: [
         {
@@ -1392,7 +1501,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Generate default preferences
    */
-  private generateDefaultPreferences(type: AgentResource['type']): AgentPreferences {
+  private generateDefaultPreferences(
+    type: AgentResource['type'],
+  ): AgentPreferences {
     return {
       preferredTaskTypes: [type],
       preferredTimeSlots: [
@@ -1420,7 +1531,10 @@ export class DynamicResourceManager extends EventEmitter {
   async optimizeResourceUtilization(): Promise<ResourceOptimization> {
     const currentState = this.calculateCurrentResourceState();
     const targetState = this.calculateTargetResourceState();
-    const optimizationActions = this.generateOptimizationActions(currentState, targetState);
+    const optimizationActions = this.generateOptimizationActions(
+      currentState,
+      targetState,
+    );
 
     const optimization: ResourceOptimization = {
       type: 'allocation',
@@ -1444,10 +1558,19 @@ export class DynamicResourceManager extends EventEmitter {
   private calculateCurrentResourceState(): ResourceState {
     const agents = Array.from(this.agents.values());
     const totalUtilization =
-      agents.reduce((sum, agent) => sum + (agent.utilization?.current || 0), 0) / agents.length;
+      agents.reduce(
+        (sum, agent) => sum + (agent.utilization?.current || 0),
+        0,
+      ) / agents.length;
     const totalEfficiency =
-      agents.reduce((sum, agent) => sum + (agent.utilization?.efficiency || 0), 0) / agents.length;
-    const totalCost = agents.reduce((sum, agent) => sum + (agent.costPerHour || 0), 0);
+      agents.reduce(
+        (sum, agent) => sum + (agent.utilization?.efficiency || 0),
+        0,
+      ) / agents.length;
+    const totalCost = agents.reduce(
+      (sum, agent) => sum + (agent.costPerHour || 0),
+      0,
+    );
 
     return {
       utilization: totalUtilization,
@@ -1480,7 +1603,7 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private generateOptimizationActions(
     current: ResourceState,
-    target: ResourceState
+    target: ResourceState,
   ): OptimizationAction[] {
     const actions: OptimizationAction[] = [];
 
@@ -1550,7 +1673,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Calculate expected benefits
    */
-  private calculateExpectedBenefits(actions: OptimizationAction[]): OptimizationBenefit[] {
+  private calculateExpectedBenefits(
+    actions: OptimizationAction[],
+  ): OptimizationBenefit[] {
     return actions.map((action) => ({
       type: 'efficiency_improvement',
       value: action.impact.efficiency * 100,
@@ -1562,7 +1687,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Assess optimization risks
    */
-  private assessOptimizationRisks(actions: OptimizationAction[]): OptimizationRisk[] {
+  private assessOptimizationRisks(
+    actions: OptimizationAction[],
+  ): OptimizationRisk[] {
     return actions.map((action) => ({
       type: 'disruption',
       probability: action.impact.risk,
@@ -1574,7 +1701,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Create optimization timeline
    */
-  private createOptimizationTimeline(actions: OptimizationAction[]): OptimizationTimeline[] {
+  private createOptimizationTimeline(
+    actions: OptimizationAction[],
+  ): OptimizationTimeline[] {
     return [
       {
         phase: 'Planning',
@@ -1604,14 +1733,16 @@ export class DynamicResourceManager extends EventEmitter {
     const bottlenecks: string[] = [];
 
     const highLoadAgents = Array.from(this.agents.values()).filter(
-      (agent) => (agent.utilization?.current || 0) > 0.9
+      (agent) => (agent.utilization?.current || 0) > 0.9,
     );
 
     if (highLoadAgents.length > 0) {
       bottlenecks.push(`High load on ${highLoadAgents.length} agents`);
     }
 
-    const busyAgents = Array.from(this.agents.values()).filter((agent) => agent.status === 'busy');
+    const busyAgents = Array.from(this.agents.values()).filter(
+      (agent) => agent.status === 'busy',
+    );
 
     if (busyAgents.length / this.agents.size > 0.8) {
       bottlenecks.push('High overall system load');
@@ -1642,7 +1773,13 @@ export class DynamicResourceManager extends EventEmitter {
               type: 'reschedule',
               description: 'Reschedule lower priority tasks',
               effort: 0.3,
-              impact: { schedule: 0.2, cost: 0, quality: -0.1, morale: 0.1, risk: 0.2 },
+              impact: {
+                schedule: 0.2,
+                cost: 0,
+                quality: -0.1,
+                morale: 0.1,
+                risk: 0.2,
+              },
               tradeoffs: ['Delayed delivery', 'Improved quality'],
             },
           ],
@@ -1662,11 +1799,16 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Resolve specific conflict
    */
-  async resolveConflict(conflictId: string, resolutionId: string): Promise<boolean> {
+  async resolveConflict(
+    conflictId: string,
+    resolutionId: string,
+  ): Promise<boolean> {
     const conflict = this.conflicts.get(conflictId);
     if (!conflict) return false;
 
-    const resolution = conflict.resolutionOptions.find((r) => r.id === resolutionId);
+    const resolution = conflict.resolutionOptions.find(
+      (r) => r.id === resolutionId,
+    );
     if (!resolution) return false;
 
     // Apply resolution based on type
@@ -1691,7 +1833,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Reschedule conflicted tasks
    */
-  private async rescheduleConflictedTasks(conflict: ResourceConflict): Promise<void> {
+  private async rescheduleConflictedTasks(
+    conflict: ResourceConflict,
+  ): Promise<void> {
     // Implementation would reschedule tasks based on priority
     console.log(`Rescheduling tasks for conflict: ${conflict.id}`);
   }
@@ -1699,7 +1843,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Reallocate conflicted resources
    */
-  private async reallocateConflictedResources(conflict: ResourceConflict): Promise<void> {
+  private async reallocateConflictedResources(
+    conflict: ResourceConflict,
+  ): Promise<void> {
     // Implementation would reallocate resources to different agents
     console.log(`Reallocating resources for conflict: ${conflict.id}`);
   }
@@ -1707,7 +1853,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Reprioritize conflicted tasks
    */
-  private async reprioritizeConflictedTasks(conflict: ResourceConflict): Promise<void> {
+  private async reprioritizeConflictedTasks(
+    conflict: ResourceConflict,
+  ): Promise<void> {
     // Implementation would adjust task priorities
     console.log(`Reprioritizing tasks for conflict: ${conflict.id}`);
   }
@@ -1715,7 +1863,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Capacity planning and forecasting
    */
-  async generateCapacityForecast(timeframe: string): Promise<CapacityPrediction> {
+  async generateCapacityForecast(
+    timeframe: string,
+  ): Promise<CapacityPrediction> {
     const demandForecast = this.forecastDemand(timeframe);
     const capacityForecast = this.forecastCapacity(timeframe);
     const gaps = this.identifyCapacityGaps(demandForecast, capacityForecast);
@@ -1768,7 +1918,8 @@ export class DynamicResourceManager extends EventEmitter {
       {
         period: 'week-1',
         agentType: 'researcher',
-        availableCapacity: agents.filter((a) => a.type === 'researcher').length * 40, // hours
+        availableCapacity:
+          agents.filter((a) => a.type === 'researcher').length * 40, // hours
         utilization: 0.7,
         efficiency: 0.85,
         constraints: ['Limited availability on weekends'],
@@ -1789,7 +1940,7 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private identifyCapacityGaps(
     demand: DemandForecast[],
-    capacity: CapacityForecast[]
+    capacity: CapacityForecast[],
   ): CapacityGap[] {
     const gaps: CapacityGap[] = [];
 
@@ -1798,7 +1949,8 @@ export class DynamicResourceManager extends EventEmitter {
       const capacityItem = capacity.find((c) => c.period === demandItem.period);
       if (capacityItem) {
         const requiredCapacity = demandItem.volume * demandItem.complexity * 2; // hours
-        const availableCapacity = capacityItem.availableCapacity * capacityItem.utilization;
+        const availableCapacity =
+          capacityItem.availableCapacity * capacityItem.utilization;
 
         if (requiredCapacity > availableCapacity) {
           gaps.push({
@@ -1819,7 +1971,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Generate capacity recommendations
    */
-  private generateCapacityRecommendations(gaps: CapacityGap[]): CapacityRecommendation[] {
+  private generateCapacityRecommendations(
+    gaps: CapacityGap[],
+  ): CapacityRecommendation[] {
     return gaps.map((gap) => ({
       type: gap.magnitude > 20 ? 'hiring' : 'training',
       action: `${gap.type === 'shortage' ? 'Add' : 'Reduce'} ${Math.ceil(gap.magnitude / 40)} ${gap.capability} agents`,
@@ -1865,9 +2019,15 @@ export class DynamicResourceManager extends EventEmitter {
     const conflicts = Array.from(this.conflicts.values());
 
     const totalUtilization =
-      agents.reduce((sum, agent) => sum + (agent.utilization?.current || 0), 0) / agents.length;
+      agents.reduce(
+        (sum, agent) => sum + (agent.utilization?.current || 0),
+        0,
+      ) / agents.length;
     const totalEfficiency =
-      agents.reduce((sum, agent) => sum + (agent.utilization?.efficiency || 0), 0) / agents.length;
+      agents.reduce(
+        (sum, agent) => sum + (agent.utilization?.efficiency || 0),
+        0,
+      ) / agents.length;
 
     return {
       agents,
@@ -1888,25 +2048,29 @@ export class DynamicResourceManager extends EventEmitter {
   async requestCrossLevelResource(
     fromLevel: string,
     toLevel: string,
-    demand: ResourceDemand
+    demand: ResourceDemand,
   ): Promise<ResourceTransfer | null> {
     try {
       const sourceLevel = this.getResourceLevel(fromLevel);
       const targetLevel = this.getResourceLevel(toLevel);
 
-      if (!sourceLevel || !targetLevel) {
+      if (!(sourceLevel && targetLevel)) {
         throw new Error(`Invalid resource level: ${fromLevel} or ${toLevel}`);
       }
 
       // Check borrowing rules
-      const borrowRule = targetLevel.borrowingRules.find((rule) => rule.fromLevel === fromLevel);
-      if (!borrowRule || !this.canBorrowResource(demand, borrowRule)) {
+      const borrowRule = targetLevel.borrowingRules.find(
+        (rule) => rule.fromLevel === fromLevel,
+      );
+      if (!(borrowRule && this.canBorrowResource(demand, borrowRule))) {
         return null;
       }
 
       // Check lending rules
-      const lendRule = sourceLevel.lendingRules.find((rule) => rule.toLevel === toLevel);
-      if (!lendRule || !this.canLendResource(demand, lendRule, sourceLevel)) {
+      const lendRule = sourceLevel.lendingRules.find(
+        (rule) => rule.toLevel === toLevel,
+      );
+      if (!(lendRule && this.canLendResource(demand, lendRule, sourceLevel))) {
         return null;
       }
 
@@ -1922,7 +2086,7 @@ export class DynamicResourceManager extends EventEmitter {
         fromLevel,
         toLevel,
         demand,
-        borrowRule
+        borrowRule,
       );
 
       // Execute transfer
@@ -1958,7 +2122,10 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Check if resource can be borrowed
    */
-  private canBorrowResource(demand: ResourceDemand, rule: BorrowingRule): boolean {
+  private canBorrowResource(
+    demand: ResourceDemand,
+    rule: BorrowingRule,
+  ): boolean {
     // Check urgency threshold
     const urgencyLevels = ['low', 'medium', 'high', 'critical'];
     const demandUrgencyIndex = urgencyLevels.indexOf(demand.urgency);
@@ -1982,7 +2149,7 @@ export class DynamicResourceManager extends EventEmitter {
   private canLendResource(
     demand: ResourceDemand,
     rule: LendingRule,
-    level: ResourceLevel
+    level: ResourceLevel,
   ): boolean {
     // Check priority requirement
     const priorityLevels = ['low', 'medium', 'high', 'critical'];
@@ -1997,7 +2164,7 @@ export class DynamicResourceManager extends EventEmitter {
     const currentUtilization = level.performanceMetrics.utilization;
     const availableForLending = Math.max(
       0,
-      rule.maxLendPercent - (currentUtilization - rule.retainMinimum)
+      rule.maxLendPercent - (currentUtilization - rule.retainMinimum),
     );
 
     if (availableForLending <= 0) {
@@ -2010,9 +2177,12 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Find suitable agent for cross-level transfer
    */
-  private findCrossLevelAgent(level: ResourceLevel, demand: ResourceDemand): AgentResource | null {
+  private findCrossLevelAgent(
+    level: ResourceLevel,
+    demand: ResourceDemand,
+  ): AgentResource | null {
     const availableAgents = Array.from(level.agents.values()).filter(
-      (agent) => agent.status === 'available' && agent.currentLoad < 0.8
+      (agent) => agent.status === 'available' && agent.currentLoad < 0.8,
     );
 
     if (availableAgents.length === 0) {
@@ -2041,7 +2211,7 @@ export class DynamicResourceManager extends EventEmitter {
     fromLevel: string,
     toLevel: string,
     demand: ResourceDemand,
-    rule: BorrowingRule
+    rule: BorrowingRule,
   ): ResourceTransfer {
     const transferId = `transfer-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -2055,10 +2225,15 @@ export class DynamicResourceManager extends EventEmitter {
       duration: Math.min(demand.duration, rule.durationLimit),
       startTime: new Date(),
       expectedReturnTime: new Date(
-        Date.now() + Math.min(demand.duration, rule.durationLimit) * 60 * 60 * 1000
+        Date.now() +
+          Math.min(demand.duration, rule.durationLimit) * 60 * 60 * 1000,
       ),
       transferCost: rule.cost,
-      performanceImpact: this.calculateTransferImpact(agent, fromLevel, toLevel),
+      performanceImpact: this.calculateTransferImpact(
+        agent,
+        fromLevel,
+        toLevel,
+      ),
       status: 'pending',
     };
   }
@@ -2069,7 +2244,7 @@ export class DynamicResourceManager extends EventEmitter {
   private calculateTransferImpact(
     agent: AgentResource,
     fromLevel: string,
-    toLevel: string
+    toLevel: string,
   ): TransferImpact {
     const sourceLevel = this.getResourceLevel(fromLevel);
     const targetLevel = this.getResourceLevel(toLevel);
@@ -2102,7 +2277,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Execute resource transfer
    */
-  private async executeResourceTransfer(transfer: ResourceTransfer): Promise<void> {
+  private async executeResourceTransfer(
+    transfer: ResourceTransfer,
+  ): Promise<void> {
     try {
       const agent = this.agents.get(transfer.agentId);
       if (!agent) {
@@ -2112,17 +2289,25 @@ export class DynamicResourceManager extends EventEmitter {
       const sourceLevel = this.getResourceLevel(transfer.fromLevel);
       const targetLevel = this.getResourceLevel(transfer.toLevel);
 
-      if (!sourceLevel || !targetLevel) {
-        throw new Error(`Invalid levels: ${transfer.fromLevel} -> ${transfer.toLevel}`);
+      if (!(sourceLevel && targetLevel)) {
+        throw new Error(
+          `Invalid levels: ${transfer.fromLevel} -> ${transfer.toLevel}`,
+        );
       }
 
       // Remove from source level
       sourceLevel.agents.delete(transfer.agentId);
-      sourceLevel.availableCapacity = Math.max(0, sourceLevel.availableCapacity - 0.1);
+      sourceLevel.availableCapacity = Math.max(
+        0,
+        sourceLevel.availableCapacity - 0.1,
+      );
 
       // Add to target level
       targetLevel.agents.set(transfer.agentId, agent);
-      targetLevel.availableCapacity = Math.min(1, targetLevel.availableCapacity + 0.1);
+      targetLevel.availableCapacity = Math.min(
+        1,
+        targetLevel.availableCapacity + 0.1,
+      );
 
       // Update agent status
       agent.allocation = {
@@ -2144,7 +2329,7 @@ export class DynamicResourceManager extends EventEmitter {
         () => {
           this.returnTransferredResource(transfer.id);
         },
-        transfer.duration * 60 * 60 * 1000
+        transfer.duration * 60 * 60 * 1000,
       );
 
       this.emit('resource-transferred', { transfer });
@@ -2174,8 +2359,10 @@ export class DynamicResourceManager extends EventEmitter {
       const sourceLevel = this.getResourceLevel(transfer.fromLevel);
       const targetLevel = this.getResourceLevel(transfer.toLevel);
 
-      if (!sourceLevel || !targetLevel) {
-        console.error(`Invalid levels for return: ${transfer.fromLevel} -> ${transfer.toLevel}`);
+      if (!(sourceLevel && targetLevel)) {
+        console.error(
+          `Invalid levels for return: ${transfer.fromLevel} -> ${transfer.toLevel}`,
+        );
         return;
       }
 
@@ -2184,8 +2371,14 @@ export class DynamicResourceManager extends EventEmitter {
       sourceLevel.agents.set(transfer.agentId, agent);
 
       // Update capacities
-      targetLevel.availableCapacity = Math.max(0, targetLevel.availableCapacity - 0.1);
-      sourceLevel.availableCapacity = Math.min(1, sourceLevel.availableCapacity + 0.1);
+      targetLevel.availableCapacity = Math.max(
+        0,
+        targetLevel.availableCapacity - 0.1,
+      );
+      sourceLevel.availableCapacity = Math.min(
+        1,
+        sourceLevel.availableCapacity + 0.1,
+      );
 
       // Clear agent allocation
       agent.allocation = undefined;
@@ -2208,7 +2401,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Calculate actual transfer impact
    */
-  private calculateActualTransferImpact(transfer: ResourceTransfer): TransferImpact {
+  private calculateActualTransferImpact(
+    transfer: ResourceTransfer,
+  ): TransferImpact {
     // In real implementation, this would analyze actual performance data
     return transfer.performanceImpact;
   }
@@ -2216,7 +2411,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Skill-based resource allocation
    */
-  async allocateBySkills(demand: ResourceDemand): Promise<SkillBasedAllocation | null> {
+  async allocateBySkills(
+    demand: ResourceDemand,
+  ): Promise<SkillBasedAllocation | null> {
     try {
       const skillAllocation: SkillBasedAllocation = {
         requiredSkills: this.extractSkillRequirements(demand),
@@ -2227,16 +2424,19 @@ export class DynamicResourceManager extends EventEmitter {
       };
 
       // Find agents with matching skills
-      const matchedAgents = this.findAgentsBySkills(skillAllocation.requiredSkills);
+      const matchedAgents = this.findAgentsBySkills(
+        skillAllocation.requiredSkills,
+      );
 
       if (matchedAgents.length === 0) {
         // Identify skill gaps
-        skillAllocation.skillGapAnalysis = this.identifySkillGaps(skillAllocation.requiredSkills);
+        skillAllocation.skillGapAnalysis = this.identifySkillGaps(
+          skillAllocation.requiredSkills,
+        );
 
         // Generate learning opportunities
-        skillAllocation.learningOpportunities = this.generateLearningOpportunities(
-          skillAllocation.skillGapAnalysis
-        );
+        skillAllocation.learningOpportunities =
+          this.generateLearningOpportunities(skillAllocation.skillGapAnalysis);
 
         this.skillDatabase.set(demand.workflowId, skillAllocation);
 
@@ -2251,7 +2451,7 @@ export class DynamicResourceManager extends EventEmitter {
       // Score allocation
       skillAllocation.allocationScore = this.calculateSkillAllocationScore(
         matchedAgents,
-        skillAllocation.requiredSkills
+        skillAllocation.requiredSkills,
       );
 
       this.skillDatabase.set(demand.workflowId, skillAllocation);
@@ -2270,16 +2470,46 @@ export class DynamicResourceManager extends EventEmitter {
     // Map task types to skill requirements
     const skillMap: Record<string, SkillRequirement[]> = {
       research: [
-        { skill: 'research', level: 'advanced', importance: 'required', weight: 0.8 },
-        { skill: 'analysis', level: 'intermediate', importance: 'preferred', weight: 0.6 },
+        {
+          skill: 'research',
+          level: 'advanced',
+          importance: 'required',
+          weight: 0.8,
+        },
+        {
+          skill: 'analysis',
+          level: 'intermediate',
+          importance: 'preferred',
+          weight: 0.6,
+        },
       ],
       coding: [
-        { skill: 'programming', level: 'advanced', importance: 'required', weight: 0.9 },
-        { skill: 'architecture', level: 'intermediate', importance: 'preferred', weight: 0.7 },
+        {
+          skill: 'programming',
+          level: 'advanced',
+          importance: 'required',
+          weight: 0.9,
+        },
+        {
+          skill: 'architecture',
+          level: 'intermediate',
+          importance: 'preferred',
+          weight: 0.7,
+        },
       ],
       analysis: [
-        { skill: 'data-analysis', level: 'advanced', importance: 'required', weight: 0.8 },
-        { skill: 'statistics', level: 'intermediate', importance: 'preferred', weight: 0.6 },
+        {
+          skill: 'data-analysis',
+          level: 'advanced',
+          importance: 'required',
+          weight: 0.8,
+        },
+        {
+          skill: 'statistics',
+          level: 'intermediate',
+          importance: 'preferred',
+          weight: 0.6,
+        },
       ],
     };
 
@@ -2289,14 +2519,19 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Find agents by skills
    */
-  private findAgentsBySkills(requiredSkills: SkillRequirement[]): AgentResource[] {
+  private findAgentsBySkills(
+    requiredSkills: SkillRequirement[],
+  ): AgentResource[] {
     const agents = Array.from(this.agents.values());
 
     return agents.filter((agent) => {
       return requiredSkills.every((required) => {
         return agent.capabilities.some((cap) => {
-          const skillMatch = cap.name.toLowerCase().includes(required.skill.toLowerCase());
-          const levelMatch = this.getLevelScore(cap.level, required.level) > 0.5;
+          const skillMatch = cap.name
+            .toLowerCase()
+            .includes(required.skill.toLowerCase());
+          const levelMatch =
+            this.getLevelScore(cap.level, required.level) > 0.5;
           return skillMatch && levelMatch;
         });
       });
@@ -2313,8 +2548,8 @@ export class DynamicResourceManager extends EventEmitter {
     for (const required of requiredSkills) {
       const agentsWithSkill = agents.filter((agent) =>
         agent.capabilities.some((cap) =>
-          cap.name.toLowerCase().includes(required.skill.toLowerCase())
-        )
+          cap.name.toLowerCase().includes(required.skill.toLowerCase()),
+        ),
       );
 
       if (agentsWithSkill.length === 0) {
@@ -2329,9 +2564,11 @@ export class DynamicResourceManager extends EventEmitter {
       } else {
         const maxAvailableLevel = agentsWithSkill.reduce((max, agent) => {
           const skillCap = agent.capabilities.find((cap) =>
-            cap.name.toLowerCase().includes(required.skill.toLowerCase())
+            cap.name.toLowerCase().includes(required.skill.toLowerCase()),
           );
-          return skillCap && this.getLevelScore(skillCap.level, max) > 0 ? skillCap.level : max;
+          return skillCap && this.getLevelScore(skillCap.level, max) > 0
+            ? skillCap.level
+            : max;
         }, 'beginner');
 
         const gapSize = this.getLevelScore(required.level, maxAvailableLevel);
@@ -2359,9 +2596,15 @@ export class DynamicResourceManager extends EventEmitter {
       skill: gap.skill,
       currentLevel: gap.availableLevel,
       targetLevel: gap.requiredLevel,
-      effort: this.calculateTrainingEffort(gap.availableLevel, gap.requiredLevel),
+      effort: this.calculateTrainingEffort(
+        gap.availableLevel,
+        gap.requiredLevel,
+      ),
       benefit: 1 - gap.gap,
-      timeline: this.estimateTrainingTimeline(gap.availableLevel, gap.requiredLevel),
+      timeline: this.estimateTrainingTimeline(
+        gap.availableLevel,
+        gap.requiredLevel,
+      ),
     }));
   }
 
@@ -2393,7 +2636,7 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private calculateSkillAllocationScore(
     agents: AgentResource[],
-    requiredSkills: SkillRequirement[]
+    requiredSkills: SkillRequirement[],
   ): number {
     if (agents.length === 0) return 0;
 
@@ -2403,18 +2646,21 @@ export class DynamicResourceManager extends EventEmitter {
     for (const required of requiredSkills) {
       const matchedAgents = agents.filter((agent) =>
         agent.capabilities.some((cap) =>
-          cap.name.toLowerCase().includes(required.skill.toLowerCase())
-        )
+          cap.name.toLowerCase().includes(required.skill.toLowerCase()),
+        ),
       );
 
       if (matchedAgents.length > 0) {
         const bestAgent = matchedAgents[0];
         const capability = bestAgent.capabilities.find((cap) =>
-          cap.name.toLowerCase().includes(required.skill.toLowerCase())
+          cap.name.toLowerCase().includes(required.skill.toLowerCase()),
         );
 
         if (capability) {
-          const skillScore = this.getLevelScore(capability.level, required.level);
+          const skillScore = this.getLevelScore(
+            capability.level,
+            required.level,
+          );
           totalScore += skillScore * required.weight;
           totalWeight += required.weight;
         }
@@ -2427,7 +2673,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Resolve resource conflicts across levels
    */
-  async resolveCrossLevelConflict(conflictId: string): Promise<ResourceConflictResolution | null> {
+  async resolveCrossLevelConflict(
+    conflictId: string,
+  ): Promise<ResourceConflictResolution | null> {
     try {
       const conflict = this.conflicts.get(conflictId);
       if (!conflict) {
@@ -2441,7 +2689,11 @@ export class DynamicResourceManager extends EventEmitter {
       const involvedLevels = this.identifyInvolvedLevels(conflict);
 
       // Execute resolution
-      const outcome = await this.executeConflictResolution(conflict, strategy, involvedLevels);
+      const outcome = await this.executeConflictResolution(
+        conflict,
+        strategy,
+        involvedLevels,
+      );
 
       const resolution: ResourceConflictResolution = {
         conflictId,
@@ -2462,7 +2714,7 @@ export class DynamicResourceManager extends EventEmitter {
    * Determine resolution strategy
    */
   private determineResolutionStrategy(
-    conflict: ResourceConflict
+    conflict: ResourceConflict,
   ): 'negotiate' | 'escalate' | 'compromise' | 'defer' {
     switch (conflict.severity) {
       case 'critical':
@@ -2509,7 +2761,7 @@ export class DynamicResourceManager extends EventEmitter {
   private async executeConflictResolution(
     conflict: ResourceConflict,
     strategy: string,
-    levels: string[]
+    levels: string[],
   ): Promise<ResolutionOutcome> {
     // Simplified resolution implementation
     const outcome: ResolutionOutcome = {
@@ -2544,7 +2796,10 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Extract learnings from conflict resolution
    */
-  private extractLearnings(conflict: ResourceConflict, outcome: ResolutionOutcome): string[] {
+  private extractLearnings(
+    conflict: ResourceConflict,
+    outcome: ResolutionOutcome,
+  ): string[] {
     return [
       `${conflict.type} conflicts require ${Math.round(this.performanceTracking.conflictResolutionTime)} hours average resolution time`,
       `Multi-level conflicts benefit from early ${outcome.resolution.includes('negotiate') ? 'negotiation' : 'escalation'}`,
@@ -2570,11 +2825,14 @@ export class DynamicResourceManager extends EventEmitter {
       const demandForecast = this.forecastDemand('2-weeks');
       const capacityGaps = this.identifyCapacityGaps(
         demandForecast,
-        currentCapacityAnalysis.capacityForecast
+        currentCapacityAnalysis.capacityForecast,
       );
 
       // Generate scaling actions
-      const scalingActions = this.generateScalingActions(capacityGaps, currentCapacityAnalysis);
+      const scalingActions = this.generateScalingActions(
+        capacityGaps,
+        currentCapacityAnalysis,
+      );
 
       // Execute approved actions
       await this.executeScalingActions(scalingActions);
@@ -2583,7 +2841,8 @@ export class DynamicResourceManager extends EventEmitter {
       const predictedCapacity = await this.generateCapacityForecast('4-weeks');
 
       // Generate optimization recommendations
-      const recommendations = this.generateCapacityRecommendations(capacityGaps);
+      const recommendations =
+        this.generateCapacityRecommendations(capacityGaps);
 
       return {
         scalingActions,
@@ -2636,7 +2895,9 @@ export class DynamicResourceManager extends EventEmitter {
 
       // Identify bottlenecks
       if (levelUtilization > 0.9) {
-        bottlenecks.push(`${level.name} at ${Math.round(levelUtilization * 100)}% utilization`);
+        bottlenecks.push(
+          `${level.name} at ${Math.round(levelUtilization * 100)}% utilization`,
+        );
       }
 
       // Generate capacity forecast for this level
@@ -2688,7 +2949,11 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private generateScalingActions(
     gaps: CapacityGap[],
-    currentAnalysis: { totalCapacity: number; utilization: number; bottlenecks: string[] }
+    currentAnalysis: {
+      totalCapacity: number;
+      utilization: number;
+      bottlenecks: string[];
+    },
   ): CapacityScalingAction[] {
     const actions: CapacityScalingAction[] = [];
 
@@ -2785,7 +3050,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Execute scaling actions
    */
-  private async executeScalingActions(actions: CapacityScalingAction[]): Promise<void> {
+  private async executeScalingActions(
+    actions: CapacityScalingAction[],
+  ): Promise<void> {
     for (const action of actions) {
       try {
         if (action.approvalRequired) {
@@ -2814,7 +3081,10 @@ export class DynamicResourceManager extends EventEmitter {
         console.log(`Executed scaling action: ${action.reason}`);
       } catch (error) {
         action.status = 'failed';
-        console.error(`Failed to execute scaling action: ${action.reason}`, error);
+        console.error(
+          `Failed to execute scaling action: ${action.reason}`,
+          error,
+        );
       }
     }
   }
@@ -2838,7 +3108,7 @@ export class DynamicResourceManager extends EventEmitter {
     // Update level capacity
     targetLevel.availableCapacity = Math.min(
       1,
-      targetLevel.availableCapacity + action.magnitude * 0.1
+      targetLevel.availableCapacity + action.magnitude * 0.1,
     );
   }
 
@@ -2847,8 +3117,10 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private async createOptimizedAgent(levelId: string): Promise<AgentResource> {
     const level = this.getResourceLevel(levelId);
-    const agentTypes: AgentResource['type'][] = this.getOptimalAgentTypes(levelId);
-    const selectedType = agentTypes[Math.floor(Math.random() * agentTypes.length)];
+    const agentTypes: AgentResource['type'][] =
+      this.getOptimalAgentTypes(levelId);
+    const selectedType =
+      agentTypes[Math.floor(Math.random() * agentTypes.length)];
 
     return {
       id: `${selectedType}-optimized-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -2880,7 +3152,14 @@ export class DynamicResourceManager extends EventEmitter {
       portfolio: ['researcher', 'analyst', 'coordinator'],
       program: ['analyst', 'coordinator', 'coder'],
       swarm: ['coder', 'tester', 'optimizer'],
-      shared: ['researcher', 'coder', 'analyst', 'optimizer', 'coordinator', 'tester'],
+      shared: [
+        'researcher',
+        'coder',
+        'analyst',
+        'optimizer',
+        'coordinator',
+        'tester',
+      ],
     };
 
     return typeMap[levelId] || ['coder', 'analyst'];
@@ -2891,12 +3170,13 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private generateOptimizedCapabilities(
     type: AgentResource['type'],
-    levelId: string
+    levelId: string,
   ): ResourceCapability[] {
     const baseCapabilities = this.generateDefaultCapabilities(type);
 
     // Enhance capabilities based on level requirements
-    const levelBonus = levelId === 'portfolio' ? 0.1 : levelId === 'program' ? 0.05 : 0;
+    const levelBonus =
+      levelId === 'portfolio' ? 0.1 : levelId === 'program' ? 0.05 : 0;
 
     return baseCapabilities.map((cap) => ({
       ...cap,
@@ -2926,7 +3206,7 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private generateOptimizedPreferences(
     type: AgentResource['type'],
-    levelId: string
+    levelId: string,
   ): AgentPreferences {
     const base = this.generateDefaultPreferences(type);
 
@@ -2936,7 +3216,9 @@ export class DynamicResourceManager extends EventEmitter {
       base.workloadPreferences.restPeriods = false;
     } else if (levelId === 'portfolio') {
       base.workloadPreferences.type = 'steady';
-      base.collaborationPreferences = [{ style: 'independent', preference: 0.8 }];
+      base.collaborationPreferences = [
+        { style: 'independent', preference: 0.8 },
+      ];
     }
 
     return base;
@@ -2945,7 +3227,10 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Calculate optimal cost for agent
    */
-  private calculateOptimalCost(type: AgentResource['type'], levelId: string): number {
+  private calculateOptimalCost(
+    type: AgentResource['type'],
+    levelId: string,
+  ): number {
     const baseCosts: Record<string, number> = {
       researcher: 100,
       coder: 120,
@@ -2955,7 +3240,8 @@ export class DynamicResourceManager extends EventEmitter {
       tester: 95,
     };
 
-    const levelMultiplier = levelId === 'portfolio' ? 1.3 : levelId === 'program' ? 1.1 : 1;
+    const levelMultiplier =
+      levelId === 'portfolio' ? 1.3 : levelId === 'program' ? 1.1 : 1;
 
     return baseCosts[type] * levelMultiplier;
   }
@@ -2963,7 +3249,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Execute optimize existing action
    */
-  private async executeOptimizeExisting(action: CapacityScalingAction): Promise<void> {
+  private async executeOptimizeExisting(
+    action: CapacityScalingAction,
+  ): Promise<void> {
     const targetLevel = this.getResourceLevel(action.level);
     if (!targetLevel) {
       throw new Error(`Invalid level: ${action.level}`);
@@ -2973,8 +3261,14 @@ export class DynamicResourceManager extends EventEmitter {
     for (const agent of targetLevel.agents.values()) {
       // Improve efficiency through training
       if (agent.utilization) {
-        agent.utilization.efficiency = Math.min(1, agent.utilization.efficiency + 0.05);
-        agent.utilization.overallHealth = Math.min(1, agent.utilization.overallHealth + 0.02);
+        agent.utilization.efficiency = Math.min(
+          1,
+          agent.utilization.efficiency + 0.05,
+        );
+        agent.utilization.overallHealth = Math.min(
+          1,
+          agent.utilization.overallHealth + 0.02,
+        );
       }
 
       // Enhance capabilities
@@ -2986,14 +3280,16 @@ export class DynamicResourceManager extends EventEmitter {
     // Update level performance
     targetLevel.performanceMetrics.efficiency = Math.min(
       1,
-      targetLevel.performanceMetrics.efficiency + 0.05
+      targetLevel.performanceMetrics.efficiency + 0.05,
     );
   }
 
   /**
    * Execute reallocate action
    */
-  private async executeReallocate(action: CapacityScalingAction): Promise<void> {
+  private async executeReallocate(
+    action: CapacityScalingAction,
+  ): Promise<void> {
     const sourceLevel = this.getResourceLevel(action.level);
     if (!sourceLevel) {
       throw new Error(`Invalid source level: ${action.level}`);
@@ -3031,7 +3327,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Find level with highest demand
    */
-  private findLevelWithHighestDemand(excludeLevel: string): ResourceLevel | null {
+  private findLevelWithHighestDemand(
+    excludeLevel: string,
+  ): ResourceLevel | null {
     const levels = [
       this.resourcePool.portfolioLevel,
       this.resourcePool.programLevel,
@@ -3043,7 +3341,8 @@ export class DynamicResourceManager extends EventEmitter {
     let highestDemand = 0;
 
     for (const level of levels) {
-      const demand = level.performanceMetrics.utilization + (1 - level.availableCapacity);
+      const demand =
+        level.performanceMetrics.utilization + (1 - level.availableCapacity);
       if (demand > highestDemand) {
         highestDemand = demand;
         highestDemandLevel = level;
@@ -3056,7 +3355,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Execute remove agents action
    */
-  private async executeRemoveAgents(action: CapacityScalingAction): Promise<void> {
+  private async executeRemoveAgents(
+    action: CapacityScalingAction,
+  ): Promise<void> {
     const targetLevel = this.getResourceLevel(action.level);
     if (!targetLevel) {
       throw new Error(`Invalid level: ${action.level}`);
@@ -3067,9 +3368,11 @@ export class DynamicResourceManager extends EventEmitter {
       .filter(
         (agent) =>
           (agent.utilization?.current || 0) < 0.3 &&
-          (!agent.allocation || agent.allocation.priority !== 'critical')
+          (!agent.allocation || agent.allocation.priority !== 'critical'),
       )
-      .sort((a, b) => (a.utilization?.current || 0) - (b.utilization?.current || 0))
+      .sort(
+        (a, b) => (a.utilization?.current || 0) - (b.utilization?.current || 0),
+      )
       .slice(0, action.magnitude);
 
     // Remove agents
@@ -3081,7 +3384,7 @@ export class DynamicResourceManager extends EventEmitter {
     // Update level capacity
     targetLevel.availableCapacity = Math.max(
       0,
-      targetLevel.availableCapacity - action.magnitude * 0.1
+      targetLevel.availableCapacity - action.magnitude * 0.1,
     );
   }
 
@@ -3100,7 +3403,10 @@ export class DynamicResourceManager extends EventEmitter {
       // Apply adjustments
       await this.applyBufferAdjustments(adjustments);
 
-      const recommendations = this.generateBufferRecommendations(currentBuffers, adjustments);
+      const recommendations = this.generateBufferRecommendations(
+        currentBuffers,
+        adjustments,
+      );
 
       return {
         currentBuffers,
@@ -3112,7 +3418,9 @@ export class DynamicResourceManager extends EventEmitter {
       return {
         currentBuffers: [],
         adjustments: [],
-        recommendations: ['Error in buffer management - manual review required'],
+        recommendations: [
+          'Error in buffer management - manual review required',
+        ],
       };
     }
   }
@@ -3153,7 +3461,7 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private getBufferStatus(
     current: number,
-    optimal: number
+    optimal: number,
   ): 'critical' | 'low' | 'adequate' | 'high' {
     const ratio = current / optimal;
 
@@ -3178,13 +3486,19 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Calculate buffer adjustments
    */
-  private calculateBufferAdjustments(buffers: CapacityBuffer[]): BufferAdjustment[] {
+  private calculateBufferAdjustments(
+    buffers: CapacityBuffer[],
+  ): BufferAdjustment[] {
     return buffers
       .filter((buffer) => buffer.status !== 'adequate')
       .map((buffer) => {
         const adjustmentType =
-          buffer.status === 'critical' || buffer.status === 'low' ? 'increase' : 'decrease';
-        const magnitude = Math.abs(buffer.bufferCapacity - buffer.optimalBuffer);
+          buffer.status === 'critical' || buffer.status === 'low'
+            ? 'increase'
+            : 'decrease';
+        const magnitude = Math.abs(
+          buffer.bufferCapacity - buffer.optimalBuffer,
+        );
 
         return {
           levelId: buffer.levelId,
@@ -3201,7 +3515,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Apply buffer adjustments
    */
-  private async applyBufferAdjustments(adjustments: BufferAdjustment[]): Promise<void> {
+  private async applyBufferAdjustments(
+    adjustments: BufferAdjustment[],
+  ): Promise<void> {
     for (const adjustment of adjustments) {
       try {
         if (adjustment.type === 'increase') {
@@ -3211,7 +3527,10 @@ export class DynamicResourceManager extends EventEmitter {
         }
         console.log(`Applied buffer adjustment: ${adjustment.reason}`);
       } catch (error) {
-        console.error(`Failed to apply buffer adjustment: ${adjustment.reason}`, error);
+        console.error(
+          `Failed to apply buffer adjustment: ${adjustment.reason}`,
+          error,
+        );
       }
     }
   }
@@ -3225,7 +3544,10 @@ export class DynamicResourceManager extends EventEmitter {
 
     // Increase available capacity
     const capacityIncrease = adjustment.magnitude / 40 / level.agents.size; // Per agent capacity increase
-    level.availableCapacity = Math.min(1, level.availableCapacity + capacityIncrease);
+    level.availableCapacity = Math.min(
+      1,
+      level.availableCapacity + capacityIncrease,
+    );
 
     // If still not enough, consider adding agents
     if (adjustment.priority === 'high' && capacityIncrease < 0.1) {
@@ -3253,7 +3575,10 @@ export class DynamicResourceManager extends EventEmitter {
       // Transfer some agents if the excess is significant
       const agentsToTransfer = Math.min(2, Math.floor(excessCapacity / 40));
       if (agentsToTransfer > 0) {
-        const candidates = Array.from(level.agents.values()).slice(0, agentsToTransfer);
+        const candidates = Array.from(level.agents.values()).slice(
+          0,
+          agentsToTransfer,
+        );
         for (const agent of candidates) {
           level.agents.delete(agent.id);
           targetLevel.agents.set(agent.id, agent);
@@ -3267,23 +3592,25 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private generateBufferRecommendations(
     buffers: CapacityBuffer[],
-    adjustments: BufferAdjustment[]
+    adjustments: BufferAdjustment[],
   ): string[] {
     const recommendations: string[] = [];
 
     // Overall buffer health
-    const criticalBuffers = buffers.filter((b) => b.status === 'critical').length;
+    const criticalBuffers = buffers.filter(
+      (b) => b.status === 'critical',
+    ).length;
     const lowBuffers = buffers.filter((b) => b.status === 'low').length;
 
     if (criticalBuffers > 0) {
       recommendations.push(
-        `${criticalBuffers} level(s) have critical buffer shortage - immediate action required`
+        `${criticalBuffers} level(s) have critical buffer shortage - immediate action required`,
       );
     }
 
     if (lowBuffers > 1) {
       recommendations.push(
-        `${lowBuffers} level(s) have low buffers - consider systematic capacity review`
+        `${lowBuffers} level(s) have low buffers - consider systematic capacity review`,
       );
     }
 
@@ -3291,20 +3618,22 @@ export class DynamicResourceManager extends EventEmitter {
     for (const buffer of buffers) {
       if (buffer.status === 'critical') {
         recommendations.push(
-          `${buffer.levelName}: Add ${Math.ceil(buffer.optimalBuffer / 40)} agents or reduce workload by ${Math.round((1 - buffer.bufferUtilization) * 100)}%`
+          `${buffer.levelName}: Add ${Math.ceil(buffer.optimalBuffer / 40)} agents or reduce workload by ${Math.round((1 - buffer.bufferUtilization) * 100)}%`,
         );
       } else if (buffer.status === 'high') {
         recommendations.push(
-          `${buffer.levelName}: Excess capacity available - consider reallocating ${Math.floor(buffer.bufferCapacity / 40)} agents`
+          `${buffer.levelName}: Excess capacity available - consider reallocating ${Math.floor(buffer.bufferCapacity / 40)} agents`,
         );
       }
     }
 
     // Adjustment recommendations
-    const highPriorityAdjustments = adjustments.filter((a) => a.priority === 'high').length;
+    const highPriorityAdjustments = adjustments.filter(
+      (a) => a.priority === 'high',
+    ).length;
     if (highPriorityAdjustments > 0) {
       recommendations.push(
-        `${highPriorityAdjustments} high-priority buffer adjustments planned - monitor closely`
+        `${highPriorityAdjustments} high-priority buffer adjustments planned - monitor closely`,
       );
     }
 
@@ -3327,16 +3656,23 @@ export class DynamicResourceManager extends EventEmitter {
       const historicalData = this.analyzeHistoricalDemand();
 
       // Generate forecast
-      const demandForecast = this.generateDemandForecast(historicalData, timeframe);
+      const demandForecast = this.generateDemandForecast(
+        historicalData,
+        timeframe,
+      );
 
       // Calculate confidence
-      const confidenceInterval = this.calculateForecastConfidence(historicalData);
+      const confidenceInterval =
+        this.calculateForecastConfidence(historicalData);
 
       // Identify risk factors
       const riskFactors = this.identifyDemandRiskFactors(demandForecast);
 
       // Generate recommendations
-      const recommendations = this.generateDemandRecommendations(demandForecast, riskFactors);
+      const recommendations = this.generateDemandRecommendations(
+        demandForecast,
+        riskFactors,
+      );
 
       return {
         demandForecast,
@@ -3388,7 +3724,7 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private generateDemandForecast(
     historical: HistoricalDemandData,
-    timeframe: string
+    timeframe: string,
   ): DemandPrediction[] {
     const periods = this.getPeriodsFromTimeframe(timeframe);
     const forecast: DemandPrediction[] = [];
@@ -3396,13 +3732,16 @@ export class DynamicResourceManager extends EventEmitter {
     for (let i = 0; i < periods; i++) {
       const period = `week-${i + 1}`;
       const baseVolume = historical.totalTasks / 52; // Weekly average
-      const trendAdjustment = baseVolume * historical.trendAnalysis.growthRate * (i / 52);
+      const trendAdjustment =
+        baseVolume * historical.trendAnalysis.growthRate * (i / 52);
       const seasonalAdjustment = this.getSeasonalAdjustment(i, historical);
 
       const adjustedVolume = baseVolume + trendAdjustment + seasonalAdjustment;
 
       // Generate forecasts by task type
-      for (const [taskType, historicalCount] of Object.entries(historical.tasksByType)) {
+      for (const [taskType, historicalCount] of Object.entries(
+        historical.tasksByType,
+      )) {
         const typeRatio = historicalCount / historical.totalTasks;
         const predictedVolume = adjustedVolume * typeRatio;
 
@@ -3413,7 +3752,8 @@ export class DynamicResourceManager extends EventEmitter {
           complexity: this.getPredictedComplexity(taskType),
           urgency: this.getPredictedUrgency(taskType, i),
           confidence: this.calculatePeriodConfidence(i),
-          resourceHours: predictedVolume * this.getAverageTaskDuration(taskType),
+          resourceHours:
+            predictedVolume * this.getAverageTaskDuration(taskType),
         });
       }
     }
@@ -3426,7 +3766,7 @@ export class DynamicResourceManager extends EventEmitter {
    */
   private getPeriodsFromTimeframe(timeframe: string): number {
     if (timeframe.includes('week')) {
-      return parseInt(timeframe.split('-')[0]) || 4;
+      return Number.parseInt(timeframe.split('-')[0]) || 4;
     }
     return 4; // Default to 4 weeks
   }
@@ -3434,14 +3774,20 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Get seasonal adjustment
    */
-  private getSeasonalAdjustment(weekIndex: number, historical: HistoricalDemandData): number {
+  private getSeasonalAdjustment(
+    weekIndex: number,
+    historical: HistoricalDemandData,
+  ): number {
     const quarterIndex = Math.floor(weekIndex / 13);
     const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
     const currentQuarter = quarters[quarterIndex % 4];
 
-    if (historical.seasonalPatterns.highDemandPeriods.includes(currentQuarter)) {
+    if (
+      historical.seasonalPatterns.highDemandPeriods.includes(currentQuarter)
+    ) {
       return (historical.totalTasks * 0.2) / 52; // 20% increase
-    } else if (historical.seasonalPatterns.lowDemandPeriods.includes(currentQuarter)) {
+    }
+    if (historical.seasonalPatterns.lowDemandPeriods.includes(currentQuarter)) {
       return (-historical.totalTasks * 0.1) / 52; // 10% decrease
     }
 
@@ -3500,7 +3846,9 @@ export class DynamicResourceManager extends EventEmitter {
   /**
    * Calculate forecast confidence
    */
-  private calculateForecastConfidence(historical: HistoricalDemandData): number {
+  private calculateForecastConfidence(
+    historical: HistoricalDemandData,
+  ): number {
     // Confidence based on volatility and data quality
     const volatilityPenalty = historical.trendAnalysis.volatility * 0.3;
     const baseConfidence = 0.8;
@@ -3515,53 +3863,73 @@ export class DynamicResourceManager extends EventEmitter {
     const risks: string[] = [];
 
     // Check for demand spikes
-    const avgVolume = forecast.reduce((sum, p) => sum + p.predictedVolume, 0) / forecast.length;
+    const avgVolume =
+      forecast.reduce((sum, p) => sum + p.predictedVolume, 0) / forecast.length;
     const spikes = forecast.filter((p) => p.predictedVolume > avgVolume * 1.5);
 
     if (spikes.length > 0) {
-      risks.push(`${spikes.length} periods with demand spikes (>50% above average)`);
+      risks.push(
+        `${spikes.length} periods with demand spikes (>50% above average)`,
+      );
     }
 
     // Check for high complexity periods
     const highComplexity = forecast.filter(
-      (p) => p.complexity > 0.75 && p.predictedVolume > avgVolume
+      (p) => p.complexity > 0.75 && p.predictedVolume > avgVolume,
     );
     if (highComplexity.length > 0) {
-      risks.push(`${highComplexity.length} periods with high complexity + high volume`);
+      risks.push(
+        `${highComplexity.length} periods with high complexity + high volume`,
+      );
     }
 
     // Check for low confidence predictions
     const lowConfidence = forecast.filter((p) => p.confidence < 0.6);
     if (lowConfidence.length > 0) {
-      risks.push(`${lowConfidence.length} periods with low prediction confidence`);
+      risks.push(
+        `${lowConfidence.length} periods with low prediction confidence`,
+      );
     }
 
-    return risks.length > 0 ? risks : ['No significant risk factors identified'];
+    return risks.length > 0
+      ? risks
+      : ['No significant risk factors identified'];
   }
 
   /**
    * Generate demand recommendations
    */
-  private generateDemandRecommendations(forecast: DemandPrediction[], risks: string[]): string[] {
+  private generateDemandRecommendations(
+    forecast: DemandPrediction[],
+    risks: string[],
+  ): string[] {
     const recommendations: string[] = [];
 
     // Capacity recommendations
     const totalHours = forecast.reduce((sum, p) => sum + p.resourceHours, 0);
     const requiredAgents = Math.ceil(totalHours / ((40 * forecast.length) / 7)); // Assuming weekly periods
 
-    recommendations.push(`Estimated ${requiredAgents} agents required for forecasted demand`);
+    recommendations.push(
+      `Estimated ${requiredAgents} agents required for forecasted demand`,
+    );
 
     // Risk-based recommendations
     if (risks.some((r) => r.includes('demand spikes'))) {
-      recommendations.push('Consider flexible capacity or overtime arrangements for demand spikes');
+      recommendations.push(
+        'Consider flexible capacity or overtime arrangements for demand spikes',
+      );
     }
 
     if (risks.some((r) => r.includes('high complexity'))) {
-      recommendations.push('Ensure senior agents available for high complexity periods');
+      recommendations.push(
+        'Ensure senior agents available for high complexity periods',
+      );
     }
 
     if (risks.some((r) => r.includes('low confidence'))) {
-      recommendations.push('Plan for demand variability - maintain higher capacity buffers');
+      recommendations.push(
+        'Plan for demand variability - maintain higher capacity buffers',
+      );
     }
 
     // Task type specific recommendations
@@ -3569,7 +3937,9 @@ export class DynamicResourceManager extends EventEmitter {
       .filter((p) => p.taskType === 'coding')
       .reduce((sum, p) => sum + p.predictedVolume, 0);
     if (codingDemand > totalHours * 0.6) {
-      recommendations.push('High coding demand forecasted - ensure sufficient developer capacity');
+      recommendations.push(
+        'High coding demand forecasted - ensure sufficient developer capacity',
+      );
     }
 
     return recommendations;
@@ -3582,11 +3952,12 @@ export class DynamicResourceManager extends EventEmitter {
     // Update performance tracking based on recent activity
     const activeTransferCount = this.activeTransfers.size;
     const completedTransfers = Array.from(this.activeTransfers.values()).filter(
-      (t) => t.status === 'completed'
+      (t) => t.status === 'completed',
     ).length;
 
     if (activeTransferCount > 0) {
-      this.performanceTracking.transferSuccessRate = completedTransfers / activeTransferCount;
+      this.performanceTracking.transferSuccessRate =
+        completedTransfers / activeTransferCount;
     }
 
     // Update cross-level efficiency based on resource utilization
@@ -3598,7 +3969,10 @@ export class DynamicResourceManager extends EventEmitter {
     ];
 
     const avgEfficiency =
-      levels.reduce((sum, level) => sum + level.performanceMetrics.efficiency, 0) / levels.length;
+      levels.reduce(
+        (sum, level) => sum + level.performanceMetrics.efficiency,
+        0,
+      ) / levels.length;
 
     this.performanceTracking.crossLevelEfficiency = avgEfficiency;
 

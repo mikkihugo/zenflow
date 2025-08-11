@@ -100,7 +100,7 @@ const getClientIp = (req: Request): string => {
 const getRequestSize = (req: Request): number => {
   const contentLength = req.headers['content-length'];
   if (contentLength) {
-    return parseInt(contentLength, 10);
+    return Number.parseInt(contentLength, 10);
   }
 
   // Estimate size from body if available
@@ -123,7 +123,7 @@ const getRequestSize = (req: Request): number => {
 const getResponseSize = (res: Response): number => {
   const contentLength = res.get('content-length');
   if (contentLength) {
-    return parseInt(contentLength, 10);
+    return Number.parseInt(contentLength, 10);
   }
   return 0;
 };
@@ -223,7 +223,7 @@ const createLogEntry = (
   message: string,
   req: Request,
   res?: Response,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ): LogEntry => {
   const requestMetadata = req.metadata as RequestMetadata;
   const duration = res ? Date.now() - requestMetadata?.startTime : undefined;
@@ -288,7 +288,11 @@ const outputLog = (logEntry: LogEntry): void => {
  * @param res
  * @param next
  */
-export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
+export const requestLogger = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
   const requestId = generateRequestId();
   const startTime = Date.now();
 
@@ -306,15 +310,21 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 
   // Log request start (only if should be logged)
   if (shouldLog(req.path, req.method)) {
-    const logEntry = createLogEntry(LogLevel.INFO, 'Request started', req, undefined, {
-      query: sanitizeData(req.query),
-      body: req.method !== 'GET' ? sanitizeData(req.body) : undefined,
-      headers: sanitizeData({
-        'content-type': req.headers['content-type'],
-        accept: req.headers.accept,
-        'cache-control': req.headers['cache-control'],
-      }),
-    });
+    const logEntry = createLogEntry(
+      LogLevel.INFO,
+      'Request started',
+      req,
+      undefined,
+      {
+        query: sanitizeData(req.query),
+        body: req.method !== 'GET' ? sanitizeData(req.body) : undefined,
+        headers: sanitizeData({
+          'content-type': req.headers['content-type'],
+          accept: req.headers.accept,
+          'cache-control': req.headers['cache-control'],
+        }),
+      },
+    );
 
     outputLog(logEntry);
   }
@@ -357,16 +367,22 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 export const logError = (
   error: Error,
   req: Request,
-  additionalContext?: Record<string, unknown>
+  additionalContext?: Record<string, unknown>,
 ): void => {
-  const logEntry = createLogEntry(LogLevel.ERROR, `Error: ${error.message}`, req, undefined, {
-    error: {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
+  const logEntry = createLogEntry(
+    LogLevel.ERROR,
+    `Error: ${error.message}`,
+    req,
+    undefined,
+    {
+      error: {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      },
+      context: additionalContext,
     },
-    context: additionalContext,
-  });
+  );
 
   outputLog(logEntry);
 };
@@ -384,7 +400,7 @@ export const logPerformance = (
   operation: string,
   duration: number,
   req: Request,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ): void => {
   const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
 
@@ -397,7 +413,7 @@ export const logPerformance = (
       operation,
       duration: `${duration}ms`,
       performanceMetrics: metadata,
-    }
+    },
   );
 
   outputLog(logEntry);
@@ -416,7 +432,7 @@ export const log = (
   level: LogLevel,
   message: string,
   req?: Request,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ): void => {
   if (req) {
     const logEntry = createLogEntry(level, message, req, undefined, metadata);

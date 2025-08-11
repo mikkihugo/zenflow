@@ -12,11 +12,11 @@
  */
 
 import { render } from 'ink';
-import type React from 'react';
-import { CommandExecutionRenderer } from './command-execution-renderer';
-import { InteractiveTerminalApplication } from './interactive-terminal-application';
-import { createSimpleLogger } from './utils/logger';
-import { detectMode } from './utils/mode-detector';
+import React from 'react';
+import { CommandExecutionRenderer } from './command-execution-renderer.js';
+import { InteractiveTerminalApplication } from './interactive-terminal-application.js';
+import { createSimpleLogger } from './utils/logger.js';
+import { detectMode } from './utils/mode-detector.js';
 
 const logger = createSimpleLogger('TerminalInterface');
 
@@ -35,21 +35,42 @@ export interface TerminalAppProps {
  * @param root0.flags
  * @param root0.onExit
  */
-export const TerminalApp: React.FC<TerminalAppProps> = ({ commands, flags, onExit }) => {
+export const TerminalApp: React.FC<TerminalAppProps> = ({
+  commands,
+  flags,
+  onExit,
+}) => {
   const mode = detectMode(commands, flags);
 
   logger.debug(`Terminal mode detected: ${mode}`);
 
   switch (mode) {
     case 'command':
-      return <CommandExecutionRenderer commands={commands} flags={flags} onExit={onExit} />;
+      return (
+        <CommandExecutionRenderer
+          commands={commands}
+          flags={flags}
+          onExit={onExit}
+        />
+      );
 
     case 'interactive':
-      return <InteractiveTerminalApplication flags={flags} onExit={onExit} />;
+      return (
+        <InteractiveTerminalApplication
+          flags={flags}
+          onExit={onExit}
+        />
+      );
 
     default:
       // Fallback to command execution mode
-      return <CommandExecutionRenderer commands={commands} flags={flags} onExit={onExit} />;
+      return (
+        <CommandExecutionRenderer
+          commands={commands}
+          flags={flags}
+          onExit={onExit}
+        />
+      );
   }
 };
 
@@ -132,7 +153,9 @@ async function main() {
 
     // Check for web interface mode
     if (flags['web']) {
-      const { launchInterface } = await import('../../core/interface-launcher.js');
+      const { launchInterface } = await import(
+        '../../core/interface-launcher.js'
+      );
       await launchInterface({
         preferredMode: 'web',
         webPort: flags['port'] || 3000,
@@ -146,7 +169,11 @@ async function main() {
 
     // Render unified terminal app
     const { unmount } = render(
-      <TerminalApp commands={commands} flags={flags} onExit={(code) => process.exit(code)} />
+      <TerminalApp
+        commands={commands}
+        flags={flags}
+        onExit={(code) => process.exit(code)}
+      />,
     );
 
     // Handle graceful shutdown
@@ -160,7 +187,10 @@ async function main() {
     process.on('SIGTERM', () => shutdown('SIGTERM'));
   } catch (error) {
     logger.error('Terminal interface error:', error);
-    console.error('❌ Terminal interface error:', error instanceof Error ? error.message : error);
+    console.error(
+      '❌ Terminal interface error:',
+      error instanceof Error ? error.message : error,
+    );
     process.exit(1);
   }
 }

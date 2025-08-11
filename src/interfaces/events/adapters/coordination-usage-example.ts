@@ -4,7 +4,9 @@
 
 import { getLogger } from '../../../config/logging-config.ts';
 
-const logger = getLogger('interfaces-events-adapters-coordination-usage-example');
+const logger = getLogger(
+  'interfaces-events-adapters-coordination-usage-example',
+);
 
 /**
  * Coordination Event Adapter Usage Example.
@@ -94,18 +96,20 @@ export async function advancedCoordinationExample(): Promise<void> {
     async (event) => {
       // Check if this is part of a correlation
       if (event['correlationId']) {
-        const correlation = coordinator.getCoordinationCorrelatedEvents(event['correlationId']);
+        const correlation = coordinator.getCoordinationCorrelatedEvents(
+          event['correlationId'],
+        );
         if (correlation) {
         }
       }
-    }
+    },
   );
 
   // Monitor health status changes
   setInterval(async () => {
     const healthStatus = await coordinator.getCoordinationHealthStatus();
     const unhealthyComponents = Object.entries(healthStatus).filter(
-      ([_, health]) => (health as any).status !== 'healthy'
+      ([_, health]) => (health as any).status !== 'healthy',
     );
 
     if (unhealthyComponents.length > 0) {
@@ -162,7 +166,7 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
       // Only log critical events to minimize overhead
       if (event['priority'] === 'high' || event['operation'] === 'fail') {
       }
-    }
+    },
   );
   const promises: Promise<void>[] = [];
 
@@ -288,39 +292,58 @@ export async function customCoordinationExample(): Promise<void> {
  * @param coordinator
  * @example
  */
-async function simulateSwarmLifecycle(coordinator: CoordinationEventAdapter): Promise<void> {
+async function simulateSwarmLifecycle(
+  coordinator: CoordinationEventAdapter,
+): Promise<void> {
   // Initialize swarm
   await coordinator.emitSwarmCoordinationEvent(
     CoordinationEventHelpers.createSwarmInitEvent('demo-swarm', 'mesh', {
       agentCount: 3,
       purpose: 'demonstration',
-    })
+    }),
   );
 
   // Spawn agents
   for (let i = 1; i <= 3; i++) {
     await coordinator.emitSwarmCoordinationEvent(
-      CoordinationEventHelpers.createAgentSpawnEvent(`agent-${i}`, 'demo-swarm', {
-        capabilities: ['research', 'analysis'],
-        specialization: i === 1 ? 'data-analysis' : i === 2 ? 'pattern-recognition' : 'synthesis',
-      })
+      CoordinationEventHelpers.createAgentSpawnEvent(
+        `agent-${i}`,
+        'demo-swarm',
+        {
+          capabilities: ['research', 'analysis'],
+          specialization:
+            i === 1
+              ? 'data-analysis'
+              : i === 2
+                ? 'pattern-recognition'
+                : 'synthesis',
+        },
+      ),
     );
   }
 
   // Distribute tasks
   await coordinator.emitSwarmCoordinationEvent(
-    CoordinationEventHelpers.createTaskDistributionEvent('demo-task', ['agent-1', 'agent-2'], {
-      taskType: 'analysis',
-      priority: 'medium',
-    })
+    CoordinationEventHelpers.createTaskDistributionEvent(
+      'demo-task',
+      ['agent-1', 'agent-2'],
+      {
+        taskType: 'analysis',
+        priority: 'medium',
+      },
+    ),
   );
 
   // Simulate a topology change
   await coordinator.emitSwarmCoordinationEvent(
-    CoordinationEventHelpers.createTopologyChangeEvent('demo-swarm', 'hierarchical', {
-      reason: 'optimization',
-      nodeCount: 3,
-    })
+    CoordinationEventHelpers.createTopologyChangeEvent(
+      'demo-swarm',
+      'hierarchical',
+      {
+        reason: 'optimization',
+        nodeCount: 3,
+      },
+    ),
   );
 }
 
@@ -331,7 +354,7 @@ async function simulateSwarmLifecycle(coordinator: CoordinationEventAdapter): Pr
  * @example
  */
 async function simulateComplexCoordinationWorkflow(
-  coordinator: CoordinationEventAdapter
+  coordinator: CoordinationEventAdapter,
 ): Promise<void> {
   const correlationId = `workflow-${Date.now()}`;
 
@@ -344,7 +367,8 @@ async function simulateComplexCoordinationWorkflow(
       targetId: `swarm-${swarmId}`,
       correlationId,
       details: {
-        topology: swarmId === 1 ? 'mesh' : swarmId === 2 ? 'hierarchical' : 'star',
+        topology:
+          swarmId === 1 ? 'mesh' : swarmId === 2 ? 'hierarchical' : 'star',
         agentCount: swarmId * 2,
       },
     });
@@ -384,7 +408,9 @@ async function simulateComplexCoordinationWorkflow(
  * @param coordinator
  * @example
  */
-async function simulateResearchCoordination(coordinator: CoordinationEventAdapter): Promise<void> {
+async function simulateResearchCoordination(
+  coordinator: CoordinationEventAdapter,
+): Promise<void> {
   const researchSession = `research-${Date.now()}`;
 
   // Initialize research swarm
@@ -401,7 +427,12 @@ async function simulateResearchCoordination(coordinator: CoordinationEventAdapte
   });
 
   // Spawn specialized research agents
-  const researchRoles = ['data-collector', 'pattern-analyzer', 'hypothesis-generator', 'validator'];
+  const researchRoles = [
+    'data-collector',
+    'pattern-analyzer',
+    'hypothesis-generator',
+    'validator',
+  ];
 
   for (const role of researchRoles) {
     await coordinator.emitSwarmCoordinationEvent({

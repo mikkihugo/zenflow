@@ -15,7 +15,10 @@ export interface RecoveryStrategy {
   priority: number;
   timeoutMs: number;
   maxRetries: number;
-  execute: (error: MemoryError, context: RecoveryContext) => Promise<RecoveryResult>;
+  execute: (
+    error: MemoryError,
+    context: RecoveryContext,
+  ) => Promise<RecoveryResult>;
 }
 
 export interface RecoveryContext {
@@ -74,7 +77,10 @@ export class RecoveryStrategyManager extends EventEmitter {
    * @param error
    * @param context
    */
-  async recover(error: MemoryError, context: RecoveryContext): Promise<RecoveryResult> {
+  async recover(
+    error: MemoryError,
+    context: RecoveryContext,
+  ): Promise<RecoveryResult> {
     const startTime = Date.now();
     this.emit('recoveryStarted', { error, context });
 
@@ -100,7 +106,11 @@ export class RecoveryStrategyManager extends EventEmitter {
         try {
           this.emit('strategyAttempted', { strategy: strategy.name, error });
 
-          const result = await this.executeWithTimeout(strategy, error, context);
+          const result = await this.executeWithTimeout(
+            strategy,
+            error,
+            context,
+          );
 
           if (result?.success) {
             this.recordRecovery(error, result);
@@ -108,9 +118,16 @@ export class RecoveryStrategyManager extends EventEmitter {
             return result;
           }
 
-          this.emit('strategyFailed', { strategy: strategy.name, error, result });
+          this.emit('strategyFailed', {
+            strategy: strategy.name,
+            error,
+            result,
+          });
         } catch (strategyError) {
-          this.emit('strategyError', { strategy: strategy.name, error: strategyError });
+          this.emit('strategyError', {
+            strategy: strategy.name,
+            error: strategyError,
+          });
         }
       }
 
@@ -150,12 +167,14 @@ export class RecoveryStrategyManager extends EventEmitter {
   private async executeWithTimeout(
     strategy: RecoveryStrategy,
     error: MemoryError,
-    context: RecoveryContext
+    context: RecoveryContext,
   ): Promise<RecoveryResult> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(
-          new Error(`Recovery strategy '${strategy.name}' timed out after ${strategy.timeoutMs}ms`)
+          new Error(
+            `Recovery strategy '${strategy.name}' timed out after ${strategy.timeoutMs}ms`,
+          ),
         );
       }, strategy.timeoutMs);
 
@@ -179,7 +198,7 @@ export class RecoveryStrategyManager extends EventEmitter {
    */
   private findApplicableStrategies(error: MemoryError): RecoveryStrategy[] {
     return Array.from(this.strategies.values()).filter((strategy) =>
-      strategy.applicableErrors.includes(error.code)
+      strategy.applicableErrors.includes(error.code),
     );
   }
 
@@ -221,7 +240,7 @@ export class RecoveryStrategyManager extends EventEmitter {
         const startTime = Date.now();
         const backendId = error.context.backendId || error.context.nodeId;
 
-        if (!backendId || !context.backends.has(backendId)) {
+        if (!(backendId && context.backends.has(backendId))) {
           return {
             success: false,
             strategy: 'node_reconnection',
@@ -240,7 +259,10 @@ export class RecoveryStrategyManager extends EventEmitter {
           // Test connectivity with method compatibility
           if ('get' in backend && typeof backend.get === 'function') {
             await backend.get('__health_check__');
-          } else if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+          } else if (
+            'retrieve' in backend &&
+            typeof backend.retrieve === 'function'
+          ) {
             await backend.retrieve('__health_check__');
           } else {
             throw new Error('Backend lacks required methods');
@@ -269,7 +291,10 @@ export class RecoveryStrategyManager extends EventEmitter {
     this.registerStrategy({
       name: 'data_repair',
       description: 'Attempt to repair corrupted or inconsistent data',
-      applicableErrors: [MemoryErrorCode['DATA_CORRUPTION'], MemoryErrorCode['DATA_INCONSISTENCY']],
+      applicableErrors: [
+        MemoryErrorCode['DATA_CORRUPTION'],
+        MemoryErrorCode['DATA_INCONSISTENCY'],
+      ],
       priority: 9,
       timeoutMs: 15000,
       maxRetries: 2,
@@ -297,7 +322,10 @@ export class RecoveryStrategyManager extends EventEmitter {
               let data;
               if ('get' in backend && typeof backend.get === 'function') {
                 data = await backend.get(key);
-              } else if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+              } else if (
+                'retrieve' in backend &&
+                typeof backend.retrieve === 'function'
+              ) {
                 data = await backend.retrieve(key);
               } else {
                 continue; // Skip backends without compatible methods
@@ -305,7 +333,10 @@ export class RecoveryStrategyManager extends EventEmitter {
 
               if (data !== null) {
                 const dataKey = JSON.stringify(data);
-                dataVersions?.set(dataKey, (dataVersions?.get(dataKey) || 0) + 1);
+                dataVersions?.set(
+                  dataKey,
+                  (dataVersions?.get(dataKey) || 0) + 1,
+                );
                 healthyBackends.push({ id, backend, data } as never);
               }
             } catch {
@@ -340,20 +371,29 @@ export class RecoveryStrategyManager extends EventEmitter {
               try {
                 if ('set' in backend && typeof backend.set === 'function') {
                   await backend.set(key, consensusData);
-                } else if ('store' in backend && typeof backend.store === 'function') {
+                } else if (
+                  'store' in backend &&
+                  typeof backend.store === 'function'
+                ) {
                   await backend.store(key, consensusData);
                 } else {
                   throw new Error('Backend lacks required set/store method');
                 }
                 return { id, status: 'repaired' };
               } catch (repairError) {
-                return { id, status: 'failed', error: (repairError as Error).message };
+                return {
+                  id,
+                  status: 'failed',
+                  error: (repairError as Error).message,
+                };
               }
-            }
+            },
           );
 
           const repairResults = await Promise.all(repairPromises);
-          const successfulRepairs = repairResults?.filter((r) => r.status === 'repaired').length;
+          const successfulRepairs = repairResults?.filter(
+            (r) => r.status === 'repaired',
+          ).length;
 
           return {
             success: successfulRepairs > 0,
@@ -436,7 +476,10 @@ export class RecoveryStrategyManager extends EventEmitter {
     this.registerStrategy({
       name: 'retry_with_backoff',
       description: 'Retry failed operation with exponential backoff',
-      applicableErrors: [MemoryErrorCode['CONSENSUS_TIMEOUT'], MemoryErrorCode['SYSTEM_OVERLOAD']],
+      applicableErrors: [
+        MemoryErrorCode['CONSENSUS_TIMEOUT'],
+        MemoryErrorCode['SYSTEM_OVERLOAD'],
+      ],
       priority: 3,
       timeoutMs: 30000,
       maxRetries: 5,
@@ -460,10 +503,15 @@ export class RecoveryStrategyManager extends EventEmitter {
                   let data;
                   if ('get' in backend && typeof backend.get === 'function') {
                     data = await backend.get(context.key);
-                  } else if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+                  } else if (
+                    'retrieve' in backend &&
+                    typeof backend.retrieve === 'function'
+                  ) {
                     data = await backend.retrieve(context.key);
                   } else {
-                    throw new Error('Backend lacks required get/retrieve method');
+                    throw new Error(
+                      'Backend lacks required get/retrieve method',
+                    );
                   }
                   return {
                     success: true,
@@ -478,7 +526,10 @@ export class RecoveryStrategyManager extends EventEmitter {
                 case 'write':
                   if ('set' in backend && typeof backend.set === 'function') {
                     await backend.set(context.key, context.originalValue);
-                  } else if ('store' in backend && typeof backend.store === 'function') {
+                  } else if (
+                    'store' in backend &&
+                    typeof backend.store === 'function'
+                  ) {
                     await backend.store(context.key, context.originalValue);
                   } else {
                     throw new Error('Backend lacks required set/store method');
@@ -529,7 +580,8 @@ export class RecoveryStrategyManager extends EventEmitter {
     // Graceful Degradation Strategy
     this.registerStrategy({
       name: 'graceful_degradation',
-      description: 'Degrade functionality gracefully to maintain partial service',
+      description:
+        'Degrade functionality gracefully to maintain partial service',
       applicableErrors: [
         MemoryErrorCode['RESOURCE_EXHAUSTED'],
         MemoryErrorCode['BACKEND_CAPACITY_EXCEEDED'],
@@ -587,7 +639,9 @@ export class RecoveryStrategyManager extends EventEmitter {
    */
   getStats() {
     const totalRecoveries = this.recoveryHistory.length;
-    const successfulRecoveries = this.recoveryHistory.filter((r) => r.result.success).length;
+    const successfulRecoveries = this.recoveryHistory.filter(
+      (r) => r.result.success,
+    ).length;
     const strategyCounts = new Map();
 
     this.recoveryHistory.forEach((record) => {
@@ -598,7 +652,8 @@ export class RecoveryStrategyManager extends EventEmitter {
     return {
       total: totalRecoveries,
       successful: successfulRecoveries,
-      successRate: totalRecoveries > 0 ? successfulRecoveries / totalRecoveries : 0,
+      successRate:
+        totalRecoveries > 0 ? successfulRecoveries / totalRecoveries : 0,
       strategies: Object.fromEntries(strategyCounts),
       registeredStrategies: this.strategies.size,
     };
@@ -610,6 +665,8 @@ export class RecoveryStrategyManager extends EventEmitter {
    * @param error
    */
   getRecommendedStrategies(error: MemoryError): RecoveryStrategy[] {
-    return this.findApplicableStrategies(error).sort((a, b) => b.priority - a.priority);
+    return this.findApplicableStrategies(error).sort(
+      (a, b) => b.priority - a.priority,
+    );
   }
 }

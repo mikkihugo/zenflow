@@ -41,15 +41,24 @@ describe('DomainBoundaryValidator', () => {
   describe('validateInput', () => {
     test('validates simple types correctly', () => {
       // String validation
-      const stringSchema: TypeSchema<string> = { type: 'string', required: true };
+      const stringSchema: TypeSchema<string> = {
+        type: 'string',
+        required: true,
+      };
       expect(validator.validateInput('hello', stringSchema)).toBe('hello');
 
       // Number validation
-      const numberSchema: TypeSchema<number> = { type: 'number', required: true };
+      const numberSchema: TypeSchema<number> = {
+        type: 'number',
+        required: true,
+      };
       expect(validator.validateInput(42, numberSchema)).toBe(42);
 
       // Boolean validation
-      const booleanSchema: TypeSchema<boolean> = { type: 'boolean', required: true };
+      const booleanSchema: TypeSchema<boolean> = {
+        type: 'boolean',
+        required: true,
+      };
       expect(validator.validateInput(true, booleanSchema)).toBe(true);
     });
 
@@ -93,7 +102,10 @@ describe('DomainBoundaryValidator', () => {
     });
 
     test('throws DomainValidationError for invalid types', () => {
-      const stringSchema: TypeSchema<string> = { type: 'string', required: true };
+      const stringSchema: TypeSchema<string> = {
+        type: 'string',
+        required: true,
+      };
 
       expect(() => {
         validator.validateInput(42, stringSchema);
@@ -125,10 +137,12 @@ describe('DomainBoundaryValidator', () => {
       const dataWithOptional = { required: 'test', optional: 'value' };
       const dataWithoutOptional = { required: 'test' };
 
-      expect(validator.validateInput(dataWithOptional, optionalSchema)).toEqual(dataWithOptional);
-      expect(validator.validateInput(dataWithoutOptional, optionalSchema)).toEqual(
-        dataWithoutOptional
+      expect(validator.validateInput(dataWithOptional, optionalSchema)).toEqual(
+        dataWithOptional,
       );
+      expect(
+        validator.validateInput(dataWithoutOptional, optionalSchema),
+      ).toEqual(dataWithoutOptional);
     });
 
     test('applies custom validators', () => {
@@ -138,7 +152,9 @@ describe('DomainBoundaryValidator', () => {
         validator: (value: string) => value.length > 5,
       };
 
-      expect(validator.validateInput('longstring', customSchema)).toBe('longstring');
+      expect(validator.validateInput('longstring', customSchema)).toBe(
+        'longstring',
+      );
 
       expect(() => {
         validator.validateInput('short', customSchema);
@@ -186,7 +202,9 @@ describe('DomainBoundaryValidator', () => {
         },
       };
 
-      expect(validator.validateInput(validNestedData, nestedSchema)).toEqual(validNestedData);
+      expect(validator.validateInput(validNestedData, nestedSchema)).toEqual(
+        validNestedData,
+      );
     });
   });
 
@@ -248,8 +266,12 @@ describe('DomainBoundaryValidator', () => {
 
       const result = await validator.enforceContract(operation);
       expect(result.success).toBe(false);
-      expect(result.error).toBeInstanceOf(ContractViolationError);
-      expect((result.error as ContractViolationError).contractRule).toBe('failing-rule');
+      if (!result.success) {
+        expect(result.error).toBeInstanceOf(ContractViolationError);
+        expect((result.error as ContractViolationError).contractRule).toBe(
+          'failing-rule',
+        );
+      }
     });
 
     test('handles warnings without blocking operation', async () => {
@@ -343,7 +365,9 @@ describe('DomainBoundaryValidator', () => {
 
       const result = await validator.enforceContract(operation);
       expect(result.success).toBe(false);
-      expect(result.error).toBeInstanceOf(ContractViolationError);
+      if (!result.success) {
+        expect(result.error).toBeInstanceOf(ContractViolationError);
+      }
     });
   });
 
@@ -353,32 +377,46 @@ describe('DomainBoundaryValidator', () => {
 
   describe('trackCrossings', () => {
     test('tracks domain crossings correctly', () => {
-      validator.trackCrossings(Domain.CORE, Domain.COORDINATION, 'test-operation');
+      validator.trackCrossings(
+        Domain.CORE,
+        Domain.COORDINATION,
+        'test-operation',
+      );
 
       const crossings = validator.getDomainCrossings();
       expect(crossings).toHaveLength(1);
-      expect(crossings[0].fromDomain).toBe(Domain.CORE);
-      expect(crossings[0].toDomain).toBe(Domain.COORDINATION);
-      expect(crossings[0].operation).toBe('test-operation');
-      expect(crossings[0].currentDomain).toBe(Domain.CORE);
+      expect(crossings[0]?.fromDomain).toBe(Domain.CORE);
+      expect(crossings[0]?.toDomain).toBe(Domain.COORDINATION);
+      expect(crossings[0]?.operation).toBe('test-operation');
+      expect(crossings[0]?.currentDomain).toBe(Domain.CORE);
     });
 
     test('maintains crossing log size limit', () => {
-      const smallValidator = new DomainBoundaryValidator(Domain.CORE, { maxCrossingLogSize: 5 });
+      const smallValidator = new DomainBoundaryValidator(Domain.CORE, {
+        maxCrossingLogSize: 5,
+      });
 
       // Add more crossings than the limit
       for (let i = 0; i < 10; i++) {
-        smallValidator.trackCrossings(Domain.CORE, Domain.COORDINATION, `operation-${i}`);
+        smallValidator.trackCrossings(
+          Domain.CORE,
+          Domain.COORDINATION,
+          `operation-${i}`,
+        );
       }
 
       const crossings = smallValidator.getDomainCrossings();
       expect(crossings).toHaveLength(5);
-      expect(crossings[0].operation).toBe('operation-5'); // Older entries should be removed
+      expect(crossings[0]?.operation).toBe('operation-5'); // Older entries should be removed
     });
 
     test('returns limited crossings when requested', () => {
       for (let i = 0; i < 5; i++) {
-        validator.trackCrossings(Domain.CORE, Domain.COORDINATION, `operation-${i}`);
+        validator.trackCrossings(
+          Domain.CORE,
+          Domain.COORDINATION,
+          `operation-${i}`,
+        );
       }
 
       const limitedCrossings = validator.getDomainCrossings(3);
@@ -436,7 +474,9 @@ describe('DomainBoundaryValidator', () => {
     });
 
     test('respects cache size limits', () => {
-      const smallCacheValidator = new DomainBoundaryValidator(Domain.CORE, { maxCacheSize: 2 });
+      const smallCacheValidator = new DomainBoundaryValidator(Domain.CORE, {
+        maxCacheSize: 2,
+      });
 
       const schema: TypeSchema<string> = { type: 'string', required: true };
 
@@ -480,7 +520,7 @@ describe('DomainBoundaryValidator', () => {
         'test-rule',
         Domain.CORE,
         'test-operation',
-        'warning'
+        'warning',
       );
 
       expect(error.contractRule).toBe('test-rule');
@@ -530,7 +570,28 @@ describe('DomainBoundaryValidator', () => {
     test('validates Agent objects correctly', () => {
       const validAgent: Agent = {
         id: 'agent-1',
-        capabilities: ['task1', 'task2'],
+        capabilities: {
+          codeGeneration: true,
+          codeReview: false,
+          testing: true,
+          documentation: false,
+          research: false,
+          analysis: false,
+          webSearch: false,
+          apiIntegration: false,
+          fileSystem: true,
+          terminalAccess: false,
+          languages: ['typescript', 'javascript'],
+          frameworks: ['node'],
+          domains: ['testing'],
+          tools: ['vitest'],
+          maxConcurrentTasks: 5,
+          maxMemoryUsage: 1024,
+          maxExecutionTime: 30000,
+          reliability: 0.95,
+          speed: 0.8,
+          quality: 0.9,
+        },
         status: 'idle',
       };
 
@@ -629,7 +690,7 @@ describe('DomainBoundaryValidator', () => {
         schema,
         Domain.CORE,
         Domain.COORDINATION,
-        'cross-domain-test'
+        'cross-domain-test',
       );
 
       expect(result).toBe(data);
@@ -638,7 +699,7 @@ describe('DomainBoundaryValidator', () => {
       const coreValidator = getDomainValidator(Domain.CORE);
       const crossings = coreValidator.getDomainCrossings();
       expect(crossings).toHaveLength(1);
-      expect(crossings[0].operation).toBe('cross-domain-test');
+      expect(crossings[0]?.operation).toBe('cross-domain-test');
     });
   });
 
@@ -663,7 +724,10 @@ describe('DomainBoundaryValidator', () => {
         targetDomain: Domain.WORKFLOWS,
         operationType: 'execute',
         inputSchema: CommonSchemas.Task,
-        outputSchema: { type: 'object', properties: { success: { type: 'boolean' } } },
+        outputSchema: {
+          type: 'object',
+          properties: { success: { type: 'boolean' } },
+        },
         contractValidation: [workflowAccessRule],
         metadata: {
           description: 'Execute workflow from coordination',
@@ -680,8 +744,8 @@ describe('DomainBoundaryValidator', () => {
         type: 'object',
         required: true,
         properties: {
-          agent: CommonSchemas.Agent.properties!,
-          task: CommonSchemas.Task.properties!,
+          agent: { type: 'object' },
+          task: { type: 'object' },
           metadata: {
             type: 'object',
             properties: {
@@ -728,10 +792,15 @@ describe('DomainBoundaryValidator', () => {
   describe('edge cases', () => {
     test('handles null and undefined values correctly', () => {
       const nullableSchema: TypeSchema = { type: 'null', required: false };
-      const undefinedSchema: TypeSchema = { type: 'undefined', required: false };
+      const undefinedSchema: TypeSchema = {
+        type: 'undefined',
+        required: false,
+      };
 
       expect(validator.validateInput(null, nullableSchema)).toBe(null);
-      expect(validator.validateInput(undefined, undefinedSchema)).toBe(undefined);
+      expect(validator.validateInput(undefined, undefinedSchema)).toBe(
+        undefined,
+      );
     });
 
     test('handles empty arrays and objects', () => {

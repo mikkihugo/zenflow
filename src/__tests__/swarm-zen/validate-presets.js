@@ -17,7 +17,9 @@ async function validateAllPresets() {
   for (const preset of presets) {
     try {
       // Test with the preset
-      const { stdout: testOutput } = await execAsync(`npm test -- --preset=${preset}`);
+      const { stdout: testOutput } = await execAsync(
+        `npm test -- --preset=${preset}`,
+      );
 
       // Extract test results
       const passed = testOutput.match(/(\d+) passed/)?.[1] || 0;
@@ -25,17 +27,19 @@ async function validateAllPresets() {
 
       // Run coverage for this preset
       const { stdout: coverageOutput } = await execAsync(
-        `npx nyc --reporter=json-summary npm test -- --preset=${preset}`
+        `npx nyc --reporter=json-summary npm test -- --preset=${preset}`,
       );
 
       // Read coverage data
-      const coverageData = JSON.parse(await fs.readFile('coverage/coverage-summary.json', 'utf8'));
+      const coverageData = JSON.parse(
+        await fs.readFile('coverage/coverage-summary.json', 'utf8'),
+      );
 
       results.presets[preset] = {
-        success: parseInt(failed, 10) === 0,
+        success: Number.parseInt(failed, 10) === 0,
         tests: {
-          passed: parseInt(passed, 10),
-          failed: parseInt(failed, 10),
+          passed: Number.parseInt(passed, 10),
+          failed: Number.parseInt(failed, 10),
         },
         coverage: {
           lines: coverageData.total.lines.pct,
@@ -54,7 +58,10 @@ async function validateAllPresets() {
   }
 
   // Save results
-  await fs.writeFile('preset-validation-results.json', JSON.stringify(results, null, 2));
+  await fs.writeFile(
+    'preset-validation-results.json',
+    JSON.stringify(results, null, 2),
+  );
 
   // Generate report
   await generatePresetReport(results);
@@ -65,13 +72,15 @@ async function validateAllPresets() {
 async function testPresetPerformance(preset) {
   try {
     const { stdout } = await execAsync(
-      `node test/benchmarks/benchmark-neural-models.js --preset=${preset} --iterations=3`
+      `node test/benchmarks/benchmark-neural-models.js --preset=${preset} --iterations=3`,
     );
 
     // Extract performance metrics
     const metrics = {
       initialized: stdout.includes('initialized'),
-      avgTime: parseFloat(stdout.match(/Average time: ([\d.]+)ms/)?.[1] || 0),
+      avgTime: Number.parseFloat(
+        stdout.match(/Average time: ([\d.]+)ms/)?.[1] || 0,
+      ),
       memory: stdout.match(/Memory: ([\d.]+)MB/)?.[1] || 'N/A',
     };
 

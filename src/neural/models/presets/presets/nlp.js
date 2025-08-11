@@ -7,7 +7,8 @@ export const nlpPresets = {
   // Social Media Sentiment Analysis
   sentiment_analysis_social: {
     name: 'Social Media Sentiment Analyzer',
-    description: 'Optimized for real-time sentiment analysis on social media posts',
+    description:
+      'Optimized for real-time sentiment analysis on social media posts',
     model: 'transformer',
     config: {
       dimensions: 512,
@@ -320,7 +321,7 @@ export const nlpPresets = {
 export const getNLPPreset = (presetName) => {
   if (!nlpPresets[presetName]) {
     throw new Error(
-      `NLP preset '${presetName}' not found. Available presets: ${Object.keys(nlpPresets).join(', ')}`
+      `NLP preset '${presetName}' not found. Available presets: ${Object.keys(nlpPresets).join(', ')}`,
     );
   }
   return nlpPresets[presetName];

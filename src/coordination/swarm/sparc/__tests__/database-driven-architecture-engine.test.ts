@@ -8,7 +8,9 @@
 
 import { getLogger } from '../../../../config/logging-config.ts';
 
-const logger = getLogger('coordination-swarm-sparc-tests-database-driven-architecture-enginetest');
+const logger = getLogger(
+  'coordination-swarm-sparc-tests-database-driven-architecture-enginetest',
+);
 
 /**
  * Test for Database-Driven SPARC Architecture Engine.
@@ -25,7 +27,7 @@ import type { PseudocodeStructure } from '../types/sparc-types.ts';
 class MockDatabaseAdapter {
   private tables: Map<string, any[]> = new Map();
 
-  async execute(sql: string, params?: any[]): Promise<any> {
+  async execute(sql: string, params?: unknown[]): Promise<unknown> {
     // Simple mock for table creation and data manipulation
     if (sql.includes('CREATE TABLE')) {
       const tableName = sql.match(/CREATE TABLE IF NOT EXISTS (\w+)/)?.[1];
@@ -56,7 +58,7 @@ class MockDatabaseAdapter {
     return { affectedRows: 0 };
   }
 
-  async query(sql: string, params?: any[]): Promise<any> {
+  async query(sql: string, params?: unknown[]): Promise<unknown> {
     if (sql.includes('SELECT') && params) {
       const tableName = sql.match(/FROM (\w+)/)?.[1];
       if (tableName && this.tables.has(tableName)) {
@@ -65,7 +67,7 @@ class MockDatabaseAdapter {
         if (sql.includes('WHERE') && params.length > 0) {
           // Simple mock for WHERE queries
           const record = table.find(
-            (r) => r.architecture_id === params?.[0] || r.id === params?.[0]
+            (r) => r.architecture_id === params?.[0] || r.id === params?.[0],
           );
           return { rows: record ? [record] : [] };
         }
@@ -86,13 +88,15 @@ class MockDatabaseAdapter {
 
     // Handle aggregate queries
     if (sql.includes('AVG(') || sql.includes('GROUP BY')) {
-      return { rows: [{ avg_components: 5, average_score: 0.8, pass_rate: 0.75 }] };
+      return {
+        rows: [{ avg_components: 5, average_score: 0.8, pass_rate: 0.75 }],
+      };
     }
 
     return { rows: [] };
   }
 
-  private createMockRecord(params: any[]): any {
+  private createMockRecord(params: unknown[]): any {
     return {
       id: params?.[0] || nanoid(),
       architecture_id: params?.[1] || nanoid(),
@@ -113,10 +117,12 @@ class MockDatabaseAdapter {
 
 // Mock logger
 const mockLogger = {
-  info: (_msg: string, ..._args: any[]) => {},
-  error: (msg: string, ...args: any[]) => logger.error(`[ERROR] ${msg}`, ...args),
-  debug: (_msg: string, ..._args: any[]) => {},
-  warn: (msg: string, ...args: any[]) => logger.warn(`[WARN] ${msg}`, ...args),
+  info: (_msg: string, ..._args: unknown[]) => {},
+  error: (msg: string, ...args: unknown[]) =>
+    logger.error(`[ERROR] ${msg}`, ...args),
+  debug: (_msg: string, ..._args: unknown[]) => {},
+  warn: (msg: string, ...args: unknown[]) =>
+    logger.warn(`[WARN] ${msg}`, ...args),
 };
 
 /**
@@ -127,7 +133,10 @@ const mockLogger = {
 async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
   // Setup test environment
   const mockDb = new MockDatabaseAdapter();
-  const architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(mockDb, mockLogger);
+  const architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(
+    mockDb,
+    mockLogger,
+  );
 
   try {
     await architectureEngine.initialize();
@@ -138,11 +147,25 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
           name: 'SwarmCoordinator',
           purpose: 'Coordinate agent tasks and resource allocation',
           inputs: [
-            { name: 'agents', type: 'Agent[]', description: 'Available agents', optional: false },
-            { name: 'tasks', type: 'Task[]', description: 'Pending tasks', optional: false },
+            {
+              name: 'agents',
+              type: 'Agent[]',
+              description: 'Available agents',
+              optional: false,
+            },
+            {
+              name: 'tasks',
+              type: 'Task[]',
+              description: 'Pending tasks',
+              optional: false,
+            },
           ],
           outputs: [
-            { name: 'assignments', type: 'TaskAssignment[]', description: 'Task assignments' },
+            {
+              name: 'assignments',
+              type: 'TaskAssignment[]',
+              description: 'Task assignments',
+            },
           ],
           steps: [
             {
@@ -183,7 +206,12 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
           name: 'TaskScheduler',
           purpose: 'Schedule tasks based on priority and dependencies',
           inputs: [
-            { name: 'tasks', type: 'Task[]', description: 'Tasks to schedule', optional: false },
+            {
+              name: 'tasks',
+              type: 'Task[]',
+              description: 'Tasks to schedule',
+              optional: false,
+            },
             {
               name: 'dependencies',
               type: 'Dependency[]',
@@ -191,7 +219,13 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
               optional: true,
             },
           ],
-          outputs: [{ name: 'schedule', type: 'Schedule', description: 'Execution schedule' }],
+          outputs: [
+            {
+              name: 'schedule',
+              type: 'Schedule',
+              description: 'Execution schedule',
+            },
+          ],
           steps: [
             {
               stepNumber: 1,
@@ -250,7 +284,13 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
           methods: [
             {
               name: 'register',
-              parameters: [{ name: 'agent', type: 'Agent', description: 'Agent to register' }],
+              parameters: [
+                {
+                  name: 'agent',
+                  type: 'Agent',
+                  description: 'Agent to register',
+                },
+              ],
               returnType: 'void',
               visibility: 'public',
               description: 'Register new agent',
@@ -258,14 +298,24 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
             {
               name: 'findByCapability',
               parameters: [
-                { name: 'capability', type: 'string', description: 'Required capability' },
+                {
+                  name: 'capability',
+                  type: 'string',
+                  description: 'Required capability',
+                },
               ],
               returnType: 'Agent[]',
               visibility: 'public',
               description: 'Find agents by capability',
             },
           ],
-          relationships: [{ type: 'uses', target: 'Agent', description: 'Stores agent instances' }],
+          relationships: [
+            {
+              type: 'uses',
+              target: 'Agent',
+              description: 'Stores agent instances',
+            },
+          ],
         },
         {
           name: 'TaskQueue',
@@ -287,7 +337,9 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
           methods: [
             {
               name: 'enqueue',
-              parameters: [{ name: 'task', type: 'Task', description: 'Task to add' }],
+              parameters: [
+                { name: 'task', type: 'Task', description: 'Task to add' },
+              ],
               returnType: 'void',
               visibility: 'public',
               description: 'Add task to queue',
@@ -301,7 +353,11 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
             },
           ],
           relationships: [
-            { type: 'contains', target: 'Task', description: 'Manages task instances' },
+            {
+              type: 'contains',
+              target: 'Task',
+              description: 'Manages task instances',
+            },
           ],
         },
       ],
@@ -322,12 +378,15 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
       ],
       dependencies: [],
     };
-    const architecture = await architectureEngine.designArchitecture(testPseudocode);
-    const validation = await architectureEngine.validateArchitecturalConsistency(
-      architecture.systemArchitecture
-    );
+    const architecture =
+      await architectureEngine.designArchitecture(testPseudocode);
+    const validation =
+      await architectureEngine.validateArchitecturalConsistency(
+        architecture.systemArchitecture,
+      );
     if (architecture.id) {
-      const _retrievedArchitecture = await architectureEngine.getArchitectureById(architecture.id);
+      const _retrievedArchitecture =
+        await architectureEngine.getArchitectureById(architecture.id);
     }
     const _searchResults = await architectureEngine.searchArchitectures({
       domain: 'swarm-coordination',

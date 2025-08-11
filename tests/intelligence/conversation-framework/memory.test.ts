@@ -7,12 +7,12 @@
 
 import { vi } from 'vitest';
 import type { MemoryBackend } from '@/memory/backends/memory-backend';
-import { ConversationMemoryImpl } from '../../../src/intelligence/conversation-framework/memory';
+import { ConversationMemoryImpl } from '../../../src/intelligence/conversation-framework/memory.js';
 import type {
   ConversationSession,
   ConversationStatus,
-} from '../../../src/intelligence/conversation-framework/types';
-import type { AgentId } from '../../../src/types/agent-types';
+} from '../../../src/intelligence/conversation-framework/types.js';
+import type { AgentId } from '../../../src/types/agent-types.js';
 
 interface MockMemoryBackend extends MemoryBackend {
   store: vi.MockedFunction<MemoryBackend['store']>;
@@ -37,30 +37,40 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
     const storage = new Map<string, unknown>();
 
     mockBackend = {
-      store: vi.fn().mockImplementation(async (key: string, value: unknown, namespace?: string) => {
-        const fullKey = namespace ? `${namespace}:${key}` : key;
-        storage.set(fullKey, JSON.parse(JSON.stringify(value))); // Deep clone to simulate persistence
-        return { id: fullKey, timestamp: Date.now(), status: 'success' };
-      }),
-      retrieve: vi.fn().mockImplementation(async (key: string, namespace?: string) => {
-        const fullKey = namespace ? `${namespace}:${key}` : key;
-        const value = storage.get(fullKey);
-        return value ? JSON.parse(JSON.stringify(value)) : null; // Deep clone to simulate retrieval
-      }),
-      delete: vi.fn().mockImplementation(async (key: string, namespace?: string) => {
-        const fullKey = namespace ? `${namespace}:${key}` : key;
-        return storage.delete(fullKey);
-      }),
-      search: vi.fn().mockImplementation(async (pattern: string, namespace?: string) => {
-        const results: Record<string, unknown> = {};
-        const prefix = namespace ? `${namespace}:` : '';
-        for (const [key, value] of storage.entries()) {
-          if (key.startsWith(prefix) && key.includes(pattern)) {
-            results[key] = JSON.parse(JSON.stringify(value));
+      store: vi
+        .fn()
+        .mockImplementation(
+          async (key: string, value: unknown, namespace?: string) => {
+            const fullKey = namespace ? `${namespace}:${key}` : key;
+            storage.set(fullKey, JSON.parse(JSON.stringify(value))); // Deep clone to simulate persistence
+            return { id: fullKey, timestamp: Date.now(), status: 'success' };
+          },
+        ),
+      retrieve: vi
+        .fn()
+        .mockImplementation(async (key: string, namespace?: string) => {
+          const fullKey = namespace ? `${namespace}:${key}` : key;
+          const value = storage.get(fullKey);
+          return value ? JSON.parse(JSON.stringify(value)) : null; // Deep clone to simulate retrieval
+        }),
+      delete: vi
+        .fn()
+        .mockImplementation(async (key: string, namespace?: string) => {
+          const fullKey = namespace ? `${namespace}:${key}` : key;
+          return storage.delete(fullKey);
+        }),
+      search: vi
+        .fn()
+        .mockImplementation(async (pattern: string, namespace?: string) => {
+          const results: Record<string, unknown> = {};
+          const prefix = namespace ? `${namespace}:` : '';
+          for (const [key, value] of storage.entries()) {
+            if (key.startsWith(prefix) && key.includes(pattern)) {
+              results[key] = JSON.parse(JSON.stringify(value));
+            }
           }
-        }
-        return results;
-      }),
+          return results;
+        }),
     };
 
     memory = new ConversationMemoryImpl(mockBackend);
@@ -145,7 +155,9 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       // Verify context is preserved
       expect(retrieved?.context.goal).toBe(conversation.context.goal);
       expect(retrieved?.context.domain).toBe(conversation.context.domain);
-      expect(retrieved?.context.constraints).toEqual(conversation.context.constraints);
+      expect(retrieved?.context.constraints).toEqual(
+        conversation.context.constraints,
+      );
 
       // Verify messages are preserved with exact content
       expect(retrieved?.messages).toHaveLength(1);
@@ -262,7 +274,9 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       }
 
       // Act - Search for agent-1's conversations
-      const agent1Conversations = await memory.searchConversations({ agentId: 'agent-1' });
+      const agent1Conversations = await memory.searchConversations({
+        agentId: 'agent-1',
+      });
 
       // Assert - Should find conversations where agent-1 participated
       expect(agent1Conversations).toHaveLength(2);
@@ -331,7 +345,9 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       // Verify no overlap between pages
       const firstPageIds = firstPage.map((c) => c.id);
       const secondPageIds = secondPage.map((c) => c.id);
-      const intersection = firstPageIds.filter((id) => secondPageIds.includes(id));
+      const intersection = firstPageIds.filter((id) =>
+        secondPageIds.includes(id),
+      );
       expect(intersection).toHaveLength(0);
     });
   });
@@ -396,7 +412,9 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       }
 
       // Act
-      const reviewConversations = await memory.searchConversations({ pattern: 'code-review' });
+      const reviewConversations = await memory.searchConversations({
+        pattern: 'code-review',
+      });
 
       // Assert
       expect(reviewConversations).toHaveLength(1);
@@ -430,7 +448,12 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
             timestamp: new Date(),
             content: { text: 'Original message' },
             messageType: 'question',
-            metadata: { priority: 'medium', requiresResponse: false, context: {} as any, tags: [] },
+            metadata: {
+              priority: 'medium',
+              requiresResponse: false,
+              context: {} as any,
+              tags: [],
+            },
           },
         ],
         outcomes: [],
@@ -476,26 +499,35 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       await memory.updateConversation('conv-update-test', updates);
 
       // Assert
-      const updatedConversation = await memory.getConversation('conv-update-test');
+      const updatedConversation =
+        await memory.getConversation('conv-update-test');
 
       expect(updatedConversation).not.toBeNull();
       expect(updatedConversation?.status).toBe('completed');
-      expect(updatedConversation?.endTime).toEqual(new Date('2024-01-01T11:00:00Z'));
+      expect(updatedConversation?.endTime).toEqual(
+        new Date('2024-01-01T11:00:00Z'),
+      );
       expect(updatedConversation?.messages).toHaveLength(2);
       expect(updatedConversation?.metrics.messageCount).toBe(2);
-      expect(updatedConversation?.metrics.participationByAgent['agent-2']).toBe(1);
+      expect(updatedConversation?.metrics.participationByAgent['agent-2']).toBe(
+        1,
+      );
 
       // Verify original data is preserved
       expect(updatedConversation?.title).toBe('Original Title');
       expect(updatedConversation?.context.goal).toBe('Original goal');
-      expect(updatedConversation?.messages[0].content.text).toBe('Original message');
-      expect(updatedConversation?.messages[1].content.text).toBe('New message after update');
+      expect(updatedConversation?.messages[0].content.text).toBe(
+        'Original message',
+      );
+      expect(updatedConversation?.messages[1].content.text).toBe(
+        'New message after update',
+      );
     });
 
     it('should throw error when updating non-existent conversation', async () => {
       // Act & Assert
       await expect(
-        memory.updateConversation('non-existent', { status: 'completed' })
+        memory.updateConversation('non-existent', { status: 'completed' }),
       ).rejects.toThrow('Conversation non-existent not found');
     });
   });
@@ -542,14 +574,20 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       expect(afterDelete).toBeNull();
 
       // Verify it's removed from agent indexes
-      const agent1Conversations = await memory.searchConversations({ agentId: 'agent-1' });
-      const deletedConvExists = agent1Conversations.some((c) => c.id === 'conv-delete-test');
+      const agent1Conversations = await memory.searchConversations({
+        agentId: 'agent-1',
+      });
+      const deletedConvExists = agent1Conversations.some(
+        (c) => c.id === 'conv-delete-test',
+      );
       expect(deletedConvExists).toBe(false);
     });
 
     it('should handle deletion of non-existent conversation gracefully', async () => {
       // Act & Assert - Should not throw
-      await expect(memory.deleteConversation('non-existent')).resolves.toBeUndefined();
+      await expect(
+        memory.deleteConversation('non-existent'),
+      ).resolves.toBeUndefined();
     });
   });
 
@@ -593,7 +631,9 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
 
       const retrieved2 = await memory.getConversation('conv-consistency-test');
 
-      const searchResults = await memory.searchConversations({ agentId: 'agent-1' });
+      const searchResults = await memory.searchConversations({
+        agentId: 'agent-1',
+      });
 
       // Assert - Verify consistency throughout all operations
       expect(retrieved1?.status).toBe('active');
@@ -603,8 +643,12 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       expect(retrieved2?.metrics.messageCount).toBe(5);
       expect(retrieved2?.title).toBe(conversation.title); // Unchanged
 
-      expect(searchResults.some((c) => c.id === 'conv-consistency-test')).toBe(true);
-      const foundConv = searchResults.find((c) => c.id === 'conv-consistency-test');
+      expect(searchResults.some((c) => c.id === 'conv-consistency-test')).toBe(
+        true,
+      );
+      const foundConv = searchResults.find(
+        (c) => c.id === 'conv-consistency-test',
+      );
       expect(foundConv?.status).toBe('paused');
       expect(foundConv?.metrics.messageCount).toBe(5);
     });

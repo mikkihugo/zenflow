@@ -7,7 +7,7 @@ export class NeuralError extends Error {
   constructor(
     message: string,
     public readonly code: string = 'NEURAL_ERROR',
-    public readonly details?: Record<string, unknown>
+    public readonly details?: Record<string, unknown>,
   ) {
     super(message);
     this.name = 'NeuralError';

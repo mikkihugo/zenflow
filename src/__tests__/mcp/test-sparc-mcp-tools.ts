@@ -13,8 +13,9 @@ const logger = getLogger('test-sparc-mcp-tools');
 async function testSPARCMCPTools() {
   try {
     // Import MCP tools
-    const createSPARCTools = (await import('./interfaces/mcp/tools/sparc-integration-tools'))
-      .default;
+    const createSPARCTools = (
+      await import('./interfaces/mcp/tools/sparc-integration-tools')
+    ).default;
 
     // Create mock document service
     const mockDocumentService = {} as any;
@@ -27,14 +28,16 @@ async function testSPARCMCPTools() {
       (tool) =>
         tool.name.startsWith('sparc_generate_pseudocode') ||
         tool.name.startsWith('sparc_validate_pseudocode') ||
-        tool.name.startsWith('sparc_generate_algorithms_only')
+        tool.name.startsWith('sparc_generate_algorithms_only'),
     );
     pseudocodeTools.forEach((tool) => {
       console.log(`Available pseudocode tool: ${tool.name}`);
     });
 
     // Test pseudocode generation tool
-    const generateTool = tools.find((tool) => tool.name === 'sparc_generate_pseudocode');
+    const generateTool = tools.find(
+      (tool) => tool.name === 'sparc_generate_pseudocode',
+    );
     if (generateTool) {
       const testSpec = {
         id: 'mcp-test-spec',
@@ -72,7 +75,9 @@ async function testSPARCMCPTools() {
 
       if (result?.success) {
         // Test validation tool with the generated result
-        const validateTool = tools.find((tool) => tool.name === 'sparc_validate_pseudocode');
+        const validateTool = tools.find(
+          (tool) => tool.name === 'sparc_validate_pseudocode',
+        );
         if (validateTool) {
           const validationResult = await validateTool.handler({
             pseudocodeStructure: {
@@ -94,7 +99,9 @@ async function testSPARCMCPTools() {
     }
 
     // Test lightweight algorithms tool
-    const algorithmsOnlyTool = tools.find((tool) => tool.name === 'sparc_generate_algorithms_only');
+    const algorithmsOnlyTool = tools.find(
+      (tool) => tool.name === 'sparc_generate_algorithms_only',
+    );
     if (algorithmsOnlyTool) {
       const testSpec = {
         id: 'mcp-algorithms-test',
@@ -110,7 +117,9 @@ async function testSPARCMCPTools() {
         ],
       };
 
-      const result = await algorithmsOnlyTool.handler({ specification: testSpec });
+      const result = await algorithmsOnlyTool.handler({
+        specification: testSpec,
+      });
 
       if (result?.success) {
       } else {

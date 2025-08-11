@@ -63,7 +63,7 @@ class ValidationError extends ZenSwarmError {
     message: string,
     field: string | null = null,
     value: any = null,
-    expectedType: string | null = null
+    expectedType: string | null = null,
   ) {
     const details = {
       field,
@@ -111,7 +111,11 @@ class SwarmError extends ZenSwarmError {
   public swarmId: string | null;
   public operation: string | null;
 
-  constructor(message: string, swarmId: string | null = null, operation: string | null = null) {
+  constructor(
+    message: string,
+    swarmId: string | null = null,
+    operation: string | null = null,
+  ) {
     const details = { swarmId, operation };
     super(message, 'SWARM_ERROR', details);
     this.swarmId = swarmId;
@@ -125,7 +129,10 @@ class SwarmError extends ZenSwarmError {
       suggestions.push('Verify the swarm ID is correct');
       suggestions.push('Check if the swarm was properly initialized');
       suggestions.push('Use swarm_status to list available swarms');
-    } else if (this.message.includes('capacity') || this.message.includes('full')) {
+    } else if (
+      this.message.includes('capacity') ||
+      this.message.includes('full')
+    ) {
       suggestions.push('Increase the swarm maxAgents parameter');
       suggestions.push('Remove idle agents before adding new ones');
       suggestions.push('Consider using multiple swarms for load distribution');
@@ -154,7 +161,7 @@ class AgentError extends ZenSwarmError {
     message: string,
     agentId: string | null = null,
     agentType: string | null = null,
-    operation: string | null = null
+    operation: string | null = null,
   ) {
     const details = { agentId, agentType, operation };
     super(message, 'AGENT_ERROR', details);
@@ -170,7 +177,10 @@ class AgentError extends ZenSwarmError {
       suggestions.push('Verify the agent ID is correct');
       suggestions.push('Check if the agent was properly spawned');
       suggestions.push('Use agent_list to see available agents');
-    } else if (this.message.includes('busy') || this.message.includes('unavailable')) {
+    } else if (
+      this.message.includes('busy') ||
+      this.message.includes('unavailable')
+    ) {
       suggestions.push('Wait for the agent to complete current tasks');
       suggestions.push('Spawn additional agents for parallel processing');
       suggestions.push('Check agent status before assignment');
@@ -203,7 +213,7 @@ class TaskError extends ZenSwarmError {
     message: string,
     taskId: string | null = null,
     taskType: string | null = null,
-    operation: string | null = null
+    operation: string | null = null,
   ) {
     const details = { taskId, taskType, operation };
     super(message, 'TASK_ERROR', details);
@@ -252,7 +262,7 @@ class NeuralError extends ZenSwarmError {
     message: string,
     networkId: string | null = null,
     operation: string | null = null,
-    modelType: string | null = null
+    modelType: string | null = null,
   ) {
     const details = { networkId, operation, modelType };
     super(message, 'NEURAL_ERROR', details);
@@ -264,7 +274,10 @@ class NeuralError extends ZenSwarmError {
   override getSuggestions() {
     const suggestions: string[] = [];
 
-    if (this.message.includes('not available') || this.message.includes('not loaded')) {
+    if (
+      this.message.includes('not available') ||
+      this.message.includes('not loaded')
+    ) {
       suggestions.push('Ensure neural network features are enabled');
       suggestions.push('Check WASM neural module loading');
       suggestions.push('Verify system supports neural operations');
@@ -296,7 +309,11 @@ class WasmError extends ZenSwarmError {
   public module: string | null;
   public operation: string | null;
 
-  constructor(message: string, module: string | null = null, operation: string | null = null) {
+  constructor(
+    message: string,
+    module: string | null = null,
+    operation: string | null = null,
+  ) {
     const details = { module, operation };
     super(message, 'WASM_ERROR', details);
     this.module = module;
@@ -306,7 +323,10 @@ class WasmError extends ZenSwarmError {
   override getSuggestions() {
     const suggestions: string[] = [];
 
-    if (this.message.includes('not loaded') || this.message.includes('not found')) {
+    if (
+      this.message.includes('not loaded') ||
+      this.message.includes('not found')
+    ) {
       suggestions.push('Check WASM module availability');
       suggestions.push('Verify module loading sequence');
       suggestions.push('Ensure WASM runtime is supported');
@@ -338,7 +358,11 @@ class ConfigurationError extends ZenSwarmError {
   public configKey: string | null;
   public configValue: any;
 
-  constructor(message: string, configKey: string | null = null, configValue: any = null) {
+  constructor(
+    message: string,
+    configKey: string | null = null,
+    configValue: any = null,
+  ) {
     const details = { configKey, configValue };
     super(message, 'CONFIGURATION_ERROR', details);
     this.configKey = configKey;
@@ -365,7 +389,11 @@ class NetworkError extends ZenSwarmError {
   public endpoint: string | null;
   public statusCode: number | null;
 
-  constructor(message: string, endpoint: string | null = null, statusCode: number | null = null) {
+  constructor(
+    message: string,
+    endpoint: string | null = null,
+    statusCode: number | null = null,
+  ) {
     const details = { endpoint, statusCode };
     super(message, 'NETWORK_ERROR', details);
     this.endpoint = endpoint;
@@ -404,7 +432,11 @@ class PersistenceError extends ZenSwarmError {
   public operation: string | null;
   public table: string | null;
 
-  constructor(message: string, operation: string | null = null, table: string | null = null) {
+  constructor(
+    message: string,
+    operation: string | null = null,
+    table: string | null = null,
+  ) {
     const details = { operation, table };
     super(message, 'PERSISTENCE_ERROR', details);
     this.operation = operation;
@@ -414,15 +446,24 @@ class PersistenceError extends ZenSwarmError {
   override getSuggestions() {
     const suggestions: string[] = [];
 
-    if (this.message.includes('constraint') || this.message.includes('unique')) {
+    if (
+      this.message.includes('constraint') ||
+      this.message.includes('unique')
+    ) {
       suggestions.push('Check for duplicate entries');
       suggestions.push('Verify unique key constraints');
       suggestions.push('Use update instead of insert for existing records');
-    } else if (this.message.includes('not found') || this.message.includes('no such table')) {
+    } else if (
+      this.message.includes('not found') ||
+      this.message.includes('no such table')
+    ) {
       suggestions.push('Verify database schema is initialized');
       suggestions.push('Run database migrations');
       suggestions.push('Check table name spelling');
-    } else if (this.message.includes('locked') || this.message.includes('busy')) {
+    } else if (
+      this.message.includes('locked') ||
+      this.message.includes('busy')
+    ) {
       suggestions.push('Retry the operation after a delay');
       suggestions.push('Check for long-running transactions');
       suggestions.push('Optimize database queries');
@@ -448,7 +489,7 @@ class ResourceError extends ZenSwarmError {
     message: string,
     resourceType: string | null = null,
     currentUsage: number | null = null,
-    limit: number | null = null
+    limit: number | null = null,
   ) {
     const details = { resourceType, currentUsage, limit };
     super(message, 'RESOURCE_ERROR', details);
@@ -493,7 +534,7 @@ class ConcurrencyError extends ZenSwarmError {
   constructor(
     message: string,
     operation: string | null = null,
-    conflictType: string | null = null
+    conflictType: string | null = null,
   ) {
     const details = { operation, conflictType };
     super(message, 'CONCURRENCY_ERROR', details);
@@ -529,19 +570,43 @@ class ErrorFactory {
   static createError(type: string, message: string, details: any = {}) {
     switch (type) {
       case 'validation':
-        return new ValidationError(message, details.field, details.value, details.expectedType);
+        return new ValidationError(
+          message,
+          details.field,
+          details.value,
+          details.expectedType,
+        );
       case 'swarm':
         return new SwarmError(message, details.swarmId, details.operation);
       case 'agent':
-        return new AgentError(message, details.agentId, details.agentType, details.operation);
+        return new AgentError(
+          message,
+          details.agentId,
+          details.agentType,
+          details.operation,
+        );
       case 'task':
-        return new TaskError(message, details.taskId, details.taskType, details.operation);
+        return new TaskError(
+          message,
+          details.taskId,
+          details.taskType,
+          details.operation,
+        );
       case 'neural':
-        return new NeuralError(message, details.networkId, details.operation, details.modelType);
+        return new NeuralError(
+          message,
+          details.networkId,
+          details.operation,
+          details.modelType,
+        );
       case 'wasm':
         return new WasmError(message, details.module, details.operation);
       case 'configuration':
-        return new ConfigurationError(message, details.configKey, details.configValue);
+        return new ConfigurationError(
+          message,
+          details.configKey,
+          details.configValue,
+        );
       case 'network':
         return new NetworkError(message, details.endpoint, details.statusCode);
       case 'persistence':
@@ -551,10 +616,14 @@ class ErrorFactory {
           message,
           details.resourceType,
           details.currentUsage,
-          details.limit
+          details.limit,
         );
       case 'concurrency':
-        return new ConcurrencyError(message, details.operation, details.conflictType);
+        return new ConcurrencyError(
+          message,
+          details.operation,
+          details.conflictType,
+        );
       default:
         return new ZenSwarmError(message, 'GENERAL_ERROR', details);
     }
@@ -567,7 +636,11 @@ class ErrorFactory {
    * @param type
    * @param additionalContext
    */
-  static wrapError(originalError: Error, type: string, additionalContext: any = {}) {
+  static wrapError(
+    originalError: Error,
+    type: string,
+    additionalContext: any = {},
+  ) {
     const message = `${type.toUpperCase()}: ${originalError.message}`;
     const details = {
       ...additionalContext,

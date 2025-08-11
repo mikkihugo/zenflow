@@ -88,7 +88,7 @@ export class IntegratedSwarmService implements ISwarmService {
     private swarmCoordinator: SwarmCoordinator,
     private eventManager: SystemEventManager,
     private commandQueue: MCPCommandQueue,
-    private agentManager: AgentManager
+    private agentManager: AgentManager,
   ) {}
 
   async initializeSwarm(config: any): Promise<any> {
@@ -96,7 +96,7 @@ export class IntegratedSwarmService implements ISwarmService {
     const command = CommandFactory.createSwarmInitCommand(
       config,
       this,
-      this.createCommandContext()
+      this.createCommandContext(),
     );
 
     // Execute through command queue for undo support
@@ -119,7 +119,7 @@ export class IntegratedSwarmService implements ISwarmService {
           throughput: 0,
           reliability: 1,
           resourceUsage: { cpu: 0, memory: 0, network: 0 },
-        }
+        },
       );
 
       await this.eventManager.notify(swarmEvent);
@@ -162,7 +162,7 @@ export class IntegratedSwarmService implements ISwarmService {
         throughput: 0,
         reliability: 0,
         resourceUsage: { cpu: 0, memory: 0, network: 0 },
-      }
+      },
     );
 
     await this.eventManager.notify(swarmEvent);
@@ -170,7 +170,7 @@ export class IntegratedSwarmService implements ISwarmService {
 
   async coordinateSwarm(
     swarmId: string,
-    context: CoordinationContext
+    context: CoordinationContext,
   ): Promise<CoordinationResult> {
     const agentGroup = this.agentManager.getSwarmGroup(swarmId);
     if (!agentGroup) {
@@ -195,14 +195,18 @@ export class IntegratedSwarmService implements ISwarmService {
       agentConfig,
       this,
       swarmId,
-      this.createCommandContext()
+      this.createCommandContext(),
     );
 
     const result = await this.commandQueue.execute(command);
 
     if (result?.success && result?.data) {
       // Add agent to the swarm group
-      await this.agentManager.addAgentToSwarm(swarmId, result?.data?.agentId, agentConfig);
+      await this.agentManager.addAgentToSwarm(
+        swarmId,
+        result?.data?.agentId,
+        agentConfig,
+      );
     }
 
     return result?.data;
@@ -217,7 +221,12 @@ export class IntegratedSwarmService implements ISwarmService {
       sessionId: `session-${Date.now()}`,
       timestamp: new Date(),
       environment: 'development',
-      permissions: ['swarm:create', 'swarm:destroy', 'agent:spawn', 'task:orchestrate'],
+      permissions: [
+        'swarm:create',
+        'swarm:destroy',
+        'agent:spawn',
+        'task:orchestrate',
+      ],
       resources: {
         cpu: 0.8,
         memory: 0.7,
@@ -240,12 +249,15 @@ export class AgentManager extends EventEmitter {
     this.config = config;
   }
 
-  async createSwarmGroup(swarmId: string, swarmConfig: any): Promise<HierarchicalAgentGroup> {
+  async createSwarmGroup(
+    swarmId: string,
+    swarmConfig: any,
+  ): Promise<HierarchicalAgentGroup> {
     const group = AgentFactory.createHierarchicalGroup(
       swarmId,
       `Swarm-${swarmId}`,
       [],
-      this.config.agents.maxGroupDepth
+      this.config.agents.maxGroupDepth,
     );
 
     group.setLoadBalancingStrategy(this.config.agents.defaultLoadBalancing);
@@ -253,7 +265,10 @@ export class AgentManager extends EventEmitter {
     // Create initial agents based on config
     for (let i = 0 as number; i < swarmConfig?.agentCount; i++) {
       const agentId = `${swarmId}-agent-${i}`;
-      const agent = await this.createAgent(agentId, swarmConfig?.capabilities || []);
+      const agent = await this.createAgent(
+        agentId,
+        swarmConfig?.capabilities || [],
+      );
       group.addMember(agent);
       this.individualAgents.set(agentId, agent);
     }
@@ -289,13 +304,20 @@ export class AgentManager extends EventEmitter {
     return this.swarmGroups.get(swarmId);
   }
 
-  async addAgentToSwarm(swarmId: string, agentId: string, agentConfig: any): Promise<void> {
+  async addAgentToSwarm(
+    swarmId: string,
+    agentId: string,
+    agentConfig: any,
+  ): Promise<void> {
     const group = this.swarmGroups.get(swarmId);
     if (!group) {
       throw new Error(`Swarm ${swarmId} not found`);
     }
 
-    const agent = await this.createAgent(agentId, agentConfig?.capabilities || []);
+    const agent = await this.createAgent(
+      agentId,
+      agentConfig?.capabilities || [],
+    );
     group.addMember(agent);
     this.individualAgents.set(agentId, agent);
 
@@ -323,7 +345,10 @@ export class AgentManager extends EventEmitter {
     }));
   }
 
-  async executeTaskOnSwarm(swarmId: string, task: TaskDefinition): Promise<any> {
+  async executeTaskOnSwarm(
+    swarmId: string,
+    task: TaskDefinition,
+  ): Promise<any> {
     const group = this.swarmGroups.get(swarmId);
     if (!group) {
       throw new Error(`Swarm ${swarmId} not found`);
@@ -332,23 +357,31 @@ export class AgentManager extends EventEmitter {
     return group.executeTask(task);
   }
 
-  private async createAgent(agentId: string, capabilityNames: string[]): Promise<Agent> {
+  private async createAgent(
+    agentId: string,
+    capabilityNames: string[],
+  ): Promise<Agent> {
     const capabilities = capabilityNames.map((name) =>
       AgentFactory.createCapability(
         name,
         '1.0.0',
         `${name} capability`,
         {},
-        { cpu: 0.1, memory: 64, network: 10, storage: 10 }
-      )
+        { cpu: 0.1, memory: 64, network: 10, storage: 10 },
+      ),
     );
 
-    const agent = AgentFactory.createAgent(agentId, `Agent-${agentId}`, capabilities, {
-      cpu: 1.0,
-      memory: 1024,
-      network: 100,
-      storage: 1024,
-    });
+    const agent = AgentFactory.createAgent(
+      agentId,
+      `Agent-${agentId}`,
+      capabilities,
+      {
+        cpu: 1.0,
+        memory: 1024,
+        network: 100,
+        storage: 1024,
+      },
+    );
 
     await agent.initialize({
       maxConcurrentTasks: 1,
@@ -421,7 +454,9 @@ export class IntegratedPatternSystem extends EventEmitter {
   }
 
   private initializeCoordinationSystem(): void {
-    const defaultStrategy = StrategyFactory.createStrategy(this.config.swarm.defaultTopology);
+    const defaultStrategy = StrategyFactory.createStrategy(
+      this.config.swarm.defaultTopology,
+    );
     this.swarmCoordinator = new SwarmCoordinator(defaultStrategy);
   }
 
@@ -460,17 +495,22 @@ export class IntegratedPatternSystem extends EventEmitter {
       this.swarmCoordinator,
       this.eventManager,
       this.commandQueue,
-      this.agentManager
+      this.agentManager,
     );
   }
 
   private async initializeFacade(logger: any, metrics: any): Promise<void> {
     // Create real services connected to actual systems
-    const realNeuralService: INeuralService = await this.createRealNeuralService();
-    const realMemoryService: IMemoryService = await this.createRealMemoryService();
-    const realDatabaseService: IDatabaseService = await this.createRealDatabaseService();
-    const realInterfaceService: IInterfaceService = await this.createRealInterfaceService();
-    const realWorkflowService: IWorkflowService = await this.createRealWorkflowService();
+    const realNeuralService: INeuralService =
+      await this.createRealNeuralService();
+    const realMemoryService: IMemoryService =
+      await this.createRealMemoryService();
+    const realDatabaseService: IDatabaseService =
+      await this.createRealDatabaseService();
+    const realInterfaceService: IInterfaceService =
+      await this.createRealInterfaceService();
+    const realWorkflowService: IWorkflowService =
+      await this.createRealWorkflowService();
 
     this.facade = new ClaudeZenFacade(
       this.swarmService,
@@ -482,7 +522,7 @@ export class IntegratedPatternSystem extends EventEmitter {
       this.eventManager as any,
       this.commandQueue,
       logger,
-      metrics
+      metrics,
     );
   }
 
@@ -580,7 +620,10 @@ export class IntegratedPatternSystem extends EventEmitter {
     return projectResult;
   }
 
-  async executeIntegratedTask(swarmId: string, taskDefinition: any): Promise<any> {
+  async executeIntegratedTask(
+    swarmId: string,
+    taskDefinition: any,
+  ): Promise<any> {
     // Create MCP command for task execution
     const command = CommandFactory.createTaskOrchestrationCommand(
       taskDefinition,
@@ -598,7 +641,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           storage: 0.9,
           timestamp: new Date(),
         },
-      }
+      },
     );
 
     // Execute through command queue
@@ -606,7 +649,10 @@ export class IntegratedPatternSystem extends EventEmitter {
 
     if (commandResult?.success) {
       // Execute through agent system
-      const taskResult = await this.agentManager.executeTaskOnSwarm(swarmId, taskDefinition);
+      const taskResult = await this.agentManager.executeTaskOnSwarm(
+        swarmId,
+        taskDefinition,
+      );
 
       // Emit completion event
       const taskEvent = EventBuilder.createSwarmEvent(
@@ -619,7 +665,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           throughput: 1,
           reliability: 1,
           resourceUsage: commandResult?.resourceUsage,
-        }
+        },
       );
 
       await this.eventManager.notify(taskEvent);
@@ -649,7 +695,9 @@ export class IntegratedPatternSystem extends EventEmitter {
       patterns: {
         strategy: {
           active: true,
-          currentStrategy: this.swarmCoordinator.getStrategy().getTopologyType(),
+          currentStrategy: this.swarmCoordinator
+            .getStrategy()
+            .getTopologyType(),
           metrics: this.swarmCoordinator.getStrategy().getMetrics(),
         },
         observer: {
@@ -697,7 +745,11 @@ export class IntegratedPatternSystem extends EventEmitter {
           timeout: 10000,
         };
 
-        await this.protocolManager.addProtocol(`integrated-${protocolType}`, protocolType, config);
+        await this.protocolManager.addProtocol(
+          `integrated-${protocolType}`,
+          protocolType,
+          config,
+        );
       } catch (error) {
         logger.warn(`Failed to initialize protocol ${protocolType}:`, error);
       }
@@ -783,7 +835,9 @@ export class IntegratedPatternSystem extends EventEmitter {
   private async createRealMemoryService(): Promise<IMemoryService> {
     try {
       // Import memory coordinator with fallback
-      const memoryModule = await import('./memory-coordinator.ts').catch(() => null);
+      const memoryModule = await import('./memory-coordinator.ts').catch(
+        () => null,
+      );
       if (!memoryModule?.MemorySystem) {
         throw new Error('MemorySystem not available');
       }
@@ -800,7 +854,7 @@ export class IntegratedPatternSystem extends EventEmitter {
         },
         delete: async (key: string) => {
           const result = await memoryCoordinator.delete(key);
-          return (result as any)?.success || false;
+          return (result as any)?.success;
         },
         list: async () => {
           const stats = await memoryCoordinator.getStats();
@@ -1098,7 +1152,12 @@ export class ConfigurationFactory {
     if (config?.events) config.events.enableDatabasePersistence = true;
     if (config?.commands) config.commands.maxConcurrentCommands = 10;
     if (config?.protocols)
-      config.protocols.enabledAdapters = ['mcp-http', 'mcp-stdio', 'websocket', 'rest'];
+      config.protocols.enabledAdapters = [
+        'mcp-http',
+        'mcp-stdio',
+        'websocket',
+        'rest',
+      ];
 
     return config;
   }

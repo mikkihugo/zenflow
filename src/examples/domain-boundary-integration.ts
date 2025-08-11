@@ -9,7 +9,12 @@
 
 import { getLogger } from '../config/logging-config.ts';
 
-import type { Agent, ExecutionPlan, PhaseAssignment, Task } from '../coordination/types.ts';
+import type {
+  Agent,
+  ExecutionPlan,
+  PhaseAssignment,
+  Task,
+} from '../coordination/types.ts';
 import {
   CommonSchemas,
   type ContractRule,
@@ -21,7 +26,11 @@ import {
   type TypeSchema,
   validateCrossDomain,
 } from '../core/domain-boundary-validator.ts';
-import type { WorkflowDefinition, WorkflowEvent, WorkflowExecution } from '../workflows/types.ts';
+import type {
+  WorkflowDefinition,
+  WorkflowEvent,
+  WorkflowExecution,
+} from '../workflows/types.ts';
 
 const logger = getLogger('domain-boundary-examples');
 
@@ -90,7 +99,14 @@ export const ExtendedSchemas = {
       status: {
         type: 'string',
         required: true,
-        enum: ['queued', 'running', 'paused', 'completed', 'failed', 'cancelled'],
+        enum: [
+          'queued',
+          'running',
+          'paused',
+          'completed',
+          'failed',
+          'cancelled',
+        ],
       },
       startTime: { type: 'string', required: true },
       endTime: { type: 'string', required: false },
@@ -189,7 +205,10 @@ export const ContractRules = {
     description: 'Validates security requirements for domain operations',
     validator: async (operation: DomainOperation, context) => {
       // Check for sensitive operations
-      if (operation.operationType === 'write' && operation.targetDomain === Domain.DATABASE) {
+      if (
+        operation.operationType === 'write' &&
+        operation.targetDomain === Domain.DATABASE
+      ) {
         // In real implementation, would check authentication/authorization
         return context.metadata?.authenticated === true;
       }
@@ -207,14 +226,18 @@ export const ContractRules = {
     description: 'Ensures data consistency across domain boundaries',
     validator: async (operation: DomainOperation, context) => {
       // Validate that the input and output schemas are compatible
-      if (operation.inputSchema.type === 'object' && operation.outputSchema.type === 'object') {
+      if (
+        operation.inputSchema.type === 'object' &&
+        operation.outputSchema.type === 'object'
+      ) {
         // In real implementation, would perform deep compatibility check
         return true;
       }
       return operation.inputSchema.type === operation.outputSchema.type;
     },
     severity: 'warning' as const,
-    errorMessage: 'Data consistency issue detected between input and output schemas',
+    errorMessage:
+      'Data consistency issue detected between input and output schemas',
   },
 } as const;
 
@@ -233,12 +256,19 @@ export async function coordinationDomainExample(): Promise<void> {
   // 1. Validate agent data
   const agentData: Agent = {
     id: 'agent-coordination-001',
-    capabilities: ['task-planning', 'resource-allocation', 'workflow-orchestration'],
+    capabilities: [
+      'task-planning',
+      'resource-allocation',
+      'workflow-orchestration',
+    ],
     status: 'idle',
   };
 
   try {
-    const validatedAgent = coordValidator.validateInput(agentData, CommonSchemas.Agent);
+    const validatedAgent = coordValidator.validateInput(
+      agentData,
+      CommonSchemas.Agent,
+    );
     logger.info('Agent validation successful', { agentId: validatedAgent.id });
   } catch (error) {
     logger.error('Agent validation failed', { error });
@@ -256,10 +286,17 @@ export async function coordinationDomainExample(): Promise<void> {
     requireConsensus: false,
   };
 
-  const validatedTask = coordValidator.validateInput(taskData, CommonSchemas.Task);
+  const validatedTask = coordValidator.validateInput(
+    taskData,
+    CommonSchemas.Task,
+  );
 
   // 3. Track cross-domain operation to workflows
-  coordValidator.trackCrossings(Domain.COORDINATION, Domain.WORKFLOWS, 'task-assignment');
+  coordValidator.trackCrossings(
+    Domain.COORDINATION,
+    Domain.WORKFLOWS,
+    'task-assignment',
+  );
 
   // 4. Validate phase assignment
   const phaseAssignment: PhaseAssignment = {
@@ -271,7 +308,7 @@ export async function coordinationDomainExample(): Promise<void> {
 
   const validatedPhaseAssignment = coordValidator.validateInput(
     phaseAssignment,
-    ExtendedSchemas.PhaseAssignment
+    ExtendedSchemas.PhaseAssignment,
   );
 
   logger.info('Coordination domain validation completed successfully', {
@@ -311,7 +348,7 @@ export async function workflowsDomainExample(): Promise<void> {
   try {
     const validatedExecution = workflowsValidator.validateInput(
       workflowExecution,
-      ExtendedSchemas.WorkflowExecution
+      ExtendedSchemas.WorkflowExecution,
     );
     logger.info('Workflow execution validation successful', {
       executionId: validatedExecution.id,
@@ -333,11 +370,15 @@ export async function workflowsDomainExample(): Promise<void> {
 
   const validatedEvent = workflowsValidator.validateInput(
     workflowEvent,
-    ExtendedSchemas.WorkflowEvent
+    ExtendedSchemas.WorkflowEvent,
   );
 
   // 3. Track cross-domain operation back to coordination
-  workflowsValidator.trackCrossings(Domain.WORKFLOWS, Domain.COORDINATION, 'status-update');
+  workflowsValidator.trackCrossings(
+    Domain.WORKFLOWS,
+    Domain.COORDINATION,
+    'status-update',
+  );
 
   logger.info('Workflows domain validation completed successfully', {
     execution: validatedExecution.id,
@@ -400,7 +441,12 @@ export async function performanceMonitoringExample(): Promise<void> {
   logger.info('Running performance monitoring example');
 
   // Perform multiple validations to generate metrics
-  const domains = [Domain.COORDINATION, Domain.WORKFLOWS, Domain.NEURAL, Domain.MEMORY];
+  const domains = [
+    Domain.COORDINATION,
+    Domain.WORKFLOWS,
+    Domain.NEURAL,
+    Domain.MEMORY,
+  ];
   const schema: TypeSchema<string> = {
     type: 'string',
     required: true,
@@ -417,7 +463,8 @@ export async function performanceMonitoringExample(): Promise<void> {
 
     // Add some domain crossings
     for (let i = 0; i < 5; i++) {
-      const targetDomain = domains[(domains.indexOf(domain) + 1) % domains.length];
+      const targetDomain =
+        domains[(domains.indexOf(domain) + 1) % domains.length];
       validator.trackCrossings(domain, targetDomain, `operation-${i}`);
     }
   }
@@ -454,7 +501,13 @@ export async function complexMultiDomainExample(): Promise<void> {
   // 1. Start with coordination domain - plan execution
   const executionPlan: ExecutionPlan = {
     taskId: 'complex-sparc-workflow',
-    phases: ['specification', 'pseudocode', 'architecture', 'refinement', 'code'],
+    phases: [
+      'specification',
+      'pseudocode',
+      'architecture',
+      'refinement',
+      'code',
+    ],
     phaseAssignments: [
       {
         phase: 'specification',
@@ -475,7 +528,10 @@ export async function complexMultiDomainExample(): Promise<void> {
 
   // Validate in coordination domain
   const coordValidator = getDomainValidator(Domain.COORDINATION);
-  const validatedPlan = coordValidator.validateInput(executionPlan, ExtendedSchemas.ExecutionPlan);
+  const validatedPlan = coordValidator.validateInput(
+    executionPlan,
+    ExtendedSchemas.ExecutionPlan,
+  );
 
   // 2. Cross-domain validation to workflows
   const workflowData = validateCrossDomain(
@@ -483,7 +539,7 @@ export async function complexMultiDomainExample(): Promise<void> {
     ExtendedSchemas.ExecutionPlan,
     Domain.COORDINATION,
     Domain.WORKFLOWS,
-    'execution-plan-transfer'
+    'execution-plan-transfer',
   );
 
   // 3. Validate workflow execution creation
@@ -497,8 +553,12 @@ export async function complexMultiDomainExample(): Promise<void> {
     totalSteps: validatedPlan.phases.length,
     results: {},
     metrics: {
-      stepsCompleted: validatedPlan.phaseAssignments.filter((p) => p.status === 'completed').length,
-      stepsFailed: validatedPlan.phaseAssignments.filter((p) => p.status === 'failed').length,
+      stepsCompleted: validatedPlan.phaseAssignments.filter(
+        (p) => p.status === 'completed',
+      ).length,
+      stepsFailed: validatedPlan.phaseAssignments.filter(
+        (p) => p.status === 'failed',
+      ).length,
       resourcesUsed: {
         agents: validatedPlan.phaseAssignments.length,
         phases: validatedPlan.phases.length,
@@ -508,7 +568,7 @@ export async function complexMultiDomainExample(): Promise<void> {
 
   const validatedExecution = workflowsValidator.validateInput(
     workflowExecution,
-    ExtendedSchemas.WorkflowExecution
+    ExtendedSchemas.WorkflowExecution,
   );
 
   // 4. Contract enforcement for neural domain integration
@@ -533,14 +593,19 @@ export async function complexMultiDomainExample(): Promise<void> {
   };
 
   const neuralValidator = getDomainValidator(Domain.NEURAL);
-  const neuralResult = await neuralValidator.enforceContract(neuralIntegrationOperation);
+  const neuralResult = await neuralValidator.enforceContract(
+    neuralIntegrationOperation,
+  );
 
   if (neuralResult.success) {
-    logger.info('Complex multi-domain workflow validation completed successfully', {
-      planId: validatedPlan.taskId,
-      executionId: validatedExecution.id,
-      neuralIntegration: 'success',
-    });
+    logger.info(
+      'Complex multi-domain workflow validation completed successfully',
+      {
+        planId: validatedPlan.taskId,
+        executionId: validatedExecution.id,
+        neuralIntegration: 'success',
+      },
+    );
   } else {
     logger.warn('Neural integration contract failed', {
       error: neuralResult.error.message,
@@ -614,7 +679,10 @@ export async function errorHandlingExample(): Promise<void> {
     status: 'idle',
   };
 
-  const recoveredAgent = validator.validateInput(validData, CommonSchemas.Agent);
+  const recoveredAgent = validator.validateInput(
+    validData,
+    CommonSchemas.Agent,
+  );
   logger.info('System recovered successfully', {
     agentId: recoveredAgent.id,
   });

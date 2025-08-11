@@ -54,7 +54,7 @@ export async function example1_CreateFACTClient(): Promise<void> {
           'api_documentation_scraper',
           'stackoverflow_search',
         ],
-      }
+      },
     );
 
     // Connect to the service
@@ -83,31 +83,36 @@ export async function example2_CreateWithFactory(): Promise<void> {
     // Create factory
     const factory = new UACLFactory(
       console, // Simple logger
-      {} // Config
+      {}, // Config
     );
 
     // Create knowledge client using factory
-    const knowledgeClient = (await factory.createKnowledgeClient('fact://local', {
-      provider: 'fact',
-      factConfig: {
-        factRepoPath: './FACT',
-        anthropicApiKey: (() => {
-          const config = getConfig();
-          if (!config?.services?.anthropic?.apiKey) {
-            throw new Error('Anthropic API key is required for knowledge client');
-          }
-          return config?.services?.anthropic?.apiKey;
-        })(),
-        pythonPath: 'python3',
+    const knowledgeClient = (await factory.createKnowledgeClient(
+      'fact://local',
+      {
+        provider: 'fact',
+        factConfig: {
+          factRepoPath: './FACT',
+          anthropicApiKey: (() => {
+            const config = getConfig();
+            if (!config?.services?.anthropic?.apiKey) {
+              throw new Error(
+                'Anthropic API key is required for knowledge client',
+              );
+            }
+            return config?.services?.anthropic?.apiKey;
+          })(),
+          pythonPath: 'python3',
+        },
+        caching: {
+          enabled: true,
+          prefix: 'factory-cache',
+          ttlSeconds: 3600,
+          minTokens: 500,
+        },
+        timeout: 30000,
       },
-      caching: {
-        enabled: true,
-        prefix: 'factory-cache',
-        ttlSeconds: 3600,
-        minTokens: 500,
-      },
-      timeout: 30000,
-    })) as KnowledgeClientAdapter;
+    )) as KnowledgeClientAdapter;
 
     // Connect and test
     await knowledgeClient.connect();
@@ -140,7 +145,7 @@ export async function example3_PerformQueries(): Promise<void> {
           throw new Error('Anthropic API key is required');
         }
         return config?.services?.anthropic?.apiKey;
-      })()
+      })(),
     );
     await knowledgeClient.connect();
     const basicQuery: KnowledgeRequest = {
@@ -150,14 +155,15 @@ export async function example3_PerformQueries(): Promise<void> {
       metadata: { category: 'authentication' },
     };
 
-    const _basicResponse = await knowledgeClient.send<KnowledgeResponse>(basicQuery);
+    const _basicResponse =
+      await knowledgeClient.send<KnowledgeResponse>(basicQuery);
     const _docResponse = await knowledgeClient.query(
       'Get React 18 hooks documentation with examples',
       {
         limit: 5,
         includeMetadata: true,
         filters: { framework: 'react', version: '18' },
-      }
+      },
     );
     const _semanticResults = await knowledgeClient.semanticSearch(
       'best practices for API error handling',
@@ -166,7 +172,7 @@ export async function example3_PerformQueries(): Promise<void> {
         similarity: 'cosine',
         threshold: 0.7,
         limit: 3,
-      }
+      },
     );
     const _searchResults = await knowledgeClient.search('typescript generics', {
       fuzzy: true,
@@ -200,19 +206,23 @@ export async function example4_UseHelpers(): Promise<void> {
           throw new Error('Anthropic API key is required');
         }
         return config?.services?.anthropic?.apiKey;
-      })()
+      })(),
     );
     await knowledgeClient.connect();
-    const _reactDocs = await KnowledgeHelpers.getDocumentation(knowledgeClient, 'react', '18');
+    const _reactDocs = await KnowledgeHelpers.getDocumentation(
+      knowledgeClient,
+      'react',
+      '18',
+    );
     const _expressAPI = await KnowledgeHelpers.getAPIReference(
       knowledgeClient,
       'express',
-      'app.use'
+      'app.use',
     );
     const _communityResults = await KnowledgeHelpers.searchCommunity(
       knowledgeClient,
       'docker container optimization',
-      ['docker', 'performance', 'optimization']
+      ['docker', 'performance', 'optimization'],
     );
 
     await knowledgeClient.disconnect();
@@ -240,7 +250,7 @@ export async function example5_MonitorPerformance(): Promise<void> {
           throw new Error('Anthropic API key is required');
         }
         return config?.services?.anthropic?.apiKey;
-      })()
+      })(),
     );
     await knowledgeClient.connect();
 
@@ -284,8 +294,13 @@ export async function example6_ErrorHandling(): Promise<void> {
       'invalid-api-key-for-testing', // Invalid API key for testing
       {
         timeout: 5000, // Short timeout for testing
-        caching: { enabled: false, prefix: 'test', ttlSeconds: 60, minTokens: 100 },
-      }
+        caching: {
+          enabled: false,
+          prefix: 'test',
+          ttlSeconds: 60,
+          minTokens: 100,
+        },
+      },
     );
 
     try {

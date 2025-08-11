@@ -61,7 +61,10 @@ export class DAACognition {
    * @param context
    * @param options
    */
-  async makeDecision(context: any, options: any = {}): Promise<CognitionDecision> {
+  async makeDecision(
+    context: any,
+    options: any = {},
+  ): Promise<CognitionDecision> {
     const decisionId = `decision_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
     const decision = {
@@ -145,7 +148,9 @@ export class DAACognition {
    * @param limit
    */
   getDecisionHistory(limit = 10) {
-    return this.history.slice(-limit).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return this.history
+      .slice(-limit)
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
   /**
@@ -186,7 +191,9 @@ export class DAACognition {
 
   private async performAction(action) {
     // Mock action performance
-    await new Promise((resolve) => setTimeout(resolve, 10 + Math.random() * 40));
+    await new Promise((resolve) =>
+      setTimeout(resolve, 10 + Math.random() * 40),
+    );
 
     return {
       success: Math.random() > 0.1, // 90% success rate
@@ -195,7 +202,9 @@ export class DAACognition {
     };
   }
 
-  private calculateAdaptations(feedback): Array<{ type: string; delta: number }> {
+  private calculateAdaptations(
+    feedback,
+  ): Array<{ type: string; delta: number }> {
     const changes: Array<{ type: string; delta: number }> = [];
 
     // Adjust adaptation rate based on feedback
@@ -217,7 +226,9 @@ export class DAACognition {
     if (feedback.confidence !== undefined) {
       changes.push({
         type: 'decisionThreshold',
-        delta: (feedback.confidence - (this.options.decisionThreshold ?? 0.7)) * 0.05,
+        delta:
+          (feedback.confidence - (this.options.decisionThreshold ?? 0.7)) *
+          0.05,
       });
     }
 
@@ -230,13 +241,16 @@ export class DAACognition {
         case 'adaptationRate':
           this.options.adaptationRate = Math.max(
             0.01,
-            Math.min(0.5, (this.options.adaptationRate ?? 0.05) + change.delta)
+            Math.min(0.5, (this.options.adaptationRate ?? 0.05) + change.delta),
           );
           break;
         case 'decisionThreshold':
           this.options.decisionThreshold = Math.max(
             0.1,
-            Math.min(0.9, (this.options.decisionThreshold ?? 0.7) + change.delta)
+            Math.min(
+              0.9,
+              (this.options.decisionThreshold ?? 0.7) + change.delta,
+            ),
           );
           break;
       }
@@ -246,7 +260,10 @@ export class DAACognition {
   private calculateAverageConfidence() {
     if (this.history.length === 0) return 0;
 
-    const total = this.history.reduce((sum, decision) => sum + decision.confidence, 0);
+    const total = this.history.reduce(
+      (sum, decision) => sum + decision.confidence,
+      0,
+    );
     return total / this.history.length;
   }
 }

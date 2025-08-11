@@ -18,7 +18,10 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type {
   ContinuousImprovement,
   DateRange,
@@ -203,9 +206,14 @@ export interface BottleneckPrediction {
 /**
  * AI-powered optimization recommendation
  */
-export interface AIOptimizationRecommendation extends FlowOptimizationRecommendation {
+export interface AIOptimizationRecommendation
+  extends FlowOptimizationRecommendation {
   readonly aiConfidence: number; // 0-1
-  readonly learningSource: 'historical' | 'simulation' | 'best-practice' | 'external';
+  readonly learningSource:
+    | 'historical'
+    | 'simulation'
+    | 'best-practice'
+    | 'external';
   readonly similarCases: SimilarCase[];
   readonly successProbability: number; // 0-1
   readonly riskFactors: RiskFactor[];
@@ -266,7 +274,7 @@ export interface KaizenObservation {
   readonly severity: 'low' | 'medium' | 'high';
   readonly frequency: number; // Occurrences per day
   readonly impact: string;
-  readonly evidence: any[];
+  readonly evidence: unknown[];
 }
 
 /**
@@ -398,7 +406,7 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
   constructor(
     eventBus: TypeSafeEventBus,
     memory: MemorySystem,
-    config: Partial<OptimizationEngineConfig> = {}
+    config: Partial<OptimizationEngineConfig> = {},
   ) {
     super();
 
@@ -457,7 +465,9 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
       // Register event handlers
       this.registerEventHandlers();
 
-      this.logger.info('Value Stream Optimization Engine initialized successfully');
+      this.logger.info(
+        'Value Stream Optimization Engine initialized successfully',
+      );
       this.emit('initialized');
     } catch (error) {
       this.logger.error('Failed to initialize Optimization Engine', { error });
@@ -489,7 +499,7 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
    */
   async performAdvancedBottleneckAnalysis(
     bottleneck: FlowBottleneck,
-    flowAnalysis: ValueStreamFlowAnalysis
+    flowAnalysis: ValueStreamFlowAnalysis,
   ): Promise<AdvancedBottleneckAnalysis> {
     this.logger.info('Performing advanced bottleneck analysis', {
       bottleneckId: bottleneck.id,
@@ -497,24 +507,34 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
     });
 
     // Root cause analysis
-    const rootCauseAnalysis = await this.performRootCauseAnalysis(bottleneck, flowAnalysis);
+    const rootCauseAnalysis = await this.performRootCauseAnalysis(
+      bottleneck,
+      flowAnalysis,
+    );
 
     // Impact assessment
-    const impactAssessment = await this.assessBottleneckImpact(bottleneck, flowAnalysis);
+    const impactAssessment = await this.assessBottleneckImpact(
+      bottleneck,
+      flowAnalysis,
+    );
 
     // Dependency analysis
-    const dependencyAnalysis = await this.analyzeDependencies(bottleneck, flowAnalysis);
+    const dependencyAnalysis = await this.analyzeDependencies(
+      bottleneck,
+      flowAnalysis,
+    );
 
     // Seasonality analysis
     const seasonalityAnalysis = await this.analyzeSeasonality(bottleneck);
 
     // Build prediction model
-    const predictionModel = await this.buildBottleneckPredictionModel(bottleneck);
+    const predictionModel =
+      await this.buildBottleneckPredictionModel(bottleneck);
 
     // Resolution complexity analysis
     const resolutionComplexity = await this.analyzeResolutionComplexity(
       bottleneck,
-      rootCauseAnalysis
+      rootCauseAnalysis,
     );
 
     // Historical pattern analysis
@@ -554,7 +574,7 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
   async generateAIOptimizationRecommendations(
     valueStreamId: string,
     flowAnalysis: ValueStreamFlowAnalysis,
-    advancedAnalyses: AdvancedBottleneckAnalysis[]
+    advancedAnalyses: AdvancedBottleneckAnalysis[],
   ): Promise<AIOptimizationRecommendation[]> {
     this.logger.info('Generating AI-powered optimization recommendations', {
       valueStreamId,
@@ -565,29 +585,32 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
 
     // Generate recommendations for each bottleneck
     for (const analysis of advancedAnalyses) {
-      const bottleneckRecommendations = await this.generateBottleneckRecommendations(
-        analysis,
-        flowAnalysis
-      );
+      const bottleneckRecommendations =
+        await this.generateBottleneckRecommendations(analysis, flowAnalysis);
       recommendations.push(...bottleneckRecommendations);
     }
 
     // Generate system-wide optimization recommendations
-    const systemRecommendations = await this.generateSystemOptimizationRecommendations(
-      flowAnalysis,
-      advancedAnalyses
-    );
+    const systemRecommendations =
+      await this.generateSystemOptimizationRecommendations(
+        flowAnalysis,
+        advancedAnalyses,
+      );
     recommendations.push(...systemRecommendations);
 
     // Apply AI learning and prioritization
     const optimizedRecommendations = await this.optimizeRecommendationsWithAI(
       recommendations,
-      flowAnalysis
+      flowAnalysis,
     );
 
     // Limit recommendations based on configuration
     const finalRecommendations = optimizedRecommendations
-      .filter((rec) => rec.expectedImpact.flowEfficiencyIncrease >= this.config.minImpactThreshold)
+      .filter(
+        (rec) =>
+          rec.expectedImpact.flowEfficiencyIncrease >=
+          this.config.minImpactThreshold,
+      )
       .slice(0, this.config.maxRecommendationsPerCycle);
 
     // Store recommendations
@@ -616,13 +639,15 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
   /**
    * Execute automated Kaizen cycle
    */
-  async executeAutomatedKaizenCycle(valueStreamId: string): Promise<AutomatedKaizenCycle> {
+  async executeAutomatedKaizenCycle(
+    valueStreamId: string,
+  ): Promise<AutomatedKaizenCycle> {
     this.logger.info('Starting automated Kaizen cycle', { valueStreamId });
 
     const cycleId = `kaizen-${Date.now()}-${valueStreamId}`;
     const startDate = new Date();
     const endDate = new Date(
-      startDate.getTime() + this.config.kaizenCycleLength * 24 * 60 * 60 * 1000
+      startDate.getTime() + this.config.kaizenCycleLength * 24 * 60 * 60 * 1000,
     );
 
     const kaizenCycle: AutomatedKaizenCycle = {
@@ -667,7 +692,9 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
   /**
    * Predict value delivery times
    */
-  async predictValueDeliveryTimes(valueStreamId: string): Promise<ValueDeliveryPrediction> {
+  async predictValueDeliveryTimes(
+    valueStreamId: string,
+  ): Promise<ValueDeliveryPrediction> {
     this.logger.info('Predicting value delivery times', { valueStreamId });
 
     const prediction: ValueDeliveryPrediction = {
@@ -677,7 +704,8 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
       predictedMetrics: await this.predictValueMetrics(valueStreamId),
       scenarios: await this.generateDeliveryScenarios(valueStreamId),
       riskFactors: await this.identifyDeliveryRiskFactors(valueStreamId),
-      recommendations: await this.generatePredictiveRecommendations(valueStreamId),
+      recommendations:
+        await this.generatePredictiveRecommendations(valueStreamId),
       confidence: await this.calculatePredictionConfidence(valueStreamId),
       modelAccuracy: await this.getModelAccuracy(valueStreamId),
     };
@@ -703,13 +731,16 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
    * Execute continuous improvement feedback loop
    */
   async executeContinuousImprovementLoop(valueStreamId: string): Promise<void> {
-    this.logger.info('Executing continuous improvement feedback loop', { valueStreamId });
+    this.logger.info('Executing continuous improvement feedback loop', {
+      valueStreamId,
+    });
 
     // Collect performance data
     const performanceData = await this.collectPerformanceData(valueStreamId);
 
     // Analyze improvement effectiveness
-    const improvementAnalysis = await this.analyzeImprovementEffectiveness(valueStreamId);
+    const improvementAnalysis =
+      await this.analyzeImprovementEffectiveness(valueStreamId);
 
     // Update learning models
     if (this.config.enableContinuousLearning) {
@@ -717,7 +748,8 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
     }
 
     // Generate new improvements based on learning
-    const newImprovements = await this.generateLearningBasedImprovements(valueStreamId);
+    const newImprovements =
+      await this.generateLearningBasedImprovements(valueStreamId);
 
     // Update optimization strategies
     await this.adaptOptimizationStrategies(valueStreamId, improvementAnalysis);
@@ -793,7 +825,9 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('optimization-engine:state');
+      const persistedState = await this.memory.retrieve(
+        'optimization-engine:state',
+      );
       if (persistedState) {
         this.state = {
           ...this.state,
@@ -861,108 +895,138 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
   private async initializeLearningSystem(): Promise<void> {}
   private async performRootCauseAnalysis(
     bottleneck: FlowBottleneck,
-    analysis: ValueStreamFlowAnalysis
+    analysis: ValueStreamFlowAnalysis,
   ): Promise<RootCauseAnalysis> {
     return {} as RootCauseAnalysis;
   }
   private async assessBottleneckImpact(
     bottleneck: FlowBottleneck,
-    analysis: ValueStreamFlowAnalysis
+    analysis: ValueStreamFlowAnalysis,
   ): Promise<ImpactAssessment> {
     return {} as ImpactAssessment;
   }
   private async analyzeDependencies(
     bottleneck: FlowBottleneck,
-    analysis: ValueStreamFlowAnalysis
+    analysis: ValueStreamFlowAnalysis,
   ): Promise<DependencyAnalysis> {
     return {} as DependencyAnalysis;
   }
-  private async analyzeSeasonality(bottleneck: FlowBottleneck): Promise<SeasonalityAnalysis> {
+  private async analyzeSeasonality(
+    bottleneck: FlowBottleneck,
+  ): Promise<SeasonalityAnalysis> {
     return {} as SeasonalityAnalysis;
   }
   private async buildBottleneckPredictionModel(
-    bottleneck: FlowBottleneck
+    bottleneck: FlowBottleneck,
   ): Promise<BottleneckPredictionModel> {
     return {} as BottleneckPredictionModel;
   }
   private async analyzeResolutionComplexity(
     bottleneck: FlowBottleneck,
-    rootCause: RootCauseAnalysis
+    rootCause: RootCauseAnalysis,
   ): Promise<ResolutionComplexityAnalysis> {
     return {} as ResolutionComplexityAnalysis;
   }
   private async analyzeHistoricalPatterns(
-    bottleneck: FlowBottleneck
+    bottleneck: FlowBottleneck,
   ): Promise<HistoricalPatternAnalysis[]> {
     return [];
   }
   private async generateBottleneckRecommendations(
     analysis: AdvancedBottleneckAnalysis,
-    flowAnalysis: ValueStreamFlowAnalysis
+    flowAnalysis: ValueStreamFlowAnalysis,
   ): Promise<AIOptimizationRecommendation[]> {
     return [];
   }
   private async generateSystemOptimizationRecommendations(
     flowAnalysis: ValueStreamFlowAnalysis,
-    analyses: AdvancedBottleneckAnalysis[]
+    analyses: AdvancedBottleneckAnalysis[],
   ): Promise<AIOptimizationRecommendation[]> {
     return [];
   }
   private async optimizeRecommendationsWithAI(
     recommendations: AIOptimizationRecommendation[],
-    flowAnalysis: ValueStreamFlowAnalysis
+    flowAnalysis: ValueStreamFlowAnalysis,
   ): Promise<AIOptimizationRecommendation[]> {
     return recommendations;
   }
   private async getNextCycleNumber(valueStreamId: string): Promise<number> {
     return 1;
   }
-  private async initializeKaizenMetrics(valueStreamId: string): Promise<KaizenMetrics> {
+  private async initializeKaizenMetrics(
+    valueStreamId: string,
+  ): Promise<KaizenMetrics> {
     return {} as KaizenMetrics;
   }
-  private async executeObservePhase(cycle: AutomatedKaizenCycle): Promise<void> {}
-  private async executeOrientPhase(cycle: AutomatedKaizenCycle): Promise<void> {}
-  private async executeDecidePhase(cycle: AutomatedKaizenCycle): Promise<void> {}
+  private async executeObservePhase(
+    cycle: AutomatedKaizenCycle,
+  ): Promise<void> {}
+  private async executeOrientPhase(
+    cycle: AutomatedKaizenCycle,
+  ): Promise<void> {}
+  private async executeDecidePhase(
+    cycle: AutomatedKaizenCycle,
+  ): Promise<void> {}
   private async executeActPhase(cycle: AutomatedKaizenCycle): Promise<void> {}
   private async executeStudyPhase(cycle: AutomatedKaizenCycle): Promise<void> {}
-  private async predictValueMetrics(valueStreamId: string): Promise<PredictedMetrics> {
+  private async predictValueMetrics(
+    valueStreamId: string,
+  ): Promise<PredictedMetrics> {
     return {} as PredictedMetrics;
   }
-  private async generateDeliveryScenarios(valueStreamId: string): Promise<DeliveryScenario[]> {
+  private async generateDeliveryScenarios(
+    valueStreamId: string,
+  ): Promise<DeliveryScenario[]> {
     return [];
   }
-  private async identifyDeliveryRiskFactors(valueStreamId: string): Promise<DeliveryRiskFactor[]> {
+  private async identifyDeliveryRiskFactors(
+    valueStreamId: string,
+  ): Promise<DeliveryRiskFactor[]> {
     return [];
   }
   private async generatePredictiveRecommendations(
-    valueStreamId: string
+    valueStreamId: string,
   ): Promise<PredictiveRecommendation[]> {
     return [];
   }
-  private async calculatePredictionConfidence(valueStreamId: string): Promise<number> {
+  private async calculatePredictionConfidence(
+    valueStreamId: string,
+  ): Promise<number> {
     return 0.8;
   }
   private async getModelAccuracy(valueStreamId: string): Promise<number> {
     return 0.85;
   }
-  private async collectPerformanceData(valueStreamId: string): Promise<any> {
+  private async collectPerformanceData(
+    valueStreamId: string,
+  ): Promise<unknown> {
     return {};
   }
-  private async analyzeImprovementEffectiveness(valueStreamId: string): Promise<any> {
+  private async analyzeImprovementEffectiveness(
+    valueStreamId: string,
+  ): Promise<unknown> {
     return {};
   }
-  private async updateLearningModels(performanceData: any, analysis: any): Promise<void> {}
+  private async updateLearningModels(
+    performanceData: unknown,
+    analysis: unknown,
+  ): Promise<void> {}
   private async generateLearningBasedImprovements(
-    valueStreamId: string
+    valueStreamId: string,
   ): Promise<ContinuousImprovement[]> {
     return [];
   }
-  private async adaptOptimizationStrategies(valueStreamId: string, analysis: any): Promise<void> {}
-  private async planNextOptimizationCycle(valueStreamId: string): Promise<void> {}
+  private async adaptOptimizationStrategies(
+    valueStreamId: string,
+    analysis: unknown,
+  ): Promise<void> {}
+  private async planNextOptimizationCycle(
+    valueStreamId: string,
+  ): Promise<void> {}
   private async runOptimizationCycle(): Promise<void> {}
   private async runLearningCycle(): Promise<void> {}
-  private async handleBottleneckDetection(payload: any): Promise<void> {}
-  private async handleImprovementImplemented(payload: any): Promise<void> {}
+  private async handleBottleneckDetection(payload: unknown): Promise<void> {}
+  private async handleImprovementImplemented(payload: unknown): Promise<void> {}
 }
 
 // ============================================================================
@@ -978,23 +1042,46 @@ export interface SystemicIssue {
 
 export interface HumanFactor {
   readonly factor: string;
-  readonly category: 'skill' | 'motivation' | 'process' | 'communication' | 'workload';
+  readonly category:
+    | 'skill'
+    | 'motivation'
+    | 'process'
+    | 'communication'
+    | 'workload';
   readonly impact: number;
-  readonly addressability: 'training' | 'process' | 'organizational' | 'cultural';
+  readonly addressability:
+    | 'training'
+    | 'process'
+    | 'organizational'
+    | 'cultural';
 }
 
 export interface TechnicalFactor {
   readonly factor: string;
-  readonly category: 'infrastructure' | 'tooling' | 'architecture' | 'integration' | 'performance';
+  readonly category:
+    | 'infrastructure'
+    | 'tooling'
+    | 'architecture'
+    | 'integration'
+    | 'performance';
   readonly impact: number;
   readonly resolutionApproach: 'upgrade' | 'replace' | 'optimize' | 'redesign';
 }
 
 export interface ProcessFactor {
   readonly factor: string;
-  readonly category: 'workflow' | 'approval' | 'communication' | 'handoff' | 'feedback';
+  readonly category:
+    | 'workflow'
+    | 'approval'
+    | 'communication'
+    | 'handoff'
+    | 'feedback';
   readonly impact: number;
-  readonly improvementType: 'eliminate' | 'simplify' | 'automate' | 'parallelize';
+  readonly improvementType:
+    | 'eliminate'
+    | 'simplify'
+    | 'automate'
+    | 'parallelize';
 }
 
 export interface CustomerImpactAnalysis {
@@ -1141,7 +1228,7 @@ export interface OptimizationHistory {
   readonly valueStreamId: string;
   readonly recommendationsGenerated: number;
   readonly recommendationsImplemented: number;
-  readonly measuredImpact: any;
+  readonly measuredImpact: unknown;
   readonly lessons: string[];
 }
 

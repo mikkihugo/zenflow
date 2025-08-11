@@ -234,7 +234,7 @@ class MockDatabaseAdapter {
 
   async query(
     sql: string,
-    _params?: any[]
+    _params?: any[],
   ): Promise<{
     rows: any[];
     fields: Array<{ name: string; type: string }>;
@@ -268,7 +268,7 @@ class MockDatabaseAdapter {
 
   async execute(
     _sql: string,
-    _params?: any[]
+    _params?: any[],
   ): Promise<{
     affectedRows: number;
     insertId?: any;
@@ -434,7 +434,9 @@ class SimplifiedDatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug(`Executing database query: ${request.sql.substring(0, 100)}...`);
+      this.logger.debug(
+        `Executing database query: ${request.sql.substring(0, 100)}...`,
+      );
 
       if (!request.sql) {
         throw new Error('SQL query is required');
@@ -442,7 +444,9 @@ class SimplifiedDatabaseController {
 
       // Validate that this is actually a query (SELECT statement)
       if (!this.isQueryStatement(request.sql)) {
-        throw new Error('Only SELECT statements are allowed for query operations');
+        throw new Error(
+          'Only SELECT statements are allowed for query operations',
+        );
       }
 
       const result = await this.adapter.query(request.sql, request.params);
@@ -452,7 +456,7 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.debug(
-        `Query completed successfully in ${executionTime}ms, returned ${result?.rowCount} rows`
+        `Query completed successfully in ${executionTime}ms, returned ${result?.rowCount} rows`,
       );
 
       return {
@@ -493,7 +497,9 @@ class SimplifiedDatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug(`Executing database command: ${request.sql.substring(0, 100)}...`);
+      this.logger.debug(
+        `Executing database command: ${request.sql.substring(0, 100)}...`,
+      );
 
       if (!request.sql) {
         throw new Error('SQL command is required');
@@ -506,7 +512,7 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.debug(
-        `Command completed successfully in ${executionTime}ms, affected ${result?.affectedRows} rows`
+        `Command completed successfully in ${executionTime}ms, affected ${result?.affectedRows} rows`,
       );
 
       return {
@@ -547,7 +553,9 @@ class SimplifiedDatabaseController {
     const startTime = Date.now();
 
     try {
-      this.logger.debug(`Executing transaction with ${request.operations.length} operations`);
+      this.logger.debug(
+        `Executing transaction with ${request.operations.length} operations`,
+      );
 
       if (!request.operations || request.operations.length === 0) {
         throw new Error('At least one operation is required for transaction');
@@ -609,12 +617,12 @@ class SimplifiedDatabaseController {
 
       const totalRows = results.reduce(
         (sum: number, r: any) => sum + (r.rowCount || r.affectedRows || 0),
-        0
+        0,
       );
       const successfulOps = results.filter((r: any) => r.success).length;
 
       this.logger.debug(
-        `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`
+        `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`,
       );
 
       return {
@@ -669,8 +677,14 @@ class SimplifiedDatabaseController {
       const schemaStats = {
         totalTables: schema.tables.length,
         totalViews: schema.views.length,
-        totalColumns: schema.tables.reduce((sum, table) => sum + table.columns.length, 0),
-        totalIndexes: schema.tables.reduce((sum, table) => sum + table.indexes.length, 0),
+        totalColumns: schema.tables.reduce(
+          (sum, table) => sum + table.columns.length,
+          0,
+        ),
+        totalIndexes: schema.tables.reduce(
+          (sum, table) => sum + table.indexes.length,
+          0,
+        ),
       };
 
       this.logger.debug(`Schema retrieved successfully in ${executionTime}ms`);
@@ -714,7 +728,7 @@ class SimplifiedDatabaseController {
 
     try {
       this.logger.info(
-        `Executing migration: ${request.version} - ${request.description || 'No description'}`
+        `Executing migration: ${request.version} - ${request.description || 'No description'}`,
       );
 
       if (!request.statements || request.statements.length === 0) {
@@ -738,7 +752,9 @@ class SimplifiedDatabaseController {
             validationResults.push({
               statement: `${statement.substring(0, 100)}...`,
               valid: false,
-              issues: [error instanceof Error ? error.message : 'Validation error'],
+              issues: [
+                error instanceof Error ? error.message : 'Validation error',
+              ],
             });
           }
         }
@@ -753,7 +769,8 @@ class SimplifiedDatabaseController {
             description: request.description,
             validationResults,
             totalStatements: request.statements.length,
-            validStatements: validationResults.filter((r: any) => r.valid).length,
+            validStatements: validationResults.filter((r: any) => r.valid)
+              .length,
           },
           metadata: {
             rowCount: 0,
@@ -794,7 +811,9 @@ class SimplifiedDatabaseController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this.logger.info(`Migration ${request.version} completed successfully in ${executionTime}ms`);
+      this.logger.info(
+        `Migration ${request.version} completed successfully in ${executionTime}ms`,
+      );
 
       return {
         success: true,
@@ -806,7 +825,10 @@ class SimplifiedDatabaseController {
           successfulStatements: results.length,
         },
         metadata: {
-          rowCount: results.reduce((sum: number, r: any) => sum + (r.affectedRows || 0), 0),
+          rowCount: results.reduce(
+            (sum: number, r: any) => sum + (r.affectedRows || 0),
+            0,
+          ),
           executionTime,
           timestamp: Date.now(),
           adapter: this.config.type,
@@ -846,24 +868,30 @@ class SimplifiedDatabaseController {
         adapter: this.config.type,
         health: {
           status: isHealthy ? 'healthy' : 'unhealthy',
-          uptime: Math.floor((Date.now() - this.performanceMetrics.startTime) / 1000),
+          uptime: Math.floor(
+            (Date.now() - this.performanceMetrics.startTime) / 1000,
+          ),
           lastOperation: this.performanceMetrics.lastOperationTime,
         },
         performance: {
           totalOperations: this.performanceMetrics.operationCount,
           averageResponseTime:
             this.performanceMetrics.operationCount > 0
-              ? this.performanceMetrics.totalResponseTime / this.performanceMetrics.operationCount
+              ? this.performanceMetrics.totalResponseTime /
+                this.performanceMetrics.operationCount
               : 0,
           successRate:
             this.performanceMetrics.operationCount > 0
-              ? ((this.performanceMetrics.operationCount - this.performanceMetrics.errorCount) /
+              ? ((this.performanceMetrics.operationCount -
+                  this.performanceMetrics.errorCount) /
                   this.performanceMetrics.operationCount) *
                 100
               : 100,
           errorRate:
             this.performanceMetrics.operationCount > 0
-              ? (this.performanceMetrics.errorCount / this.performanceMetrics.operationCount) * 100
+              ? (this.performanceMetrics.errorCount /
+                  this.performanceMetrics.operationCount) *
+                100
               : 0,
           operationsPerSecond: this.calculateOperationsPerSecond(),
         },
@@ -874,7 +902,7 @@ class SimplifiedDatabaseController {
           port: this.config.port,
           database: this.config.database,
           poolConfig: this.config.pool,
-          sslEnabled: this.config.ssl?.enabled || false,
+          sslEnabled: this.config.ssl?.enabled,
         },
       };
 
@@ -946,8 +974,11 @@ class SimplifiedDatabaseController {
    * Calculate operations per second.
    */
   private calculateOperationsPerSecond(): number {
-    const uptimeSeconds = (Date.now() - this.performanceMetrics.startTime) / 1000;
-    return uptimeSeconds > 0 ? this.performanceMetrics.operationCount / uptimeSeconds : 0;
+    const uptimeSeconds =
+      (Date.now() - this.performanceMetrics.startTime) / 1000;
+    return uptimeSeconds > 0
+      ? this.performanceMetrics.operationCount / uptimeSeconds
+      : 0;
   }
 }
 

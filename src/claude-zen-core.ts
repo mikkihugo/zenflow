@@ -68,7 +68,9 @@ class AppConfig implements IConfig {
     if (defaultValue !== undefined) {
       return defaultValue;
     }
-    throw new Error(`Configuration key '${key}' not found and no default value provided`);
+    throw new Error(
+      `Configuration key '${key}' not found and no default value provided`,
+    );
   }
 
   set<T>(key: string, value: T): void {
@@ -153,7 +155,9 @@ class MockDatabase implements IDatabase {
         metrics.push(value);
       }
     }
-    return metrics.sort((a: any, b: any) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
+    return metrics.sort(
+      (a: any, b: any) => (b.timestamp ?? 0) - (a.timestamp ?? 0),
+    );
   }
 }
 
@@ -192,84 +196,93 @@ export class ClaudeZenCore {
       })
 
       // Other coordinators
-      .singleton(createToken<CoordinationManager>('CoordinationManager'), (c) => {
-        const config = c.resolve(CORE_TOKENS.Config);
-        const logger = c.resolve(CORE_TOKENS.Logger);
-        const eventBus = c.resolve(CORE_TOKENS.EventBus);
+      .singleton(
+        createToken<CoordinationManager>('CoordinationManager'),
+        (c) => {
+          const config = c.resolve(CORE_TOKENS.Config);
+          const logger = c.resolve(CORE_TOKENS.Logger);
+          const eventBus = c.resolve(CORE_TOKENS.EventBus);
 
-        return new CoordinationManager(
-          {
-            maxAgents: config?.get('swarm.maxAgents') || 10,
-            heartbeatInterval: config?.get('swarm.heartbeatInterval') || 5000,
-            timeout: config?.get('coordination.timeout') || 30000,
-            enableHealthCheck: true,
-          },
-          logger,
-          eventBus
-        );
-      })
+          return new CoordinationManager(
+            {
+              maxAgents: config?.get('swarm.maxAgents') || 10,
+              heartbeatInterval: config?.get('swarm.heartbeatInterval') || 5000,
+              timeout: config?.get('coordination.timeout') || 30000,
+              enableHealthCheck: true,
+            },
+            logger,
+            eventBus,
+          );
+        },
+      )
 
-      .singleton(createToken<LearningCoordinator>('LearningCoordinator'), (c) => {
-        const logger = c.resolve(CORE_TOKENS.Logger);
-        return new LearningCoordinator(
-          {
-            patternRecognition: {
-              enabled: true,
-              minPatternFrequency: 5,
-              confidenceThreshold: 0.8,
-              analysisWindow: 1000,
-            },
-            learning: {
-              enabled: true,
-              learningRate: 0.1,
-              adaptationRate: 0.05,
-              knowledgeRetention: 0.9,
-            },
-            optimization: {
-              enabled: true,
-              optimizationThreshold: 0.7,
-              maxOptimizations: 10,
-              validationRequired: true,
-            },
-            ml: {
-              neuralNetwork: true,
-              reinforcementLearning: false,
-              ensemble: false,
-              onlineLearning: true,
-            },
-          },
-          {
-            environment: 'development',
-            resources: [
-              { type: 'memory', limit: 1024, flexibility: 0.2, cost: 1.0 },
-              { type: 'cpu', limit: 4, flexibility: 0.1, cost: 2.0 },
-            ],
-            constraints: [
-              {
-                type: 'latency',
-                description: 'Max response time',
-                limit: 1000,
-                priority: 1,
+      .singleton(
+        createToken<LearningCoordinator>('LearningCoordinator'),
+        (c) => {
+          const logger = c.resolve(CORE_TOKENS.Logger);
+          return new LearningCoordinator(
+            {
+              patternRecognition: {
+                enabled: true,
+                minPatternFrequency: 5,
+                confidenceThreshold: 0.8,
+                analysisWindow: 1000,
               },
-            ],
-            objectives: [
-              {
-                type: 'performance',
-                description: 'Maximize throughput',
-                target: 1000,
-                weight: 1.0,
-                measurement: 'requests/second',
+              learning: {
+                enabled: true,
+                learningRate: 0.1,
+                adaptationRate: 0.05,
+                knowledgeRetention: 0.9,
               },
-            ],
-          },
-          logger
-        );
-      })
+              optimization: {
+                enabled: true,
+                optimizationThreshold: 0.7,
+                maxOptimizations: 10,
+                validationRequired: true,
+              },
+              ml: {
+                neuralNetwork: true,
+                reinforcementLearning: false,
+                ensemble: false,
+                onlineLearning: true,
+              },
+            },
+            {
+              environment: 'development',
+              resources: [
+                { type: 'memory', limit: 1024, flexibility: 0.2, cost: 1.0 },
+                { type: 'cpu', limit: 4, flexibility: 0.1, cost: 2.0 },
+              ],
+              constraints: [
+                {
+                  type: 'latency',
+                  description: 'Max response time',
+                  limit: 1000,
+                  priority: 1,
+                },
+              ],
+              objectives: [
+                {
+                  type: 'performance',
+                  description: 'Maximize throughput',
+                  target: 1000,
+                  weight: 1.0,
+                  measurement: 'requests/second',
+                },
+              ],
+            },
+            logger,
+          );
+        },
+      )
 
-      .singleton(createToken<MultiSystemCoordinator>('MultiSystemCoordinator'), (c) => {
-        const logger = c.resolve(CORE_TOKENS.Logger);
-        return new MultiSystemCoordinator(logger, {});
-      })
+      .singleton(
+        createToken<MultiSystemCoordinator>('MultiSystemCoordinator'),
+        (c) => {
+          const logger = c.resolve(CORE_TOKENS.Logger);
+          return new MultiSystemCoordinator(logger, {});
+        },
+      )
 
       .build();
 
@@ -291,15 +304,17 @@ export class ClaudeZenCore {
       }
 
       // Resolve all coordinators through DI
-      this.orchestrator = this.container.resolve(SWARM_TOKENS.SwarmCoordinator) as Orchestrator;
+      this.orchestrator = this.container.resolve(
+        SWARM_TOKENS.SwarmCoordinator,
+      ) as Orchestrator;
       this.coordinationManager = this.container.resolve(
-        createToken<CoordinationManager>('CoordinationManager')
+        createToken<CoordinationManager>('CoordinationManager'),
       );
       this.learningCoordinator = this.container.resolve(
-        createToken<LearningCoordinator>('LearningCoordinator')
+        createToken<LearningCoordinator>('LearningCoordinator'),
       );
       this.multiSystemCoordinator = this.container.resolve(
-        createToken<MultiSystemCoordinator>('MultiSystemCoordinator')
+        createToken<MultiSystemCoordinator>('MultiSystemCoordinator'),
       );
 
       // Initialize all coordinators
@@ -307,7 +322,9 @@ export class ClaudeZenCore {
       await this.coordinationManager.start();
       // Note: LearningCoordinator and MultiSystemCoordinator start automatically in constructor
 
-      logger.info('✅ All systems initialized successfully with dependency injection!');
+      logger.info(
+        '✅ All systems initialized successfully with dependency injection!',
+      );
 
       // Demonstrate the system is working
       await this.demonstrateSystemIntegration();
@@ -337,21 +354,27 @@ export class ClaudeZenCore {
     if (this.coordinationManager) {
       logger.info('🤝 Testing CoordinationManager with DI...');
       // The coordination manager uses injected logger and event bus
-      logger.info('  - CoordinationManager successfully using injected dependencies');
+      logger.info(
+        '  - CoordinationManager successfully using injected dependencies',
+      );
     }
 
     // Example: Test learning coordinator
     if (this.learningCoordinator) {
       logger.info('🧠 Testing LearningCoordinator with DI...');
       // The learning coordinator uses injected logger
-      logger.info('  - LearningCoordinator successfully using injected dependencies');
+      logger.info(
+        '  - LearningCoordinator successfully using injected dependencies',
+      );
     }
 
     // Example: Test multi-system coordinator
     if (this.multiSystemCoordinator) {
       logger.info('🌐 Testing MultiSystemCoordinator with DI...');
       // The multi-system coordinator uses injected logger
-      logger.info('  - MultiSystemCoordinator successfully using injected dependencies');
+      logger.info(
+        '  - MultiSystemCoordinator successfully using injected dependencies',
+      );
     }
 
     logger.info('🎉 All DI integration demonstrations completed successfully!');

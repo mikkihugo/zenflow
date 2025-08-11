@@ -6,7 +6,10 @@
  */
 
 import * as fs from 'fs';
-import type { MCPTool, MCPToolResult } from '../../coordination/swarm/mcp/types.ts';
+import type {
+  MCPTool,
+  MCPToolResult,
+} from '../../coordination/swarm/mcp/types.ts';
 import { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
 
 // This is a placeholder for the actual memoryCoordinator instance.
@@ -99,7 +102,7 @@ export abstract class AdvancedToolHandler {
     success: boolean,
     content: any,
     error?: string,
-    metadata?: any
+    metadata?: any,
   ): AdvancedMCPToolResult {
     return {
       success,
@@ -184,8 +187,16 @@ class StoreDiscoveryPatternHandler extends AdvancedToolHandler {
         memoryCoordinator = new MemoryCoordinator({
           enabled: true,
           consensus: { quorum: 0.5, timeout: 5000, strategy: 'majority' },
-          distributed: { replication: 1, consistency: 'strong', partitioning: 'hash' },
-          optimization: { autoCompaction: true, cacheEviction: 'lru', memoryThreshold: 0.8 },
+          distributed: {
+            replication: 1,
+            consistency: 'strong',
+            partitioning: 'hash',
+          },
+          optimization: {
+            autoCompaction: true,
+            cacheEviction: 'lru',
+            memoryThreshold: 0.8,
+          },
         });
       }
 
@@ -263,7 +274,9 @@ class RetrieveDiscoveryPatternHandler extends AdvancedToolHandler {
     this.validateParams(params, memoryRetrieveDiscoveryPatternTool.inputSchema);
     try {
       if (!memoryCoordinator) {
-        throw new Error('Memory coordinator not initialized. Run memory_init first.');
+        throw new Error(
+          'Memory coordinator not initialized. Run memory_init first.',
+        );
       }
 
       const { domainName } = params;
@@ -321,10 +334,15 @@ advancedToolRegistry.registerTool(memoryRetrieveDiscoveryPatternTool);
 
 class FindSimilarDiscoveryPatternsHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
-    this.validateParams(params, memoryFindSimilarDiscoveryPatternsTool.inputSchema);
+    this.validateParams(
+      params,
+      memoryFindSimilarDiscoveryPatternsTool.inputSchema,
+    );
     try {
       if (!memoryCoordinator) {
-        throw new Error('Memory coordinator not initialized. Run memory_init first.');
+        throw new Error(
+          'Memory coordinator not initialized. Run memory_init first.',
+        );
       }
 
       const { pattern, similarityThreshold } = params;
@@ -381,7 +399,12 @@ export const memoryFindSimilarDiscoveryPatternsTool: AdvancedMCPTool = {
         },
         required: ['domainName', 'files', 'dependencies', 'confidenceScore'],
       },
-      similarityThreshold: { type: 'number', minimum: 0, maximum: 1, default: 0.5 },
+      similarityThreshold: {
+        type: 'number',
+        minimum: 0,
+        maximum: 1,
+        default: 0.5,
+      },
     },
     required: ['pattern'],
   },
@@ -403,7 +426,10 @@ export const memoryFindSimilarDiscoveryPatternsTool: AdvancedMCPTool = {
         },
       },
     ],
-    related: ['memory_store_discovery_pattern', 'memory_retrieve_discovery_pattern'],
+    related: [
+      'memory_store_discovery_pattern',
+      'memory_retrieve_discovery_pattern',
+    ],
     since: '2025-08-10',
   },
 };
@@ -415,7 +441,9 @@ class LogSwarmOperationHandler extends AdvancedToolHandler {
     this.validateParams(params, memoryLogSwarmOperationTool.inputSchema);
     try {
       if (!memoryCoordinator) {
-        throw new Error('Memory coordinator not initialized. Run memory_init first.');
+        throw new Error(
+          'Memory coordinator not initialized. Run memory_init first.',
+        );
       }
 
       const { operation } = params;
@@ -488,10 +516,15 @@ advancedToolRegistry.registerTool(memoryLogSwarmOperationTool);
 
 class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
-    this.validateParams(params, memoryUpdateDiscoveryPatternFromSwarmOperationTool.inputSchema);
+    this.validateParams(
+      params,
+      memoryUpdateDiscoveryPatternFromSwarmOperationTool.inputSchema,
+    );
     try {
       if (!memoryCoordinator) {
-        throw new Error('Memory coordinator not initialized. Run memory_init first.');
+        throw new Error(
+          'Memory coordinator not initialized. Run memory_init first.',
+        );
       }
 
       const { operation } = params;
@@ -507,15 +540,25 @@ class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandle
       const existingPattern = existingPatternRaw.metadata?.data;
 
       if (!existingPattern) {
-        throw new Error(`Discovery pattern for domain '${domainName}' not found.`);
+        throw new Error(
+          `Discovery pattern for domain '${domainName}' not found.`,
+        );
       }
 
       // Update the discovery pattern based on the swarm operation
       if (outcome === 'success') {
-        existingPattern.confidenceScore = Math.min(1, existingPattern.confidenceScore + 0.1);
-        existingPattern.files = [...new Set([...existingPattern.files, ...filesModified])];
+        existingPattern.confidenceScore = Math.min(
+          1,
+          existingPattern.confidenceScore + 0.1,
+        );
+        existingPattern.files = [
+          ...new Set([...existingPattern.files, ...filesModified]),
+        ];
       } else {
-        existingPattern.confidenceScore = Math.max(0, existingPattern.confidenceScore - 0.1);
+        existingPattern.confidenceScore = Math.max(
+          0,
+          existingPattern.confidenceScore - 0.1,
+        );
       }
 
       // Store the updated discovery pattern
@@ -538,59 +581,64 @@ class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandle
   }
 }
 
-export const memoryUpdateDiscoveryPatternFromSwarmOperationTool: AdvancedMCPTool = {
-  name: 'memory_update_discovery_pattern_from_swarm_operation',
-  description: 'Update a discovery pattern based on a swarm operation.',
-  category: 'memory-neural',
-  version: '1.0.0',
-  permissions: [{ type: 'write', resource: 'memory:discovery_patterns' }],
-  priority: 'medium',
-  inputSchema: {
-    type: 'object',
-    properties: {
-      operation: {
-        type: 'object',
-        properties: {
-          type: { type: 'string', enum: ['bugfix', 'feature', 'refactor'] },
-          domainName: { type: 'string' },
-          filesModified: { type: 'array', items: { type: 'string' } },
-          outcome: { type: 'string', enum: ['success', 'failure'] },
+export const memoryUpdateDiscoveryPatternFromSwarmOperationTool: AdvancedMCPTool =
+  {
+    name: 'memory_update_discovery_pattern_from_swarm_operation',
+    description: 'Update a discovery pattern based on a swarm operation.',
+    category: 'memory-neural',
+    version: '1.0.0',
+    permissions: [{ type: 'write', resource: 'memory:discovery_patterns' }],
+    priority: 'medium',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        operation: {
+          type: 'object',
+          properties: {
+            type: { type: 'string', enum: ['bugfix', 'feature', 'refactor'] },
+            domainName: { type: 'string' },
+            filesModified: { type: 'array', items: { type: 'string' } },
+            outcome: { type: 'string', enum: ['success', 'failure'] },
+          },
+          required: ['type', 'domainName', 'filesModified', 'outcome'],
         },
-        required: ['type', 'domainName', 'filesModified', 'outcome'],
       },
+      required: ['operation'],
     },
-    required: ['operation'],
-  },
-  handler: new UpdateDiscoveryPatternFromSwarmOperationHandler(),
-  metadata: {
-    author: 'Gemini',
-    tags: ['memory', 'swarm', 'learning', 'update'],
-    examples: [
-      {
-        description: 'Update a discovery pattern after a successful bugfix.',
-        params: {
-          operation: {
-            type: 'bugfix',
-            domainName: 'my-new-domain',
-            filesModified: ['file1.ts'],
-            outcome: 'success',
+    handler: new UpdateDiscoveryPatternFromSwarmOperationHandler(),
+    metadata: {
+      author: 'Gemini',
+      tags: ['memory', 'swarm', 'learning', 'update'],
+      examples: [
+        {
+          description: 'Update a discovery pattern after a successful bugfix.',
+          params: {
+            operation: {
+              type: 'bugfix',
+              domainName: 'my-new-domain',
+              filesModified: ['file1.ts'],
+              outcome: 'success',
+            },
           },
         },
-      },
-    ],
-    related: ['memory_log_swarm_operation'],
-    since: '2025-08-10',
-  },
-};
+      ],
+      related: ['memory_log_swarm_operation'],
+      since: '2025-08-10',
+    },
+  };
 
-advancedToolRegistry.registerTool(memoryUpdateDiscoveryPatternFromSwarmOperationTool);
+advancedToolRegistry.registerTool(
+  memoryUpdateDiscoveryPatternFromSwarmOperationTool,
+);
 
 class ExportDiscoveryPatternsHandler extends AdvancedToolHandler {
   async execute(params: any): Promise<AdvancedMCPToolResult> {
     this.validateParams(params, memoryExportDiscoveryPatternsTool.inputSchema);
     try {
       if (!memoryCoordinator) {
-        throw new Error('Memory coordinator not initialized. Run memory_init first.');
+        throw new Error(
+          'Memory coordinator not initialized. Run memory_init first.',
+        );
       }
 
       const { filePath } = params;

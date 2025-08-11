@@ -39,7 +39,9 @@ interface MessageValidatorContract {
   validate(message: unknown): Promise<ValidationResult>;
   validateRequest(request: MCPRequest): Promise<ValidationResult>;
   validateResponse(response: MCPResponse): Promise<ValidationResult>;
-  validateNotification(notification: MCPNotification): Promise<ValidationResult>;
+  validateNotification(
+    notification: MCPNotification,
+  ): Promise<ValidationResult>;
 }
 
 interface ValidationResult {
@@ -62,11 +64,13 @@ class MockMCPMessageValidator implements MessageValidatorContract {
   constructor(
     private schemaValidator = mockSchemaValidator,
     private logger = mockLogger,
-    private metrics = mockMetricsCollector
+    private metrics = mockMetricsCollector,
   ) {}
 
   async validate(message: unknown): Promise<ValidationResult> {
-    this.logger.debug('Validating MCP message', { messageType: typeof message });
+    this.logger.debug('Validating MCP message', {
+      messageType: typeof message,
+    });
 
     const jsonRpcResult = this.schemaValidator.validateJsonRpc(message);
     if (!jsonRpcResult?.valid) {
@@ -78,15 +82,26 @@ class MockMCPMessageValidator implements MessageValidatorContract {
 
     if ('id' in mcpMessage && 'method' in mcpMessage) {
       return this.validateRequest(mcpMessage as MCPRequest);
-    } else if ('id' in mcpMessage && ('result' in mcpMessage || 'error' in mcpMessage)) {
+    }
+    if (
+      'id' in mcpMessage &&
+      ('result' in mcpMessage || 'error' in mcpMessage)
+    ) {
       return this.validateResponse(mcpMessage as MCPResponse);
-    } else if ('method' in mcpMessage && !('id' in mcpMessage)) {
+    }
+    if ('method' in mcpMessage && !('id' in mcpMessage)) {
       return this.validateNotification(mcpMessage as MCPNotification);
     }
 
     return {
       valid: false,
-      errors: [{ field: 'message', code: 'UNKNOWN_TYPE', message: 'Unknown message type' }],
+      errors: [
+        {
+          field: 'message',
+          code: 'UNKNOWN_TYPE',
+          message: 'Unknown message type',
+        },
+      ],
     };
   }
 
@@ -100,7 +115,10 @@ class MockMCPMessageValidator implements MessageValidatorContract {
     }
 
     const schema = this.schemaValidator.getSchemaForMethod(request.method);
-    const paramsResult = this.schemaValidator.validateParams(request.params, schema);
+    const paramsResult = this.schemaValidator.validateParams(
+      request.params,
+      schema,
+    );
 
     if (!paramsResult?.valid) {
       this.metrics.recordValidationError('params_invalid');
@@ -126,10 +144,16 @@ class MockMCPMessageValidator implements MessageValidatorContract {
     return { valid: true, errors: [] };
   }
 
-  async validateNotification(notification: MCPNotification): Promise<ValidationResult> {
-    this.logger.debug('Validating MCP notification', { method: notification.method });
+  async validateNotification(
+    notification: MCPNotification,
+  ): Promise<ValidationResult> {
+    this.logger.debug('Validating MCP notification', {
+      method: notification.method,
+    });
 
-    const methodResult = this.schemaValidator.validateMethod(notification.method);
+    const methodResult = this.schemaValidator.validateMethod(
+      notification.method,
+    );
     if (!methodResult?.valid) {
       this.metrics.recordValidationError('notification_method_invalid');
       return { valid: false, errors: methodResult?.errors };
@@ -175,7 +199,9 @@ describe('MCP Protocol Message Validation - London TDD', () => {
           valid: true,
           errors: [],
         });
-        mockSchemaValidator.getSchemaForMethod.mockReturnValue({ type: 'object' });
+        mockSchemaValidator.getSchemaForMethod.mockReturnValue({
+          type: 'object',
+        });
         mockSchemaValidator.validateParams.mockReturnValue({
           valid: true,
           errors: [],
@@ -194,10 +220,19 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         const result = await validator.validate(validRequest);
 
         // Assert - Verify JSON-RPC validation conversation
-        expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(validRequest);
-        expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith('tools/list');
-        expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith({}, { type: 'object' });
-        expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith('request_valid');
+        expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(
+          validRequest,
+        );
+        expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
+          'tools/list',
+        );
+        expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith(
+          {},
+          { type: 'object' },
+        );
+        expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith(
+          'request_valid',
+        );
         expect(result?.valid).toBe(true);
       });
 
@@ -226,8 +261,12 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         const result = await validator.validate(invalidRequest);
 
         // Assert - Verify error handling conversation
-        expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(invalidRequest);
-        expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('jsonrpc_invalid');
+        expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(
+          invalidRequest,
+        );
+        expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
+          'jsonrpc_invalid',
+        );
         expect(result?.valid).toBe(false);
         expect(result?.errors).toHaveLength(1);
         expect(result?.errors?.[0]?.code).toBe('INVALID_VERSION');
@@ -237,10 +276,21 @@ describe('MCP Protocol Message Validation - London TDD', () => {
     describe('MCP Method Validation', () => {
       it('should validate standard MCP methods', async () => {
         // Arrange - Mock standard MCP method validation
-        mockSchemaValidator.validateJsonRpc.mockReturnValue({ valid: true, errors: [] });
-        mockSchemaValidator.validateMethod.mockReturnValue({ valid: true, errors: [] });
-        mockSchemaValidator.getSchemaForMethod.mockReturnValue({ type: 'object' });
-        mockSchemaValidator.validateParams.mockReturnValue({ valid: true, errors: [] });
+        mockSchemaValidator.validateJsonRpc.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
+        mockSchemaValidator.validateMethod.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
+        mockSchemaValidator.getSchemaForMethod.mockReturnValue({
+          type: 'object',
+        });
+        mockSchemaValidator.validateParams.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
 
         const validator = new MockMCPMessageValidator();
 
@@ -267,16 +317,23 @@ describe('MCP Protocol Message Validation - London TDD', () => {
           const result = await validator.validate(request);
 
           // Assert - Verify method validation conversation
-          expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(method);
+          expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
+            method,
+          );
           expect(result?.valid).toBe(true);
         }
 
-        expect(mockSchemaValidator.validateMethod).toHaveBeenCalledTimes(standardMethods.length);
+        expect(mockSchemaValidator.validateMethod).toHaveBeenCalledTimes(
+          standardMethods.length,
+        );
       });
 
       it('should reject unknown methods', async () => {
         // Arrange - Mock unknown method rejection
-        mockSchemaValidator.validateJsonRpc.mockReturnValue({ valid: true, errors: [] });
+        mockSchemaValidator.validateJsonRpc.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
         mockSchemaValidator.validateMethod.mockReturnValue({
           valid: false,
           errors: [
@@ -301,8 +358,12 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         const result = await validator.validate(requestWithUnknownMethod);
 
         // Assert - Verify unknown method handling
-        expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith('unknown/method');
-        expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('method_invalid');
+        expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
+          'unknown/method',
+        );
+        expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
+          'method_invalid',
+        );
         expect(result?.valid).toBe(false);
         expect(result?.errors?.[0]?.code).toBe('UNKNOWN_METHOD');
       });
@@ -311,8 +372,14 @@ describe('MCP Protocol Message Validation - London TDD', () => {
     describe('Parameter Validation', () => {
       it('should validate parameters against method schemas', async () => {
         // Arrange - Mock parameter validation
-        mockSchemaValidator.validateJsonRpc.mockReturnValue({ valid: true, errors: [] });
-        mockSchemaValidator.validateMethod.mockReturnValue({ valid: true, errors: [] });
+        mockSchemaValidator.validateJsonRpc.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
+        mockSchemaValidator.validateMethod.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
 
         const toolCallSchema = {
           type: 'object',
@@ -324,7 +391,10 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         };
 
         mockSchemaValidator.getSchemaForMethod.mockReturnValue(toolCallSchema);
-        mockSchemaValidator.validateParams.mockReturnValue({ valid: true, errors: [] });
+        mockSchemaValidator.validateParams.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
 
         const validator = new MockMCPMessageValidator();
 
@@ -345,18 +415,26 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         const result = await validator.validate(toolCallRequest);
 
         // Assert - Verify parameter validation conversation
-        expect(mockSchemaValidator.getSchemaForMethod).toHaveBeenCalledWith('tools/call');
+        expect(mockSchemaValidator.getSchemaForMethod).toHaveBeenCalledWith(
+          'tools/call',
+        );
         expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith(
           toolCallRequest.params,
-          toolCallSchema
+          toolCallSchema,
         );
         expect(result?.valid).toBe(true);
       });
 
       it('should reject invalid parameters', async () => {
         // Arrange - Mock parameter validation failure
-        mockSchemaValidator.validateJsonRpc.mockReturnValue({ valid: true, errors: [] });
-        mockSchemaValidator.validateMethod.mockReturnValue({ valid: true, errors: [] });
+        mockSchemaValidator.validateJsonRpc.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
+        mockSchemaValidator.validateMethod.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
         mockSchemaValidator.getSchemaForMethod.mockReturnValue({
           type: 'object',
           required: ['name'],
@@ -389,7 +467,9 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
         // Assert - Verify parameter error handling
         expect(mockSchemaValidator.validateParams).toHaveBeenCalled();
-        expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('params_invalid');
+        expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
+          'params_invalid',
+        );
         expect(result?.valid).toBe(false);
         expect(result?.errors?.[0]?.code).toBe('MISSING_REQUIRED');
       });
@@ -420,10 +500,15 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         const result = await validator.validateResponse(successResponse);
 
         // Assert - Verify success response validation
-        expect(mockLogger.debug).toHaveBeenCalledWith('Validating MCP response', {
-          id: 'test-123',
-        });
-        expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith('response_valid');
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+          'Validating MCP response',
+          {
+            id: 'test-123',
+          },
+        );
+        expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith(
+          'response_valid',
+        );
         expect(result?.valid).toBe(true);
       });
     });
@@ -451,7 +536,9 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
         // Assert - Verify error response validation
         expect(result?.valid).toBe(true);
-        expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith('response_valid');
+        expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith(
+          'response_valid',
+        );
       });
 
       it('should reject malformed error structures', async () => {
@@ -471,11 +558,17 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         const result = await validator.validateResponse(malformedErrorResponse);
 
         // Assert - Verify malformed error handling
-        expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('error_invalid');
+        expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
+          'error_invalid',
+        );
         expect(result?.valid).toBe(false);
         expect(result?.errors).toHaveLength(2);
-        expect(result?.errors?.some((e) => e.field === 'error.code')).toBe(true);
-        expect(result?.errors?.some((e) => e.field === 'error.message')).toBe(true);
+        expect(result?.errors?.some((e) => e.field === 'error.code')).toBe(
+          true,
+        );
+        expect(result?.errors?.some((e) => e.field === 'error.message')).toBe(
+          true,
+        );
       });
     });
   });
@@ -486,10 +579,21 @@ describe('MCP Protocol Message Validation - London TDD', () => {
       const validator = new MockMCPMessageValidator();
 
       // Setup validation chain mocks
-      mockSchemaValidator.validateJsonRpc.mockReturnValue({ valid: true, errors: [] });
-      mockSchemaValidator.validateMethod.mockReturnValue({ valid: true, errors: [] });
-      mockSchemaValidator.getSchemaForMethod.mockReturnValue({ type: 'object' });
-      mockSchemaValidator.validateParams.mockReturnValue({ valid: true, errors: [] });
+      mockSchemaValidator.validateJsonRpc.mockReturnValue({
+        valid: true,
+        errors: [],
+      });
+      mockSchemaValidator.validateMethod.mockReturnValue({
+        valid: true,
+        errors: [],
+      });
+      mockSchemaValidator.getSchemaForMethod.mockReturnValue({
+        type: 'object',
+      });
+      mockSchemaValidator.validateParams.mockReturnValue({
+        valid: true,
+        errors: [],
+      });
 
       const complexRequest: MCPRequest = {
         jsonrpc: '2.0',
@@ -515,13 +619,24 @@ describe('MCP Protocol Message Validation - London TDD', () => {
       expect(mockLogger.debug).toHaveBeenCalledWith('Validating MCP message', {
         messageType: 'object',
       });
-      expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(complexRequest);
-      expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith('tools/call');
-      expect(mockSchemaValidator.getSchemaForMethod).toHaveBeenCalledWith('tools/call');
-      expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith(complexRequest.params, {
-        type: 'object',
-      });
-      expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith('request_valid');
+      expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(
+        complexRequest,
+      );
+      expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
+        'tools/call',
+      );
+      expect(mockSchemaValidator.getSchemaForMethod).toHaveBeenCalledWith(
+        'tools/call',
+      );
+      expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith(
+        complexRequest.params,
+        {
+          type: 'object',
+        },
+      );
+      expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith(
+        'request_valid',
+      );
 
       expect(result?.valid).toBe(true);
       expect(result?.errors).toHaveLength(0);
@@ -532,7 +647,10 @@ describe('MCP Protocol Message Validation - London TDD', () => {
       const validator = new MockMCPMessageValidator();
 
       // First validation passes, second fails
-      mockSchemaValidator.validateJsonRpc.mockReturnValue({ valid: true, errors: [] });
+      mockSchemaValidator.validateJsonRpc.mockReturnValue({
+        valid: true,
+        errors: [],
+      });
       mockSchemaValidator.validateMethod.mockReturnValue({
         valid: false,
         errors: [
@@ -555,13 +673,19 @@ describe('MCP Protocol Message Validation - London TDD', () => {
       const result = await validator.validate(invalidRequest);
 
       // Assert - Verify error cascade conversation
-      expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(invalidRequest);
-      expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith('nonexistent/method');
+      expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(
+        invalidRequest,
+      );
+      expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
+        'nonexistent/method',
+      );
 
       // Should stop at method validation, not proceed to params
       expect(mockSchemaValidator.validateParams).not.toHaveBeenCalled();
 
-      expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith('method_invalid');
+      expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
+        'method_invalid',
+      );
       expect(result?.valid).toBe(false);
       expect(result?.errors?.[0]?.code).toBe('METHOD_NOT_FOUND');
     });

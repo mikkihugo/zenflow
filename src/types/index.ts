@@ -45,7 +45,9 @@ export type {
 } from './shared-types.ts';
 
 // Type guards and utilities
-export function isZenSwarm(obj: any): obj is import('./shared-types.ts').ZenSwarm {
+export function isZenSwarm(
+  obj: any,
+): obj is import('./shared-types.ts').ZenSwarm {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -54,7 +56,9 @@ export function isZenSwarm(obj: any): obj is import('./shared-types.ts').ZenSwar
   );
 }
 
-export function isSwarmAgent(obj: any): obj is import('./shared-types.ts').SwarmAgent {
+export function isSwarmAgent(
+  obj: any,
+): obj is import('./shared-types.ts').SwarmAgent {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -63,7 +67,9 @@ export function isSwarmAgent(obj: any): obj is import('./shared-types.ts').Swarm
   );
 }
 
-export function isSystemEvent(obj: any): obj is import('./shared-types.ts').SystemEvent {
+export function isSystemEvent(
+  obj: any,
+): obj is import('./shared-types.ts').SystemEvent {
   return (
     obj &&
     typeof obj.id === 'string' &&

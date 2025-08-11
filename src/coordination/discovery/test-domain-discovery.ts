@@ -53,11 +53,15 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
     });
 
     // Create document processor
-    const documentProcessor = new DocumentProcessor(memorySystem, workflowEngine, {
-      workspaceRoot: projectPath,
-      autoWatch: false,
-      enableWorkflows: false,
-    });
+    const documentProcessor = new DocumentProcessor(
+      memorySystem,
+      workflowEngine,
+      {
+        workspaceRoot: projectPath,
+        autoWatch: false,
+        enableWorkflows: false,
+      },
+    );
     await documentProcessor.initialize();
 
     // Create domain analyzer
@@ -98,7 +102,7 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
         collectiveMemory: { enabled: true },
       },
       logger,
-      eventBus
+      eventBus,
     );
     const bridge = new DomainDiscoveryBridge(
       documentProcessor,
@@ -111,7 +115,7 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
         maxDomainsPerDocument: 3,
         useNeuralAnalysis: true,
         enableCache: true,
-      }
+      },
     );
 
     // Listen for events

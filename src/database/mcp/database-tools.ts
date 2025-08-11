@@ -7,13 +7,17 @@ import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('database-mcp-database-tools');
 
-import { config } from '../../config';
+import { config } from '../../config/index.js';
 
 const getConfig = () => config.getAll();
 
 // Import UACL for unified client monitoring and MCP client management
-import { ClientType, uacl } from '../../interfaces/clients';
-import type { DatabaseQuery, IDataAccessObject, IRepository } from '../interfaces.ts';
+import { ClientType, uacl } from '../../interfaces/clients/index.js';
+import type {
+  DatabaseQuery,
+  IDataAccessObject,
+  IRepository,
+} from '../interfaces.ts';
 // Import database types
 import { DatabaseTypes, EntityTypes } from '../interfaces.ts';
 
@@ -22,7 +26,7 @@ interface ExtendedDatabaseQuery {
   id: string;
   type: 'select' | 'insert' | 'update' | 'delete' | 'aggregate';
   operation: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   requirements: {
     consistency: 'eventual' | 'strong' | 'weak';
     timeout: number;
@@ -32,7 +36,11 @@ interface ExtendedDatabaseQuery {
   routing: {
     preferredEngines: string[];
     excludeEngines: string[];
-    loadBalancing: 'round_robin' | 'least_loaded' | 'capability_based' | 'performance_based';
+    loadBalancing:
+      | 'round_robin'
+      | 'least_loaded'
+      | 'capability_based'
+      | 'performance_based';
   };
   timestamp: number;
   sessionId?: string;
@@ -40,8 +48,15 @@ interface ExtendedDatabaseQuery {
 
 // Extended DAO interfaces to include missing methods
 interface ExtendedDataAccessObject<T> extends IDataAccessObject<T> {
-  bulkVectorOperations?(vectors: number[][], operation: string): Promise<any>;
-  traverseGraph?(startNode: string, relationshipType: string, maxDepth?: number): Promise<any>;
+  bulkVectorOperations?(
+    vectors: number[][],
+    operation: string,
+  ): Promise<unknown>;
+  traverseGraph?(
+    startNode: string,
+    relationshipType: string,
+    maxDepth?: number,
+  ): Promise<unknown>;
 }
 
 // xxx NEEDS_HUMAN: Missing database-coordinator and query-optimizer modules - files may have been moved/deleted
@@ -64,17 +79,17 @@ export interface MCPTool {
   description: string;
   inputSchema: {
     type: string;
-    properties: Record<string, any>;
+    properties: Record<string, unknown>;
     required?: string[];
   };
-  handler: (params: any) => Promise<any>;
+  handler: (params: unknown) => Promise<unknown>;
 }
 
 export interface MCPToolResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Database System Initialization Tool
@@ -98,7 +113,8 @@ export const databaseInitTool: MCPTool = {
             capabilities: {
               type: 'array',
               items: { type: 'string' },
-              description: 'Engine capabilities (search, analytics, indexing, etc.)',
+              description:
+                'Engine capabilities (search, analytics, indexing, etc.)',
             },
             config: {
               type: 'object',
@@ -141,7 +157,12 @@ export const databaseInitTool: MCPTool = {
           defaultTimeout: { type: 'number', default: 30000 },
           loadBalancing: {
             type: 'string',
-            enum: ['round_robin', 'least_loaded', 'performance_based', 'capability_based'],
+            enum: [
+              'round_robin',
+              'least_loaded',
+              'performance_based',
+              'capability_based',
+            ],
             default: 'performance_based',
           },
         },
@@ -169,18 +190,31 @@ export const databaseInitTool: MCPTool = {
           'database-coordinator': {
             url: `http://${centralConfig?.interfaces?.mcp?.http?.host}:${centralConfig?.interfaces?.mcp?.http?.port}/mcp`,
             type: 'http' as const,
-            capabilities: ['database_management', 'query_optimization', 'performance_monitoring'],
+            capabilities: [
+              'database_management',
+              'query_optimization',
+              'performance_monitoring',
+            ],
           },
         };
 
-        const _mcpClientInstance = await uacl.createMCPClient('database-mcp-client', mcpServers, {
-          enabled: true,
-          priority: 9, // High priority for database operations
-          timeout: coordination.defaultTimeout || centralConfig?.network?.defaultTimeout,
-          retryAttempts: 3,
-        });
+        const _mcpClientInstance = await uacl.createMCPClient(
+          'database-mcp-client',
+          mcpServers,
+          {
+            enabled: true,
+            priority: 9, // High priority for database operations
+            timeout:
+              coordination.defaultTimeout ||
+              centralConfig?.network?.defaultTimeout,
+            retryAttempts: 3,
+          },
+        );
       } catch (error: unknown) {
-        logger.warn('⚠️ Could not initialize UACL MCP client for database coordination:', error);
+        logger.warn(
+          '⚠️ Could not initialize UACL MCP client for database coordination:',
+          error,
+        );
         // Continue without UACL MCP client - database tools will still work
       }
 
@@ -204,9 +238,11 @@ export const databaseInitTool: MCPTool = {
 
       // Initialize query optimizer using factory pattern
       queryOptimizer = {
-        optimizeQuery: async (query: ExtendedDatabaseQuery, engines: Map<string, DatabaseEngine>) =>
-          query,
-        recordExecution: (execution: any) => {
+        optimizeQuery: async (
+          query: ExtendedDatabaseQuery,
+          engines: Map<string, DatabaseEngine>,
+        ) => query,
+        recordExecution: (execution: unknown) => {
           /* implementation */
         },
         getStats: () => ({
@@ -228,10 +264,10 @@ export const databaseInitTool: MCPTool = {
 
       // Register engines
       const engineResults: Array<{
-        id: any;
-        type: any;
+        id?: unknown;
+        type?: unknown;
         status: string;
-        capabilities?: any;
+        capabilities?: unknown;
         error?: string;
       }> = [];
       for (const engineConfig of engines) {
@@ -262,7 +298,7 @@ export const databaseInitTool: MCPTool = {
             status: 'registered',
             capabilities: engine.capabilities,
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
           engineResults.push({
             id: engineConfig?.id,
             type: engineConfig?.type,
@@ -318,7 +354,8 @@ export const databaseQueryTool: MCPTool = {
     properties: {
       operation: {
         type: 'string',
-        description: 'Database operation (vector_search, graph_query, document_find, etc.)',
+        description:
+          'Database operation (vector_search, graph_query, document_find, etc.)',
       },
       parameters: {
         type: 'object',
@@ -360,7 +397,12 @@ export const databaseQueryTool: MCPTool = {
           },
           loadBalancing: {
             type: 'string',
-            enum: ['round_robin', 'least_loaded', 'capability_based', 'performance_based'],
+            enum: [
+              'round_robin',
+              'least_loaded',
+              'capability_based',
+              'performance_based',
+            ],
             default: 'performance_based',
           },
         },
@@ -373,14 +415,19 @@ export const databaseQueryTool: MCPTool = {
           explain: { type: 'boolean', default: false },
         },
       },
-      sessionId: { type: 'string', description: 'Session identifier for tracking' },
+      sessionId: {
+        type: 'string',
+        description: 'Session identifier for tracking',
+      },
     },
     required: ['operation', 'parameters'],
   },
   handler: async (params): Promise<MCPToolResult> => {
     try {
       if (!databaseCoordinator) {
-        throw new Error('Database coordinator not initialized. Run database_init first.');
+        throw new Error(
+          'Database coordinator not initialized. Run database_init first.',
+        );
       }
 
       const {
@@ -396,7 +443,9 @@ export const databaseQueryTool: MCPTool = {
       const query: ExtendedDatabaseQuery = {
         id: `query_${Date.now()}_${Math.random().toString(36).slice(2)}`,
         type:
-          operation.includes('search') || operation.includes('find') || operation.includes('get')
+          operation.includes('search') ||
+          operation.includes('find') ||
+          operation.includes('get')
             ? 'select'
             : operation.includes('insert') || operation.includes('create')
               ? 'insert'
@@ -425,16 +474,19 @@ export const databaseQueryTool: MCPTool = {
       // Optimize query if enabled
       let optimizedQuery = query;
       if (optimization.enabled !== false && queryOptimizer) {
-        optimizedQuery = await queryOptimizer.optimizeQuery(query, registeredEngines);
+        optimizedQuery = await queryOptimizer.optimizeQuery(
+          query,
+          registeredEngines,
+        );
 
         // Handle cache hit
-        if ((optimizedQuery).operation === 'cache_hit') {
+        if (optimizedQuery.operation === 'cache_hit') {
           return {
             success: true,
             data: {
-              result: (optimizedQuery).parameters['cached'],
+              result: optimizedQuery.parameters['cached'],
               source: 'cache',
-              queryId: (query).id,
+              queryId: query.id,
               executionTime: 0,
             },
             metadata: {
@@ -468,9 +520,7 @@ export const databaseQueryTool: MCPTool = {
           timestamp: Date.now(),
           originalQuery: query,
           optimizedQuery:
-            (optimizedQuery).id !== (query).id
-              ? optimizedQuery
-              : undefined,
+            optimizedQuery.id !== query.id ? optimizedQuery : undefined,
           optimizations: parameters.__optimizations,
         },
       };
@@ -493,13 +543,19 @@ export const databaseQueryTool: MCPTool = {
 // Database Performance Optimization Tool
 export const databaseOptimizeTool: MCPTool = {
   name: 'database_optimize',
-  description: 'Optimize database performance using advanced algorithms and query analysis',
+  description:
+    'Optimize database performance using advanced algorithms and query analysis',
   inputSchema: {
     type: 'object',
     properties: {
       target: {
         type: 'string',
-        enum: ['query_performance', 'cache_efficiency', 'engine_utilization', 'all'],
+        enum: [
+          'query_performance',
+          'cache_efficiency',
+          'engine_utilization',
+          'all',
+        ],
         default: 'all',
         description: 'Optimization target',
       },
@@ -524,7 +580,9 @@ export const databaseOptimizeTool: MCPTool = {
   handler: async (params): Promise<MCPToolResult> => {
     try {
       if (registeredEngines.size === 0 || !queryOptimizer) {
-        throw new Error('Database system not initialized. Run database_init first.');
+        throw new Error(
+          'Database system not initialized. Run database_init first.',
+        );
       }
 
       const {
@@ -542,11 +600,11 @@ export const databaseOptimizeTool: MCPTool = {
           action: string;
           description: string;
           impact: string;
-          current?: any;
+          current?: unknown;
           recommended?: string;
-          engineId?: any;
-          utilization?: any;
-          errorRate?: any;
+          engineId?: unknown;
+          utilization?: unknown;
+          errorRate?: unknown;
         }>,
         analysis: null as any,
         recommendations: [] as string[],
@@ -604,7 +662,8 @@ export const databaseOptimizeTool: MCPTool = {
         // Engine utilization optimizations
         const engines = Array.from(registeredEngines.values());
         const utilizationIssues = engines.filter(
-          (e) => e.performance.utilization > 0.8 || e.performance.errorRate > 0.05
+          (e) =>
+            e.performance.utilization > 0.8 || e.performance.errorRate > 0.05,
         );
 
         for (const engine of utilizationIssues) {
@@ -626,8 +685,9 @@ export const databaseOptimizeTool: MCPTool = {
         // Set analysis object instead of null
         results.analysis = {
           totalPatterns: patterns.length,
-          frequentPatterns: patterns.filter((p: any) => p.frequency >= 5).length,
-          topPatterns: patterns.slice(0, 10).map((p: any) => ({
+          frequentPatterns: patterns.filter((p: unknown) => p.frequency >= 5)
+            .length,
+          topPatterns: patterns.slice(0, 10).map((p: unknown) => ({
             signature: p.signature || 'unknown',
             frequency: p.frequency || 0,
             averageLatency: p.averageLatency || 0,
@@ -647,7 +707,8 @@ export const databaseOptimizeTool: MCPTool = {
         data: results,
         metadata: {
           timestamp: Date.now(),
-          systemHealth: coordinatorStats.engines.active / coordinatorStats.engines.total,
+          systemHealth:
+            coordinatorStats.engines.active / coordinatorStats.engines.total,
         },
       };
     } catch (error: unknown) {
@@ -678,7 +739,14 @@ export const databaseMonitorTool: MCPTool = {
         type: 'array',
         items: {
           type: 'string',
-          enum: ['performance', 'utilization', 'errors', 'queries', 'cache', 'engines'],
+          enum: [
+            'performance',
+            'utilization',
+            'errors',
+            'queries',
+            'cache',
+            'engines',
+          ],
         },
         default: ['performance', 'utilization', 'errors', 'queries'],
         description: 'Metrics to monitor',
@@ -708,7 +776,9 @@ export const databaseMonitorTool: MCPTool = {
   handler: async (params): Promise<MCPToolResult> => {
     try {
       if (registeredEngines.size === 0 || !queryOptimizer) {
-        throw new Error('Database system not initialized. Run database_init first.');
+        throw new Error(
+          'Database system not initialized. Run database_init first.',
+        );
       }
 
       const {
@@ -727,8 +797,8 @@ export const databaseMonitorTool: MCPTool = {
           severity: string;
           message: string;
           engineId?: string;
-          value?: any;
-          threshold?: any;
+          value?: unknown;
+          threshold?: unknown;
         }>,
         engines: {},
         system: {
@@ -773,7 +843,9 @@ export const databaseMonitorTool: MCPTool = {
 
         // Engine performance alerts
         Array.from(registeredEngines.entries()).forEach(([id, engine]) => {
-          if (engine.performance.averageLatency > (thresholds.latency || 1000)) {
+          if (
+            engine.performance.averageLatency > (thresholds.latency || 1000)
+          ) {
             monitoringData?.alerts.push({
               type: 'performance',
               severity: 'warning',
@@ -795,7 +867,9 @@ export const databaseMonitorTool: MCPTool = {
             });
           }
 
-          if (engine.performance.utilization > (thresholds.utilization || 0.8)) {
+          if (
+            engine.performance.utilization > (thresholds.utilization || 0.8)
+          ) {
             monitoringData?.alerts.push({
               type: 'utilization',
               severity: 'warning',
@@ -821,13 +895,19 @@ export const databaseMonitorTool: MCPTool = {
 
       // Calculate system health score
       const healthFactors = {
-        engineHealth: coordinatorStats.engines.active / Math.max(coordinatorStats.engines.total, 1),
+        engineHealth:
+          coordinatorStats.engines.active /
+          Math.max(coordinatorStats.engines.total, 1),
         querySuccess:
           coordinatorStats.queries.recent > 0
-            ? coordinatorStats.queries.successful / coordinatorStats.queries.recent
+            ? coordinatorStats.queries.successful /
+              coordinatorStats.queries.recent
             : 1,
         cacheEfficiency: cacheStats.hitRate,
-        averageLatency: Math.max(0, 1 - coordinatorStats.queries.averageLatency / 1000),
+        averageLatency: Math.max(
+          0,
+          1 - coordinatorStats.queries.averageLatency / 1000,
+        ),
       };
 
       const healthScore =
@@ -838,7 +918,12 @@ export const databaseMonitorTool: MCPTool = {
         monitoringData.system.health = {
           score: Math.round(healthScore * 100),
           factors: healthFactors,
-          status: healthScore > 0.8 ? 'healthy' : healthScore > 0.6 ? 'warning' : 'critical',
+          status:
+            healthScore > 0.8
+              ? 'healthy'
+              : healthScore > 0.6
+                ? 'warning'
+                : 'critical',
         };
       }
 
@@ -906,7 +991,7 @@ export const databaseHealthCheckTool: MCPTool = {
         issues: [] as string[],
         recommendations: [] as string[],
         repairs: [] as Array<{
-          issue: any;
+          issue?: unknown;
           action: string;
           success: boolean;
         }>,
@@ -919,10 +1004,16 @@ export const databaseHealthCheckTool: MCPTool = {
       if (shouldCheck('coordinator')) {
         if (databaseCoordinator) {
           const stats = databaseCoordinator?.getStats();
-          const engineHealth = stats.engines.active / Math.max(stats.engines.total, 1);
+          const engineHealth =
+            stats.engines.active / Math.max(stats.engines.total, 1);
 
           healthReport.components.coordinator = {
-            status: engineHealth > 0.8 ? 'healthy' : engineHealth > 0.5 ? 'degraded' : 'critical',
+            status:
+              engineHealth > 0.8
+                ? 'healthy'
+                : engineHealth > 0.5
+                  ? 'degraded'
+                  : 'critical',
             engines: stats.engines,
             queries: stats.queries,
             details: detailed ? stats : undefined,
@@ -931,7 +1022,7 @@ export const databaseHealthCheckTool: MCPTool = {
           if (engineHealth < 0.8) {
             healthReport.overall = 'degraded';
             healthReport.issues.push(
-              `${stats.engines.total - stats.engines.active} engines are unhealthy`
+              `${stats.engines.total - stats.engines.active} engines are unhealthy`,
             );
           }
         } else {
@@ -946,7 +1037,9 @@ export const databaseHealthCheckTool: MCPTool = {
         if (queryOptimizer) {
           const stats = queryOptimizer.getStats();
           const optimizationRate =
-            stats.totalQueries > 0 ? stats.optimizedQueries / stats.totalQueries : 0;
+            stats.totalQueries > 0
+              ? stats.optimizedQueries / stats.totalQueries
+              : 0;
 
           healthReport.components.optimizer = {
             status: 'healthy',
@@ -956,7 +1049,9 @@ export const databaseHealthCheckTool: MCPTool = {
           };
 
           if (optimizationRate < 0.3 && stats.totalQueries > 50) {
-            healthReport.recommendations.push('Consider enabling more optimization rules');
+            healthReport.recommendations.push(
+              'Consider enabling more optimization rules',
+            );
           }
         } else {
           healthReport.components.optimizer = { status: 'not_initialized' };
@@ -1021,7 +1116,9 @@ export const databaseHealthCheckTool: MCPTool = {
           };
 
           if (cacheStats.hitRate < 0.6) {
-            healthReport.recommendations.push('Consider optimizing cache configuration');
+            healthReport.recommendations.push(
+              'Consider optimizing cache configuration',
+            );
           }
 
           if (cacheStats.memoryUsage > 90) {
@@ -1037,11 +1134,15 @@ export const databaseHealthCheckTool: MCPTool = {
             const clientMetrics = uacl.getMetrics();
             const clientHealth = uacl.getHealthStatus();
             const healthyPercentage =
-              clientMetrics.total > 0 ? (clientMetrics.connected / clientMetrics.total) * 100 : 100;
+              clientMetrics.total > 0
+                ? (clientMetrics.connected / clientMetrics.total) * 100
+                : 100;
 
             // Get MCP clients specifically for database coordination
             const mcpClients = uacl.getClientsByType(ClientType.MCP);
-            const databaseMCPClient = mcpClients.find((c) => c.id === 'database-mcp-client');
+            const databaseMCPClient = mcpClients.find(
+              (c) => c.id === 'database-mcp-client',
+            );
 
             healthReport.components.clients = {
               status:
@@ -1072,29 +1173,35 @@ export const databaseHealthCheckTool: MCPTool = {
             };
 
             if (healthyPercentage < 80) {
-              healthReport.overall = healthyPercentage < 50 ? 'critical' : 'degraded';
+              healthReport.overall =
+                healthyPercentage < 50 ? 'critical' : 'degraded';
               healthReport.issues.push(
-                `Only ${healthyPercentage.toFixed(1)}% of clients are healthy`
+                `Only ${healthyPercentage.toFixed(1)}% of clients are healthy`,
               );
             }
 
-            if (!databaseMCPClient || databaseMCPClient?.status !== 'connected') {
+            if (
+              !databaseMCPClient ||
+              databaseMCPClient?.status !== 'connected'
+            ) {
               healthReport.issues.push('Database MCP client is not connected');
             }
 
             if (clientMetrics.totalErrors > 10) {
               healthReport.issues.push(
-                `High error count: ${clientMetrics.totalErrors} client errors`
+                `High error count: ${clientMetrics.totalErrors} client errors`,
               );
             }
 
             if (clientMetrics.avgLatency > 5000) {
-              healthReport.recommendations.push('Consider optimizing client response times');
+              healthReport.recommendations.push(
+                'Consider optimizing client response times',
+              );
             }
           } else {
             healthReport.components.clients = { status: 'not_initialized' };
             healthReport.recommendations.push(
-              'Consider initializing UACL for enhanced client management'
+              'Consider initializing UACL for enhanced client management',
             );
           }
         } catch (error: unknown) {
@@ -1134,7 +1241,8 @@ export const databaseHealthCheckTool: MCPTool = {
         healthReport.overall = 'healthy';
       } else if (
         healthReport.issues.some(
-          (issue) => issue.includes('not_initialized') || issue.includes('critical')
+          (issue) =>
+            issue.includes('not_initialized') || issue.includes('critical'),
         )
       ) {
         healthReport.overall = 'critical';
@@ -1209,13 +1317,13 @@ function _mapEngineTypeToDB(engineType: string): string {
 async function _executeQueryWithDAL(
   query: ExtendedDatabaseQuery,
   engines: Map<string, DatabaseEngine>,
-  repositories: Map<string, IRepository<any>>,
-  daos: Map<string, ExtendedDataAccessObject<any>>
+  repositories: Map<string, IRepository<unknown>>,
+  daos: Map<string, ExtendedDataAccessObject<unknown>>,
 ): Promise<{
   queryId: string;
   engineId: string;
   status: 'completed' | 'failed';
-  result?: any;
+  result?: unknown;
   error?: string;
   duration: number;
 }> {
@@ -1226,7 +1334,9 @@ async function _executeQueryWithDAL(
     (e) =>
       e.status === 'active' &&
       (query.requirements.capabilities.length === 0 ||
-        query.requirements.capabilities.some((cap) => e.capabilities.includes(cap)))
+        query.requirements.capabilities.some((cap) =>
+          e.capabilities.includes(cap),
+        )),
   );
 
   if (availableEngines.length === 0) {
@@ -1244,7 +1354,7 @@ async function _executeQueryWithDAL(
   const repository = repositories.get(selectedEngine?.id);
   const dao = daos.get(selectedEngine?.id);
 
-  if (!repository || !dao) {
+  if (!(repository && dao)) {
     return {
       queryId: query.id,
       engineId: selectedEngine?.id,
@@ -1272,7 +1382,10 @@ async function _executeQueryWithDAL(
         break;
 
       case 'update':
-        result = await repository.update(query.parameters['id'], query.parameters['data']);
+        result = await repository.update(
+          query.parameters['id'],
+          query.parameters['data'],
+        );
         break;
 
       case 'delete':
@@ -1284,13 +1397,13 @@ async function _executeQueryWithDAL(
         if (selectedEngine?.type === 'vector' && dao.bulkVectorOperations) {
           result = await dao.bulkVectorOperations(
             query.parameters['vectors'] || [],
-            query.operation
+            query.operation,
           );
         } else if (selectedEngine?.type === 'graph' && dao.traverseGraph) {
           result = await dao.traverseGraph(
             query.parameters['startNode'],
             query.parameters['relationshipType'],
-            query.parameters['maxDepth']
+            query.parameters['maxDepth'],
           );
         } else {
           result = await repository.findAll(query.parameters);
@@ -1317,7 +1430,7 @@ async function _executeQueryWithDAL(
     if (selectedEngine) {
       selectedEngine.performance.errorRate = Math.min(
         1,
-        selectedEngine.performance.errorRate + 0.01
+        selectedEngine.performance.errorRate + 0.01,
       );
     }
 

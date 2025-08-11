@@ -198,7 +198,13 @@ function validateSwarmOptions(options) {
     }
   }
   if (options.topology !== undefined) {
-    const validTopologies = ['mesh', 'hierarchical', 'distributed', 'centralized', 'hybrid'];
+    const validTopologies = [
+      'mesh',
+      'hierarchical',
+      'distributed',
+      'centralized',
+      'hybrid',
+    ];
     if (!validTopologies.includes(options.topology)) {
       errors.push(`topology must be one of: ${validTopologies.join(', ')}`);
     }

@@ -36,7 +36,12 @@ const MISSING_TYPES = [
 // Type templates by category
 const TYPE_TEMPLATES = {
   workflow: {
-    interfaces: ['WorkflowContext', 'WorkflowState', 'WorkflowEngineConfig', 'ExecutionPlan'],
+    interfaces: [
+      'WorkflowContext',
+      'WorkflowState',
+      'WorkflowEngineConfig',
+      'ExecutionPlan',
+    ],
     template: (name) => `export interface ${name} {
   id: string;
   status: 'pending' | 'running' | 'completed' | 'failed';
@@ -70,7 +75,11 @@ const TYPE_TEMPLATES = {
   },
 
   services: {
-    interfaces: ['ServiceOperationError', 'ServiceTimeoutError', 'ServiceConfigFactory'],
+    interfaces: [
+      'ServiceOperationError',
+      'ServiceTimeoutError',
+      'ServiceConfigFactory',
+    ],
     template: (name) => {
       if (name.endsWith('Error')) {
         return `export class ${name} extends Error {
@@ -111,7 +120,8 @@ const TYPE_TEMPLATES = {
 
   protocol: {
     interfaces: ['ProtocolType'],
-    template: (name) => `export type ${name} = 'http' | 'websocket' | 'mcp' | 'stdio';`,
+    template: (name) =>
+      `export type ${name} = 'http' | 'websocket' | 'mcp' | 'stdio';`,
   },
 
   conversation: {
@@ -155,7 +165,11 @@ const TYPE_TEMPLATES = {
 };
 
 // Singleton instances (variables, not types)
-const SINGLETON_INSTANCES = ['globalClientManager', 'globalUSLFactory', 'globalServiceRegistry'];
+const SINGLETON_INSTANCES = [
+  'globalClientManager',
+  'globalUSLFactory',
+  'globalServiceRegistry',
+];
 
 class MissingTypesGenerator {
   constructor() {
@@ -234,7 +248,9 @@ class MissingTypesGenerator {
     });
 
     // Add exports
-    const exportableTypes = typeNames.filter((name) => !SINGLETON_INSTANCES.includes(name));
+    const exportableTypes = typeNames.filter(
+      (name) => !SINGLETON_INSTANCES.includes(name),
+    );
     if (exportableTypes.length > 0) {
       content += `// Convenience exports\n`;
       content += `export type {\n`;
@@ -293,7 +309,9 @@ export {
 
   async updateTypesIndex() {
     const indexPath = path.join(this.typesDir, 'index.ts');
-    const existingContent = fs.existsSync(indexPath) ? fs.readFileSync(indexPath, 'utf8') : '';
+    const existingContent = fs.existsSync(indexPath)
+      ? fs.readFileSync(indexPath, 'utf8')
+      : '';
 
     // Add exports for new files
     let newExports = '';

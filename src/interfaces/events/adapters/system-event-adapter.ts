@@ -33,7 +33,11 @@ import type {
   IEventManager,
   SystemEvent,
 } from '../core/interfaces.ts';
-import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces.ts';
+import {
+  EventEmissionError,
+  EventManagerTypes,
+  EventTimeoutError,
+} from '../core/interfaces.ts';
 import type { SystemLifecycleEvent } from '../types.ts';
 import { EventPriorityMap } from '../types.ts';
 
@@ -327,9 +331,14 @@ export class SystemEventAdapter implements IEventManager {
       this.startTime = new Date();
       this.emitInternal('start');
 
-      this.logger.info(`System event adapter started successfully: ${this.name}`);
+      this.logger.info(
+        `System event adapter started successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to start system event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to start system event adapter ${this.name}:`,
+        error,
+      );
       this.emitInternal('error', error);
       throw error;
     }
@@ -359,9 +368,14 @@ export class SystemEventAdapter implements IEventManager {
       this.running = false;
       this.emitInternal('stop');
 
-      this.logger.info(`System event adapter stopped successfully: ${this.name}`);
+      this.logger.info(
+        `System event adapter stopped successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to stop system event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to stop system event adapter ${this.name}:`,
+        error,
+      );
       this.emitInternal('error', error);
       throw error;
     }
@@ -389,20 +403,31 @@ export class SystemEventAdapter implements IEventManager {
    * @param event
    * @param options
    */
-  async emit<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void> {
+  async emit<T extends SystemEvent>(
+    event: T,
+    options?: EventEmissionOptions,
+  ): Promise<void> {
     const startTime = Date.now();
     const eventId = event.id || this.generateEventId();
 
     try {
       // Validate event
       if (!this.validateEvent(event)) {
-        throw new EventEmissionError(this.name, eventId, new Error('Invalid event format'));
+        throw new EventEmissionError(
+          this.name,
+          eventId,
+          new Error('Invalid event format'),
+        );
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.performance?.eventTimeout || 30000;
+      const timeout =
+        options?.timeout || this.config.performance?.eventTimeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new EventTimeoutError(this.name, timeout, eventId)), timeout);
+        setTimeout(
+          () => reject(new EventTimeoutError(this.name, timeout, eventId)),
+          timeout,
+        );
       });
 
       // Process event emission with timeout
@@ -438,7 +463,8 @@ export class SystemEventAdapter implements IEventManager {
         executionTime: duration,
         success: false,
         correlationId: event.correlationId || undefined,
-        errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
+        errorType:
+          error instanceof Error ? error.constructor.name : 'UnknownError',
         timestamp: new Date(),
       });
 
@@ -446,7 +472,12 @@ export class SystemEventAdapter implements IEventManager {
       this.errorCount++;
       this.totalLatency += duration;
 
-      this.eventEmitter.emit('emission', { event, success: false, duration, error });
+      this.eventEmitter.emit('emission', {
+        event,
+        success: false,
+        duration,
+        error,
+      });
       this.eventEmitter.emit('error', error);
 
       this.logger.error(`Event emission failed for ${event.type}:`, error);
@@ -462,12 +493,14 @@ export class SystemEventAdapter implements IEventManager {
    */
   async emitBatch<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const startTime = Date.now();
 
     try {
-      this.logger.debug(`Emitting event batch: ${batch.id} (${batch.events.length} events)`);
+      this.logger.debug(
+        `Emitting event batch: ${batch.id} (${batch.events.length} events)`,
+      );
 
       // Process events based on strategy
       switch (this.config.processing?.strategy) {
@@ -488,9 +521,14 @@ export class SystemEventAdapter implements IEventManager {
       }
 
       const duration = Date.now() - startTime;
-      this.logger.debug(`Event batch processed successfully: ${batch.id} in ${duration}ms`);
+      this.logger.debug(
+        `Event batch processed successfully: ${batch.id} in ${duration}ms`,
+      );
     } catch (error) {
-      this.logger.error(`Event batch processing failed for ${batch.id}:`, error);
+      this.logger.error(
+        `Event batch processing failed for ${batch.id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -514,7 +552,7 @@ export class SystemEventAdapter implements IEventManager {
   subscribe<T extends SystemEvent>(
     eventTypes: string | string[],
     listener: EventListener<T>,
-    options?: Partial<EventSubscription<T>>
+    options?: Partial<EventSubscription<T>>,
   ): string {
     const subscriptionId = this.generateSubscriptionId();
     const types = Array.isArray(eventTypes) ? eventTypes : [eventTypes];
@@ -533,7 +571,9 @@ export class SystemEventAdapter implements IEventManager {
 
     this.subscriptions.set(subscriptionId, subscription as EventSubscription);
 
-    this.logger.debug(`Created subscription ${subscriptionId} for events: ${types.join(', ')}`);
+    this.logger.debug(
+      `Created subscription ${subscriptionId} for events: ${types.join(', ')}`,
+    );
     this.eventEmitter.emit('subscription', { subscriptionId, subscription });
 
     return subscriptionId;
@@ -581,7 +621,7 @@ export class SystemEventAdapter implements IEventManager {
     }
 
     this.logger.debug(
-      `Removed ${removedCount} subscriptions${eventType ? ` for ${eventType}` : ''}`
+      `Removed ${removedCount} subscriptions${eventType ? ` for ${eventType}` : ''}`,
     );
     return removedCount;
   }
@@ -646,7 +686,9 @@ export class SystemEventAdapter implements IEventManager {
 
     // Apply filters
     if (options?.filter) {
-      events = events.filter((event) => this.applyFilter(event, options?.filter!));
+      events = events.filter((event) =>
+        this.applyFilter(event, options?.filter!),
+      );
     }
 
     // Apply sorting
@@ -673,8 +715,13 @@ export class SystemEventAdapter implements IEventManager {
    * @param eventType
    * @param limit
    */
-  async getEventHistory(eventType: string, limit?: number): Promise<SystemEvent[]> {
-    const events = this.eventHistory.filter((event) => event.type === eventType);
+  async getEventHistory(
+    eventType: string,
+    limit?: number,
+  ): Promise<SystemEvent[]> {
+    const events = this.eventHistory.filter(
+      (event) => event.type === eventType,
+    );
     return limit ? events.slice(-limit) : events;
   }
 
@@ -683,8 +730,11 @@ export class SystemEventAdapter implements IEventManager {
    */
   async healthCheck(): Promise<EventManagerStatus> {
     const now = new Date();
-    const uptime = this.startTime ? now.getTime() - this.startTime.getTime() : 0;
-    const errorRate = this.eventCount > 0 ? (this.errorCount / this.eventCount) * 100 : 0;
+    const uptime = this.startTime
+      ? now.getTime() - this.startTime.getTime()
+      : 0;
+    const errorRate =
+      this.eventCount > 0 ? (this.errorCount / this.eventCount) * 100 : 0;
 
     // Check system component health
     const componentHealth = await this.checkSystemComponentHealth();
@@ -726,14 +776,18 @@ export class SystemEventAdapter implements IEventManager {
   async getMetrics(): Promise<EventManagerMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
-    const avgLatency = this.eventCount > 0 ? this.totalLatency / this.eventCount : 0;
-    const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // events per second
+    const avgLatency =
+      this.eventCount > 0 ? this.totalLatency / this.eventCount : 0;
+    const throughput =
+      recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // events per second
 
     // Calculate percentile latencies
-    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics
+      .map((m) => m.executionTime)
+      .sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
@@ -767,7 +821,9 @@ export class SystemEventAdapter implements IEventManager {
    * @param config
    */
   updateConfig(config: Partial<SystemEventAdapterConfig>): void {
-    this.logger.info(`Updating configuration for system event adapter: ${this.name}`);
+    this.logger.info(
+      `Updating configuration for system event adapter: ${this.name}`,
+    );
     Object.assign(this.config, config);
     this.logger.info(`Configuration updated successfully for: ${this.name}`);
   }
@@ -781,7 +837,7 @@ export class SystemEventAdapter implements IEventManager {
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
-    handler: (...args: unknown[]) => void
+    handler: (...args: unknown[]) => void,
   ): void {
     this.eventEmitter.on(event, handler);
   }
@@ -824,9 +880,14 @@ export class SystemEventAdapter implements IEventManager {
       // Remove all event listeners
       this.eventEmitter.removeAllListeners();
 
-      this.logger.info(`System event adapter destroyed successfully: ${this.name}`);
+      this.logger.info(
+        `System event adapter destroyed successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to destroy system event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to destroy system event adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -841,7 +902,7 @@ export class SystemEventAdapter implements IEventManager {
    * @param event
    */
   async emitSystemLifecycleEvent(
-    event: Omit<SystemLifecycleEvent, 'id' | 'timestamp'>
+    event: Omit<SystemLifecycleEvent, 'id' | 'timestamp'>,
   ): Promise<void> {
     const systemEvent: SystemLifecycleEvent = {
       ...event,
@@ -864,10 +925,18 @@ export class SystemEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeSystemLifecycleEvents(listener: EventListener<SystemLifecycleEvent>): string {
+  subscribeSystemLifecycleEvents(
+    listener: EventListener<SystemLifecycleEvent>,
+  ): string {
     return this.subscribe(
-      ['system:startup', 'system:shutdown', 'system:restart', 'system:error', 'system:health'],
-      listener
+      [
+        'system:startup',
+        'system:shutdown',
+        'system:restart',
+        'system:error',
+        'system:health',
+      ],
+      listener,
     );
   }
 
@@ -876,7 +945,9 @@ export class SystemEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeApplicationEvents(listener: EventListener<SystemLifecycleEvent>): string {
+  subscribeApplicationEvents(
+    listener: EventListener<SystemLifecycleEvent>,
+  ): string {
     return this.subscribe(['system:startup', 'system:health'], listener);
   }
 
@@ -885,7 +956,9 @@ export class SystemEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeErrorRecoveryEvents(listener: EventListener<SystemLifecycleEvent>): string {
+  subscribeErrorRecoveryEvents(
+    listener: EventListener<SystemLifecycleEvent>,
+  ): string {
     return this.subscribe(['system:error'], listener);
   }
 
@@ -915,7 +988,9 @@ export class SystemEventAdapter implements IEventManager {
    * Get active event correlations.
    */
   getActiveCorrelations(): EventCorrelation[] {
-    return Array.from(this.eventCorrelations.values()).filter((c) => c.status === 'active');
+    return Array.from(this.eventCorrelations.values()).filter(
+      (c) => c.status === 'active',
+    );
   }
 
   /**
@@ -933,15 +1008,20 @@ export class SystemEventAdapter implements IEventManager {
         let errorRate = 0;
 
         // Get component-specific health data if available
-        if (wrapped.component && typeof (wrapped.component as any).getStatus === 'function') {
+        if (
+          wrapped.component &&
+          typeof (wrapped.component as any).getStatus === 'function'
+        ) {
           const status = await (wrapped.component as any).getStatus();
-          isHealthy = (status).status === 'ready' || (status).status === 'healthy';
-          errorRate = (status).errorRate || 0;
+          isHealthy = status.status === 'ready' || status.status === 'healthy';
+          errorRate = status.errorRate || 0;
         }
 
         const responseTime = Date.now() - startTime;
         const threshold =
-          this.config.healthMonitoring?.componentHealthThresholds?.[componentName] || 0.8;
+          this.config.healthMonitoring?.componentHealthThresholds?.[
+            componentName
+          ] || 0.8;
         const healthScore = isHealthy ? 1 - errorRate : 0;
 
         const healthEntry: SystemHealthEntry = {
@@ -955,7 +1035,8 @@ export class SystemEventAdapter implements IEventManager {
           lastCheck: new Date(),
           consecutiveFailures: isHealthy
             ? 0
-            : (this.systemHealth.get(componentName)?.consecutiveFailures || 0) + 1,
+            : (this.systemHealth.get(componentName)?.consecutiveFailures || 0) +
+              1,
           errorRate,
           responseTime,
           metadata: {
@@ -972,7 +1053,9 @@ export class SystemEventAdapter implements IEventManager {
           component: componentName,
           status: 'unhealthy',
           lastCheck: new Date(),
-          consecutiveFailures: (this.systemHealth.get(componentName)?.consecutiveFailures || 0) + 1,
+          consecutiveFailures:
+            (this.systemHealth.get(componentName)?.consecutiveFailures || 0) +
+            1,
           errorRate: 1.0,
           responseTime: 0,
           metadata: {
@@ -1013,7 +1096,9 @@ export class SystemEventAdapter implements IEventManager {
       await this.wrapErrorRecoverySystem();
     }
 
-    this.logger.debug(`Wrapped ${this.wrappedComponents.size} system components`);
+    this.logger.debug(
+      `Wrapped ${this.wrappedComponents.size} system components`,
+    );
   }
 
   /**
@@ -1182,7 +1267,7 @@ export class SystemEventAdapter implements IEventManager {
    */
   private async processEventEmission<T extends SystemEvent>(
     event: T,
-    _options?: EventEmissionOptions
+    _options?: EventEmissionOptions,
   ): Promise<void> {
     // Add to event history
     this.eventHistory.push(event);
@@ -1213,27 +1298,44 @@ export class SystemEventAdapter implements IEventManager {
 
     // Process subscriptions manually to handle filtering and transformation per subscription
     for (const subscription of this.subscriptions.values()) {
-      if (!subscription.active || !subscription.eventTypes.includes(transformedEvent.type)) {
+      if (
+        !(
+          subscription.active &&
+          subscription.eventTypes.includes(transformedEvent.type)
+        )
+      ) {
         continue;
       }
 
       try {
         // Apply subscription-specific filters
-        if (subscription.filter && !this.applyFilter(transformedEvent, subscription.filter)) {
+        if (
+          subscription.filter &&
+          !this.applyFilter(transformedEvent, subscription.filter)
+        ) {
           continue;
         }
 
         // Apply subscription-specific transforms
         let subscriptionEvent = transformedEvent;
         if (subscription.transform) {
-          subscriptionEvent = await this.applyTransform(transformedEvent, subscription.transform);
+          subscriptionEvent = await this.applyTransform(
+            transformedEvent,
+            subscription.transform,
+          );
         }
 
         // Call the listener
         await subscription.listener(subscriptionEvent);
       } catch (error) {
-        this.logger.error(`Subscription listener error for ${subscription.id}:`, error);
-        this.eventEmitter.emit('subscription-error', { subscriptionId: subscription.id, error });
+        this.logger.error(
+          `Subscription listener error for ${subscription.id}:`,
+          error,
+        );
+        this.eventEmitter.emit('subscription-error', {
+          subscriptionId: subscription.id,
+          error,
+        });
       }
     }
 
@@ -1290,7 +1392,9 @@ export class SystemEventAdapter implements IEventManager {
               status: health.status === 'unhealthy' ? 'error' : 'warning',
               details: {
                 component,
-                healthScore: (health.metadata as any)?.['healthScore'] as number | undefined,
+                healthScore: (health.metadata as any)?.['healthScore'] as
+                  | number
+                  | undefined,
                 errorRate: health.errorRate,
                 consecutiveFailures: health.consecutiveFailures,
               },
@@ -1314,7 +1418,10 @@ export class SystemEventAdapter implements IEventManager {
       const now = Date.now();
       const expiredCorrelations: string[] = [];
 
-      for (const [correlationId, correlation] of this.eventCorrelations.entries()) {
+      for (const [
+        correlationId,
+        correlation,
+      ] of this.eventCorrelations.entries()) {
         if (now - correlation.lastUpdate.getTime() > correlationTTL) {
           expiredCorrelations.push(correlationId);
         }
@@ -1329,7 +1436,9 @@ export class SystemEventAdapter implements IEventManager {
       });
 
       if (expiredCorrelations.length > 0) {
-        this.logger.debug(`Cleaned up ${expiredCorrelations.length} expired correlations`);
+        this.logger.debug(
+          `Cleaned up ${expiredCorrelations.length} expired correlations`,
+        );
       }
     }, cleanupInterval);
   }
@@ -1342,7 +1451,9 @@ export class SystemEventAdapter implements IEventManager {
   private startEventCorrelation(event: SystemEvent): void {
     const correlationId = event.correlationId || this.generateCorrelationId();
 
-    if (!this.eventCorrelations.has(correlationId)) {
+    if (this.eventCorrelations.has(correlationId)) {
+      this.updateEventCorrelation(event);
+    } else {
       const correlation: EventCorrelation = {
         correlationId,
         events: [event],
@@ -1355,8 +1466,6 @@ export class SystemEventAdapter implements IEventManager {
       };
 
       this.eventCorrelations.set(correlationId, correlation);
-    } else {
-      this.updateEventCorrelation(event);
     }
   }
 
@@ -1389,7 +1498,7 @@ export class SystemEventAdapter implements IEventManager {
    */
   private correlateErrorRecoveryEvent(
     event: SystemLifecycleEvent,
-    data: Record<string, unknown>
+    data: Record<string, unknown>,
   ): void {
     // Create correlation between error and recovery events
     const recoveryCorrelationId = this.generateCorrelationId();
@@ -1428,7 +1537,9 @@ export class SystemEventAdapter implements IEventManager {
   /**
    * Check health of all system components.
    */
-  private async checkSystemComponentHealth(): Promise<Record<string, SystemHealthEntry>> {
+  private async checkSystemComponentHealth(): Promise<
+    Record<string, SystemHealthEntry>
+  > {
     const componentHealth: Record<string, SystemHealthEntry> = {};
 
     for (const [componentName, wrapped] of this.wrappedComponents.entries()) {
@@ -1457,21 +1568,21 @@ export class SystemEventAdapter implements IEventManager {
    */
   private async processBatchImmediate<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     await Promise.all(batch.events.map((event) => this.emit(event, options)));
   }
 
   private async processBatchQueued<T extends SystemEvent>(
     batch: EventBatch<T>,
-    _options?: EventEmissionOptions
+    _options?: EventEmissionOptions,
   ): Promise<void> {
     this.eventQueue.push(...batch.events);
   }
 
   private async processBatchBatched<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const batchSize = this.config.processing?.batchSize || 50;
 
@@ -1483,7 +1594,7 @@ export class SystemEventAdapter implements IEventManager {
 
   private async processBatchThrottled<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const throttleMs = this.config.processing?.throttleMs || 100;
 
@@ -1514,7 +1625,11 @@ export class SystemEventAdapter implements IEventManager {
     }
 
     // Priority filter
-    if (filter.priorities && event.priority && !filter.priorities.includes(event.priority)) {
+    if (
+      filter.priorities &&
+      event.priority &&
+      !filter.priorities.includes(event.priority)
+    ) {
       return false;
     }
 
@@ -1537,7 +1652,7 @@ export class SystemEventAdapter implements IEventManager {
 
   private async applyTransform<T extends SystemEvent>(
     event: T,
-    transform: EventTransform
+    transform: EventTransform,
   ): Promise<T> {
     let transformedEvent = event;
 
@@ -1559,7 +1674,10 @@ export class SystemEventAdapter implements IEventManager {
     return transformedEvent;
   }
 
-  private getEventSortValue(event: SystemEvent, sortBy: string): string | number {
+  private getEventSortValue(
+    event: SystemEvent,
+    sortBy: string,
+  ): string | number {
     switch (sortBy) {
       case 'timestamp':
         return event.timestamp.getTime();
@@ -1576,9 +1694,13 @@ export class SystemEventAdapter implements IEventManager {
     }
   }
 
-  private extractOperationFromEvent(eventType: string): SystemLifecycleEvent['operation'] {
-    if (eventType.includes('start') || eventType.includes('init')) return 'start';
-    if (eventType.includes('stop') || eventType.includes('shutdown')) return 'stop';
+  private extractOperationFromEvent(
+    eventType: string,
+  ): SystemLifecycleEvent['operation'] {
+    if (eventType.includes('start') || eventType.includes('init'))
+      return 'start';
+    if (eventType.includes('stop') || eventType.includes('shutdown'))
+      return 'stop';
     if (eventType.includes('restart')) return 'restart';
     if (eventType.includes('health')) return 'status';
     return 'status';
@@ -1665,7 +1787,9 @@ export class SystemEventAdapter implements IEventManager {
  * @param config
  * @example
  */
-export function createSystemEventAdapter(config: SystemEventAdapterConfig): SystemEventAdapter {
+export function createSystemEventAdapter(
+  config: SystemEventAdapterConfig,
+): SystemEventAdapter {
   return new SystemEventAdapter(config);
 }
 
@@ -1678,7 +1802,7 @@ export function createSystemEventAdapter(config: SystemEventAdapterConfig): Syst
  */
 export function createDefaultSystemEventAdapterConfig(
   name: string,
-  overrides?: Partial<SystemEventAdapterConfig>
+  overrides?: Partial<SystemEventAdapterConfig>,
 ): SystemEventAdapterConfig {
   return {
     name,
@@ -1777,7 +1901,7 @@ export const SystemEventHelpers = {
    */
   createStartupEvent(
     component: string,
-    details?: any
+    details?: any,
   ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,
@@ -1797,7 +1921,7 @@ export const SystemEventHelpers = {
    */
   createShutdownEvent(
     component: string,
-    details?: any
+    details?: any,
   ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,
@@ -1819,13 +1943,18 @@ export const SystemEventHelpers = {
   createHealthEvent(
     component: string,
     healthScore: number,
-    details?: any
+    details?: any,
   ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,
       type: 'system:health',
       operation: 'status',
-      status: healthScore >= 0.8 ? 'success' : healthScore >= 0.5 ? 'warning' : 'error',
+      status:
+        healthScore >= 0.8
+          ? 'success'
+          : healthScore >= 0.5
+            ? 'warning'
+            : 'error',
       priority: 'medium',
       details: {
         ...details,
@@ -1844,7 +1973,7 @@ export const SystemEventHelpers = {
   createErrorEvent(
     component: string,
     error: Error,
-    details?: any
+    details?: any,
   ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,

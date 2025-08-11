@@ -43,7 +43,8 @@ export class DaemonProcessManager {
     this.config = {
       pidFile: config?.pidFile || join(process.cwd(), '.claude-zen-web.pid'),
       logFile: config?.logFile || join(process.cwd(), '.claude-zen-web.log'),
-      errorFile: config?.errorFile || join(process.cwd(), '.claude-zen-web.error'),
+      errorFile:
+        config?.errorFile || join(process.cwd(), '.claude-zen-web.error'),
       cwd: config?.cwd || process.cwd(),
       detached: config?.detached ?? true,
     };
@@ -55,7 +56,10 @@ export class DaemonProcessManager {
    * @param command
    * @param args
    */
-  async startDaemon(command: string, args: string[] = []): Promise<ProcessInfo> {
+  async startDaemon(
+    command: string,
+    args: string[] = [],
+  ): Promise<ProcessInfo> {
     // Check if already running
     const existing = await this.getRunningProcess();
     if (existing) {
@@ -96,7 +100,9 @@ export class DaemonProcessManager {
     });
 
     child?.on('exit', (code, signal) => {
-      this.logger.info(`Daemon process exited with code ${code}, signal ${signal}`);
+      this.logger.info(
+        `Daemon process exited with code ${code}, signal ${signal}`,
+      );
       this.cleanupPidFile();
     });
 
@@ -156,7 +162,10 @@ export class DaemonProcessManager {
    * @param command
    * @param args
    */
-  async restartDaemon(command: string, args: string[] = []): Promise<ProcessInfo> {
+  async restartDaemon(
+    command: string,
+    args: string[] = [],
+  ): Promise<ProcessInfo> {
     this.logger.info('Restarting daemon process...');
 
     await this.stopDaemon();
@@ -177,7 +186,7 @@ export class DaemonProcessManager {
 
     try {
       const pidContent = await readFile(this.config.pidFile, 'utf-8');
-      const pid = parseInt(pidContent.trim());
+      const pid = Number.parseInt(pidContent.trim());
 
       if (Number.isNaN(pid)) {
         await this.cleanupPidFile();
@@ -292,7 +301,10 @@ export class DaemonProcessManager {
    * @param pid
    * @param timeout
    */
-  private async waitForProcessStop(pid: number, timeout: number): Promise<void> {
+  private async waitForProcessStop(
+    pid: number,
+    timeout: number,
+  ): Promise<void> {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {
@@ -323,9 +335,11 @@ export class DaemonProcessManager {
    * Ensure required directories exist.
    */
   private async ensureDirectories(): Promise<void> {
-    const dirs = [this.config.pidFile, this.config.logFile, this.config.errorFile].map((file) =>
-      file.substring(0, file.lastIndexOf('/'))
-    );
+    const dirs = [
+      this.config.pidFile,
+      this.config.logFile,
+      this.config.errorFile,
+    ].map((file) => file.substring(0, file.lastIndexOf('/')));
 
     for (const dir of [...new Set(dirs)]) {
       if (dir && !existsSync(dir)) {
@@ -347,9 +361,13 @@ export class DaemonProcessManager {
     };
 
     try {
-      await writeFile(this.config.errorFile, `${JSON.stringify(errorLog, null, 2)}\n`, {
-        flag: 'a',
-      });
+      await writeFile(
+        this.config.errorFile,
+        `${JSON.stringify(errorLog, null, 2)}\n`,
+        {
+          flag: 'a',
+        },
+      );
     } catch (writeError) {
       this.logger.error('Failed to write error log:', writeError);
     }

@@ -32,14 +32,15 @@ describe('Agent Communication Protocols (London TDD)', () => {
           id: `agent-${i}`,
           type: i < 2 ? 'coordinator' : 'worker',
           status: 'active',
-          capabilities: i < 2 ? ['coordination', 'supervision'] : ['execution', 'analysis'],
+          capabilities:
+            i < 2 ? ['coordination', 'supervision'] : ['execution', 'analysis'],
           sendMessage: vi.fn(),
           receiveMessage: vi.fn(),
           subscribeToChannel: vi.fn(),
           unsubscribeFromChannel: vi.fn(),
           getMessageQueue: vi.fn(),
           processMessage: vi.fn(),
-        }) as vi.Mocked<Agent>
+        }) as vi.Mocked<Agent>,
     );
 
     testHelpers = new CoordinationTestHelpers();
@@ -67,9 +68,16 @@ describe('Agent Communication Protocols (London TDD)', () => {
         success: true,
         messageId: 'msg-001',
       });
-      mockMessageBroker.routeMessage.mockResolvedValue({ delivered: true, latency: 45 });
+      mockMessageBroker.routeMessage.mockResolvedValue({
+        delivered: true,
+        latency: 45,
+      });
 
-      await communicationProtocol.sendDirectMessage(sender.id, receiver.id, message);
+      await communicationProtocol.sendDirectMessage(
+        sender.id,
+        receiver.id,
+        message,
+      );
 
       // Verify message broker routing
       expect(mockMessageBroker.sendDirectMessage).toHaveBeenCalledWith(
@@ -79,7 +87,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           ...message,
           encrypted: true,
           compressed: false, // Below compression threshold
-        })
+        }),
       );
 
       // Verify routing optimization
@@ -88,14 +96,18 @@ describe('Agent Communication Protocols (London TDD)', () => {
           from: sender.id,
           to: receiver.id,
           optimizeRoute: true,
-        })
+        }),
       );
     });
 
     it('should handle message delivery failures with retry logic', async () => {
       const sender = mockAgents[0];
       const receiver = mockAgents[2];
-      const message = { id: 'msg-002', type: 'status_update', content: { status: 'completed' } };
+      const message = {
+        id: 'msg-002',
+        type: 'status_update',
+        content: { status: 'completed' },
+      };
 
       // Mock failure then success
       mockMessageBroker.sendDirectMessage
@@ -103,7 +115,11 @@ describe('Agent Communication Protocols (London TDD)', () => {
         .mockRejectedValueOnce(new Error('Receiver busy'))
         .mockResolvedValueOnce({ success: true, messageId: 'msg-002' });
 
-      const result = await communicationProtocol.sendDirectMessage(sender.id, receiver.id, message);
+      const result = await communicationProtocol.sendDirectMessage(
+        sender.id,
+        receiver.id,
+        message,
+      );
 
       // Verify retry attempts
       expect(mockMessageBroker.sendDirectMessage).toHaveBeenCalledTimes(3);
@@ -126,7 +142,11 @@ describe('Agent Communication Protocols (London TDD)', () => {
         messageId: 'msg-003',
       });
 
-      await communicationProtocol.sendDirectMessage(sender.id, receiver.id, largeMessage);
+      await communicationProtocol.sendDirectMessage(
+        sender.id,
+        receiver.id,
+        largeMessage,
+      );
 
       expect(mockMessageBroker.sendDirectMessage).toHaveBeenCalledWith(
         sender.id,
@@ -136,7 +156,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           compressed: true,
           originalSize: expect.any(Number),
           compressedSize: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -147,7 +167,10 @@ describe('Agent Communication Protocols (London TDD)', () => {
       const broadcastMessage = {
         id: 'broadcast-001',
         type: 'system_announcement',
-        content: { announcement: 'System maintenance scheduled', urgency: 'medium' },
+        content: {
+          announcement: 'System maintenance scheduled',
+          urgency: 'medium',
+        },
         scope: 'all_agents',
       };
 
@@ -157,14 +180,17 @@ describe('Agent Communication Protocols (London TDD)', () => {
         failedDeliveries: [],
       });
 
-      const result = await communicationProtocol.broadcastMessage(broadcaster.id, broadcastMessage);
+      const result = await communicationProtocol.broadcastMessage(
+        broadcaster.id,
+        broadcastMessage,
+      );
 
       expect(mockMessageBroker.broadcast).toHaveBeenCalledWith(
         expect.objectContaining({
           ...broadcastMessage,
           sender: broadcaster.id,
           broadcastType: 'topology_wide',
-        })
+        }),
       );
 
       expect(result?.success).toBe(true);
@@ -180,21 +206,28 @@ describe('Agent Communication Protocols (London TDD)', () => {
         targetFilter: { type: 'coordinator' },
       };
 
-      const coordinatorAgents = mockAgents.filter((a) => a.type === 'coordinator');
+      const coordinatorAgents = mockAgents.filter(
+        (a) => a.type === 'coordinator',
+      );
 
       mockMessageBroker.broadcast.mockResolvedValue({
         success: true,
         deliveredTo: coordinatorAgents.map((a) => a.id),
-        filteredOut: mockAgents.filter((a) => a.type !== 'coordinator').map((a) => a.id),
+        filteredOut: mockAgents
+          .filter((a) => a.type !== 'coordinator')
+          .map((a) => a.id),
       });
 
-      await communicationProtocol.broadcastMessage(broadcaster.id, selectiveMessage);
+      await communicationProtocol.broadcastMessage(
+        broadcaster.id,
+        selectiveMessage,
+      );
 
       expect(mockMessageBroker.broadcast).toHaveBeenCalledWith(
         expect.objectContaining({
           targetFilter: { type: 'coordinator' },
           broadcastType: 'filtered',
-        })
+        }),
       );
     });
 
@@ -222,7 +255,10 @@ describe('Agent Communication Protocols (London TDD)', () => {
         });
       });
 
-      const result = await communicationProtocol.broadcastMessage(broadcaster.id, reliableMessage);
+      const result = await communicationProtocol.broadcastMessage(
+        broadcaster.id,
+        reliableMessage,
+      );
 
       // Verify retry for failed deliveries
       expect(mockMessageBroker.broadcast).toHaveBeenCalledTimes(1);
@@ -259,7 +295,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
             encryption: true,
             maxMessages: expect.any(Number),
           }),
-        })
+        }),
       );
 
       expect(channel.channelId).toBe('ch-001');
@@ -272,10 +308,16 @@ describe('Agent Communication Protocols (London TDD)', () => {
       const channelMessage = {
         id: 'ch-msg-001',
         type: 'channel_message',
-        content: { discussion: 'task_progress', updates: ['step1_complete', 'step2_in_progress'] },
+        content: {
+          discussion: 'task_progress',
+          updates: ['step1_complete', 'step2_in_progress'],
+        },
       };
 
-      mockMessageBroker.subscribe.mockResolvedValue({ subscribed: true, channelId });
+      mockMessageBroker.subscribe.mockResolvedValue({
+        subscribed: true,
+        channelId,
+      });
 
       await communicationProtocol.subscribeToChannel(subscriber.id, channelId);
 
@@ -285,11 +327,14 @@ describe('Agent Communication Protocols (London TDD)', () => {
         expect.objectContaining({
           messageHandler: expect.any(Function),
           errorHandler: expect.any(Function),
-        })
+        }),
       );
 
       // Verify agent subscription
-      expect(subscriber.subscribeToChannel).toHaveBeenCalledWith(channelId, expect.any(Function));
+      expect(subscriber.subscribeToChannel).toHaveBeenCalledWith(
+        channelId,
+        expect.any(Function),
+      );
     });
 
     it('should support channel message threading and replies', async () => {
@@ -304,14 +349,20 @@ describe('Agent Communication Protocols (London TDD)', () => {
       const replyMessage = {
         id: 'thread-reply-001',
         type: 'reply',
-        content: { response: 'Agreed on strategy A', references: ['strategy_doc_v2'] },
+        content: {
+          response: 'Agreed on strategy A',
+          references: ['strategy_doc_v2'],
+        },
         threadId: 'thread-001',
         replyTo: 'thread-root',
       };
 
       mockMessageBroker.sendDirectMessage.mockResolvedValue({ success: true });
 
-      await communicationProtocol.sendChannelMessage(channelId, originalMessage);
+      await communicationProtocol.sendChannelMessage(
+        channelId,
+        originalMessage,
+      );
       await communicationProtocol.sendChannelMessage(channelId, replyMessage);
 
       // Verify threading structure
@@ -321,7 +372,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
         expect.objectContaining({
           threadId: 'thread-001',
           messageType: 'threaded',
-        })
+        }),
       );
     });
   });
@@ -346,21 +397,31 @@ describe('Agent Communication Protocols (London TDD)', () => {
         priority: 'normal',
       };
 
-      mockMessageBroker.sendDirectMessage.mockImplementation((from, to, msg) => {
-        return Promise.resolve({
-          success: true,
-          messageId: msg.id,
-          priority: msg.priority,
-          queuePosition: msg.priority === 'critical' ? 0 : 10,
-        });
-      });
+      mockMessageBroker.sendDirectMessage.mockImplementation(
+        (from, to, msg) => {
+          return Promise.resolve({
+            success: true,
+            messageId: msg.id,
+            priority: msg.priority,
+            queuePosition: msg.priority === 'critical' ? 0 : 10,
+          });
+        },
+      );
 
       // Send regular message first, then critical
-      await communicationProtocol.sendDirectMessage(sender.id, receiver.id, regularMessage);
-      await communicationProtocol.sendDirectMessage(sender.id, receiver.id, criticalMessage);
+      await communicationProtocol.sendDirectMessage(
+        sender.id,
+        receiver.id,
+        regularMessage,
+      );
+      await communicationProtocol.sendDirectMessage(
+        sender.id,
+        receiver.id,
+        criticalMessage,
+      );
 
       const criticalCall = mockMessageBroker.sendDirectMessage.mock.calls.find(
-        (call) => call[2]?.priority === 'critical'
+        (call) => call[2]?.priority === 'critical',
       );
 
       expect(criticalCall[2]).toMatchObject({
@@ -377,8 +438,16 @@ describe('Agent Communication Protocols (London TDD)', () => {
       const messages = [
         { id: 'msg-1', priority: 'low', content: { task: 'cleanup' } },
         { id: 'msg-2', priority: 'high', content: { task: 'urgent_analysis' } },
-        { id: 'msg-3', priority: 'normal', content: { task: 'regular_processing' } },
-        { id: 'msg-4', priority: 'critical', content: { task: 'emergency_response' } },
+        {
+          id: 'msg-3',
+          priority: 'normal',
+          content: { task: 'regular_processing' },
+        },
+        {
+          id: 'msg-4',
+          priority: 'critical',
+          content: { task: 'emergency_response' },
+        },
       ];
 
       agent.getMessageQueue.mockReturnValue({
@@ -398,7 +467,8 @@ describe('Agent Communication Protocols (London TDD)', () => {
       expect(agent.getMessageQueue().prioritySort).toHaveBeenCalled();
 
       // Verify priority ordering
-      const enqueueCalls = (agent.getMessageQueue().enqueue as vi.Mock).mock.calls;
+      const enqueueCalls = (agent.getMessageQueue().enqueue as vi.Mock).mock
+        .calls;
       enqueueCalls.forEach(([message], index) => {
         expect(message).toMatchObject({
           priorityScore: expect.any(Number),
@@ -427,14 +497,18 @@ describe('Agent Communication Protocols (London TDD)', () => {
       }));
 
       const sendPromises = rapidMessages.map((msg) =>
-        communicationProtocol.sendDirectMessage(sender.id, receiver.id, msg)
+        communicationProtocol.sendDirectMessage(sender.id, receiver.id, msg),
       );
 
       const results = await Promise.allSettled(sendPromises);
 
-      const successful = results?.filter((r) => r.status === 'fulfilled' && r.value.success).length;
+      const successful = results?.filter(
+        (r) => r.status === 'fulfilled' && r.value.success,
+      ).length;
       const rateLimited = results?.filter(
-        (r) => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success)
+        (r) =>
+          r.status === 'rejected' ||
+          (r.status === 'fulfilled' && !r.value.success),
       ).length;
 
       // Some messages should be rate limited
@@ -458,9 +532,16 @@ describe('Agent Communication Protocols (London TDD)', () => {
         requireEncryption: true,
       };
 
-      mockMessageBroker.sendDirectMessage.mockResolvedValue({ success: true, encrypted: true });
+      mockMessageBroker.sendDirectMessage.mockResolvedValue({
+        success: true,
+        encrypted: true,
+      });
 
-      await communicationProtocol.sendDirectMessage(sender.id, receiver.id, sensitiveMessage);
+      await communicationProtocol.sendDirectMessage(
+        sender.id,
+        receiver.id,
+        sensitiveMessage,
+      );
 
       expect(mockMessageBroker.sendDirectMessage).toHaveBeenCalledWith(
         sender.id,
@@ -470,7 +551,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           encryptionAlgorithm: expect.any(String),
           encryptedContent: expect.any(String),
           contentHash: expect.any(String),
-        })
+        }),
       );
     });
 
@@ -485,19 +566,21 @@ describe('Agent Communication Protocols (London TDD)', () => {
         requireSignature: true,
       };
 
-      mockMessageBroker.sendDirectMessage.mockImplementation((from, to, msg) => {
-        // Simulate signature verification
-        const hasValidSignature = msg.signature && msg.signatureTimestamp;
-        return Promise.resolve({
-          success: hasValidSignature,
-          signatureVerified: hasValidSignature,
-        });
-      });
+      mockMessageBroker.sendDirectMessage.mockImplementation(
+        (from, to, msg) => {
+          // Simulate signature verification
+          const hasValidSignature = msg.signature && msg.signatureTimestamp;
+          return Promise.resolve({
+            success: hasValidSignature,
+            signatureVerified: hasValidSignature,
+          });
+        },
+      );
 
       const result = await communicationProtocol.sendDirectMessage(
         sender.id,
         receiver.id,
-        signedMessage
+        signedMessage,
       );
 
       expect(result?.success).toBe(true);
@@ -510,7 +593,7 @@ describe('Agent Communication Protocols (London TDD)', () => {
           signature: expect.any(String),
           signatureTimestamp: expect.any(Number),
           signatureAlgorithm: expect.any(String),
-        })
+        }),
       );
     });
   });
@@ -535,10 +618,16 @@ describe('Agent Communication Protocols (London TDD)', () => {
           messageId: message.id,
         });
 
-        await communicationProtocol.sendDirectMessage(sender.id, receiver.id, message);
+        await communicationProtocol.sendDirectMessage(
+          sender.id,
+          receiver.id,
+          message,
+        );
       }
 
-      const metrics = await communicationProtocol.getCommunicationMetrics(sender.id);
+      const metrics = await communicationProtocol.getCommunicationMetrics(
+        sender.id,
+      );
 
       expect(metrics).toMatchObject({
         totalMessagesSent: 10,
@@ -576,7 +665,11 @@ describe('Agent Communication Protocols (London TDD)', () => {
         overallHealth: 0.85,
         communicationMatrix,
         anomalies: [
-          { type: 'high_latency', agents: ['agent-2', 'agent-3'], severity: 'medium' },
+          {
+            type: 'high_latency',
+            agents: ['agent-2', 'agent-3'],
+            severity: 'medium',
+          },
           { type: 'message_loss', agents: ['agent-1'], severity: 'low' },
         ],
       });

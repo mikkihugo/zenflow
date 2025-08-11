@@ -89,8 +89,12 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     try {
       // Create backend instance
       this.backend = await BackendFactory.createBackend(
-        this.options.backendConfig.type as 'memory' | 'file' | 'sqlite' | 'jsonb',
-        this.options.backendConfig
+        this.options.backendConfig.type as
+          | 'memory'
+          | 'file'
+          | 'sqlite'
+          | 'jsonb',
+        this.options.backendConfig,
       );
 
       await this.backend.initialize();
@@ -103,13 +107,22 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     }
   }
 
-  async store(sessionId: string, key: string, data: unknown, options?: StoreOptions): Promise<void>;
-  async store(key: string, data: unknown, options?: StoreOptions): Promise<void>;
+  async store(
+    sessionId: string,
+    key: string,
+    data: unknown,
+    options?: StoreOptions,
+  ): Promise<void>;
+  async store(
+    key: string,
+    data: unknown,
+    options?: StoreOptions,
+  ): Promise<void>;
   async store(
     sessionIdOrKey: string,
     keyOrData?: string | unknown,
     dataOrOptions?: unknown | StoreOptions,
-    options?: StoreOptions
+    options?: StoreOptions,
   ): Promise<void> {
     // Handle both overloads: (sessionId, key, data, options) and (key, data, options)
     let sessionId: string;
@@ -160,16 +173,26 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
       session.vectors?.set(key, storeOptions?.vector);
     }
 
-    await this.backend?.store(sessionId, session as unknown as JSONValue, 'session');
+    await this.backend?.store(
+      sessionId,
+      session as unknown as JSONValue,
+      'session',
+    );
 
     if (this.options.enableCache) {
       this.updateCache(sessionId, key, data);
     }
   }
 
-  async retrieve<T = unknown>(sessionId: string, key: string): Promise<T | null>;
+  async retrieve<T = unknown>(
+    sessionId: string,
+    key: string,
+  ): Promise<T | null>;
   async retrieve<T = unknown>(key: string): Promise<T | null>;
-  async retrieve<T = unknown>(sessionIdOrKey: string, key?: string): Promise<T | null> {
+  async retrieve<T = unknown>(
+    sessionIdOrKey: string,
+    key?: string,
+  ): Promise<T | null> {
     // Handle both overloads
     const actualSessionId = key ? sessionIdOrKey : 'default';
     const actualKey = key || sessionIdOrKey;
@@ -214,7 +237,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     this.ensureInitialized();
 
     const session = this.sessions.get(actualSessionId);
-    if (!session || !(actualKey in session.data)) {
+    if (!(session && actualKey in session.data)) {
       return false;
     }
 
@@ -223,7 +246,11 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     session.metadata.updated = Date.now();
 
     // Update backend
-    await this.backend?.store(actualSessionId, session as unknown as JSONValue, 'session');
+    await this.backend?.store(
+      actualSessionId,
+      session as unknown as JSONValue,
+      'session',
+    );
 
     // Remove from cache
     const cacheKey = `${actualSessionId}:${actualKey}`;
@@ -278,7 +305,11 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
 
   private async saveToBackend(): Promise<void> {
     for (const [sessionId, session] of this.sessions.entries()) {
-      await this.backend?.store(sessionId, session as unknown as JSONValue, 'session');
+      await this.backend?.store(
+        sessionId,
+        session as unknown as JSONValue,
+        'session',
+      );
     }
   }
 
@@ -308,8 +339,10 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
   }
 
   private ensureInitialized(): void {
-    if (!this.initialized || !this.backend) {
-      throw new Error('Session memory store not initialized. Call initialize() first.');
+    if (!(this.initialized && this.backend)) {
+      throw new Error(
+        'Session memory store not initialized. Call initialize() first.',
+      );
     }
   }
 }

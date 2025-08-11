@@ -57,7 +57,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
     it('should throw error for invalid category in getPreset', () => {
       expect(() => getPreset('invalid-category', 'some-preset')).toThrow(
-        'Unknown preset category: invalid-category'
+        'Unknown preset category: invalid-category',
       );
     });
 
@@ -71,7 +71,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
     it('should throw error for invalid category in getCategoryPresets', () => {
       expect(() => getCategoryPresets('non-existent')).toThrow(
-        'Unknown preset category: non-existent'
+        'Unknown preset category: non-existent',
       );
     });
 
@@ -106,7 +106,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
         expect(
           useCase.includes('classification') ||
             name.includes('classification') ||
-            description.includes('classification')
+            description.includes('classification'),
         ).toBe(true);
       });
     });
@@ -129,7 +129,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       // Results should be sorted by accuracy (descending)
       for (let i = 1; i < highAccuracyResults.length; i++) {
         expect(highAccuracyResults[i - 1].accuracy).toBeGreaterThanOrEqual(
-          highAccuracyResults[i].accuracy
+          highAccuracyResults[i].accuracy,
         );
       }
     });
@@ -151,7 +151,9 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
       // Results should be sorted by inference time (ascending)
       for (let i = 1; i < fastResults.length; i++) {
-        expect(fastResults[i - 1].inferenceTime).toBeLessThanOrEqual(fastResults[i].inferenceTime);
+        expect(fastResults[i - 1].inferenceTime).toBeLessThanOrEqual(
+          fastResults[i].inferenceTime,
+        );
       }
     });
 
@@ -304,9 +306,11 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
         description: 'Missing other fields',
       };
 
-      expect(() => validatePresetConfig(incompletePreset)).toThrow('Preset validation failed');
       expect(() => validatePresetConfig(incompletePreset)).toThrow(
-        'Missing fields: model, config, training, performance, useCase'
+        'Preset validation failed',
+      );
+      expect(() => validatePresetConfig(incompletePreset)).toThrow(
+        'Missing fields: model, config, training, performance, useCase',
       );
     });
 
@@ -325,10 +329,10 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       };
 
       expect(() => validatePresetConfig(presetMissingPerf)).toThrow(
-        'Preset performance validation failed'
+        'Preset performance validation failed',
       );
       expect(() => validatePresetConfig(presetMissingPerf)).toThrow(
-        'Missing fields: inferenceTime, memoryUsage, trainingTime'
+        'Missing fields: inferenceTime, memoryUsage, trainingTime',
       );
     });
 
@@ -378,7 +382,11 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
     });
 
     it('should return null for unknown use cases', () => {
-      const unknownUseCases = ['unknown-use-case', 'non-existent', 'random-task'];
+      const unknownUseCases = [
+        'unknown-use-case',
+        'non-existent',
+        'random-task',
+      ];
 
       unknownUseCases.forEach((useCase) => {
         const preset = getRecommendedPreset(useCase);
@@ -429,12 +437,14 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
     it('should ensure all model types are represented in presets', () => {
       const allPresets = Object.values(NEURAL_PRESETS).flatMap((category) =>
-        Object.values(category)
+        Object.values(category),
       );
       const usedModelTypes = new Set(allPresets.map((preset) => preset.model));
 
       // At least some of the model types should be used
-      const intersection = PRESET_MODEL_TYPES.filter((type) => usedModelTypes.has(type));
+      const intersection = PRESET_MODEL_TYPES.filter((type) =>
+        usedModelTypes.has(type),
+      );
       expect(intersection.length).toBeGreaterThan(0);
     });
   });
@@ -544,7 +554,11 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       // All results should match the search term
       results.forEach((result) => {
         const preset = result.preset;
-        const searchableText = [preset.name || '', preset.description || '', preset.useCase || '']
+        const searchableText = [
+          preset.name || '',
+          preset.description || '',
+          preset.useCase || '',
+        ]
           .join(' ')
           .toLowerCase();
 
@@ -591,11 +605,14 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       const recommendation = getRecommendedPreset('sentiment_analysis');
 
       // Step 5: Validate selected presets
-      [...chatbotPresets, ...visionPresets, ...highAccuracyPresets, ...fastPresets].forEach(
-        (result) => {
-          expect(() => validatePresetConfig(result.preset)).not.toThrow();
-        }
-      );
+      [
+        ...chatbotPresets,
+        ...visionPresets,
+        ...highAccuracyPresets,
+        ...fastPresets,
+      ].forEach((result) => {
+        expect(() => validatePresetConfig(result.preset)).not.toThrow();
+      });
 
       if (recommendation) {
         expect(() => validatePresetConfig(recommendation)).not.toThrow();
@@ -606,7 +623,9 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       expect(stats.totalPresets).toBeGreaterThan(0);
 
       // Verify the workflow found reasonable results
-      expect(highAccuracyPresets.length + fastPresets.length).toBeGreaterThan(0);
+      expect(highAccuracyPresets.length + fastPresets.length).toBeGreaterThan(
+        0,
+      );
     });
 
     it('should handle performance optimization preset selection', () => {
@@ -621,14 +640,16 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
         balanced: fastInferencePresets.filter((fast) =>
           highAccuracyPresets.some(
             (accurate) =>
-              fast.category === accurate.category && fast.presetName === accurate.presetName
-          )
+              fast.category === accurate.category &&
+              fast.presetName === accurate.presetName,
+          ),
         ).length,
       };
 
       // Should have options for different optimization strategies
       expect(
-        performanceAnalysis.speedOptimized + performanceAnalysis.accuracyOptimized
+        performanceAnalysis.speedOptimized +
+          performanceAnalysis.accuracyOptimized,
       ).toBeGreaterThan(0);
     });
 

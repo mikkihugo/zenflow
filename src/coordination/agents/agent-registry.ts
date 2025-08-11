@@ -10,7 +10,13 @@
 
 import { EventEmitter } from 'node:events';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
-import type { AgentCapabilities, AgentId, AgentMetrics, AgentStatus, AgentType } from '../types.ts';
+import type {
+  AgentCapabilities,
+  AgentId,
+  AgentMetrics,
+  AgentStatus,
+  AgentType,
+} from '../types.ts';
 
 export interface AgentRegistryQuery {
   type?: AgentType;
@@ -42,7 +48,13 @@ export interface AgentSelectionCriteria {
   maxResults?: number;
   fileType?: string;
   projectContext?: string;
-  taskType?: 'performance' | 'migration' | 'testing' | 'ui-ux' | 'development' | 'analysis';
+  taskType?:
+    | 'performance'
+    | 'migration'
+    | 'testing'
+    | 'ui-ux'
+    | 'development'
+    | 'analysis';
 }
 
 /**
@@ -180,7 +192,7 @@ export class AgentRegistry extends EventEmitter {
       status?: AgentStatus;
       metrics?: Partial<AgentMetrics>;
       capabilities?: AgentCapabilities;
-    }
+    },
   ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (!agent) return;
@@ -219,7 +231,9 @@ export class AgentRegistry extends EventEmitter {
    *
    * @param query
    */
-  async queryAgents(query: AgentRegistryQuery = {}): Promise<RegisteredAgent[]> {
+  async queryAgents(
+    query: AgentRegistryQuery = {},
+  ): Promise<RegisteredAgent[]> {
     const agents = Array.from(this.agents.values());
 
     return agents.filter((agent) => {
@@ -248,7 +262,7 @@ export class AgentRegistry extends EventEmitter {
             agent.capabilities.languages?.includes(cap) ||
             agent.capabilities.frameworks?.includes(cap) ||
             agent.capabilities.domains?.includes(cap) ||
-            agent.capabilities.tools?.includes(cap)
+            agent.capabilities.tools?.includes(cap),
         );
         if (!hasAllCapabilities) {
           return false;
@@ -256,12 +270,18 @@ export class AgentRegistry extends EventEmitter {
       }
 
       // Success rate filter
-      if (query.minSuccessRate !== undefined && agent.metrics.successRate < query.minSuccessRate) {
+      if (
+        query.minSuccessRate !== undefined &&
+        agent.metrics.successRate < query.minSuccessRate
+      ) {
         return false;
       }
 
       // Load factor filter
-      if (query.maxLoadFactor !== undefined && agent.loadFactor > query.maxLoadFactor) {
+      if (
+        query.maxLoadFactor !== undefined &&
+        agent.loadFactor > query.maxLoadFactor
+      ) {
         return false;
       }
 
@@ -274,16 +294,22 @@ export class AgentRegistry extends EventEmitter {
    *
    * @param criteria
    */
-  async selectAgents(criteria: AgentSelectionCriteria): Promise<RegisteredAgent[]> {
+  async selectAgents(
+    criteria: AgentSelectionCriteria,
+  ): Promise<RegisteredAgent[]> {
     let candidates = await this.queryAgents({
       ...(criteria.type && { type: criteria.type }),
       status: 'idle', // Only consider idle agents
-      ...(criteria.requiredCapabilities && { capabilities: criteria.requiredCapabilities }),
+      ...(criteria.requiredCapabilities && {
+        capabilities: criteria.requiredCapabilities,
+      }),
     });
 
     // Exclude specific agents
     if (criteria.excludeAgents) {
-      candidates = candidates.filter((agent) => !criteria.excludeAgents?.includes(agent.id));
+      candidates = candidates.filter(
+        (agent) => !criteria.excludeAgents?.includes(agent.id),
+      );
     }
 
     // Enhanced selection based on file type and task context
@@ -301,7 +327,9 @@ export class AgentRegistry extends EventEmitter {
         case 'health':
           return b.health - a.health;
         case 'availability':
-          return (a.metrics.tasksInProgress || 0) - (b.metrics.tasksInProgress || 0);
+          return (
+            (a.metrics.tasksInProgress || 0) - (b.metrics.tasksInProgress || 0)
+          );
         default: {
           // Default: balanced scoring with context awareness
           const scoreA = this.calculateSelectionScore(a, criteria);
@@ -338,7 +366,9 @@ export class AgentRegistry extends EventEmitter {
    * @param type
    */
   getAgentsByType(type: AgentType): RegisteredAgent[] {
-    return Array.from(this.agents.values()).filter((agent) => agent.type === type);
+    return Array.from(this.agents.values()).filter(
+      (agent) => agent.type === type,
+    );
   }
 
   /**
@@ -351,7 +381,7 @@ export class AgentRegistry extends EventEmitter {
         acc[agent.type] = (acc[agent.type] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const byStatus = agents.reduce(
@@ -359,17 +389,20 @@ export class AgentRegistry extends EventEmitter {
         acc[agent.status] = (acc[agent.status] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     return {
       totalAgents: agents.length,
       agentsByType: byType,
       agentsByStatus: byStatus,
-      averageLoadFactor: agents.reduce((sum, a) => sum + a.loadFactor, 0) / agents.length || 0,
-      averageHealth: agents.reduce((sum, a) => sum + a.health, 0) / agents.length || 0,
+      averageLoadFactor:
+        agents.reduce((sum, a) => sum + a.loadFactor, 0) / agents.length || 0,
+      averageHealth:
+        agents.reduce((sum, a) => sum + a.health, 0) / agents.length || 0,
       averageSuccessRate:
-        agents.reduce((sum, a) => sum + a.metrics.successRate, 0) / agents.length || 0,
+        agents.reduce((sum, a) => sum + a.metrics.successRate, 0) /
+          agents.length || 0,
     };
   }
 
@@ -396,7 +429,7 @@ export class AgentRegistry extends EventEmitter {
       this.memory.store(`${this.namespace}/agents/${id}`, agent, {
         ttl: 3600000, // 1 hour
         replicas: 2,
-      })
+      }),
     );
 
     await Promise.allSettled(promises);
@@ -460,12 +493,17 @@ export class AgentRegistry extends EventEmitter {
       (metrics.tasksInProgress || 0) /
       Math.max(1, metrics.tasksCompleted + (metrics.tasksInProgress || 0));
     const resourceLoad =
-      ((metrics.resourceUsage?.memory || 0) + (metrics.resourceUsage?.cpu || 0)) / 2;
+      ((metrics.resourceUsage?.memory || 0) +
+        (metrics.resourceUsage?.cpu || 0)) /
+      2;
 
     return Math.min(1, taskLoad * 0.6 + resourceLoad * 0.4);
   }
 
-  private calculateHealth(metrics?: AgentMetrics, status?: AgentStatus): number {
+  private calculateHealth(
+    metrics?: AgentMetrics,
+    status?: AgentStatus,
+  ): number {
     if (!metrics) return 1.0;
 
     let health = 1.0;
@@ -480,7 +518,10 @@ export class AgentRegistry extends EventEmitter {
     // Resource usage penalty
     const resourcePenalty = Math.max(
       0,
-      ((metrics.resourceUsage?.memory || 0) + (metrics.resourceUsage?.cpu || 0)) / 2 - 0.8
+      ((metrics.resourceUsage?.memory || 0) +
+        (metrics.resourceUsage?.cpu || 0)) /
+        2 -
+        0.8,
     );
     health -= resourcePenalty * 0.3;
 
@@ -489,7 +530,7 @@ export class AgentRegistry extends EventEmitter {
 
   private calculateSelectionScore(
     agent: RegisteredAgent,
-    criteria?: AgentSelectionCriteria
+    criteria?: AgentSelectionCriteria,
   ): number {
     // Balanced scoring for agent selection
     const availabilityScore = (1 - agent.loadFactor) * 0.3;
@@ -506,7 +547,7 @@ export class AgentRegistry extends EventEmitter {
 
   private filterByContext(
     candidates: RegisteredAgent[],
-    criteria: AgentSelectionCriteria
+    criteria: AgentSelectionCriteria,
   ): RegisteredAgent[] {
     const fileTypeToAgents = this.getFileTypeMapping();
     const taskTypeToAgents = this.getTaskTypeMapping();
@@ -532,7 +573,10 @@ export class AgentRegistry extends EventEmitter {
     });
   }
 
-  private calculateContextScore(agent: RegisteredAgent, criteria: AgentSelectionCriteria): number {
+  private calculateContextScore(
+    agent: RegisteredAgent,
+    criteria: AgentSelectionCriteria,
+  ): number {
     const fileTypeToAgents = this.getFileTypeMapping();
     const taskTypeToAgents = this.getTaskTypeMapping();
 
@@ -560,7 +604,12 @@ export class AgentRegistry extends EventEmitter {
   private getFileTypeMapping(): Record<string, AgentType[]> {
     return {
       // Frontend files
-      tsx: ['frontend-dev', 'ui-designer', 'ux-designer', 'accessibility-specialist'],
+      tsx: [
+        'frontend-dev',
+        'ui-designer',
+        'ux-designer',
+        'accessibility-specialist',
+      ],
       jsx: ['frontend-dev', 'ui-designer', 'ux-designer'],
       css: ['ui-designer', 'frontend-dev'],
       scss: ['ui-designer', 'frontend-dev'],
@@ -588,7 +637,11 @@ export class AgentRegistry extends EventEmitter {
       rst: ['technical-writer', 'user-guide-writer'],
 
       // Performance files
-      wasm: ['performance-analyzer', 'bottleneck-analyzer', 'latency-optimizer'],
+      wasm: [
+        'performance-analyzer',
+        'bottleneck-analyzer',
+        'latency-optimizer',
+      ],
       c: ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
       cpp: ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
       rs: ['performance-analyzer', 'memory-optimizer', 'latency-optimizer'],

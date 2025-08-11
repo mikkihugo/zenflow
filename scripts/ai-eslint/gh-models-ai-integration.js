@@ -51,7 +51,9 @@ export class GHModelsAIIntegration {
       import('@logtape/logtape')
         .then(({ getLogger }) => {
           this.logger = getLogger(['gh-models-integration']);
-          this.logger.info('GitHub Models AI Integration initialized with structured logging');
+          this.logger.info(
+            'GitHub Models AI Integration initialized with structured logging',
+          );
         })
         .catch((err) => {
           console.warn('Failed to initialize structured logging:', err.message);
@@ -131,14 +133,20 @@ export class GHModelsAIIntegration {
   getOptimalModel(errorTypes = [], fileSize = 'medium') {
     // Model selection logic based on task complexity
     const hasComplexErrors = errorTypes.some((type) =>
-      ['type_inference', 'generic_constraints', 'conditional_types'].includes(type)
+      ['type_inference', 'generic_constraints', 'conditional_types'].includes(
+        type,
+      ),
     );
 
     if (hasComplexErrors || fileSize === 'large') {
       return 'openai/gpt-4o'; // Best reasoning for complex cases
     }
 
-    if (errorTypes.some((type) => ['syntax_error', 'import_resolution'].includes(type))) {
+    if (
+      errorTypes.some((type) =>
+        ['syntax_error', 'import_resolution'].includes(type),
+      )
+    ) {
       return 'deepseek/deepseek-v3'; // Excellent for code understanding
     }
 
@@ -173,7 +181,11 @@ export class GHModelsAIIntegration {
       const fileContent = fs.readFileSync(filePath, 'utf8');
 
       // Enhanced prompt with file context
-      const enhancedPrompt = this.buildEnhancedPrompt(prompt, filePath, fileContent);
+      const enhancedPrompt = this.buildEnhancedPrompt(
+        prompt,
+        filePath,
+        fileContent,
+      );
 
       // Log full prompt for debugging
       this.logger.debug('GitHub Models full prompt', {
@@ -184,7 +196,11 @@ export class GHModelsAIIntegration {
       });
 
       // Execute GitHub Models CLI
-      const result = await this.executeGHModelsCommand(selectedModel, enhancedPrompt, sessionId);
+      const result = await this.executeGHModelsCommand(
+        selectedModel,
+        enhancedPrompt,
+        sessionId,
+      );
 
       if (!result.success) {
         throw new Error(`GitHub Models execution failed: ${result.error}`);
@@ -195,7 +211,7 @@ export class GHModelsAIIntegration {
         result.output,
         filePath,
         fileContent,
-        sessionId
+        sessionId,
       );
 
       // Calculate metrics
@@ -203,7 +219,7 @@ export class GHModelsAIIntegration {
       const cost = this.estimateCost(
         selectedModel,
         enhancedPrompt.length,
-        result.output?.length || 0
+        result.output?.length || 0,
       );
 
       this.logger.info('GitHub Models session completed', {
@@ -371,7 +387,12 @@ Provide the complete corrected file content. Do not include explanations or mark
   /**
    * Process GitHub Models response and apply changes
    */
-  async processGHModelsResponse(response, filePath, originalContent, sessionId) {
+  async processGHModelsResponse(
+    response,
+    filePath,
+    originalContent,
+    sessionId,
+  ) {
     try {
       // GitHub Models should return the complete corrected file
       const correctedContent = response.trim();
@@ -385,7 +406,10 @@ Provide the complete corrected file content. Do not include explanations or mark
       fs.writeFileSync(filePath, correctedContent);
 
       // Count changes made
-      const changesApplied = this.countChanges(originalContent, correctedContent);
+      const changesApplied = this.countChanges(
+        originalContent,
+        correctedContent,
+      );
 
       this.logger.info('Applied GitHub Models fixes', {
         sessionId,
@@ -438,7 +462,9 @@ Provide the complete corrected file content. Do not include explanations or mark
       /interface\s+\w+/,
     ];
 
-    const hasCodePattern = codePatterns.some((pattern) => pattern.test(response));
+    const hasCodePattern = codePatterns.some((pattern) =>
+      pattern.test(response),
+    );
     if (!hasCodePattern) return false;
 
     // Check that response is reasonably similar in structure to original

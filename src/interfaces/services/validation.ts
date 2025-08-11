@@ -163,7 +163,7 @@ export class USLValidationFramework {
   constructor(
     serviceManager: ServiceManager,
     registry: EnhancedServiceRegistry,
-    config?: Partial<ValidationConfig>
+    config?: Partial<ValidationConfig>,
   ) {
     this.serviceManager = serviceManager;
     this.registry = registry;
@@ -185,7 +185,8 @@ export class USLValidationFramework {
         maxErrorRate: config?.thresholds?.maxErrorRate || 5,
         minAvailability: config?.thresholds?.minAvailability || 99,
         maxMemoryUsage: config?.thresholds?.maxMemoryUsage || 512,
-        maxConcurrentConnections: config?.thresholds?.maxConcurrentConnections || 100,
+        maxConcurrentConnections:
+          config?.thresholds?.maxConcurrentConnections || 100,
       },
       timeouts: {
         healthCheck: config?.timeouts?.healthCheck || 5000,
@@ -196,7 +197,8 @@ export class USLValidationFramework {
       testScenarios: {
         loadTest: {
           enabled: config?.testScenarios?.loadTest?.enabled ?? false,
-          concurrentUsers: config?.testScenarios?.loadTest?.concurrentUsers || 10,
+          concurrentUsers:
+            config?.testScenarios?.loadTest?.concurrentUsers || 10,
           duration: config?.testScenarios?.loadTest?.duration || 30000,
         },
         stressTest: {
@@ -232,12 +234,48 @@ export class USLValidationFramework {
       timestamp: new Date(),
       duration: 0,
       results: {
-        configuration: { status: 'pass', score: 0, checks: [], warnings: [], errors: [] },
-        dependencies: { status: 'pass', score: 0, checks: [], warnings: [], errors: [] },
-        performance: { status: 'pass', score: 0, checks: [], warnings: [], errors: [] },
-        security: { status: 'pass', score: 0, checks: [], warnings: [], errors: [] },
-        compatibility: { status: 'pass', score: 0, checks: [], warnings: [], errors: [] },
-        integration: { status: 'pass', score: 0, checks: [], warnings: [], errors: [] },
+        configuration: {
+          status: 'pass',
+          score: 0,
+          checks: [],
+          warnings: [],
+          errors: [],
+        },
+        dependencies: {
+          status: 'pass',
+          score: 0,
+          checks: [],
+          warnings: [],
+          errors: [],
+        },
+        performance: {
+          status: 'pass',
+          score: 0,
+          checks: [],
+          warnings: [],
+          errors: [],
+        },
+        security: {
+          status: 'pass',
+          score: 0,
+          checks: [],
+          warnings: [],
+          errors: [],
+        },
+        compatibility: {
+          status: 'pass',
+          score: 0,
+          checks: [],
+          warnings: [],
+          errors: [],
+        },
+        integration: {
+          status: 'pass',
+          score: 0,
+          checks: [],
+          warnings: [],
+          errors: [],
+        },
       },
       summary: {
         totalChecks: 0,
@@ -281,7 +319,7 @@ export class USLValidationFramework {
       result.duration = Date.now() - startTime;
 
       this.logger.info(
-        `Validation completed in ${result?.duration}ms with overall status: ${result?.overall} (Score: ${result?.score})`
+        `Validation completed in ${result?.duration}ms with overall status: ${result?.overall} (Score: ${result?.score})`,
       );
 
       return result;
@@ -313,7 +351,8 @@ export class USLValidationFramework {
     this.logger.info('Validating system health');
 
     const systemHealth = await this.serviceManager.getSystemHealth();
-    const performanceMetrics = await this.serviceManager.getPerformanceMetrics();
+    const performanceMetrics =
+      await this.serviceManager.getPerformanceMetrics();
 
     const serviceHealthMap = new Map<
       string,
@@ -340,7 +379,9 @@ export class USLValidationFramework {
       // Check service lifecycle status
       if (status.lifecycle === 'error' || status.lifecycle === 'stopped') {
         issues.push(`Service is in ${status.lifecycle} state`);
-        recommendations.push('Investigate service logs and restart if necessary');
+        recommendations.push(
+          'Investigate service logs and restart if necessary',
+        );
 
         alerts.push({
           severity: 'critical',
@@ -372,8 +413,12 @@ export class USLValidationFramework {
     });
 
     // Calculate system metrics
-    const responseTimeP95 = this.calculateP95ResponseTime(performanceMetrics.services);
-    const totalMemoryUsage = this.calculateTotalMemoryUsage(performanceMetrics.services);
+    const responseTimeP95 = this.calculateP95ResponseTime(
+      performanceMetrics.services,
+    );
+    const totalMemoryUsage = this.calculateTotalMemoryUsage(
+      performanceMetrics.services,
+    );
 
     // Check system-wide thresholds
     if (responseTimeP95 > this.config.thresholds.maxResponseTime) {
@@ -424,7 +469,9 @@ export class USLValidationFramework {
         valid: false,
         issues: [`Service '${serviceName}' not found`],
         warnings: [],
-        recommendations: ['Verify service name and ensure service is registered'],
+        recommendations: [
+          'Verify service name and ensure service is registered',
+        ],
       };
     }
 
@@ -437,26 +484,40 @@ export class USLValidationFramework {
       const configValid = await service.validateConfig(service.config);
       if (!configValid) {
         issues.push('Service configuration validation failed');
-        recommendations.push('Review service configuration against schema requirements');
+        recommendations.push(
+          'Review service configuration against schema requirements',
+        );
       }
 
       // Check dependencies
-      if (service.config.dependencies && service.config.dependencies.length > 0) {
+      if (
+        service.config.dependencies &&
+        service.config.dependencies.length > 0
+      ) {
         const dependenciesValid = await service.checkDependencies();
         if (!dependenciesValid) {
           issues.push('Service dependencies are not available');
-          recommendations.push('Ensure all dependent services are running and healthy');
+          recommendations.push(
+            'Ensure all dependent services are running and healthy',
+          );
         }
       }
 
       // Performance configuration checks
       if (service.config.timeout && service.config.timeout < 1000) {
         warnings.push('Service timeout is very low (< 1s), may cause timeouts');
-        recommendations.push('Consider increasing timeout for better reliability');
+        recommendations.push(
+          'Consider increasing timeout for better reliability',
+        );
       }
 
       // Type-specific validation
-      await this.validateServiceTypeSpecific(service, issues, warnings, recommendations);
+      await this.validateServiceTypeSpecific(
+        service,
+        issues,
+        warnings,
+        recommendations,
+      );
 
       return {
         valid: issues.length === 0,
@@ -466,13 +527,15 @@ export class USLValidationFramework {
       };
     } catch (error) {
       issues.push(
-        `Configuration validation error: ${error instanceof Error ? error.message : String(error)}`
+        `Configuration validation error: ${error instanceof Error ? error.message : String(error)}`,
       );
       return {
         valid: false,
         issues,
         warnings,
-        recommendations: ['Check service configuration and resolve validation errors'],
+        recommendations: [
+          'Check service configuration and resolve validation errors',
+        ],
       };
     }
   }
@@ -523,7 +586,12 @@ export class USLValidationFramework {
 
       checks.push({
         name: 'Service Configuration Validation',
-        status: validConfigs === allServices.size ? 'pass' : validConfigs > 0 ? 'warning' : 'fail',
+        status:
+          validConfigs === allServices.size
+            ? 'pass'
+            : validConfigs > 0
+              ? 'warning'
+              : 'fail',
         message: `${validConfigs}/${allServices.size} services have valid configurations`,
         duration: Date.now() - configCheckStart,
       });
@@ -532,22 +600,29 @@ export class USLValidationFramework {
       const factoryCheckStart = Date.now();
       const factoryTypes = this.registry.listFactoryTypes();
       const expectedFactoryTypes = Object.values(ServiceType);
-      const missingFactories = expectedFactoryTypes.filter((type) => !factoryTypes.includes(type));
+      const missingFactories = expectedFactoryTypes.filter(
+        (type) => !factoryTypes.includes(type),
+      );
 
       checks.push({
         name: 'Factory Registration Coverage',
         status: missingFactories.length === 0 ? 'pass' : 'warning',
         message: `${factoryTypes.length}/${expectedFactoryTypes.length} service types have registered factories`,
-        details: missingFactories.length > 0 ? { missing: missingFactories } : undefined,
+        details:
+          missingFactories.length > 0
+            ? { missing: missingFactories }
+            : undefined,
         duration: Date.now() - factoryCheckStart,
       });
 
       if (missingFactories.length > 0) {
-        warnings.push(`Missing factory registrations for: ${missingFactories.join(', ')}`);
+        warnings.push(
+          `Missing factory registrations for: ${missingFactories.join(', ')}`,
+        );
       }
     } catch (error) {
       errors.push(
-        `Configuration validation error: ${error instanceof Error ? error.message : String(error)}`
+        `Configuration validation error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
 
@@ -569,7 +644,10 @@ export class USLValidationFramework {
       let servicesWithValidDeps = 0;
 
       for (const [serviceName, service] of allServices) {
-        if (!service.config.dependencies || service.config.dependencies.length === 0) {
+        if (
+          !service.config.dependencies ||
+          service.config.dependencies.length === 0
+        ) {
           servicesWithValidDeps++;
           continue;
         }
@@ -580,8 +658,8 @@ export class USLValidationFramework {
             new Promise<boolean>((_, reject) =>
               setTimeout(
                 () => reject(new Error('Dependency check timeout')),
-                this.config.timeouts.dependencyCheck
-              )
+                this.config.timeouts.dependencyCheck,
+              ),
             ),
           ]);
 
@@ -592,7 +670,7 @@ export class USLValidationFramework {
           }
         } catch (error) {
           warnings.push(
-            `Dependency check failed for ${serviceName}: ${error instanceof Error ? error.message : String(error)}`
+            `Dependency check failed for ${serviceName}: ${error instanceof Error ? error.message : String(error)}`,
           );
         }
       }
@@ -626,12 +704,12 @@ export class USLValidationFramework {
 
       if (circularDeps.length > 0) {
         errors.push(
-          `Circular dependencies detected: ${circularDeps.map((cycle) => cycle.join(' -> ')).join(', ')}`
+          `Circular dependencies detected: ${circularDeps.map((cycle) => cycle.join(' -> ')).join(', ')}`,
         );
       }
     } catch (error) {
       errors.push(
-        `Dependency validation error: ${error instanceof Error ? error.message : String(error)}`
+        `Dependency validation error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
 
@@ -648,7 +726,8 @@ export class USLValidationFramework {
     try {
       // Performance metrics validation
       const metricsStart = Date.now();
-      const performanceMetrics = await this.serviceManager.getPerformanceMetrics();
+      const performanceMetrics =
+        await this.serviceManager.getPerformanceMetrics();
 
       const systemLatency = performanceMetrics.system.averageLatency;
       const systemErrorRate = performanceMetrics.system.errorRate;
@@ -657,24 +736,34 @@ export class USLValidationFramework {
       // Check system-wide performance
       checks.push({
         name: 'System Response Time',
-        status: systemLatency <= this.config.thresholds.maxResponseTime ? 'pass' : 'warning',
+        status:
+          systemLatency <= this.config.thresholds.maxResponseTime
+            ? 'pass'
+            : 'warning',
         message: `Average response time: ${systemLatency.toFixed(2)}ms (threshold: ${this.config.thresholds.maxResponseTime}ms)`,
         duration: Date.now() - metricsStart,
       });
 
       if (systemLatency > this.config.thresholds.maxResponseTime) {
-        warnings.push(`System response time (${systemLatency.toFixed(2)}ms) exceeds threshold`);
+        warnings.push(
+          `System response time (${systemLatency.toFixed(2)}ms) exceeds threshold`,
+        );
       }
 
       checks.push({
         name: 'System Error Rate',
-        status: systemErrorRate <= this.config.thresholds.maxErrorRate ? 'pass' : 'fail',
+        status:
+          systemErrorRate <= this.config.thresholds.maxErrorRate
+            ? 'pass'
+            : 'fail',
         message: `System error rate: ${systemErrorRate.toFixed(2)}% (threshold: ${this.config.thresholds.maxErrorRate}%)`,
         duration: 0,
       });
 
       if (systemErrorRate > this.config.thresholds.maxErrorRate) {
-        errors.push(`System error rate (${systemErrorRate.toFixed(2)}%) exceeds threshold`);
+        errors.push(
+          `System error rate (${systemErrorRate.toFixed(2)}%) exceeds threshold`,
+        );
       }
 
       // Individual service performance checks
@@ -682,28 +771,30 @@ export class USLValidationFramework {
       let performantServices = 0;
       const totalServices = Object.keys(performanceMetrics.services).length;
 
-      Object.entries(performanceMetrics.services).forEach(([serviceName, serviceData]) => {
-        const serviceLatency = serviceData?.performance?.responseTime;
-        const serviceErrorRate = serviceData?.performance?.errorRate;
+      Object.entries(performanceMetrics.services).forEach(
+        ([serviceName, serviceData]) => {
+          const serviceLatency = serviceData?.performance?.responseTime;
+          const serviceErrorRate = serviceData?.performance?.errorRate;
 
-        if (
-          serviceLatency <= this.config.thresholds.maxResponseTime &&
-          serviceErrorRate <= this.config.thresholds.maxErrorRate
-        ) {
-          performantServices++;
-        } else {
-          if (serviceLatency > this.config.thresholds.maxResponseTime) {
-            warnings.push(
-              `Service ${serviceName} response time (${serviceLatency.toFixed(2)}ms) exceeds threshold`
-            );
+          if (
+            serviceLatency <= this.config.thresholds.maxResponseTime &&
+            serviceErrorRate <= this.config.thresholds.maxErrorRate
+          ) {
+            performantServices++;
+          } else {
+            if (serviceLatency > this.config.thresholds.maxResponseTime) {
+              warnings.push(
+                `Service ${serviceName} response time (${serviceLatency.toFixed(2)}ms) exceeds threshold`,
+              );
+            }
+            if (serviceErrorRate > this.config.thresholds.maxErrorRate) {
+              warnings.push(
+                `Service ${serviceName} error rate (${serviceErrorRate.toFixed(2)}%) exceeds threshold`,
+              );
+            }
           }
-          if (serviceErrorRate > this.config.thresholds.maxErrorRate) {
-            warnings.push(
-              `Service ${serviceName} error rate (${serviceErrorRate.toFixed(2)}%) exceeds threshold`
-            );
-          }
-        }
-      });
+        },
+      );
 
       checks.push({
         name: 'Individual Service Performance',
@@ -734,7 +825,7 @@ export class USLValidationFramework {
       }
     } catch (error) {
       errors.push(
-        `Performance validation error: ${error instanceof Error ? error.message : String(error)}`
+        `Performance validation error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
 
@@ -759,7 +850,9 @@ export class USLValidationFramework {
         if (service.config.auth && service.config.auth.type !== 'none') {
           servicesWithAuth++;
         } else {
-          warnings.push(`Service ${serviceName} has no authentication configured`);
+          warnings.push(
+            `Service ${serviceName} has no authentication configured`,
+          );
         }
       }
 
@@ -784,14 +877,20 @@ export class USLValidationFramework {
         if (isSecure.secure) {
           secureServices++;
         } else {
-          warnings.push(...isSecure.issues.map((issue) => `${serviceName}: ${issue}`));
+          warnings.push(
+            ...isSecure.issues.map((issue) => `${serviceName}: ${issue}`),
+          );
         }
       }
 
       checks.push({
         name: 'Security Configuration',
         status:
-          secureServices === allServices.size ? 'pass' : secureServices > 0 ? 'warning' : 'fail',
+          secureServices === allServices.size
+            ? 'pass'
+            : secureServices > 0
+              ? 'warning'
+              : 'fail',
         message: `${secureServices}/${allServices.size} services have secure configurations`,
         duration: Date.now() - securityCheckStart,
       });
@@ -811,7 +910,7 @@ export class USLValidationFramework {
       }
     } catch (error) {
       errors.push(
-        `Security validation error: ${error instanceof Error ? error.message : String(error)}`
+        `Security validation error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
 
@@ -852,7 +951,7 @@ export class USLValidationFramework {
 
       if (migrationStatus.completionPercentage < 90) {
         warnings.push(
-          `Migration not complete: ${migrationStatus.legacyUsageCount} legacy patterns remaining`
+          `Migration not complete: ${migrationStatus.legacyUsageCount} legacy patterns remaining`,
         );
       }
 
@@ -867,12 +966,15 @@ export class USLValidationFramework {
           breakingChanges.length === 0
             ? 'No breaking changes detected'
             : `${breakingChanges.length} breaking changes found`,
-        details: breakingChanges.length > 0 ? { changes: breakingChanges } : undefined,
+        details:
+          breakingChanges.length > 0 ? { changes: breakingChanges } : undefined,
         duration: Date.now() - breakingChangesStart,
       });
 
       if (breakingChanges.length > 0) {
-        errors.push(...breakingChanges.map((change) => `Breaking change: ${change}`));
+        errors.push(
+          ...breakingChanges.map((change) => `Breaking change: ${change}`),
+        );
       }
 
       // Validate legacy API compatibility
@@ -892,7 +994,7 @@ export class USLValidationFramework {
       }
     } catch (error) {
       errors.push(
-        `Compatibility validation error: ${error instanceof Error ? error.message : String(error)}`
+        `Compatibility validation error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
 
@@ -972,7 +1074,7 @@ export class USLValidationFramework {
       }
     } catch (error) {
       errors.push(
-        `Integration validation error: ${error instanceof Error ? error.message : String(error)}`
+        `Integration validation error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
 
@@ -985,17 +1087,28 @@ export class USLValidationFramework {
 
   private calculateOverallResults(result: ValidationResult): void {
     const sections = Object.values(result?.results);
-    const totalScore = sections.reduce((sum, section) => sum + section.score, 0);
-    const sectionCount = sections.filter((section) => section.checks.length > 0).length;
+    const totalScore = sections.reduce(
+      (sum, section) => sum + section.score,
+      0,
+    );
+    const sectionCount = sections.filter(
+      (section) => section.checks.length > 0,
+    ).length;
 
     result.score = sectionCount > 0 ? Math.round(totalScore / sectionCount) : 0;
 
     // Calculate summary
     sections.forEach((section) => {
       result.summary.totalChecks += section.checks.length;
-      result.summary.passed += section.checks.filter((c) => c.status === 'pass').length;
-      result.summary.warnings += section.checks.filter((c) => c.status === 'warning').length;
-      result.summary.failures += section.checks.filter((c) => c.status === 'fail').length;
+      result.summary.passed += section.checks.filter(
+        (c) => c.status === 'pass',
+      ).length;
+      result.summary.warnings += section.checks.filter(
+        (c) => c.status === 'warning',
+      ).length;
+      result.summary.failures += section.checks.filter(
+        (c) => c.status === 'fail',
+      ).length;
       result.summary.criticalIssues += section.errors.length;
     });
 
@@ -1018,16 +1131,20 @@ export class USLValidationFramework {
   private calculateSectionResult(
     checks: ValidationSectionResult['checks'],
     warnings: string[],
-    errors: string[]
+    errors: string[],
   ): ValidationSectionResult {
     const passCount = checks.filter((c) => c.status === 'pass').length;
     const totalChecks = checks.length;
-    const score = totalChecks > 0 ? Math.round((passCount / totalChecks) * 100) : 100;
+    const score =
+      totalChecks > 0 ? Math.round((passCount / totalChecks) * 100) : 100;
 
     let status: 'pass' | 'warning' | 'fail';
     if (errors.length > 0 || checks.some((c) => c.status === 'fail')) {
       status = 'fail';
-    } else if (warnings.length > 0 || checks.some((c) => c.status === 'warning')) {
+    } else if (
+      warnings.length > 0 ||
+      checks.some((c) => c.status === 'warning')
+    ) {
       status = 'warning';
     } else {
       status = 'pass';
@@ -1036,7 +1153,9 @@ export class USLValidationFramework {
     return { status, score, checks, warnings, errors };
   }
 
-  private generateRecommendations(result: ValidationResult): ValidationResult['recommendations'] {
+  private generateRecommendations(
+    result: ValidationResult,
+  ): ValidationResult['recommendations'] {
     const recommendations: ValidationResult['recommendations'] = [];
 
     // Critical issues
@@ -1047,7 +1166,8 @@ export class USLValidationFramework {
         description: 'Critical system issues detected',
         impact: 'high',
         effort: 'high',
-        action: 'Address all critical errors before proceeding with production deployment',
+        action:
+          'Address all critical errors before proceeding with production deployment',
       });
     }
 
@@ -1128,7 +1248,10 @@ export class USLValidationFramework {
     };
   }
 
-  private checkServiceSecurity(service: IService): { secure: boolean; issues: string[] } {
+  private checkServiceSecurity(service: IService): {
+    secure: boolean;
+    issues: string[];
+  } {
     const issues: string[] = [];
 
     // Check basic security configurations
@@ -1265,8 +1388,12 @@ export class USLValidationFramework {
     };
   }
 
-  private calculateP95ResponseTime(services: Record<string, ServicePerformanceData>): number {
-    const responseTimes = Object.values(services).map((s) => s.performance.responseTime);
+  private calculateP95ResponseTime(
+    services: Record<string, ServicePerformanceData>,
+  ): number {
+    const responseTimes = Object.values(services).map(
+      (s) => s.performance.responseTime,
+    );
     if (responseTimes.length === 0) return 0;
 
     responseTimes?.sort((a, b) => a - b);
@@ -1274,7 +1401,9 @@ export class USLValidationFramework {
     return responseTimes?.[p95Index] || 0;
   }
 
-  private calculateTotalMemoryUsage(services: Record<string, ServicePerformanceData>): number {
+  private calculateTotalMemoryUsage(
+    services: Record<string, ServicePerformanceData>,
+  ): number {
     return Object.values(services).reduce((total: number, s) => {
       return total + (s.metrics?.memoryUsage?.used || 0);
     }, 0);
@@ -1284,7 +1413,7 @@ export class USLValidationFramework {
     _service: IService,
     _issues: string[],
     _warnings: string[],
-    _recommendations: string[]
+    _recommendations: string[],
   ): Promise<void> {
     // Type-specific validation logic would go here
     // This is a placeholder for service type-specific checks

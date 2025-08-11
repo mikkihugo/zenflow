@@ -71,7 +71,7 @@ module.exports = function transformer(file, api) {
       // Create the new logger call
       const newCall = j.callExpression(
         j.memberExpression(j.identifier('logger'), j.identifier(loggerMethod)),
-        args
+        args,
       );
 
       // Replace the console call
@@ -83,13 +83,13 @@ module.exports = function transformer(file, api) {
     // Add import statement for ES modules
     const importStatement = j.importDeclaration(
       [j.importSpecifier(j.identifier('getLogger'))],
-      j.literal('../config/logging-config')
+      j.literal('../config/logging-config'),
     );
 
     const loggerDeclaration = j.variableDeclaration('const', [
       j.variableDeclarator(
         j.identifier('logger'),
-        j.callExpression(j.identifier('getLogger'), [j.literal(componentName)])
+        j.callExpression(j.identifier('getLogger'), [j.literal(componentName)]),
       ),
     ]);
 

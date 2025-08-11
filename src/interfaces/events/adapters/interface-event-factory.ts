@@ -1,26 +1,26 @@
 /**
  * @fileoverview Interface Event Manager Factory Implementation
- * 
+ *
  * Factory for creating interface event managers that handle UI interactions,
  * CLI commands, web requests, and API calls. Provides specialized event
  * management for user interface components and interaction patterns.
- * 
+ *
  * ## Features
- * 
+ *
  * - **Multi-Interface Support**: CLI, Web, and API event handling
  * - **User Interaction Tracking**: Button clicks, form submissions, navigation
- * - **Request/Response Events**: HTTP requests, API calls, WebSocket messages  
+ * - **Request/Response Events**: HTTP requests, API calls, WebSocket messages
  * - **UI State Management**: Component state changes, modal events, navigation
  * - **Performance Monitoring**: Response times, error rates, user engagement
- * 
+ *
  * ## Event Types Handled
- * 
+ *
  * - `interface:cli` - Command line interface events
  * - `interface:web` - Web browser interface events
  * - `interface:api` - API request/response events
  * - `interface:websocket` - Real-time communication events
  * - `interface:user` - User interaction and behavior events
- * 
+ *
  * @example
  * ```typescript
  * const factory = new InterfaceEventManagerFactory(logger, config);
@@ -28,17 +28,17 @@
  *   name: 'web-interface',
  *   type: 'interface',
  *   maxListeners: 1000,
- *   processing: { 
+ *   processing: {
  *     strategy: 'immediate',
  *     batchSize: 10
  *   }
  * });
- * 
+ *
  * // Subscribe to UI events
  * manager.subscribeCLIEvents((event) => {
  *   console.log(`CLI command: ${event.data.command}`);
  * });
- * 
+ *
  * // Emit interface event
  * await manager.emitInterfaceEvent({
  *   id: 'web-001',
@@ -51,46 +51,52 @@
  *   data: { formData: { name: 'test' } }
  * });
  * ```
- * 
- * @author Claude Code Zen Team  
+ *
+ * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
  * @since 1.0.0
  */
 
-import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces.ts';
-import type { 
-  EventManagerConfig, 
-  EventManagerStatus,
-  EventManagerMetrics,
-  IEventManagerFactory,
-  IEventManager
-} from '../core/interfaces.ts';
+import type {
+  IConfig,
+  ILogger,
+} from '../../../core/interfaces/base-interfaces.ts';
 import { BaseEventManager } from '../core/base-event-manager.ts';
-import type { InterfaceEvent } from '../types.ts';
+import type {
+  EventManagerConfig,
+  EventManagerMetrics,
+  EventManagerStatus,
+  IEventManager,
+  IEventManagerFactory,
+} from '../core/interfaces.ts';
 import type { IInterfaceEventManager } from '../factories.ts';
+import type { InterfaceEvent } from '../types.ts';
 
 /**
  * Interface Event Manager implementation for UI and interaction events.
- * 
+ *
  * Specialized event manager for handling interface-related events across
  * different UI channels including CLI, web interfaces, and API endpoints.
  * Provides real-time event processing with interface-specific optimizations.
- * 
+ *
  * ## Interface Types
- * 
+ *
  * - **CLI Interface**: Command line interactions, terminal events
  * - **Web Interface**: Browser events, HTTP requests, form submissions
  * - **API Interface**: REST API calls, WebSocket connections, data transfers
  * - **User Interface**: User behavior tracking, session management
- * 
+ *
  * ## Performance Features
- * 
+ *
  * - **Immediate Processing**: Real-time event handling for responsive UI
  * - **Batched Analytics**: Efficient processing of user behavior data
  * - **Error Recovery**: Graceful handling of interface failures
  * - **Metrics Collection**: Performance tracking and user engagement stats
  */
-class InterfaceEventManager extends BaseEventManager implements IInterfaceEventManager {
+class InterfaceEventManager
+  extends BaseEventManager
+  implements IInterfaceEventManager
+{
   private interfaceMetrics = {
     cliCommands: 0,
     webRequests: 0,
@@ -99,7 +105,7 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
     userInteractions: 0,
     totalResponseTime: 0,
     errorCount: 0,
-    activeUsers: new Set<string>()
+    activeUsers: new Set<string>(),
   };
 
   private subscriptions = {
@@ -107,7 +113,7 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
     web: new Map<string, (event: InterfaceEvent) => void>(),
     api: new Map<string, (event: InterfaceEvent) => void>(),
     websocket: new Map<string, (event: InterfaceEvent) => void>(),
-    user: new Map<string, (event: InterfaceEvent) => void>()
+    user: new Map<string, (event: InterfaceEvent) => void>(),
   };
 
   constructor(config: EventManagerConfig, logger: ILogger) {
@@ -122,15 +128,15 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
     try {
       // Update interface metrics
       this.updateInterfaceMetrics(event);
-      
+
       // Add interface-specific metadata
       const enrichedEvent = {
         ...event,
         metadata: {
           ...event.metadata,
           timestamp: new Date(),
-          processingTime: Date.now()
-        }
+          processingTime: Date.now(),
+        },
       };
 
       // Emit through base manager
@@ -139,7 +145,9 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
       // Route to specific interface handlers
       await this.routeInterfaceEvent(enrichedEvent);
 
-      this.logger.debug(`Interface event emitted: ${event.interface}:${event.action}`);
+      this.logger.debug(
+        `Interface event emitted: ${event.interface}:${event.action}`,
+      );
     } catch (error) {
       this.interfaceMetrics.errorCount++;
       this.logger.error('Failed to emit interface event:', error);
@@ -153,7 +161,7 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
   subscribeCLIEvents(listener: (event: InterfaceEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.cli.set(subscriptionId, listener);
-    
+
     this.logger.debug(`CLI event subscription created: ${subscriptionId}`);
     return subscriptionId;
   }
@@ -164,7 +172,7 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
   subscribeWebEvents(listener: (event: InterfaceEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.web.set(subscriptionId, listener);
-    
+
     this.logger.debug(`Web event subscription created: ${subscriptionId}`);
     return subscriptionId;
   }
@@ -175,7 +183,7 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
   subscribeAPIEvents(listener: (event: InterfaceEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.api.set(subscriptionId, listener);
-    
+
     this.logger.debug(`API event subscription created: ${subscriptionId}`);
     return subscriptionId;
   }
@@ -186,8 +194,10 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
   subscribeWebSocketEvents(listener: (event: InterfaceEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.websocket.set(subscriptionId, listener);
-    
-    this.logger.debug(`WebSocket event subscription created: ${subscriptionId}`);
+
+    this.logger.debug(
+      `WebSocket event subscription created: ${subscriptionId}`,
+    );
     return subscriptionId;
   }
 
@@ -197,7 +207,7 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
   subscribeUserEvents(listener: (event: InterfaceEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.user.set(subscriptionId, listener);
-    
+
     this.logger.debug(`User event subscription created: ${subscriptionId}`);
     return subscriptionId;
   }
@@ -218,18 +228,19 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
       user: number;
     };
   }> {
-    const totalRequests = this.interfaceMetrics.cliCommands + 
-                         this.interfaceMetrics.webRequests + 
-                         this.interfaceMetrics.apiCalls + 
-                         this.interfaceMetrics.websocketMessages;
+    const totalRequests =
+      this.interfaceMetrics.cliCommands +
+      this.interfaceMetrics.webRequests +
+      this.interfaceMetrics.apiCalls +
+      this.interfaceMetrics.websocketMessages;
 
-    const averageResponseTime = totalRequests > 0 
-      ? this.interfaceMetrics.totalResponseTime / totalRequests 
-      : 0;
+    const averageResponseTime =
+      totalRequests > 0
+        ? this.interfaceMetrics.totalResponseTime / totalRequests
+        : 0;
 
-    const errorRate = totalRequests > 0 
-      ? this.interfaceMetrics.errorCount / totalRequests 
-      : 0;
+    const errorRate =
+      totalRequests > 0 ? this.interfaceMetrics.errorCount / totalRequests : 0;
 
     return {
       totalRequests,
@@ -241,8 +252,8 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
         web: this.interfaceMetrics.webRequests,
         api: this.interfaceMetrics.apiCalls,
         websocket: this.interfaceMetrics.websocketMessages,
-        user: this.interfaceMetrics.userInteractions
-      }
+        user: this.interfaceMetrics.userInteractions,
+      },
     };
   }
 
@@ -256,8 +267,8 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
     return {
       ...baseMetrics,
       customMetrics: {
-        interface: interfaceMetrics
-      }
+        interface: interfaceMetrics,
+      },
     };
   }
 
@@ -272,9 +283,8 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
     const highErrorRate = interfaceMetrics.errorRate > 0.1; // 10% error threshold
     const slowResponseTime = interfaceMetrics.responseTime > 1000; // 1 second threshold
 
-    const isHealthy = baseStatus.status === 'healthy' && 
-                     !highErrorRate && 
-                     !slowResponseTime;
+    const isHealthy =
+      baseStatus.status === 'healthy' && !highErrorRate && !slowResponseTime;
 
     return {
       ...baseStatus,
@@ -285,9 +295,9 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
           errorRate: interfaceMetrics.errorRate,
           responseTime: interfaceMetrics.responseTime,
           activeUsers: interfaceMetrics.activeUsers,
-          totalRequests: interfaceMetrics.totalRequests
-        }
-      }
+          totalRequests: interfaceMetrics.totalRequests,
+        },
+      },
     };
   }
 
@@ -297,16 +307,23 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
 
   private initializeInterfaceHandlers(): void {
     this.logger.debug('Initializing interface event handlers');
-    
+
     // Set up event type routing
-    this.subscribe(['interface:cli', 'interface:web', 'interface:api', 
-                   'interface:websocket', 'interface:user'], 
-                  this.handleInterfaceEvent.bind(this));
+    this.subscribe(
+      [
+        'interface:cli',
+        'interface:web',
+        'interface:api',
+        'interface:websocket',
+        'interface:user',
+      ],
+      this.handleInterfaceEvent.bind(this),
+    );
   }
 
   private async handleInterfaceEvent(event: InterfaceEvent): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       // Route based on interface type
       switch (event.interface) {
@@ -332,7 +349,6 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
       // Track processing time
       const processingTime = Date.now() - startTime;
       this.interfaceMetrics.totalResponseTime += processingTime;
-
     } catch (error) {
       this.interfaceMetrics.errorCount++;
       this.logger.error('Interface event handling failed:', error);
@@ -384,16 +400,18 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
   }
 
   private async notifySubscribers(
-    subscribers: Map<string, (event: InterfaceEvent) => void>, 
-    event: InterfaceEvent
+    subscribers: Map<string, (event: InterfaceEvent) => void>,
+    event: InterfaceEvent,
   ): Promise<void> {
-    const notifications = Array.from(subscribers.values()).map(async (listener) => {
-      try {
-        await listener(event);
-      } catch (error) {
-        this.logger.error('Interface event listener failed:', error);
-      }
-    });
+    const notifications = Array.from(subscribers.values()).map(
+      async (listener) => {
+        try {
+          await listener(event);
+        } catch (error) {
+          this.logger.error('Interface event listener failed:', error);
+        }
+      },
+    );
 
     await Promise.allSettled(notifications);
   }
@@ -405,34 +423,34 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
 
 /**
  * Factory for creating InterfaceEventManager instances.
- * 
+ *
  * Provides configuration management and instance creation for interface
  * event managers with optimized settings for UI responsiveness and
  * user interaction tracking.
- * 
+ *
  * ## Configuration Options
- * 
+ *
  * - **Real-time Processing**: Immediate event handling for UI responsiveness
- * - **Batch Analytics**: Efficient processing of user behavior data  
+ * - **Batch Analytics**: Efficient processing of user behavior data
  * - **Error Recovery**: Graceful degradation for interface failures
  * - **Performance Monitoring**: Built-in metrics and health checking
- * 
+ *
  * @example
  * ```typescript
  * const factory = new InterfaceEventManagerFactory(logger, config);
- * 
+ *
  * const webManager = await factory.create({
  *   name: 'web-interface',
  *   type: 'interface',
  *   maxListeners: 500,
- *   processing: { 
+ *   processing: {
  *     strategy: 'immediate',
- *     timeout: 100 
+ *     timeout: 100
  *   }
  * });
- * 
+ *
  * const cliManager = await factory.create({
- *   name: 'cli-interface', 
+ *   name: 'cli-interface',
  *   type: 'interface',
  *   processing: {
  *     strategy: 'queued',
@@ -441,17 +459,19 @@ class InterfaceEventManager extends BaseEventManager implements IInterfaceEventM
  * });
  * ```
  */
-export class InterfaceEventManagerFactory implements IEventManagerFactory<EventManagerConfig> {
+export class InterfaceEventManagerFactory
+  implements IEventManagerFactory<EventManagerConfig>
+{
   constructor(
     private logger: ILogger,
-    private config: IConfig
+    private config: IConfig,
   ) {
     this.logger.debug('InterfaceEventManagerFactory initialized');
   }
 
   /**
    * Create a new InterfaceEventManager instance.
-   * 
+   *
    * @param config - Configuration for the interface event manager
    * @returns Promise resolving to configured manager instance
    */
@@ -466,11 +486,13 @@ export class InterfaceEventManagerFactory implements IEventManagerFactory<EventM
 
     // Create and configure manager
     const manager = new InterfaceEventManager(optimizedConfig, this.logger);
-    
+
     // Initialize with interface-specific settings
     await this.configureInterfaceManager(manager, optimizedConfig);
 
-    this.logger.info(`Interface event manager created successfully: ${config.name}`);
+    this.logger.info(
+      `Interface event manager created successfully: ${config.name}`,
+    );
     return manager;
   }
 
@@ -488,18 +510,24 @@ export class InterfaceEventManagerFactory implements IEventManagerFactory<EventM
 
     // Validate interface-specific settings
     if (config.maxListeners && config.maxListeners < 100) {
-      this.logger.warn('Interface managers should support at least 100 listeners for UI responsiveness');
+      this.logger.warn(
+        'Interface managers should support at least 100 listeners for UI responsiveness',
+      );
     }
 
     if (config.processing?.timeout && config.processing.timeout > 1000) {
-      this.logger.warn('Interface processing timeout > 1000ms may impact UI responsiveness');
+      this.logger.warn(
+        'Interface processing timeout > 1000ms may impact UI responsiveness',
+      );
     }
   }
 
   /**
    * Apply interface-optimized default configuration.
    */
-  private applyInterfaceDefaults(config: EventManagerConfig): EventManagerConfig {
+  private applyInterfaceDefaults(
+    config: EventManagerConfig,
+  ): EventManagerConfig {
     return {
       ...config,
       maxListeners: config.maxListeners || 500,
@@ -508,18 +536,18 @@ export class InterfaceEventManagerFactory implements IEventManagerFactory<EventM
         timeout: 100, // Fast timeout for responsiveness
         retries: 2,
         batchSize: 10,
-        ...config.processing
+        ...config.processing,
       },
       persistence: {
         enabled: false, // Interface events are typically ephemeral
-        ...config.persistence
+        ...config.persistence,
       },
       monitoring: {
         enabled: true,
         metricsInterval: 30000, // 30 second metrics collection
         healthCheckInterval: 60000, // 1 minute health checks
-        ...config.monitoring
-      }
+        ...config.monitoring,
+      },
     };
   }
 
@@ -527,13 +555,15 @@ export class InterfaceEventManagerFactory implements IEventManagerFactory<EventM
    * Configure interface-specific manager settings.
    */
   private async configureInterfaceManager(
-    manager: InterfaceEventManager, 
-    config: EventManagerConfig
+    manager: InterfaceEventManager,
+    config: EventManagerConfig,
   ): Promise<void> {
     // Start monitoring if enabled
     if (config.monitoring?.enabled) {
       await manager.start();
-      this.logger.debug(`Interface event manager monitoring started: ${config.name}`);
+      this.logger.debug(
+        `Interface event manager monitoring started: ${config.name}`,
+      );
     }
 
     // Set up health checking
@@ -542,7 +572,10 @@ export class InterfaceEventManagerFactory implements IEventManagerFactory<EventM
         try {
           await manager.healthCheck();
         } catch (error) {
-          this.logger.error(`Interface manager health check failed: ${config.name}`, error);
+          this.logger.error(
+            `Interface manager health check failed: ${config.name}`,
+            error,
+          );
         }
       }, config.monitoring.healthCheckInterval);
     }

@@ -7,8 +7,15 @@
  * @file Agent interface compatibility adapter.
  */
 
-import type { Agent as CoordinationAgent, Task as CoordinationTask, Message } from '../../../types';
-import type { Agent as BaseAgent, Task as BaseTask } from '../types/agent-types';
+import type {
+  Agent as CoordinationAgent,
+  Task as CoordinationTask,
+  Message,
+} from '../../../types/index.js';
+import type {
+  Agent as BaseAgent,
+  Task as BaseTask,
+} from '../types/agent-types';
 
 /**
  * Adapter function to convert base Agent to coordination Agent.
@@ -16,7 +23,9 @@ import type { Agent as BaseAgent, Task as BaseTask } from '../types/agent-types'
  * @param baseAgent
  * @example
  */
-export function adaptAgentForCoordination(baseAgent: BaseAgent): CoordinationAgent {
+export function adaptAgentForCoordination(
+  baseAgent: BaseAgent,
+): CoordinationAgent {
   return {
     ...baseAgent,
     connections: [], // Initialize empty connections
@@ -46,7 +55,9 @@ export function adaptAgentForCoordination(baseAgent: BaseAgent): CoordinationAge
  * @param coordinationTask
  * @example
  */
-export function adaptTaskForExecution(coordinationTask: CoordinationTask): BaseTask {
+export function adaptTaskForExecution(
+  coordinationTask: CoordinationTask,
+): BaseTask {
   return {
     ...coordinationTask,
     // Add missing base task properties with defaults
@@ -72,8 +83,8 @@ export function adaptTaskForExecution(coordinationTask: CoordinationTask): BaseT
  */
 export async function executeTaskWithAgent(
   agent: BaseAgent | CoordinationAgent,
-  task: CoordinationTask
-): Promise<any> {
+  task: CoordinationTask,
+): Promise<unknown> {
   // Convert coordination task to base task format
   const baseTask = adaptTaskForExecution(task);
 

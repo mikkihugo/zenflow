@@ -75,13 +75,14 @@ export class DatabaseError extends Error {
       severity?: 'low' | 'medium' | 'high' | 'critical';
       retryable?: boolean;
       cause?: Error;
-    } = {}
+    } = {},
   ) {
     super(message);
     this.name = 'DatabaseError';
     this.code = code;
     this.context = context;
-    this.recoverable = options?.recoverable ?? DatabaseError?.isRecoverable(code);
+    this.recoverable =
+      options?.recoverable ?? DatabaseError?.isRecoverable(code);
     this.severity = options?.severity ?? DatabaseError?.getSeverity(code);
     this.retryable = options?.retryable ?? DatabaseError?.isRetryable(code);
 
@@ -139,7 +140,9 @@ export class DatabaseError extends Error {
    *
    * @param code
    */
-  static getSeverity(code: DatabaseErrorCode): 'low' | 'medium' | 'high' | 'critical' {
+  static getSeverity(
+    code: DatabaseErrorCode,
+  ): 'low' | 'medium' | 'high' | 'critical' {
     const severityMap = {
       [DatabaseErrorCode?.COORDINATION_FAILED]: 'high',
       [DatabaseErrorCode?.ENGINE_SELECTION_FAILED]: 'medium',
@@ -204,15 +207,27 @@ export class DatabaseError extends Error {
 
     if (error.message.includes('timeout')) {
       code = DatabaseErrorCode?.QUERY_TIMEOUT;
-    } else if (error.message.includes('connection') || error.message.includes('connect')) {
+    } else if (
+      error.message.includes('connection') ||
+      error.message.includes('connect')
+    ) {
       code = DatabaseErrorCode?.ENGINE_CONNECTION_FAILED;
-    } else if (error.message.includes('invalid') || error.message.includes('malformed')) {
+    } else if (
+      error.message.includes('invalid') ||
+      error.message.includes('malformed')
+    ) {
       code = DatabaseErrorCode?.QUERY_INVALID;
-    } else if (error.message.includes('overload') || error.message.includes('busy')) {
+    } else if (
+      error.message.includes('overload') ||
+      error.message.includes('busy')
+    ) {
       code = DatabaseErrorCode?.ENGINE_OVERLOADED;
     } else if (error.message.includes('deadlock')) {
       code = DatabaseErrorCode?.DEADLOCK_DETECTED;
-    } else if (error.message.includes('capacity') || error.message.includes('limit')) {
+    } else if (
+      error.message.includes('capacity') ||
+      error.message.includes('limit')
+    ) {
       code = DatabaseErrorCode?.CAPACITY_EXCEEDED;
     } else if (error.message.includes('transaction')) {
       code = DatabaseErrorCode?.TRANSACTION_FAILED;
@@ -223,7 +238,11 @@ export class DatabaseError extends Error {
 }
 
 export class DatabaseCoordinationError extends DatabaseError {
-  constructor(message: string, context: DatabaseErrorContext, options: { cause?: Error } = {}) {
+  constructor(
+    message: string,
+    context: DatabaseErrorContext,
+    options: { cause?: Error } = {},
+  ) {
     super(DatabaseErrorCode?.COORDINATION_FAILED, message, context, options);
     this.name = 'DatabaseCoordinationError';
   }
@@ -234,7 +253,7 @@ export class DatabaseEngineError extends DatabaseError {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {}
+    options: { cause?: Error } = {},
   ) {
     super(code, message, context, options);
     this.name = 'DatabaseEngineError';
@@ -246,7 +265,7 @@ export class DatabaseQueryError extends DatabaseError {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {}
+    options: { cause?: Error } = {},
   ) {
     super(code, message, context, options);
     this.name = 'DatabaseQueryError';
@@ -258,7 +277,7 @@ export class DatabaseTransactionError extends DatabaseError {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {}
+    options: { cause?: Error } = {},
   ) {
     super(code, message, context, options);
     this.name = 'DatabaseTransactionError';
@@ -288,7 +307,11 @@ export class DatabaseErrorClassifier {
     priority: 'low' | 'medium' | 'high' | 'critical';
     actionRequired: boolean;
     suggestedActions: string[];
-    retryStrategy?: 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none';
+    retryStrategy?:
+      | 'immediate'
+      | 'exponential_backoff'
+      | 'circuit_breaker'
+      | 'none';
   } {
     if (error instanceof DatabaseError) {
       return DatabaseErrorClassifier?.classifyDatabaseError(error);
@@ -302,7 +325,10 @@ export class DatabaseErrorClassifier {
       category,
       priority,
       actionRequired: priority === 'high' || priority === 'critical',
-      suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(category, error.message),
+      suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(
+        category,
+        error.message,
+      ),
       retryStrategy: DatabaseErrorClassifier?.inferRetryStrategy(error),
     };
   }
@@ -354,15 +380,26 @@ export class DatabaseErrorClassifier {
     return {
       category,
       priority: error.severity,
-      actionRequired: error.severity === 'high' || error.severity === 'critical',
-      suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(category, error.message),
+      actionRequired:
+        error.severity === 'high' || error.severity === 'critical',
+      suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(
+        category,
+        error.message,
+      ),
       retryStrategy: DatabaseErrorClassifier?.getRetryStrategy(error),
     };
   }
 
   private static inferCategory(
-    error: Error
-  ): 'coordination' | 'engine' | 'query' | 'transaction' | 'performance' | 'resource' | 'system' {
+    error: Error,
+  ):
+    | 'coordination'
+    | 'engine'
+    | 'query'
+    | 'transaction'
+    | 'performance'
+    | 'resource'
+    | 'system' {
     const message = error.message.toLowerCase();
 
     if (
@@ -379,7 +416,11 @@ export class DatabaseErrorClassifier {
     ) {
       return 'engine';
     }
-    if (message.includes('query') || message.includes('sql') || message.includes('syntax')) {
+    if (
+      message.includes('query') ||
+      message.includes('sql') ||
+      message.includes('syntax')
+    ) {
       return 'query';
     }
     if (
@@ -389,7 +430,11 @@ export class DatabaseErrorClassifier {
     ) {
       return 'transaction';
     }
-    if (message.includes('performance') || message.includes('slow') || message.includes('cache')) {
+    if (
+      message.includes('performance') ||
+      message.includes('slow') ||
+      message.includes('cache')
+    ) {
       return 'performance';
     }
     if (
@@ -402,7 +447,9 @@ export class DatabaseErrorClassifier {
     return 'system';
   }
 
-  private static inferPriority(error: Error): 'low' | 'medium' | 'high' | 'critical' {
+  private static inferPriority(
+    error: Error,
+  ): 'low' | 'medium' | 'high' | 'critical' {
     const message = error.message.toLowerCase();
 
     if (
@@ -419,13 +466,20 @@ export class DatabaseErrorClassifier {
     ) {
       return 'high';
     }
-    if (message.includes('warning') || message.includes('slow') || message.includes('timeout')) {
+    if (
+      message.includes('warning') ||
+      message.includes('slow') ||
+      message.includes('timeout')
+    ) {
       return 'medium';
     }
     return 'low';
   }
 
-  private static getSuggestedActions(category: string, message: string): string[] {
+  private static getSuggestedActions(
+    category: string,
+    message: string,
+  ): string[] {
     const actions: string[] = [];
 
     switch (category) {
@@ -491,7 +545,7 @@ export class DatabaseErrorClassifier {
   }
 
   private static inferRetryStrategy(
-    error: Error
+    error: Error,
   ): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
     const message = error.message.toLowerCase();
 
@@ -511,7 +565,7 @@ export class DatabaseErrorClassifier {
   }
 
   private static getRetryStrategy(
-    error: DatabaseError
+    error: DatabaseError,
   ): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
     if (!error.retryable) {
       return 'none';

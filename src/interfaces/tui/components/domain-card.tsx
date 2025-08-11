@@ -10,7 +10,11 @@ export interface DomainCardProps {
   highlighted: boolean;
 }
 
-export const DomainCard: React.FC<DomainCardProps> = ({ domain, selected, highlighted }) => {
+export const DomainCard: React.FC<DomainCardProps> = ({
+  domain,
+  selected,
+  highlighted,
+}) => {
   const getComplexityColor = (complexity: string) => {
     switch (complexity) {
       case 'low':
@@ -43,25 +47,39 @@ export const DomainCard: React.FC<DomainCardProps> = ({ domain, selected, highli
       paddingX={1}
       marginBottom={0}
     >
-      <Box flexDirection="column" width="100%">
+      <Box
+        flexDirection="column"
+        width="100%"
+      >
         {/* Header row */}
         <Box>
-          <Text color={selected ? 'green' : 'white'}>{selected ? '✅' : '⭕'}</Text>
-          <Text bold color={highlighted ? 'cyan' : 'white'}>
+          <Text color={selected ? 'green' : 'white'}>
+            {selected ? '✅' : '⭕'}
+          </Text>
+          <Text
+            bold
+            color={highlighted ? 'cyan' : 'white'}
+          >
             {' '}
             {domain.name}
           </Text>
           <Text dimColor> ({domain.path})</Text>
           <Box marginLeft={1}>
             <Text>{confidenceIndicator.icon}</Text>
-            <Text color={confidenceIndicator.color}> {(domain.confidence * 100).toFixed(0)}%</Text>
+            <Text color={confidenceIndicator.color}>
+              {' '}
+              {(domain.confidence * 100).toFixed(0)}%
+            </Text>
           </Box>
         </Box>
 
         {/* Details row */}
         <Box marginTop={0}>
           <Text dimColor>📁 {domain.files} files •</Text>
-          <Text color={complexityColor}> 🔧 {domain.estimatedComplexity} •</Text>
+          <Text color={complexityColor}>
+            {' '}
+            🔧 {domain.estimatedComplexity} •
+          </Text>
           <Text dimColor>🤖 {domain.estimatedAgents} agents •</Text>
           <Text dimColor>🕸️ {domain.suggestedTopology}</Text>
         </Box>
@@ -71,7 +89,8 @@ export const DomainCard: React.FC<DomainCardProps> = ({ domain, selected, highli
           <Text dimColor>💡 </Text>
           <Text>
             {domain.concepts.slice(0, 3).join(', ')}
-            {domain.concepts.length > 3 && ` +${domain.concepts.length - 3} more`}
+            {domain.concepts.length > 3 &&
+              ` +${domain.concepts.length - 3} more`}
           </Text>
         </Box>
 
@@ -80,7 +99,8 @@ export const DomainCard: React.FC<DomainCardProps> = ({ domain, selected, highli
           <Text dimColor>🔧 </Text>
           <Text>
             {domain.technologies.slice(0, 3).join(', ')}
-            {domain.technologies.length > 3 && ` +${domain.technologies.length - 3} more`}
+            {domain.technologies.length > 3 &&
+              ` +${domain.technologies.length - 3} more`}
           </Text>
         </Box>
       </Box>

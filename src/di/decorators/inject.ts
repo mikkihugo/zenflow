@@ -17,7 +17,11 @@ import { getInjectionTokens, setInjectionTokens } from './injectable.ts';
  * @example
  */
 export function inject<T>(token: DIToken<T>): ParameterDecorator {
-  return (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) => {
+  return (
+    target: any,
+    propertyKey: string | symbol | undefined,
+    parameterIndex: number,
+  ) => {
     // Get existing injection tokens
     const existingTokens = getInjectionTokens(target) || [];
 
@@ -43,7 +47,7 @@ export function inject<T>(token: DIToken<T>): ParameterDecorator {
  */
 export function getInjectionToken(
   constructor: any,
-  parameterIndex: number
+  parameterIndex: number,
 ): DIToken<any> | undefined {
   const tokens = getInjectionTokens(constructor);
   return tokens?.[parameterIndex];
@@ -56,6 +60,9 @@ export function getInjectionToken(
  * @param parameterIndex
  * @example
  */
-export function hasInjectionToken(constructor: any, parameterIndex: number): boolean {
+export function hasInjectionToken(
+  constructor: any,
+  parameterIndex: number,
+): boolean {
   return getInjectionToken(constructor, parameterIndex) !== undefined;
 }

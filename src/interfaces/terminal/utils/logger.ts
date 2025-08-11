@@ -2,9 +2,9 @@
  * @file Interface implementation: logger.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config.js';
 
-const logger = getLogger('interfaces-terminal-utils-logger');
+const baseLogger = getLogger('interfaces-terminal-utils-logger');
 /**
  * Simple Logger for Terminal Interface.
  *
@@ -32,11 +32,11 @@ export const createSimpleLogger = (component?: string): SimpleLogger => {
     info: (_message: string, ..._args: any[]) => {},
 
     warn: (message: string, ...args: any[]) => {
-      logger.warn(`${prefix} WARN: ${message}`, ...args);
+      baseLogger.warn(`${prefix} WARN: ${message}`, ...args);
     },
 
     error: (message: string, ...args: any[]) => {
-      logger.error(`${prefix} ERROR: ${message}`, ...args);
+      baseLogger.error(`${prefix} ERROR: ${message}`, ...args);
     },
   };
 };

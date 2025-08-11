@@ -11,7 +11,7 @@
  * This replaces the custom Express.js implementation while maintaining all functionality.
  */
 
-import { config } from '../../config';
+import { config } from '../../config/index.js';
 import { getLogger } from '../../config/logging-config.ts';
 import { DEFAULT_CONFIG } from '../config/defaults';
 import { HTTPMCPServer } from './http-mcp-server.ts';
@@ -41,7 +41,7 @@ function parseArgs(): StartupConfig {
     switch (arg) {
       case '--port':
       case '-p': {
-        const port = parseInt(args[++i], 10);
+        const port = Number.parseInt(args[++i], 10);
         if (Number.isNaN(port) || port < 1 || port > 65535) {
           throw new Error(`Invalid port: ${args[i]}`);
         }
@@ -66,7 +66,7 @@ function parseArgs(): StartupConfig {
 
       case '--timeout':
       case '-t': {
-        const timeout = parseInt(args[++i], 10);
+        const timeout = Number.parseInt(args[++i], 10);
         if (Number.isNaN(timeout) || timeout < 1000) {
           throw new Error(`Invalid timeout: ${args[i]} (minimum 1000ms)`);
         }
@@ -186,11 +186,11 @@ async function main(): Promise<void> {
     const server = new HTTPMCPServer({
       port:
         config?.port ||
-        parseInt(
+        Number.parseInt(
           process.env['CLAUDE_MCP_PORT'] ||
             process.env['MCP_PORT'] ||
             String(centralConfig?.interfaces?.mcp?.http?.port),
-          10
+          10,
         ),
       host:
         config?.host ||
@@ -204,11 +204,11 @@ async function main(): Promise<void> {
         centralConfig?.core?.logger?.level,
       timeout:
         config?.timeout ||
-        parseInt(
+        Number.parseInt(
           process.env['CLAUDE_MCP_TIMEOUT'] ||
             process.env['MCP_TIMEOUT'] ||
             String(centralConfig?.interfaces?.mcp?.http?.timeout),
-          10
+          10,
         ),
     });
 
@@ -239,9 +239,13 @@ async function main(): Promise<void> {
 
     if (error instanceof Error) {
       if (error.message.includes('EADDRINUSE')) {
-        logger.error('Port is already in use. Try a different port with --port option.');
+        logger.error(
+          'Port is already in use. Try a different port with --port option.',
+        );
       } else if (error.message.includes('EACCES')) {
-        logger.error('Permission denied. Try running with sudo or use a port > 1024.');
+        logger.error(
+          'Permission denied. Try running with sudo or use a port > 1024.',
+        );
       }
     }
 

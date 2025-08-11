@@ -148,7 +148,7 @@ export class FACTIntegration extends EventEmitter {
         queryId,
         response: result?.response,
         executionTimeMs: executionTime,
-        cacheHit: result?.cacheHit || false,
+        cacheHit: result?.cacheHit,
         toolsUsed: result?.toolsUsed || [],
         cost: result?.cost,
         metadata: {
@@ -176,7 +176,10 @@ export class FACTIntegration extends EventEmitter {
    * @param framework
    * @param version
    */
-  async getDocumentation(framework: string, version?: string): Promise<FACTResult> {
+  async getDocumentation(
+    framework: string,
+    version?: string,
+  ): Promise<FACTResult> {
     const queries = {
       react: `Get the latest React ${version || '19'} documentation including hooks, components, and best practices. Include code examples and migration notes.`,
       typescript: `Get TypeScript ${version || 'latest'} documentation covering type system, advanced features, and configuration options.`,
@@ -238,7 +241,10 @@ export class FACTIntegration extends EventEmitter {
    * @param topic
    * @param tags
    */
-  async searchCommunityKnowledge(topic: string, tags?: string[]): Promise<FACTResult> {
+  async searchCommunityKnowledge(
+    topic: string,
+    tags?: string[],
+  ): Promise<FACTResult> {
     const tagStr = tags ? ` with tags: ${tags.join(', ')}` : '';
     const query = `Search Stack Overflow and developer communities for: ${topic}${tagStr}. Get top solutions, code examples, and best practices.`;
 
@@ -308,7 +314,7 @@ export class FACTIntegration extends EventEmitter {
       await fs.access(srcPath);
     } catch (_error) {
       throw new Error(
-        `FACT repository not found at ${this.config.factRepoPath}. Please clone it first: git clone https://github.com/ruvnet/FACT.git`
+        `FACT repository not found at ${this.config.factRepoPath}. Please clone it first: git clone https://github.com/ruvnet/FACT.git`,
       );
     }
   }
@@ -360,7 +366,10 @@ export class FACTIntegration extends EventEmitter {
    * @param queryId
    * @param factQuery
    */
-  private async executeFACTQuery(queryId: string, factQuery: FACTQuery): Promise<any> {
+  private async executeFACTQuery(
+    queryId: string,
+    factQuery: FACTQuery,
+  ): Promise<any> {
     const command = {
       action: 'query',
       query_id: queryId,
@@ -441,7 +450,9 @@ let globalFACTInstance: FACTIntegration | null = null;
  * @param config
  * @example
  */
-export async function initializeFACT(config: FACTConfig): Promise<FACTIntegration> {
+export async function initializeFACT(
+  config: FACTConfig,
+): Promise<FACTIntegration> {
   if (globalFACTInstance) {
     return globalFACTInstance;
   }

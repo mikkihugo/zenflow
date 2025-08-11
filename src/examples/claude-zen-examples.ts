@@ -3,7 +3,7 @@
  * Demonstrates the "1 MESSAGE = ALL OPERATIONS" principle with practical examples.
  */
 
-import { createBatchSystem } from '../coordination/batch';
+import { createBatchSystem } from '../coordination/batch/index.js';
 import {
   // TODO: TypeScript error TS2305 - createClaudeZenPattern not exported from batch-tools (AI unsure of safe fix - human review needed)
   // createClaudeZenPattern,
@@ -18,7 +18,9 @@ import {
  */
 export async function exampleBasicClaudeZenPattern() {
   // TODO: TypeScript error - createClaudeZenPattern function not available (human review needed)
-  throw new Error('createClaudeZenPattern function not available - needs implementation');
+  throw new Error(
+    'createClaudeZenPattern function not available - needs implementation',
+  );
 
   /* Original implementation commented out until createClaudeZenPattern is available:
   // Create the classic claude-zen pattern operations.
@@ -124,7 +126,12 @@ export async function exampleProjectInitialization() {
   };
 
   const result = await projectInitBatchTool.handler(params);
-  if (result?.success && result?.content && result?.content?.[0] && result?.content?.[0]?.text) {
+  if (
+    result?.success &&
+    result?.content &&
+    result?.content?.[0] &&
+    result?.content?.[0]?.text
+  ) {
     const response = result?.content?.[0]?.text;
     // Extract metrics from response
     if (response) {
@@ -139,10 +146,14 @@ export async function exampleProjectInitialization() {
       }
 
       if (speedMatch && speedMatch?.[1]) {
-        resultWithPerformance?.performance.speedImprovement = Number.parseFloat(speedMatch?.[1]);
+        resultWithPerformance?.performance.speedImprovement = Number.parseFloat(
+          speedMatch?.[1],
+        );
       }
       if (tokenMatch && tokenMatch?.[1]) {
-        resultWithPerformance?.performance.tokenReduction = Number.parseFloat(tokenMatch?.[1]);
+        resultWithPerformance?.performance.tokenReduction = Number.parseFloat(
+          tokenMatch?.[1],
+        );
       }
     }
   }

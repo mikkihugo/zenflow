@@ -4,7 +4,9 @@
 
 import { getLogger } from '../../../../config/logging-config.ts';
 
-const logger = getLogger('coordination-swarm-sparc-integrations-swarm-coordination-integration');
+const logger = getLogger(
+  'coordination-swarm-sparc-integrations-swarm-coordination-integration',
+);
 
 /**
  * SPARC Swarm Coordination Integration.
@@ -13,9 +15,12 @@ const logger = getLogger('coordination-swarm-sparc-integrations-swarm-coordinati
  * Enables distributed SPARC development using existing agent types and coordination protocols.
  */
 
-import { TaskAPI } from '../../../../interfaces/api';
+import { CoordinationAPI } from '../../../api.ts';
+
+const TaskAPI = CoordinationAPI.tasks;
+
 import type { AgentType } from '../../../../types/agent-types.ts';
-import { type TaskConfig, TaskCoordinator } from '../../task-coordinator';
+import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator.ts';
 import type { SPARCPhase, SPARCProject } from '../types/sparc-types.ts';
 
 // SPARC-specific agent types from existing 147+ agent types
@@ -33,7 +38,12 @@ export const SPARC_AGENT_TYPES: AgentType[] = [
 export interface SPARCSwarmTask {
   sparcProjectId: string;
   phase: SPARCPhase;
-  taskType: 'analysis' | 'design' | 'implementation' | 'testing' | 'documentation';
+  taskType:
+    | 'analysis'
+    | 'design'
+    | 'implementation'
+    | 'testing'
+    | 'documentation';
   agentType: AgentType;
   priority: 'low' | 'medium' | 'high' | 'critical';
   dependencies: string[];
@@ -73,11 +83,18 @@ export class SPARCSwarmCoordinator {
     for (const agentType of phaseAgents) {
       const taskConfig: TaskConfig = {
         description: `SPARC ${project.currentPhase} phase for ${project.name}`,
-        prompt: this.generatePhasePrompt(project, project.currentPhase, agentType),
+        prompt: this.generatePhasePrompt(
+          project,
+          project.currentPhase,
+          agentType,
+        ),
         subagent_type: agentType,
         use_claude_subagent: true,
         domain_context: `SPARC methodology - ${project.domain}`,
-        expected_output: this.getPhaseExpectedOutput(project.currentPhase, agentType),
+        expected_output: this.getPhaseExpectedOutput(
+          project.currentPhase,
+          agentType,
+        ),
         tools_required: this.getRequiredTools(project.currentPhase, agentType),
         priority: 'high',
         dependencies: [],
@@ -105,7 +122,7 @@ export class SPARCSwarmCoordinator {
    */
   async executeSPARCPhase(
     projectId: string,
-    phase: SPARCPhase
+    phase: SPARCPhase,
   ): Promise<{ success: boolean; results: Map<AgentType, any> }> {
     const swarmId = `sparc-${projectId}`;
     const results = new Map<AgentType, any>();
@@ -123,7 +140,11 @@ export class SPARCSwarmCoordinator {
     const taskPromises = phaseAgents.map(async (agentType) => {
       const taskConfig: TaskConfig = {
         description: `Execute ${phase} phase with ${agentType}`,
-        prompt: this.generatePhasePrompt({ id: projectId } as SPARCProject, phase, agentType),
+        prompt: this.generatePhasePrompt(
+          { id: projectId } as SPARCProject,
+          phase,
+          agentType,
+        ),
         subagent_type: agentType,
         use_claude_subagent: true,
         domain_context: 'SPARC methodology execution',
@@ -156,8 +177,18 @@ export class SPARCSwarmCoordinator {
     const phaseAgentMap: Record<SPARCPhase, AgentType[]> = {
       specification: ['requirements-engineer', 'coordinator', 'documenter'],
       pseudocode: ['coder', 'system-architect', 'coordinator'],
-      architecture: ['system-architect', 'performance-tester', 'security-architect', 'coordinator'],
-      refinement: ['performance-tester', 'security-architect', 'unit-tester', 'coder'],
+      architecture: [
+        'system-architect',
+        'performance-tester',
+        'security-architect',
+        'coordinator',
+      ],
+      refinement: [
+        'performance-tester',
+        'security-architect',
+        'unit-tester',
+        'coder',
+      ],
       completion: ['coder', 'unit-tester', 'documenter', 'coordinator'],
     };
 
@@ -174,7 +205,7 @@ export class SPARCSwarmCoordinator {
   private generatePhasePrompt(
     project: SPARCProject,
     phase: SPARCPhase,
-    agentType: AgentType
+    agentType: AgentType,
   ): string {
     const basePrompt = `You are a ${agentType} working on SPARC methodology ${phase} phase for "${project.name}".`;
 
@@ -209,7 +240,10 @@ export class SPARCSwarmCoordinator {
       },
     };
 
-    return phasePrompts[phase]?.[agentType] || `${basePrompt} Execute ${phase} phase tasks.`;
+    return (
+      phasePrompts[phase]?.[agentType] ||
+      `${basePrompt} Execute ${phase} phase tasks.`
+    );
   }
 
   /**
@@ -218,14 +252,23 @@ export class SPARCSwarmCoordinator {
    * @param phase
    * @param agentType
    */
-  private getPhaseExpectedOutput(phase: SPARCPhase, agentType: AgentType): string {
+  private getPhaseExpectedOutput(
+    phase: SPARCPhase,
+    agentType: AgentType,
+  ): string {
     const outputMap: Record<string, string> = {
-      'specification-requirements-analyst': 'Detailed requirements specification document',
-      'specification-sparc-coordinator': 'Phase coordination summary and next steps',
-      'pseudocode-implementer-sparc-coder': 'Detailed pseudocode with algorithm analysis',
-      'architecture-system-architect': 'Comprehensive system architecture design',
-      'refinement-performance-engineer': 'Performance optimization recommendations',
-      'completion-implementer-sparc-coder': 'Production-ready code implementation',
+      'specification-requirements-analyst':
+        'Detailed requirements specification document',
+      'specification-sparc-coordinator':
+        'Phase coordination summary and next steps',
+      'pseudocode-implementer-sparc-coder':
+        'Detailed pseudocode with algorithm analysis',
+      'architecture-system-architect':
+        'Comprehensive system architecture design',
+      'refinement-performance-engineer':
+        'Performance optimization recommendations',
+      'completion-implementer-sparc-coder':
+        'Production-ready code implementation',
     };
 
     return outputMap[`${phase}-${agentType}`] || `${phase} phase deliverable`;
@@ -244,7 +287,11 @@ export class SPARCSwarmCoordinator {
       coder: [...baseTools, 'code_generation', 'testing'],
       'system-architect': [...baseTools, 'design_tools', 'modeling'],
       'performance-tester': [...baseTools, 'profiling', 'benchmarking'],
-      'security-architect': [...baseTools, 'security_analysis', 'threat_modeling'],
+      'security-architect': [
+        ...baseTools,
+        'security_analysis',
+        'threat_modeling',
+      ],
       'unit-tester': [...baseTools, 'testing_frameworks', 'test_automation'],
       'requirements-engineer': [...baseTools, 'requirements_analysis'],
       documenter: [...baseTools, 'documentation_generators'],
@@ -296,7 +343,10 @@ export class SPARCSwarmCoordinator {
           completedTasks++;
         }
       } catch (error) {
-        this.logger?.warn('Failed to get task status', { taskId, error: error.message });
+        this.logger?.warn('Failed to get task status', {
+          taskId,
+          error: error.message,
+        });
       }
     }
 
@@ -325,7 +375,10 @@ export class SPARCSwarmCoordinator {
           await this.cancelTask(taskId);
           this.logger?.info('SPARC task cancelled', { taskId, swarmId });
         } catch (error) {
-          this.logger?.warn('Failed to cancel SPARC task', { taskId, error: error.message });
+          this.logger?.warn('Failed to cancel SPARC task', {
+            taskId,
+            error: error.message,
+          });
         }
       }
 
@@ -339,7 +392,7 @@ export class SPARCSwarmCoordinator {
    * @param _taskId
    */
   private async getTaskStatus(
-    _taskId: string
+    _taskId: string,
   ): Promise<'pending' | 'running' | 'completed' | 'failed'> {
     // In a real implementation, this would call the TaskAPI
     // For now, return a mock status based on task age or other criteria

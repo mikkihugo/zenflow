@@ -11,7 +11,12 @@ export interface HybridTestConfig {
     execution: number;
     memory: number;
   };
-  domainContext: 'coordination' | 'neural' | 'interfaces' | 'database' | 'utils';
+  domainContext:
+    | 'coordination'
+    | 'neural'
+    | 'interfaces'
+    | 'database'
+    | 'utils';
 }
 
 export class HybridTestUtility {
@@ -30,7 +35,8 @@ export class HybridTestUtility {
 
     if (londonDomains.includes(this.config.domainContext)) {
       return 'london';
-    } else if (classicalDomains.includes(this.config.domainContext)) {
+    }
+    if (classicalDomains.includes(this.config.domainContext)) {
       return 'classical';
     }
 
@@ -55,7 +61,10 @@ export class HybridTestUtility {
     return mocks;
   }
 
-  private shouldMock(dependency: string, approach: 'london' | 'classical'): boolean {
+  private shouldMock(
+    dependency: string,
+    approach: 'london' | 'classical',
+  ): boolean {
     const alwaysMock = ['http', 'file', 'network', 'external'];
     const neverMock = ['math', 'pure', 'algorithm'];
 
@@ -65,7 +74,10 @@ export class HybridTestUtility {
     return approach === 'london';
   }
 
-  private createMockForDependency(dependency: string, approach: 'london' | 'classical'): jest.Mock {
+  private createMockForDependency(
+    dependency: string,
+    approach: 'london' | 'classical',
+  ): jest.Mock {
     const mock = vi.fn();
 
     if (approach === 'london') {
@@ -82,12 +94,14 @@ export class HybridTestUtility {
     return mock;
   }
 
-  private getRealisticBehavior(dependency: string): (...args: any[]) => any {
-    const behaviors: Record<string, (...args: any[]) => any> = {
+  private getRealisticBehavior(
+    dependency: string,
+  ): (...args: unknown[]) => any {
+    const behaviors: Record<string, (...args: unknown[]) => any> = {
       database: () => ({ success: true, data: [] }),
       logger: () => undefined,
-      validator: (_input: any) => ({ valid: true, errors: [] }),
-      transformer: (data: any) => data,
+      validator: (_input: unknown) => ({ valid: true, errors: [] }),
+      transformer: (data: unknown) => data,
       calculator: (a: number, b: number) => a + b,
     };
 
@@ -103,9 +117,8 @@ export class HybridTestUtility {
 
     if (approach === 'london') {
       return new LondonAssertions();
-    } else {
-      return new ClassicalAssertions();
     }
+    return new ClassicalAssertions();
   }
 
   /**
@@ -134,7 +147,7 @@ export class LondonAssertions {
   verifyInteractionPattern(
     mock: jest.Mock,
     pattern: 'called' | 'not-called' | 'called-with' | 'called-times',
-    ...args: any[]
+    ...args: unknown[]
   ) {
     switch (pattern) {
       case 'called':
@@ -158,7 +171,7 @@ export class LondonAssertions {
    * @param interactions
    * @param protocol
    */
-  verifyProtocolCompliance(interactions: any[], protocol: string) {
+  verifyProtocolCompliance(interactions: unknown[], protocol: string) {
     switch (protocol) {
       case 'mcp':
         interactions.forEach((interaction) => {
@@ -184,7 +197,7 @@ export class LondonAssertions {
    */
   verifyCoordinationPattern(
     mock: jest.Mock,
-    expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe'
+    expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe',
   ) {
     const calls = mock.mock.calls;
 
@@ -213,7 +226,7 @@ export class ClassicalAssertions {
   verifyComputation(
     actual: number | number[],
     expected: number | number[],
-    tolerance: number = 1e-10
+    tolerance: number = 1e-10,
   ) {
     if (Array.isArray(actual) && Array.isArray(expected)) {
       expect(actual).toHaveLength(expected.length);
@@ -234,14 +247,20 @@ export class ClassicalAssertions {
    * @param targetValue
    * @param tolerance
    */
-  verifyConvergence(values: number[], targetValue: number, tolerance: number = 1e-6) {
+  verifyConvergence(
+    values: number[],
+    targetValue: number,
+    tolerance: number = 1e-6,
+  ) {
     const lastValue = values[values.length - 1];
     expect(Math.abs(lastValue - targetValue)).toBeLessThanOrEqual(tolerance);
 
     // Verify convergence trend
     const isConverging = values.slice(-5).every((val, index, arr) => {
       if (index === 0) return true;
-      return Math.abs(val - targetValue) <= Math.abs(arr[index - 1] - targetValue);
+      return (
+        Math.abs(val - targetValue) <= Math.abs(arr[index - 1] - targetValue)
+      );
     });
 
     expect(isConverging).toBe(true);
@@ -257,7 +276,7 @@ export class ClassicalAssertions {
   verifyTransformation(
     input: any,
     output: any,
-    transformationRules: Record<string, (input: any) => any>
+    transformationRules: Record<string, (input: unknown) => any>,
   ) {
     for (const [_rule, transform] of Object.entries(transformationRules)) {
       const expected = transform(input);
@@ -271,7 +290,10 @@ export class ClassicalAssertions {
    * @param state
    * @param invariants
    */
-  verifyStateConsistency(state: any, invariants: Array<(state: any) => boolean>) {
+  verifyStateConsistency(
+    state: any,
+    invariants: Array<(state: unknown) => boolean>,
+  ) {
     invariants.forEach((invariant, _index) => {
       expect(invariant(state)).toBe(true);
     });
@@ -286,7 +308,7 @@ export class ClassicalAssertions {
  */
 export function createHybridTestSetup(
   domain: string,
-  config?: Partial<HybridTestConfig>
+  config?: Partial<HybridTestConfig>,
 ): HybridTestUtility {
   const defaultConfig: HybridTestConfig = {
     approach: 'hybrid',

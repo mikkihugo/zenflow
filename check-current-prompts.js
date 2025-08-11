@@ -13,7 +13,9 @@ console.log('=======================================');
 
 // Check if zen-ai-fixer is running
 try {
-  const processes = execSync('ps aux | grep zen-ai-fixer | grep -v grep', { encoding: 'utf8' });
+  const processes = execSync('ps aux | grep zen-ai-fixer | grep -v grep', {
+    encoding: 'utf8',
+  });
   if (processes.trim()) {
     console.log('✅ zen-ai-fixer is currently running');
 
@@ -29,11 +31,14 @@ console.log('\n📋 Analyzing prompt generation in zen-ai-fixer.js...\n');
 
 // Read the zen-ai-fixer file and find prompt generation
 try {
-  const fixerCode = fs.readFileSync('scripts/ai-eslint/zen-ai-fixer.js', 'utf8');
+  const fixerCode = fs.readFileSync(
+    'scripts/ai-eslint/zen-ai-fixer.js',
+    'utf8',
+  );
 
   // Extract the buildContextAwarePrompt function
   const promptMatch = fixerCode.match(
-    /buildContextAwarePrompt\(violation\)\s*{[\s\S]*?return\s*`([\s\S]*?)`;/
+    /buildContextAwarePrompt\(violation\)\s*{[\s\S]*?return\s*`([\s\S]*?)`;/,
   );
 
   if (promptMatch) {
@@ -111,6 +116,8 @@ console.log('2. Include clear violation context and surrounding code');
 
 console.log('3. Specify exact line numbers and columns');
 
-console.log('4. Use direct Edit tool commands rather than general instructions');
+console.log(
+  '4. Use direct Edit tool commands rather than general instructions',
+);
 
 console.log('5. Test prompts with a single violation first');

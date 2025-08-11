@@ -471,7 +471,7 @@ export interface IService {
   execute<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    options?: ServiceOperationOptions,
   ): Promise<ServiceOperationResponse<T>>;
 
   /**
@@ -545,7 +545,9 @@ export interface IService {
  * }
  * ```
  */
-export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> {
+export interface IServiceFactory<
+  TConfig extends ServiceConfig = ServiceConfig,
+> {
   /**
    * Create a single service instance.
    *
@@ -623,8 +625,13 @@ export interface IServiceFactory<TConfig extends ServiceConfig = ServiceConfig> 
  */
 export interface IServiceRegistry {
   // Factory registration
-  registerFactory<T extends ServiceConfig>(type: string, factory: IServiceFactory<T>): void;
-  getFactory<T extends ServiceConfig>(type: string): IServiceFactory<T> | undefined;
+  registerFactory<T extends ServiceConfig>(
+    type: string,
+    factory: IServiceFactory<T>,
+  ): void;
+  getFactory<T extends ServiceConfig>(
+    type: string,
+  ): IServiceFactory<T> | undefined;
   listFactoryTypes(): string[];
   unregisterFactory(type: string): void;
 
@@ -657,8 +664,11 @@ export interface IServiceRegistry {
 
   // Event management
   on(
-    event: 'service-registered' | 'service-unregistered' | 'service-status-changed',
-    handler: (serviceName: string, service?: IService) => void
+    event:
+      | 'service-registered'
+      | 'service-unregistered'
+      | 'service-status-changed',
+    handler: (serviceName: string, service?: IService) => void,
   ): void;
   off(event: string, handler?: Function): void;
 }
@@ -692,7 +702,7 @@ export class ServiceError extends Error {
     message: string,
     public readonly code: string,
     public readonly serviceName: string,
-    public readonly cause?: Error
+    public readonly cause?: Error,
   ) {
     super(message);
     this.name = 'ServiceError';
@@ -705,7 +715,7 @@ export class ServiceInitializationError extends ServiceError {
       `Service initialization failed: ${serviceName}`,
       'SERVICE_INIT_ERROR',
       serviceName,
-      cause
+      cause,
     );
     this.name = 'ServiceInitializationError';
   }
@@ -717,7 +727,7 @@ export class ServiceConfigurationError extends ServiceError {
       `Service configuration error: ${serviceName} - ${details}`,
       'SERVICE_CONFIG_ERROR',
       serviceName,
-      cause
+      cause,
     );
     this.name = 'ServiceConfigurationError';
   }
@@ -729,7 +739,7 @@ export class ServiceDependencyError extends ServiceError {
       `Service dependency error: ${serviceName} -> ${dependency}`,
       'SERVICE_DEPENDENCY_ERROR',
       serviceName,
-      cause
+      cause,
     );
     this.name = 'ServiceDependencyError';
   }
@@ -741,19 +751,24 @@ export class ServiceOperationError extends ServiceError {
       `Service operation failed: ${serviceName}.${operation}`,
       'SERVICE_OPERATION_ERROR',
       serviceName,
-      cause
+      cause,
     );
     this.name = 'ServiceOperationError';
   }
 }
 
 export class ServiceTimeoutError extends ServiceError {
-  constructor(serviceName: string, operation: string, timeout: number, cause?: Error) {
+  constructor(
+    serviceName: string,
+    operation: string,
+    timeout: number,
+    cause?: Error,
+  ) {
     super(
       `Service operation timeout: ${serviceName}.${operation} (${timeout}ms)`,
       'SERVICE_TIMEOUT_ERROR',
       serviceName,
-      cause
+      cause,
     );
     this.name = 'ServiceTimeoutError';
   }

@@ -39,7 +39,10 @@ const filesToConvert = [
 
 const jestToVitestReplacements = [
   // Import replacements
-  [/import\s+{\s*jest\s*}\s+from\s+['"]@jest\/globals['"];?/g, "import { vi } from 'vitest';"],
+  [
+    /import\s+{\s*jest\s*}\s+from\s+['"]@jest\/globals['"];?/g,
+    "import { vi } from 'vitest';",
+  ],
   [
     /import\s+{\s*([^}]+),?\s*jest\s*}\s+from\s+['"]@jest\/globals['"];?/g,
     "import { $1, vi } from 'vitest';",
@@ -95,10 +98,9 @@ function convertFile(filePath) {
       fs.writeFileSync(fullPath, content, 'utf8');
       // console.log(`✅ Converted: ${filePath}`);
       return true;
-    } else {
-      // console.log(`ℹ️  No changes needed: ${filePath}`);
-      return false;
     }
+    // console.log(`ℹ️  No changes needed: ${filePath}`);
+    return false;
   } catch (error) {
     // console.error(`❌ Error converting ${filePath}:`, error.message);
     return false;
@@ -121,9 +123,12 @@ function main() {
 
   // Also find and convert any remaining files with Jest imports
   try {
-    const grepResult = execSync('grep -r "import.*@jest/globals" src/ tests/ 2>/dev/null || true', {
-      encoding: 'utf8',
-    });
+    const grepResult = execSync(
+      'grep -r "import.*@jest/globals" src/ tests/ 2>/dev/null || true',
+      {
+        encoding: 'utf8',
+      },
+    );
     const remainingFiles = grepResult
       .split('\n')
       .filter((line) => line.includes(':'))

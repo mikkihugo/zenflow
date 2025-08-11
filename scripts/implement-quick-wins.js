@@ -17,7 +17,7 @@ if (!vitestConfig.includes('maxConcurrency')) {
     maxConcurrency: 8, // Enable concurrent test execution
     sequence: {
       concurrent: true, // Run tests concurrently by default
-    },`
+    },`,
   );
   fs.writeFileSync(vitestConfigPath, vitestConfig);
   // console.log('✅ Added concurrent test execution to vitest.config.ts');

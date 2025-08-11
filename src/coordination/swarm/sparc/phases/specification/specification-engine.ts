@@ -12,7 +12,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import { TemplateEngine } from '../core/template-engine';
+import { TemplateEngine } from '../../core/template-engine.js';
 import type {
   AcceptanceCriterion,
   ConstraintAnalysis,
@@ -52,7 +52,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    */
   async generateSpecificationFromTemplate(
     projectSpec: ProjectSpecification,
-    templateId?: string
+    templateId?: string,
   ): Promise<DetailedSpecification> {
     let template;
     if (templateId) {
@@ -64,18 +64,23 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       // Find best matching template
       const bestMatch = this.templateEngine.findBestTemplate(projectSpec);
       if (!bestMatch) {
-        throw new Error(`No suitable template found for domain: ${projectSpec.domain}`);
+        throw new Error(
+          `No suitable template found for domain: ${projectSpec.domain}`,
+        );
       }
       template = bestMatch?.template;
     }
 
     // Apply template to project
-    const result = await this.templateEngine.applyTemplate(template, projectSpec);
+    const result = await this.templateEngine.applyTemplate(
+      template,
+      projectSpec,
+    );
 
     // Generate additional specification details
     const enhancedSpec = await this.enhanceTemplateSpecification(
       result?.specification,
-      projectSpec
+      projectSpec,
     );
 
     return enhancedSpec;
@@ -89,25 +94,36 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    */
   private async enhanceTemplateSpecification(
     templateSpec: DetailedSpecification,
-    projectSpec: ProjectSpecification
+    projectSpec: ProjectSpecification,
   ): Promise<DetailedSpecification> {
     // Add project-specific analysis
     const additionalRisks = await this.analyzeProjectSpecificRisks(projectSpec);
-    const additionalDependencies = this.identifyAdditionalDependencies(projectSpec);
+    const additionalDependencies =
+      this.identifyAdditionalDependencies(projectSpec);
     const enhancedAcceptance = await this.defineAdditionalAcceptanceCriteria(
-      templateSpec.functionalRequirements
+      templateSpec.functionalRequirements,
     );
 
     return {
       ...templateSpec,
       riskAssessment: {
         ...templateSpec.riskAssessment,
-        risks: [...(templateSpec.riskAssessment?.risks || []), ...additionalRisks],
-        mitigationStrategies: templateSpec.riskAssessment?.mitigationStrategies || [],
+        risks: [
+          ...(templateSpec.riskAssessment?.risks || []),
+          ...additionalRisks,
+        ],
+        mitigationStrategies:
+          templateSpec.riskAssessment?.mitigationStrategies || [],
         overallRisk: templateSpec.riskAssessment?.overallRisk || 'LOW',
       },
-      dependencies: [...(templateSpec.dependencies || []), ...additionalDependencies],
-      acceptanceCriteria: [...(templateSpec.acceptanceCriteria || []), ...enhancedAcceptance],
+      dependencies: [
+        ...(templateSpec.dependencies || []),
+        ...additionalDependencies,
+      ],
+      acceptanceCriteria: [
+        ...(templateSpec.acceptanceCriteria || []),
+        ...enhancedAcceptance,
+      ],
     };
   }
 
@@ -138,7 +154,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    */
   validateTemplateCompatibility(
     projectSpec: ProjectSpecification,
-    templateId: string
+    templateId: string,
   ): {
     compatible: boolean;
     warnings: string[];
@@ -155,7 +171,10 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       };
     }
 
-    return this.templateEngine.validateTemplateCompatibility(template, projectSpec);
+    return this.templateEngine.validateTemplateCompatibility(
+      template,
+      projectSpec,
+    );
   }
   /**
    * Gather comprehensive requirements from project context.
@@ -163,8 +182,10 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    * @param context
    */
   async gatherRequirements(context: ProjectContext): Promise<RequirementSet> {
-    const functionalRequirements = await this.extractFunctionalRequirements(context);
-    const nonFunctionalRequirements = await this.extractNonFunctionalRequirements(context);
+    const functionalRequirements =
+      await this.extractFunctionalRequirements(context);
+    const nonFunctionalRequirements =
+      await this.extractNonFunctionalRequirements(context);
 
     return [...functionalRequirements, ...nonFunctionalRequirements];
   }
@@ -174,7 +195,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    *
    * @param requirements
    */
-  async analyzeConstraints(requirements: RequirementSet): Promise<ConstraintAnalysis> {
+  async analyzeConstraints(
+    requirements: RequirementSet,
+  ): Promise<ConstraintAnalysis> {
     const systemConstraints = this.deriveSystemConstraints(requirements);
     const assumptions = this.identifyAssumptions(requirements);
 
@@ -187,7 +210,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    * @param requirements
    */
   async defineAcceptanceCriteria(
-    requirements: (FunctionalRequirement | NonFunctionalRequirement)[]
+    requirements: (FunctionalRequirement | NonFunctionalRequirement)[],
   ): Promise<AcceptanceCriterion[]> {
     const acceptanceCriteria: AcceptanceCriterion[] = [];
 
@@ -209,7 +232,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
           requirement: nonFuncReq.id,
           criteria: [
             `System meets ${nonFuncReq.title} requirements`,
-            ...Object.entries(nonFuncReq.metrics).map(([key, value]) => `${key}: ${value}`),
+            ...Object.entries(nonFuncReq.metrics).map(
+              ([key, value]) => `${key}: ${value}`,
+            ),
           ],
           testMethod: 'automated',
         });
@@ -224,22 +249,28 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    * @param analysis
    */
   async generateSpecificationDocument(
-    analysis: ConstraintAnalysis
+    analysis: ConstraintAnalysis,
   ): Promise<SpecificationDocument> {
     const functionalRequirements = this.extractFunctionalFromAnalysis(analysis);
-    const nonFunctionalRequirements = this.extractNonFunctionalFromAnalysis(analysis);
+    const nonFunctionalRequirements =
+      this.extractNonFunctionalFromAnalysis(analysis);
     const constraints = this.extractConstraintsFromAnalysis(analysis);
     const assumptions = this.extractAssumptionsFromAnalysis(analysis);
 
-    const riskAnalysis = await this.performRiskAnalysis(functionalRequirements, constraints);
-    const dependencies = this.identifyExternalDependencies(functionalRequirements);
+    const riskAnalysis = await this.performRiskAnalysis(
+      functionalRequirements,
+      constraints,
+    );
+    const dependencies = this.identifyExternalDependencies(
+      functionalRequirements,
+    );
     const acceptanceCriteria = await this.defineAcceptanceCriteria([
       ...functionalRequirements,
       ...nonFunctionalRequirements,
     ]);
     const successMetrics = this.defineSuccessMetrics(
       functionalRequirements,
-      nonFunctionalRequirements
+      nonFunctionalRequirements,
     );
 
     const specification: DetailedSpecification = {
@@ -263,7 +294,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
    *
    * @param spec
    */
-  async validateSpecificationCompleteness(spec: SpecificationDocument): Promise<ValidationReport> {
+  async validateSpecificationCompleteness(
+    spec: SpecificationDocument,
+  ): Promise<ValidationReport> {
     const validationResults: ValidationResult[] = [
       {
         criterion: 'functional-requirements-present',
@@ -281,7 +314,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
         criterion: 'acceptance-criteria-defined',
         passed: spec.acceptanceCriteria.length > 0,
         score: spec.acceptanceCriteria?.length
-          ? spec.acceptanceCriteria.length / Math.max(1, spec.functionalRequirements.length)
+          ? spec.acceptanceCriteria.length /
+            Math.max(1, spec.functionalRequirements.length)
           : 0,
         details: `${spec.acceptanceCriteria.length} acceptance criteria defined`,
       },
@@ -306,10 +340,12 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     ];
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
+      validationResults.reduce((sum, result) => sum + result?.score, 0) /
+      validationResults.length;
     const allPassed = validationResults.every((result) => result?.passed);
 
-    const recommendations = this.generateValidationRecommendations(validationResults);
+    const recommendations =
+      this.generateValidationRecommendations(validationResults);
 
     const report: ValidationReport = {
       overall: allPassed,
@@ -323,9 +359,11 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   // Private helper methods
 
   private async extractFunctionalRequirements(
-    context: ProjectContext
+    context: ProjectContext,
   ): Promise<FunctionalRequirement[]> {
-    const domainRequirements = this.getDomainSpecificRequirements(context.domain);
+    const domainRequirements = this.getDomainSpecificRequirements(
+      context.domain,
+    );
 
     const requirements: FunctionalRequirement[] = [
       {
@@ -371,7 +409,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private async extractNonFunctionalRequirements(
-    context: ProjectContext
+    context: ProjectContext,
   ): Promise<NonFunctionalRequirement[]> {
     const baseRequirements: NonFunctionalRequirement[] = [
       {
@@ -452,7 +490,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     return baseRequirements;
   }
 
-  private deriveSystemConstraints(requirements: RequirementSet): SystemConstraint[] {
+  private deriveSystemConstraints(
+    requirements: RequirementSet,
+  ): SystemConstraint[] {
     const constraints: SystemConstraint[] = [
       {
         id: 'SC-001',
@@ -479,8 +519,11 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       (req) =>
         'metrics' in req &&
         Object.keys(req.metrics).some(
-          (key) => key.includes('performance') || key.includes('speed') || key.includes('latency')
-        )
+          (key) =>
+            key.includes('performance') ||
+            key.includes('speed') ||
+            key.includes('latency'),
+        ),
     );
 
     if (hasPerformanceReqs) {
@@ -495,7 +538,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     return constraints;
   }
 
-  private identifyAssumptions(_requirements: RequirementSet): ProjectAssumption[] {
+  private identifyAssumptions(
+    _requirements: RequirementSet,
+  ): ProjectAssumption[] {
     return [
       {
         id: 'PA-001',
@@ -511,7 +556,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       },
       {
         id: 'PA-003',
-        description: 'System resources are adequate for performance requirements',
+        description:
+          'System resources are adequate for performance requirements',
         confidence: 'medium',
         riskIfIncorrect: 'HIGH',
       },
@@ -519,12 +565,16 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private determineTestMethod(
-    requirement: FunctionalRequirement
+    requirement: FunctionalRequirement,
   ): 'automated' | 'manual' | 'integration' {
     if (requirement.priority === 'HIGH') {
       return 'automated';
     }
-    if (requirement.testCriteria.some((criteria) => criteria.includes('integration'))) {
+    if (
+      requirement.testCriteria.some((criteria) =>
+        criteria.includes('integration'),
+      )
+    ) {
       return 'integration';
     }
     return 'manual';
@@ -532,7 +582,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   private async performRiskAnalysis(
     _requirements: FunctionalRequirement[],
-    _constraints: SystemConstraint[]
+    _constraints: SystemConstraint[],
   ): Promise<RiskAnalysis> {
     const risks: ProjectRisk[] = [
       {
@@ -561,7 +611,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     const mitigationStrategies: MitigationStrategy[] = [
       {
         riskId: 'PR-001',
-        strategy: 'Implement performance benchmarking and iterative optimization',
+        strategy:
+          'Implement performance benchmarking and iterative optimization',
         priority: 'HIGH',
         effort: 'medium',
       },
@@ -592,7 +643,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private identifyExternalDependencies(
-    _requirements: FunctionalRequirement[]
+    _requirements: FunctionalRequirement[],
   ): ExternalDependency[] {
     return [
       {
@@ -621,7 +672,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
 
   private defineSuccessMetrics(
     _functional: FunctionalRequirement[],
-    _nonFunctional: NonFunctionalRequirement[]
+    _nonFunctional: NonFunctionalRequirement[],
   ): SuccessMetric[] {
     return [
       {
@@ -648,7 +699,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     ];
   }
 
-  private getDomainSpecificRequirements(domain: string): FunctionalRequirement[] {
+  private getDomainSpecificRequirements(
+    domain: string,
+  ): FunctionalRequirement[] {
     const domainRequirements: Record<string, FunctionalRequirement[]> = {
       'swarm-coordination': [
         {
@@ -680,7 +733,8 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
         {
           id: 'FR-NN-001',
           title: 'Neural Network Training',
-          description: 'Efficient neural network training with WASM acceleration',
+          description:
+            'Efficient neural network training with WASM acceleration',
           type: 'functional',
           priority: 'HIGH',
           testCriteria: [
@@ -695,28 +749,36 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     return domainRequirements[domain] || [];
   }
 
-  private extractFunctionalFromAnalysis(_analysis: ConstraintAnalysis): FunctionalRequirement[] {
+  private extractFunctionalFromAnalysis(
+    _analysis: ConstraintAnalysis,
+  ): FunctionalRequirement[] {
     // Extract functional requirements from constraint analysis
     // This is a simplified implementation
     return [];
   }
 
   private extractNonFunctionalFromAnalysis(
-    _analysis: ConstraintAnalysis
+    _analysis: ConstraintAnalysis,
   ): NonFunctionalRequirement[] {
     // Extract non-functional requirements from constraint analysis
     return [];
   }
 
-  private extractConstraintsFromAnalysis(analysis: ConstraintAnalysis): SystemConstraint[] {
+  private extractConstraintsFromAnalysis(
+    analysis: ConstraintAnalysis,
+  ): SystemConstraint[] {
     return analysis.filter(
       (item): item is SystemConstraint =>
         'type' in item &&
-        ['technical', 'business', 'regulatory', 'performance'].includes(item?.type)
+        ['technical', 'business', 'regulatory', 'performance'].includes(
+          item?.type,
+        ),
     );
   }
 
-  private extractAssumptionsFromAnalysis(analysis: ConstraintAnalysis): ProjectAssumption[] {
+  private extractAssumptionsFromAnalysis(
+    analysis: ConstraintAnalysis,
+  ): ProjectAssumption[] {
     // Filter out only ProjectAssumption items
     const assumptions: ProjectAssumption[] = [];
     for (const item of analysis) {
@@ -727,52 +789,68 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     return assumptions;
   }
 
-  private validateHighPriorityRequirements(spec: DetailedSpecification): boolean {
-    const highPriorityReqs = spec.functionalRequirements.filter((req) => req.priority === 'HIGH');
+  private validateHighPriorityRequirements(
+    spec: DetailedSpecification,
+  ): boolean {
+    const highPriorityReqs = spec.functionalRequirements.filter(
+      (req) => req.priority === 'HIGH',
+    );
     return highPriorityReqs.every((req) =>
-      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id)
+      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id),
     );
   }
 
-  private calculateHighPriorityCompleteness(spec: DetailedSpecification): number {
-    const highPriorityReqs = spec.functionalRequirements.filter((req) => req.priority === 'HIGH');
+  private calculateHighPriorityCompleteness(
+    spec: DetailedSpecification,
+  ): number {
+    const highPriorityReqs = spec.functionalRequirements.filter(
+      (req) => req.priority === 'HIGH',
+    );
     if (highPriorityReqs.length === 0) return 1.0;
 
     const completedHighPriority = highPriorityReqs.filter((req) =>
-      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id)
+      spec.acceptanceCriteria.some((ac) => ac.requirement === req.id),
     );
 
     return completedHighPriority.length / highPriorityReqs.length;
   }
 
-  private generateValidationRecommendations(results: ValidationResult[]): string[] {
+  private generateValidationRecommendations(
+    results: ValidationResult[],
+  ): string[] {
     const recommendations: string[] = [];
 
     results.forEach((result) => {
       if (!result?.passed) {
         switch (result?.criterion) {
           case 'functional-requirements-present':
-            recommendations.push('Add detailed functional requirements for all major features');
+            recommendations.push(
+              'Add detailed functional requirements for all major features',
+            );
             break;
           case 'non-functional-requirements-present':
-            recommendations.push('Define performance, scalability, and reliability requirements');
+            recommendations.push(
+              'Define performance, scalability, and reliability requirements',
+            );
             break;
           case 'acceptance-criteria-defined':
             recommendations.push(
-              'Create specific acceptance criteria for each functional requirement'
+              'Create specific acceptance criteria for each functional requirement',
             );
             break;
           case 'risk-assessment-complete':
             recommendations.push(
-              'Perform comprehensive risk analysis and define mitigation strategies'
+              'Perform comprehensive risk analysis and define mitigation strategies',
             );
             break;
           case 'success-metrics-defined':
-            recommendations.push('Define measurable success metrics for project validation');
+            recommendations.push(
+              'Define measurable success metrics for project validation',
+            );
             break;
           case 'high-priority-requirements-complete':
             recommendations.push(
-              'Ensure all high-priority requirements have detailed acceptance criteria'
+              'Ensure all high-priority requirements have detailed acceptance criteria',
             );
             break;
         }
@@ -780,7 +858,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     });
 
     if (recommendations.length === 0) {
-      recommendations.push('Specification is complete - proceed to pseudocode phase');
+      recommendations.push(
+        'Specification is complete - proceed to pseudocode phase',
+      );
     }
 
     return recommendations;
@@ -789,12 +869,15 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   // Template enhancement methods
 
   private async analyzeProjectSpecificRisks(
-    projectSpec: ProjectSpecification
+    projectSpec: ProjectSpecification,
   ): Promise<ProjectRisk[]> {
     const risks: ProjectRisk[] = [];
 
     // Analyze complexity-based risks
-    if (projectSpec.complexity === 'enterprise' || projectSpec.complexity === 'complex') {
+    if (
+      projectSpec.complexity === 'enterprise' ||
+      projectSpec.complexity === 'complex'
+    ) {
       risks.push({
         id: nanoid(),
         description: 'High complexity may lead to integration challenges',
@@ -829,7 +912,9 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
     return risks;
   }
 
-  private identifyAdditionalDependencies(projectSpec: ProjectSpecification): ExternalDependency[] {
+  private identifyAdditionalDependencies(
+    projectSpec: ProjectSpecification,
+  ): ExternalDependency[] {
     const dependencies: ExternalDependency[] = [];
 
     // Add complexity-based dependencies
@@ -857,12 +942,16 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
   }
 
   private async defineAdditionalAcceptanceCriteria(
-    requirements: FunctionalRequirement[]
+    requirements: FunctionalRequirement[],
   ): Promise<AcceptanceCriterion[]> {
     const criteria: AcceptanceCriterion[] = [];
 
     for (const req of requirements) {
-      if (req.priority === 'HIGH' && req.testCriteria && req.testCriteria.length > 0) {
+      if (
+        req.priority === 'HIGH' &&
+        req.testCriteria &&
+        req.testCriteria.length > 0
+      ) {
         criteria.push({
           id: nanoid(),
           requirement: req.id,

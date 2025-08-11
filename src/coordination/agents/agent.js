@@ -9,7 +9,7 @@ exports.AgentPool =
   exports.BaseAgent =
     void 0;
 exports.createAgent = createAgent;
-const utils_1 = require('../swarm/core/utils');
+const utils_1 = require('../swarm/core/utils.js');
 class BaseAgent {
   // Convenience getter for status
   get status() {
@@ -28,7 +28,8 @@ class BaseAgent {
       ...config,
       id: this.id,
       cognitiveProfile:
-        config.cognitiveProfile || (0, utils_1.getDefaultCognitiveProfile)(config.type),
+        config.cognitiveProfile ||
+        (0, utils_1.getDefaultCognitiveProfile)(config.type),
     };
     // Initialize metrics
     this.metrics = {
@@ -103,14 +104,28 @@ class BaseAgent {
     this.setupMessageHandlers();
   }
   setupMessageHandlers() {
-    this.messageHandlers.set('task_assignment', this.handleTaskAssignment.bind(this));
-    this.messageHandlers.set('coordination', this.handleCoordination.bind(this));
-    this.messageHandlers.set('knowledge_share', this.handleKnowledgeShare.bind(this));
-    this.messageHandlers.set('status_update', this.handleStatusUpdate.bind(this));
+    this.messageHandlers.set(
+      'task_assignment',
+      this.handleTaskAssignment.bind(this),
+    );
+    this.messageHandlers.set(
+      'coordination',
+      this.handleCoordination.bind(this),
+    );
+    this.messageHandlers.set(
+      'knowledge_share',
+      this.handleKnowledgeShare.bind(this),
+    );
+    this.messageHandlers.set(
+      'status_update',
+      this.handleStatusUpdate.bind(this),
+    );
   }
   async executeTaskByType(task) {
     // Simulate work
-    await new Promise((resolve) => setTimeout(resolve, 100 + Math.random() * 400));
+    await new Promise((resolve) =>
+      setTimeout(resolve, 100 + Math.random() * 400),
+    );
     return {
       taskId: task.id,
       agentId: this.id,
@@ -146,9 +161,11 @@ class BaseAgent {
       performance.tasksFailed++;
     }
     const totalTasks = performance.tasksCompleted + performance.tasksFailed;
-    performance.successRate = totalTasks > 0 ? performance.tasksCompleted / totalTasks : 0;
+    performance.successRate =
+      totalTasks > 0 ? performance.tasksCompleted / totalTasks : 0;
     // Update average execution time
-    const totalTime = performance.averageExecutionTime * (totalTasks - 1) + executionTime;
+    const totalTime =
+      performance.averageExecutionTime * (totalTasks - 1) + executionTime;
     performance.averageExecutionTime = totalTime / totalTasks;
   }
   async handleTaskAssignment(message) {
@@ -180,7 +197,10 @@ class BaseAgent {
   async handleKnowledgeShare(message) {
     // Store shared knowledge in memory
     if (this.config.memory) {
-      this.config.memory.shortTerm.set(`knowledge_${message.id}`, message.payload);
+      this.config.memory.shortTerm.set(
+        `knowledge_${message.id}`,
+        message.payload,
+      );
     }
   }
   async handleStatusUpdate(_message) {
@@ -262,7 +282,12 @@ class ResearcherAgent extends BaseAgent {
   }
   async executeTaskByType(task) {
     // Simulate research activities
-    const phases = ['collecting_data', 'analyzing', 'synthesizing', 'reporting'];
+    const phases = [
+      'collecting_data',
+      'analyzing',
+      'synthesizing',
+      'reporting',
+    ];
     const results = [];
     for (const phase of phases) {
       await new Promise((resolve) => setTimeout(resolve, 200));
@@ -278,7 +303,10 @@ class ResearcherAgent extends BaseAgent {
       type: 'research_report',
       phases: results,
       summary: `Research completed on: ${task.description}`,
-      recommendations: ['Further investigation needed', 'Consider alternative approaches'],
+      recommendations: [
+        'Further investigation needed',
+        'Consider alternative approaches',
+      ],
     };
   }
 }

@@ -24,11 +24,11 @@ describe('Neural Network Edge Cases', () => {
       const network = await manager.create(config);
 
       const invalidInputs = [
-        [NaN, 1, 2, 3],
-        [1, NaN, 2, 3],
-        [1, 2, NaN, 3],
-        [1, 2, 3, NaN],
-        [NaN, NaN, NaN, NaN],
+        [Number.NaN, 1, 2, 3],
+        [1, Number.NaN, 2, 3],
+        [1, 2, Number.NaN, 3],
+        [1, 2, 3, Number.NaN],
+        [Number.NaN, Number.NaN, Number.NaN, Number.NaN],
       ];
 
       for (const input of invalidInputs) {
@@ -55,13 +55,13 @@ describe('Neural Network Edge Cases', () => {
       const network = await manager.create(config);
 
       const infinityInputs = [
-        [Infinity, 1],
-        [1, Infinity],
-        [-Infinity, 1],
-        [1, -Infinity],
-        [Infinity, -Infinity],
-        [Infinity, Infinity],
-        [-Infinity, -Infinity],
+        [Number.POSITIVE_INFINITY, 1],
+        [1, Number.POSITIVE_INFINITY],
+        [Number.NEGATIVE_INFINITY, 1],
+        [1, Number.NEGATIVE_INFINITY],
+        [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
+        [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
       ];
 
       for (const input of infinityInputs) {
@@ -132,7 +132,9 @@ describe('Neural Network Edge Cases', () => {
         // ReLU should pass through positive values or zero
         result.forEach((value) => {
           expect(value).toBeGreaterThanOrEqual(0);
-          expect(Number.isFinite(value) || value === Infinity).toBe(true);
+          expect(
+            Number.isFinite(value) || value === Number.POSITIVE_INFINITY,
+          ).toBe(true);
         });
       }
     });
@@ -220,7 +222,9 @@ describe('Neural Network Edge Cases', () => {
 
           // Track gradient magnitude
           const currentWeights = network.getWeights();
-          const gradientMagnitude = Math.sqrt(currentWeights.reduce((sum, w) => sum + w * w, 0));
+          const gradientMagnitude = Math.sqrt(
+            currentWeights.reduce((sum, w) => sum + w * w, 0),
+          );
 
           gradientHistory.push(gradientMagnitude);
           maxGradient = Math.max(maxGradient, gradientMagnitude);
@@ -340,7 +344,9 @@ describe('Neural Network Edge Cases', () => {
         { input: [1], target: [0, 1] }, // Wrong input size
       ];
 
-      await expect(network.train(inconsistentData)).rejects.toThrow(/dimension|size/i);
+      await expect(network.train(inconsistentData)).rejects.toThrow(
+        /dimension|size/i,
+      );
     });
 
     it('should handle inconsistent output dimensions', async () => {
@@ -358,7 +364,9 @@ describe('Neural Network Edge Cases', () => {
         { input: [1, 2], target: [0] }, // Wrong target size
       ];
 
-      await expect(network.train(inconsistentData)).rejects.toThrow(/dimension|size/i);
+      await expect(network.train(inconsistentData)).rejects.toThrow(
+        /dimension|size/i,
+      );
     });
 
     it('should handle duplicate training samples', async () => {
@@ -390,7 +398,9 @@ describe('Neural Network Edge Cases', () => {
         activation: 'unknown_activation',
       };
 
-      await expect(manager.create(config)).rejects.toThrow(/activation|unknown/i);
+      await expect(manager.create(config)).rejects.toThrow(
+        /activation|unknown/i,
+      );
     });
 
     it('should handle custom activation functions', async () => {

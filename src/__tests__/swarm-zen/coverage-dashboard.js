@@ -12,11 +12,19 @@ const startTime = Date.now();
 export async function trackCoverage() {
   try {
     // Run coverage with JSON output
-    const { stdout, stderr } = await execAsync('npm run test:coverage -- --reporter=json-summary');
+    const { stdout, stderr } = await execAsync(
+      'npm run test:coverage -- --reporter=json-summary',
+    );
 
     // Read the coverage summary
-    const coverageSummaryPath = path.join(process.cwd(), 'coverage', 'coverage-summary.json');
-    const coverageData = JSON.parse(await fs.readFile(coverageSummaryPath, 'utf8'));
+    const coverageSummaryPath = path.join(
+      process.cwd(),
+      'coverage',
+      'coverage-summary.json',
+    );
+    const coverageData = JSON.parse(
+      await fs.readFile(coverageSummaryPath, 'utf8'),
+    );
 
     const totalCoverage = coverageData.total;
 
@@ -42,7 +50,10 @@ export async function trackCoverage() {
     coverageHistory.push(metrics);
 
     // Save to file for persistence
-    await fs.writeFile('coverage-history.json', JSON.stringify(coverageHistory, null, 2));
+    await fs.writeFile(
+      'coverage-history.json',
+      JSON.stringify(coverageHistory, null, 2),
+    );
 
     return metrics;
   } catch (error) {
@@ -98,7 +109,9 @@ export async function generateProgressReport() {
       statements: latest.coverage.statements - initial.coverage.statements,
     },
     rate: {
-      perMinute: (latest.coverage.lines - initial.coverage.lines) / (latest.elapsed / 60000),
+      perMinute:
+        (latest.coverage.lines - initial.coverage.lines) /
+        (latest.elapsed / 60000),
     },
     target: {
       lines: 100 - latest.coverage.lines,
@@ -149,9 +162,13 @@ export async function validatePresets() {
 async function getPresetCoverage(preset) {
   try {
     const { stdout } = await execAsync(
-      `npm run test:coverage -- --preset=${preset} --reporter=json-summary`
+      `npm run test:coverage -- --preset=${preset} --reporter=json-summary`,
     );
-    const summaryPath = path.join(process.cwd(), 'coverage', 'coverage-summary.json');
+    const summaryPath = path.join(
+      process.cwd(),
+      'coverage',
+      'coverage-summary.json',
+    );
     const data = JSON.parse(await fs.readFile(summaryPath, 'utf8'));
     return data.total;
   } catch (_error) {
@@ -218,7 +235,7 @@ ${Object.entries(presetResults)
       `### ${preset}
 - Success: ${result.success ? '✅' : '❌'}
 - Tests: ${result.passed || 0} passed, ${result.failed || 0} failed
-- Coverage: ${result.coverage ? `${result.coverage.lines.pct}%` : 'N/A'}`
+- Coverage: ${result.coverage ? `${result.coverage.lines.pct}%` : 'N/A'}`,
   )
   .join('\n\n')}
 

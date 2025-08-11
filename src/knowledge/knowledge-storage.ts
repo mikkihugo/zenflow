@@ -150,7 +150,10 @@ export class FACTStorageSystem extends EventEmitter {
    * @param entry
    */
   async storeKnowledge(
-    entry: Omit<FACTKnowledgeEntry, 'id' | 'timestamp' | 'accessCount' | 'lastAccessed'>
+    entry: Omit<
+      FACTKnowledgeEntry,
+      'id' | 'timestamp' | 'accessCount' | 'lastAccessed'
+    >,
   ): Promise<string> {
     const id = this.generateEntryId(entry.query, entry.metadata['type']);
     const timestamp = Date.now();
@@ -258,7 +261,8 @@ export class FACTStorageSystem extends EventEmitter {
 
     // Calculate cache hit rate
     const totalRequests = this.stats.hits + this.stats.misses;
-    const cacheHitRate = totalRequests > 0 ? this.stats.hits / totalRequests : 0;
+    const cacheHitRate =
+      totalRequests > 0 ? this.stats.hits / totalRequests : 0;
 
     // Get top domains from memory cache
     const domainCounts = new Map<string, number>();
@@ -307,7 +311,9 @@ export class FACTStorageSystem extends EventEmitter {
     }
 
     // Clean backend storage
-    const backendDeletions = await this.backend.cleanup(this.config.maxEntryAge);
+    const backendDeletions = await this.backend.cleanup(
+      this.config.maxEntryAge,
+    );
 
     this.stats.evictions += memoryEvictions;
     this.stats.entriesDeleted += backendDeletions;
@@ -397,7 +403,10 @@ export class FACTStorageSystem extends EventEmitter {
     this.memoryCache.set(entry.id, entry);
   }
 
-  private isEntryValid(entry: FACTKnowledgeEntry, now: number = Date.now()): boolean {
+  private isEntryValid(
+    entry: FACTKnowledgeEntry,
+    now: number = Date.now(),
+  ): boolean {
     return now - entry.timestamp < entry.ttl;
   }
 

@@ -76,7 +76,7 @@ export class PerformanceOptimizer extends EventEmitter {
       swarm?: SwarmOptimizer;
       data?: DataOptimizer;
       wasm?: WasmOptimizer;
-    } = {}
+    } = {},
   ) {
     super();
 
@@ -155,7 +155,10 @@ export class PerformanceOptimizer extends EventEmitter {
       const afterMetrics = await this.getCurrentPerformanceMetrics();
 
       // Calculate overall improvement
-      const overallImprovement = this.calculateImprovement(beforeMetrics, afterMetrics);
+      const overallImprovement = this.calculateImprovement(
+        beforeMetrics,
+        afterMetrics,
+      );
 
       this.emit('optimization:completed', {
         results,
@@ -205,7 +208,7 @@ export class PerformanceOptimizer extends EventEmitter {
    * @param currentMetrics
    */
   private async generateOptimizationPlan(
-    currentMetrics: PerformanceMetrics
+    currentMetrics: PerformanceMetrics,
   ): Promise<OptimizationPlan[]> {
     const plans: OptimizationPlan[] = [];
 
@@ -229,7 +232,9 @@ export class PerformanceOptimizer extends EventEmitter {
    *
    * @param plan
    */
-  private async executeOptimizationPlan(plan: OptimizationPlan): Promise<OptimizationResult> {
+  private async executeOptimizationPlan(
+    plan: OptimizationPlan,
+  ): Promise<OptimizationResult> {
     const startTime = Date.now();
     const beforeMetrics = await this.getCurrentPerformanceMetrics();
 
@@ -248,7 +253,10 @@ export class PerformanceOptimizer extends EventEmitter {
       }
 
       const afterMetrics = await this.getCurrentPerformanceMetrics();
-      const improvement = this.calculateImprovement(beforeMetrics, afterMetrics);
+      const improvement = this.calculateImprovement(
+        beforeMetrics,
+        afterMetrics,
+      );
 
       const result: OptimizationResult = {
         success: true,
@@ -285,7 +293,7 @@ export class PerformanceOptimizer extends EventEmitter {
    */
   private async executeOptimizationAction(
     optimizer: any,
-    action: OptimizationAction
+    action: OptimizationAction,
   ): Promise<void> {
     this.emit('optimization:action:started', action);
 
@@ -299,16 +307,22 @@ export class PerformanceOptimizer extends EventEmitter {
           await optimizer.implementBatchProcessing?.(action.target);
           break;
         case 'gpu_acceleration':
-          await optimizer.enableGPUAcceleration?.(action.parameters['computeUnits']);
+          await optimizer.enableGPUAcceleration?.(
+            action.parameters['computeUnits'],
+          );
           break;
         case 'memory_optimization':
           await optimizer.optimizeMemoryUsage?.(action.parameters['networks']);
           break;
         case 'message_routing':
-          await optimizer.optimizeMessageRouting?.(action.parameters['topology']);
+          await optimizer.optimizeMessageRouting?.(
+            action.parameters['topology'],
+          );
           break;
         case 'caching':
-          await optimizer.implementCaching?.(action.parameters['coordinationLayer']);
+          await optimizer.implementCaching?.(
+            action.parameters['coordinationLayer'],
+          );
           break;
         case 'latency_reduction':
           await optimizer.reduceLatency?.(action.parameters['protocols']);
@@ -317,28 +331,42 @@ export class PerformanceOptimizer extends EventEmitter {
           await optimizer.scaleHorizontally?.(action.parameters['swarmSize']);
           break;
         case 'query_optimization':
-          await optimizer.optimizeQueryPerformance?.(action.parameters['queries']);
+          await optimizer.optimizeQueryPerformance?.(
+            action.parameters['queries'],
+          );
           break;
         case 'connection_pooling':
-          await optimizer.implementConnectionPooling?.(action.parameters['connections']);
+          await optimizer.implementConnectionPooling?.(
+            action.parameters['connections'],
+          );
           break;
         case 'intelligent_caching':
-          await optimizer.addIntelligentCaching?.(action.parameters['cacheLayer']);
+          await optimizer.addIntelligentCaching?.(
+            action.parameters['cacheLayer'],
+          );
           break;
         case 'data_compression':
           await optimizer.compressDataStorage?.(action.parameters['storage']);
           break;
         case 'wasm_loading':
-          await optimizer.optimizeWasmModuleLoading?.(action.parameters['modules']);
+          await optimizer.optimizeWasmModuleLoading?.(
+            action.parameters['modules'],
+          );
           break;
         case 'streaming_compilation':
-          await optimizer.implementStreamingCompilation?.(action.parameters['wasmFiles']);
+          await optimizer.implementStreamingCompilation?.(
+            action.parameters['wasmFiles'],
+          );
           break;
         case 'memory_sharing':
-          await optimizer.optimizeMemorySharing?.(action.parameters['jsWasmBridge']);
+          await optimizer.optimizeMemorySharing?.(
+            action.parameters['jsWasmBridge'],
+          );
           break;
         case 'simd_acceleration':
-          await optimizer.enableSIMDAcceleration?.(action.parameters['computeKernels']);
+          await optimizer.enableSIMDAcceleration?.(
+            action.parameters['computeKernels'],
+          );
           break;
         default:
           throw new Error(`Unknown optimization action type: ${action.type}`);
@@ -435,7 +463,9 @@ export class PerformanceOptimizer extends EventEmitter {
    *
    * @param bottleneck
    */
-  private async createOptimizationPlan(bottleneck: string): Promise<OptimizationPlan | null> {
+  private async createOptimizationPlan(
+    bottleneck: string,
+  ): Promise<OptimizationPlan | null> {
     const planId = `opt-${Date.now()}-${bottleneck}`;
     const actions: OptimizationAction[] = [];
 
@@ -515,19 +545,34 @@ export class PerformanceOptimizer extends EventEmitter {
    * @param before
    * @param after
    */
-  private calculateImprovement(before: PerformanceMetrics, after: PerformanceMetrics): number {
-    const latencyImprovement = Math.max(0, (before.latency - after.latency) / before.latency);
+  private calculateImprovement(
+    before: PerformanceMetrics,
+    after: PerformanceMetrics,
+  ): number {
+    const latencyImprovement = Math.max(
+      0,
+      (before.latency - after.latency) / before.latency,
+    );
     const throughputImprovement = Math.max(
       0,
-      (after.throughput - before.throughput) / before.throughput
+      (after.throughput - before.throughput) / before.throughput,
     );
     const memoryImprovement = Math.max(
       0,
-      (before.memoryUsage - after.memoryUsage) / before.memoryUsage
+      (before.memoryUsage - after.memoryUsage) / before.memoryUsage,
     );
-    const cpuImprovement = Math.max(0, (before.cpuUsage - after.cpuUsage) / before.cpuUsage);
+    const cpuImprovement = Math.max(
+      0,
+      (before.cpuUsage - after.cpuUsage) / before.cpuUsage,
+    );
 
-    return (latencyImprovement + throughputImprovement + memoryImprovement + cpuImprovement) / 4;
+    return (
+      (latencyImprovement +
+        throughputImprovement +
+        memoryImprovement +
+        cpuImprovement) /
+      4
+    );
   }
 
   /**

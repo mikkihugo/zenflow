@@ -105,7 +105,11 @@ export interface NeuralOptimizationConfig extends OptimizationConfig {
 
 export interface PruningConfig {
   readonly enabled: boolean;
-  readonly strategy: 'magnitude' | 'structured' | 'unstructured' | 'lottery_ticket';
+  readonly strategy:
+    | 'magnitude'
+    | 'structured'
+    | 'unstructured'
+    | 'lottery_ticket';
   readonly sparsityLevel: number;
   readonly gradual: boolean;
   readonly fineTuneEpochs: number;
@@ -129,7 +133,11 @@ export interface DistillationConfig {
 
 export interface ArchitectureOptimizationConfig {
   readonly enabled: boolean;
-  readonly searchMethod: 'random' | 'evolutionary' | 'reinforcement' | 'differentiable';
+  readonly searchMethod:
+    | 'random'
+    | 'evolutionary'
+    | 'reinforcement'
+    | 'differentiable';
   readonly searchSpace: ArchitectureSearchSpace;
   readonly evaluationBudget: number;
   readonly earlyStoppingPatience: number;
@@ -213,7 +221,12 @@ export interface SwarmOptimizationConfig extends OptimizationConfig {
 export interface SwarmTopologyOptimization {
   readonly enabled: boolean;
   readonly adaptiveTopology: boolean;
-  readonly topologyTypes: readonly ('mesh' | 'ring' | 'star' | 'hierarchical')[];
+  readonly topologyTypes: readonly (
+    | 'mesh'
+    | 'ring'
+    | 'star'
+    | 'hierarchical'
+  )[];
   readonly switchingThreshold: number;
   readonly evaluationPeriod: number;
 }
@@ -229,7 +242,11 @@ export interface SwarmCommunicationOptimization {
 
 export interface TaskDistributionOptimization {
   readonly enabled: boolean;
-  readonly algorithm: 'round_robin' | 'least_loaded' | 'capability_based' | 'ml_based';
+  readonly algorithm:
+    | 'round_robin'
+    | 'least_loaded'
+    | 'capability_based'
+    | 'ml_based';
   readonly workloadPrediction: boolean;
   readonly dynamicRebalancing: boolean;
   readonly queueManagement: 'fifo' | 'priority' | 'deadline';
@@ -400,7 +417,7 @@ export class OptimizationError extends Error {
   constructor(
     message: string,
     public readonly code?: string,
-    public readonly target?: OptimizationTarget
+    public readonly target?: OptimizationTarget,
   ) {
     super(message);
     this.name = 'OptimizationError';
@@ -410,7 +427,7 @@ export class OptimizationError extends Error {
 export class OptimizationConfigError extends OptimizationError {
   constructor(
     message: string,
-    public readonly config?: Partial<OptimizationConfig>
+    public readonly config?: Partial<OptimizationConfig>,
   ) {
     super(message, 'OPTIMIZATION_CONFIG_ERROR');
     this.name = 'OptimizationConfigError';
@@ -420,7 +437,7 @@ export class OptimizationConfigError extends OptimizationError {
 export class OptimizationTimeoutError extends OptimizationError {
   constructor(
     message: string,
-    public readonly timeout?: number
+    public readonly timeout?: number,
   ) {
     super(message, 'OPTIMIZATION_TIMEOUT_ERROR');
     this.name = 'OptimizationTimeoutError';

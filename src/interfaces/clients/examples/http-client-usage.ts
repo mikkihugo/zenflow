@@ -258,7 +258,11 @@ async function factoryUsage() {
       {
         name: 'inventory-api',
         baseURL: 'https://inventory.example.com',
-        authentication: { type: 'basic', username: 'admin', password: 'secret' },
+        authentication: {
+          type: 'basic',
+          username: 'admin',
+          password: 'secret',
+        },
       },
     ]);
 
@@ -294,7 +298,7 @@ async function presetUsage() {
   const devClient = await createHTTPClientWithPreset(
     'dev-client',
     'https://dev-api.example.com',
-    'development'
+    'development',
   );
 
   // Production preset with optimized settings
@@ -307,14 +311,14 @@ async function presetUsage() {
         type: 'bearer',
         token: 'production-token',
       },
-    }
+    },
   );
 
   // High-availability preset with aggressive health checks
   const haClient = await createHTTPClientWithPreset(
     'ha-client',
     'https://ha-api.example.com',
-    'highAvailability'
+    'highAvailability',
   );
 
   try {
@@ -323,7 +327,11 @@ async function presetUsage() {
     const prodData = await prodClient.get('/data');
     const haData = await haClient.get('/critical');
   } finally {
-    await Promise.all([devClient.destroy(), prodClient.destroy(), haClient.destroy()]);
+    await Promise.all([
+      devClient.destroy(),
+      prodClient.destroy(),
+      haClient.destroy(),
+    ]);
   }
 }
 
@@ -338,8 +346,12 @@ async function loadBalancingExample() {
   // Create load-balanced clients across multiple endpoints
   const clients = await createLoadBalancedHTTPClients(
     'api-cluster',
-    ['https://api1.example.com', 'https://api2.example.com', 'https://api3.example.com'],
-    'production'
+    [
+      'https://api1.example.com',
+      'https://api2.example.com',
+      'https://api3.example.com',
+    ],
+    'production',
   );
 
   try {
@@ -366,7 +378,9 @@ async function loadBalancingExample() {
  */
 async function backwardCompatibility() {
   // Import the compatible API client
-  const { APIClient, createAPIClient } = await import('../wrappers/api-client-wrapper.ts');
+  const { APIClient, createAPIClient } = await import(
+    '../wrappers/api-client-wrapper.ts'
+  );
 
   // Create client using the old interface
   const apiClient = createAPIClient({

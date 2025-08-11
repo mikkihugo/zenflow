@@ -42,10 +42,22 @@ export interface WebSocketHandlers {
 
 export interface HttpClient {
   get(path: string, headers?: Record<string, string>): Promise<HttpResponse>;
-  post(path: string, body?: any, headers?: Record<string, string>): Promise<HttpResponse>;
-  put(path: string, body?: any, headers?: Record<string, string>): Promise<HttpResponse>;
+  post(
+    path: string,
+    body?: any,
+    headers?: Record<string, string>,
+  ): Promise<HttpResponse>;
+  put(
+    path: string,
+    body?: any,
+    headers?: Record<string, string>,
+  ): Promise<HttpResponse>;
   delete(path: string, headers?: Record<string, string>): Promise<HttpResponse>;
-  patch(path: string, body?: any, headers?: Record<string, string>): Promise<HttpResponse>;
+  patch(
+    path: string,
+    body?: any,
+    headers?: Record<string, string>,
+  ): Promise<HttpResponse>;
 }
 
 export interface WebSocketClient {
@@ -115,14 +127,17 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
     const _url = baseUrl || `http://localhost:${this.port}`;
 
     return {
-      async get(path: string, headers: Record<string, string> = {}): Promise<HttpResponse> {
+      async get(
+        path: string,
+        headers: Record<string, string> = {},
+      ): Promise<HttpResponse> {
         return self.makeRequest('GET', path, undefined, headers);
       },
 
       async post(
         path: string,
         body?: any,
-        headers: Record<string, string> = {}
+        headers: Record<string, string> = {},
       ): Promise<HttpResponse> {
         return self.makeRequest('POST', path, body, headers);
       },
@@ -130,19 +145,22 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
       async put(
         path: string,
         body?: any,
-        headers: Record<string, string> = {}
+        headers: Record<string, string> = {},
       ): Promise<HttpResponse> {
         return self.makeRequest('PUT', path, body, headers);
       },
 
-      async delete(path: string, headers: Record<string, string> = {}): Promise<HttpResponse> {
+      async delete(
+        path: string,
+        headers: Record<string, string> = {},
+      ): Promise<HttpResponse> {
         return self.makeRequest('DELETE', path, undefined, headers);
       },
 
       async patch(
         path: string,
         body?: any,
-        headers: Record<string, string> = {}
+        headers: Record<string, string> = {},
       ): Promise<HttpResponse> {
         return self.makeRequest('PATCH', path, body, headers);
       },
@@ -230,7 +248,7 @@ export class MockNetworkTestHelper implements NetworkTestHelper {
     method: string,
     path: string,
     body?: any,
-    headers: Record<string, string> = {}
+    headers: Record<string, string> = {},
   ): Promise<HttpResponse> {
     if (!this.isRunning) {
       throw new Error('Mock server not running');
@@ -357,14 +375,17 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
     const url = baseUrl || `http://localhost:${this.port}`;
 
     return {
-      async get(path: string, headers: Record<string, string> = {}): Promise<HttpResponse> {
+      async get(
+        path: string,
+        headers: Record<string, string> = {},
+      ): Promise<HttpResponse> {
         return this.makeRealRequest('GET', `${url}${path}`, undefined, headers);
       },
 
       async post(
         path: string,
         body?: any,
-        headers: Record<string, string> = {}
+        headers: Record<string, string> = {},
       ): Promise<HttpResponse> {
         return this.makeRealRequest('POST', `${url}${path}`, body, headers);
       },
@@ -372,19 +393,27 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
       async put(
         path: string,
         body?: any,
-        headers: Record<string, string> = {}
+        headers: Record<string, string> = {},
       ): Promise<HttpResponse> {
         return this.makeRealRequest('PUT', `${url}${path}`, body, headers);
       },
 
-      async delete(path: string, headers: Record<string, string> = {}): Promise<HttpResponse> {
-        return this.makeRealRequest('DELETE', `${url}${path}`, undefined, headers);
+      async delete(
+        path: string,
+        headers: Record<string, string> = {},
+      ): Promise<HttpResponse> {
+        return this.makeRealRequest(
+          'DELETE',
+          `${url}${path}`,
+          undefined,
+          headers,
+        );
       },
 
       async patch(
         path: string,
         body?: any,
-        headers: Record<string, string> = {}
+        headers: Record<string, string> = {},
       ): Promise<HttpResponse> {
         return this.makeRealRequest('PATCH', `${url}${path}`, body, headers);
       },
@@ -405,7 +434,8 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
     });
 
     req.on('end', () => {
-      const body = chunks.length > 0 ? Buffer.concat(chunks).toString() : undefined;
+      const body =
+        chunks.length > 0 ? Buffer.concat(chunks).toString() : undefined;
 
       // Record the request
       const request: HttpRequest = {
@@ -424,7 +454,9 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
       if (response) {
         res.writeHead(response?.status, response?.headers);
         res.end(
-          typeof response?.body === 'string' ? response?.body : JSON.stringify(response?.body)
+          typeof response?.body === 'string'
+            ? response?.body
+            : JSON.stringify(response?.body),
         );
       } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -437,7 +469,7 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
     method: string,
     url: string,
     body?: any,
-    headers: Record<string, string> = {}
+    headers: Record<string, string> = {},
   ): Promise<HttpResponse> {
     try {
       // Use fetch if available, otherwise use http module
@@ -462,9 +494,8 @@ export class RealNetworkTestHelper implements NetworkTestHelper {
           headers: Object.fromEntries(response?.headers?.entries()),
           body: this.tryParseJson(responseBody),
         };
-      } else {
-        throw new Error('fetch not available');
       }
+      throw new Error('fetch not available');
     } catch (error) {
       throw new Error(`HTTP request failed: ${error}`);
     }
@@ -498,7 +529,7 @@ export async function testHttpEndpoint(
   method: string,
   path: string,
   expectedResponse: Partial<HttpResponse>,
-  requestBody?: any
+  requestBody?: any,
 ): Promise<HttpResponse> {
   const client = helper.createHttpClient();
 
@@ -527,7 +558,9 @@ export async function testHttpEndpoint(
   // Verify expected response
   if (expectedResponse?.status !== undefined) {
     if (response?.status !== expectedResponse?.status) {
-      throw new Error(`Expected status ${expectedResponse?.status}, got ${response?.status}`);
+      throw new Error(
+        `Expected status ${expectedResponse?.status}, got ${response?.status}`,
+      );
     }
   }
 
@@ -540,7 +573,7 @@ export async function setupRestApiMock(
     method: string;
     path: string;
     response: HttpResponse;
-  }>
+  }>,
 ): Promise<void> {
   await helper.startMockServer();
 

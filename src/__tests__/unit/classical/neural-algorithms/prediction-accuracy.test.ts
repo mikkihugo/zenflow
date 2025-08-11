@@ -21,7 +21,9 @@ describe('Prediction Accuracy - Classical TDD', () => {
     try {
       wasmModule = await initializeNeuralWasm();
     } catch (error) {
-      console.warn('WASM module not available, skipping prediction accuracy tests');
+      console.warn(
+        'WASM module not available, skipping prediction accuracy tests',
+      );
     }
   });
 
@@ -35,7 +37,9 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         randomSeed: 101,
@@ -93,7 +97,9 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         randomSeed: 202,
@@ -150,7 +156,9 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         randomSeed: 303,
@@ -176,7 +184,12 @@ describe('Prediction Accuracy - Classical TDD', () => {
       const trainer = await createTrainer(trainingConfig);
 
       network.setTrainingData(xorData);
-      const result = await trainer.trainUntilTarget(network, xorData, 0.01, 1000);
+      const result = await trainer.trainUntilTarget(
+        network,
+        xorData,
+        0.01,
+        1000,
+      );
 
       // XOR is more complex, but should still achieve good accuracy
       expect(result?.finalError).toBeLessThan(0.05);
@@ -338,7 +351,9 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 8, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 8, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 2,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };
@@ -519,7 +534,9 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 1,
-        hiddenLayers: [{ size: 6, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 6, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['LINEAR'],
       };
@@ -579,7 +596,9 @@ describe('Prediction Accuracy - Classical TDD', () => {
 
       const networkConfig: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         randomSeed: 999, // Fixed seed for reproducibility

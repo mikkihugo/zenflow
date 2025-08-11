@@ -14,11 +14,18 @@ export enum LogLevel {
   ERROR = 3,
 }
 
+export type Logger = {
+  debug: (message: string, meta?: unknown) => void;
+  info: (message: string, meta?: unknown) => void;
+  warn: (message: string, meta?: unknown) => void;
+  error: (message: string, meta?: unknown) => void;
+};
+
 export interface ILogger {
-  debug(message: string, meta?: any): void;
-  info(message: string, meta?: any): void;
-  warn(message: string, meta?: any): void;
-  error(message: string, meta?: any): void;
+  debug(message: string, meta?: unknown): void;
+  info(message: string, meta?: unknown): void;
+  warn(message: string, meta?: unknown): void;
+  error(message: string, meta?: unknown): void;
 }
 
 /**
@@ -27,7 +34,7 @@ export interface ILogger {
  * @example
  */
 export class BootstrapLogger implements ILogger {
-  private logger: any; // logtape logger
+  private logger: Logger; // logtape logger
   private prefix: string;
 
   constructor(prefix: string = 'system', level: LogLevel = LogLevel.INFO) {
@@ -39,27 +46,31 @@ export class BootstrapLogger implements ILogger {
     } catch (error) {
       // Fallback to console if logtape not ready
       this.logger = {
-        debug: (msg: string, meta?: any) => console.debug(`[${prefix}] DEBUG: ${msg}`, meta || ''),
-        info: (msg: string, meta?: any) => console.info(`[${prefix}] INFO: ${msg}`, meta || ''),
-        warn: (msg: string, meta?: any) => console.warn(`[${prefix}] WARN: ${msg}`, meta || ''),
-        error: (msg: string, meta?: any) => console.error(`[${prefix}] ERROR: ${msg}`, meta || ''),
+        debug: (msg: string, meta?: unknown) =>
+          console.debug(`[${prefix}] DEBUG: ${msg}`, meta || ''),
+        info: (msg: string, meta?: unknown) =>
+          console.info(`[${prefix}] INFO: ${msg}`, meta || ''),
+        warn: (msg: string, meta?: unknown) =>
+          console.warn(`[${prefix}] WARN: ${msg}`, meta || ''),
+        error: (msg: string, meta?: unknown) =>
+          console.error(`[${prefix}] ERROR: ${msg}`, meta || ''),
       };
     }
   }
 
-  debug(message: string, meta?: any): void {
+  debug(message: string, meta?: unknown): void {
     this.logger.debug(message, meta);
   }
 
-  info(message: string, meta?: any): void {
+  info(message: string, meta?: unknown): void {
     this.logger.info(message, meta);
   }
 
-  warn(message: string, meta?: any): void {
+  warn(message: string, meta?: unknown): void {
     this.logger.warn(message, meta);
   }
 
-  error(message: string, meta?: any): void {
+  error(message: string, meta?: unknown): void {
     this.logger.error(message, meta);
   }
 }

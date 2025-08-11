@@ -149,7 +149,11 @@ function setupClassicalTDD() {
    * @param expected - Expected value
    * @param tolerance - Allowed difference (default: 1e-10)
    */
-  expectNearlyEqual = (actual: number, expected: number, tolerance: number = 1e-10) => {
+  expectNearlyEqual = (
+    actual: number,
+    expected: number,
+    tolerance: number = 1e-10,
+  ) => {
     expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
   };
 }
@@ -164,14 +168,16 @@ function setupHybridTDD() {
   setupClassicalTDD();
 
   // Hybrid-specific utilities
-  testWithApproach = (approach: 'london' | 'classical', testFn: () => void | Promise<void>) => {
+  testWithApproach = (
+    approach: 'london' | 'classical',
+    testFn: () => void | Promise<void>,
+  ) => {
     if (approach === 'london') {
       // Use mocks for external dependencies
       return testFn();
-    } else {
-      // Use real implementations
-      return testFn();
     }
+    // Use real implementations
+    return testFn();
   };
 
   // Memory-specific test utilities
@@ -206,7 +212,9 @@ function setupHybridTDD() {
  */
 function cleanupClassicalResources() {
   const g = (globalThis as any).gc;
-  const startMem = (globalThis as any).testStartMemory as NodeJS.MemoryUsage | undefined;
+  const startMem = (globalThis as any).testStartMemory as
+    | NodeJS.MemoryUsage
+    | undefined;
   if (typeof g === 'function' && startMem) {
     try {
       g();
@@ -229,7 +237,7 @@ function cleanupClassicalResources() {
  */
 (globalThis as any).expectPerformanceWithinThreshold = (
   operation: 'coordination' | 'neural' | 'memory',
-  actualTime: number
+  actualTime: number,
 ) => {
   const threshold =
     HYBRID_CONFIG.performanceThresholds[
@@ -261,7 +269,12 @@ function cleanupClassicalResources() {
  * @param phase
  */
 (globalThis as any).createSPARCTestScenario = (
-  phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion'
+  phase:
+    | 'specification'
+    | 'pseudocode'
+    | 'architecture'
+    | 'refinement'
+    | 'completion',
 ) => {
   return {
     phase,
@@ -306,7 +319,12 @@ interface TestContainer {
  */
 interface SPARCTestScenario {
   /** SPARC phase */
-  phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
+  phase:
+    | 'specification'
+    | 'pseudocode'
+    | 'architecture'
+    | 'refinement'
+    | 'completion';
   /** Test input */
   input: string;
   /** Expected output */
@@ -347,7 +365,9 @@ declare global {
     interface Global {
       // London TDD utilities
       createInteractionSpy(name: string): vi.Mock;
-      createCoordinationMock<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
+      createCoordinationMock<T>(
+        defaults?: Partial<T>,
+      ): (overrides?: Partial<T>) => T;
 
       // Classical TDD utilities
       testStartTime: number;
@@ -358,17 +378,23 @@ declare global {
         heapTotal: number;
       };
       generateNeuralTestData(config: NeuralTestConfig): NeuralTestData[];
-      expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
+      expectNearlyEqual(
+        actual: number,
+        expected: number,
+        tolerance?: number,
+      ): void;
 
       // Hybrid utilities
       testWithApproach(
         approach: 'london' | 'classical',
-        testFn: () => void | Promise<void>
+        testFn: () => void | Promise<void>,
       ): void | Promise<void>;
-      createMemoryTestScenario(type: 'sqlite' | 'lancedb' | 'json'): MemoryTestScenario;
+      createMemoryTestScenario(
+        type: 'sqlite' | 'lancedb' | 'json',
+      ): MemoryTestScenario;
       expectPerformanceWithinThreshold(
         operation: 'coordination' | 'neural' | 'memory',
-        actualTime: number
+        actualTime: number,
       ): void;
 
       // DI testing utilities
@@ -376,7 +402,12 @@ declare global {
 
       // SPARC testing utilities
       createSPARCTestScenario(
-        phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion'
+        phase:
+          | 'specification'
+          | 'pseudocode'
+          | 'architecture'
+          | 'refinement'
+          | 'completion',
       ): SPARCTestScenario;
 
       // Global GC

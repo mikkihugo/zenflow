@@ -74,7 +74,7 @@ export class SwarmSynchronizer extends EventEmitter {
     swarmId: string,
     config: Partial<SwarmSyncConfig> = {},
     private eventBus?: IEventBus,
-    private logger?: ILogger
+    private logger?: ILogger,
   ) {
     super();
 
@@ -150,7 +150,8 @@ export class SwarmSynchronizer extends EventEmitter {
 
     try {
       // 1. Increment local vector clock
-      this.vectorClock[this.swarmId] = (this.vectorClock[this.swarmId] || 0) + 1;
+      this.vectorClock[this.swarmId] =
+        (this.vectorClock[this.swarmId] || 0) + 1;
 
       // 2. Gather local state
       const localState = await this.gatherLocalState();
@@ -178,7 +179,8 @@ export class SwarmSynchronizer extends EventEmitter {
         agentCount: consensusState.agentStates.size,
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       this.logger?.error('Sync cycle failed', {
         swarmId: this.swarmId,
         syncId,
@@ -216,7 +218,10 @@ export class SwarmSynchronizer extends EventEmitter {
    * @param localState
    * @param syncId
    */
-  private async broadcastState(localState: SwarmLocalState, syncId: string): Promise<void> {
+  private async broadcastState(
+    localState: SwarmLocalState,
+    syncId: string,
+  ): Promise<void> {
     if (!this.eventBus) return;
 
     this.eventBus.emit('swarm:sync:broadcast', {
@@ -241,9 +246,12 @@ export class SwarmSynchronizer extends EventEmitter {
   private async waitForPeerStates(syncId: string): Promise<SwarmLocalState[]> {
     return new Promise((resolve) => {
       const peerStates: SwarmLocalState[] = [];
-      const timeout = setTimeout(() => resolve(peerStates), this.config.consensusTimeout);
+      const timeout = setTimeout(
+        () => resolve(peerStates),
+        this.config.consensusTimeout,
+      );
 
-      const responseHandler = (data: any) => {
+      const responseHandler = (data: unknown) => {
         if (data.syncId === syncId && data?.sourceSwarmId !== this.swarmId) {
           peerStates.push(data?.state);
 
@@ -272,13 +280,15 @@ export class SwarmSynchronizer extends EventEmitter {
    */
   private async reachConsensus(
     localState: SwarmLocalState,
-    peerStates: SwarmLocalState[]
+    peerStates: SwarmLocalState[],
   ): Promise<SwarmConsensusState> {
     if (this.config.enableByzantineFaultTolerance) {
-      return await this.consensusProtocol.byzantineConsensus(localState, peerStates);
-    } else {
-      return await this.consensusProtocol.simpleConsensus(localState, peerStates);
+      return await this.consensusProtocol.byzantineConsensus(
+        localState,
+        peerStates,
+      );
     }
+    return await this.consensusProtocol.simpleConsensus(localState, peerStates);
   }
 
   /**
@@ -286,7 +296,9 @@ export class SwarmSynchronizer extends EventEmitter {
    *
    * @param consensusState
    */
-  private async applyStateChanges(consensusState: SwarmConsensusState): Promise<void> {
+  private async applyStateChanges(
+    consensusState: SwarmConsensusState,
+  ): Promise<void> {
     // Update local agent states
     for (const [agentId, agentState] of consensusState.agentStates) {
       this.agentStates.set(agentId, agentState);
@@ -312,7 +324,9 @@ export class SwarmSynchronizer extends EventEmitter {
    *
    * @param consensusState
    */
-  private async createCheckpoint(consensusState: SwarmConsensusState): Promise<void> {
+  private async createCheckpoint(
+    consensusState: SwarmConsensusState,
+  ): Promise<void> {
     const checkpoint: SyncCheckpoint = {
       id: this.generateCheckpointId(),
       timestamp: new Date(),
@@ -391,13 +405,21 @@ export class SwarmSynchronizer extends EventEmitter {
     return {
       activeAgents,
       totalTasks: agents.reduce((sum, a) => sum + a.taskHistory.length, 0),
-      completedTasks: agents.reduce((sum, a) => sum + a.metrics.tasksCompleted, 0),
+      completedTasks: agents.reduce(
+        (sum, a) => sum + a.metrics.tasksCompleted,
+        0,
+      ),
       averageResponseTime:
-        agents.reduce((sum, a) => sum + a.metrics.responseTime, 0) / agents.length,
+        agents.reduce((sum, a) => sum + a.metrics.responseTime, 0) /
+        agents.length,
       systemHealth: (activeAgents / Math.max(agents.length, 1)) * 100,
       resourceUtilization: {
-        cpuUsage: agents.reduce((sum, a) => sum + a.metrics.cpuUsage, 0) / agents.length,
-        memoryUsage: agents.reduce((sum, a) => sum + a.metrics.memoryUsage, 0) / agents.length,
+        cpuUsage:
+          agents.reduce((sum, a) => sum + a.metrics.cpuUsage, 0) /
+          agents.length,
+        memoryUsage:
+          agents.reduce((sum, a) => sum + a.metrics.memoryUsage, 0) /
+          agents.length,
         networkLatency: 50, // Placeholder - would be measured
         diskIO: 0, // Placeholder - would be measured
       },
@@ -431,7 +453,7 @@ export class SwarmSynchronizer extends EventEmitter {
    *
    * @param data
    */
-  private handlePeerSyncBroadcast(data: any): void {
+  private handlePeerSyncBroadcast(data: unknown): void {
     // Respond with our current state
     if (this.eventBus) {
       this.eventBus.emit('swarm:sync:response', {
@@ -466,7 +488,8 @@ export class SwarmSynchronizer extends EventEmitter {
       this.agentStates.set(agentId, updatedState);
 
       // Increment vector clock for this update
-      this.vectorClock[this.swarmId] = (this.vectorClock[this.swarmId] || 0) + 1;
+      this.vectorClock[this.swarmId] =
+        (this.vectorClock[this.swarmId] || 0) + 1;
     }
   }
 
@@ -479,8 +502,9 @@ export class SwarmSynchronizer extends EventEmitter {
       swarmId: this.swarmId,
       isActive: !!this.syncTimer,
       agentCount: this.agentStates.size,
-      activeAgents: Array.from(this.agentStates.values()).filter((a) => a.status !== 'offline')
-        .length,
+      activeAgents: Array.from(this.agentStates.values()).filter(
+        (a) => a.status !== 'offline',
+      ).length,
       vectorClock: { ...this.vectorClock },
       syncHistory: this.syncHistory.length,
     };
@@ -504,7 +528,7 @@ export class SwarmSynchronizer extends EventEmitter {
 
   private calculateStateChecksum(
     agentStates: Map<string, AgentState>,
-    globalState: SwarmGlobalState
+    globalState: SwarmGlobalState,
   ): string {
     const crypto = require('node:crypto');
     const data = JSON.stringify({
@@ -514,13 +538,14 @@ export class SwarmSynchronizer extends EventEmitter {
     return crypto.createHash('sha256').update(data).digest('hex');
   }
 
-  private async processPendingChanges(changes: any[]): Promise<void> {
+  private async processPendingChanges(changes: unknown[]): Promise<void> {
     // Process any pending state changes from consensus
     for (const change of changes) {
       try {
         await this.applyStateChange(change);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         this.logger?.error('Failed to apply state change', {
           change,
           error: errorMessage,
@@ -529,7 +554,7 @@ export class SwarmSynchronizer extends EventEmitter {
     }
   }
 
-  private async applyStateChange(change: any): Promise<void> {
+  private async applyStateChange(change: unknown): Promise<void> {
     // Implementation would depend on change type
     this.logger?.debug('Applying state change', { change });
   }
@@ -547,7 +572,7 @@ interface SwarmLocalState {
 
 interface SwarmConsensusState extends SwarmLocalState {
   taskQueue?: Task[];
-  pendingChanges?: any[];
+  pendingChanges?: unknown[];
 }
 
 interface SwarmSyncStatus {
@@ -586,7 +611,7 @@ class ConsensusProtocol {
 
   async byzantineConsensus(
     localState: SwarmLocalState,
-    peerStates: SwarmLocalState[]
+    peerStates: SwarmLocalState[],
   ): Promise<SwarmConsensusState> {
     // Implement Byzantine fault-tolerant consensus
     // This is a simplified version - production would use proper BFT algorithm
@@ -595,28 +620,36 @@ class ConsensusProtocol {
     const majorityThreshold = Math.floor(allStates.length / 2) + 1;
 
     // Find consensus on agent states
-    const consensusAgentStates = this.findAgentStateConsensus(allStates, majorityThreshold);
+    const consensusAgentStates = this.findAgentStateConsensus(
+      allStates,
+      majorityThreshold,
+    );
 
     // Merge vector clocks
-    const consensusVectorClock = this.mergeVectorClocks(allStates.map((s) => s.vectorClock));
+    const consensusVectorClock = this.mergeVectorClocks(
+      allStates.map((s) => s.vectorClock),
+    );
 
     return {
       ...localState,
       agentStates: consensusAgentStates,
       vectorClock: consensusVectorClock,
       globalState: await this.calculateConsensusGlobalState(allStates),
-      checksum: this.calculateStateChecksum(consensusAgentStates, localState.globalState),
+      checksum: this.calculateStateChecksum(
+        consensusAgentStates,
+        localState.globalState,
+      ),
     };
   }
 
   async simpleConsensus(
     localState: SwarmLocalState,
-    peerStates: SwarmLocalState[]
+    peerStates: SwarmLocalState[],
   ): Promise<SwarmConsensusState> {
     // Simple last-writer-wins consensus
     const allStates = [localState, ...peerStates];
     const latestState = allStates.reduce((latest, current) =>
-      current?.timestamp > latest.timestamp ? current : latest
+      current?.timestamp > latest.timestamp ? current : latest,
     );
 
     return {
@@ -627,7 +660,7 @@ class ConsensusProtocol {
 
   private findAgentStateConsensus(
     states: SwarmLocalState[],
-    threshold: number
+    threshold: number,
   ): Map<string, AgentState> {
     const consensusStates = new Map<string, AgentState>();
     const allAgentIds = new Set<string>();
@@ -646,7 +679,7 @@ class ConsensusProtocol {
       if (agentStates.length >= threshold) {
         // Use most recent state as consensus
         const consensusState = agentStates.reduce((latest, current) =>
-          current?.lastHeartbeat > latest.lastHeartbeat ? current : latest
+          current?.lastHeartbeat > latest.lastHeartbeat ? current : latest,
         );
         consensusStates.set(agentId, consensusState);
       }
@@ -668,13 +701,13 @@ class ConsensusProtocol {
   }
 
   private async calculateConsensusGlobalState(
-    states: SwarmLocalState[]
+    states: SwarmLocalState[],
   ): Promise<SwarmGlobalState> {
     // Calculate consensus global state from all peer states
     // This is a simplified version - would implement proper consensus algorithm
 
     const latestState = states.reduce((latest, current) =>
-      current?.timestamp > latest.timestamp ? current : latest
+      current?.timestamp > latest.timestamp ? current : latest,
     );
 
     return latestState.globalState;
@@ -682,7 +715,7 @@ class ConsensusProtocol {
 
   private calculateStateChecksum(
     agentStates: Map<string, AgentState>,
-    globalState: SwarmGlobalState
+    globalState: SwarmGlobalState,
   ): string {
     const crypto = require('node:crypto');
     const data = JSON.stringify({

@@ -19,7 +19,7 @@ export * from './wasm-compat.ts';
 export { default as WasmLoader } from './wasm-loader.ts'; // TODO: remove after migration
 export * from './wasm-memory-optimizer.ts'; // TODO: remove after migration
 export { default as WasmMemoryOptimizer } from './wasm-memory-optimizer.ts';
-export * from './wasm-types';
+export * from './wasm-types.js';
 
 // FACT WASM Core (cognitive processing - consolidated from src/wasm/)
 // Located in fact-core/ subdirectory to avoid naming conflicts

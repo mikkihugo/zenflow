@@ -99,7 +99,10 @@ export class DatabaseDrivenSystem extends EventEmitter {
   private documentService: DocumentManager;
   private workflowEngine: WorkflowEngine;
 
-  constructor(documentService: DocumentManager, workflowEngine: WorkflowEngine) {
+  constructor(
+    documentService: DocumentManager,
+    workflowEngine: WorkflowEngine,
+  ) {
     super();
     this.documentService = documentService;
     this.workflowEngine = workflowEngine;
@@ -187,7 +190,9 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
     this.workspaces.set(workspaceId, context);
 
-    logger.info(`📁 Created database workspace: ${projectSpec.name} (${workspaceId})`);
+    logger.info(
+      `📁 Created database workspace: ${projectSpec.name} (${workspaceId})`,
+    );
     this.emit('workspace:created', {
       workspaceId,
       projectId: project.id,
@@ -206,7 +211,8 @@ export class DatabaseDrivenSystem extends EventEmitter {
     const workspaceId = nanoid();
 
     // Get project with all documents from database
-    const projectData = await this.documentService.getProjectWithDocuments(projectId);
+    const projectData =
+      await this.documentService.getProjectWithDocuments(projectId);
     if (!projectData) {
       throw new Error(`Project not found: ${projectId}`);
     }
@@ -238,7 +244,9 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
     this.workspaces.set(workspaceId, context);
 
-    logger.info(`📁 Loaded database workspace: ${project.name} (${allDocs.length} documents)`);
+    logger.info(
+      `📁 Loaded database workspace: ${project.name} (${allDocs.length} documents)`,
+    );
     this.emit('workspace:loaded', {
       workspaceId,
       projectId,
@@ -259,7 +267,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
   async processDocumentEntity(
     workspaceId: string,
     document: BaseDocumentEntity,
-    options: DocumentProcessingOptions = {}
+    options: DocumentProcessingOptions = {},
   ): Promise<void> {
     const context = this.workspaces.get(workspaceId);
     if (!context) {
@@ -275,11 +283,13 @@ export class DatabaseDrivenSystem extends EventEmitter {
     if (options?.startWorkflows !== false) {
       const workflowIds = await this.workflowEngine.processDocumentEvent(
         'document:created',
-        document
+        document,
       );
 
       if (workflowIds.length > 0) {
-        logger.info(`🔄 Started ${workflowIds.length} workflows for ${document.type} document`);
+        logger.info(
+          `🔄 Started ${workflowIds.length} workflows for ${document.type} document`,
+        );
       }
     }
 
@@ -323,14 +333,17 @@ export class DatabaseDrivenSystem extends EventEmitter {
         }>;
       };
     },
-    options: DocumentProcessingOptions = {}
+    options: DocumentProcessingOptions = {},
   ): Promise<VisionDocumentEntity> {
     const context = this.workspaces.get(workspaceId);
     if (!context) {
       throw new Error(`Workspace not found: ${workspaceId}`);
     }
 
-    const visionDoc: Omit<VisionDocumentEntity, 'id' | 'created_at' | 'updated_at' | 'checksum'> = {
+    const visionDoc: Omit<
+      VisionDocumentEntity,
+      'id' | 'created_at' | 'updated_at' | 'checksum'
+    > = {
       type: 'vision' as const,
       title: visionSpec.title,
       content: this.generateVisionContent(visionSpec),
@@ -386,7 +399,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     workspaceId: string,
     sourceDocumentId: string,
     targetType: DocumentType,
-    options: DocumentProcessingOptions = {}
+    options: DocumentProcessingOptions = {},
   ): Promise<BaseDocumentEntity[]> {
     const context = this.workspaces.get(workspaceId);
     if (!context) {
@@ -402,19 +415,31 @@ export class DatabaseDrivenSystem extends EventEmitter {
 
     if (targetType === 'prd') {
       generatedDocs.push(
-        ...(await this.generatePRDsFromVision(sourceDoc as VisionDocumentEntity, context))
+        ...(await this.generatePRDsFromVision(
+          sourceDoc as VisionDocumentEntity,
+          context,
+        )),
       );
     } else if (targetType === 'epic') {
       generatedDocs.push(
-        ...(await this.generateEpicsFromPRD(sourceDoc as PRDDocumentEntity, context))
+        ...(await this.generateEpicsFromPRD(
+          sourceDoc as PRDDocumentEntity,
+          context,
+        )),
       );
     } else if (targetType === 'feature') {
       generatedDocs.push(
-        ...(await this.generateFeaturesFromEpic(sourceDoc as EpicDocumentEntity, context))
+        ...(await this.generateFeaturesFromEpic(
+          sourceDoc as EpicDocumentEntity,
+          context,
+        )),
       );
     } else if (targetType === 'task') {
       generatedDocs.push(
-        ...(await this.generateTasksFromFeature(sourceDoc as FeatureDocumentEntity, context))
+        ...(await this.generateTasksFromFeature(
+          sourceDoc as FeatureDocumentEntity,
+          context,
+        )),
       );
     } else {
       throw new Error(`Unsupported target type: ${targetType}`);
@@ -426,7 +451,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
     }
 
     logger.info(
-      `🔧 Generated ${generatedDocs.length} ${targetType} documents from ${sourceDoc.type}`
+      `🔧 Generated ${generatedDocs.length} ${targetType} documents from ${sourceDoc.type}`,
     );
     return generatedDocs;
   }
@@ -454,7 +479,9 @@ export class DatabaseDrivenSystem extends EventEmitter {
       throw new Error(`Workspace not found: ${workspaceId}`);
     }
 
-    const projectData = await this.documentService.getProjectWithDocuments(context.projectId);
+    const projectData = await this.documentService.getProjectWithDocuments(
+      context.projectId,
+    );
     if (!projectData) {
       throw new Error(`Project not found: ${context.projectId}`);
     }
@@ -475,7 +502,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
         acc[doc.type] = (acc[doc.type] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const docsByStatus = allDocs.reduce(
@@ -483,15 +510,17 @@ export class DatabaseDrivenSystem extends EventEmitter {
         acc[doc.status] = (acc[doc.status] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const completedDocs = allDocs.filter(
-      (doc) => doc.status === 'approved' || doc.completion_percentage === 100
+      (doc) => doc.status === 'approved' || doc.completion_percentage === 100,
     ).length;
 
     const overallProgress =
-      allDocs.length > 0 ? Math.round((completedDocs / allDocs.length) * 100) : 0;
+      allDocs.length > 0
+        ? Math.round((completedDocs / allDocs.length) * 100)
+        : 0;
 
     return {
       workspace: context,
@@ -508,7 +537,10 @@ export class DatabaseDrivenSystem extends EventEmitter {
           requirements: this.calculatePhaseProgress(documents.prds),
           architecture: this.calculatePhaseProgress(documents.adrs),
           planning: this.calculatePhaseProgress(documents.epics),
-          development: this.calculatePhaseProgress([...documents.features, ...documents.tasks]),
+          development: this.calculatePhaseProgress([
+            ...documents.features,
+            ...documents.tasks,
+          ]),
         },
       },
     };
@@ -524,14 +556,16 @@ export class DatabaseDrivenSystem extends EventEmitter {
   async exportWorkspaceToFiles(
     workspaceId: string,
     outputPath: string,
-    _format: 'markdown' | 'json' = 'markdown'
+    _format: 'markdown' | 'json' = 'markdown',
   ): Promise<string[]> {
     const context = this.workspaces.get(workspaceId);
     if (!context) {
       throw new Error(`Workspace not found: ${workspaceId}`);
     }
 
-    const projectData = await this.documentService.getProjectWithDocuments(context.projectId);
+    const projectData = await this.documentService.getProjectWithDocuments(
+      context.projectId,
+    );
     if (!projectData) {
       throw new Error(`Project not found: ${context.projectId}`);
     }
@@ -540,7 +574,9 @@ export class DatabaseDrivenSystem extends EventEmitter {
     const exportedFiles: string[] = [];
 
     // This is an optional export capability - the system remains database-driven
-    logger.info(`📁 Export capability: would export ${project.name} documents to ${outputPath}`);
+    logger.info(
+      `📁 Export capability: would export ${project.name} documents to ${outputPath}`,
+    );
     logger.info(
       `📊 Documents to export: ${JSON.stringify({
         visions: documents.visions.length,
@@ -549,7 +585,7 @@ export class DatabaseDrivenSystem extends EventEmitter {
         epics: documents.epics.length,
         features: documents.features.length,
         tasks: documents.tasks.length,
-      })}`
+      })}`,
     );
 
     return exportedFiles;
@@ -563,25 +599,51 @@ export class DatabaseDrivenSystem extends EventEmitter {
     this.on('workspace:loaded', this.handleWorkspaceLoaded.bind(this));
   }
 
-  private async handleDocumentProcessed(event: DocumentProcessedEvent): Promise<void> {
-    logger.debug(`Document processed: ${event.document.type} - ${event.document.title}`);
+  private async handleDocumentProcessed(
+    event: DocumentProcessedEvent,
+  ): Promise<void> {
+    logger.debug(
+      `Document processed: ${event.document.type} - ${event.document.title}`,
+    );
   }
 
-  private async handleWorkspaceCreated(event: WorkspaceCreatedEvent): Promise<void> {
+  private async handleWorkspaceCreated(
+    event: WorkspaceCreatedEvent,
+  ): Promise<void> {
     logger.debug(`Workspace created: ${event.workspaceId}`);
   }
 
-  private async handleWorkspaceLoaded(event: WorkspaceLoadedEvent): Promise<void> {
-    logger.debug(`Workspace loaded: ${event.workspaceId} (${event.documentCount} documents)`);
+  private async handleWorkspaceLoaded(
+    event: WorkspaceLoadedEvent,
+  ): Promise<void> {
+    logger.debug(
+      `Workspace loaded: ${event.workspaceId} (${event.documentCount} documents)`,
+    );
   }
 
   private getSuggestedNextSteps(documentType: string): string[] {
     const nextSteps: Record<string, string[]> = {
-      vision: ['Create PRDs', 'Define stakeholder requirements', 'Conduct stakeholder alignment'],
-      adr: ['Review architectural implications', 'Update related PRDs', 'Validate decisions'],
-      prd: ['Generate epics', 'Create user stories', 'Define acceptance criteria'],
+      vision: [
+        'Create PRDs',
+        'Define stakeholder requirements',
+        'Conduct stakeholder alignment',
+      ],
+      adr: [
+        'Review architectural implications',
+        'Update related PRDs',
+        'Validate decisions',
+      ],
+      prd: [
+        'Generate epics',
+        'Create user stories',
+        'Define acceptance criteria',
+      ],
       epic: ['Break down into features', 'Estimate effort', 'Plan timeline'],
-      feature: ['Create implementation tasks', 'Define test cases', 'Review dependencies'],
+      feature: [
+        'Create implementation tasks',
+        'Define test cases',
+        'Review dependencies',
+      ],
       task: ['Begin implementation', 'Write tests', 'Update documentation'],
     };
     return nextSteps[documentType] || [];
@@ -618,9 +680,12 @@ ${spec.timeline.milestones?.map((m: { name: string; date: Date; description: str
 
   private async generatePRDsFromVision(
     vision: VisionDocumentEntity,
-    context: DatabaseWorkspaceContext
+    context: DatabaseWorkspaceContext,
   ): Promise<PRDDocumentEntity[]> {
-    const prdDoc: Omit<PRDDocumentEntity, 'id' | 'created_at' | 'updated_at' | 'checksum'> = {
+    const prdDoc: Omit<
+      PRDDocumentEntity,
+      'id' | 'created_at' | 'updated_at' | 'checksum'
+    > = {
       type: 'prd',
       title: `PRD: ${vision.title.replace('Vision:', '').trim()}`,
       content: `# Product Requirements Document: ${vision.title}
@@ -660,7 +725,10 @@ ${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLower
       functional_requirements: vision.business_objectives.map((obj, i) => ({
         id: `REQ-${String(i + 1).padStart(3, '0')}`,
         description: obj,
-        acceptance_criteria: [`${obj} is properly implemented`, `${obj} meets quality standards`],
+        acceptance_criteria: [
+          `${obj} is properly implemented`,
+          `${obj} meets quality standards`,
+        ],
         priority: 'must_have' as const,
       })),
       non_functional_requirements: [
@@ -704,7 +772,7 @@ ${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLower
 
   private async generateEpicsFromPRD(
     prd: PRDDocumentEntity,
-    context: DatabaseWorkspaceContext
+    context: DatabaseWorkspaceContext,
   ): Promise<EpicDocumentEntity[]> {
     // Group functional requirements into epics
     const epics = [
@@ -712,22 +780,27 @@ ${vision.business_objectives.map((obj, _i) => `- As a user, I want ${obj.toLower
         title: 'User Management Epic',
         requirements: prd.functional_requirements.slice(
           0,
-          Math.ceil(prd.functional_requirements.length / 2)
+          Math.ceil(prd.functional_requirements.length / 2),
         ),
-        businessValue: 'Enable user registration, authentication, and profile management',
+        businessValue:
+          'Enable user registration, authentication, and profile management',
       },
       {
         title: 'Core Functionality Epic',
         requirements: prd.functional_requirements.slice(
-          Math.ceil(prd.functional_requirements.length / 2)
+          Math.ceil(prd.functional_requirements.length / 2),
         ),
-        businessValue: 'Deliver primary business functionality and user workflows',
+        businessValue:
+          'Deliver primary business functionality and user workflows',
       },
     ];
 
     const epicDocs: EpicDocumentEntity[] = [];
     for (const epicSpec of epics) {
-      const epicDoc: Omit<EpicDocumentEntity, 'id' | 'created_at' | 'updated_at' | 'checksum'> = {
+      const epicDoc: Omit<
+        EpicDocumentEntity,
+        'id' | 'created_at' | 'updated_at' | 'checksum'
+      > = {
         type: 'epic',
         title: epicSpec.title,
         content: `# ${epicSpec.title}
@@ -771,7 +844,13 @@ This epic will enable users to ${epicSpec.businessValue.toLowerCase()}.
         timeline: {
           start_date: new Date(),
           estimated_completion: new Date(
-            Date.now() + Math.ceil(epicSpec.requirements.length / 2) * 7 * 24 * 60 * 60 * 1000
+            Date.now() +
+              Math.ceil(epicSpec.requirements.length / 2) *
+                7 *
+                24 *
+                60 *
+                60 *
+                1000,
           ),
         },
         source_prd_id: prd.id,
@@ -789,7 +868,7 @@ This epic will enable users to ${epicSpec.businessValue.toLowerCase()}.
 
   private async generateFeaturesFromEpic(
     epic: EpicDocumentEntity,
-    context: DatabaseWorkspaceContext
+    context: DatabaseWorkspaceContext,
   ): Promise<FeatureDocumentEntity[]> {
     // Create features based on epic scope
     const featureSpecs = [
@@ -865,7 +944,8 @@ Ready for development
         implementation_status: 'not_started',
       };
 
-      const createdFeature = await this.documentService.createDocument(featureDoc);
+      const createdFeature =
+        await this.documentService.createDocument(featureDoc);
       features.push(createdFeature);
     }
 
@@ -874,7 +954,7 @@ Ready for development
 
   private async generateTasksFromFeature(
     feature: FeatureDocumentEntity,
-    context: DatabaseWorkspaceContext
+    context: DatabaseWorkspaceContext,
   ): Promise<TaskDocumentEntity[]> {
     const taskSpecs = [
       { title: 'Implement Core Logic', type: 'development', hours: 8 },
@@ -884,7 +964,10 @@ Ready for development
 
     const tasks: TaskDocumentEntity[] = [];
     for (const spec of taskSpecs) {
-      const taskDoc: Omit<TaskDocumentEntity, 'id' | 'created_at' | 'updated_at' | 'checksum'> = {
+      const taskDoc: Omit<
+        TaskDocumentEntity,
+        'id' | 'created_at' | 'updated_at' | 'checksum'
+      > = {
         type: 'task',
         title: `${feature.title}: ${spec.title}`,
         content: `# ${spec.title}
@@ -927,9 +1010,13 @@ ${spec.title} for ${feature.title}
         task_type: spec.type as any,
         estimated_hours: spec.hours,
         implementation_details: {
-          files_to_create: [`${feature.title.toLowerCase().replace(/\s+/g, '-')}.ts`],
+          files_to_create: [
+            `${feature.title.toLowerCase().replace(/\s+/g, '-')}.ts`,
+          ],
           files_to_modify: ['index.ts', 'routes.ts'],
-          test_files: [`${feature.title.toLowerCase().replace(/\s+/g, '-')}.test.ts`],
+          test_files: [
+            `${feature.title.toLowerCase().replace(/\s+/g, '-')}.test.ts`,
+          ],
           documentation_updates: ['README.md'],
         },
         technical_specifications: {
@@ -952,7 +1039,7 @@ ${spec.title} for ${feature.title}
   private calculatePhaseProgress(documents: BaseDocumentEntity[]): number {
     if (documents.length === 0) return 0;
     const completed = documents.filter(
-      (doc) => doc.status === 'approved' || doc.completion_percentage === 100
+      (doc) => doc.status === 'approved' || doc.completion_percentage === 100,
     ).length;
     return Math.round((completed / documents.length) * 100);
   }
@@ -978,7 +1065,7 @@ ${spec.title} for ${feature.title}
 // Export singleton instance factory
 export function createDatabaseDrivenSystem(
   documentService: DocumentManager,
-  workflowEngine: WorkflowEngine
+  workflowEngine: WorkflowEngine,
 ): DatabaseDrivenSystem {
   return new DatabaseDrivenSystem(documentService, workflowEngine);
 }

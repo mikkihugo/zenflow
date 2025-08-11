@@ -48,9 +48,13 @@ describe('JS-WASM Communication Integration Tests', () => {
       expect(agent.priority).toBe(0.75);
 
       // Test string marshalling
-      agent.updateMetadata({ description: 'Test agent with special chars: 日本語 🚀' });
+      agent.updateMetadata({
+        description: 'Test agent with special chars: 日本語 🚀',
+      });
       const metadata = await agent.getMetadata();
-      expect(metadata.description).toBe('Test agent with special chars: 日本語 🚀');
+      expect(metadata.description).toBe(
+        'Test agent with special chars: 日本語 🚀',
+      );
 
       // Test boolean marshalling
       agent.setActive(true);
@@ -202,7 +206,9 @@ describe('JS-WASM Communication Integration Tests', () => {
       const incrementsPerWorker = 1000;
 
       for (let i = 0; i < numWorkers; i++) {
-        promises.push(wasmLoader.atomicIncrement(buffer, 0, incrementsPerWorker));
+        promises.push(
+          wasmLoader.atomicIncrement(buffer, 0, incrementsPerWorker),
+        );
       }
 
       await Promise.all(promises);
@@ -231,7 +237,9 @@ describe('JS-WASM Communication Integration Tests', () => {
       }
 
       const afterCleanupMemory = await wasmLoader.getMemoryStats();
-      expect(afterCleanupMemory.used).toBeLessThanOrEqual(afterAllocMemory.used);
+      expect(afterCleanupMemory.used).toBeLessThanOrEqual(
+        afterAllocMemory.used,
+      );
     });
   });
 
@@ -287,7 +295,9 @@ describe('JS-WASM Communication Integration Tests', () => {
       for (let i = 0; i < 20; i++) {
         writePromises.push(stream.write(new Float32Array(1000)));
         // Use dynamic processing delay that adapts to backpressure
-        await new Promise((resolve) => setTimeout(resolve, Math.min(processingDelay, 10)));
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.min(processingDelay, 10)),
+        );
       }
 
       await Promise.all(writePromises);

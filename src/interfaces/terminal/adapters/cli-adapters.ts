@@ -24,12 +24,17 @@ export class DiscoverCommandAdapter implements DiscoverCommandInterface {
   async execute(context: ExecutionContext): Promise<CommandResult> {
     try {
       // Dynamic import to avoid circular dependency
-      const { DiscoverCommand } = await import('../../cli/commands/discover.ts');
+      const { DiscoverCommand } = await import(
+        '../../cli/commands/discover.ts'
+      );
       const discoverCommand = new DiscoverCommand();
 
       // Execute the discover command
       const result = (await discoverCommand.execute?.(context)) ||
-        (await discoverCommand.run?.(context)) || { success: true, message: 'Discovery completed' };
+        (await discoverCommand.run?.(context)) || {
+          success: true,
+          message: 'Discovery completed',
+        };
 
       return result;
     } catch (error) {
@@ -69,7 +74,10 @@ export class CLICommandRegistry {
     return this.commands.get(name) || null;
   }
 
-  async executeCommand(name: string, context: ExecutionContext): Promise<CommandResult> {
+  async executeCommand(
+    name: string,
+    context: ExecutionContext,
+  ): Promise<CommandResult> {
     const command = await this.getCommand(name);
     if (!command) {
       return {

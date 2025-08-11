@@ -5,7 +5,9 @@
  * Main entry point for complete test suite validation
  */
 
-const { ComprehensiveTestOrchestrator } = require('./comprehensive-test-orchestrator.js');
+const {
+  ComprehensiveTestOrchestrator,
+} = require('./comprehensive-test-orchestrator.js');
 const fs = require('node:fs').promises;
 const path = require('node:path');
 
@@ -37,7 +39,9 @@ async function main() {
           speed: {
             target: '2.8-4.4x improvement',
             actual: results.metrics.performance?.speedOptimization || 'N/A',
-            met: checkSpeedTarget(results.metrics.performance?.speedOptimization),
+            met: checkSpeedTarget(
+              results.metrics.performance?.speedOptimization,
+            ),
           },
           loadTesting: {
             target: '50+ concurrent agents',
@@ -70,13 +74,14 @@ async function main() {
           },
           claudeFlowIntegration: {
             target: 'Full integration',
-            actual: results.testSuites.find((s) => s.name === 'Claude Code Flow Integration')
-              ?.passed
+            actual: results.testSuites.find(
+              (s) => s.name === 'Claude Code Flow Integration',
+            )?.passed
               ? 'Verified'
               : 'Failed',
-            met:
-              results.testSuites.find((s) => s.name === 'Claude Code Flow Integration')?.passed ||
-              false,
+            met: results.testSuites.find(
+              (s) => s.name === 'Claude Code Flow Integration',
+            )?.passed,
           },
         },
       },
@@ -103,15 +108,21 @@ async function main() {
 
     // Generate summary report
     await generateSummaryReport(finalReport);
-    Object.entries(finalReport.validation.performanceTargets).forEach(([_key, _target]) => {});
-    Object.entries(finalReport.validation.integrationTargets).forEach(([_key, _target]) => {});
+    Object.entries(finalReport.validation.performanceTargets).forEach(
+      ([_key, _target]) => {},
+    );
+    Object.entries(finalReport.validation.integrationTargets).forEach(
+      ([_key, _target]) => {},
+    );
 
     if (finalReport.recommendations.length > 0) {
       finalReport.recommendations.forEach((_rec, _i) => {});
     }
 
     // Exit with appropriate code
-    process.exit(finalReport.status === 'PASSED' && validationScore >= 90 ? 0 : 1);
+    process.exit(
+      finalReport.status === 'PASSED' && validationScore >= 90 ? 0 : 1,
+    );
   } catch (error) {
     console.error('💥 Comprehensive validation failed:', error);
     process.exit(1);
@@ -122,7 +133,7 @@ function checkSIMDTarget(actual) {
   if (!actual) {
     return false;
   }
-  const multiplier = parseFloat(actual.replace('x', ''));
+  const multiplier = Number.parseFloat(actual.replace('x', ''));
   return multiplier >= 6.0 && multiplier <= 10.0;
 }
 
@@ -130,7 +141,7 @@ function checkSpeedTarget(actual) {
   if (!actual) {
     return false;
   }
-  const multiplier = parseFloat(actual.replace('x', ''));
+  const multiplier = Number.parseFloat(actual.replace('x', ''));
   return multiplier >= 2.8 && multiplier <= 4.4;
 }
 
@@ -202,7 +213,7 @@ async function generateSummaryReport(finalReport) {
 ${finalReport.testSuites
   .map(
     (suite) =>
-      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`
+      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
   )
   .join('\n')}
 

@@ -110,7 +110,9 @@ describe('Comprehensive Performance Benchmarks', () => {
       await instance.enableForecasting();
       const forecastingLoadTime = performance.now() - forecastingStart;
 
-      expect(coreLoadTime).toBeLessThan(PERFORMANCE_TARGETS.initialization.standard);
+      expect(coreLoadTime).toBeLessThan(
+        PERFORMANCE_TARGETS.initialization.standard,
+      );
       expect(forecastingLoadTime).toBeLessThan(100);
 
       await instance.cleanup();
@@ -154,7 +156,9 @@ describe('Comprehensive Performance Benchmarks', () => {
         const agents = await Promise.all(
           Array(batchSize)
             .fill(null)
-            .map((_, i) => swarm.spawn({ type: ['researcher', 'coder', 'analyst'][i % 3] }))
+            .map((_, i) =>
+              swarm.spawn({ type: ['researcher', 'coder', 'analyst'][i % 3] }),
+            ),
         );
         const time = performance.now() - start;
 
@@ -169,7 +173,9 @@ describe('Comprehensive Performance Benchmarks', () => {
       }
       results.forEach((_r) => {});
 
-      expect(results[0].totalTime).toBeLessThan(PERFORMANCE_TARGETS.agentCreation.batch);
+      expect(results[0].totalTime).toBeLessThan(
+        PERFORMANCE_TARGETS.agentCreation.batch,
+      );
     });
 
     it('should benchmark agent communication', async () => {
@@ -181,7 +187,7 @@ describe('Comprehensive Performance Benchmarks', () => {
       const agents = await Promise.all(
         Array(10)
           .fill(null)
-          .map(() => swarm.spawn({ type: 'researcher' }))
+          .map(() => swarm.spawn({ type: 'researcher' })),
       );
 
       const messageCount = 1000;
@@ -198,7 +204,9 @@ describe('Comprehensive Performance Benchmarks', () => {
       await Promise.all(promises);
       const duration = performance.now() - start;
       const throughput = messageCount / (duration / 1000);
-      expect(throughput).toBeGreaterThan(PERFORMANCE_TARGETS.throughput.messages);
+      expect(throughput).toBeGreaterThan(
+        PERFORMANCE_TARGETS.throughput.messages,
+      );
     });
   });
 
@@ -329,7 +337,8 @@ describe('Comprehensive Performance Benchmarks', () => {
       const simdTime = performance.now() - simdStart;
 
       const speedup = nonSimdTime / simdTime;
-      const _throughputNonSimd = (size * 4) / 1024 / 1024 / (nonSimdTime / 1000); // MB/s
+      const _throughputNonSimd =
+        (size * 4) / 1024 / 1024 / (nonSimdTime / 1000); // MB/s
       const _throughputSimd = (size * 4) / 1024 / 1024 / (simdTime / 1000); // MB/s
 
       if (ruvSwarm.features.simd) {
@@ -347,7 +356,14 @@ describe('Comprehensive Performance Benchmarks', () => {
 
         // SIMD matrix multiplication
         const start = performance.now();
-        const _result = await ruvSwarm.wasmLoader.matrixMultiplySIMD(a, size, size, b, size, size);
+        const _result = await ruvSwarm.wasmLoader.matrixMultiplySIMD(
+          a,
+          size,
+          size,
+          b,
+          size,
+          size,
+        );
         const time = performance.now() - start;
 
         const gflops = (2 * size ** 3) / 1e9 / (time / 1000);
@@ -462,16 +478,22 @@ describe('Comprehensive Performance Benchmarks', () => {
               { units: 50, activation: 'relu' },
               { units: 10, activation: 'softmax' },
             ],
-          })
+          }),
         );
       }
 
       const afterNetworksMemory = await ruvSwarm.getMemoryUsage();
       const networkMemoryOverhead =
-        (afterNetworksMemory.total - afterAgentsMemory.total) / networks.length / 1024;
+        (afterNetworksMemory.total - afterAgentsMemory.total) /
+        networks.length /
+        1024;
 
-      expect(agentMemoryOverhead).toBeLessThan(PERFORMANCE_TARGETS.memoryOverhead.perAgent);
-      expect(networkMemoryOverhead).toBeLessThan(PERFORMANCE_TARGETS.memoryOverhead.perNetwork);
+      expect(agentMemoryOverhead).toBeLessThan(
+        PERFORMANCE_TARGETS.memoryOverhead.perAgent,
+      );
+      expect(networkMemoryOverhead).toBeLessThan(
+        PERFORMANCE_TARGETS.memoryOverhead.perNetwork,
+      );
     });
   });
 
@@ -491,7 +513,7 @@ describe('Comprehensive Performance Benchmarks', () => {
         await Promise.all(
           Array(size)
             .fill(null)
-            .map(() => swarm.spawn({ type: 'analyst' }))
+            .map(() => swarm.spawn({ type: 'analyst' })),
         );
 
         // Create tasks
@@ -539,7 +561,7 @@ describe('Comprehensive Performance Benchmarks', () => {
         const _agents = await Promise.all(
           Array(10)
             .fill(null)
-            .map(() => swarm.spawn({ type: 'researcher' }))
+            .map(() => swarm.spawn({ type: 'researcher' })),
         );
 
         // Measure broadcast performance
@@ -645,10 +667,19 @@ describe('Comprehensive Performance Benchmarks', () => {
 
       // Create processing pipeline
       const agents = {
-        ingestion: await swarm.spawn({ type: 'researcher', role: 'data-ingestion' }),
-        preprocessing: await swarm.spawn({ type: 'analyst', role: 'preprocessing' }),
+        ingestion: await swarm.spawn({
+          type: 'researcher',
+          role: 'data-ingestion',
+        }),
+        preprocessing: await swarm.spawn({
+          type: 'analyst',
+          role: 'preprocessing',
+        }),
         inference: await swarm.spawn({ type: 'coder', role: 'inference' }),
-        postprocessing: await swarm.spawn({ type: 'analyst', role: 'postprocessing' }),
+        postprocessing: await swarm.spawn({
+          type: 'analyst',
+          role: 'postprocessing',
+        }),
         output: await swarm.spawn({ type: 'coordinator', role: 'output' }),
       };
 
@@ -698,9 +729,14 @@ describe('Comprehensive Performance Benchmarks', () => {
       // Wait for stream to complete
       await new Promise((resolve) => setTimeout(resolve, streamDuration + 100));
 
-      const _avgLatency = latencies.reduce((a, b) => a + b, 0) / latencies.length;
-      const p95Latency = latencies.sort((a, b) => a - b)[Math.floor(latencies.length * 0.95)];
-      const _p99Latency = latencies.sort((a, b) => a - b)[Math.floor(latencies.length * 0.99)];
+      const _avgLatency =
+        latencies.reduce((a, b) => a + b, 0) / latencies.length;
+      const p95Latency = latencies.sort((a, b) => a - b)[
+        Math.floor(latencies.length * 0.95)
+      ];
+      const _p99Latency = latencies.sort((a, b) => a - b)[
+        Math.floor(latencies.length * 0.99)
+      ];
       const throughput = processed / (streamDuration / 1000);
 
       expect(throughput).toBeGreaterThan(dataRate * 0.95); // At least 95% of target rate

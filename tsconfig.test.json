@@ -7,13 +7,9 @@
   },
   "include": [
     "src/__tests__/**/*.ts",
-    "src/**/*.test.ts", 
+    "src/**/*.test.ts",
     "src/**/*.spec.ts",
     "src/types/vitest-globals.d.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist"
-  ]
+  "exclude": ["node_modules", "build", "dist"]
 }

@@ -26,8 +26,15 @@ program
   .command('generate')
   .description('Generate system architecture from pseudocode')
   .requiredOption('--pseudocode-file <path>', 'Path to pseudocode JSON file')
-  .option('--spec-file <path>', 'Path to specification JSON file for additional context')
-  .option('--output <path>', 'Output file path for architecture', 'architecture.json')
+  .option(
+    '--spec-file <path>',
+    'Path to specification JSON file for additional context',
+  )
+  .option(
+    '--output <path>',
+    'Output file path for architecture',
+    'architecture.json',
+  )
   .option('--format <format>', 'Output format (json|markdown)', 'json')
   .action(async (options) => {
     try {
@@ -66,7 +73,7 @@ program
       if (specification) {
         const systemArchitecture = await engine.designSystemArchitecture(
           specification,
-          pseudocodeData?.algorithms
+          pseudocodeData?.algorithms,
         );
         architecture = {
           systemArchitecture,
@@ -103,7 +110,10 @@ program
 program
   .command('validate')
   .description('Validate architecture design for consistency and quality')
-  .requiredOption('--architecture-file <path>', 'Path to architecture JSON file')
+  .requiredOption(
+    '--architecture-file <path>',
+    'Path to architecture JSON file',
+  )
   .option('--detailed', 'Show detailed validation results')
   .action(async (options) => {
     try {
@@ -131,7 +141,9 @@ program
       if (options?.detailed) {
         validationResults?.forEach((result, index) => {
           const status = result.passed ? '✅' : '❌';
-          console.log(`${index + 1}. ${status} ${result.rule}: ${result.message}`);
+          console.log(
+            `${index + 1}. ${status} ${result.rule}: ${result.message}`,
+          );
         });
       }
 
@@ -147,8 +159,15 @@ program
 program
   .command('plan')
   .description('Generate implementation plan from architecture')
-  .requiredOption('--architecture-file <path>', 'Path to architecture JSON file')
-  .option('--output <path>', 'Output file path for implementation plan', 'implementation-plan.json')
+  .requiredOption(
+    '--architecture-file <path>',
+    'Path to architecture JSON file',
+  )
+  .option(
+    '--output <path>',
+    'Output file path for implementation plan',
+    'implementation-plan.json',
+  )
   .option('--format <format>', 'Output format (json|markdown)', 'json')
   .action(async (options) => {
     try {
@@ -163,7 +182,8 @@ program
       const architecture = JSON.parse(archContent);
 
       // Generate implementation plan
-      const implementationPlan = await engine.generateImplementationPlan(architecture);
+      const implementationPlan =
+        await engine.generateImplementationPlan(architecture);
 
       // Format output
       let output: string;
@@ -223,22 +243,24 @@ function generateArchitectureMarkdown(architecture: any): string {
     architecture.systemArchitecture.architecturalPatterns.length > 0
   ) {
     markdown += `## 🎯 Architecture Patterns (${architecture.systemArchitecture.architecturalPatterns.length})\n\n`;
-    architecture.systemArchitecture.architecturalPatterns.forEach((pattern: any, index: number) => {
-      markdown += `### ${index + 1}. ${pattern.name}\n\n`;
-      markdown += `${pattern.description}\n\n`;
+    architecture.systemArchitecture.architecturalPatterns.forEach(
+      (pattern: any, index: number) => {
+        markdown += `### ${index + 1}. ${pattern.name}\n\n`;
+        markdown += `${pattern.description}\n\n`;
 
-      markdown += `**Benefits:**\n`;
-      pattern.benefits.forEach((benefit: string) => {
-        markdown += `- ${benefit}\n`;
-      });
-      markdown += `\n`;
+        markdown += `**Benefits:**\n`;
+        pattern.benefits.forEach((benefit: string) => {
+          markdown += `- ${benefit}\n`;
+        });
+        markdown += `\n`;
 
-      markdown += `**Tradeoffs:**\n`;
-      pattern.tradeoffs.forEach((tradeoff: string) => {
-        markdown += `- ${tradeoff}\n`;
-      });
-      markdown += `\n---\n\n`;
-    });
+        markdown += `**Tradeoffs:**\n`;
+        pattern.tradeoffs.forEach((tradeoff: string) => {
+          markdown += `- ${tradeoff}\n`;
+        });
+        markdown += `\n---\n\n`;
+      },
+    );
   }
 
   // Quality Attributes
@@ -247,22 +269,24 @@ function generateArchitectureMarkdown(architecture: any): string {
     architecture.systemArchitecture.qualityAttributes.length > 0
   ) {
     markdown += `## 📊 Quality Attributes (${architecture.systemArchitecture.qualityAttributes.length})\n\n`;
-    architecture.systemArchitecture.qualityAttributes.forEach((qa: any, index: number) => {
-      markdown += `### ${index + 1}. ${qa.name}\n\n`;
-      markdown += `**Target:** ${qa.target}\n\n`;
-      markdown += `**Priority:** ${qa.priority}\n\n`;
-      markdown += `**Measurement:** ${qa.measurement}\n\n`;
+    architecture.systemArchitecture.qualityAttributes.forEach(
+      (qa: any, index: number) => {
+        markdown += `### ${index + 1}. ${qa.name}\n\n`;
+        markdown += `**Target:** ${qa.target}\n\n`;
+        markdown += `**Priority:** ${qa.priority}\n\n`;
+        markdown += `**Measurement:** ${qa.measurement}\n\n`;
 
-      if (qa.criteria && qa.criteria.length > 0) {
-        markdown += `**Criteria:**\n`;
-        qa.criteria.forEach((criterion: string) => {
-          markdown += `- ${criterion}\n`;
-        });
-        markdown += `\n`;
-      }
+        if (qa.criteria && qa.criteria.length > 0) {
+          markdown += `**Criteria:**\n`;
+          qa.criteria.forEach((criterion: string) => {
+            markdown += `- ${criterion}\n`;
+          });
+          markdown += `\n`;
+        }
 
-      markdown += `---\n\n`;
-    });
+        markdown += `---\n\n`;
+      },
+    );
   }
 
   return markdown;
@@ -335,11 +359,16 @@ function generateImplementationPlanMarkdown(plan: any): string {
       });
     }
 
-    if (plan.riskAssessment.mitigationPlans && plan.riskAssessment.mitigationPlans.length > 0) {
+    if (
+      plan.riskAssessment.mitigationPlans &&
+      plan.riskAssessment.mitigationPlans.length > 0
+    ) {
       markdown += `**Mitigation Strategies:**\n`;
-      plan.riskAssessment.mitigationPlans.forEach((mitigation: string, index: number) => {
-        markdown += `${index + 1}. ${mitigation}\n`;
-      });
+      plan.riskAssessment.mitigationPlans.forEach(
+        (mitigation: string, index: number) => {
+          markdown += `${index + 1}. ${mitigation}\n`;
+        },
+      );
       markdown += `\n`;
     }
   }

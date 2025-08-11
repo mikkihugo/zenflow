@@ -48,13 +48,17 @@ class ProductionValidationTest {
       const instance2 = await ZenSwarm.initialize();
 
       if (instance1 !== instance2) {
-        throw new Error('Multiple instances created - singleton pattern broken');
+        throw new Error(
+          'Multiple instances created - singleton pattern broken',
+        );
       }
 
       // Test memory isolation
       instance1.testProperty = 'test-value';
       if (instance2.testProperty !== 'test-value') {
-        throw new Error('Memory isolation broken - instances not sharing state');
+        throw new Error(
+          'Memory isolation broken - instances not sharing state',
+        );
       }
     });
 
@@ -71,7 +75,9 @@ class ProductionValidationTest {
       // All instances should be the same reference
       for (let i = 1; i < instances.length; i++) {
         if (instances[i] !== firstInstance) {
-          throw new Error(`Instance ${i} is not the same reference as first instance`);
+          throw new Error(
+            `Instance ${i} is not the same reference as first instance`,
+          );
         }
       }
     });
@@ -86,7 +92,10 @@ class ProductionValidationTest {
 
       for (let i = 0; i < 5; i++) {
         await mcpTools.swarm_init({ topology: 'mesh', maxAgents: 5 });
-        await mcpTools.agent_spawn({ type: 'researcher', name: `Test Agent ${i}` });
+        await mcpTools.agent_spawn({
+          type: 'researcher',
+          name: `Test Agent ${i}`,
+        });
       }
 
       // Force garbage collection if available
@@ -100,7 +109,7 @@ class ProductionValidationTest {
       // Memory increase should be reasonable (less than 50MB)
       if (memoryIncrease > 50 * 1024 * 1024) {
         throw new Error(
-          `Excessive memory usage: ${Math.round(memoryIncrease / 1024 / 1024)}MB increase`
+          `Excessive memory usage: ${Math.round(memoryIncrease / 1024 / 1024)}MB increase`,
         );
       }
     });
@@ -117,7 +126,7 @@ class ProductionValidationTest {
         strategy: 'balanced',
       });
 
-      if (!swarmResult.id || !swarmResult.topology) {
+      if (!(swarmResult.id && swarmResult.topology)) {
         throw new Error('Swarm initialization failed');
       }
 
@@ -127,7 +136,7 @@ class ProductionValidationTest {
         name: 'Production Test Agent',
       });
 
-      if (!agentResult.agent || !agentResult.agent.id) {
+      if (!(agentResult.agent && agentResult.agent.id)) {
         throw new Error('Agent spawning failed');
       }
 
@@ -162,7 +171,10 @@ class ProductionValidationTest {
         cognitivePattern: 'adaptive',
       });
 
-      if (!agentResult.agent || agentResult.agent.id !== 'production-test-agent') {
+      if (
+        !agentResult.agent ||
+        agentResult.agent.id !== 'production-test-agent'
+      ) {
         throw new Error('DAA agent creation failed');
       }
 
@@ -190,7 +202,9 @@ class ProductionValidationTest {
         throw new Error('Should have thrown error for invalid topology');
       } catch (error) {
         if (!error.message.includes('must be one of')) {
-          throw new Error(`Wrong error message for invalid topology: ${error.message}`);
+          throw new Error(
+            `Wrong error message for invalid topology: ${error.message}`,
+          );
         }
       }
 
@@ -200,12 +214,17 @@ class ProductionValidationTest {
         throw new Error('Should have thrown error for invalid agent type');
       } catch (error) {
         if (!error.message.includes('must be one of')) {
-          throw new Error(`Wrong error message for invalid agent type: ${error.message}`);
+          throw new Error(
+            `Wrong error message for invalid agent type: ${error.message}`,
+          );
         }
       }
 
       // Test system recovery after errors
-      const validResult = await mcpTools.swarm_init({ topology: 'mesh', maxAgents: 2 });
+      const validResult = await mcpTools.swarm_init({
+        topology: 'mesh',
+        maxAgents: 2,
+      });
       if (!validResult.id) {
         throw new Error('System failed to recover after errors');
       }
@@ -222,7 +241,7 @@ class ProductionValidationTest {
         iterations: 5,
       });
 
-      if (!benchmarkResult.results || !benchmarkResult.results.swarm) {
+      if (!(benchmarkResult.results && benchmarkResult.results.swarm)) {
         throw new Error('Benchmark execution failed');
       }
 
@@ -262,7 +281,9 @@ class ProductionValidationTest {
     const totalTime = Date.now() - startTime;
 
     if (this.failed > 0) {
-      this.testResults.filter((result) => result.status === 'FAILED').forEach((_result) => {});
+      this.testResults
+        .filter((result) => result.status === 'FAILED')
+        .forEach((_result) => {});
     }
 
     return {

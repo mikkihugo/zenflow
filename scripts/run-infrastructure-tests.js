@@ -12,7 +12,11 @@ const __logger = new Logger('InfrastructureTestRunner');
 
 async function main() {
   console.warn(chalk.blue.bold('🏗️ Claude Code Flow Infrastructure Test Suite'));
-  console.warn(chalk.gray('Testing critical infrastructure components for 92/100 quality score\n'));
+  console.warn(
+    chalk.gray(
+      'Testing critical infrastructure components for 92/100 quality score\n',
+    ),
+  );
 
   try {
     const startTime = Date.now();
@@ -27,7 +31,9 @@ async function main() {
     // Display component results
     console.warn(chalk.bold('\n🔧 Component Test Results:'));
     for (const [component, result] of Object.entries(results.results)) {
-      const status = result.passed ? chalk.green('✅ PASSED') : chalk.red('❌ FAILED');
+      const status = result.passed
+        ? chalk.green('✅ PASSED')
+        : chalk.red('❌ FAILED');
       const details = result.passed
         ? result.mode
           ? `(${result.mode.toUpperCase()} mode)`
@@ -35,7 +41,9 @@ async function main() {
             ? `(${result.bindingType.toUpperCase()} bindings)`
             : ''
         : `(${result.error})`;
-      console.warn(`${component.toUpperCase().padEnd(20)} ${status} ${chalk.gray(details)}`);
+      console.warn(
+        `${component.toUpperCase().padEnd(20)} ${status} ${chalk.gray(details)}`,
+      );
     }
 
     // Display overall score
@@ -67,7 +75,9 @@ async function main() {
               : rec.priority === 'MEDIUM'
                 ? chalk.yellow
                 : chalk.green;
-        console.warn(`\n  ${priorityColor(rec.priority)} - ${chalk.bold(rec.component)}`);
+        console.warn(
+          `\n  ${priorityColor(rec.priority)} - ${chalk.bold(rec.component)}`,
+        );
         console.warn(`    Issue: ${rec.issue}`);
         console.warn(`    Action: ${chalk.cyan(rec.action)}`);
       }

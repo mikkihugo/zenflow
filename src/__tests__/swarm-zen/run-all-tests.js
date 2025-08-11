@@ -160,20 +160,25 @@ async function runTestSuite(suite, report) {
 
     const timeout = setTimeout(() => {
       testProcess.kill('SIGTERM');
-      suiteResult.errors.push(`Test suite timed out after ${suite.timeout / 1000}s`);
+      suiteResult.errors.push(
+        `Test suite timed out after ${suite.timeout / 1000}s`,
+      );
     }, suite.timeout);
 
     testProcess.on('close', (code) => {
       clearTimeout(timeout);
 
       suiteResult.duration = Date.now() - suiteStartTime;
-      suiteResult.totalTests = suiteResult.passedTests + suiteResult.failedTests;
+      suiteResult.totalTests =
+        suiteResult.passedTests + suiteResult.failedTests;
       suiteResult.passed = code === 0 && suiteResult.failedTests === 0;
       suiteResult.exitCode = code;
       suiteResult.output = output.split('\n').filter((line) => line.trim());
 
       if (errorOutput) {
-        suiteResult.errors.push(...errorOutput.split('\n').filter((line) => line.trim()));
+        suiteResult.errors.push(
+          ...errorOutput.split('\n').filter((line) => line.trim()),
+        );
       }
 
       report.addSuite(suiteResult);
@@ -197,7 +202,10 @@ async function startMCPServer() {
     mcpServer.stdout.on('data', (data) => {
       const output = data.toString();
 
-      if (output.includes('Starting RUV-Swarm MCP server') || output.includes('listening')) {
+      if (
+        output.includes('Starting RUV-Swarm MCP server') ||
+        output.includes('listening')
+      ) {
         serverStarted = true;
         setTimeout(resolve, 2000); // Give server time to fully initialize
       }
@@ -277,7 +285,8 @@ class PerformanceMonitor {
       (this.metrics.cpu.length || 1) /
       1000000; // Convert to seconds
 
-    const maxMemory = Math.max(...this.metrics.memory.map((m) => m.heapUsed)) / 1024 / 1024; // MB
+    const maxMemory =
+      Math.max(...this.metrics.memory.map((m) => m.heapUsed)) / 1024 / 1024; // MB
 
     return {
       averageCpuSeconds: avgCpu.toFixed(2),

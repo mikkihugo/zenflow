@@ -33,7 +33,12 @@ export interface TrainingDataConfig {
 }
 
 export interface TrainingConfig {
-  algorithm: 'incremental_backprop' | 'batch_backprop' | 'rprop' | 'quickprop' | 'sarprop';
+  algorithm:
+    | 'incremental_backprop'
+    | 'batch_backprop'
+    | 'rprop'
+    | 'quickprop'
+    | 'sarprop';
   learningRate?: number;
   momentum?: number;
   maxEpochs: number;
@@ -45,7 +50,13 @@ export interface TrainingConfig {
 export interface AgentNetworkConfig {
   agentId: string;
   agentType: string;
-  cognitivePattern: 'convergent' | 'divergent' | 'lateral' | 'systems' | 'critical' | 'abstract';
+  cognitivePattern:
+    | 'convergent'
+    | 'divergent'
+    | 'lateral'
+    | 'systems'
+    | 'critical'
+    | 'abstract';
   inputSize: number;
   outputSize: number;
   taskSpecialization?: string[];
@@ -188,7 +199,7 @@ export class NeuralNetwork {
 
   constructor(
     private wasm: any,
-    config: NetworkConfig
+    config: NetworkConfig,
   ) {
     this.network = new wasm.WasmNeuralNetwork(config);
   }
@@ -256,7 +267,7 @@ export class NeuralTrainer {
 
   constructor(
     private wasm: any,
-    config: TrainingConfig
+    config: TrainingConfig,
   ) {
     this.trainer = new wasm.WasmTrainer(config);
   }
@@ -267,7 +278,10 @@ export class NeuralTrainer {
    * @param network
    * @param data
    */
-  async trainEpoch(network: NeuralNetwork, data: TrainingDataConfig): Promise<number> {
+  async trainEpoch(
+    network: NeuralNetwork,
+    data: TrainingDataConfig,
+  ): Promise<number> {
     return this.trainer.train_epoch(network.getInternalNetwork(), data);
   }
 
@@ -283,13 +297,13 @@ export class NeuralTrainer {
     network: NeuralNetwork,
     data: TrainingDataConfig,
     targetError: number,
-    maxEpochs: number
+    maxEpochs: number,
   ): Promise<TrainingResult> {
     return this.trainer.train_until_target(
       network.getInternalNetwork(),
       data,
       targetError,
-      maxEpochs
+      maxEpochs,
     );
   }
 
@@ -339,7 +353,10 @@ export class AgentNeuralManager {
    * @param agentId
    * @param data
    */
-  async trainAgentNetwork(agentId: string, data: TrainingDataConfig): Promise<any> {
+  async trainAgentNetwork(
+    agentId: string,
+    data: TrainingDataConfig,
+  ): Promise<any> {
     return this.manager.train_agent_network(agentId, data);
   }
 
@@ -349,7 +366,10 @@ export class AgentNeuralManager {
    * @param agentId
    * @param inputs
    */
-  async getAgentInference(agentId: string, inputs: number[]): Promise<number[]> {
+  async getAgentInference(
+    agentId: string,
+    inputs: number[],
+  ): Promise<number[]> {
     return this.manager.get_agent_inference(agentId, new Float32Array(inputs));
   }
 
@@ -368,7 +388,10 @@ export class AgentNeuralManager {
    * @param agentId
    * @param experienceData
    */
-  async fineTuneDuringExecution(agentId: string, experienceData: any): Promise<any> {
+  async fineTuneDuringExecution(
+    agentId: string,
+    experienceData: any,
+  ): Promise<any> {
     return this.manager.fine_tune_during_execution(agentId, experienceData);
   }
 }
@@ -404,9 +427,13 @@ export class ActivationFunctions {
     wasm: any,
     name: string,
     input: number,
-    steepness: number = 1.0
+    steepness: number = 1.0,
   ): Promise<number> {
-    return wasm.ActivationFunctionManager.test_activation_function(name, input, steepness);
+    return wasm.ActivationFunctionManager.test_activation_function(
+      name,
+      input,
+      steepness,
+    );
   }
 
   /**
@@ -415,7 +442,10 @@ export class ActivationFunctions {
    * @param wasm
    * @param input
    */
-  static async compare(wasm: any, input: number): Promise<Record<string, number>> {
+  static async compare(
+    wasm: any,
+    input: number,
+  ): Promise<Record<string, number>> {
     return wasm.ActivationFunctionManager.compare_functions(input);
   }
 
@@ -446,12 +476,12 @@ export class CascadeTrainer {
     private wasm: any,
     config: CascadeConfig | null,
     network: NeuralNetwork,
-    data: TrainingDataConfig
+    data: TrainingDataConfig,
   ) {
     this.trainer = new wasm.WasmCascadeTrainer(
       config || this.getDefaultConfig(),
       network.getInternalNetwork(),
-      data
+      data,
     );
   }
 
@@ -496,7 +526,9 @@ export class CascadeTrainer {
  * @param config
  * @example
  */
-export async function createNeuralNetwork(config: NetworkConfig): Promise<NeuralNetwork> {
+export async function createNeuralNetwork(
+  config: NetworkConfig,
+): Promise<NeuralNetwork> {
   const wasm = await initializeNeuralWasm();
   return new NeuralNetwork(wasm, config);
 }
@@ -507,7 +539,9 @@ export async function createNeuralNetwork(config: NetworkConfig): Promise<Neural
  * @param config
  * @example
  */
-export async function createTrainer(config: TrainingConfig): Promise<NeuralTrainer> {
+export async function createTrainer(
+  config: TrainingConfig,
+): Promise<NeuralTrainer> {
   const wasm = await initializeNeuralWasm();
   return new NeuralTrainer(wasm, config);
 }
@@ -533,7 +567,7 @@ export async function createAgentNeuralManager(): Promise<AgentNeuralManager> {
 export async function createCascadeTrainer(
   config: CascadeConfig | null,
   network: NeuralNetwork,
-  data: TrainingDataConfig
+  data: TrainingDataConfig,
 ): Promise<CascadeTrainer> {
   const wasm = await initializeNeuralWasm();
   return new CascadeTrainer(wasm, config, network, data);
@@ -583,15 +617,21 @@ export function validateTrainingConfig(config: TrainingConfig): boolean {
 export function getRecommendedAgentConfig(
   cognitivePattern: keyof typeof COGNITIVE_PATTERNS,
   inputSize: number,
-  outputSize: number
+  outputSize: number,
 ): NetworkConfig {
   const baseConfig: NetworkConfig = {
     inputSize,
     outputSize,
     outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
     hiddenLayers: [
-      { size: Math.ceil(inputSize * 1.5), activation: ACTIVATION_FUNCTIONS.RELU },
-      { size: Math.ceil(inputSize * 0.75), activation: ACTIVATION_FUNCTIONS.TANH },
+      {
+        size: Math.ceil(inputSize * 1.5),
+        activation: ACTIVATION_FUNCTIONS.RELU,
+      },
+      {
+        size: Math.ceil(inputSize * 0.75),
+        activation: ACTIVATION_FUNCTIONS.TANH,
+      },
     ],
     connectionRate: 1.0,
   };
@@ -599,12 +639,20 @@ export function getRecommendedAgentConfig(
   // Customize based on cognitive pattern
   switch (cognitivePattern as any) {
     case 'convergent':
-      baseConfig.hiddenLayers = [{ size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.RELU }];
+      baseConfig.hiddenLayers = [
+        { size: inputSize * 2, activation: ACTIVATION_FUNCTIONS.RELU },
+      ];
       break;
     case 'divergent':
       baseConfig.hiddenLayers = [
-        { size: Math.ceil(inputSize * 2.5), activation: ACTIVATION_FUNCTIONS.TANH },
-        { size: Math.ceil(inputSize * 1.5), activation: ACTIVATION_FUNCTIONS.SIGMOID },
+        {
+          size: Math.ceil(inputSize * 2.5),
+          activation: ACTIVATION_FUNCTIONS.TANH,
+        },
+        {
+          size: Math.ceil(inputSize * 1.5),
+          activation: ACTIVATION_FUNCTIONS.SIGMOID,
+        },
       ];
       break;
     case 'lateral':
@@ -622,7 +670,10 @@ export function getRecommendedAgentConfig(
       break;
     case 'critical':
       baseConfig.hiddenLayers = [
-        { size: Math.ceil(inputSize * 1.2), activation: ACTIVATION_FUNCTIONS.RELU },
+        {
+          size: Math.ceil(inputSize * 1.2),
+          activation: ACTIVATION_FUNCTIONS.RELU,
+        },
       ];
       break;
     case 'abstract':

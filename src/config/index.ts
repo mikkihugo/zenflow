@@ -8,6 +8,14 @@
 import { configManager } from './manager.ts';
 import type { SystemConfiguration } from './types.ts';
 
+// Repository configuration
+export {
+  createRepoConfig,
+  defaultRepoConfig,
+  logRepoConfigStatus,
+  type RepoConfig,
+  validateRepoConfig,
+} from './default-repo-config.ts';
 // Constants and defaults
 export {
   createURLBuilder,
@@ -26,14 +34,6 @@ export {
   type URLBuilderConfig,
   VALIDATION_RULES,
 } from './defaults.ts';
-// Repository configuration
-export {
-  createRepoConfig,
-  defaultRepoConfig,
-  logRepoConfigStatus,
-  type RepoConfig,
-  validateRepoConfig,
-} from './default-repo-config.ts';
 // Health checking and monitoring
 export {
   ConfigHealthChecker,
@@ -103,7 +103,9 @@ export const config = {
    *
    * @param section
    */
-  getSection<K extends keyof SystemConfiguration>(section: K): SystemConfiguration[K] {
+  getSection<K extends keyof SystemConfiguration>(
+    section: K,
+  ): SystemConfiguration[K] {
     return configManager?.getSection(section);
   },
 

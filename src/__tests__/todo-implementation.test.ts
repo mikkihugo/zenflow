@@ -1,14 +1,18 @@
 /**
  * @file TODO Implementation Tests
- * 
+ *
  * Tests to verify that all critical TODO items have been properly implemented
  * with production-ready code.
  */
 
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
-import { initializeClaudeZen, shutdownClaudeZen, healthCheck } from '../index.ts';
-import { WorkflowEngine } from '../workflows/workflow-engine.ts';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  healthCheck,
+  initializeClaudeZen,
+  shutdownClaudeZen,
+} from '../index.ts';
 import { MemoryManager } from '../memory/memory.ts';
+import { WorkflowEngine } from '../workflows/workflow-engine.ts';
 
 describe('TODO Implementation Tests', () => {
   beforeAll(async () => {
@@ -32,7 +36,7 @@ describe('TODO Implementation Tests', () => {
     it('should initialize SwarmOrchestrator from coordination module', async () => {
       // Test that SwarmOrchestrator is properly initialized
       const swarmCoordinator = (global as any).swarmCoordinator;
-      
+
       if (swarmCoordinator) {
         expect(swarmCoordinator).toBeDefined();
         expect(typeof swarmCoordinator.getSwarmId).toBe('function');
@@ -41,7 +45,7 @@ describe('TODO Implementation Tests', () => {
         expect(typeof swarmCoordinator.getStatus).toBe('function');
         expect(typeof swarmCoordinator.shutdown).toBe('function');
       }
-      
+
       // If coordinator is not available, ensure system handles it gracefully
       expect(() => {
         // Should not throw errors even if coordinator is not available
@@ -71,7 +75,7 @@ describe('TODO Implementation Tests', () => {
       // Clear global references to simulate missing components
       const originalSwarmCoordinator = (global as any).swarmCoordinator;
       const originalHttpMcpServer = (global as any).httpMcpServer;
-      
+
       delete (global as any).swarmCoordinator;
       delete (global as any).httpMcpServer;
 
@@ -106,9 +110,11 @@ describe('TODO Implementation Tests', () => {
       expect(health.components).toHaveProperty('interfaces');
 
       // Verify each component has proper structure
-      Object.values(health.components).forEach(component => {
+      Object.values(health.components).forEach((component) => {
         expect(component).toHaveProperty('status');
-        expect(['healthy', 'degraded', 'unhealthy', 'unknown']).toContain(component.status);
+        expect(['healthy', 'degraded', 'unhealthy', 'unknown']).toContain(
+          component.status,
+        );
       });
 
       // Verify metrics
@@ -135,7 +141,7 @@ describe('TODO Implementation Tests', () => {
 
       // WorkflowEngine should accept MemoryManager without type errors
       const engine = new WorkflowEngine(memoryManager);
-      
+
       expect(engine).toBeDefined();
       expect(typeof engine.initialize).toBe('function');
       expect(typeof engine.startWorkflow).toBe('function');
@@ -174,21 +180,23 @@ describe('TODO Implementation Tests', () => {
     it('should handle memory system unavailability gracefully', async () => {
       // Create a mock memory manager that throws errors
       const errorMemoryManager = {
-        store: jest.fn().mockRejectedValue(new Error('Memory unavailable')),
-        retrieve: jest.fn().mockRejectedValue(new Error('Memory unavailable')),
-        search: jest.fn().mockRejectedValue(new Error('Memory unavailable')),
-        delete: jest.fn().mockRejectedValue(new Error('Memory unavailable')),
+        store: vi.fn().mockRejectedValue(new Error('Memory unavailable')),
+        retrieve: vi.fn().mockRejectedValue(new Error('Memory unavailable')),
+        search: vi.fn().mockRejectedValue(new Error('Memory unavailable')),
+        delete: vi.fn().mockRejectedValue(new Error('Memory unavailable')),
       } as any;
 
       const engine = new WorkflowEngine(errorMemoryManager);
-      
+
       // Should initialize without throwing
       await expect(engine.initialize()).resolves.not.toThrow();
-      
+
       // Should handle workflow creation despite memory errors
-      await expect(engine.startWorkflow('error-test-workflow', {
-        workspaceId: 'test-workspace',
-      })).resolves.toHaveProperty('success', true);
+      await expect(
+        engine.startWorkflow('error-test-workflow', {
+          workspaceId: 'test-workspace',
+        }),
+      ).resolves.toHaveProperty('success', true);
     });
   });
 
@@ -219,20 +227,20 @@ describe('TODO Implementation Tests', () => {
       if (memorySystem) {
         // Create a mock MemoryManager-compatible interface
         const mockMemoryManager = {
-          store: jest.fn().mockResolvedValue(undefined),
-          retrieve: jest.fn().mockResolvedValue({}),
-          search: jest.fn().mockResolvedValue({}),
-          delete: jest.fn().mockResolvedValue(undefined),
+          store: vi.fn().mockResolvedValue(undefined),
+          retrieve: vi.fn().mockResolvedValue({}),
+          search: vi.fn().mockResolvedValue({}),
+          delete: vi.fn().mockResolvedValue(undefined),
         } as any;
 
         const engine = new WorkflowEngine(mockMemoryManager);
         await engine.initialize();
-        
+
         const workflowResult = await engine.startWorkflow('integration-test', {
           workspaceId: 'integration',
         });
         expect(workflowResult.success).toBe(true);
-        
+
         await engine.shutdown();
       }
 

@@ -153,7 +153,9 @@ function parseErrors(output) {
   const lines = output.split('\n');
 
   for (const line of lines) {
-    const match = line.match(/^(.+\.ts)\((\d+),(\d+)\): error TS2304: Cannot find name '([^']+)'/);
+    const match = line.match(
+      /^(.+\.ts)\((\d+),(\d+)\): error TS2304: Cannot find name '([^']+)'/,
+    );
     if (match) {
       const [, filePath, lineNum, col, typeName] = match;
       errors.push({
@@ -206,7 +208,7 @@ function addMissingImport(filePath, typeName, importPath) {
 
     // Check if import already exists
     const importRegex = new RegExp(
-      `import.*{[^}]*\\b${typeName}\\b[^}]*}.*from.*['"]${importPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`
+      `import.*{[^}]*\\b${typeName}\\b[^}]*}.*from.*['"]${importPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`,
     );
     if (importRegex.test(content)) {
       return false; // Already imported
@@ -214,13 +216,17 @@ function addMissingImport(filePath, typeName, importPath) {
 
     // Find existing imports from the same path
     const existingImportIndex = lines.findIndex(
-      (line) => line.includes(`from '${importPath}'`) || line.includes(`from "${importPath}"`)
+      (line) =>
+        line.includes(`from '${importPath}'`) ||
+        line.includes(`from "${importPath}"`),
     );
 
     if (existingImportIndex !== -1) {
       // Add to existing import
       const existingLine = lines[existingImportIndex];
-      const match = existingLine.match(/import\s*(?:type\s*)?\{\s*([^}]+)\s*\}/);
+      const match = existingLine.match(
+        /import\s*(?:type\s*)?\{\s*([^}]+)\s*\}/,
+      );
       if (match) {
         const imports = match[1]
           .split(',')
@@ -229,7 +235,10 @@ function addMissingImport(filePath, typeName, importPath) {
         if (!imports.includes(typeName)) {
           imports.push(typeName);
           imports.sort(); // Keep imports sorted
-          const newImportLine = existingLine.replace(/\{[^}]+\}/, `{ ${imports.join(', ')} }`);
+          const newImportLine = existingLine.replace(
+            /\{[^}]+\}/,
+            `{ ${imports.join(', ')} }`,
+          );
           lines[existingImportIndex] = newImportLine;
           fs.writeFileSync(filePath, lines.join('\n'));
           return true;
@@ -241,7 +250,11 @@ function addMissingImport(filePath, typeName, importPath) {
       for (let i = 0; i < lines.length; i++) {
         if (lines[i].trim().startsWith('import ')) {
           insertIndex = i + 1;
-        } else if (lines[i].trim() === '' && i > 0 && lines[i - 1].trim().startsWith('import ')) {
+        } else if (
+          lines[i].trim() === '' &&
+          i > 0 &&
+          lines[i - 1].trim().startsWith('import ')
+        ) {
           insertIndex = i;
           break;
         }
@@ -253,7 +266,10 @@ function addMissingImport(filePath, typeName, importPath) {
       return true;
     }
   } catch (error) {
-    console.warn(`Failed to add import for ${typeName} in ${filePath}:`, error.message);
+    console.warn(
+      `Failed to add import for ${typeName} in ${filePath}:`,
+      error.message,
+    );
   }
 
   return false;
@@ -266,7 +282,9 @@ function main() {
   const errors = getTypeScriptErrors();
   const ts2304Errors = errors.filter((e) => e.type === 'TS2304');
 
-  console.log(`📊 Found ${ts2304Errors.length} TS2304 "Cannot find name" errors`);
+  console.log(
+    `📊 Found ${ts2304Errors.length} TS2304 "Cannot find name" errors`,
+  );
 
   if (ts2304Errors.length === 0) {
     console.log('✅ No TypeScript TS2304 errors found!');
@@ -314,7 +332,7 @@ function main() {
     // Show progress every 10 files
     if (processedFiles % 10 === 0) {
       console.log(
-        `📈 Progress: ${processedFiles}/${Object.keys(errorsByFile).length} files processed`
+        `📈 Progress: ${processedFiles}/${Object.keys(errorsByFile).length} files processed`,
       );
     }
   }
@@ -326,11 +344,13 @@ function main() {
 
   // Verify improvements
   console.log('\n🔍 Verifying improvements...');
-  const remainingErrors = getTypeScriptErrors().filter((e) => e.type === 'TS2304');
+  const remainingErrors = getTypeScriptErrors().filter(
+    (e) => e.type === 'TS2304',
+  );
   const improvement = ts2304Errors.length - remainingErrors.length;
 
   console.log(
-    `📈 Progress: ${improvement}/${ts2304Errors.length} TS2304 errors resolved (${Math.round((improvement / ts2304Errors.length) * 100)}%)`
+    `📈 Progress: ${improvement}/${ts2304Errors.length} TS2304 errors resolved (${Math.round((improvement / ts2304Errors.length) * 100)}%)`,
   );
 
   if (remainingErrors.length > 0) {

@@ -41,7 +41,9 @@ describe('Error Recovery and Resilience Integration', () => {
 
       // Simulate agent failure
       const failingAgent = agents[1];
-      sandbox.stub(failingAgent, 'executeTask').rejects(new Error('Agent crashed'));
+      sandbox
+        .stub(failingAgent, 'executeTask')
+        .rejects(new Error('Agent crashed'));
 
       // Orchestrate task
       const task = await swarm.orchestrateTask({
@@ -54,7 +56,10 @@ describe('Error Recovery and Resilience Integration', () => {
       let taskStatus;
       for (let i = 0; i < 10; i++) {
         taskStatus = await swarm.getTaskStatus(task.id);
-        if (taskStatus.status === 'completed' || taskStatus.status === 'failed') {
+        if (
+          taskStatus.status === 'completed' ||
+          taskStatus.status === 'failed'
+        ) {
           break;
         }
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -91,7 +96,9 @@ describe('Error Recovery and Resilience Integration', () => {
       ]);
 
       // Simulate mid-level failure
-      sandbox.stub(midLevel[0], 'executeTask').rejects(new Error('Mid-level crash'));
+      sandbox
+        .stub(midLevel[0], 'executeTask')
+        .rejects(new Error('Mid-level crash'));
 
       // Execute hierarchical task
       const _task = await swarm.orchestrateTask({
@@ -120,7 +127,9 @@ describe('Error Recovery and Resilience Integration', () => {
       ]);
 
       // Workers under failed mid-level should be reassigned
-      const reassignedWorkers = recoveryEvents.filter((e) => e.type === 'reassignment');
+      const reassignedWorkers = recoveryEvents.filter(
+        (e) => e.type === 'reassignment',
+      );
       expect(reassignedWorkers).to.have.lengthOf.at.least(2);
     });
 
@@ -170,7 +179,9 @@ describe('Error Recovery and Resilience Integration', () => {
 
       // Verify circuit breaker behavior
       const failures = results.filter((r) => !r.success);
-      const circuitOpenErrors = failures.filter((f) => f.error.includes('Circuit breaker open'));
+      const circuitOpenErrors = failures.filter((f) =>
+        f.error.includes('Circuit breaker open'),
+      );
 
       expect(failures).to.have.lengthOf.at.least(3);
       expect(circuitOpenErrors).to.have.lengthOf.at.least(1);
@@ -251,7 +262,7 @@ describe('Error Recovery and Resilience Integration', () => {
           swarm.orchestrateTask({
             task: `Task ${i}`,
             persistent: true,
-          })
+          }),
         );
       }
 
@@ -295,8 +306,12 @@ describe('Error Recovery and Resilience Integration', () => {
       `);
 
       // Insert corrupted data
-      corruptDb.prepare('INSERT INTO agents VALUES (?, ?)').run('agent1', 'CORRUPTED{{{');
-      corruptDb.prepare('INSERT INTO tasks VALUES (?, ?)').run('task1', '{"invalid": json}');
+      corruptDb
+        .prepare('INSERT INTO agents VALUES (?, ?)')
+        .run('agent1', 'CORRUPTED{{{');
+      corruptDb
+        .prepare('INSERT INTO tasks VALUES (?, ?)')
+        .run('task1', '{"invalid": json}');
 
       swarm = new ZenSwarm();
       const initResult = await swarm.init({
@@ -404,13 +419,15 @@ describe('Error Recovery and Resilience Integration', () => {
 
       // Mock flaky network
       let attempts = 0;
-      const _flakyNetwork = sandbox.stub(swarm._network, 'send').callsFake(async () => {
-        attempts++;
-        if (attempts < 4) {
-          throw new Error('Network timeout');
-        }
-        return { success: true };
-      });
+      const _flakyNetwork = sandbox
+        .stub(swarm._network, 'send')
+        .callsFake(async () => {
+          attempts++;
+          if (attempts < 4) {
+            throw new Error('Network timeout');
+          }
+          return { success: true };
+        });
 
       const startTime = Date.now();
       const result = await swarm.sendAgentMessage(agent.id, {
@@ -452,7 +469,7 @@ describe('Error Recovery and Resilience Integration', () => {
             type: 'update',
             priority: i < 50 ? 'low' : 'high',
             data: `Message ${i}`,
-          })
+          }),
         );
       }
 
@@ -466,7 +483,9 @@ describe('Error Recovery and Resilience Integration', () => {
 
       // High priority messages should be preserved
       const remainingMessages = await swarm.getQueuedMessages();
-      const highPriorityCount = remainingMessages.filter((m) => m.priority === 'high').length;
+      const highPriorityCount = remainingMessages.filter(
+        (m) => m.priority === 'high',
+      ).length;
       expect(highPriorityCount).to.be.greaterThan(50);
     });
   });
@@ -496,7 +515,7 @@ describe('Error Recovery and Resilience Integration', () => {
             await swarm.spawnAgent({
               type: 'coder',
               ephemeral: true,
-            })
+            }),
           );
         }
 
@@ -505,7 +524,7 @@ describe('Error Recovery and Resilience Integration', () => {
           swarm.executeAgentTask(agent.id, {
             task: 'Memory intensive operation',
             data: Buffer.alloc(1024 * 1024), // 1MB per task
-          })
+          }),
         );
 
         await Promise.all(tasks);
@@ -559,7 +578,7 @@ describe('Error Recovery and Resilience Integration', () => {
             task: `High load task ${i}`,
             priority: i < 10 ? 'high' : 'normal',
             estimatedLoad: 1,
-          })
+          }),
         );
       }
 
@@ -580,7 +599,7 @@ describe('Error Recovery and Resilience Integration', () => {
       // High priority tasks should complete
       const highPriorityResults = results.slice(0, 10);
       const highPriorityCompleted = highPriorityResults.filter(
-        (r) => r.status === 'fulfilled'
+        (r) => r.status === 'fulfilled',
       ).length;
       expect(highPriorityCompleted).to.be.at.least(8);
 

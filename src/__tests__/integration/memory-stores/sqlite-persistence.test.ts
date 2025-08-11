@@ -64,34 +64,46 @@ class SQLiteMemoryStore {
     }
   }
 
-  async store(sessionId: string, data: any, metadata?: any): Promise<void> {
+  async store(sessionId: string, data: unknown, metadata?: any): Promise<void> {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
     const now = Date.now();
     await this.run(
       `INSERT OR REPLACE INTO sessions (id, data, metadata, created_at, updated_at) 
        VALUES (?, ?, ?, ?, ?)`,
-      [sessionId, JSON.stringify(data), JSON.stringify(metadata || {}), now, now]
+      [
+        sessionId,
+        JSON.stringify(data),
+        JSON.stringify(metadata || {}),
+        now,
+        now,
+      ],
     );
   }
 
-  async retrieve(sessionId: string): Promise<any> {
+  async retrieve(sessionId: string): Promise<unknown> {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
-    return this.get('SELECT data, metadata FROM sessions WHERE id = ?', [sessionId]);
+    return this.get('SELECT data, metadata FROM sessions WHERE id = ?', [
+      sessionId,
+    ]);
   }
 
   async listSessions(): Promise<string[]> {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
-    const rows = await this.all('SELECT id FROM sessions ORDER BY updated_at DESC');
-    return rows.map((row: any) => row.id);
+    const rows = await this.all(
+      'SELECT id FROM sessions ORDER BY updated_at DESC',
+    );
+    return rows.map((row: unknown) => row.id);
   }
 
   async deleteSession(sessionId: string): Promise<boolean> {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
-    const result = await this.run('DELETE FROM sessions WHERE id = ?', [sessionId]);
+    const result = await this.run('DELETE FROM sessions WHERE id = ?', [
+      sessionId,
+    ]);
     return result?.changes > 0;
   }
 
@@ -99,7 +111,7 @@ class SQLiteMemoryStore {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
     const result = await this.get(
-      'SELECT COUNT(*) as count, SUM(LENGTH(data)) as size FROM sessions'
+      'SELECT COUNT(*) as count, SUM(LENGTH(data)) as size FROM sessions',
     );
 
     return {
@@ -108,7 +120,7 @@ class SQLiteMemoryStore {
     };
   }
 
-  private run(query: string, params: any[] = []): Promise<any> {
+  private run(query: string, params: unknown[] = []): Promise<unknown> {
     return new Promise((resolve, reject) => {
       this.db?.run(query, params, function (err) {
         if (err) reject(err);
@@ -117,7 +129,7 @@ class SQLiteMemoryStore {
     });
   }
 
-  private get(query: string, params: any[] = []): Promise<any> {
+  private get(query: string, params: unknown[] = []): Promise<unknown> {
     return new Promise((resolve, reject) => {
       this.db?.get(query, params, (err, row) => {
         if (err) reject(err);
@@ -126,7 +138,7 @@ class SQLiteMemoryStore {
     });
   }
 
-  private all(query: string, params: any[] = []): Promise<any[]> {
+  private all(query: string, params: unknown[] = []): Promise<any[]> {
     return new Promise((resolve, reject) => {
       this.db?.all(query, params, (err, rows) => {
         if (err) reject(err);
@@ -210,12 +222,16 @@ describe('SQLite Persistence Integration Tests', () => {
     });
 
     it('should mock query execution properly', async () => {
-      mockConnection.query.mockResolvedValue([{ id: 'session1', data: '{"test": true}' }]);
+      mockConnection.query.mockResolvedValue([
+        { id: 'session1', data: '{"test": true}' },
+      ]);
 
       const result = await mockConnection.query('SELECT * FROM sessions');
       expect(result).toHaveLength(1);
       expect(result?.[0]?.id).toBe('session1');
-      expect(mockConnection.query).toHaveBeenCalledWith('SELECT * FROM sessions');
+      expect(mockConnection.query).toHaveBeenCalledWith(
+        'SELECT * FROM sessions',
+      );
     });
 
     it('should handle transaction mocking', async () => {
@@ -415,10 +431,14 @@ describe('SQLite Persistence Integration Tests', () => {
       const uninitializedStore = new SQLiteMemoryStore(dbPath);
 
       await expect(uninitializedStore.store('test', {})).rejects.toThrow(
-        'Database not initialized'
+        'Database not initialized',
       );
-      await expect(uninitializedStore.retrieve('test')).rejects.toThrow('Database not initialized');
-      await expect(uninitializedStore.listSessions()).rejects.toThrow('Database not initialized');
+      await expect(uninitializedStore.retrieve('test')).rejects.toThrow(
+        'Database not initialized',
+      );
+      await expect(uninitializedStore.listSessions()).rejects.toThrow(
+        'Database not initialized',
+      );
     });
 
     it('should handle invalid database paths gracefully', async () => {

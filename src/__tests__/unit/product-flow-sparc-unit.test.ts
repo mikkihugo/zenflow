@@ -5,8 +5,8 @@
  * Tests the architecture and design decisions for Product Flow + SPARC integration
  */
 
-import { describe, expect, it } from 'vitest';
 import { nanoid } from 'nanoid';
+import { describe, expect, it } from 'vitest';
 
 describe('Product Flow + SPARC Unit Tests', () => {
   describe('🎯 Entity Structure Validation', () => {
@@ -51,7 +51,11 @@ describe('Product Flow + SPARC Unit Tests', () => {
             pseudocode: {
               status: 'in_progress',
               deliverables: ['auth-algorithms.md'],
-              algorithms: ['jwt-generation', 'token-validation', 'refresh-logic'],
+              algorithms: [
+                'jwt-generation',
+                'token-validation',
+                'refresh-logic',
+              ],
             },
             architecture: {
               status: 'not_started',
@@ -83,8 +87,12 @@ describe('Product Flow + SPARC Unit Tests', () => {
 
       // Validate SPARC integration exists and is properly structured
       expect(feature['sparc_implementation']).toBeDefined();
-      expect(feature['sparc_implementation']?.['use_sparc_methodology']).toBe(true);
-      expect(feature['sparc_implementation']?.['sparc_project_id']).toBe('sparc-auth-api-001');
+      expect(feature['sparc_implementation']?.['use_sparc_methodology']).toBe(
+        true,
+      );
+      expect(feature['sparc_implementation']?.['sparc_project_id']).toBe(
+        'sparc-auth-api-001',
+      );
 
       // Validate all 5 SPARC phases are defined
       const phases = feature['sparc_implementation']?.['sparc_phases'];
@@ -103,8 +111,12 @@ describe('Product Flow + SPARC Unit Tests', () => {
       expect(phases?.pseudocode.algorithms).toHaveLength(3);
 
       // Validate current phase and progress
-      expect(feature['sparc_implementation']?.['current_sparc_phase']).toBe('pseudocode');
-      expect(feature['sparc_implementation']?.['sparc_progress_percentage']).toBe(40.0);
+      expect(feature['sparc_implementation']?.['current_sparc_phase']).toBe(
+        'pseudocode',
+      );
+      expect(
+        feature['sparc_implementation']?.['sparc_progress_percentage'],
+      ).toBe(40.0);
     });
 
     it('should have proper SPARC integration structure in TaskDocumentEntity', () => {
@@ -112,7 +124,8 @@ describe('Product Flow + SPARC Unit Tests', () => {
         id: nanoid(),
         type: 'task',
         title: 'Implement JWT Token Generation Logic',
-        content: 'Create secure JWT token generation with proper claims and expiration',
+        content:
+          'Create secure JWT token generation with proper claims and expiration',
         task_type: 'development',
         estimated_hours: 6,
         implementation_details: {
@@ -124,7 +137,11 @@ describe('Product Flow + SPARC Unit Tests', () => {
         technical_specifications: {
           component: 'authentication-service',
           module: 'jwt-generator',
-          functions: ['generateAccessToken', 'generateRefreshToken', 'validateTokenClaims'],
+          functions: [
+            'generateAccessToken',
+            'generateRefreshToken',
+            'validateTokenClaims',
+          ],
           dependencies: ['jsonwebtoken', '@types/jsonwebtoken'],
         },
         status: 'draft',
@@ -191,29 +208,36 @@ describe('Product Flow + SPARC Unit Tests', () => {
 
       // Validate SPARC task integration
       expect(task['sparc_implementation_details']).toBeDefined();
-      expect(task['sparc_implementation_details']?.['parent_feature_sparc_id']).toBe(
-        'sparc-auth-api-001'
-      );
-      expect(task['sparc_implementation_details']?.['sparc_phase_assignment']).toBe('completion');
-      expect(task['sparc_implementation_details']?.['sparc_deliverable_type']).toBe(
-        'production_code'
-      );
+      expect(
+        task['sparc_implementation_details']?.['parent_feature_sparc_id'],
+      ).toBe('sparc-auth-api-001');
+      expect(
+        task['sparc_implementation_details']?.['sparc_phase_assignment'],
+      ).toBe('completion');
+      expect(
+        task['sparc_implementation_details']?.['sparc_deliverable_type'],
+      ).toBe('production_code');
 
       // Validate quality gates
-      const qualityGates = task['sparc_implementation_details']?.['sparc_quality_gates'];
+      const qualityGates =
+        task['sparc_implementation_details']?.['sparc_quality_gates'];
       expect(qualityGates).toHaveLength(3);
-      expect(qualityGates?.[0].requirement).toContain('cryptographically secure');
+      expect(qualityGates?.[0].requirement).toContain(
+        'cryptographically secure',
+      );
       expect(qualityGates?.[1].requirement).toContain('latency');
       expect(qualityGates?.[2].requirement).toContain('coverage');
 
       // Validate artifacts
-      const artifacts = task['sparc_implementation_details']?.['sparc_artifacts'];
+      const artifacts =
+        task['sparc_implementation_details']?.['sparc_artifacts'];
       expect(artifacts).toHaveLength(2);
       expect(artifacts?.[0]['artifact_type']).toBe('final_implementation');
       expect(artifacts?.[0]['file_path']).toBe('auth/jwt-generator.ts');
 
       // Validate complexity analysis
-      const complexity = task['sparc_implementation_details']?.['complexity_analysis'];
+      const complexity =
+        task['sparc_implementation_details']?.['complexity_analysis'];
       expect(complexity?.['time_complexity']).toBe('O(1)');
       expect(complexity?.['maintainability_score']).toBe(85);
       expect(complexity?.['performance_impact']).toBe('low');
@@ -224,7 +248,12 @@ describe('Product Flow + SPARC Unit Tests', () => {
     it('should properly map feature types to SPARC methodology usage', () => {
       // Define mapping logic (would be in ProductWorkflowEngine)
       const shouldUseSPARC = (featureType: string): boolean => {
-        const technicalFeatureTypes = ['api', 'database', 'integration', 'infrastructure'];
+        const technicalFeatureTypes = [
+          'api',
+          'database',
+          'integration',
+          'infrastructure',
+        ];
         return technicalFeatureTypes.includes(featureType);
       };
 
@@ -258,18 +287,28 @@ describe('Product Flow + SPARC Unit Tests', () => {
       expect(mapFeatureTypeToSPARCDomain('api')).toBe('rest-api');
       expect(mapFeatureTypeToSPARCDomain('database')).toBe('memory-systems');
       expect(mapFeatureTypeToSPARCDomain('ui')).toBe('interfaces');
-      expect(mapFeatureTypeToSPARCDomain('integration')).toBe('swarm-coordination');
+      expect(mapFeatureTypeToSPARCDomain('integration')).toBe(
+        'swarm-coordination',
+      );
       expect(mapFeatureTypeToSPARCDomain('infrastructure')).toBe('general');
       expect(mapFeatureTypeToSPARCDomain('unknown')).toBe('general');
     });
 
     it('should validate SPARC phase progression logic', () => {
-      const phases = ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'];
+      const phases = [
+        'specification',
+        'pseudocode',
+        'architecture',
+        'refinement',
+        'completion',
+      ];
 
       // Define phase progression logic
       const getNextPhase = (currentPhase: string): string | null => {
         const currentIndex = phases.indexOf(currentPhase);
-        return currentIndex < phases.length - 1 ? phases[currentIndex + 1] : null;
+        return currentIndex < phases.length - 1
+          ? phases[currentIndex + 1]
+          : null;
       };
 
       // Test phase progression
@@ -282,7 +321,9 @@ describe('Product Flow + SPARC Unit Tests', () => {
 
     it('should validate SPARC progress calculation', () => {
       // Define progress calculation logic
-      const calculateSPARCProgress = (phases: Record<string, { status: string }>): number => {
+      const calculateSPARCProgress = (
+        phases: Record<string, { status: string }>,
+      ): number => {
         const phaseList = [
           'specification',
           'pseudocode',
@@ -362,7 +403,9 @@ describe('Product Flow + SPARC Unit Tests', () => {
       expect(integrationPrinciples.integrationPoint).toBe('Features and Tasks');
 
       // Validate workflow includes SPARC integration step
-      expect(integrationPrinciples.productFlowSteps).toContain('sparc-integration');
+      expect(integrationPrinciples.productFlowSteps).toContain(
+        'sparc-integration',
+      );
 
       // Validate all SPARC phases are defined
       expect(integrationPrinciples.sparcPhases).toHaveLength(5);
@@ -396,8 +439,8 @@ describe('Product Flow + SPARC Unit Tests', () => {
         sparcConcerns.some(
           (sparcConcern) =>
             concern.toLowerCase().includes(sparcConcern.toLowerCase()) ||
-            sparcConcern.toLowerCase().includes(concern.toLowerCase())
-        )
+            sparcConcern.toLowerCase().includes(concern.toLowerCase()),
+        ),
       );
 
       expect(overlap).toHaveLength(0); // No direct overlap
@@ -422,7 +465,9 @@ describe('Product Flow + SPARC Unit Tests', () => {
       // Validate quality gate structure
       expect(qualityGate.requirement).toBeDefined();
       expect(['pending', 'passed', 'failed']).toContain(qualityGate.status);
-      expect(['automated', 'manual', 'ai_assisted']).toContain(qualityGate['validation_method']);
+      expect(['automated', 'manual', 'ai_assisted']).toContain(
+        qualityGate['validation_method'],
+      );
 
       // Validate requirement is specific and measurable
       expect(qualityGate.requirement).toContain('<');

@@ -111,7 +111,10 @@ async function validateSQLiteOptimizations() {
     const memoryAfter = process.memoryUsage().heapUsed;
     const memoryDiff = memoryAfter - memoryBefore;
 
-    log(`📊 Memory usage: ${Math.round((memoryDiff / 1024 / 1024) * 100) / 100}MB`, 'cyan');
+    log(
+      `📊 Memory usage: ${Math.round((memoryDiff / 1024 / 1024) * 100) / 100}MB`,
+      'cyan',
+    );
 
     if (memoryDiff < 50 * 1024 * 1024) {
       // Less than 50MB
@@ -139,10 +142,9 @@ async function validateSQLiteOptimizations() {
   if (allTestsPassed) {
     log('✅ All tests passed! SQLite optimizations are working.', 'green');
     return true;
-  } else {
-    log('❌ Some tests failed. Check the issues above.', 'red');
-    return false;
   }
+  log('❌ Some tests failed. Check the issues above.', 'red');
+  return false;
 }
 
 // Run validation if called directly

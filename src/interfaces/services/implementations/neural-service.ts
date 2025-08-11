@@ -49,7 +49,11 @@ export class NeuralService extends BaseService implements IService {
 
     // Load default model if specified
     if (config?.model?.path) {
-      await this.loadModel('default', config?.model?.path, config?.model?.config);
+      await this.loadModel(
+        'default',
+        config?.model?.path,
+        config?.model?.config,
+      );
     }
 
     this.logger.info(`Neural service ${this.name} initialized successfully`);
@@ -114,7 +118,10 @@ export class NeuralService extends BaseService implements IService {
 
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed for neural service ${this.name}:`, error);
+      this.logger.error(
+        `Health check failed for neural service ${this.name}:`,
+        error,
+      );
       return false;
     }
   }
@@ -122,13 +129,17 @@ export class NeuralService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     this.logger.debug(`Executing neural operation: ${operation}`);
 
     switch (operation) {
       case 'load-model':
-        return (await this.loadModel(params?.modelId, params?.path, params?.config)) as T;
+        return (await this.loadModel(
+          params?.modelId,
+          params?.path,
+          params?.config,
+        )) as T;
 
       case 'unload-model':
         return (await this.unloadModel(params?.modelId)) as T;
@@ -137,10 +148,18 @@ export class NeuralService extends BaseService implements IService {
         return this.getModels() as T;
 
       case 'predict':
-        return (await this.predict(params?.modelId, params?.input, params?.options)) as T;
+        return (await this.predict(
+          params?.modelId,
+          params?.input,
+          params?.options,
+        )) as T;
 
       case 'batch-predict':
-        return (await this.batchPredict(params?.modelId, params?.inputs, params?.options)) as T;
+        return (await this.batchPredict(
+          params?.modelId,
+          params?.inputs,
+          params?.options,
+        )) as T;
 
       case 'start-training':
         return (await this.startTraining(params)) as T;
@@ -169,8 +188,12 @@ export class NeuralService extends BaseService implements IService {
   // Neural Service Specific Methods
   // ============================================
 
-  private async loadModel(modelId: string, path: string, config?: any): Promise<any> {
-    if (!modelId || !path) {
+  private async loadModel(
+    modelId: string,
+    path: string,
+    config?: any,
+  ): Promise<any> {
+    if (!(modelId && path)) {
       throw new Error('Model ID and path are required');
     }
 
@@ -214,7 +237,11 @@ export class NeuralService extends BaseService implements IService {
     return Array.from(this.models.values());
   }
 
-  private async predict(modelId: string, input: any, _options?: any): Promise<any> {
+  private async predict(
+    modelId: string,
+    input: any,
+    _options?: any,
+  ): Promise<any> {
     const model = this.models.get(modelId);
     if (!model) {
       throw new Error(`Model not found: ${modelId}`);
@@ -231,7 +258,9 @@ export class NeuralService extends BaseService implements IService {
 
     // Simulate prediction
     this.logger.debug(`Running prediction with model: ${modelId}`);
-    await new Promise((resolve) => setTimeout(resolve, Math.random() * 100 + 50));
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.random() * 100 + 50),
+    );
 
     const prediction = {
       modelId,
@@ -250,13 +279,19 @@ export class NeuralService extends BaseService implements IService {
     return prediction;
   }
 
-  private async batchPredict(modelId: string, inputs: any[], options?: any): Promise<any[]> {
+  private async batchPredict(
+    modelId: string,
+    inputs: any[],
+    options?: any,
+  ): Promise<any[]> {
     const model = this.models.get(modelId);
     if (!model) {
       throw new Error(`Model not found: ${modelId}`);
     }
 
-    this.logger.debug(`Running batch prediction with model: ${modelId} (${inputs.length} samples)`);
+    this.logger.debug(
+      `Running batch prediction with model: ${modelId} (${inputs.length} samples)`,
+    );
 
     const config = this.config as NeuralServiceConfig;
     const batchSize = config?.inference?.batchSize || inputs.length;
@@ -266,7 +301,7 @@ export class NeuralService extends BaseService implements IService {
     for (let i = 0; i < inputs.length; i += batchSize) {
       const batch = inputs.slice(i, i + batchSize);
       const batchResults = await Promise.all(
-        batch.map((input) => this.predict(modelId, input, options))
+        batch.map((input) => this.predict(modelId, input, options)),
       );
       results.push(...batchResults);
     }
@@ -289,7 +324,8 @@ export class NeuralService extends BaseService implements IService {
       config: {
         batchSize: params?.batchSize || config?.training?.batchSize || 32,
         epochs: params?.epochs || config?.training?.epochs || 100,
-        learningRate: params?.learningRate || config?.training?.learningRate || 0.001,
+        learningRate:
+          params?.learningRate || config?.training?.learningRate || 0.001,
         ...params?.config,
       },
       status: 'running',
@@ -351,10 +387,14 @@ export class NeuralService extends BaseService implements IService {
       trainingJobCount: this.trainingJobs.size,
       cacheSize: this.inferenceCache.size,
       totalPredictions: this.operationCount,
-      successRate: this.operationCount > 0 ? (this.successCount / this.operationCount) * 100 : 100,
+      successRate:
+        this.operationCount > 0
+          ? (this.successCount / this.operationCount) * 100
+          : 100,
       averageInferenceTime:
         this.latencyMetrics.length > 0
-          ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) / this.latencyMetrics.length
+          ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) /
+            this.latencyMetrics.length
           : 0,
     };
   }
@@ -381,7 +421,9 @@ export class NeuralService extends BaseService implements IService {
         const entries = Array.from(this.inferenceCache.entries());
         const toRemove = entries.slice(0, entries.length - maxCacheSize);
         toRemove.forEach(([key]) => this.inferenceCache.delete(key));
-        this.logger.debug(`Cleaned ${toRemove.length} items from inference cache`);
+        this.logger.debug(
+          `Cleaned ${toRemove.length} items from inference cache`,
+        );
       }
     }, 60000); // Clean every minute
   }
@@ -392,7 +434,9 @@ export class NeuralService extends BaseService implements IService {
       case 'classification':
         return {
           class: Math.floor(Math.random() * 10),
-          probabilities: Array.from({ length: 10 }, () => Math.random()).map((p) => p / 10),
+          probabilities: Array.from({ length: 10 }, () => Math.random()).map(
+            (p) => p / 10,
+          ),
         };
 
       case 'regression':
@@ -403,7 +447,9 @@ export class NeuralService extends BaseService implements IService {
 
       default:
         return {
-          output: Array.from({ length: model.metadata.outputShape[0] }, () => Math.random()),
+          output: Array.from({ length: model.metadata.outputShape[0] }, () =>
+            Math.random(),
+          ),
           shape: model.metadata.outputShape,
         };
     }
@@ -421,9 +467,18 @@ export class NeuralService extends BaseService implements IService {
 
       // Update metrics
       job.metrics.loss = Math.max(0.1, job.metrics.loss - Math.random() * 0.05);
-      job.metrics.accuracy = Math.min(0.99, job.metrics.accuracy + Math.random() * 0.02);
-      job.metrics.valLoss = Math.max(0.1, job.metrics.valLoss - Math.random() * 0.03);
-      job.metrics.valAccuracy = Math.min(0.99, job.metrics.valAccuracy + Math.random() * 0.015);
+      job.metrics.accuracy = Math.min(
+        0.99,
+        job.metrics.accuracy + Math.random() * 0.02,
+      );
+      job.metrics.valLoss = Math.max(
+        0.1,
+        job.metrics.valLoss - Math.random() * 0.03,
+      );
+      job.metrics.valAccuracy = Math.min(
+        0.99,
+        job.metrics.valAccuracy + Math.random() * 0.015,
+      );
 
       if (job.progress >= 100) {
         job.status = 'completed';

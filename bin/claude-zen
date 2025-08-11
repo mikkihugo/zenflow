@@ -1,7 +1,14 @@
 #!/bin/sh
 # Claude-Zen Smart Dispatcher - Detects and uses the best available runtime
 
-VERSION="2.0.0-alpha.73"
+# Get version from package.json
+get_version() {
+  if [ -f "$ROOT_DIR/package.json" ]; then
+    VERSION=$(node -p "require('$ROOT_DIR/package.json').version" 2>/dev/null || echo "1.0.0-alpha.43")
+  else
+    VERSION="1.0.0-alpha.43"
+  fi
+}
 
 # Determine the correct path based on how the script is invoked
 if [ -L "$0" ]; then
@@ -29,16 +36,17 @@ else
   fi
 fi
 
-# Show help if no arguments provided
-if [ $# -eq 0 ]; then
-  set -- "--help"
-fi
+# No longer force help - let the main script handle default behavior
+# If no arguments provided, main.ts will default to TUI mode
 
 # Special handling for help command to ensure it passes through
 if [ "$1" = "help" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
   # Let the actual CLI handle help display
   :  # no-op, just pass through
 fi
+
+# Get version dynamically
+get_version
 
 # Quick version check only - let the actual CLI handle help
 for arg in "$@"; do
@@ -60,12 +68,15 @@ should_use_dev_fallback() {
   return 1
 }
 
-# Use Node.js - prefer built files over source
-if [ -f "$ROOT_DIR/dist/interfaces/terminal/main.js" ]; then
-  # Try production mode first
-  # Always use tsx for now due to ESM import issues in dist
-  echo "🧠 Claude-Zen: Using development mode"
-  cd "$ROOT_DIR" && exec npx tsx src/interfaces/terminal/main.ts "$@"
+# Use Node.js - prefer development mode for stability
+if [ -f "$ROOT_DIR/src/main.ts" ]; then
+  # Use development mode (more stable)
+  echo "🧠 Claude-Zen v$VERSION: Using development mode"
+  cd "$ROOT_DIR" && exec npx tsx src/main.ts "$@"
+elif [ -f "$ROOT_DIR/dist/claude-zen.js" ]; then
+  # Try production build as fallback
+  echo "🧠 Claude-Zen v$VERSION: Using production build"
+  cd "$ROOT_DIR" && exec node dist/claude-zen.js "$@"
 else
   # Built files not found - this should trigger a build
   echo "🧠 Claude-Zen v$VERSION - Distribution files not found"

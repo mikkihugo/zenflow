@@ -15,7 +15,9 @@ describe('LanceDB Integration Validation', () => {
 
   it('should have LanceDBInterface available', async () => {
     // Test that our LanceDBInterface exists and has required methods
-    const { default: LanceDBInterface } = await import('../../../database/lancedb-interface');
+    const { default: LanceDBInterface } = await import(
+      '../../../database/lancedb-interface'
+    );
     expect(LanceDBInterface).toBeDefined();
 
     const instance = new LanceDBInterface({
@@ -31,7 +33,9 @@ describe('LanceDB Integration Validation', () => {
 
   it('should have LanceDBAdapter available with vector operations', async () => {
     // Test that our adapter has the required vector methods
-    const { LanceDBAdapter } = await import('../../../database/providers/database-providers.ts');
+    const { LanceDBAdapter } = await import(
+      '../../../database/providers/database-providers.ts'
+    );
     expect(LanceDBAdapter).toBeDefined();
 
     const mockLogger = {
@@ -76,7 +80,9 @@ describe('LanceDB Integration Validation', () => {
 
   it('should have proper vector interfaces defined', async () => {
     // Test that vector interfaces are properly exported
-    const module = await import('../../../database/providers/database-providers.ts');
+    const module = await import(
+      '../../../database/providers/database-providers.ts'
+    );
 
     // These should be available as types, but we can test the class implements them
     expect(module['LanceDBAdapter']).toBeDefined();
@@ -91,7 +97,7 @@ describe('LanceDB Integration Validation', () => {
 
     const adapter = new module['LanceDBAdapter'](
       { type: 'lancedb', database: './test.lance' },
-      mockLogger
+      mockLogger,
     );
 
     // Test that it implements VectorDatabaseAdapter interface

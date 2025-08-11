@@ -8,7 +8,12 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { EventManagerTypes, UEL, UELHelpers, UELSystemIntegration } from '../index.ts';
+import {
+  EventManagerTypes,
+  UEL,
+  UELHelpers,
+  UELSystemIntegration,
+} from '../index.ts';
 
 /**
  * Example: Complete UEL System Integration.
@@ -18,10 +23,12 @@ import { EventManagerTypes, UEL, UELHelpers, UELSystemIntegration } from '../ind
  */
 export class UELIntegrationExample {
   private logger = {
-    info: (_msg: string, ..._args: any[]) => {},
-    warn: (msg: string, ...args: any[]) => console.warn(`⚠️  ${msg}`, ...args),
-    error: (msg: string, ...args: any[]) => console.error(`❌ ${msg}`, ...args),
-    debug: (_msg: string, ..._args: any[]) => {},
+    info: (_msg: string, ..._args: unknown[]) => {},
+    warn: (msg: string, ...args: unknown[]) =>
+      console.warn(`⚠️  ${msg}`, ...args),
+    error: (msg: string, ...args: unknown[]) =>
+      console.error(`❌ ${msg}`, ...args),
+    debug: (_msg: string, ..._args: unknown[]) => {},
   };
 
   /**
@@ -45,9 +52,12 @@ export class UELIntegrationExample {
       maxListeners: 50,
     });
 
-    const coordManager = await uel.createCoordinationEventManager('example-coordination', {
-      maxListeners: 30,
-    });
+    const coordManager = await uel.createCoordinationEventManager(
+      'example-coordination',
+      {
+        maxListeners: 30,
+      },
+    );
 
     this.logger.info('Event managers created');
 
@@ -80,13 +90,25 @@ export class UELIntegrationExample {
     };
 
     // Subscribe to events
-    const systemSubscription = systemManager.subscribe(['system:*'], (event) => {
-      this.logger.info(`System event received: ${event.type}`, event['details']);
-    });
+    const systemSubscription = systemManager.subscribe(
+      ['system:*'],
+      (event) => {
+        this.logger.info(
+          `System event received: ${event.type}`,
+          event['details'],
+        );
+      },
+    );
 
-    const coordSubscription = coordManager.subscribe(['coordination:*'], (event) => {
-      this.logger.info(`Coordination event received: ${event.type}`, event['details']);
-    });
+    const coordSubscription = coordManager.subscribe(
+      ['coordination:*'],
+      (event) => {
+        this.logger.info(
+          `Coordination event received: ${event.type}`,
+          event['details'],
+        );
+      },
+    );
 
     // Emit events
     await systemManager.emit(systemEvent);
@@ -136,7 +158,10 @@ export class UELIntegrationExample {
 
     // Simulate some legacy usage
     legacyEventBus.emit('data-processed', { id: 1, type: 'test' });
-    legacyCoordinator.emit('agent-spawned', { id: 'agent-001', type: 'worker' });
+    legacyCoordinator.emit('agent-spawned', {
+      id: 'agent-001',
+      type: 'worker',
+    });
     legacyObserver.emit('metric-collected', { name: 'cpu', value: 45 });
 
     this.logger.info('Legacy systems created and tested');
@@ -173,7 +198,8 @@ export class UELIntegrationExample {
       });
 
       // Test migrated systems - they maintain EventEmitter compatibility
-      const { eventBus, applicationCoordinator, observerSystem } = migrationResult;
+      const { eventBus, applicationCoordinator, observerSystem } =
+        migrationResult;
 
       if (eventBus) {
         // EventEmitter API still works
@@ -199,7 +225,10 @@ export class UELIntegrationExample {
         this.logger.info('Enhanced observer system status:', observerStatus);
       }
     } else {
-      this.logger.error('Migration failed:', migrationResult?.migrationReport?.errors);
+      this.logger.error(
+        'Migration failed:',
+        migrationResult?.migrationReport?.errors,
+      );
     }
 
     this.logger.info('System migration example completed');
@@ -251,7 +280,10 @@ export class UELIntegrationExample {
       });
 
       // Map legacy events to UEL types
-      systems.eventBus.mapEventToUEL('complete-setup-test', 'system:integration-test');
+      systems.eventBus.mapEventToUEL(
+        'complete-setup-test',
+        'system:integration-test',
+      );
     }
 
     // Demonstrate event managers
@@ -330,7 +362,11 @@ export class UELIntegrationExample {
 
     // Perform health check
     const healthCheck = await UELHelpers.performHealthCheck();
-    this.logger.info('Health check results:', Object.keys(healthCheck).length, 'managers checked');
+    this.logger.info(
+      'Health check results:',
+      Object.keys(healthCheck).length,
+      'managers checked',
+    );
 
     // Get detailed metrics
     const systemStatus = await uel.getSystemStatus();
@@ -402,25 +438,28 @@ export class UELIntegrationExample {
     await UELSystemIntegration.initialize(uel.getEventManager(), this.logger);
 
     // Create enhanced systems with custom configurations
-    const enhancedEventBus = UELSystemIntegration.factory.createEnhancedEventBus({
-      enableUEL: true,
-      managerType: EventManagerTypes['SYSTEM'],
-      managerName: 'advanced-event-bus',
-      maxListeners: 200,
-    });
+    const enhancedEventBus =
+      UELSystemIntegration.factory.createEnhancedEventBus({
+        enableUEL: true,
+        managerType: EventManagerTypes['SYSTEM'],
+        managerName: 'advanced-event-bus',
+        maxListeners: 200,
+      });
 
-    const enhancedCoordinator = UELSystemIntegration.factory.createEnhancedApplicationCoordinator({
-      enableUEL: true,
-      uelConfig: {
-        enableValidation: true,
-        enableCompatibility: true,
-        healthMonitoring: true,
-      },
-    });
+    const enhancedCoordinator =
+      UELSystemIntegration.factory.createEnhancedApplicationCoordinator({
+        enableUEL: true,
+        uelConfig: {
+          enableValidation: true,
+          enableCompatibility: true,
+          healthMonitoring: true,
+        },
+      });
 
-    const enhancedObserver = UELSystemIntegration.factory.createEnhancedObserverSystem({
-      enableUEL: true,
-    });
+    const enhancedObserver =
+      UELSystemIntegration.factory.createEnhancedObserverSystem({
+        enableUEL: true,
+      });
 
     this.logger.info('Advanced enhanced systems created');
 
@@ -430,10 +469,13 @@ export class UELIntegrationExample {
     });
 
     // Create observers with UEL integration
-    const systemObserver = enhancedObserver.createObserver('system-metrics', 'monitoring');
+    const systemObserver = enhancedObserver.createObserver(
+      'system-metrics',
+      'monitoring',
+    );
     const performanceObserver = enhancedObserver.createObserver(
       'performance-tracking',
-      'analytics'
+      'analytics',
     );
 
     systemObserver.on('metric-update', (metric) => {
@@ -482,15 +524,23 @@ export class UELIntegrationExample {
     // Demonstrate event builder pattern
     const eventBuilder = UELHelpers.createEventBuilder();
 
-    const builtSystemEvent = eventBuilder.system('integration-test', 'success', {
-      pattern: 'advanced-integration',
-      timestamp: Date.now(),
-    });
+    const builtSystemEvent = eventBuilder.system(
+      'integration-test',
+      'success',
+      {
+        pattern: 'advanced-integration',
+        timestamp: Date.now(),
+      },
+    );
 
-    const builtCoordEvent = eventBuilder.coordination('pattern-demo', 'advanced-target', {
-      pattern: 'builder-pattern',
-      phase: 'demonstration',
-    });
+    const builtCoordEvent = eventBuilder.coordination(
+      'pattern-demo',
+      'advanced-target',
+      {
+        pattern: 'builder-pattern',
+        phase: 'demonstration',
+      },
+    );
 
     this.logger.info('Built events:', {
       system: { id: builtSystemEvent.id, type: builtSystemEvent.type },

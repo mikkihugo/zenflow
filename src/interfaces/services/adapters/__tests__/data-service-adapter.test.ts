@@ -22,7 +22,10 @@ import {
   type DataServiceAdapterConfig,
 } from '../data-service-adapter.ts';
 import { DataServiceFactory } from '../data-service-factory.ts';
-import { DataServiceHelper, DataServiceUtils } from '../data-service-helpers.ts';
+import {
+  DataServiceHelper,
+  DataServiceUtils,
+} from '../data-service-helpers.ts';
 
 // Mock external dependencies
 vi.mock('../../../web/web-data-service');
@@ -36,7 +39,9 @@ vi.mock('../../../../utils/logger', () => ({
   })),
 }));
 
-const MockedWebDataService = WebDataService as vi.MockedClass<typeof WebDataService>;
+const MockedWebDataService = WebDataService as vi.MockedClass<
+  typeof WebDataService
+>;
 const MockedDocumentService = vi.mocked(documentManager);
 
 describe('DataServiceAdapter', () => {
@@ -162,7 +167,9 @@ describe('DataServiceAdapter', () => {
 
     it('should throw error when starting without initialization', async () => {
       // Act & Assert
-      await expect(adapter.start()).rejects.toThrow('Cannot start service in uninitialized state');
+      await expect(adapter.start()).rejects.toThrow(
+        'Cannot start service in uninitialized state',
+      );
     });
 
     it('should stop and destroy service gracefully', async () => {
@@ -211,7 +218,14 @@ describe('DataServiceAdapter', () => {
     it('should delegate swarm operations to WebDataService', async () => {
       // Arrange
       const mockSwarms = [
-        { id: 'swarm-1', name: 'Test Swarm', status: 'active', agents: 4, tasks: 8, progress: 75 },
+        {
+          id: 'swarm-1',
+          name: 'Test Swarm',
+          status: 'active',
+          agents: 4,
+          tasks: 8,
+          progress: 75,
+        },
       ];
       mockWebDataService?.getSwarms?.mockResolvedValue(mockSwarms);
 
@@ -247,15 +261,30 @@ describe('DataServiceAdapter', () => {
 
     it('should delegate document creation to DocumentService', async () => {
       // Arrange
-      const mockDocument = { id: 'doc-1', title: 'Test Doc', content: 'Content' };
-      const createdDocument = { ...mockDocument, created_at: new Date(), updated_at: new Date() };
-      MockedDocumentService.createDocument.mockResolvedValue(createdDocument as any);
+      const mockDocument = {
+        id: 'doc-1',
+        title: 'Test Doc',
+        content: 'Content',
+      };
+      const createdDocument = {
+        ...mockDocument,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      MockedDocumentService.createDocument.mockResolvedValue(
+        createdDocument as any,
+      );
 
       // Act
-      const response = await adapter.execute('document-create', { document: mockDocument });
+      const response = await adapter.execute('document-create', {
+        document: mockDocument,
+      });
 
       // Assert
-      expect(mockDocumentService.createDocument).toHaveBeenCalledWith(mockDocument, undefined);
+      expect(mockDocumentService.createDocument).toHaveBeenCalledWith(
+        mockDocument,
+        undefined,
+      );
       expect(response?.success).toBe(true);
       expect(response?.data).toEqual(createdDocument);
     });
@@ -271,15 +300,25 @@ describe('DataServiceAdapter', () => {
         documents: [{ id: 'doc-1', title: 'Found Doc' }],
         total: 1,
         hasMore: false,
-        searchMetadata: { searchType: 'fulltext', query: 'test query', processingTime: 50 },
+        searchMetadata: {
+          searchType: 'fulltext',
+          query: 'test query',
+          processingTime: 50,
+        },
       };
-      MockedDocumentService.searchDocuments.mockResolvedValue(mockResults as any);
+      MockedDocumentService.searchDocuments.mockResolvedValue(
+        mockResults as any,
+      );
 
       // Act
-      const response = await adapter.execute('document-search', { searchOptions });
+      const response = await adapter.execute('document-search', {
+        searchOptions,
+      });
 
       // Assert
-      expect(mockDocumentService.searchDocuments).toHaveBeenCalledWith(searchOptions);
+      expect(mockDocumentService.searchDocuments).toHaveBeenCalledWith(
+        searchOptions,
+      );
       expect(response?.success).toBe(true);
       expect(response?.data).toEqual(mockResults);
     });
@@ -309,10 +348,14 @@ describe('DataServiceAdapter', () => {
 
     it('should not retry non-retryable operations', async () => {
       // Arrange
-      mockWebDataService?.createSwarm?.mockRejectedValue(new Error('Creation failed'));
+      mockWebDataService?.createSwarm?.mockRejectedValue(
+        new Error('Creation failed'),
+      );
 
       // Act
-      const response = await adapter.execute('create-swarm', { name: 'Test Swarm' });
+      const response = await adapter.execute('create-swarm', {
+        name: 'Test Swarm',
+      });
 
       // Assert - no retries for non-retryable operations
       expect(mockWebDataService?.createSwarm).toHaveBeenCalledTimes(1);
@@ -473,7 +516,9 @@ describe('DataServiceAdapter', () => {
 
     it('should clear cache when requested', async () => {
       // Arrange - Add some data to cache first
-      mockWebDataService?.getSystemStatus?.mockResolvedValue({ system: 'healthy' } as any);
+      mockWebDataService?.getSystemStatus?.mockResolvedValue({
+        system: 'healthy',
+      } as any);
       await adapter.execute('system-status');
 
       // Act
@@ -494,7 +539,9 @@ describe('DataServiceAdapter', () => {
 
     it('should collect operation metrics', async () => {
       // Arrange
-      mockWebDataService?.getSystemStatus?.mockResolvedValue({ system: 'healthy' } as any);
+      mockWebDataService?.getSystemStatus?.mockResolvedValue({
+        system: 'healthy',
+      } as any);
 
       // Act - Perform some operations
       await adapter.execute('system-status');
@@ -512,7 +559,9 @@ describe('DataServiceAdapter', () => {
 
     it('should track error metrics', async () => {
       // Arrange
-      mockWebDataService?.getSystemStatus?.mockRejectedValue(new Error('Test error'));
+      mockWebDataService?.getSystemStatus?.mockRejectedValue(
+        new Error('Test error'),
+      );
 
       // Act
       await adapter.execute('system-status');
@@ -526,7 +575,9 @@ describe('DataServiceAdapter', () => {
 
     it('should calculate custom metrics correctly', async () => {
       // Arrange
-      mockWebDataService?.getSystemStatus?.mockResolvedValue({ system: 'healthy' } as any);
+      mockWebDataService?.getSystemStatus?.mockResolvedValue({
+        system: 'healthy',
+      } as any);
 
       // Act - Hit cache to test cache hit rate
       await adapter.execute('system-status'); // Cache miss
@@ -572,7 +623,9 @@ describe('DataServiceAdapter', () => {
       // Assert
       expect(status.dependencies).toHaveProperty('web-data-service');
       expect(status.dependencies).toHaveProperty('document-service');
-      expect(status.dependencies?.['web-data-service'].status).toMatch(/healthy|unhealthy|unknown/);
+      expect(status.dependencies?.['web-data-service'].status).toMatch(
+        /healthy|unhealthy|unknown/,
+      );
     });
 
     it('should report metadata in service status', async () => {
@@ -646,7 +699,9 @@ describe('DataServiceFactory', () => {
   describe('Factory Operations (London TDD)', () => {
     it('should create adapter instances correctly', async () => {
       // Arrange
-      const config = createDefaultDataServiceAdapterConfig('test-factory-adapter');
+      const config = createDefaultDataServiceAdapterConfig(
+        'test-factory-adapter',
+      );
       MockedDocumentService.initialize.mockResolvedValue();
 
       // Act
@@ -665,7 +720,9 @@ describe('DataServiceFactory', () => {
       await factory.create(config);
 
       // Act & Assert
-      await expect(factory.create(config)).rejects.toThrow('Service with this name already exists');
+      await expect(factory.create(config)).rejects.toThrow(
+        'Service with this name already exists',
+      );
     });
 
     it('should validate configuration before creating services', async () => {
@@ -680,7 +737,7 @@ describe('DataServiceFactory', () => {
 
       // Act & Assert
       await expect(factory.create(invalidConfig)).rejects.toThrow(
-        'Invalid data service adapter configuration'
+        'Invalid data service adapter configuration',
       );
     });
   });
@@ -716,7 +773,10 @@ describe('DataServiceFactory', () => {
 
     it('should create document adapter with specified database type', async () => {
       // Act
-      const adapter = await factory.createDocumentAdapter('doc-adapter', 'mysql');
+      const adapter = await factory.createDocumentAdapter(
+        'doc-adapter',
+        'mysql',
+      );
 
       // Assert
       expect(adapter.type).toBe(ServiceType.DOCUMENT);
@@ -727,7 +787,10 @@ describe('DataServiceFactory', () => {
 
     it('should create unified adapter with both services enabled', async () => {
       // Act
-      const adapter = await factory.createUnifiedDataAdapter('unified-adapter', 'postgresql');
+      const adapter = await factory.createUnifiedDataAdapter(
+        'unified-adapter',
+        'postgresql',
+      );
 
       // Assert
       expect(adapter.type).toBe(ServiceType.DATA);
@@ -906,11 +969,19 @@ describe('DataServiceHelper', () => {
       ];
 
       const pipeline = [
-        { type: 'filter' as const, config: { predicate: (item: any) => item?.active } },
-        { type: 'sort' as const, config: { field: 'value', direction: 'desc' } },
+        {
+          type: 'filter' as const,
+          config: { predicate: (item: any) => item?.active },
+        },
+        {
+          type: 'sort' as const,
+          config: { field: 'value', direction: 'desc' },
+        },
         {
           type: 'map' as const,
-          config: { mapper: (item: any) => ({ ...item, doubled: item?.value * 2 }) },
+          config: {
+            mapper: (item: any) => ({ ...item, doubled: item?.value * 2 }),
+          },
         },
       ];
 
@@ -1043,8 +1114,14 @@ describe('DataServiceUtils', () => {
       const invalidConfig = { name: 'test' }; // Missing 'type'
 
       // Act
-      const validResult = DataServiceUtils?.validateConfiguration(validConfig, schema);
-      const invalidResult = DataServiceUtils?.validateConfiguration(invalidConfig, schema);
+      const validResult = DataServiceUtils?.validateConfiguration(
+        validConfig,
+        schema,
+      );
+      const invalidResult = DataServiceUtils?.validateConfiguration(
+        invalidConfig,
+        schema,
+      );
 
       // Assert
       expect(validResult?.valid).toBe(true);

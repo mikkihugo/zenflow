@@ -78,11 +78,15 @@ export class PerformanceMeasurement {
   measureSync<T>(
     name: string,
     fn: () => T,
-    options: Partial<PerformanceTestOptions> = {}
+    options: Partial<PerformanceTestOptions> = {},
   ): PerformanceMetrics {
     const config = { ...this.options, ...options };
     const measurements: number[] = [];
-    const memoryMeasurements: Array<{ heap: number; external: number; total: number }> = [];
+    const memoryMeasurements: Array<{
+      heap: number;
+      external: number;
+      total: number;
+    }> = [];
 
     // Warmup
     for (let i = 0; i < config?.warmup!; i++) {
@@ -115,7 +119,9 @@ export class PerformanceMeasurement {
         heap: endMemory.heapUsed - startMemory.heapUsed,
         external: endMemory.external - startMemory.external,
         total:
-          endMemory.heapUsed + endMemory.external - (startMemory.heapUsed + startMemory.external),
+          endMemory.heapUsed +
+          endMemory.external -
+          (startMemory.heapUsed + startMemory.external),
       });
     }
 
@@ -135,11 +141,15 @@ export class PerformanceMeasurement {
   async measureAsync<T>(
     name: string,
     fn: () => Promise<T>,
-    options: Partial<PerformanceTestOptions> = {}
+    options: Partial<PerformanceTestOptions> = {},
   ): Promise<PerformanceMetrics> {
     const config = { ...this.options, ...options };
     const measurements: number[] = [];
-    const memoryMeasurements: Array<{ heap: number; external: number; total: number }> = [];
+    const memoryMeasurements: Array<{
+      heap: number;
+      external: number;
+      total: number;
+    }> = [];
 
     // Warmup
     for (let i = 0; i < config?.warmup!; i++) {
@@ -166,7 +176,9 @@ export class PerformanceMeasurement {
         heap: endMemory.heapUsed - startMemory.heapUsed,
         external: endMemory.external - startMemory.external,
         total:
-          endMemory.heapUsed + endMemory.external - (startMemory.heapUsed + startMemory.external),
+          endMemory.heapUsed +
+          endMemory.external -
+          (startMemory.heapUsed + startMemory.external),
       });
     }
 
@@ -186,7 +198,7 @@ export class PerformanceMeasurement {
   async measureThroughput<T>(
     name: string,
     fn: () => T | Promise<T>,
-    duration: number = 5000
+    duration: number = 5000,
   ): Promise<PerformanceMetrics> {
     const operations: number[] = [];
     const startTime = Date.now();
@@ -227,14 +239,20 @@ export class PerformanceMeasurement {
    */
   async benchmarkComparison<T>(
     benchmarks: Array<{ name: string; fn: () => T | Promise<T> }>,
-    options: Partial<PerformanceTestOptions> = {}
-  ): Promise<Array<{ name: string; metrics: PerformanceMetrics; ranking: number }>> {
+    options: Partial<PerformanceTestOptions> = {},
+  ): Promise<
+    Array<{ name: string; metrics: PerformanceMetrics; ranking: number }>
+  > {
     const results: Array<{ name: string; metrics: PerformanceMetrics }> = [];
 
     for (const benchmark of benchmarks) {
       const isAsync = benchmark.fn.constructor.name === 'AsyncFunction';
       const metrics = isAsync
-        ? await this.measureAsync(benchmark.name, benchmark.fn as () => Promise<T>, options)
+        ? await this.measureAsync(
+            benchmark.name,
+            benchmark.fn as () => Promise<T>,
+            options,
+          )
         : this.measureSync(benchmark.name, benchmark.fn as () => T, options);
 
       results?.push({ name: benchmark.name, metrics });
@@ -245,7 +263,7 @@ export class PerformanceMeasurement {
       ?.sort(
         (a, b) =>
           (a.metrics.statistics?.mean || a.metrics.executionTime) -
-          (b.metrics.statistics?.mean || b.metrics.executionTime)
+          (b.metrics.statistics?.mean || b.metrics.executionTime),
       )
       .map((result, index) => ({ ...result, ranking: index + 1 }));
 
@@ -264,14 +282,20 @@ export class PerformanceMeasurement {
     name: string,
     fn: () => Promise<T>,
     concurrency: number = 10,
-    duration: number = 10000
+    duration: number = 10000,
   ): Promise<PerformanceMetrics> {
     const startTime = Date.now();
-    const operations: Array<{ duration: number; success: boolean; error?: string }> = [];
+    const operations: Array<{
+      duration: number;
+      success: boolean;
+      error?: string;
+    }> = [];
     const promises: Promise<void>[] = [];
 
     for (let i = 0; i < concurrency; i++) {
-      promises.push(this.runConcurrentTest(fn, operations, startTime + duration));
+      promises.push(
+        this.runConcurrentTest(fn, operations, startTime + duration),
+      );
     }
 
     await Promise.all(promises);
@@ -310,8 +334,12 @@ export class PerformanceMeasurement {
   async detectMemoryLeaks<T>(
     _name: string,
     fn: () => T | Promise<T>,
-    iterations: number = 100
-  ): Promise<{ hasLeak: boolean; memoryGrowth: number; measurements: number[] }> {
+    iterations: number = 100,
+  ): Promise<{
+    hasLeak: boolean;
+    memoryGrowth: number;
+    measurements: number[];
+  }> {
     const memoryMeasurements: number[] = [];
 
     // Force initial garbage collection
@@ -332,11 +360,16 @@ export class PerformanceMeasurement {
     }
 
     // Calculate memory growth trend
-    const firstQuarter = memoryMeasurements.slice(0, Math.floor(iterations / 4));
+    const firstQuarter = memoryMeasurements.slice(
+      0,
+      Math.floor(iterations / 4),
+    );
     const lastQuarter = memoryMeasurements.slice(-Math.floor(iterations / 4));
 
-    const firstAverage = firstQuarter.reduce((a, b) => a + b, 0) / firstQuarter.length;
-    const lastAverage = lastQuarter.reduce((a, b) => a + b, 0) / lastQuarter.length;
+    const firstAverage =
+      firstQuarter.reduce((a, b) => a + b, 0) / firstQuarter.length;
+    const lastAverage =
+      lastQuarter.reduce((a, b) => a + b, 0) / lastQuarter.length;
 
     const memoryGrowth = lastAverage - firstAverage;
     const hasLeak = memoryGrowth > firstAverage * 0.1; // 10% growth threshold
@@ -351,7 +384,11 @@ export class PerformanceMeasurement {
   /**
    * Get all recorded measurements
    */
-  getAllMeasurements(): Array<{ name: string; metrics: PerformanceMetrics; timestamp: number }> {
+  getAllMeasurements(): Array<{
+    name: string;
+    metrics: PerformanceMetrics;
+    timestamp: number;
+  }> {
     return [...this.measurements];
   }
 
@@ -409,15 +446,25 @@ export class PerformanceMeasurement {
 
   private calculateMetrics(
     timeMeasurements: number[],
-    memoryMeasurements: Array<{ heap: number; external: number; total: number }>
+    memoryMeasurements: Array<{
+      heap: number;
+      external: number;
+      total: number;
+    }>,
   ): PerformanceMetrics {
-    const executionTime = timeMeasurements.reduce((a, b) => a + b, 0) / timeMeasurements.length;
+    const executionTime =
+      timeMeasurements.reduce((a, b) => a + b, 0) / timeMeasurements.length;
 
     const avgMemory = {
-      heap: memoryMeasurements.reduce((sum, m) => sum + m.heap, 0) / memoryMeasurements.length,
+      heap:
+        memoryMeasurements.reduce((sum, m) => sum + m.heap, 0) /
+        memoryMeasurements.length,
       external:
-        memoryMeasurements.reduce((sum, m) => sum + m.external, 0) / memoryMeasurements.length,
-      total: memoryMeasurements.reduce((sum, m) => sum + m.total, 0) / memoryMeasurements.length,
+        memoryMeasurements.reduce((sum, m) => sum + m.external, 0) /
+        memoryMeasurements.length,
+      total:
+        memoryMeasurements.reduce((sum, m) => sum + m.total, 0) /
+        memoryMeasurements.length,
     };
 
     return {
@@ -444,7 +491,8 @@ export class PerformanceMeasurement {
     const p99 = sorted[p99Index];
 
     const variance =
-      measurements.reduce((sum, val) => sum + (val - mean) ** 2, 0) / measurements.length;
+      measurements.reduce((sum, val) => sum + (val - mean) ** 2, 0) /
+      measurements.length;
     const standardDeviation = Math.sqrt(variance);
 
     return {
@@ -460,7 +508,7 @@ export class PerformanceMeasurement {
   private async runConcurrentTest<T>(
     fn: () => Promise<T>,
     operations: Array<{ duration: number; success: boolean; error?: string }>,
-    endTime: number
+    endTime: number,
   ): Promise<void> {
     while (Date.now() < endTime) {
       const start = performance.now();
@@ -488,7 +536,7 @@ export const performanceMeasurement = new PerformanceMeasurement();
 export function measurePerformance<T>(
   name: string,
   fn: () => T,
-  options?: Partial<PerformanceTestOptions>
+  options?: Partial<PerformanceTestOptions>,
 ): PerformanceMetrics {
   return performanceMeasurement.measureSync(name, fn, options);
 }
@@ -496,14 +544,16 @@ export function measurePerformance<T>(
 export async function measureAsyncPerformance<T>(
   name: string,
   fn: () => Promise<T>,
-  options?: Partial<PerformanceTestOptions>
+  options?: Partial<PerformanceTestOptions>,
 ): Promise<PerformanceMetrics> {
   return performanceMeasurement.measureAsync(name, fn, options);
 }
 
 export async function benchmarkFunctions<T>(
   benchmarks: Array<{ name: string; fn: () => T | Promise<T> }>,
-  options?: Partial<PerformanceTestOptions>
-): Promise<Array<{ name: string; metrics: PerformanceMetrics; ranking: number }>> {
+  options?: Partial<PerformanceTestOptions>,
+): Promise<
+  Array<{ name: string; metrics: PerformanceMetrics; ranking: number }>
+> {
   return performanceMeasurement.benchmarkComparison(benchmarks, options);
 }

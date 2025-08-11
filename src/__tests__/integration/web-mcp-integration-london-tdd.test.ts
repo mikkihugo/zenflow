@@ -113,20 +113,28 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       });
 
       // Route: Execute tool
-      mockWebApiServer.post('/api/tools/:toolName', async (req: any, res: any) => {
-        return this.handleToolExecution(req, res);
-      });
+      mockWebApiServer.post(
+        '/api/tools/:toolName',
+        async (req: any, res: any) => {
+          return this.handleToolExecution(req, res);
+        },
+      );
 
       // Route: Queen task coordination
-      mockWebApiServer.post('/api/queens/:queenType/task', async (req: any, res: any) => {
-        return this.handleQueenTask(req, res);
-      });
+      mockWebApiServer.post(
+        '/api/queens/:queenType/task',
+        async (req: any, res: any) => {
+          return this.handleQueenTask(req, res);
+        },
+      );
     }
 
     async handleToolsList(req: any, _res: any) {
       try {
         // Authenticate request
-        const _authContext = await mockAuthHandler.validateApiKey(req.headers.authorization);
+        const _authContext = await mockAuthHandler.validateApiKey(
+          req.headers.authorization,
+        );
 
         // Get tools from MCP server
         const mcpResponse = await mockMcpServer.listTools();
@@ -209,22 +217,37 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
     describe('User Story: API Tool Discovery', () => {
       it('should expose MCP tools through REST API with proper transformation', async () => {
         // Arrange - Mock tool discovery workflow
-        mockAuthHandler.validateApiKey.mockResolvedValue({ valid: true, user: 'test-user' });
+        mockAuthHandler.validateApiKey.mockResolvedValue({
+          valid: true,
+          user: 'test-user',
+        });
         mockMcpServer.listTools.mockResolvedValue({
           jsonrpc: '2.0',
           id: 1,
           result: {
             tools: [
-              { name: 'claude-zen-analyze', description: 'Analyze code architecture' },
-              { name: 'queen-architect-design', description: 'Design system architecture' },
+              {
+                name: 'claude-zen-analyze',
+                description: 'Analyze code architecture',
+              },
+              {
+                name: 'queen-architect-design',
+                description: 'Design system architecture',
+              },
             ],
           },
         });
 
         mockRequestTransformer.mcpToHttp.mockReturnValue({
           tools: [
-            { name: 'claude-zen-analyze', description: 'Analyze code architecture' },
-            { name: 'queen-architect-design', description: 'Design system architecture' },
+            {
+              name: 'claude-zen-analyze',
+              description: 'Analyze code architecture',
+            },
+            {
+              name: 'queen-architect-design',
+              description: 'Design system architecture',
+            },
           ],
         });
 
@@ -232,8 +255,14 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
           status: 'success',
           data: {
             tools: [
-              { name: 'claude-zen-analyze', description: 'Analyze code architecture' },
-              { name: 'queen-architect-design', description: 'Design system architecture' },
+              {
+                name: 'claude-zen-analyze',
+                description: 'Analyze code architecture',
+              },
+              {
+                name: 'queen-architect-design',
+                description: 'Design system architecture',
+              },
             ],
           },
         });
@@ -246,17 +275,22 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
         };
         const mockRes = {};
 
-        const response = await integrationLayer.handleToolsList(mockReq, mockRes);
+        const response = await integrationLayer.handleToolsList(
+          mockReq,
+          mockRes,
+        );
 
         // Assert - Verify complete transformation chain
-        expect(mockAuthHandler.validateApiKey).toHaveBeenCalledWith('Bearer test-token');
+        expect(mockAuthHandler.validateApiKey).toHaveBeenCalledWith(
+          'Bearer test-token',
+        );
         expect(mockMcpServer.listTools).toHaveBeenCalled();
         expect(mockRequestTransformer.mcpToHttp).toHaveBeenCalledWith(
           expect.objectContaining({
             result: expect.objectContaining({
               tools: expect.any(Array),
             }),
-          })
+          }),
         );
         expect(mockResponseFormatter?.formatSuccess).toHaveBeenCalled();
 
@@ -317,10 +351,15 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
         const integrationLayer = new MockWebMcpIntegrationLayer();
 
         // Act - Execute tool via HTTP
-        const response = await integrationLayer.handleToolExecution(httpToolRequest, {});
+        const response = await integrationLayer.handleToolExecution(
+          httpToolRequest,
+          {},
+        );
 
         // Assert - Verify request/response transformation chain
-        expect(mockRequestTransformer.validateHttpRequest).toHaveBeenCalledWith(httpToolRequest);
+        expect(mockRequestTransformer.validateHttpRequest).toHaveBeenCalledWith(
+          httpToolRequest,
+        );
         expect(mockRequestTransformer.httpToMcp).toHaveBeenCalledWith({
           method: 'tools/call',
           params: {
@@ -408,7 +447,10 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
         const integrationLayer = new MockWebMcpIntegrationLayer();
 
         // Act - Execute Queen task via API
-        const response = await integrationLayer.handleQueenTask(queenTaskRequest, {});
+        const response = await integrationLayer.handleQueenTask(
+          queenTaskRequest,
+          {},
+        );
 
         // Assert - Verify Queen coordination workflow
         expect(mockRequestTransformer.httpToMcp).toHaveBeenCalledWith({
@@ -483,7 +525,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
             params: { toolName: 'invalid-tool' },
             body: {},
           },
-          {}
+          {},
         );
 
         // Assert - Verify error transformation chain
@@ -508,9 +550,19 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       };
 
       const protocolIntegrator = {
-        bridge: (sourceRequest: any, sourceProtocol: string, targetProtocol: string) => {
-          const translated = mockProtocolBridge.translateRequest(sourceRequest, targetProtocol);
-          const isValid = mockProtocolBridge.validateTranslation(sourceRequest, translated);
+        bridge: (
+          sourceRequest: any,
+          sourceProtocol: string,
+          targetProtocol: string,
+        ) => {
+          const translated = mockProtocolBridge.translateRequest(
+            sourceRequest,
+            targetProtocol,
+          );
+          const isValid = mockProtocolBridge.validateTranslation(
+            sourceRequest,
+            translated,
+          );
 
           if (!isValid) {
             throw new Error('Translation validation failed');
@@ -521,7 +573,10 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       };
 
       // Mock the protocol translation conversation
-      mockProtocolBridge.translateRequest.mockReturnValue({ method: 'translated', params: {} });
+      mockProtocolBridge.translateRequest.mockReturnValue({
+        method: 'translated',
+        params: {},
+      });
       mockProtocolBridge.validateTranslation.mockReturnValue(true);
 
       // Act - Test protocol bridging
@@ -529,8 +584,14 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       const result = protocolIntegrator.bridge(httpRequest, 'HTTP', 'MCP');
 
       // Assert - Verify protocol interaction
-      expect(mockProtocolBridge.translateRequest).toHaveBeenCalledWith(httpRequest, 'MCP');
-      expect(mockProtocolBridge.validateTranslation).toHaveBeenCalledWith(httpRequest, result);
+      expect(mockProtocolBridge.translateRequest).toHaveBeenCalledWith(
+        httpRequest,
+        'MCP',
+      );
+      expect(mockProtocolBridge.validateTranslation).toHaveBeenCalledWith(
+        httpRequest,
+        result,
+      );
       expect(result?.method).toBe('translated');
     });
   });

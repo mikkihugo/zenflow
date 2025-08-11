@@ -9,7 +9,11 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { MCPContext, MCPRequest, MCPResponse } from '../../../../utils/types';
+import type {
+  MCPContext,
+  MCPRequest,
+  MCPResponse,
+} from '../../../../utils/types';
 
 // === MOCK DEPENDENCIES (London School Contract Definition) ===
 
@@ -63,8 +67,14 @@ const mockEventEmitter = {
 // === CONTRACT INTERFACES ===
 
 interface StreamingContract {
-  createStreamingSession(request: MCPRequest, context: MCPContext): Promise<StreamSession>;
-  handleStreamingRequest(request: MCPRequest, context: MCPContext): Promise<MCPResponse>;
+  createStreamingSession(
+    request: MCPRequest,
+    context: MCPContext,
+  ): Promise<StreamSession>;
+  handleStreamingRequest(
+    request: MCPRequest,
+    context: MCPContext,
+  ): Promise<MCPResponse>;
   closeStreamingSession(streamId: string): Promise<void>;
   handleStreamData(streamId: string, data: StreamData): Promise<void>;
 }
@@ -132,7 +142,9 @@ interface StreamSummary {
 
 // === MOCK IMPLEMENTATION ===
 
-class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolContract {
+class MockMCPStreamingHandler
+  implements StreamingContract, StreamingProtocolContract
+{
   private activeSessions = new Map<string, StreamSession>();
 
   constructor(
@@ -141,10 +153,13 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
     private flowController = mockFlowController,
     private logger = mockLogger,
     private metrics = mockMetricsCollector,
-    private eventEmitter = mockEventEmitter
+    private eventEmitter = mockEventEmitter,
   ) {}
 
-  async createStreamingSession(request: MCPRequest, context: MCPContext): Promise<StreamSession> {
+  async createStreamingSession(
+    request: MCPRequest,
+    context: MCPContext,
+  ): Promise<StreamSession> {
     const streamId = `stream-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
 
     this.logger.info('Creating streaming session', {
@@ -183,7 +198,10 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
     return session;
   }
 
-  async handleStreamingRequest(request: MCPRequest, context: MCPContext): Promise<MCPResponse> {
+  async handleStreamingRequest(
+    request: MCPRequest,
+    context: MCPContext,
+  ): Promise<MCPResponse> {
     this.logger.debug('Handling streaming request', {
       method: request.method,
       id: request.id,
@@ -193,7 +211,10 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
       case 'stream/start':
         return this.handleStreamStart(request, context);
       case 'stream/data':
-        return this.handleStreamData(request.params.streamId, request.params.data);
+        return this.handleStreamData(
+          request.params.streamId,
+          request.params.data,
+        );
       case 'stream/end':
         return this.handleStreamEnd(request, context);
       default:
@@ -303,7 +324,9 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
     });
 
     if (!processed) {
-      throw new Error(`Failed to process chunk ${chunk.sequence} for stream ${streamId}`);
+      throw new Error(
+        `Failed to process chunk ${chunk.sequence} for stream ${streamId}`,
+      );
     }
 
     this.eventEmitter.emit('stream:chunk-processed', { streamId, chunk });
@@ -345,7 +368,10 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
     await this.closeStreamingSession(streamId);
   }
 
-  private async handleStreamStart(request: MCPRequest, context: MCPContext): Promise<MCPResponse> {
+  private async handleStreamStart(
+    request: MCPRequest,
+    context: MCPContext,
+  ): Promise<MCPResponse> {
     const session = await this.createStreamingSession(request, context);
 
     return {
@@ -360,7 +386,10 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
     };
   }
 
-  private async handleStreamEnd(request: MCPRequest, _context: MCPContext): Promise<MCPResponse> {
+  private async handleStreamEnd(
+    request: MCPRequest,
+    _context: MCPContext,
+  ): Promise<MCPResponse> {
     const { streamId } = request.params;
     await this.closeStreamingSession(streamId);
 
@@ -374,7 +403,10 @@ class MockMCPStreamingHandler implements StreamingContract, StreamingProtocolCon
     };
   }
 
-  private async handleBackpressure(streamId: string, bufferUsage: number): Promise<void> {
+  private async handleBackpressure(
+    streamId: string,
+    bufferUsage: number,
+  ): Promise<void> {
     this.logger.warn('Backpressure detected', { streamId, bufferUsage });
 
     const backpressureEvent: BackpressureEvent = {
@@ -442,7 +474,10 @@ describe('MCP Streaming Support - London TDD', () => {
         };
 
         // Act - Create streaming session
-        const session = await streamingHandler.createStreamingSession(streamRequest, context);
+        const session = await streamingHandler.createStreamingSession(
+          streamRequest,
+          context,
+        );
 
         // Assert - Verify stream creation conversation
         expect(mockLogger.info).toHaveBeenCalledWith(
@@ -451,18 +486,18 @@ describe('MCP Streaming Support - London TDD', () => {
             streamId: session.id,
             method: 'stream/start',
             sessionId: 'session-stream',
-          })
+          }),
         );
         expect(mockStreamManager.createStream).toHaveBeenCalledWith(
           session.id,
           expect.objectContaining({
             bufferSize: expect.any(Number),
             maxBufferSize: expect.any(Number),
-          })
+          }),
         );
         expect(mockMetricsCollector.recordStreamCreated).toHaveBeenCalledWith(
           session.id,
-          'stream/start'
+          'stream/start',
         );
         expect(mockEventEmitter.emit).toHaveBeenCalledWith('stream:created', {
           streamId: session.id,
@@ -494,7 +529,10 @@ describe('MCP Streaming Support - London TDD', () => {
         };
 
         // Act - Attempt to create failing stream
-        const session = await streamingHandler.createStreamingSession(failedStreamRequest, context);
+        const session = await streamingHandler.createStreamingSession(
+          failedStreamRequest,
+          context,
+        );
 
         // Assert - Verify failure handling
         expect(mockStreamManager.createStream).toHaveBeenCalled();
@@ -529,13 +567,19 @@ describe('MCP Streaming Support - London TDD', () => {
         };
 
         // Act - Handle stream start request
-        const response = await streamingHandler.handleStreamingRequest(streamStartRequest, context);
+        const response = await streamingHandler.handleStreamingRequest(
+          streamStartRequest,
+          context,
+        );
 
         // Assert - Verify stream start protocol handling
-        expect(mockLogger.debug).toHaveBeenCalledWith('Handling streaming request', {
-          method: 'stream/start',
-          id: 'protocol-start-1',
-        });
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+          'Handling streaming request',
+          {
+            method: 'stream/start',
+            id: 'protocol-start-1',
+          },
+        );
         expect(response?.jsonrpc).toBe('2.0');
         expect(response?.id).toBe('protocol-start-1');
         expect(response?.result).toBeDefined();
@@ -550,7 +594,9 @@ describe('MCP Streaming Support - London TDD', () => {
       it('should process data chunks in sequence', async () => {
         // Arrange - Mock data chunk processing
         mockStreamManager.writeToStream.mockReturnValue(1024); // 1KB written
-        mockFlowController.checkBackpressure.mockReturnValue({ shouldPause: false });
+        mockFlowController.checkBackpressure.mockReturnValue({
+          shouldPause: false,
+        });
         mockEventEmitter.emit.mockReturnValue(undefined);
 
         const streamingHandler = new MockMCPStreamingHandler();
@@ -563,7 +609,7 @@ describe('MCP Streaming Support - London TDD', () => {
             method: 'data/stream',
             params: {},
           },
-          { sessionId: 'session-chunks', logger: mockLogger }
+          { sessionId: 'session-chunks', logger: mockLogger },
         );
 
         const chunkData: StreamData = {
@@ -578,20 +624,33 @@ describe('MCP Streaming Support - London TDD', () => {
         await streamingHandler.handleStreamData(session.id, chunkData);
 
         // Assert - Verify chunk processing
-        expect(mockLogger.debug).toHaveBeenCalledWith('Processing stream data', {
-          streamId: session.id,
-          sequence: 1,
-          isLast: false,
-        });
-        expect(mockFlowController.checkBackpressure).toHaveBeenCalledWith(session.id);
-        expect(mockStreamManager.writeToStream).toHaveBeenCalledWith(session.id, chunkData);
-        expect(mockMetricsCollector.recordDataTransfer).toHaveBeenCalledWith(session.id, 1024);
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+          'Processing stream data',
+          {
+            streamId: session.id,
+            sequence: 1,
+            isLast: false,
+          },
+        );
+        expect(mockFlowController.checkBackpressure).toHaveBeenCalledWith(
+          session.id,
+        );
+        expect(mockStreamManager.writeToStream).toHaveBeenCalledWith(
+          session.id,
+          chunkData,
+        );
+        expect(mockMetricsCollector.recordDataTransfer).toHaveBeenCalledWith(
+          session.id,
+          1024,
+        );
       });
 
       it('should handle last chunk and end stream', async () => {
         // Arrange - Mock last chunk processing
         mockStreamManager.writeToStream.mockReturnValue(512);
-        mockFlowController.checkBackpressure.mockReturnValue({ shouldPause: false });
+        mockFlowController.checkBackpressure.mockReturnValue({
+          shouldPause: false,
+        });
         mockStreamManager.closeStream.mockReturnValue(undefined);
         mockBufferManager.releaseBuffer.mockReturnValue(undefined);
 
@@ -605,7 +664,7 @@ describe('MCP Streaming Support - London TDD', () => {
             method: 'data/stream',
             params: {},
           },
-          { sessionId: 'session-last', logger: mockLogger }
+          { sessionId: 'session-last', logger: mockLogger },
         );
 
         const lastChunkData: StreamData = {
@@ -620,7 +679,10 @@ describe('MCP Streaming Support - London TDD', () => {
         await streamingHandler.handleStreamData(session.id, lastChunkData);
 
         // Assert - Verify last chunk handling and stream end
-        expect(mockStreamManager.writeToStream).toHaveBeenCalledWith(session.id, lastChunkData);
+        expect(mockStreamManager.writeToStream).toHaveBeenCalledWith(
+          session.id,
+          lastChunkData,
+        );
         expect(mockEventEmitter.emit).toHaveBeenCalledWith('stream:ended', {
           streamId: session.id,
           summary: expect.objectContaining({
@@ -660,11 +722,14 @@ describe('MCP Streaming Support - London TDD', () => {
         await streamingHandler.streamChunk(streamResponse?.streamId, chunk);
 
         // Assert - Verify protocol chunk processing
-        expect(mockLogger.debug).toHaveBeenCalledWith('Processing stream chunk', {
-          streamId: streamResponse?.streamId,
-          sequence: 1,
-          isLast: false,
-        });
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+          'Processing stream chunk',
+          {
+            streamId: streamResponse?.streamId,
+            sequence: 1,
+            isLast: false,
+          },
+        );
         expect(mockStreamManager.writeToStream).toHaveBeenCalledWith(
           streamResponse?.streamId,
           expect.objectContaining({
@@ -672,12 +737,15 @@ describe('MCP Streaming Support - London TDD', () => {
             sequence: 1,
             data: chunk.data,
             isLast: false,
-          })
+          }),
         );
-        expect(mockEventEmitter.emit).toHaveBeenCalledWith('stream:chunk-processed', {
-          streamId: streamResponse?.streamId,
-          chunk,
-        });
+        expect(mockEventEmitter.emit).toHaveBeenCalledWith(
+          'stream:chunk-processed',
+          {
+            streamId: streamResponse?.streamId,
+            chunk,
+          },
+        );
       });
 
       it('should validate chunk sequence numbers', async () => {
@@ -696,7 +764,7 @@ describe('MCP Streaming Support - London TDD', () => {
 
         // Act & Assert - Should throw error for invalid sequence
         await expect(
-          streamingHandler.streamChunk(streamResponse?.streamId, invalidChunk)
+          streamingHandler.streamChunk(streamResponse?.streamId, invalidChunk),
         ).rejects.toThrow('Invalid chunk sequence: -1');
       });
     });
@@ -724,7 +792,7 @@ describe('MCP Streaming Support - London TDD', () => {
             method: 'heavy/stream',
             params: {},
           },
-          { sessionId: 'session-backpressure', logger: mockLogger }
+          { sessionId: 'session-backpressure', logger: mockLogger },
         );
 
         const heavyData: StreamData = {
@@ -739,12 +807,16 @@ describe('MCP Streaming Support - London TDD', () => {
         await streamingHandler.handleStreamData(session.id, heavyData);
 
         // Assert - Verify backpressure handling
-        expect(mockFlowController.checkBackpressure).toHaveBeenCalledWith(session.id);
+        expect(mockFlowController.checkBackpressure).toHaveBeenCalledWith(
+          session.id,
+        );
         expect(mockLogger.warn).toHaveBeenCalledWith('Backpressure detected', {
           streamId: session.id,
           bufferUsage: 0.85,
         });
-        expect(mockMetricsCollector.recordBackpressureEvent).toHaveBeenCalledWith(session.id, 0.85);
+        expect(
+          mockMetricsCollector.recordBackpressureEvent,
+        ).toHaveBeenCalledWith(session.id, 0.85);
         expect(mockFlowController.pauseStream).toHaveBeenCalledWith(session.id);
         expect(mockEventEmitter.emit).toHaveBeenCalledWith(
           'stream:backpressure',
@@ -752,7 +824,7 @@ describe('MCP Streaming Support - London TDD', () => {
             streamId: session.id,
             bufferUsage: 0.85,
             action: expect.any(String),
-          })
+          }),
         );
       });
 
@@ -775,7 +847,7 @@ describe('MCP Streaming Support - London TDD', () => {
             method: 'expandable/stream',
             params: {},
           },
-          { sessionId: 'session-resize', logger: mockLogger }
+          { sessionId: 'session-resize', logger: mockLogger },
         );
 
         // Simulate buffer resize opportunity
@@ -795,13 +867,13 @@ describe('MCP Streaming Support - London TDD', () => {
         // Assert - Verify buffer resize
         expect(mockBufferManager.resizeBuffer).toHaveBeenCalledWith(
           session.id,
-          originalBufferSize * 2 // Should double buffer size
+          originalBufferSize * 2, // Should double buffer size
         );
         expect(mockEventEmitter.emit).toHaveBeenCalledWith(
           'stream:backpressure',
           expect.objectContaining({
             action: 'resize',
-          })
+          }),
         );
       });
     });
@@ -826,21 +898,26 @@ describe('MCP Streaming Support - London TDD', () => {
             method: 'closeable/stream',
             params: {},
           },
-          { sessionId: 'session-close', logger: mockLogger }
+          { sessionId: 'session-close', logger: mockLogger },
         );
 
         // Act - Close streaming session
         await streamingHandler.closeStreamingSession(session.id);
 
         // Assert - Verify stream closure conversation
-        expect(mockLogger.info).toHaveBeenCalledWith('Closing streaming session', {
-          streamId: session.id,
-        });
+        expect(mockLogger.info).toHaveBeenCalledWith(
+          'Closing streaming session',
+          {
+            streamId: session.id,
+          },
+        );
         expect(mockStreamManager.closeStream).toHaveBeenCalledWith(session.id);
-        expect(mockBufferManager.releaseBuffer).toHaveBeenCalledWith(session.id);
+        expect(mockBufferManager.releaseBuffer).toHaveBeenCalledWith(
+          session.id,
+        );
         expect(mockMetricsCollector.recordStreamClosed).toHaveBeenCalledWith(
           session.id,
-          expect.any(Number) // bytes transferred
+          expect.any(Number), // bytes transferred
         );
         expect(mockEventEmitter.emit).toHaveBeenCalledWith('stream:closed', {
           streamId: session.id,
@@ -857,9 +934,12 @@ describe('MCP Streaming Support - London TDD', () => {
         await streamingHandler.closeStreamingSession(nonExistentStreamId);
 
         // Assert - Verify graceful handling
-        expect(mockLogger.warn).toHaveBeenCalledWith('Attempt to close non-existent stream', {
-          streamId: nonExistentStreamId,
-        });
+        expect(mockLogger.warn).toHaveBeenCalledWith(
+          'Attempt to close non-existent stream',
+          {
+            streamId: nonExistentStreamId,
+          },
+        );
         expect(mockStreamManager.closeStream).not.toHaveBeenCalled();
       });
     });
@@ -882,7 +962,7 @@ describe('MCP Streaming Support - London TDD', () => {
             method: 'error/stream',
             params: {},
           },
-          { sessionId: 'session-error', logger: mockLogger }
+          { sessionId: 'session-error', logger: mockLogger },
         );
 
         const streamError = new Error('Stream processing failed');
@@ -897,7 +977,7 @@ describe('MCP Streaming Support - London TDD', () => {
         });
         expect(mockMetricsCollector.recordStreamError).toHaveBeenCalledWith(
           session.id,
-          'Stream processing failed'
+          'Stream processing failed',
         );
         expect(mockEventEmitter.emit).toHaveBeenCalledWith('stream:error', {
           streamId: session.id,
@@ -905,7 +985,9 @@ describe('MCP Streaming Support - London TDD', () => {
         });
         // Should also cleanup resources
         expect(mockStreamManager.closeStream).toHaveBeenCalledWith(session.id);
-        expect(mockBufferManager.releaseBuffer).toHaveBeenCalledWith(session.id);
+        expect(mockBufferManager.releaseBuffer).toHaveBeenCalledWith(
+          session.id,
+        );
       });
     });
   });
@@ -915,7 +997,9 @@ describe('MCP Streaming Support - London TDD', () => {
       // Arrange - Mock complete streaming workflow
       mockStreamManager.createStream.mockReturnValue(true);
       mockStreamManager.writeToStream.mockReturnValue(2048);
-      mockFlowController.checkBackpressure.mockReturnValue({ shouldPause: false });
+      mockFlowController.checkBackpressure.mockReturnValue({
+        shouldPause: false,
+      });
       mockStreamManager.closeStream.mockReturnValue(undefined);
       mockBufferManager.releaseBuffer.mockReturnValue(undefined);
 
@@ -936,7 +1020,7 @@ describe('MCP Streaming Support - London TDD', () => {
           method: 'complete/workflow',
           params: { bufferSize: 32768 },
         },
-        context
+        context,
       );
 
       // 2. Stream multiple chunks
@@ -956,11 +1040,14 @@ describe('MCP Streaming Support - London TDD', () => {
         expect.objectContaining({
           streamId: session.id,
           method: 'complete/workflow',
-        })
+        }),
       );
       expect(mockStreamManager.createStream).toHaveBeenCalledTimes(1);
       expect(mockMetricsCollector.recordStreamCreated).toHaveBeenCalledTimes(1);
-      expect(mockEventEmitter.emit).toHaveBeenCalledWith('stream:created', expect.any(Object));
+      expect(mockEventEmitter.emit).toHaveBeenCalledWith(
+        'stream:created',
+        expect.any(Object),
+      );
 
       // Verify chunk processing
       expect(mockLogger.debug).toHaveBeenCalledTimes(3); // One per chunk
@@ -976,7 +1063,7 @@ describe('MCP Streaming Support - London TDD', () => {
             totalChunks: 3,
             totalBytes: expect.any(Number),
           }),
-        })
+        }),
       );
     });
   });

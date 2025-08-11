@@ -157,7 +157,12 @@ export interface FailurePoint {
   mitigation: string;
 }
 
-export type PerformanceRating = 'excellent' | 'good' | 'fair' | 'poor' | 'critical';
+export type PerformanceRating =
+  | 'excellent'
+  | 'good'
+  | 'fair'
+  | 'poor'
+  | 'critical';
 
 export type OptimizationType =
   | 'performance'

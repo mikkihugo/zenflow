@@ -118,8 +118,17 @@ export interface ClientInstance {
   readonly id: string;
   readonly type: ClientType;
   readonly config: ClientConfig;
-  readonly client: APIClient | WebSocketClient | FACTIntegration | ExternalMCPClient;
-  readonly status: 'initialized' | 'connecting' | 'connected' | 'disconnected' | 'error';
+  readonly client:
+    | APIClient
+    | WebSocketClient
+    | FACTIntegration
+    | ExternalMCPClient;
+  readonly status:
+    | 'initialized'
+    | 'connecting'
+    | 'connected'
+    | 'disconnected'
+    | 'error';
   readonly lastHealth?: Date;
   readonly metrics: {
     requests: number;
@@ -148,7 +157,10 @@ export interface ClientFactory {
 export interface RegistryEvents {
   'client:registered': (client: ClientInstance) => void;
   'client:unregistered': (clientId: string) => void;
-  'client:status_changed': (clientId: string, status: ClientInstance['status']) => void;
+  'client:status_changed': (
+    clientId: string,
+    status: ClientInstance['status'],
+  ) => void;
   'client:health_check': (clientId: string, healthy: boolean) => void;
   'registry:error': (error: Error) => void;
 }
@@ -229,10 +241,16 @@ export class ClientRegistry extends EventEmitter {
 
     try {
       // Cleanup client if it has a cleanup method
-      if ('disconnect' in instance.client && typeof instance.client.disconnect === 'function') {
+      if (
+        'disconnect' in instance.client &&
+        typeof instance.client.disconnect === 'function'
+      ) {
         await instance.client.disconnect();
       }
-      if ('shutdown' in instance.client && typeof instance.client.shutdown === 'function') {
+      if (
+        'shutdown' in instance.client &&
+        typeof instance.client.shutdown === 'function'
+      ) {
         await instance.client.shutdown();
       }
 
@@ -264,7 +282,9 @@ export class ClientRegistry extends EventEmitter {
    * @param type
    */
   getByType(type: ClientType): ClientInstance[] {
-    return Array.from(this.clients.values()).filter((client) => client.type === type);
+    return Array.from(this.clients.values()).filter(
+      (client) => client.type === type,
+    );
   }
 
   /**
@@ -298,7 +318,7 @@ export class ClientRegistry extends EventEmitter {
    */
   getByPriority(type?: ClientType): ClientInstance[] {
     return this.getAll((client) => !type || client.type === type).sort(
-      (a, b) => b.config.priority - a.config.priority
+      (a, b) => b.config.priority - a.config.priority,
     );
   }
 
@@ -309,7 +329,7 @@ export class ClientRegistry extends EventEmitter {
    */
   isHealthy(clientId: string): boolean {
     const client = this.clients.get(clientId);
-    return client?.status === 'connected' || false;
+    return client?.status === 'connected';
   }
 
   /**
@@ -329,7 +349,7 @@ export class ClientRegistry extends EventEmitter {
         acc[type] = this.getByType(type).length;
         return acc;
       },
-      {} as Record<ClientType, number>
+      {} as Record<ClientType, number>,
     );
 
     const byStatus = all.reduce(
@@ -337,12 +357,14 @@ export class ClientRegistry extends EventEmitter {
         acc[client.status] = (acc[client.status] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     const healthy = all.filter((c) => c.status === 'connected').length;
     const avgLatency =
-      all.length > 0 ? all.reduce((sum, c) => sum + c.metrics.avgLatency, 0) / all.length : 0;
+      all.length > 0
+        ? all.reduce((sum, c) => sum + c.metrics.avgLatency, 0) / all.length
+        : 0;
 
     return {
       total: all.length,
@@ -412,12 +434,18 @@ export class ClientRegistry extends EventEmitter {
   private async checkClientHealth(instance: ClientInstance): Promise<boolean> {
     try {
       // Try to ping the client if it has a ping method
-      if ('ping' in instance.client && typeof instance.client.ping === 'function') {
+      if (
+        'ping' in instance.client &&
+        typeof instance.client.ping === 'function'
+      ) {
         return await instance.client.ping();
       }
 
       // For WebSocket clients, check connection status
-      if (instance.type === ClientType.WEBSOCKET && 'connected' in instance.client) {
+      if (
+        instance.type === ClientType.WEBSOCKET &&
+        'connected' in instance.client
+      ) {
         return Boolean(instance.client.connected);
       }
 
@@ -491,7 +519,9 @@ export const ClientRegistryHelpers = {
    *
    * @param config
    */
-  async registerHTTPClient(config: Omit<HTTPClientConfig, 'type'>): Promise<ClientInstance> {
+  async registerHTTPClient(
+    config: Omit<HTTPClientConfig, 'type'>,
+  ): Promise<ClientInstance> {
     return globalClientRegistry.register({ ...config, type: ClientType.HTTP });
   },
 
@@ -501,9 +531,12 @@ export const ClientRegistryHelpers = {
    * @param config
    */
   async registerWebSocketClient(
-    config: Omit<WebSocketClientConfig, 'type'>
+    config: Omit<WebSocketClientConfig, 'type'>,
   ): Promise<ClientInstance> {
-    return globalClientRegistry.register({ ...config, type: ClientType.WEBSOCKET });
+    return globalClientRegistry.register({
+      ...config,
+      type: ClientType.WEBSOCKET,
+    });
   },
 
   /**
@@ -512,9 +545,12 @@ export const ClientRegistryHelpers = {
    * @param config
    */
   async registerKnowledgeClient(
-    config: Omit<KnowledgeClientConfig, 'type'>
+    config: Omit<KnowledgeClientConfig, 'type'>,
   ): Promise<ClientInstance> {
-    return globalClientRegistry.register({ ...config, type: ClientType.KNOWLEDGE });
+    return globalClientRegistry.register({
+      ...config,
+      type: ClientType.KNOWLEDGE,
+    });
   },
 
   /**
@@ -522,7 +558,9 @@ export const ClientRegistryHelpers = {
    *
    * @param config
    */
-  async registerMCPClient(config: Omit<MCPClientConfig, 'type'>): Promise<ClientInstance> {
+  async registerMCPClient(
+    config: Omit<MCPClientConfig, 'type'>,
+  ): Promise<ClientInstance> {
     return globalClientRegistry.register({ ...config, type: ClientType.MCP });
   },
 

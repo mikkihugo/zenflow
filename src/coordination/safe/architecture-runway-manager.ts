@@ -18,7 +18,10 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates.ts';
 import { WorkflowHumanGateType } from '../orchestration/workflow-gates.ts';
 import type {
@@ -290,7 +293,7 @@ export interface Framework {
   readonly version: string;
   readonly purpose: string;
   readonly components: string[];
-  readonly configuration: any;
+  readonly configuration: unknown;
   readonly customizations: string[];
 }
 
@@ -325,7 +328,7 @@ export interface DevelopmentTool {
   readonly name: string;
   readonly version: string;
   readonly purpose: string;
-  readonly configuration: any;
+  readonly configuration: unknown;
   readonly integrations: string[];
 }
 
@@ -336,7 +339,7 @@ export interface Environment {
   readonly name: string;
   readonly type: 'development' | 'testing' | 'staging' | 'production';
   readonly infrastructure: InfrastructureSpec;
-  readonly configuration: any;
+  readonly configuration: unknown;
   readonly securityProfile: SecurityProfile;
 }
 
@@ -414,7 +417,12 @@ export interface AcceptanceCriterion {
  */
 export interface ArchitecturalRisk {
   readonly id: string;
-  readonly category: 'technical' | 'business' | 'operational' | 'security' | 'compliance';
+  readonly category:
+    | 'technical'
+    | 'business'
+    | 'operational'
+    | 'security'
+    | 'compliance';
   readonly description: string;
   readonly impact: 'low' | 'medium' | 'high' | 'critical';
   readonly probability: number; // 0-1
@@ -422,7 +430,13 @@ export interface ArchitecturalRisk {
   readonly mitigation: RiskMitigation;
   readonly contingency?: RiskContingency;
   readonly owner: string;
-  readonly status: 'identified' | 'assessed' | 'mitigated' | 'accepted' | 'transferred' | 'avoided';
+  readonly status:
+    | 'identified'
+    | 'assessed'
+    | 'mitigated'
+    | 'accepted'
+    | 'transferred'
+    | 'avoided';
 }
 
 /**
@@ -657,7 +671,11 @@ export interface GovernanceReview {
  */
 export interface ReviewItem {
   readonly id: string;
-  readonly type: 'runway_item' | 'technical_debt' | 'architecture_decision' | 'design_document';
+  readonly type:
+    | 'runway_item'
+    | 'technical_debt'
+    | 'architecture_decision'
+    | 'design_document';
   readonly title: string;
   readonly description: string;
   readonly presenter: string;
@@ -718,7 +736,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
     gatesManager: WorkflowGatesManager,
     piManager: ProgramIncrementManager,
     valueStreamMapper: ValueStreamMapper,
-    config: Partial<ArchitectureRunwayConfig> = {}
+    config: Partial<ArchitectureRunwayConfig> = {},
   ) {
     super();
 
@@ -783,7 +801,9 @@ export class ArchitectureRunwayManager extends EventEmitter {
       this.logger.info('Architecture Runway Manager initialized successfully');
       this.emit('initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize Architecture Runway Manager', { error });
+      this.logger.error('Failed to initialize Architecture Runway Manager', {
+        error,
+      });
       throw error;
     }
   }
@@ -814,7 +834,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
   async createArchitectureBacklog(
     name: string,
     description: string,
-    owner: string
+    owner: string,
   ): Promise<ArchitectureBacklog> {
     this.logger.info('Creating architecture backlog', { name, owner });
 
@@ -875,7 +895,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
    */
   async addArchitectureRunwayItem(
     backlogId: string,
-    runwayItemData: Partial<ArchitectureRunwayItem>
+    runwayItemData: Partial<ArchitectureRunwayItem>,
   ): Promise<ArchitectureRunwayItem> {
     const backlog = this.state.architectureBacklogs.get(backlogId);
     if (!backlog) {
@@ -968,7 +988,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
   async planArchitectureRunwayForPI(
     piId: string,
     artId: string,
-    availableCapacity: CapacityAllocation[]
+    availableCapacity: CapacityAllocation[],
   ): Promise<RunwayPlan> {
     this.logger.info('Planning architecture runway for PI', { piId, artId });
 
@@ -976,20 +996,30 @@ export class ArchitectureRunwayManager extends EventEmitter {
     const eligibleItems = await this.getEligibleRunwayItems(piId, artId);
 
     // Prioritize items based on backlog criteria
-    const prioritizedItems = await this.prioritizeRunwayItems(eligibleItems, availableCapacity);
+    const prioritizedItems = await this.prioritizeRunwayItems(
+      eligibleItems,
+      availableCapacity,
+    );
 
     // Select items that fit within capacity
     const selectedItems = await this.selectRunwayItemsForCapacity(
       prioritizedItems,
-      availableCapacity
+      availableCapacity,
     );
 
     // Get technical debt items that can be addressed
-    const debtItems = await this.selectTechnicalDebtForPI(piId, availableCapacity);
+    const debtItems = await this.selectTechnicalDebtForPI(
+      piId,
+      availableCapacity,
+    );
 
     // Identify dependencies and risks
     const dependencies = await this.identifyRunwayDependencies(selectedItems);
-    const risks = await this.assessRunwayPlanRisks(selectedItems, debtItems, availableCapacity);
+    const risks = await this.assessRunwayPlanRisks(
+      selectedItems,
+      debtItems,
+      availableCapacity,
+    );
 
     const runwayPlan: RunwayPlan = {
       piId,
@@ -1013,7 +1043,10 @@ export class ArchitectureRunwayManager extends EventEmitter {
     this.state.runwayPlanning.set(piId, runwayPlan);
 
     // Create AGUI gate for plan approval if high risk
-    if (risks.length > 0 || selectedItems.some((item) => item.riskLevel === 'critical')) {
+    if (
+      risks.length > 0 ||
+      selectedItems.some((item) => item.riskLevel === 'critical')
+    ) {
       await this.createRunwayPlanApprovalGate(runwayPlan, risks);
     }
 
@@ -1035,7 +1068,9 @@ export class ArchitectureRunwayManager extends EventEmitter {
   /**
    * Track architectural epic implementation
    */
-  async trackArchitecturalEpicProgress(epicId: string): Promise<EpicProgressReport> {
+  async trackArchitecturalEpicProgress(
+    epicId: string,
+  ): Promise<EpicProgressReport> {
     this.logger.info('Tracking architectural epic progress', { epicId });
 
     // Get epic details from program orchestrator
@@ -1045,21 +1080,31 @@ export class ArchitectureRunwayManager extends EventEmitter {
     }
 
     // Collect runway items associated with this epic
-    const associatedRunwayItems = Array.from(this.state.runwayItems.values()).filter((item) =>
-      item.architecture.impactedComponents.some((comp) => epic.components?.includes(comp))
+    const associatedRunwayItems = Array.from(
+      this.state.runwayItems.values(),
+    ).filter((item) =>
+      item.architecture.impactedComponents.some((comp) =>
+        epic.components?.includes(comp),
+      ),
     );
 
     // Calculate progress metrics
-    const progressMetrics = await this.calculateEpicProgress(epic, associatedRunwayItems);
+    const progressMetrics = await this.calculateEpicProgress(
+      epic,
+      associatedRunwayItems,
+    );
 
     // Assess architectural compliance
     const complianceAssessment = await this.assessArchitecturalCompliance(
       epic,
-      associatedRunwayItems
+      associatedRunwayItems,
     );
 
     // Check quality attributes
-    const qualityAssessment = await this.assessQualityAttributes(epic, associatedRunwayItems);
+    const qualityAssessment = await this.assessQualityAttributes(
+      epic,
+      associatedRunwayItems,
+    );
 
     const progressReport: EpicProgressReport = {
       epicId,
@@ -1088,7 +1133,9 @@ export class ArchitectureRunwayManager extends EventEmitter {
   /**
    * Track capability development
    */
-  async trackCapabilityDevelopment(capabilityId: string): Promise<CapabilityProgressReport> {
+  async trackCapabilityDevelopment(
+    capabilityId: string,
+  ): Promise<CapabilityProgressReport> {
     this.logger.info('Tracking capability development', { capabilityId });
 
     // Get capability details
@@ -1102,16 +1149,16 @@ export class ArchitectureRunwayManager extends EventEmitter {
     const associatedFeatures = await this.getCapabilityFeatures(capabilityId);
 
     // Track architectural runway items for this capability
-    const capabilityRunwayItems = Array.from(this.state.runwayItems.values()).filter(
-      (item) => item.architecture.domain === capability.domain
-    );
+    const capabilityRunwayItems = Array.from(
+      this.state.runwayItems.values(),
+    ).filter((item) => item.architecture.domain === capability.domain);
 
     // Calculate capability progress
     const progressMetrics = await this.calculateCapabilityProgress(
       capability,
       associatedEpics,
       associatedFeatures,
-      capabilityRunwayItems
+      capabilityRunwayItems,
     );
 
     const progressReport: CapabilityProgressReport = {
@@ -1150,7 +1197,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
     context: string,
     problem: string,
     alternatives: Alternative[],
-    stakeholders: string[]
+    stakeholders: string[],
   ): Promise<ArchitecturalDecision> {
     this.logger.info('Creating architectural decision', { title });
 
@@ -1194,7 +1241,9 @@ export class ArchitectureRunwayManager extends EventEmitter {
       throw new Error(`Architectural decision not found: ${decisionId}`);
     }
 
-    this.logger.info('Executing architecture decision workflow', { decisionId });
+    this.logger.info('Executing architecture decision workflow', {
+      decisionId,
+    });
 
     try {
       // Update status to under review
@@ -1215,9 +1264,15 @@ export class ArchitectureRunwayManager extends EventEmitter {
         finalStatus: this.state.architecturalDecisions.get(decisionId)?.status,
       });
 
-      this.emit('architecture-decision-workflow-completed', { decisionId, gateResult });
+      this.emit('architecture-decision-workflow-completed', {
+        decisionId,
+        gateResult,
+      });
     } catch (error) {
-      this.logger.error('Architecture decision workflow failed', { decisionId, error });
+      this.logger.error('Architecture decision workflow failed', {
+        decisionId,
+        error,
+      });
 
       // Update status to reflect failure
       const failedDecision = {
@@ -1266,7 +1321,9 @@ export class ArchitectureRunwayManager extends EventEmitter {
   /**
    * Add technical debt item
    */
-  async addTechnicalDebtItem(debtData: Partial<TechnicalDebtItem>): Promise<TechnicalDebtItem> {
+  async addTechnicalDebtItem(
+    debtData: Partial<TechnicalDebtItem>,
+  ): Promise<TechnicalDebtItem> {
     this.logger.info('Adding technical debt item', {
       title: debtData.title,
       severity: debtData.severity,
@@ -1328,7 +1385,10 @@ export class ArchitectureRunwayManager extends EventEmitter {
     const totalDebt = allDebtItems.length;
     const debtByType = this.groupDebtByType(allDebtItems);
     const debtBySeverity = this.groupDebtBySeverity(allDebtItems);
-    const totalCost = allDebtItems.reduce((sum, item) => sum + item.currentCost, 0);
+    const totalCost = allDebtItems.reduce(
+      (sum, item) => sum + item.currentCost,
+      0,
+    );
     const averageAge = this.calculateAverageDebtAge(allDebtItems);
 
     // Calculate debt trends
@@ -1339,12 +1399,15 @@ export class ArchitectureRunwayManager extends EventEmitter {
       .filter(
         (item) =>
           item.severity === TechnicalDebtSeverity.HIGH ||
-          item.severity === TechnicalDebtSeverity.CRITICAL
+          item.severity === TechnicalDebtSeverity.CRITICAL,
       )
       .sort((a, b) => b.currentCost - a.currentCost);
 
     // Generate recommendations
-    const recommendations = await this.generateDebtRecommendations(allDebtItems, trends);
+    const recommendations = await this.generateDebtRecommendations(
+      allDebtItems,
+      trends,
+    );
 
     const assessment: TechnicalDebtAssessment = {
       totalItems: totalDebt,
@@ -1388,15 +1451,21 @@ export class ArchitectureRunwayManager extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('architecture-runway:state');
+      const persistedState = await this.memory.retrieve(
+        'architecture-runway:state',
+      );
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
-          architectureBacklogs: new Map(persistedState.architectureBacklogs || []),
+          architectureBacklogs: new Map(
+            persistedState.architectureBacklogs || [],
+          ),
           runwayItems: new Map(persistedState.runwayItems || []),
           technicalDebtItems: new Map(persistedState.technicalDebtItems || []),
-          architecturalDecisions: new Map(persistedState.architecturalDecisions || []),
+          architecturalDecisions: new Map(
+            persistedState.architecturalDecisions || [],
+          ),
           runwayPlanning: new Map(persistedState.runwayPlanning || []),
           governanceReviews: new Map(persistedState.governanceReviews || []),
         };
@@ -1411,10 +1480,14 @@ export class ArchitectureRunwayManager extends EventEmitter {
     try {
       const stateToSerialize = {
         ...this.state,
-        architectureBacklogs: Array.from(this.state.architectureBacklogs.entries()),
+        architectureBacklogs: Array.from(
+          this.state.architectureBacklogs.entries(),
+        ),
         runwayItems: Array.from(this.state.runwayItems.entries()),
         technicalDebtItems: Array.from(this.state.technicalDebtItems.entries()),
-        architecturalDecisions: Array.from(this.state.architecturalDecisions.entries()),
+        architecturalDecisions: Array.from(
+          this.state.architecturalDecisions.entries(),
+        ),
         runwayPlanning: Array.from(this.state.runwayPlanning.entries()),
         governanceReviews: Array.from(this.state.governanceReviews.entries()),
       };
@@ -1431,7 +1504,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
       await this.createArchitectureBacklog(
         'Enterprise Architecture Backlog',
         'Main backlog for enterprise architecture runway items and technical debt',
-        'system'
+        'system',
       );
     }
   }
@@ -1458,78 +1531,91 @@ export class ArchitectureRunwayManager extends EventEmitter {
 
   private registerEventHandlers(): void {
     this.eventBus.registerHandler('pi-planning-started', async (event) => {
-      await this.handlePIPlanningStarted(event.payload.piId, event.payload.artId);
+      await this.handlePIPlanningStarted(
+        event.payload.piId,
+        event.payload.artId,
+      );
     });
 
     this.eventBus.registerHandler('feature-completed', async (event) => {
       await this.handleFeatureCompletion(event.payload.featureId);
     });
 
-    this.eventBus.registerHandler('technical-debt-threshold-exceeded', async (event) => {
-      await this.handleDebtThresholdExceeded(event.payload);
-    });
+    this.eventBus.registerHandler(
+      'technical-debt-threshold-exceeded',
+      async (event) => {
+        await this.handleDebtThresholdExceeded(event.payload);
+      },
+    );
   }
 
   // Many placeholder implementations would follow...
 
-  private async createRunwayApprovalGate(runwayItem: ArchitectureRunwayItem): Promise<void> {}
+  private async createRunwayApprovalGate(
+    runwayItem: ArchitectureRunwayItem,
+  ): Promise<void> {}
   private async getEligibleRunwayItems(
     piId: string,
-    artId: string
+    artId: string,
   ): Promise<ArchitectureRunwayItem[]> {
     return [];
   }
   private async prioritizeRunwayItems(
     items: ArchitectureRunwayItem[],
-    capacity: CapacityAllocation[]
+    capacity: CapacityAllocation[],
   ): Promise<ArchitectureRunwayItem[]> {
     return items;
   }
   private async selectRunwayItemsForCapacity(
     items: ArchitectureRunwayItem[],
-    capacity: CapacityAllocation[]
+    capacity: CapacityAllocation[],
   ): Promise<ArchitectureRunwayItem[]> {
     return items;
   }
   private async selectTechnicalDebtForPI(
     piId: string,
-    capacity: CapacityAllocation[]
+    capacity: CapacityAllocation[],
   ): Promise<TechnicalDebtItem[]> {
     return [];
   }
-  private async identifyRunwayDependencies(items: ArchitectureRunwayItem[]): Promise<string[]> {
+  private async identifyRunwayDependencies(
+    items: ArchitectureRunwayItem[],
+  ): Promise<string[]> {
     return [];
   }
   private async assessRunwayPlanRisks(
     items: ArchitectureRunwayItem[],
     debtItems: TechnicalDebtItem[],
-    capacity: CapacityAllocation[]
+    capacity: CapacityAllocation[],
   ): Promise<string[]> {
     return [];
   }
-  private async createRunwayPlanApprovalGate(plan: RunwayPlan, risks: string[]): Promise<void> {}
-  private async getEpicDetails(epicId: string): Promise<any> {
+  private async createRunwayPlanApprovalGate(
+    plan: RunwayPlan,
+    risks: string[],
+  ): Promise<void> {}
+  private async getEpicDetails(epicId: string): Promise<unknown> {
     return null;
   }
   private async calculateEpicProgress(
-    epic: any,
-    runwayItems: ArchitectureRunwayItem[]
-  ): Promise<any> {
+    epic: unknown,
+    runwayItems: ArchitectureRunwayItem[],
+  ): Promise<unknown> {
     return {};
   }
   private async assessArchitecturalCompliance(
-    epic: any,
-    runwayItems: ArchitectureRunwayItem[]
-  ): Promise<any> {
+    epic: unknown,
+    runwayItems: ArchitectureRunwayItem[],
+  ): Promise<unknown> {
     return {};
   }
   private async assessQualityAttributes(
-    epic: any,
-    runwayItems: ArchitectureRunwayItem[]
-  ): Promise<any> {
+    epic: unknown,
+    runwayItems: ArchitectureRunwayItem[],
+  ): Promise<unknown> {
     return {};
   }
-  private async getCapabilityDetails(capabilityId: string): Promise<any> {
+  private async getCapabilityDetails(capabilityId: string): Promise<unknown> {
     return null;
   }
   private async getCapabilityEpics(capabilityId: string): Promise<any[]> {
@@ -1539,54 +1625,68 @@ export class ArchitectureRunwayManager extends EventEmitter {
     return [];
   }
   private async calculateCapabilityProgress(
-    capability: any,
-    epics: any[],
-    features: any[],
-    runwayItems: ArchitectureRunwayItem[]
-  ): Promise<any> {
+    capability: unknown,
+    epics: unknown[],
+    features: unknown[],
+    runwayItems: ArchitectureRunwayItem[],
+  ): Promise<unknown> {
     return {};
   }
   private async createArchitectureDecisionGate(
     decision: ArchitecturalDecision,
-    alternatives: Alternative[]
+    alternatives: Alternative[],
   ): Promise<void> {}
-  private async createDecisionReviewGate(decision: ArchitecturalDecision): Promise<any> {
+  private async createDecisionReviewGate(
+    decision: ArchitecturalDecision,
+  ): Promise<unknown> {
     return {};
   }
-  private async processDecisionGateResult(decisionId: string, gateResult: any): Promise<void> {}
+  private async processDecisionGateResult(
+    decisionId: string,
+    gateResult: unknown,
+  ): Promise<void> {}
   private async setupAutomatedDebtDetection(): Promise<void> {}
   private async setupDebtThresholdMonitoring(): Promise<void> {}
-  private async createCriticalDebtAlert(debtItem: TechnicalDebtItem): Promise<void> {}
+  private async createCriticalDebtAlert(
+    debtItem: TechnicalDebtItem,
+  ): Promise<void> {}
   private async checkDebtThreshold(): Promise<void> {}
   private groupDebtByType(items: TechnicalDebtItem[]): Record<string, number> {
     return {};
   }
-  private groupDebtBySeverity(items: TechnicalDebtItem[]): Record<string, number> {
+  private groupDebtBySeverity(
+    items: TechnicalDebtItem[],
+  ): Record<string, number> {
     return {};
   }
   private calculateAverageDebtAge(items: TechnicalDebtItem[]): number {
     return 0;
   }
-  private async calculateDebtTrends(items: TechnicalDebtItem[]): Promise<any> {
+  private async calculateDebtTrends(
+    items: TechnicalDebtItem[],
+  ): Promise<unknown> {
     return {};
   }
   private async generateDebtRecommendations(
     items: TechnicalDebtItem[],
-    trends: any
+    trends: unknown,
   ): Promise<string[]> {
     return [];
   }
   private calculateDebtRiskLevel(
     totalCost: number,
-    highImpactCount: number
+    highImpactCount: number,
   ): 'low' | 'medium' | 'high' | 'critical' {
     return 'medium';
   }
   private async performRunwayTracking(): Promise<void> {}
   private async performGovernanceReview(): Promise<void> {}
-  private async handlePIPlanningStarted(piId: string, artId: string): Promise<void> {}
+  private async handlePIPlanningStarted(
+    piId: string,
+    artId: string,
+  ): Promise<void> {}
   private async handleFeatureCompletion(featureId: string): Promise<void> {}
-  private async handleDebtThresholdExceeded(payload: any): Promise<void> {}
+  private async handleDebtThresholdExceeded(payload: unknown): Promise<void> {}
 }
 
 // ============================================================================
@@ -1599,8 +1699,8 @@ export interface EpicProgressReport {
   readonly overallProgress: number;
   readonly runwayItemsCompleted: number;
   readonly runwayItemsTotal: number;
-  readonly architecturalCompliance: any;
-  readonly qualityAttributeStatus: any;
+  readonly architecturalCompliance: unknown;
+  readonly qualityAttributeStatus: unknown;
   readonly risks: string[];
   readonly blockers: string[];
   readonly nextMilestones: string[];
@@ -1627,7 +1727,7 @@ export interface TechnicalDebtAssessment {
   readonly debtBySeverity: Record<string, number>;
   readonly totalMonthlyCost: number;
   readonly averageAge: number;
-  readonly trends: any;
+  readonly trends: unknown;
   readonly highImpactItems: TechnicalDebtItem[];
   readonly recommendations: string[];
   readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';

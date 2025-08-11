@@ -9,7 +9,9 @@ const fs = require('fs');
 const path = require('path');
 
 // Files that were failing in the transformer
-const problematicFiles = ['src/optimization/benchmarks/performance-benchmarks.ts'];
+const problematicFiles = [
+  'src/optimization/benchmarks/performance-benchmarks.ts',
+];
 
 function fixOptionalChainingAssignments(filePath) {
   if (!fs.existsSync(filePath)) {

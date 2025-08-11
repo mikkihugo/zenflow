@@ -10,18 +10,49 @@
  */
 
 export type { SwarmStatus } from '../components/index.ts';
+export {
+  type CommandPaletteProps,
+  default as CommandPalette,
+} from './command-palette.tsx';
+export {
+  default as FileBrowser,
+  type FileBrowserProps,
+} from './file-browser.tsx';
+export { default as Help, type HelpProps } from './help.tsx';
+export {
+  default as LLMStatistics,
+  type LLMStatisticsProps,
+} from './llm-statistics.tsx';
+// New essential TUI screens
+export { default as LogsViewer, type LogsViewerProps } from './logs-viewer.tsx';
 // Main screens
-export * from './main-menu';
+export * from './main-menu.tsx';
 // Re-export key screens for convenience
-export { createDefaultMenuItems, MainMenu, type MainMenuProps, type MenuItem } from './main-menu';
-export * from './swarm-dashboard';
+export {
+  createDefaultMenuItems,
+  Menu as MainMenu,
+  type MenuItem,
+  type MenuProps as MainMenuProps,
+} from './main-menu.tsx';
+// Additional screens
+export { default as MCPServers, type MCPServersProps } from './mcp-servers.tsx';
+export { default as MCPTester, type MCPTesterProps } from './mcp-tester.tsx';
+export { default as NixManager, type NixManagerProps } from './nix-manager.tsx';
+export {
+  default as PerformanceMonitor,
+  type PerformanceMonitorProps,
+} from './performance-monitor.tsx';
+export { default as Settings, type SettingsProps } from './settings.tsx';
+export { default as Status, type StatusProps } from './status.tsx';
+export * from './swarm-dashboard.tsx';
 export {
   type SwarmAgent,
   SwarmDashboard,
   type SwarmDashboardProps,
   type SwarmMetrics,
   type SwarmTask,
-} from './swarm-dashboard';
+} from './swarm-dashboard.tsx';
+export { default as Workspace, type WorkspaceProps } from './workspace.tsx';
 
 // Screen types for navigation
 export type ScreenType =
@@ -33,7 +64,18 @@ export type ScreenType =
   | 'help'
   | 'status'
   | 'create-agent'
-  | 'create-task';
+  | 'create-task'
+  | 'mcp-servers'
+  | 'workspace'
+  | 'logs-viewer'
+  | 'command-palette'
+  | 'performance-monitor'
+  | 'file-browser'
+  | 'mcp-tester'
+  | 'llm-statistics'
+  | 'document-ai'
+  | 'adr-generator'
+  | 'nix-manager';
 
 // Screen configuration interface
 export interface ScreenConfig {
@@ -56,7 +98,7 @@ export const defaultScreenConfigs: ScreenConfig[] = [
     id: 'swarm-dashboard',
     title: 'Swarm Dashboard',
     description: 'Real-time swarm monitoring',
-    requiresSwarm: true,
+    requiresSwarm: false, // Allow access without swarm for demo
     showInMenu: true,
   },
   {
@@ -71,6 +113,18 @@ export const defaultScreenConfigs: ScreenConfig[] = [
     title: 'Task Manager',
     description: 'Manage swarm tasks',
     requiresSwarm: true,
+    showInMenu: true,
+  },
+  {
+    id: 'mcp-servers',
+    title: 'MCP Servers',
+    description: 'Model Context Protocol server management',
+    showInMenu: true,
+  },
+  {
+    id: 'workspace',
+    title: 'Workspace',
+    description: 'Document-driven development workflow',
     showInMenu: true,
   },
   {
@@ -109,6 +163,6 @@ export const ScreenUtils = {
 
   isSwarmRequired: (screenId: ScreenType): boolean => {
     const config = ScreenUtils.getScreenConfig(screenId);
-    return config?.requiresSwarm || false;
+    return config?.requiresSwarm;
   },
 };

@@ -60,7 +60,9 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       this.isInitialized = true;
     } catch (error) {
-      throw new Error(`Failed to initialize SQLite backend: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to initialize SQLite backend: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -93,7 +95,9 @@ export class SQLiteBackend implements FACTStorageBackend {
 
       this.updateStats('write', entry.content.length);
     } catch (error) {
-      throw new Error(`Failed to store entry ${entry.id}: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to store entry ${entry.id}: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -125,7 +129,9 @@ export class SQLiteBackend implements FACTStorageBackend {
       return null;
     } catch (error) {
       this.stats.cacheMisses++;
-      throw new Error(`Failed to retrieve entry ${id}: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to retrieve entry ${id}: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -155,7 +161,9 @@ export class SQLiteBackend implements FACTStorageBackend {
     try {
       return false;
     } catch (error) {
-      throw new Error(`Failed to delete entry ${id}: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to delete entry ${id}: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -247,7 +255,9 @@ export class SQLiteBackend implements FACTStorageBackend {
         // await this.db.close();
         this.isInitialized = false;
       } catch (error) {
-        throw new Error(`Failed to close database: ${(error as Error).message}`);
+        throw new Error(
+          `Failed to close database: ${(error as Error).message}`,
+        );
       }
     }
   }
@@ -279,7 +289,10 @@ export class SQLiteBackend implements FACTStorageBackend {
     }
   }
 
-  private updateStats(operation: 'read' | 'write' | 'delete', size: number): void {
+  private updateStats(
+    operation: 'read' | 'write' | 'delete',
+    size: number,
+  ): void {
     this.stats.lastAccessed = Date.now();
     this.stats.modified = Date.now();
 

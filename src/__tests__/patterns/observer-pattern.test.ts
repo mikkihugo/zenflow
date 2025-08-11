@@ -59,7 +59,7 @@ describe('Observer Pattern Implementation', () => {
             throughput: 100,
             reliability: 0.99,
             resourceUsage: { cpu: 0.5, memory: 0.6, network: 0.4 },
-          }
+          },
         );
 
         expect(swarmEvent.type).toBe('swarm');
@@ -77,7 +77,7 @@ describe('Observer Pattern Implementation', () => {
           'test-session',
           'tool_call',
           { tool: 'swarm_init', args: { topology: 'hierarchical' } },
-          { latency: 25, success: true, tokenUsage: 150 }
+          { latency: 25, success: true, tokenUsage: 150 },
         );
 
         expect(mcpEvent.type).toBe('mcp');
@@ -93,7 +93,7 @@ describe('Observer Pattern Implementation', () => {
           'model-v1',
           'training_complete',
           { modelPath: '/models/v1', dataSize: 1000 },
-          { accuracy: 0.95, loss: 0.05, epochs: 100, trainingTime: 3600 }
+          { accuracy: 0.95, loss: 0.05, epochs: 100, trainingTime: 3600 },
         );
 
         expect(neuralEvent.type).toBe('neural');
@@ -121,7 +121,7 @@ describe('Observer Pattern Implementation', () => {
             throughput: 0,
             reliability: 0.1,
             resourceUsage: { cpu: 1.0, memory: 0.9, network: 0.1 },
-          }
+          },
         );
 
         const normalEvent = EventBuilder.createSwarmEvent(
@@ -134,7 +134,7 @@ describe('Observer Pattern Implementation', () => {
             throughput: 200,
             reliability: 0.98,
             resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.8 },
-          }
+          },
         );
 
         const mockObserver: SystemObserver = {
@@ -177,8 +177,8 @@ describe('Observer Pattern Implementation', () => {
                 throughput: isHighPriority ? 0 : 100,
                 reliability: isHighPriority ? 0.5 : 0.95,
                 resourceUsage: { cpu: 0.5, memory: 0.5, network: 0.5 },
-              }
-            )
+              },
+            ),
           );
         }
 
@@ -198,8 +198,12 @@ describe('Observer Pattern Implementation', () => {
         await Promise.all(events.map((event) => eventManager.notify(event)));
 
         // Verify processing order - errors should come first
-        const errorEvents = processedEvents.filter((e) => e.subtype === 'error');
-        const updateEvents = processedEvents.filter((e) => e.subtype === 'update');
+        const errorEvents = processedEvents.filter(
+          (e) => e.subtype === 'error',
+        );
+        const updateEvents = processedEvents.filter(
+          (e) => e.subtype === 'update',
+        );
 
         expect(errorEvents.length).toBe(4); // Every 3rd event (0,3,6,9)
         expect(updateEvents.length).toBe(6);
@@ -244,14 +248,14 @@ describe('Observer Pattern Implementation', () => {
             throughput: 150,
             reliability: 0.97,
             resourceUsage: { cpu: 0.2, memory: 0.3, network: 0.5 },
-          }
+          },
         );
 
         const mcpEvent = EventBuilder.createMCPEvent(
           'test-session',
           'response',
           { result: 'success', data: { message: 'Operation completed' } },
-          { latency: 15, success: true, tokenUsage: 75 }
+          { latency: 15, success: true, tokenUsage: 75 },
         );
 
         await eventManager.notify(swarmEvent);
@@ -300,7 +304,7 @@ describe('Observer Pattern Implementation', () => {
             throughput: 75,
             reliability: 0.92,
             resourceUsage: { cpu: 0.4, memory: 0.5, network: 0.6 },
-          }
+          },
         );
 
         // Should not throw despite failing observer
@@ -336,14 +340,19 @@ describe('Observer Pattern Implementation', () => {
               event = EventBuilder.createSwarmEvent(
                 `swarm-${i}`,
                 'update',
-                { healthy: true, activeAgents: i % 5, completedTasks: i, errors: [] },
+                {
+                  healthy: true,
+                  activeAgents: i % 5,
+                  completedTasks: i,
+                  errors: [],
+                },
                 'mesh',
                 {
                   latency: 50,
                   throughput: 100,
                   reliability: 0.95,
                   resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
-                }
+                },
               );
               break;
             case 'mcp':
@@ -351,15 +360,18 @@ describe('Observer Pattern Implementation', () => {
                 `session-${i}`,
                 'tool_call',
                 { tool: 'test_tool', args: { index: i } },
-                { latency: 20, success: true, tokenUsage: 50 }
+                { latency: 20, success: true, tokenUsage: 50 },
               );
               break;
             default:
               event = EventBuilder.createNeuralEvent(
                 `model-${i}`,
                 'prediction',
-                { input: `data-${i}`, prediction: i % 2 === 0 ? 'positive' : 'negative' },
-                { confidence: 0.85, processingTime: 10, modelVersion: '1.0.0' }
+                {
+                  input: `data-${i}`,
+                  prediction: i % 2 === 0 ? 'positive' : 'negative',
+                },
+                { confidence: 0.85, processingTime: 10, modelVersion: '1.0.0' },
               );
           }
 
@@ -413,7 +425,7 @@ describe('Observer Pattern Implementation', () => {
           type: 'swarm',
           observerId: 'mock-observer',
           priority: 1,
-        })
+        }),
       );
     });
 
@@ -422,7 +434,9 @@ describe('Observer Pattern Implementation', () => {
       eventManager.unsubscribe('swarm', mockObserver);
 
       const stats = eventManager.getObserverStats();
-      expect(stats.find((s) => s.observerId === 'mock-observer')).toBeUndefined();
+      expect(
+        stats.find((s) => s.observerId === 'mock-observer'),
+      ).toBeUndefined();
     });
 
     it('should notify subscribed observers', async () => {
@@ -438,7 +452,7 @@ describe('Observer Pattern Implementation', () => {
           throughput: 100,
           reliability: 0.95,
           resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
-        }
+        },
       );
 
       await eventManager.notify(testEvent);
@@ -461,7 +475,7 @@ describe('Observer Pattern Implementation', () => {
           throughput: 120,
           reliability: 0.96,
           resourceUsage: { cpu: 0.2, memory: 0.3, network: 0.4 },
-        }
+        },
       );
 
       await eventManager.notify(testEvent);
@@ -490,7 +504,7 @@ describe('Observer Pattern Implementation', () => {
           throughput: 90,
           reliability: 0.93,
           resourceUsage: { cpu: 0.5, memory: 0.6, network: 0.7 },
-        }
+        },
       );
 
       await eventManager.notify(testEvent);
@@ -527,7 +541,7 @@ describe('Observer Pattern Implementation', () => {
           throughput: 60,
           reliability: 0.9,
           resourceUsage: { cpu: 0.6, memory: 0.7, network: 0.8 },
-        }
+        },
       );
 
       await eventManager.notify(testEvent);
@@ -563,20 +577,25 @@ describe('Observer Pattern Implementation', () => {
             throughput: 100,
             reliability: 0.95,
             resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
-          }
+          },
         );
 
         const errorEvent = EventBuilder.createSwarmEvent(
           'error-swarm',
           'error',
-          { healthy: false, activeAgents: 0, completedTasks: 3, errors: ['Connection failed'] },
+          {
+            healthy: false,
+            activeAgents: 0,
+            completedTasks: 3,
+            errors: ['Connection failed'],
+          },
           'star',
           {
             latency: 1000,
             throughput: 0,
             reliability: 0.2,
             resourceUsage: { cpu: 0.9, memory: 0.8, network: 0.1 },
-          }
+          },
         );
 
         loggerObserver.update(normalEvent);
@@ -584,18 +603,22 @@ describe('Observer Pattern Implementation', () => {
 
         expect(mockLogger.info).toHaveBeenCalledWith(
           expect.stringContaining('Swarm update'),
-          expect.objectContaining({ swarmId: 'test-swarm' })
+          expect.objectContaining({ swarmId: 'test-swarm' }),
         );
 
         expect(mockLogger.error).toHaveBeenCalledWith(
           expect.stringContaining('Swarm error'),
-          expect.objectContaining({ swarmId: 'error-swarm' })
+          expect.objectContaining({ swarmId: 'error-swarm' }),
         );
       });
 
       it('should have correct observer metadata', () => {
         expect(loggerObserver.getId()).toBe('logger-observer');
-        expect(loggerObserver.getInterests()).toEqual(['swarm', 'mcp', 'neural']);
+        expect(loggerObserver.getInterests()).toEqual([
+          'swarm',
+          'mcp',
+          'neural',
+        ]);
         expect(loggerObserver.getPriority()).toBe(1);
       });
     });
@@ -618,14 +641,14 @@ describe('Observer Pattern Implementation', () => {
             throughput: 100,
             reliability: 0.95,
             resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
-          }
+          },
         );
 
         const event2 = EventBuilder.createMCPEvent(
           'session1',
           'tool_call',
           { tool: 'test_tool', args: {} },
-          { latency: 25, success: true, tokenUsage: 150 }
+          { latency: 25, success: true, tokenUsage: 150 },
         );
 
         metricsObserver.update(event1);
@@ -647,7 +670,7 @@ describe('Observer Pattern Implementation', () => {
           'model1',
           'training_complete',
           { modelPath: '/models/test' },
-          { accuracy: 0.92, loss: 0.08, epochs: 50, trainingTime: 1800 }
+          { accuracy: 0.92, loss: 0.08, epochs: 50, trainingTime: 1800 },
         );
 
         metricsObserver.update(event);
@@ -681,7 +704,7 @@ describe('Observer Pattern Implementation', () => {
             throughput: 80,
             reliability: 0.94,
             resourceUsage: { cpu: 0.4, memory: 0.5, network: 0.6 },
-          }
+          },
         );
 
         wsObserver.update(testEvent);
@@ -691,7 +714,7 @@ describe('Observer Pattern Implementation', () => {
             type: 'event_notification',
             event: testEvent,
             timestamp: expect.any(String),
-          })
+          }),
         );
       });
 
@@ -702,7 +725,7 @@ describe('Observer Pattern Implementation', () => {
           'session-test',
           'response',
           { result: 'test' },
-          { latency: 20, success: true, tokenUsage: 100 }
+          { latency: 20, success: true, tokenUsage: 100 },
         );
 
         wsObserver.update(testEvent);
@@ -738,7 +761,7 @@ describe('Observer Pattern Implementation', () => {
           'persist-test',
           'prediction',
           { input: 'test-data', prediction: 'positive' },
-          { confidence: 0.87, processingTime: 15, modelVersion: '2.0.0' }
+          { confidence: 0.87, processingTime: 15, modelVersion: '2.0.0' },
         );
 
         await dbObserver.update(testEvent);
@@ -750,12 +773,14 @@ describe('Observer Pattern Implementation', () => {
             event_type: testEvent.type,
             event_subtype: testEvent.subtype,
             payload: JSON.stringify(testEvent.payload),
-          })
+          }),
         );
       });
 
       it('should handle database errors gracefully', async () => {
-        mockDatabase?.insert?.mockRejectedValue(new Error('Database connection failed'));
+        mockDatabase?.insert?.mockRejectedValue(
+          new Error('Database connection failed'),
+        );
 
         const testEvent = EventBuilder.createSwarmEvent(
           'error-test',
@@ -767,14 +792,14 @@ describe('Observer Pattern Implementation', () => {
             throughput: 85,
             reliability: 0.91,
             resourceUsage: { cpu: 0.5, memory: 0.6, network: 0.7 },
-          }
+          },
         );
 
         await expect(dbObserver.update(testEvent)).resolves.not.toThrow();
 
         expect(mockLogger.error).toHaveBeenCalledWith(
           'Failed to persist event to database:',
-          expect.any(Error)
+          expect.any(Error),
         );
       });
     });
@@ -816,13 +841,13 @@ describe('Observer Pattern Implementation', () => {
             throughput: 0,
             reliability: 1,
             resourceUsage: { cpu: 0, memory: 0, network: 0 },
-          }
+          },
         ),
         EventBuilder.createMCPEvent(
           'workflow-session',
           'tool_call',
           { tool: 'agent_spawn', args: { type: 'worker', count: 3 } },
-          { latency: 30, success: true, tokenUsage: 200 }
+          { latency: 30, success: true, tokenUsage: 200 },
         ),
         EventBuilder.createSwarmEvent(
           'workflow-swarm',
@@ -834,16 +859,19 @@ describe('Observer Pattern Implementation', () => {
             throughput: 150,
             reliability: 0.98,
             resourceUsage: { cpu: 0.4, memory: 0.5, network: 0.6 },
-          }
+          },
         ),
         EventBuilder.createMCPEvent(
           'workflow-session',
           'tool_call',
           {
             tool: 'task_orchestrate',
-            args: { task: 'data_processing', agents: ['agent1', 'agent2', 'agent3'] },
+            args: {
+              task: 'data_processing',
+              agents: ['agent1', 'agent2', 'agent3'],
+            },
           },
-          { latency: 50, success: true, tokenUsage: 300 }
+          { latency: 50, success: true, tokenUsage: 300 },
         ),
         EventBuilder.createSwarmEvent(
           'workflow-swarm',
@@ -855,7 +883,7 @@ describe('Observer Pattern Implementation', () => {
             throughput: 180,
             reliability: 0.97,
             resourceUsage: { cpu: 0.7, memory: 0.8, network: 0.9 },
-          }
+          },
         ),
       ];
 
@@ -879,7 +907,9 @@ describe('Observer Pattern Implementation', () => {
       const performanceObserver: SystemObserver = {
         update: vi.fn().mockImplementation(() => {
           // Simulate some processing time
-          return new Promise((resolve) => setTimeout(resolve, Math.random() * 10));
+          return new Promise((resolve) =>
+            setTimeout(resolve, Math.random() * 10),
+          );
         }),
         getInterests: () => ['swarm', 'mcp', 'neural'],
         getId: () => 'performance-observer',
@@ -903,14 +933,19 @@ describe('Observer Pattern Implementation', () => {
             event = EventBuilder.createSwarmEvent(
               `concurrent-swarm-${i}`,
               'update',
-              { healthy: true, activeAgents: i % 5, completedTasks: i, errors: [] },
+              {
+                healthy: true,
+                activeAgents: i % 5,
+                completedTasks: i,
+                errors: [],
+              },
               'hierarchical',
               {
                 latency: 50 + (i % 10),
                 throughput: 100 + (i % 20),
                 reliability: 0.9 + (i % 10) / 100,
                 resourceUsage: { cpu: 0.5, memory: 0.5, network: 0.5 },
-              }
+              },
             );
             break;
           case 'mcp':
@@ -918,19 +953,26 @@ describe('Observer Pattern Implementation', () => {
               `concurrent-session-${i}`,
               'tool_call',
               { tool: `tool_${i}`, args: { index: i } },
-              { latency: 20 + (i % 5), success: true, tokenUsage: 100 + (i % 50) }
+              {
+                latency: 20 + (i % 5),
+                success: true,
+                tokenUsage: 100 + (i % 50),
+              },
             );
             break;
           default:
             event = EventBuilder.createNeuralEvent(
               `concurrent-model-${i}`,
               'prediction',
-              { input: `data-${i}`, prediction: i % 2 === 0 ? 'positive' : 'negative' },
+              {
+                input: `data-${i}`,
+                prediction: i % 2 === 0 ? 'positive' : 'negative',
+              },
               {
                 confidence: 0.8 + (i % 20) / 100,
                 processingTime: 10 + (i % 5),
                 modelVersion: '1.0.0',
-              }
+              },
             );
         }
 
@@ -989,7 +1031,9 @@ describe('Observer Pattern Implementation', () => {
       const slowObserver: SystemObserver = {
         update: vi
           .fn()
-          .mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100))),
+          .mockImplementation(
+            () => new Promise((resolve) => setTimeout(resolve, 100)),
+          ),
         getInterests: () => ['swarm'],
         getId: () => 'slow-observer',
         getPriority: () => 1,
@@ -1010,7 +1054,7 @@ describe('Observer Pattern Implementation', () => {
             throughput: 110,
             reliability: 0.96,
             resourceUsage: { cpu: 0.3, memory: 0.4, network: 0.5 },
-          }
+          },
         );
         eventPromises.push(eventManager.notify(event));
       }

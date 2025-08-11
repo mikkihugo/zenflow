@@ -216,7 +216,9 @@ export class WebDataService {
     this.logger.info(`Executing command: ${command} with args:`, args);
 
     // Mock command execution
-    await new Promise((resolve) => setTimeout(resolve, Math.random() * 2000 + 500));
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.random() * 2000 + 500),
+    );
 
     return {
       command,

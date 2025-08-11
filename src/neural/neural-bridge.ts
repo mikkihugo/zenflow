@@ -97,7 +97,11 @@ export class NeuralBridge {
    * @param type
    * @param layers
    */
-  async createNetwork(id: string, type: NeuralNetwork['type'], layers: number[]): Promise<string> {
+  async createNetwork(
+    id: string,
+    type: NeuralNetwork['type'],
+    layers: number[],
+  ): Promise<string> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -125,7 +129,7 @@ export class NeuralBridge {
   async trainNetwork(
     networkId: string,
     trainingData: TrainingData,
-    epochs: number = 1000
+    epochs: number = 1000,
   ): Promise<boolean> {
     const network = this.networks.get(networkId);
     if (!network) {
@@ -165,7 +169,10 @@ export class NeuralBridge {
    * @param networkId
    * @param inputs
    */
-  async predict(networkId: string, inputs: number[]): Promise<PredictionResult> {
+  async predict(
+    networkId: string,
+    inputs: number[],
+  ): Promise<PredictionResult> {
     const network = this.networks.get(networkId);
     if (!network) {
       throw new Error(`Network not found: ${networkId}`);
@@ -233,7 +240,7 @@ export class NeuralBridge {
       totalNetworks: networks.length,
       activeNetworks: networks.filter((n) => n.status !== 'idle').length,
       trainingNetworks: networks.filter((n) => n.status === 'training').length,
-      gpuEnabled: this.config.gpuAcceleration || false,
+      gpuEnabled: this.config.gpuAcceleration,
       wasmEnabled: !!this.config.wasmPath,
     };
   }
@@ -263,7 +270,7 @@ export class NeuralBridge {
   private async simulateTraining(
     _network: NeuralNetwork,
     trainingData: TrainingData,
-    epochs: number
+    epochs: number,
   ): Promise<void> {
     // Simulate training progress
     const batchSize = Math.min(10, trainingData?.inputs.length);
@@ -274,12 +281,17 @@ export class NeuralBridge {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       if (batch % 100 === 0) {
-        logger.debug(`Training progress: ${Math.round((batch / batches) * 100)}%`);
+        logger.debug(
+          `Training progress: ${Math.round((batch / batches) * 100)}%`,
+        );
       }
     }
   }
 
-  private async simulatePrediction(network: NeuralNetwork, _inputs: number[]): Promise<number[]> {
+  private async simulatePrediction(
+    network: NeuralNetwork,
+    _inputs: number[],
+  ): Promise<number[]> {
     // Simulate prediction computation
     await new Promise((resolve) => setTimeout(resolve, 5));
 
@@ -319,7 +331,7 @@ export async function createNeuralNetwork(
   id: string,
   type: NeuralNetwork['type'],
   layers: number[],
-  config?: NeuralConfig
+  config?: NeuralConfig,
 ): Promise<string> {
   const bridge = NeuralBridge.getInstance(config);
   return await bridge.createNetwork(id, type, layers);
@@ -328,7 +340,7 @@ export async function createNeuralNetwork(
 export async function trainNeuralNetwork(
   networkId: string,
   trainingData: TrainingData,
-  epochs?: number
+  epochs?: number,
 ): Promise<boolean> {
   const bridge = NeuralBridge.getInstance();
   return await bridge.trainNetwork(networkId, trainingData, epochs);
@@ -336,7 +348,7 @@ export async function trainNeuralNetwork(
 
 export async function predictWithNetwork(
   networkId: string,
-  inputs: number[]
+  inputs: number[],
 ): Promise<PredictionResult> {
   const bridge = NeuralBridge.getInstance();
   return await bridge.predict(networkId, inputs);

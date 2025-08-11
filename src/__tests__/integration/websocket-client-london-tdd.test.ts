@@ -65,8 +65,8 @@ const mockHeartbeatManager = {
 // === CONTRACT INTERFACES ===
 
 interface WebSocketClientContract {
-  connect(url: string, options?: any): Promise<void>;
-  send(data: any): Promise<void>;
+  connect(url: string, options?: Record<string, unknown>): Promise<void>;
+  send(data: unknown): Promise<void>;
   disconnect(): Promise<void>;
   isConnected(): boolean;
   on(event: string, handler: Function): void;
@@ -74,7 +74,7 @@ interface WebSocketClientContract {
 }
 
 interface ReconnectionContract {
-  shouldReconnect(error: any): boolean;
+  shouldReconnect(error: unknown): boolean;
   getReconnectDelay(attempt: number): number;
   handleReconnection(): Promise<void>;
 }
@@ -122,14 +122,13 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       return Promise.resolve();
     }
 
-    async send(data: any) {
+    async send(data: unknown) {
       if (this.isConnected()) {
         return mockWebSocket.send(JSON.stringify(data));
-      } else {
-        // Queue message for when connection is restored
-        mockMessageQueue.enqueue(data);
-        return Promise.resolve();
       }
+      // Queue message for when connection is restored
+      mockMessageQueue.enqueue(data);
+      return Promise.resolve();
     }
 
     isConnected(): boolean {
@@ -142,7 +141,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       mockMessageQueue.flush();
     }
 
-    private handleMessage(data: any) {
+    private handleMessage(data: unknown) {
       const parsed = JSON.parse(data);
       mockEventEmitter.emit('message', parsed);
     }
@@ -156,7 +155,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       }
     }
 
-    private handleError(error: any) {
+    private handleError(error: unknown) {
       mockEventEmitter.emit('error', error);
     }
 
@@ -200,11 +199,25 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         });
 
         // Assert - Verify connection establishment conversation
-        expect(mockWebSocket.connect).toHaveBeenCalledWith('ws://localhost:4000');
-        expect(mockWebSocket.on).toHaveBeenCalledWith('open', expect.any(Function));
-        expect(mockWebSocket.on).toHaveBeenCalledWith('message', expect.any(Function));
-        expect(mockWebSocket.on).toHaveBeenCalledWith('close', expect.any(Function));
-        expect(mockWebSocket.on).toHaveBeenCalledWith('error', expect.any(Function));
+        expect(mockWebSocket.connect).toHaveBeenCalledWith(
+          'ws://localhost:4000',
+        );
+        expect(mockWebSocket.on).toHaveBeenCalledWith(
+          'open',
+          expect.any(Function),
+        );
+        expect(mockWebSocket.on).toHaveBeenCalledWith(
+          'message',
+          expect.any(Function),
+        );
+        expect(mockWebSocket.on).toHaveBeenCalledWith(
+          'close',
+          expect.any(Function),
+        );
+        expect(mockWebSocket.on).toHaveBeenCalledWith(
+          'error',
+          expect.any(Function),
+        );
         expect(mockHeartbeatManager.start).toHaveBeenCalled();
       });
     });
@@ -219,8 +232,14 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         const client = new MockWebSocketClient();
         client.ws = mockWebSocket; // Simulate connected state
 
-        const connectedMessage = { type: 'task-update', data: { status: 'completed' } };
-        const disconnectedMessage = { type: 'queen-status', data: { id: 'arch-001' } };
+        const connectedMessage = {
+          type: 'task-update',
+          data: { status: 'completed' },
+        };
+        const disconnectedMessage = {
+          type: 'queen-status',
+          data: { id: 'arch-001' },
+        };
 
         // Act - Send message when connected
         await client.send(connectedMessage);
@@ -232,8 +251,12 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         await client.send(disconnectedMessage);
 
         // Assert - Verify message handling conversation
-        expect(mockWebSocket.send).toHaveBeenCalledWith(JSON.stringify(connectedMessage));
-        expect(mockMessageQueue.enqueue).toHaveBeenCalledWith(disconnectedMessage);
+        expect(mockWebSocket.send).toHaveBeenCalledWith(
+          JSON.stringify(connectedMessage),
+        );
+        expect(mockMessageQueue.enqueue).toHaveBeenCalledWith(
+          disconnectedMessage,
+        );
       });
     });
 
@@ -266,7 +289,9 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
           reason: 'Connection lost',
         });
         expect(mockReconnectionManager.isMaxAttemptsReached).toHaveBeenCalled();
-        expect(mockReconnectionManager.getReconnectDelay).toHaveBeenCalledWith(1);
+        expect(mockReconnectionManager.getReconnectDelay).toHaveBeenCalledWith(
+          1,
+        );
         expect(mockReconnectionManager.incrementAttempts).toHaveBeenCalled();
       });
     });
@@ -361,16 +386,28 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
 
       // Simulate events
       mockEventBus.subscribe.mock.calls[0]?.[1]('connected');
-      mockEventBus.subscribe.mock.calls[1]?.[1]({ id: 'msg-123', data: 'test' });
+      mockEventBus.subscribe.mock.calls[1]?.[1]({
+        id: 'msg-123',
+        data: 'test',
+      });
 
       // Assert - Verify event interaction conversation
       expect(mockEventBus.subscribe).toHaveBeenCalledWith(
         'connection-status',
-        expect.any(Function)
+        expect.any(Function),
       );
-      expect(mockEventBus.subscribe).toHaveBeenCalledWith('message-received', expect.any(Function));
-      expect(mockEventBus.publish).toHaveBeenCalledWith('ready-for-messages', true);
-      expect(mockEventBus.publish).toHaveBeenCalledWith('message-processed', 'msg-123');
+      expect(mockEventBus.subscribe).toHaveBeenCalledWith(
+        'message-received',
+        expect.any(Function),
+      );
+      expect(mockEventBus.publish).toHaveBeenCalledWith(
+        'ready-for-messages',
+        true,
+      );
+      expect(mockEventBus.publish).toHaveBeenCalledWith(
+        'message-processed',
+        'msg-123',
+      );
     });
 
     it('should use mocks to drive connection resilience design', () => {
@@ -382,27 +419,36 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       };
 
       const resilientClient = {
-        handleConnectionIssue: async (issue: any) => {
+        handleConnectionIssue: async (issue: unknown) => {
           const health = mockResilienceStrategy.evaluateConnectionHealth(issue);
-          const strategy = mockResilienceStrategy.determineReconnectionStrategy(health);
+          const strategy =
+            mockResilienceStrategy.determineReconnectionStrategy(health);
           return mockResilienceStrategy.executeRecoveryPlan(strategy);
         },
       };
 
       // Mock the resilience conversation
-      mockResilienceStrategy.evaluateConnectionHealth.mockReturnValue({ severity: 'moderate' });
+      mockResilienceStrategy.evaluateConnectionHealth.mockReturnValue({
+        severity: 'moderate',
+      });
       mockResilienceStrategy.determineReconnectionStrategy.mockReturnValue({
         type: 'exponential-backoff',
       });
-      mockResilienceStrategy.executeRecoveryPlan.mockResolvedValue({ success: true });
+      mockResilienceStrategy.executeRecoveryPlan.mockResolvedValue({
+        success: true,
+      });
 
       // Act - Test resilience design
       const connectionIssue = { type: 'timeout', duration: 5000 };
       resilientClient.handleConnectionIssue(connectionIssue);
 
       // Assert - Verify resilience interface exists and behaves correctly
-      expect(mockResilienceStrategy.evaluateConnectionHealth).toHaveBeenCalledWith(connectionIssue);
-      expect(mockResilienceStrategy.determineReconnectionStrategy).toHaveBeenCalledWith({
+      expect(
+        mockResilienceStrategy.evaluateConnectionHealth,
+      ).toHaveBeenCalledWith(connectionIssue);
+      expect(
+        mockResilienceStrategy.determineReconnectionStrategy,
+      ).toHaveBeenCalledWith({
         severity: 'moderate',
       });
       expect(mockResilienceStrategy.executeRecoveryPlan).toHaveBeenCalledWith({

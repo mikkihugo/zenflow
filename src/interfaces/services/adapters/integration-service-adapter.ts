@@ -7,7 +7,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { config, getMCPServerURL } from '../../../config';
+import { config, getMCPServerURL } from '../../../config/index.js';
 import { getLogger } from '../../../config/logging-config.ts';
 import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage.ts';
 import type {
@@ -47,7 +47,7 @@ import { ServiceEnvironment, ServicePriority, ServiceType } from '../types.ts';
 class ServiceDependencyError extends Error {
   constructor(
     public serviceName: string,
-    message: string
+    message: string,
   ) {
     super(message);
     this.name = 'ServiceDependencyError';
@@ -58,7 +58,7 @@ class ServiceOperationError extends Error {
   constructor(
     public serviceName: string,
     public operation: string,
-    public originalError: Error
+    public originalError: Error,
   ) {
     super(`${serviceName}: ${operation} failed - ${originalError.message}`);
     this.name = 'ServiceOperationError';
@@ -69,7 +69,7 @@ class ServiceTimeoutError extends Error {
   constructor(
     public serviceName: string,
     public operation: string,
-    public timeout: number
+    public timeout: number,
   ) {
     super(`${serviceName}: ${operation} timed out after ${timeout}ms`);
     this.name = 'ServiceTimeoutError';
@@ -81,7 +81,8 @@ class ServiceTimeoutError extends Error {
  *
  * @example
  */
-export interface IntegrationServiceAdapterConfig extends Omit<IntegrationServiceConfig, 'type'> {
+export interface IntegrationServiceAdapterConfig
+  extends Omit<IntegrationServiceConfig, 'type'> {
   /** Service name */
   name?: string;
   /** Service type */
@@ -473,7 +474,10 @@ export class IntegrationServiceAdapter implements IService {
     try {
       // Apply configuration updates if provided
       if (config) {
-        Object.assign(this.config, config as unknown as Partial<IntegrationServiceAdapterConfig>);
+        Object.assign(
+          this.config,
+          config as unknown as Partial<IntegrationServiceAdapterConfig>,
+        );
       }
 
       // Validate configuration
@@ -484,7 +488,9 @@ export class IntegrationServiceAdapter implements IService {
 
       // Initialize Architecture Storage Service if enabled
       if (this.config.architectureStorage?.enabled) {
-        this.logger.debug('Initializing ArchitectureStorageService integration');
+        this.logger.debug(
+          'Initializing ArchitectureStorageService integration',
+        );
 
         // Connect to real database adapter using DAL Factory
         let realDatabaseAdapter;
@@ -507,7 +513,10 @@ export class IntegrationServiceAdapter implements IService {
             execute: async (query: string, params?: any[]) => {
               try {
                 // Would execute query via DAL
-                this.logger.debug('Executing database query:', { query, params });
+                this.logger.debug('Executing database query:', {
+                  query,
+                  params,
+                });
                 return { rows: [], changes: 0 };
               } catch (error) {
                 this.logger.warn('Database query failed:', error);
@@ -528,7 +537,7 @@ export class IntegrationServiceAdapter implements IService {
         } catch (error) {
           this.logger.warn(
             'Failed to create real database adapter, using minimal fallback:',
-            error
+            error,
           );
           // Minimal fallback that doesn't pretend to have data
           realDatabaseAdapter = {
@@ -537,7 +546,9 @@ export class IntegrationServiceAdapter implements IService {
           };
         }
 
-        this.architectureStorageService = new ArchitectureStorageService(realDatabaseAdapter);
+        this.architectureStorageService = new ArchitectureStorageService(
+          realDatabaseAdapter,
+        );
 
         if (this.config.architectureStorage.autoInitialize) {
           await this.architectureStorageService.initialize();
@@ -564,12 +575,12 @@ export class IntegrationServiceAdapter implements IService {
                 Authorization: `Bearer ${apiConfig?.authentication?.credentials}`,
               }
             : {},
-          apiConfig?.timeout || 30000
+          apiConfig?.timeout || 30000,
         );
 
         this.safeAPIService = new SafeAPIService(
           apiConfig?.baseURL || getMCPServerURL(),
-          apiConfig?.authentication?.credentials
+          apiConfig?.authentication?.credentials,
         );
 
         await this.addDependency({
@@ -588,7 +599,8 @@ export class IntegrationServiceAdapter implements IService {
         this.protocolManager = new ProtocolManager();
 
         // Initialize supported protocol adapters
-        for (const protocol of this.config.protocolManagement.supportedProtocols) {
+        for (const protocol of this.config.protocolManagement
+          .supportedProtocols) {
           try {
             const adapter = await this.createProtocolAdapter(protocol);
             this.protocolAdapters.set(protocol, adapter);
@@ -611,7 +623,10 @@ export class IntegrationServiceAdapter implements IService {
               status: 'healthy',
             });
           } catch (error) {
-            this.logger.warn(`Failed to initialize protocol adapter for ${protocol}:`, error);
+            this.logger.warn(
+              `Failed to initialize protocol adapter for ${protocol}:`,
+              error,
+            );
           }
         }
 
@@ -650,12 +665,17 @@ export class IntegrationServiceAdapter implements IService {
 
       this.lifecycleStatus = 'initialized';
       this.emit('initialized');
-      this.logger.info(`Integration service adapter initialized successfully: ${this.name}`);
+      this.logger.info(
+        `Integration service adapter initialized successfully: ${this.name}`,
+      );
       // void return
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
-      this.logger.error(`Failed to initialize integration service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to initialize integration service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -677,7 +697,10 @@ export class IntegrationServiceAdapter implements IService {
       // Check dependencies before starting
       const dependenciesOk = await this.checkDependencies();
       if (!dependenciesOk) {
-        throw new ServiceDependencyError(this.name, 'One or more dependencies failed');
+        throw new ServiceDependencyError(
+          this.name,
+          'One or more dependencies failed',
+        );
       }
 
       // Start protocol connections if enabled
@@ -688,11 +711,16 @@ export class IntegrationServiceAdapter implements IService {
       this.startTime = new Date();
       this.lifecycleStatus = 'running';
       this.emit('started');
-      this.logger.info(`Integration service adapter started successfully: ${this.name}`);
+      this.logger.info(
+        `Integration service adapter started successfully: ${this.name}`,
+      );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
-      this.logger.error(`Failed to start integration service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to start integration service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -721,7 +749,10 @@ export class IntegrationServiceAdapter implements IService {
             await pool.close();
           }
         } catch (error) {
-          this.logger.warn(`Failed to close connection pool for ${protocol}:`, error);
+          this.logger.warn(
+            `Failed to close connection pool for ${protocol}:`,
+            error,
+          );
         }
       }
       this.connectionPool.clear();
@@ -733,11 +764,16 @@ export class IntegrationServiceAdapter implements IService {
 
       this.lifecycleStatus = 'stopped';
       this.emit('stopped');
-      this.logger.info(`Integration service adapter stopped successfully: ${this.name}`);
+      this.logger.info(
+        `Integration service adapter stopped successfully: ${this.name}`,
+      );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
-      this.logger.error(`Failed to stop integration service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to stop integration service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -776,9 +812,14 @@ export class IntegrationServiceAdapter implements IService {
       this.eventEmitter.removeAllListeners();
 
       this.lifecycleStatus = 'destroyed';
-      this.logger.info(`Integration service adapter destroyed successfully: ${this.name}`);
+      this.logger.info(
+        `Integration service adapter destroyed successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to destroy integration service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to destroy integration service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -788,15 +829,26 @@ export class IntegrationServiceAdapter implements IService {
    */
   async getStatus(): Promise<ServiceStatus> {
     const now = new Date();
-    const uptime = this.startTime ? now.getTime() - this.startTime.getTime() : 0;
-    const errorRate = this.operationCount > 0 ? (this.errorCount / this.operationCount) * 100 : 0;
+    const uptime = this.startTime
+      ? now.getTime() - this.startTime.getTime()
+      : 0;
+    const errorRate =
+      this.operationCount > 0
+        ? (this.errorCount / this.operationCount) * 100
+        : 0;
 
     // Check dependency statuses
     const dependencyStatuses: {
-      [serviceName: string]: { status: 'healthy' | 'unhealthy' | 'unknown'; lastCheck: Date };
+      [serviceName: string]: {
+        status: 'healthy' | 'unhealthy' | 'unknown';
+        lastCheck: Date;
+      };
     } = {};
 
-    if (this.architectureStorageService && this.config.architectureStorage?.enabled) {
+    if (
+      this.architectureStorageService &&
+      this.config.architectureStorage?.enabled
+    ) {
       dependencyStatuses['architecture-storage-service'] = {
         status: 'healthy', // Would implement actual health check
         lastCheck: now,
@@ -812,7 +864,7 @@ export class IntegrationServiceAdapter implements IService {
 
     if (this.protocolManager && this.config.protocolManagement?.enabled) {
       const protocolStatus = Array.from(this.protocolMetrics.values()).every(
-        (metrics) => metrics.status === 'healthy'
+        (metrics) => metrics.status === 'healthy',
       )
         ? 'healthy'
         : 'unhealthy';
@@ -840,9 +892,9 @@ export class IntegrationServiceAdapter implements IService {
         pendingRequests: this.pendingRequests.size,
         activeProtocols: this.protocolAdapters.size,
         connectionPoolSize: this.connectionPool.size,
-        architectureStorageEnabled: this.config.architectureStorage?.enabled || false,
-        safeAPIEnabled: this.config.safeAPI?.enabled || false,
-        protocolManagementEnabled: this.config.protocolManagement?.enabled || false,
+        architectureStorageEnabled: this.config.architectureStorage?.enabled,
+        safeAPIEnabled: this.config.safeAPI?.enabled,
+        protocolManagementEnabled: this.config.protocolManagement?.enabled,
       },
     };
   }
@@ -853,14 +905,18 @@ export class IntegrationServiceAdapter implements IService {
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
-    const avgLatency = this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
-    const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // ops per second
+    const avgLatency =
+      this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
+    const throughput =
+      recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // ops per second
 
     // Calculate percentile latencies from recent metrics
-    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics
+      .map((m) => m.executionTime)
+      .sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
@@ -870,7 +926,8 @@ export class IntegrationServiceAdapter implements IService {
       .map((m) => m.executionTime);
     const avgProtocolLatency =
       protocolLatencies.length > 0
-        ? protocolLatencies.reduce((sum, lat) => sum + lat, 0) / protocolLatencies.length
+        ? protocolLatencies.reduce((sum, lat) => sum + lat, 0) /
+          protocolLatencies.length
         : 0;
 
     return {
@@ -886,7 +943,8 @@ export class IntegrationServiceAdapter implements IService {
       memoryUsage: {
         used: this.estimateMemoryUsage(),
         total: this.config.cache?.maxSize || 1000,
-        percentage: (this.cache.size / (this.config.cache?.maxSize || 1000)) * 100,
+        percentage:
+          (this.cache.size / (this.config.cache?.maxSize || 1000)) * 100,
       },
       customMetrics: {
         cacheHitRate: this.calculateCacheHitRate(),
@@ -942,7 +1000,7 @@ export class IntegrationServiceAdapter implements IService {
         if (this.cache.size > maxSize * 1.2) {
           // 20% overage threshold
           this.logger.warn(
-            `Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`
+            `Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`,
           );
           this.healthStats.consecutiveFailures++;
           this.healthStats.healthCheckFailures++;
@@ -953,12 +1011,12 @@ export class IntegrationServiceAdapter implements IService {
       // Check connection pool health
       if (this.config.performance?.connectionPooling) {
         const unhealthyPools = Array.from(this.connectionPool.entries()).filter(
-          ([_protocol, pool]) => !this.isConnectionPoolHealthy(pool)
+          ([_protocol, pool]) => !this.isConnectionPoolHealthy(pool),
         );
 
         if (unhealthyPools.length > 0) {
           this.logger.warn(
-            `Unhealthy connection pools detected: ${unhealthyPools.map(([p]) => p).join(', ')}`
+            `Unhealthy connection pools detected: ${unhealthyPools.map(([p]) => p).join(', ')}`,
           );
           this.healthStats.consecutiveFailures++;
           this.healthStats.healthCheckFailures++;
@@ -983,7 +1041,9 @@ export class IntegrationServiceAdapter implements IService {
    * @param config
    */
   async updateConfig(config: Partial<ServiceConfig>): Promise<void> {
-    this.logger.info(`Updating configuration for integration service adapter: ${this.name}`);
+    this.logger.info(
+      `Updating configuration for integration service adapter: ${this.name}`,
+    );
 
     try {
       // Validate the updated configuration
@@ -994,12 +1054,18 @@ export class IntegrationServiceAdapter implements IService {
       }
 
       // Apply the configuration
-      Object.assign(this.config, config as unknown as Partial<IntegrationServiceAdapterConfig>);
+      Object.assign(
+        this.config,
+        config as unknown as Partial<IntegrationServiceAdapterConfig>,
+      );
 
       this.logger.info(`Configuration updated successfully for: ${this.name}`);
       // void return
     } catch (error) {
-      this.logger.error(`Failed to update configuration for ${this.name}:`, error);
+      this.logger.error(
+        `Failed to update configuration for ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -1012,10 +1078,11 @@ export class IntegrationServiceAdapter implements IService {
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     try {
       const errors: string[] = [];
-      const typedConfig = config as IntegrationServiceAdapterConfig & ServiceConfig;
+      const typedConfig = config as IntegrationServiceAdapterConfig &
+        ServiceConfig;
 
       // Basic validation
-      if (!typedConfig?.name || !typedConfig?.type) {
+      if (!(typedConfig?.name && typedConfig?.type)) {
         errors.push('Configuration missing required fields: name or type');
       }
 
@@ -1026,16 +1093,24 @@ export class IntegrationServiceAdapter implements IService {
           typedConfig?.architectureStorage?.databaseType &&
           !validDbTypes.includes(typedConfig?.architectureStorage?.databaseType)
         ) {
-          errors.push(`Invalid database type: ${typedConfig?.architectureStorage?.databaseType}`);
+          errors.push(
+            `Invalid database type: ${typedConfig?.architectureStorage?.databaseType}`,
+          );
         }
       }
 
       // Validate safe API configuration
       if (typedConfig?.safeAPI?.enabled) {
-        if (typedConfig?.safeAPI?.timeout && typedConfig?.safeAPI?.timeout < 1000) {
+        if (
+          typedConfig?.safeAPI?.timeout &&
+          typedConfig?.safeAPI?.timeout < 1000
+        ) {
           errors.push('API timeout must be at least 1000ms');
         }
-        if (typedConfig?.safeAPI?.retries && typedConfig?.safeAPI?.retries < 0) {
+        if (
+          typedConfig?.safeAPI?.retries &&
+          typedConfig?.safeAPI?.retries < 0
+        ) {
           errors.push('API retries must be non-negative');
         }
         if (
@@ -1052,10 +1127,15 @@ export class IntegrationServiceAdapter implements IService {
           !typedConfig?.protocolManagement?.supportedProtocols ||
           typedConfig?.protocolManagement?.supportedProtocols.length === 0
         ) {
-          errors.push('Protocol management requires at least one supported protocol');
+          errors.push(
+            'Protocol management requires at least one supported protocol',
+          );
         }
         if (typedConfig?.protocolManagement?.connectionPooling?.enabled) {
-          if (typedConfig?.protocolManagement?.connectionPooling?.maxConnections < 1) {
+          if (
+            typedConfig?.protocolManagement?.connectionPooling?.maxConnections <
+            1
+          ) {
             errors.push('Max connections must be at least 1');
           }
         }
@@ -1119,7 +1199,7 @@ export class IntegrationServiceAdapter implements IService {
         'component-management',
         'validation-tracking',
         'design-search',
-        'metadata-management'
+        'metadata-management',
       );
     }
 
@@ -1131,7 +1211,7 @@ export class IntegrationServiceAdapter implements IService {
         'rate-limiting',
         'authentication-handling',
         'error-recovery',
-        'request-deduplication'
+        'request-deduplication',
       );
     }
 
@@ -1142,7 +1222,7 @@ export class IntegrationServiceAdapter implements IService {
         'protocol-failover',
         'health-monitoring',
         'load-balancing',
-        'circuit-breaking'
+        'circuit-breaking',
       );
     }
 
@@ -1175,27 +1255,42 @@ export class IntegrationServiceAdapter implements IService {
   async execute<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    options?: ServiceOperationOptions,
   ): Promise<ServiceOperationResponse<T>> {
     const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
 
-    this.logger.debug(`Executing operation: ${operation}`, { operationId, params });
+    this.logger.debug(`Executing operation: ${operation}`, {
+      operationId,
+      params,
+    });
 
     try {
       // Check if service is ready
       if (!this.isReady()) {
-        throw new ServiceOperationError(this.name, operation, new Error('Service not ready'));
+        throw new ServiceOperationError(
+          this.name,
+          operation,
+          new Error('Service not ready'),
+        );
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.performance?.requestTimeout || 30000;
+      const timeout =
+        options?.timeout || this.config.performance?.requestTimeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new ServiceTimeoutError(this.name, operation, timeout)), timeout);
+        setTimeout(
+          () => reject(new ServiceTimeoutError(this.name, operation, timeout)),
+          timeout,
+        );
       });
 
       // Execute operation with timeout
-      const operationPromise = this.executeOperationInternal<T>(operation, params, options);
+      const operationPromise = this.executeOperationInternal<T>(
+        operation,
+        params,
+        options,
+      );
       const result = await Promise.race([operationPromise, timeoutPromise]);
 
       const duration = Date.now() - startTime;
@@ -1224,7 +1319,12 @@ export class IntegrationServiceAdapter implements IService {
       this.successCount++;
       this.totalLatency += duration;
 
-      this.emit('operation', { operationId, operation, success: true, duration });
+      this.emit('operation', {
+        operationId,
+        operation,
+        success: true,
+        duration,
+      });
 
       return {
         success: true,
@@ -1250,7 +1350,13 @@ export class IntegrationServiceAdapter implements IService {
       this.errorCount++;
       this.totalLatency += duration;
 
-      this.emit('operation', { operationId, operation, success: false, duration, error });
+      this.emit('operation', {
+        operationId,
+        operation,
+        success: false,
+        duration,
+        error,
+      });
       this.emit('error', error);
 
       this.logger.error(`Operation ${operation} failed:`, error);
@@ -1258,7 +1364,10 @@ export class IntegrationServiceAdapter implements IService {
       return {
         success: false,
         error: {
-          code: error instanceof Error && 'code' in error ? (error as any).code : 'OPERATION_ERROR',
+          code:
+            error instanceof Error && 'code' in error
+              ? (error as any).code
+              : 'OPERATION_ERROR',
           message: error.message,
           details: params,
           stack: error.stack,
@@ -1304,7 +1413,9 @@ export class IntegrationServiceAdapter implements IService {
   // ============================================
 
   async addDependency(dependency: ServiceDependencyConfig): Promise<void> {
-    this.logger.debug(`Adding dependency ${dependency.serviceName} for ${this.name}`);
+    this.logger.debug(
+      `Adding dependency ${dependency.serviceName} for ${this.name}`,
+    );
     this.dependencies.set(dependency.serviceName, dependency);
   }
 
@@ -1333,7 +1444,7 @@ export class IntegrationServiceAdapter implements IService {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
             return !config?.required; // Return false only if dependency is required
           }
-        }
+        },
       );
 
       const results = await Promise.all(dependencyChecks);
@@ -1358,7 +1469,7 @@ export class IntegrationServiceAdapter implements IService {
   private async executeOperationInternal<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    options?: ServiceOperationOptions,
   ): Promise<T> {
     // Generate cache key
     const cacheKey = this.generateCacheKey(operation, params);
@@ -1390,7 +1501,11 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     // Execute operation with retry logic
-    const executionPromise = this.executeWithRetry<T>(operation, params, options);
+    const executionPromise = this.executeWithRetry<T>(
+      operation,
+      params,
+      options,
+    );
 
     // Store pending request for deduplication
     if (this.config.performance?.enableRequestDeduplication) {
@@ -1430,7 +1545,7 @@ export class IntegrationServiceAdapter implements IService {
     operation: string,
     params?: any,
     options?: ServiceOperationOptions,
-    attempt = 1
+    attempt = 1,
   ): Promise<T> {
     try {
       return await this.performOperation<T>(operation, params, options);
@@ -1438,10 +1553,11 @@ export class IntegrationServiceAdapter implements IService {
       const shouldRetry = this.shouldRetryOperation(operation, error, attempt);
 
       if (shouldRetry && attempt < (this.config.retry?.maxAttempts || 3)) {
-        const delay = (this.config.retry?.backoffMultiplier || 2) ** (attempt - 1) * 1000;
+        const delay =
+          (this.config.retry?.backoffMultiplier || 2) ** (attempt - 1) * 1000;
         this.logger.warn(
           `Operation ${operation} failed (attempt ${attempt}), retrying in ${delay}ms:`,
-          error
+          error,
         );
 
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -1454,7 +1570,12 @@ export class IntegrationServiceAdapter implements IService {
           timestamp: new Date(),
         });
 
-        return await this.executeWithRetry<T>(operation, params, options, attempt + 1);
+        return await this.executeWithRetry<T>(
+          operation,
+          params,
+          options,
+          attempt + 1,
+        );
       }
 
       throw error;
@@ -1472,18 +1593,24 @@ export class IntegrationServiceAdapter implements IService {
   private async performOperation<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     switch (operation) {
       // Architecture Storage Service operations
       case 'architecture-save':
-        return (await this.saveArchitecture(params?.architecture, params?.projectId)) as T;
+        return (await this.saveArchitecture(
+          params?.architecture,
+          params?.projectId,
+        )) as T;
 
       case 'architecture-retrieve':
         return (await this.getArchitecture(params?.architectureId)) as T;
 
       case 'architecture-update':
-        return (await this.updateArchitecture(params?.architectureId, params?.architecture)) as T;
+        return (await this.updateArchitecture(
+          params?.architectureId,
+          params?.architecture,
+        )) as T;
 
       case 'architecture-delete':
         return (await this.deleteArchitecture(params?.architectureId)) as T;
@@ -1501,7 +1628,7 @@ export class IntegrationServiceAdapter implements IService {
         return (await this.saveValidation(
           params?.architectureId,
           params?.validation,
-          params?.type
+          params?.type,
         )) as T;
 
       case 'architecture-validation-history':
@@ -1512,43 +1639,67 @@ export class IntegrationServiceAdapter implements IService {
 
       // Safe API Service operations
       case 'api-get': {
-        const result = await this.safeAPIGet<T>(params?.endpoint, params?.options);
-        return result.success ? (result.data) : (result as any);
+        const result = await this.safeAPIGet<T>(
+          params?.endpoint,
+          params?.options,
+        );
+        return result.success ? result.data : (result as any);
       }
 
       case 'api-post': {
-        const result = await this.safeAPIPost<T>(params?.endpoint, params?.data, params?.options);
-        return result.success ? (result.data) : (result as any);
+        const result = await this.safeAPIPost<T>(
+          params?.endpoint,
+          params?.data,
+          params?.options,
+        );
+        return result.success ? result.data : (result as any);
       }
 
       case 'api-put': {
-        const result = await this.safeAPIPut<T>(params?.endpoint, params?.data, params?.options);
-        return result.success ? (result.data) : (result as any);
+        const result = await this.safeAPIPut<T>(
+          params?.endpoint,
+          params?.data,
+          params?.options,
+        );
+        return result.success ? result.data : (result as any);
       }
 
       case 'api-delete': {
-        const result = await this.safeAPIDelete<T>(params?.endpoint, params?.options);
-        return result.success ? (result.data) : (result as any);
+        const result = await this.safeAPIDelete<T>(
+          params?.endpoint,
+          params?.options,
+        );
+        return result.success ? result.data : (result as any);
       }
 
       case 'api-create-resource': {
-        const result = await this.createResource<T>(params?.endpoint, params?.data);
-        return result.success ? (result.data) : (result as any);
+        const result = await this.createResource<T>(
+          params?.endpoint,
+          params?.data,
+        );
+        return result.success ? result.data : (result as any);
       }
 
       case 'api-get-resource': {
         const result = await this.getResource<T>(params?.endpoint, params?.id);
-        return result.success ? (result.data) : (result as any);
+        return result.success ? result.data : (result as any);
       }
 
       case 'api-list-resources': {
-        const result = await this.listResources<T>(params?.endpoint, params?.queryParams);
+        const result = await this.listResources<T>(
+          params?.endpoint,
+          params?.queryParams,
+        );
         return result.success ? (result.data as T) : (result as any);
       }
 
       case 'api-update-resource': {
-        const result = await this.updateResource<T>(params?.endpoint, params?.id, params?.data);
-        return result.success ? (result.data) : (result as any);
+        const result = await this.updateResource<T>(
+          params?.endpoint,
+          params?.id,
+          params?.data,
+        );
+        return result.success ? result.data : (result as any);
       }
 
       case 'api-delete-resource':
@@ -1556,16 +1707,25 @@ export class IntegrationServiceAdapter implements IService {
 
       // Protocol Management operations
       case 'protocol-connect':
-        return (await this.connectProtocol(params?.protocol, params?.config)) as T;
+        return (await this.connectProtocol(
+          params?.protocol,
+          params?.config,
+        )) as T;
 
       case 'protocol-disconnect':
         return (await this.disconnectProtocol(params?.protocol)) as T;
 
       case 'protocol-send':
-        return await this.sendProtocolMessage<T>(params?.protocol, params?.message);
+        return await this.sendProtocolMessage<T>(
+          params?.protocol,
+          params?.message,
+        );
 
       case 'protocol-receive':
-        return await this.receiveProtocolMessage<T>(params?.protocol, params?.timeout);
+        return await this.receiveProtocolMessage<T>(
+          params?.protocol,
+          params?.timeout,
+        );
 
       case 'protocol-health-check':
         return (await this.checkProtocolHealth(params?.protocol)) as T;
@@ -1574,10 +1734,16 @@ export class IntegrationServiceAdapter implements IService {
         return (await this.listActiveProtocols()) as T;
 
       case 'protocol-switch':
-        return (await this.switchProtocol(params?.fromProtocol, params?.toProtocol)) as T;
+        return (await this.switchProtocol(
+          params?.fromProtocol,
+          params?.toProtocol,
+        )) as T;
 
       case 'protocol-broadcast':
-        return (await this.broadcastMessage(params?.message, params?.protocols)) as T;
+        return (await this.broadcastMessage(
+          params?.message,
+          params?.protocols,
+        )) as T;
 
       // Connection management operations
       case 'connection-pool-status':
@@ -1594,7 +1760,10 @@ export class IntegrationServiceAdapter implements IService {
         return (await this.sanitizeResponse(params?.response)) as T;
 
       case 'rate-limit-check':
-        return (await this.checkRateLimit(params?.endpoint, params?.clientId)) as T;
+        return (await this.checkRateLimit(
+          params?.endpoint,
+          params?.clientId,
+        )) as T;
 
       // Utility operations
       case 'cache-stats':
@@ -1616,7 +1785,7 @@ export class IntegrationServiceAdapter implements IService {
         throw new ServiceOperationError(
           this.name,
           operation,
-          new Error(`Unknown operation: ${operation}`)
+          new Error(`Unknown operation: ${operation}`),
         );
     }
   }
@@ -1627,7 +1796,7 @@ export class IntegrationServiceAdapter implements IService {
 
   private async saveArchitecture(
     architecture: ArchitectureDesign,
-    projectId?: string
+    projectId?: string,
   ): Promise<string> {
     if (!this.architectureStorageService) {
       throw new Error('ArchitectureStorageService not available');
@@ -1637,7 +1806,7 @@ export class IntegrationServiceAdapter implements IService {
     try {
       const result = await this.architectureStorageService.saveArchitecture(
         architecture,
-        projectId
+        projectId,
       );
 
       this.recordArchitectureMetrics({
@@ -1661,14 +1830,19 @@ export class IntegrationServiceAdapter implements IService {
     }
   }
 
-  private async getArchitecture(architectureId: string): Promise<ArchitectureDesign | null> {
+  private async getArchitecture(
+    architectureId: string,
+  ): Promise<ArchitectureDesign | null> {
     if (!this.architectureStorageService) {
       throw new Error('ArchitectureStorageService not available');
     }
 
     const startTime = Date.now();
     try {
-      const result = await this.architectureStorageService.getArchitectureById(architectureId);
+      const result =
+        await this.architectureStorageService.getArchitectureById(
+          architectureId,
+        );
 
       this.recordArchitectureMetrics({
         operationType: 'retrieve',
@@ -1694,7 +1868,7 @@ export class IntegrationServiceAdapter implements IService {
 
   private async updateArchitecture(
     architectureId: string,
-    architecture: ArchitectureDesign
+    architecture: ArchitectureDesign,
   ): Promise<void> {
     if (!this.architectureStorageService) {
       throw new Error('ArchitectureStorageService not available');
@@ -1702,7 +1876,10 @@ export class IntegrationServiceAdapter implements IService {
 
     const startTime = Date.now();
     try {
-      await this.architectureStorageService.updateArchitecture(architectureId, architecture);
+      await this.architectureStorageService.updateArchitecture(
+        architectureId,
+        architecture,
+      );
 
       this.recordArchitectureMetrics({
         operationType: 'update',
@@ -1752,14 +1929,17 @@ export class IntegrationServiceAdapter implements IService {
     }
   }
 
-  private async searchArchitectures(criteria: any): Promise<ArchitectureDesign[]> {
+  private async searchArchitectures(
+    criteria: any,
+  ): Promise<ArchitectureDesign[]> {
     if (!this.architectureStorageService) {
       throw new Error('ArchitectureStorageService not available');
     }
 
     const startTime = Date.now();
     try {
-      const result = await this.architectureStorageService.searchArchitectures(criteria);
+      const result =
+        await this.architectureStorageService.searchArchitectures(criteria);
 
       this.recordArchitectureMetrics({
         operationType: 'search',
@@ -1781,36 +1961,52 @@ export class IntegrationServiceAdapter implements IService {
     }
   }
 
-  private async getArchitecturesByProject(projectId: string): Promise<ArchitectureDesign[]> {
+  private async getArchitecturesByProject(
+    projectId: string,
+  ): Promise<ArchitectureDesign[]> {
     if (!this.architectureStorageService) {
       throw new Error('ArchitectureStorageService not available');
     }
-    return await this.architectureStorageService.getArchitecturesByProject(projectId);
+    return await this.architectureStorageService.getArchitecturesByProject(
+      projectId,
+    );
   }
 
-  private async getArchitecturesByDomain(domain: string): Promise<ArchitectureDesign[]> {
+  private async getArchitecturesByDomain(
+    domain: string,
+  ): Promise<ArchitectureDesign[]> {
     if (!this.architectureStorageService) {
       throw new Error('ArchitectureStorageService not available');
     }
-    return await this.architectureStorageService.getArchitecturesByDomain(domain);
+    return await this.architectureStorageService.getArchitecturesByDomain(
+      domain,
+    );
   }
 
   private async saveValidation(
     architectureId: string,
     validation: ArchitecturalValidation,
-    type?: string
+    type?: string,
   ): Promise<void> {
     if (!this.architectureStorageService) {
       throw new Error('ArchitectureStorageService not available');
     }
-    return await this.architectureStorageService.saveValidation(architectureId, validation, type);
+    return await this.architectureStorageService.saveValidation(
+      architectureId,
+      validation,
+      type,
+    );
   }
 
-  private async getValidationHistory(architectureId: string): Promise<ArchitecturalValidation[]> {
+  private async getValidationHistory(
+    architectureId: string,
+  ): Promise<ArchitecturalValidation[]> {
     if (!this.architectureStorageService) {
       throw new Error('ArchitectureStorageService not available');
     }
-    return await this.architectureStorageService.getValidationHistory(architectureId);
+    return await this.architectureStorageService.getValidationHistory(
+      architectureId,
+    );
   }
 
   private async getArchitectureStats(): Promise<any> {
@@ -1824,7 +2020,10 @@ export class IntegrationServiceAdapter implements IService {
   // Safe API Service Integration Methods
   // ============================================
 
-  private async safeAPIGet<T>(endpoint: string, options?: any): Promise<APIResult<T>> {
+  private async safeAPIGet<T>(
+    endpoint: string,
+    options?: any,
+  ): Promise<APIResult<T>> {
     if (!this.safeAPIClient) {
       throw new Error('SafeAPIClient not available');
     }
@@ -1834,7 +2033,11 @@ export class IntegrationServiceAdapter implements IService {
     return result;
   }
 
-  private async safeAPIPost<T>(endpoint: string, data?: any, options?: any): Promise<APIResult<T>> {
+  private async safeAPIPost<T>(
+    endpoint: string,
+    data?: any,
+    options?: any,
+  ): Promise<APIResult<T>> {
     if (!this.safeAPIClient) {
       throw new Error('SafeAPIClient not available');
     }
@@ -1844,7 +2047,11 @@ export class IntegrationServiceAdapter implements IService {
     return result;
   }
 
-  private async safeAPIPut<T>(endpoint: string, data?: any, options?: any): Promise<APIResult<T>> {
+  private async safeAPIPut<T>(
+    endpoint: string,
+    data?: any,
+    options?: any,
+  ): Promise<APIResult<T>> {
     if (!this.safeAPIClient) {
       throw new Error('SafeAPIClient not available');
     }
@@ -1854,7 +2061,10 @@ export class IntegrationServiceAdapter implements IService {
     return result;
   }
 
-  private async safeAPIDelete<T>(endpoint: string, options?: any): Promise<APIResult<T>> {
+  private async safeAPIDelete<T>(
+    endpoint: string,
+    options?: any,
+  ): Promise<APIResult<T>> {
     if (!this.safeAPIClient) {
       throw new Error('SafeAPIClient not available');
     }
@@ -1864,14 +2074,20 @@ export class IntegrationServiceAdapter implements IService {
     return result;
   }
 
-  private async createResource<T>(endpoint: string, data: any): Promise<APIResult<T>> {
+  private async createResource<T>(
+    endpoint: string,
+    data: any,
+  ): Promise<APIResult<T>> {
     if (!this.safeAPIService) {
       throw new Error('SafeAPIService not available');
     }
     return await this.safeAPIService.createResource<T, any>(endpoint, data);
   }
 
-  private async getResource<T>(endpoint: string, id: string | number): Promise<APIResult<T>> {
+  private async getResource<T>(
+    endpoint: string,
+    id: string | number,
+  ): Promise<APIResult<T>> {
     if (!this.safeAPIService) {
       throw new Error('SafeAPIService not available');
     }
@@ -1880,7 +2096,7 @@ export class IntegrationServiceAdapter implements IService {
 
   private async listResources<T>(
     endpoint: string,
-    params?: any
+    params?: any,
   ): Promise<APIResult<{ items: T[]; pagination: any }>> {
     if (!this.safeAPIService) {
       throw new Error('SafeAPIService not available');
@@ -1891,7 +2107,7 @@ export class IntegrationServiceAdapter implements IService {
   private async updateResource<T>(
     endpoint: string,
     id: string | number,
-    data: any
+    data: any,
   ): Promise<APIResult<T>> {
     if (!this.safeAPIService) {
       throw new Error('SafeAPIService not available');
@@ -1901,7 +2117,7 @@ export class IntegrationServiceAdapter implements IService {
 
   private async deleteResource(
     endpoint: string,
-    id: string | number
+    id: string | number,
   ): Promise<APIResult<{ deleted: boolean }>> {
     if (!this.safeAPIService) {
       throw new Error('SafeAPIService not available');
@@ -1913,7 +2129,10 @@ export class IntegrationServiceAdapter implements IService {
   // Protocol Management Integration Methods
   // ============================================
 
-  private async connectProtocol(protocol: string, config?: ConnectionConfig): Promise<void> {
+  private async connectProtocol(
+    protocol: string,
+    config?: ConnectionConfig,
+  ): Promise<void> {
     if (!this.protocolManager) {
       throw new Error('ProtocolManager not available');
     }
@@ -1937,7 +2156,7 @@ export class IntegrationServiceAdapter implements IService {
           host: 'localhost',
           port: 3000,
           timeout: 10000,
-        }
+        },
       );
 
       // Update protocol metrics
@@ -1970,7 +2189,10 @@ export class IntegrationServiceAdapter implements IService {
     }
   }
 
-  private async sendProtocolMessage<T>(protocol: string, message: any): Promise<T> {
+  private async sendProtocolMessage<T>(
+    protocol: string,
+    message: any,
+  ): Promise<T> {
     if (!this.protocolManager) {
       throw new Error('ProtocolManager not available');
     }
@@ -1981,7 +2203,10 @@ export class IntegrationServiceAdapter implements IService {
     }
 
     try {
-      const result = await this.protocolManager.sendMessage(message, `${this.name}-${protocol}`);
+      const result = await this.protocolManager.sendMessage(
+        message,
+        `${this.name}-${protocol}`,
+      );
 
       // Update protocol metrics
       const metrics = this.protocolMetrics.get(protocol);
@@ -1997,14 +2222,19 @@ export class IntegrationServiceAdapter implements IService {
     }
   }
 
-  private async receiveProtocolMessage<T>(protocol: string, timeout?: number): Promise<T> {
+  private async receiveProtocolMessage<T>(
+    protocol: string,
+    timeout?: number,
+  ): Promise<T> {
     if (!this.protocolManager) {
       throw new Error('ProtocolManager not available');
     }
 
     // Protocol Manager doesn't have a receive method - this would need to be implemented
     // using event listeners or WebSocket-style message handling
-    throw new Error(`Receive functionality not implemented for protocol: ${protocol}`);
+    throw new Error(
+      `Receive functionality not implemented for protocol: ${protocol}`,
+    );
   }
 
   private async checkProtocolHealth(protocol?: string): Promise<boolean> {
@@ -2019,7 +2249,7 @@ export class IntegrationServiceAdapter implements IService {
 
     // Check all protocols
     return Array.from(this.protocolMetrics.values()).every(
-      (metrics) => metrics.status === 'healthy'
+      (metrics) => metrics.status === 'healthy',
     );
   }
 
@@ -2027,7 +2257,10 @@ export class IntegrationServiceAdapter implements IService {
     return Array.from(this.protocolAdapters.keys());
   }
 
-  private async switchProtocol(fromProtocol: string, toProtocol: string): Promise<void> {
+  private async switchProtocol(
+    fromProtocol: string,
+    toProtocol: string,
+  ): Promise<void> {
     if (!this.config.multiProtocol?.enableProtocolSwitching) {
       throw new Error('Protocol switching is disabled');
     }
@@ -2039,12 +2272,16 @@ export class IntegrationServiceAdapter implements IService {
     await this.connectProtocol(toProtocol);
   }
 
-  private async broadcastMessage(message: any, protocols?: string[]): Promise<any[]> {
+  private async broadcastMessage(
+    message: any,
+    protocols?: string[],
+  ): Promise<any[]> {
     if (!this.protocolManager) {
       throw new Error('ProtocolManager not available');
     }
 
-    const targetProtocols = protocols || Array.from(this.protocolAdapters.keys());
+    const targetProtocols =
+      protocols || Array.from(this.protocolAdapters.keys());
     const results: any[] = [];
 
     for (const protocol of targetProtocols) {
@@ -2070,7 +2307,9 @@ export class IntegrationServiceAdapter implements IService {
       poolStatuses[protocol] = {
         healthy: this.isConnectionPoolHealthy(pool),
         connections: pool?.activeConnections || 0,
-        maxConnections: this.config.protocolManagement?.connectionPooling?.maxConnections || 50,
+        maxConnections:
+          this.config.protocolManagement?.connectionPooling?.maxConnections ||
+          50,
         lastActivity: new Date(), // Would track actual activity
       };
     }
@@ -2088,7 +2327,10 @@ export class IntegrationServiceAdapter implements IService {
           cleaned += result?.closed || 0;
         }
       } catch (error) {
-        this.logger.warn(`Failed to cleanup connection pool for ${protocol}:`, error);
+        this.logger.warn(
+          `Failed to cleanup connection pool for ${protocol}:`,
+          error,
+        );
       }
     }
 
@@ -2099,7 +2341,9 @@ export class IntegrationServiceAdapter implements IService {
   // Security and Validation Methods
   // ============================================
 
-  private async validateRequest(request: any): Promise<{ valid: boolean; errors?: string[] }> {
+  private async validateRequest(
+    request: any,
+  ): Promise<{ valid: boolean; errors?: string[] }> {
     if (!this.config.security?.enableRequestValidation) {
       return { valid: true };
     }
@@ -2140,7 +2384,7 @@ export class IntegrationServiceAdapter implements IService {
 
   private async checkRateLimit(
     endpoint: string,
-    clientId: string
+    clientId: string,
   ): Promise<{ allowed: boolean; remaining?: number }> {
     if (!this.config.security?.enableRateLimiting) {
       return { allowed: true };
@@ -2150,7 +2394,8 @@ export class IntegrationServiceAdapter implements IService {
     const _key = `${endpoint}:${clientId}`;
     const _now = Date.now();
     const _windowSize = 60000; // 1 minute
-    const maxRequests = this.config.safeAPI?.rateLimiting?.requestsPerSecond || 100;
+    const maxRequests =
+      this.config.safeAPI?.rateLimiting?.requestsPerSecond || 100;
 
     // In a real implementation, this would use Redis or similar
     // For now, just return allowed
@@ -2202,7 +2447,8 @@ export class IntegrationServiceAdapter implements IService {
       operationCount: this.operationCount,
       successCount: this.successCount,
       errorCount: this.errorCount,
-      avgLatency: this.operationCount > 0 ? this.totalLatency / this.operationCount : 0,
+      avgLatency:
+        this.operationCount > 0 ? this.totalLatency / this.operationCount : 0,
       cacheHitRate: this.calculateCacheHitRate(),
       pendingRequests: this.pendingRequests.size,
       activeProtocols: this.protocolAdapters.size,
@@ -2307,7 +2553,11 @@ export class IntegrationServiceAdapter implements IService {
     this.logger.debug(`Cache cleanup: removed ${toRemove} entries`);
   }
 
-  private shouldRetryOperation(operation: string, error: any, attempt: number): boolean {
+  private shouldRetryOperation(
+    operation: string,
+    error: any,
+    attempt: number,
+  ): boolean {
     if (!this.config.retry?.enabled) {
       return false;
     }
@@ -2324,7 +2574,7 @@ export class IntegrationServiceAdapter implements IService {
     if (
       error.name === 'ServiceTimeoutError' &&
       'timeout' in error &&
-      (error).timeout < 5000
+      error.timeout < 5000
     ) {
       return false; // Don't retry short timeouts
     }
@@ -2344,7 +2594,9 @@ export class IntegrationServiceAdapter implements IService {
     this.metrics = this.metrics.filter((m) => m.timestamp > cutoff);
   }
 
-  private recordArchitectureMetrics(metrics: ArchitectureOperationMetrics): void {
+  private recordArchitectureMetrics(
+    metrics: ArchitectureOperationMetrics,
+  ): void {
     if (!this.config.performance?.enableMetricsCollection) {
       return;
     }
@@ -2353,10 +2605,16 @@ export class IntegrationServiceAdapter implements IService {
 
     // Keep only recent metrics
     const cutoff = new Date(Date.now() - 3600000); // 1 hour
-    this.architectureMetrics = this.architectureMetrics.filter((m) => m.timestamp > cutoff);
+    this.architectureMetrics = this.architectureMetrics.filter(
+      (m) => m.timestamp > cutoff,
+    );
   }
 
-  private updateAPIEndpointMetrics(endpoint: string, timestamp: number, success: boolean): void {
+  private updateAPIEndpointMetrics(
+    endpoint: string,
+    timestamp: number,
+    success: boolean,
+  ): void {
     let metrics = this.apiEndpointMetrics.get(endpoint);
     if (!metrics) {
       metrics = {
@@ -2373,22 +2631,25 @@ export class IntegrationServiceAdapter implements IService {
     metrics.requestCount++;
     metrics.lastAccessed = new Date();
 
-    if (!success) {
+    if (success) {
       metrics.errorRate =
-        (metrics.errorRate * (metrics.requestCount - 1) + 1) / metrics.requestCount;
+        (metrics.errorRate * (metrics.requestCount - 1)) / metrics.requestCount;
     } else {
-      metrics.errorRate = (metrics.errorRate * (metrics.requestCount - 1)) / metrics.requestCount;
+      metrics.errorRate =
+        (metrics.errorRate * (metrics.requestCount - 1) + 1) /
+        metrics.requestCount;
     }
 
     const responseTime = Date.now() - timestamp;
     metrics.averageResponseTime =
-      (metrics.averageResponseTime * (metrics.requestCount - 1) + responseTime) /
+      (metrics.averageResponseTime * (metrics.requestCount - 1) +
+        responseTime) /
       metrics.requestCount;
   }
 
   private calculateCacheHitRate(): number {
     const recentMetrics = this.metrics.filter(
-      (m) => Date.now() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => Date.now() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
     if (recentMetrics.length === 0) {
@@ -2400,10 +2661,9 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   private calculateDeduplicationRate(): number {
-    const deduplicatedRequests = Array.from(this.pendingRequests.values()).reduce(
-      (sum, req) => sum + (req.requestCount - 1),
-      0
-    );
+    const deduplicatedRequests = Array.from(
+      this.pendingRequests.values(),
+    ).reduce((sum, req) => sum + (req.requestCount - 1), 0);
 
     const totalRequests = this.operationCount + deduplicatedRequests;
     return totalRequests > 0 ? (deduplicatedRequests / totalRequests) * 100 : 0;
@@ -2413,13 +2673,15 @@ export class IntegrationServiceAdapter implements IService {
     const protocols = Array.from(this.protocolMetrics.values());
     if (protocols.length === 0) return 100;
 
-    const healthyProtocols = protocols.filter((p) => p.status === 'healthy').length;
+    const healthyProtocols = protocols.filter(
+      (p) => p.status === 'healthy',
+    ).length;
     return (healthyProtocols / protocols.length) * 100;
   }
 
   private calculateArchitectureOperationsRate(): number {
     const recentMetrics = this.architectureMetrics.filter(
-      (m) => Date.now() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => Date.now() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
     return recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // ops per second
@@ -2427,7 +2689,9 @@ export class IntegrationServiceAdapter implements IService {
 
   private calculateValidationSuccessRate(): number {
     const recentMetrics = this.metrics.filter(
-      (m) => Date.now() - m.timestamp.getTime() < 300000 && m.operationName.includes('validation')
+      (m) =>
+        Date.now() - m.timestamp.getTime() < 300000 &&
+        m.operationName.includes('validation'),
     );
 
     if (recentMetrics.length === 0) return 100;
@@ -2477,17 +2741,18 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   private determineHealthStatus(
-    errorRate: number
+    errorRate: number,
   ): 'healthy' | 'degraded' | 'unhealthy' | 'unknown' {
     if (this.healthStats.consecutiveFailures > 5) {
       return 'unhealthy';
-    } else if (errorRate > 10 || this.healthStats.consecutiveFailures > 2) {
-      return 'degraded';
-    } else if (this.operationCount > 0) {
-      return 'healthy';
-    } else {
-      return 'unknown';
     }
+    if (errorRate > 10 || this.healthStats.consecutiveFailures > 2) {
+      return 'degraded';
+    }
+    if (this.operationCount > 0) {
+      return 'healthy';
+    }
+    return 'unknown';
   }
 
   private async createProtocolAdapter(protocol: string): Promise<any> {
@@ -2512,7 +2777,10 @@ export class IntegrationServiceAdapter implements IService {
       try {
         await this.connectProtocol(defaultProtocol);
       } catch (error) {
-        this.logger.warn(`Failed to initialize default protocol ${defaultProtocol}:`, error);
+        this.logger.warn(
+          `Failed to initialize default protocol ${defaultProtocol}:`,
+          error,
+        );
       }
     }
   }
@@ -2600,14 +2868,17 @@ export class IntegrationServiceAdapter implements IService {
     setInterval(() => {
       const cutoff = new Date(Date.now() - 3600000); // 1 hour
       this.metrics = this.metrics.filter((m) => m.timestamp > cutoff);
-      this.architectureMetrics = this.architectureMetrics.filter((m) => m.timestamp > cutoff);
+      this.architectureMetrics = this.architectureMetrics.filter(
+        (m) => m.timestamp > cutoff,
+      );
     }, 300000); // Run every 5 minutes
   }
 
   private startProtocolHealthCheckTimer(): void {
     if (!this.config.protocolManagement?.healthChecking?.enabled) return;
 
-    const interval = this.config.protocolManagement.healthChecking.interval || 30000;
+    const interval =
+      this.config.protocolManagement.healthChecking.interval || 30000;
     setInterval(async () => {
       for (const [protocol, metrics] of this.protocolMetrics.entries()) {
         try {
@@ -2616,7 +2887,10 @@ export class IntegrationServiceAdapter implements IService {
           metrics.lastHealthCheck = new Date();
         } catch (error) {
           metrics.status = 'unhealthy';
-          this.logger.warn(`Protocol health check failed for ${protocol}:`, error);
+          this.logger.warn(
+            `Protocol health check failed for ${protocol}:`,
+            error,
+          );
         }
       }
     }, interval);
@@ -2628,12 +2902,12 @@ export class IntegrationServiceAdapter implements IService {
     setInterval(() => {
       // Audit suspicious activity patterns
       const recentFailures = this.metrics.filter(
-        (m) => !m.success && Date.now() - m.timestamp.getTime() < 300000
+        (m) => !m.success && Date.now() - m.timestamp.getTime() < 300000,
       );
 
       if (recentFailures.length > 10) {
         this.logger.warn(
-          `High failure rate detected: ${recentFailures.length} failures in last 5 minutes`
+          `High failure rate detected: ${recentFailures.length} failures in last 5 minutes`,
         );
       }
 
@@ -2641,13 +2915,18 @@ export class IntegrationServiceAdapter implements IService {
       const endpointFailures = new Map<string, number>();
       recentFailures.forEach((m) => {
         if (m.endpoint) {
-          endpointFailures.set(m.endpoint, (endpointFailures.get(m.endpoint) || 0) + 1);
+          endpointFailures.set(
+            m.endpoint,
+            (endpointFailures.get(m.endpoint) || 0) + 1,
+          );
         }
       });
 
       for (const [endpoint, failures] of endpointFailures.entries()) {
         if (failures > 5) {
-          this.logger.warn(`High failure rate for endpoint ${endpoint}: ${failures} failures`);
+          this.logger.warn(
+            `High failure rate for endpoint ${endpoint}: ${failures} failures`,
+          );
         }
       }
     }, 60000); // Run every minute
@@ -2661,7 +2940,7 @@ export class IntegrationServiceAdapter implements IService {
  * @example
  */
 export function createIntegrationServiceAdapter(
-  config: IntegrationServiceAdapterConfig
+  config: IntegrationServiceAdapterConfig,
 ): IntegrationServiceAdapter {
   return new IntegrationServiceAdapter(config);
 }
@@ -2675,7 +2954,7 @@ export function createIntegrationServiceAdapter(
  */
 export function createDefaultIntegrationServiceAdapterConfig(
   name: string,
-  overrides?: Partial<IntegrationServiceAdapterConfig>
+  overrides?: Partial<IntegrationServiceAdapterConfig>,
 ): IntegrationServiceAdapterConfig {
   return {
     name,

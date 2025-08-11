@@ -103,7 +103,7 @@ function parseSourceFile(content, filePath) {
 
   // Extract classes
   const classMatches = content.matchAll(
-    /export\s+class\s+(\w+)(?:\s+extends\s+(\w+))?\s*{([^}]+)}/g
+    /export\s+class\s+(\w+)(?:\s+extends\s+(\w+))?\s*{([^}]+)}/g,
   );
   for (const match of classMatches) {
     const [, name, parent, body] = match;
@@ -122,7 +122,7 @@ function parseSourceFile(content, filePath) {
 
   // Extract functions
   const functionMatches = content.matchAll(
-    /export\s+(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?\s*{/g
+    /export\s+(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?\s*{/g,
   );
   for (const match of functionMatches) {
     const [, name, params, returnType] = match;
@@ -138,7 +138,7 @@ function parseSourceFile(content, filePath) {
 
   // Extract interfaces (TypeScript)
   const interfaceMatches = content.matchAll(
-    /export\s+interface\s+(\w+)(?:\s+extends\s+([^{]+))?\s*{([^}]+)}/g
+    /export\s+interface\s+(\w+)(?:\s+extends\s+([^{]+))?\s*{([^}]+)}/g,
   );
   for (const match of interfaceMatches) {
     const [, name, parent, body] = match;
@@ -168,7 +168,7 @@ function parseSourceFile(content, filePath) {
 
   // Extract constants
   const constMatches = content.matchAll(
-    /export\s+const\s+(\w+)(?:\s*:\s*([^=]+))?\s*=\s*([^;]+);/g
+    /export\s+const\s+(\w+)(?:\s*:\s*([^=]+))?\s*=\s*([^;]+);/g,
   );
   for (const match of constMatches) {
     const [, name, type, value] = match;
@@ -188,7 +188,9 @@ function parseSourceFile(content, filePath) {
 // Extract methods from class body
 function extractMethods(body) {
   const methods = [];
-  const methodMatches = body.matchAll(/(?:async\s+)?(\w+)\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?\s*{/g);
+  const methodMatches = body.matchAll(
+    /(?:async\s+)?(\w+)\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?\s*{/g,
+  );
 
   for (const match of methodMatches) {
     const [, name, params, returnType] = match;
@@ -208,7 +210,7 @@ function extractMethods(body) {
 function extractProperties(body) {
   const properties = [];
   const propertyMatches = body.matchAll(
-    /(?:readonly\s+)?(\w+)(?:\s*:\s*([^;=]+))?(?:\s*=\s*([^;]+))?;/g
+    /(?:readonly\s+)?(\w+)(?:\s*:\s*([^;=]+))?(?:\s*=\s*([^;]+))?;/g,
   );
 
   for (const match of propertyMatches) {
@@ -249,7 +251,9 @@ function parseParameters(paramsString) {
   if (!paramsString?.trim()) return [];
 
   const params = [];
-  const paramMatches = paramsString.matchAll(/(\w+)(\?)?(?:\s*:\s*([^,=]+))?(?:\s*=\s*([^,]+))?/g);
+  const paramMatches = paramsString.matchAll(
+    /(\w+)(\?)?(?:\s*:\s*([^,=]+))?(?:\s*=\s*([^,]+))?/g,
+  );
 
   for (const match of paramMatches) {
     const [, name, optional, type, defaultValue] = match;
@@ -298,7 +302,7 @@ async function extractExamples() {
     const files = await fs.readdir(CONFIG.examplesDir);
 
     for (const file of files) {
-      if (!file.endsWith('.js') && !file.endsWith('.ts')) continue;
+      if (!(file.endsWith('.js') || file.endsWith('.ts'))) continue;
 
       const filePath = path.join(CONFIG.examplesDir, file);
       const content = await fs.readFile(filePath, 'utf8');
@@ -370,7 +374,7 @@ ${
         .map(
           (prop) => `
 - **${prop.name}**${prop.readonly ? ' *(readonly)*' : ''}: \`${prop.type || 'any'}\`${prop.defaultValue ? ` = \`${prop.defaultValue}\`` : ''}
-`
+`,
         )
         .join('')
     : '*No public properties*'
@@ -394,20 +398,20 @@ ${
         .map(
           (p) => `
 - **${p.name}**${p.optional ? ' *(optional)*' : ''}: \`${p.type || 'any'}\`${p.defaultValue ? ` = \`${p.defaultValue}\`` : ''}
-`
+`,
         )
         .join('')
     : '*No parameters*'
 }
 
-`
+`,
         )
         .join('')
     : '*No public methods*'
 }
 
 ---
-`
+`,
   )
   .join('')}
 
@@ -429,14 +433,14 @@ ${
         .map(
           (p) => `
 - **${p.name}**${p.optional ? ' *(optional)*' : ''}: \`${p.type || 'any'}\`${p.defaultValue ? ` = \`${p.defaultValue}\`` : ''}
-`
+`,
         )
         .join('')
     : '*No parameters*'
 }
 
 ---
-`
+`,
   )
   .join('')}
 
@@ -463,12 +467,12 @@ ${iface.properties
   .map(
     (prop) => `
 - **${prop.name}**${prop.optional ? ' *(optional)*' : ''}: \`${prop.type}\`
-`
+`,
   )
   .join('')}
 
 ---
-`
+`,
   )
   .join('')}
 
@@ -488,7 +492,7 @@ type ${type.name} = ${type.definition};
 \`\`\`
 
 ---
-`
+`,
   )
   .join('')}
 
@@ -506,7 +510,7 @@ ${constant.documentation || '*No description available*'}
 **Value**: \`${constant.value}\`
 
 ---
-`
+`,
   )
   .join('')}
 
@@ -549,7 +553,7 @@ ${example.content}
 \`\`\`
 
 ---
-`
+`,
   )
   .join('')}
 
@@ -955,7 +959,10 @@ async function main() {
     // Generate documentation files
     log('Generating API reference...');
     const apiReference = await generateAPIReference(apiInfo, packageInfo);
-    await fs.writeFile(path.join(CONFIG.outputDir, 'API_REFERENCE_GENERATED.md'), apiReference);
+    await fs.writeFile(
+      path.join(CONFIG.outputDir, 'API_REFERENCE_GENERATED.md'),
+      apiReference,
+    );
 
     log('Generating examples documentation...');
     const examplesDoc = await generateExamplesDoc(examples);
@@ -1002,12 +1009,15 @@ ${(await findSourceFiles(CONFIG.sourceDir)).map((file) => `- ${path.relative(CON
 *Generated by ruv-swarm documentation generator*
 `;
 
-    await fs.writeFile(path.join(CONFIG.outputDir, 'GENERATION_SUMMARY.md'), summary);
+    await fs.writeFile(
+      path.join(CONFIG.outputDir, 'GENERATION_SUMMARY.md'),
+      summary,
+    );
 
     log('Documentation generation completed successfully!');
     log(`Files generated in: ${CONFIG.outputDir}`);
     log(
-      `- API Reference: ${apiInfo.classes.length} classes, ${apiInfo.functions.length} functions`
+      `- API Reference: ${apiInfo.classes.length} classes, ${apiInfo.functions.length} functions`,
     );
     log(`- Examples: ${examples.length} examples`);
     log(`- CLI Documentation: Complete command reference`);

@@ -24,7 +24,7 @@ interface ArgumentParser {
 }
 
 interface OutputFormatter {
-  format(data: unknown, options?: any): string;
+  format(data: unknown, options?: Record<string, unknown>): string;
 }
 
 interface ErrorHandler {
@@ -65,7 +65,7 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
     parser: ArgumentParser,
     formatter: OutputFormatter,
     errorHandler: ErrorHandler,
-    mockExecute?: jest.Mock
+    mockExecute?: jest.Mock,
   ) {
     super();
     this.registry = registry;
@@ -170,7 +170,7 @@ describe('CLI Commands Integration - TDD London', () => {
       mockParser,
       mockFormatter,
       mockErrorHandler,
-      mockExecute
+      mockExecute,
     );
   });
 
@@ -276,7 +276,9 @@ describe('CLI Commands Integration - TDD London', () => {
       mockErrorHandler.handle.mockResolvedValue(errorResult);
 
       // Act & Assert
-      await expect(cliSystem.execute(input)).rejects.toThrow('Command not found');
+      await expect(cliSystem.execute(input)).rejects.toThrow(
+        'Command not found',
+      );
     });
 
     it('should emit execution events', async () => {
@@ -307,12 +309,12 @@ describe('CLI Commands Integration - TDD London', () => {
         mockRegistry,
         mockParser,
         mockFormatter,
-        mockErrorHandler
+        mockErrorHandler,
       );
 
       // Act & Assert
       await expect(uninitializedSystem.execute(['test'])).rejects.toThrow(
-        'CLI system not initialized'
+        'CLI system not initialized',
       );
     });
   });
@@ -387,7 +389,9 @@ describe('CLI Commands Integration - TDD London', () => {
       const formattedOutput = 'Agents: 3, Active: true';
 
       mockExecute.mockImplementation(async () => {
-        const formatted = mockFormatter.format(commandData, { format: 'table' });
+        const formatted = mockFormatter.format(commandData, {
+          format: 'table',
+        });
         return {
           success: true,
           exitCode: 0,
@@ -401,7 +405,9 @@ describe('CLI Commands Integration - TDD London', () => {
       const result = await cliSystem.execute(input);
 
       // Assert - verify formatter usage
-      expect(mockFormatter.format).toHaveBeenCalledWith(commandData, { format: 'table' });
+      expect(mockFormatter.format).toHaveBeenCalledWith(commandData, {
+        format: 'table',
+      });
       expect(result?.output).toBe(formattedOutput);
     });
 
@@ -471,7 +477,9 @@ describe('CLI Commands Integration - TDD London', () => {
         { config: { name: 'init', category: 'core' } },
       ];
 
-      mockRegistry.findByCategory.mockReturnValue(coreCommands as CommandMetadata[]);
+      mockRegistry.findByCategory.mockReturnValue(
+        coreCommands as CommandMetadata[],
+      );
 
       await cliSystem.initialize();
 
@@ -595,11 +603,13 @@ describe('CLI Commands Integration - TDD London', () => {
         mockRegistry,
         mockParser,
         mockFormatter,
-        mockErrorHandler
+        mockErrorHandler,
       );
 
       // Act & Assert
-      await expect(errorSystem.initialize()).rejects.toThrow('Initialization failed');
+      await expect(errorSystem.initialize()).rejects.toThrow(
+        'Initialization failed',
+      );
     });
   });
 });

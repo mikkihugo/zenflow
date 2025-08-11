@@ -75,7 +75,9 @@ class NeuralWasmGatewayImpl {
    *
    * @param ctx
    */
-  async execute<T = unknown>(ctx: WasmExecutionContext): Promise<WasmExecutionResult<T>> {
+  async execute<T = unknown>(
+    ctx: WasmExecutionContext,
+  ): Promise<WasmExecutionResult<T>> {
     const start = performance.now?.() ?? Date.now();
     try {
       await this.initialize();

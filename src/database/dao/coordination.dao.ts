@@ -9,7 +9,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces.ts';
+import type {
+  DatabaseAdapter,
+  ILogger,
+} from '../../core/interfaces/base-interfaces.ts';
 import { BaseDao } from '../base.dao.ts';
 import type {
   CoordinationChange,
@@ -49,7 +52,10 @@ interface LockInfo extends CoordinationLock {
  * @template T The entity type this repository manages.
  * @example
  */
-export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepository<T> {
+export class CoordinationDao<T>
+  extends BaseDao<T>
+  implements ICoordinationRepository<T>
+{
   private eventEmitter = new EventEmitter();
   private locks = new Map<string, LockInfo>();
   private subscriptions = new Map<string, Subscription>();
@@ -61,7 +67,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     adapter: DatabaseAdapter,
     logger: ILogger,
     tableName: string,
-    entitySchema?: Record<string, any>
+    entitySchema?: Record<string, any>,
   ) {
     super(adapter, logger, tableName, entitySchema);
 
@@ -75,15 +81,22 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
    * @param resourceId
    * @param lockTimeout
    */
-  async acquireLock(resourceId: string, lockTimeout: number = 30000): Promise<CoordinationLock> {
-    this.logger.debug(`Acquiring lock for resource: ${resourceId}, timeout: ${lockTimeout}ms`);
+  async acquireLock(
+    resourceId: string,
+    lockTimeout: number = 30000,
+  ): Promise<CoordinationLock> {
+    this.logger.debug(
+      `Acquiring lock for resource: ${resourceId}, timeout: ${lockTimeout}ms`,
+    );
 
     const lockId = this.generateLockId(resourceId);
     const existingLock = this.locks.get(resourceId);
 
     // Check if resource is already locked
     if (existingLock && existingLock.expiresAt > new Date()) {
-      throw new Error(`Resource ${resourceId} is already locked by ${existingLock.owner}`);
+      throw new Error(
+        `Resource ${resourceId} is already locked by ${existingLock.owner}`,
+      );
     }
 
     // Create new lock
@@ -140,7 +153,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
       }
     }
 
-    if (!lockInfo || !resourceId) {
+    if (!(lockInfo && resourceId)) {
       throw new Error(`Lock ${lockId} not found`);
     }
 
@@ -170,11 +183,13 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
    */
   async subscribe(
     pattern: string,
-    callback: (change: CoordinationChange<T>) => void
+    callback: (change: CoordinationChange<T>) => void,
   ): Promise<string> {
     const subscriptionId = this.generateSubscriptionId();
 
-    this.logger.debug(`Creating subscription: ${subscriptionId} for pattern: ${pattern}`);
+    this.logger.debug(
+      `Creating subscription: ${subscriptionId} for pattern: ${pattern}`,
+    );
 
     const subscription: Subscription = {
       id: subscriptionId,
@@ -195,7 +210,9 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
         try {
           callback(change);
         } catch (error) {
-          this.logger.error(`Error in subscription callback ${subscriptionId}: ${error}`);
+          this.logger.error(
+            `Error in subscription callback ${subscriptionId}: ${error}`,
+          );
         }
       }
     });
@@ -246,7 +263,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     } catch (error) {
       this.logger.error(`Failed to publish event: ${error}`);
       throw new Error(
-        `Publish failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Publish failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -272,7 +289,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
    */
   async execute(
     sql: string,
-    params?: unknown[]
+    params?: unknown[],
   ): Promise<{ affectedRows?: number; insertId?: number }> {
     try {
       const result = await this.adapter.execute(sql, params);
@@ -348,7 +365,9 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
    *
    * @param customQuery
    */
-  override async executeCustomQuery<R = any>(customQuery: CustomQuery): Promise<R> {
+  override async executeCustomQuery<R = any>(
+    customQuery: CustomQuery,
+  ): Promise<R> {
     if (customQuery.type === 'coordination') {
       const query = customQuery.query as any;
 
@@ -392,10 +411,10 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     resourceId: string,
     maxRetries: number = 3,
     retryDelay: number = 1000,
-    lockTimeout: number = 30000
+    lockTimeout: number = 30000,
   ): Promise<CoordinationLock | null> {
     this.logger.debug(
-      `Trying to acquire lock for resource: ${resourceId} (max retries: ${maxRetries})`
+      `Trying to acquire lock for resource: ${resourceId} (max retries: ${maxRetries})`,
     );
 
     for (let attempt = 0 as number; attempt <= maxRetries; attempt++) {
@@ -403,12 +422,14 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
         return await this.acquireLock(resourceId, lockTimeout);
       } catch (error) {
         if (attempt === maxRetries) {
-          this.logger.warn(`Failed to acquire lock after ${maxRetries} attempts: ${error}`);
+          this.logger.warn(
+            `Failed to acquire lock after ${maxRetries} attempts: ${error}`,
+          );
           return null;
         }
 
         this.logger.debug(
-          `Lock acquisition attempt ${attempt + 1} failed, retrying in ${retryDelay}ms`
+          `Lock acquisition attempt ${attempt + 1} failed, retrying in ${retryDelay}ms`,
         );
         await this.sleep(retryDelay);
       }
@@ -427,9 +448,11 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   async executeWithLock<R>(
     resourceId: string,
     operation: () => Promise<R>,
-    lockTimeout: number = 30000
+    lockTimeout: number = 30000,
   ): Promise<R> {
-    this.logger.debug(`Executing operation with lock for resource: ${resourceId}`);
+    this.logger.debug(
+      `Executing operation with lock for resource: ${resourceId}`,
+    );
 
     const lock = await this.acquireLock(resourceId, lockTimeout);
 
@@ -501,7 +524,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
   private async emitChange(
     type: 'create' | 'update' | 'delete',
     entityId: string | number,
-    entity?: T
+    entity?: T,
   ): Promise<void> {
     const change: CoordinationChange<T> = {
       type,
@@ -517,7 +540,10 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
     this.eventEmitter.emit('change', change);
   }
 
-  private matchesPattern(change: CoordinationChange<T>, pattern: string): boolean {
+  private matchesPattern(
+    change: CoordinationChange<T>,
+    pattern: string,
+  ): boolean {
     // Simple pattern matching - can be enhanced with more sophisticated matching
     if (pattern === '*') return true;
 
@@ -557,7 +583,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
       await this.adapter.execute(
         `INSERT OR REPLACE INTO coordination_locks (lock_id, resource_id, owner, acquired_at, expires_at, created_at) 
          VALUES (?, ?, ?, ?, ?, ?)`,
-        Object.values(lockData)
+        Object.values(lockData),
       );
     } catch (error) {
       // Table might not exist, which is fine for this implementation
@@ -567,14 +593,20 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
 
   private async removeLockFromDatabase(lockId: string): Promise<void> {
     try {
-      await this.adapter.execute('DELETE FROM coordination_locks WHERE lock_id = ?', [lockId]);
+      await this.adapter.execute(
+        'DELETE FROM coordination_locks WHERE lock_id = ?',
+        [lockId],
+      );
     } catch (error) {
       // Table might not exist, which is fine for this implementation
       this.logger.debug(`Could not remove lock from database: ${error}`);
     }
   }
 
-  private async persistEvent(channel: string, event: CoordinationEvent<T>): Promise<void> {
+  private async persistEvent(
+    channel: string,
+    event: CoordinationEvent<T>,
+  ): Promise<void> {
     try {
       const eventData = {
         channel,
@@ -588,7 +620,7 @@ export class CoordinationDao<T> extends BaseDao<T> implements ICoordinationRepos
       await this.adapter.execute(
         `INSERT INTO coordination_events (channel, event_type, event_data, source, timestamp, metadata) 
          VALUES (?, ?, ?, ?, ?, ?)`,
-        Object.values(eventData)
+        Object.values(eventData),
       );
     } catch (error) {
       // Table might not exist, which is fine for this implementation

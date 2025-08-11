@@ -8,7 +8,7 @@
  * @file Interface implementation: contracts.
  */
 
-import type { InterfaceConfig } from '../../config';
+import type { InterfaceConfig } from '../../config/index.js';
 import type { CommandResult, ExecutionContext } from './command-interfaces.ts';
 import type { ComponentStatus } from './types.ts';
 

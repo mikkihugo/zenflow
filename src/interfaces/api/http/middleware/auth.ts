@@ -48,7 +48,7 @@ export interface AuthContext {
 export const authMiddleware = (
   req: Request & { auth?: AuthContext },
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   // Create anonymous user context
   const authContext: AuthContext = {
@@ -67,11 +67,16 @@ export const authMiddleware = (
 
   // Log authentication status (only in development)
   if (process.env['NODE_ENV'] === 'development') {
-    log(LogLevel['DEBUG'], 'Authentication: No auth required - allowing request', req as any, {
-      authStatus: 'no_auth_required',
-      userType: 'anonymous',
-      permissions: authContext.user?.permissions,
-    });
+    log(
+      LogLevel['DEBUG'],
+      'Authentication: No auth required - allowing request',
+      req as any,
+      {
+        authStatus: 'no_auth_required',
+        userType: 'anonymous',
+        permissions: authContext.user?.permissions,
+      },
+    );
   }
 
   // Continue to next middleware
@@ -92,7 +97,7 @@ export const authMiddleware = (
 export const optionalAuthMiddleware = (
   req: Request & { auth?: AuthContext },
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   // Check for auth headers (but don't enforce)
   const authHeader = req.headers['authorization'];
@@ -116,11 +121,16 @@ export const optionalAuthMiddleware = (
     };
 
     if (process.env['NODE_ENV'] === 'development') {
-      log(LogLevel['DEBUG'], 'Optional auth: Token provided but not validated', req as any, {
-        hasAuthHeader: !!authHeader,
-        hasApiKey: !!apiKey,
-        tokenType: authContext.tokenType,
-      });
+      log(
+        LogLevel['DEBUG'],
+        'Optional auth: Token provided but not validated',
+        req as any,
+        {
+          hasAuthHeader: !!authHeader,
+          hasApiKey: !!apiKey,
+          tokenType: authContext.tokenType,
+        },
+      );
     }
   } else {
     // No auth provided
@@ -151,7 +161,7 @@ export const optionalAuthMiddleware = (
  */
 export const hasPermission = (
   req: Request & { auth?: AuthContext },
-  permission: string
+  permission: string,
 ): boolean => {
   const authContext = req.auth;
 
@@ -174,14 +184,20 @@ export const hasPermission = (
  * @param req
  * @param role
  */
-export const hasRole = (req: Request & { auth?: AuthContext }, role: string): boolean => {
+export const hasRole = (
+  req: Request & { auth?: AuthContext },
+  role: string,
+): boolean => {
   const authContext = req.auth;
 
   if (!authContext?.user) {
     return true; // Allow all since no auth required
   }
 
-  return authContext.user.roles.includes(role) || authContext.user.roles.includes('admin');
+  return (
+    authContext.user.roles.includes(role) ||
+    authContext.user.roles.includes('admin')
+  );
 };
 
 /**
@@ -205,7 +221,9 @@ export const isAdmin = (req: Request): boolean => {
  *
  * @param req
  */
-export const getCurrentUser = (req: Request & { auth?: AuthContext }): User | undefined => {
+export const getCurrentUser = (
+  req: Request & { auth?: AuthContext },
+): User | undefined => {
   return req.auth?.user;
 };
 

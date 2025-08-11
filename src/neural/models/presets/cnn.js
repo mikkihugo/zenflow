@@ -13,9 +13,27 @@ class CNNModel extends NeuralModel {
     this.config = {
       inputShape: config.inputShape || [28, 28, 1], // [height, width, channels]
       convLayers: config.convLayers || [
-        { filters: 32, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
-        { filters: 64, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
-        { filters: 128, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
+        {
+          filters: 32,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
+        {
+          filters: 64,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
+        {
+          filters: 128,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
       ],
       poolingSize: config.poolingSize || 2,
       denseLayers: config.denseLayers || [128, 64],
@@ -42,7 +60,12 @@ class CNNModel extends NeuralModel {
       const inputChannels = currentShape[2];
 
       // Initialize kernel weights [kernelSize, kernelSize, inputChannels, filters]
-      const kernelWeights = this.createWeight([kernelSize, kernelSize, inputChannels, filters]);
+      const kernelWeights = this.createWeight([
+        kernelSize,
+        kernelSize,
+        inputChannels,
+        filters,
+      ]);
 
       this.convWeights.push({
         kernel: kernelWeights,
@@ -77,7 +100,9 @@ class CNNModel extends NeuralModel {
     }
 
     // Output layer
-    this.denseWeights.push(this.createWeight([lastSize, this.config.outputSize]));
+    this.denseWeights.push(
+      this.createWeight([lastSize, this.config.outputSize]),
+    );
     this.denseBiases.push(new Float32Array(this.config.outputSize).fill(0));
   }
 
@@ -148,7 +173,11 @@ class CNNModel extends NeuralModel {
 
     // Output layer
     const outputIndex = this.denseWeights.length - 1;
-    x = this.dense(x, this.denseWeights[outputIndex], this.denseBiases[outputIndex]);
+    x = this.dense(
+      x,
+      this.denseWeights[outputIndex],
+      this.denseBiases[outputIndex],
+    );
 
     // Apply softmax for classification
     x = this.softmax(x);
@@ -165,10 +194,15 @@ class CNNModel extends NeuralModel {
     const { filters, kernelSize, stride = 1, padding } = convLayer;
 
     // Calculate output dimensions
-    const outputShape = this.getConvOutputShape([height, width, inputChannels], convLayer);
+    const outputShape = this.getConvOutputShape(
+      [height, width, inputChannels],
+      convLayer,
+    );
     const [outputHeight, outputWidth, outputChannels] = outputShape;
 
-    const output = new Float32Array(batchSize * outputHeight * outputWidth * outputChannels);
+    const output = new Float32Array(
+      batchSize * outputHeight * outputWidth * outputChannels,
+    );
 
     // Apply convolution
     for (let b = 0; b < batchSize; b++) {
@@ -231,13 +265,15 @@ class CNNModel extends NeuralModel {
     const outputHeight = Math.floor(height / poolSize);
     const outputWidth = Math.floor(width / poolSize);
 
-    const output = new Float32Array(batchSize * outputHeight * outputWidth * channels);
+    const output = new Float32Array(
+      batchSize * outputHeight * outputWidth * channels,
+    );
 
     for (let b = 0; b < batchSize; b++) {
       for (let oh = 0; oh < outputHeight; oh++) {
         for (let ow = 0; ow < outputWidth; ow++) {
           for (let c = 0; c < channels; c++) {
-            let maxVal = -Infinity;
+            let maxVal = Number.NEGATIVE_INFINITY;
 
             // Find max in pool window
             for (let ph = 0; ph < poolSize; ph++) {
@@ -247,7 +283,10 @@ class CNNModel extends NeuralModel {
 
                 if (ih < height && iw < width) {
                   const inputIdx =
-                    b * height * width * channels + ih * width * channels + iw * channels + c;
+                    b * height * width * channels +
+                    ih * width * channels +
+                    iw * channels +
+                    c;
 
                   maxVal = Math.max(maxVal, input[inputIdx]);
                 }
@@ -313,7 +352,7 @@ class CNNModel extends NeuralModel {
 
     for (let b = 0; b < batchSize; b++) {
       const offset = b * size;
-      let maxVal = -Infinity;
+      let maxVal = Number.NEGATIVE_INFINITY;
 
       // Find max for numerical stability
       for (let i = 0; i < size; i++) {
@@ -338,7 +377,12 @@ class CNNModel extends NeuralModel {
   }
 
   async train(trainingData, options = {}) {
-    const { epochs = 10, batchSize = 32, learningRate = 0.001, validationSplit = 0.1 } = options;
+    const {
+      epochs = 10,
+      batchSize = 32,
+      learningRate = 0.001,
+      validationSplit = 0.1,
+    } = options;
 
     const trainingHistory = [];
 
@@ -357,7 +401,10 @@ class CNNModel extends NeuralModel {
 
       // Process batches
       for (let i = 0; i < shuffled.length; i += batchSize) {
-        const batch = shuffled.slice(i, Math.min(i + batchSize, shuffled.length));
+        const batch = shuffled.slice(
+          i,
+          Math.min(i + batchSize, shuffled.length),
+        );
 
         // Forward pass
         const predictions = await this.forward(batch.inputs, true);
@@ -428,7 +475,7 @@ class CNNModel extends NeuralModel {
 
     for (let b = 0; b < batchSize; b++) {
       let predClass = 0;
-      let maxProb = -Infinity;
+      let maxProb = Number.NEGATIVE_INFINITY;
 
       // Find predicted class
       for (let c = 0; c < numClasses; c++) {

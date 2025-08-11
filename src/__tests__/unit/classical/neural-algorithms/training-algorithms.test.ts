@@ -57,7 +57,8 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
       expect(result?.errorHistory?.length).toBeGreaterThan(10);
 
       const initialError = result?.errorHistory?.[0];
-      const finalError = result?.errorHistory?.[result?.errorHistory?.length - 1];
+      const finalError =
+        result?.errorHistory?.[result?.errorHistory?.length - 1];
       expect(finalError).toBeLessThan(initialError);
     });
   });
@@ -86,7 +87,8 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
 
       // RPROP should converge faster or achieve lower error
       expect(
-        resultRPROP?.finalError < resultBP?.finalError || resultRPROP?.epochs < resultBP?.epochs
+        resultRPROP?.finalError < resultBP?.finalError ||
+          resultRPROP?.epochs < resultBP?.epochs,
       ).toBe(true);
     });
 
@@ -145,7 +147,9 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
 
       // Should achieve better convergence than linear methods
       expect(result?.finalError).toBeLessThan(0.05);
-      expect(performance.getDuration('quickprop-convergence')).toBeLessThan(5000); // 5 seconds max
+      expect(performance.getDuration('quickprop-convergence')).toBeLessThan(
+        5000,
+      ); // 5 seconds max
     });
 
     it('should handle momentum and growth factors correctly', () => {
@@ -388,10 +392,13 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
       // Simulate large dataset processing
       const batchGenerator = function* (size: number, batchSize: number) {
         for (let i = 0; i < size; i += batchSize) {
-          const batch = Array.from({ length: Math.min(batchSize, size - i) }, (_, j) => ({
-            input: [Math.random(), Math.random(), Math.random()],
-            output: [Math.random()],
-          }));
+          const batch = Array.from(
+            { length: Math.min(batchSize, size - i) },
+            (_, j) => ({
+              input: [Math.random(), Math.random(), Math.random()],
+              output: [Math.random()],
+            }),
+          );
           yield batch;
         }
       };
@@ -419,7 +426,9 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
 
       expect(avgError).toBeLessThan(1.0);
       expect(batchCount).toBe(100); // 10,000 / 100
-      expect(performance.getDuration('large-dataset-training')).toBeLessThan(30000); // 30 seconds max
+      expect(performance.getDuration('large-dataset-training')).toBeLessThan(
+        30000,
+      ); // 30 seconds max
     });
 
     it('should optimize memory usage with weight sharing', () => {
@@ -462,8 +471,9 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
     for (const sample of testData) {
       const prediction = network.predict(sample.input);
       const error = sample.output.reduce(
-        (sum: number, target: number, i: number) => sum + (target - prediction[i]) ** 2,
-        0
+        (sum: number, target: number, i: number) =>
+          sum + (target - prediction[i]) ** 2,
+        0,
       );
       totalError += error;
     }

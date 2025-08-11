@@ -122,7 +122,9 @@ const initialSwarmState: SwarmState = {
  *
  * @param options
  */
-export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmStatusReturn => {
+export const useSwarmStatus = (
+  options: UseSwarmStatusOptions = {},
+): UseSwarmStatusReturn => {
   const {
     autoRefresh = true,
     refreshInterval = 3000,
@@ -147,7 +149,10 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
 
       logger.debug('Swarm status refreshed successfully');
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to refresh swarm status');
+      const error =
+        err instanceof Error
+          ? err
+          : new Error('Failed to refresh swarm status');
       logger.error('Failed to refresh swarm status:', error);
       setError(error);
     } finally {
@@ -175,7 +180,12 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
         id: 'coordinator-main',
         role: 'coordinator',
         status: 'active',
-        capabilities: ['coordination', 'planning', 'monitoring', 'optimization'],
+        capabilities: [
+          'coordination',
+          'planning',
+          'monitoring',
+          'optimization',
+        ],
         lastActivity: new Date(Date.now() - 1000),
         metrics: {
           tasksCompleted: Math.floor(Math.random() * 20) + 10,
@@ -204,8 +214,11 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       // Add more mock tasks as needed
     ];
 
-    const activeAgents = mockAgents.filter((a) => a.status === 'active' || a.status === 'busy');
-    const uptime = Date.now() - (swarmState.status.uptime || Date.now() - 3600000);
+    const activeAgents = mockAgents.filter(
+      (a) => a.status === 'active' || a.status === 'busy',
+    );
+    const uptime =
+      Date.now() - (swarmState.status.uptime || Date.now() - 3600000);
 
     const newState: SwarmState = {
       status: {
@@ -218,8 +231,10 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       metrics: {
         totalAgents: mockAgents.length,
         activeAgents: activeAgents.length,
-        tasksInProgress: mockTasks.filter((t) => t.status === 'in_progress').length,
-        tasksCompleted: mockTasks.filter((t) => t.status === 'completed').length,
+        tasksInProgress: mockTasks.filter((t) => t.status === 'in_progress')
+          .length,
+        tasksCompleted: mockTasks.filter((t) => t.status === 'completed')
+          .length,
         totalTasks: mockTasks.length,
         uptime,
         performance: {
@@ -240,7 +255,9 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
     // Attempt to load real swarm data with fallback to mock data
     try {
       // Try to import and use real swarm coordination through public API
-      const { createPublicSwarmCoordinator } = await import('../../../coordination/public-api.ts');
+      const { createPublicSwarmCoordinator } = await import(
+        '../../../coordination/public-api.ts'
+      );
       const coordinator = await createPublicSwarmCoordinator();
 
       if (coordinator) {
@@ -356,7 +373,8 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
 
       logger.debug('Agent started successfully:', newAgent.id);
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to start agent');
+      const error =
+        err instanceof Error ? err : new Error('Failed to start agent');
       logger.error('Failed to start agent:', error);
       throw error;
     }
@@ -369,7 +387,7 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       setSwarmState((prev) => ({
         ...prev,
         agents: prev.agents.map((agent) =>
-          agent.id === agentId ? { ...agent, status: 'idle' as const } : agent
+          agent.id === agentId ? { ...agent, status: 'idle' as const } : agent,
         ),
         status: {
           ...prev.status,
@@ -384,7 +402,8 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
 
       logger.debug('Agent stopped successfully:', agentId);
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to stop agent');
+      const error =
+        err instanceof Error ? err : new Error('Failed to stop agent');
       logger.error('Failed to stop agent:', error);
       throw error;
     }
@@ -401,7 +420,8 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
         progress: taskConfig?.progress || 0,
         assignedAgents: taskConfig?.assignedAgents || [],
         priority: taskConfig?.priority || 'medium',
-        startTime: taskConfig?.status === 'in_progress' ? new Date() : undefined,
+        startTime:
+          taskConfig?.status === 'in_progress' ? new Date() : undefined,
         ...taskConfig,
       };
 
@@ -421,7 +441,8 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
 
       logger.debug('Task created successfully:', newTask.id);
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to create task');
+      const error =
+        err instanceof Error ? err : new Error('Failed to create task');
       logger.error('Failed to create task:', error);
       throw error;
     }
@@ -434,16 +455,18 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
       setSwarmState((prev) => {
         const oldTask = prev.tasks.find((t) => t.id === taskId);
         const newTasks = prev.tasks.map((task) =>
-          task.id === taskId ? { ...task, ...updates } : task
+          task.id === taskId ? { ...task, ...updates } : task,
         );
 
         // Recalculate metrics if status changed
         let metricsUpdate = {};
         if (oldTask && updates.status && oldTask.status !== updates.status) {
           const inProgressChange =
-            (updates.status === 'in_progress' ? 1 : 0) - (oldTask.status === 'in_progress' ? 1 : 0);
+            (updates.status === 'in_progress' ? 1 : 0) -
+            (oldTask.status === 'in_progress' ? 1 : 0);
           const completedChange =
-            (updates.status === 'completed' ? 1 : 0) - (oldTask.status === 'completed' ? 1 : 0);
+            (updates.status === 'completed' ? 1 : 0) -
+            (oldTask.status === 'completed' ? 1 : 0);
 
           metricsUpdate = {
             tasksInProgress: prev.metrics.tasksInProgress + inProgressChange,
@@ -464,7 +487,8 @@ export const useSwarmStatus = (options: UseSwarmStatusOptions = {}): UseSwarmSta
 
       logger.debug('Task updated successfully:', taskId);
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to update task');
+      const error =
+        err instanceof Error ? err : new Error('Failed to update task');
       logger.error('Failed to update task:', error);
       throw error;
     }

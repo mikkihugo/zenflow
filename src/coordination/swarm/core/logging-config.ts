@@ -90,7 +90,7 @@ export class LoggingConfig {
       formatJson?: boolean;
       logDir?: string;
       [key: string]: any;
-    } = {}
+    } = {},
   ): Logger {
     if (this.loggers.has(component)) {
       return this.loggers.get(component)!;
@@ -108,17 +108,20 @@ export class LoggingConfig {
     };
 
     // Conditionally add optional properties only if they have truthy values
-    const enableStderr = process.env['MCP_MODE'] === 'stdio' || options?.enableStderr;
+    const enableStderr =
+      process.env['MCP_MODE'] === 'stdio' || options?.enableStderr;
     if (enableStderr) {
       loggerOptions.enableStderr = true;
     }
 
-    const enableFile = process.env['LOG_TO_FILE'] === 'true' || options?.enableFile;
+    const enableFile =
+      process.env['LOG_TO_FILE'] === 'true' || options?.enableFile;
     if (enableFile) {
       loggerOptions.enableFile = true;
     }
 
-    const formatJson = process.env['LOG_FORMAT'] === 'json' || options?.formatJson;
+    const formatJson =
+      process.env['LOG_FORMAT'] === 'json' || options?.formatJson;
     if (formatJson) {
       loggerOptions.formatJson = true;
     }
@@ -165,7 +168,10 @@ export class LoggingConfig {
   /**
    * Get current log levels.
    */
-  getLogLevels(): { global: string | null; components: Record<string, string> } {
+  getLogLevels(): {
+    global: string | null;
+    components: Record<string, string>;
+  } {
     return {
       global: this.globalLevel,
       components: { ...this.componentLevels },
@@ -179,7 +185,11 @@ export class LoggingConfig {
    * @param module
    * @param correlationId
    */
-  createChildLogger(parentLogger: any, module: string, correlationId: string | null = null): any {
+  createChildLogger(
+    parentLogger: any,
+    module: string,
+    correlationId: string | null = null,
+  ): any {
     return parentLogger?.child({
       module,
       correlationId: correlationId || parentLogger?.correlationId,
@@ -218,7 +228,8 @@ export const getLogger = (component: string, options?: any): Logger =>
   loggingConfig?.getLogger(component, options);
 export const setLogLevel = (component: string, level: string): void =>
   loggingConfig?.setLogLevel(component, level);
-export const setGlobalLogLevel = (level: string): void => loggingConfig?.setGlobalLogLevel(level);
+export const setGlobalLogLevel = (level: string): void =>
+  loggingConfig?.setGlobalLogLevel(level);
 
 // Pre-configured loggers for common components
 export const mcpLogger = loggingConfig?.getLogger('mcp-server');

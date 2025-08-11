@@ -40,7 +40,11 @@ class SingletonContainer {
    * @param {Function} factory - Factory function to create instance.
    * @param {Object} options - Configuration options.
    */
-  register(key: string, factory: (...args: any[]) => any, options: RegistrationOptions = {}) {
+  register(
+    key: string,
+    factory: (...args: unknown[]) => any,
+    options: RegistrationOptions = {},
+  ) {
     if (typeof factory !== 'function') {
       throw new Error(`Factory for '${key}' must be a function`);
     }
@@ -61,7 +65,9 @@ class SingletonContainer {
    */
   get<T = any>(key: string): T {
     if (this.isDestroying) {
-      throw new Error(`Cannot get instance '${key}' during container destruction`);
+      throw new Error(
+        `Cannot get instance '${key}' during container destruction`,
+      );
     }
 
     // Return existing instance if available

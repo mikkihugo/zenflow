@@ -16,7 +16,12 @@ import type { EventPriority, SystemEvent } from './core/interfaces.ts';
  * @example
  */
 export interface SystemLifecycleEvent extends SystemEvent {
-  type: 'system:startup' | 'system:shutdown' | 'system:restart' | 'system:error' | 'system:health';
+  type:
+    | 'system:startup'
+    | 'system:shutdown'
+    | 'system:restart'
+    | 'system:error'
+    | 'system:health';
   operation: 'start' | 'stop' | 'restart' | 'status' | 'healthcheck';
   status: 'success' | 'warning' | 'error' | 'critical';
   details?: {
@@ -35,8 +40,19 @@ export interface SystemLifecycleEvent extends SystemEvent {
  * @example
  */
 export interface CoordinationEvent extends SystemEvent {
-  type: 'coordination:swarm' | 'coordination:agent' | 'coordination:task' | 'coordination:topology';
-  operation: 'init' | 'spawn' | 'destroy' | 'coordinate' | 'distribute' | 'complete' | 'fail';
+  type:
+    | 'coordination:swarm'
+    | 'coordination:agent'
+    | 'coordination:task'
+    | 'coordination:topology';
+  operation:
+    | 'init'
+    | 'spawn'
+    | 'destroy'
+    | 'coordinate'
+    | 'distribute'
+    | 'complete'
+    | 'fail';
   targetId: string; // swarmId, agentId, taskId, etc.
   details?: {
     agentCount?: number;
@@ -68,8 +84,23 @@ export interface CommunicationEvent extends SystemEvent {
     | 'communication:mcp'
     | 'communication:http'
     | 'communication:protocol';
-  operation: 'connect' | 'disconnect' | 'send' | 'receive' | 'error' | 'timeout' | 'retry';
-  protocol: 'http' | 'https' | 'ws' | 'wss' | 'stdio' | 'tcp' | 'udp' | 'custom';
+  operation:
+    | 'connect'
+    | 'disconnect'
+    | 'send'
+    | 'receive'
+    | 'error'
+    | 'timeout'
+    | 'retry';
+  protocol:
+    | 'http'
+    | 'https'
+    | 'ws'
+    | 'wss'
+    | 'stdio'
+    | 'tcp'
+    | 'udp'
+    | 'custom';
   endpoint?: string;
   details?: {
     requestId?: string;
@@ -89,8 +120,18 @@ export interface CommunicationEvent extends SystemEvent {
  * @example
  */
 export interface MonitoringEvent extends SystemEvent {
-  type: 'monitoring:metrics' | 'monitoring:health' | 'monitoring:performance' | 'monitoring:alert';
-  operation: 'collect' | 'report' | 'alert' | 'recover' | 'threshold' | 'anomaly';
+  type:
+    | 'monitoring:metrics'
+    | 'monitoring:health'
+    | 'monitoring:performance'
+    | 'monitoring:alert';
+  operation:
+    | 'collect'
+    | 'report'
+    | 'alert'
+    | 'recover'
+    | 'threshold'
+    | 'anomaly';
   component: string;
   details?: {
     metricName?: string;
@@ -118,7 +159,14 @@ export interface MonitoringEvent extends SystemEvent {
  */
 export interface InterfaceEvent extends SystemEvent {
   type: 'interface:cli' | 'interface:web' | 'interface:tui' | 'interface:api';
-  operation: 'start' | 'stop' | 'command' | 'request' | 'response' | 'interaction' | 'render';
+  operation:
+    | 'start'
+    | 'stop'
+    | 'command'
+    | 'request'
+    | 'response'
+    | 'interaction'
+    | 'render';
   interface: 'cli' | 'web' | 'tui' | 'api' | 'mcp';
   details?: {
     command?: string;
@@ -140,8 +188,19 @@ export interface InterfaceEvent extends SystemEvent {
  * @example
  */
 export interface NeuralEvent extends SystemEvent {
-  type: 'neural:training' | 'neural:inference' | 'neural:optimization' | 'neural:evaluation';
-  operation: 'train' | 'predict' | 'evaluate' | 'optimize' | 'load' | 'save' | 'export';
+  type:
+    | 'neural:training'
+    | 'neural:inference'
+    | 'neural:optimization'
+    | 'neural:evaluation';
+  operation:
+    | 'train'
+    | 'predict'
+    | 'evaluate'
+    | 'optimize'
+    | 'load'
+    | 'save'
+    | 'export';
   modelId: string;
   details?: {
     modelType?: string;
@@ -166,7 +225,11 @@ export interface NeuralEvent extends SystemEvent {
  * @example
  */
 export interface DatabaseEvent extends SystemEvent {
-  type: 'database:query' | 'database:transaction' | 'database:migration' | 'database:backup';
+  type:
+    | 'database:query'
+    | 'database:transaction'
+    | 'database:migration'
+    | 'database:backup';
   operation:
     | 'select'
     | 'insert'
@@ -198,7 +261,15 @@ export interface DatabaseEvent extends SystemEvent {
  */
 export interface MemoryEvent extends SystemEvent {
   type: 'memory:cache' | 'memory:store' | 'memory:gc' | 'memory:pool';
-  operation: 'get' | 'set' | 'delete' | 'clear' | 'expire' | 'cleanup' | 'allocate' | 'deallocate';
+  operation:
+    | 'get'
+    | 'set'
+    | 'delete'
+    | 'clear'
+    | 'expire'
+    | 'cleanup'
+    | 'allocate'
+    | 'deallocate';
   details?: {
     key?: string;
     size?: number;
@@ -219,8 +290,20 @@ export interface MemoryEvent extends SystemEvent {
  * @example
  */
 export interface WorkflowEvent extends SystemEvent {
-  type: 'workflow:execution' | 'workflow:task' | 'workflow:condition' | 'workflow:trigger';
-  operation: 'start' | 'complete' | 'fail' | 'retry' | 'skip' | 'branch' | 'merge' | 'loop';
+  type:
+    | 'workflow:execution'
+    | 'workflow:task'
+    | 'workflow:condition'
+    | 'workflow:trigger';
+  operation:
+    | 'start'
+    | 'complete'
+    | 'fail'
+    | 'retry'
+    | 'skip'
+    | 'branch'
+    | 'merge'
+    | 'loop';
   workflowId: string;
   taskId?: string;
   details?: {
@@ -274,7 +357,8 @@ export const EventCategories = {
 export const EventTypePatterns = {
   // System events
   SYSTEM_ALL: 'system:*',
-  SYSTEM_LIFECYCLE: 'system:startup|system:shutdown|system:restart|system:error|system:health',
+  SYSTEM_LIFECYCLE:
+    'system:startup|system:shutdown|system:restart|system:error|system:health',
 
   // Coordination events
   COORDINATION_ALL: 'coordination:*',
@@ -630,7 +714,9 @@ export const EventSources = {
  * Type guards for UEL event types.
  */
 export const UELTypeGuards = {
-  isSystemLifecycleEvent: (event: SystemEvent): event is SystemLifecycleEvent => {
+  isSystemLifecycleEvent: (
+    event: SystemEvent,
+  ): event is SystemLifecycleEvent => {
     return event.type.startsWith('system:');
   },
 

@@ -274,7 +274,11 @@ describe('Type Guards - Classical TDD', () => {
       const neuralError: NeuralError = {
         type: 'error',
         success: false,
-        error: { code: 'NEURAL_ERROR', message: 'Neural error', operation: 'training' },
+        error: {
+          code: 'NEURAL_ERROR',
+          message: 'Neural error',
+          operation: 'training',
+        },
       };
 
       expect(extractErrorMessage(databaseError)).toBe('Database error');

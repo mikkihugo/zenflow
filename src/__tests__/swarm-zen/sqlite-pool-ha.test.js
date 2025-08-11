@@ -96,7 +96,9 @@ async function testConcurrentReads() {
 
     // Insert test data
     for (let i = 0; i < 1000; i++) {
-      await pool.write('INSERT INTO test_data (value) VALUES (?)', [`test-value-${i}`]);
+      await pool.write('INSERT INTO test_data (value) VALUES (?)', [
+        `test-value-${i}`,
+      ]);
     }
 
     // Concurrent read test
@@ -105,7 +107,9 @@ async function testConcurrentReads() {
 
     for (let i = 0; i < CONCURRENT_CONNECTIONS; i++) {
       concurrentReads.push(
-        pool.read('SELECT * FROM test_data WHERE id = ?', [Math.floor(Math.random() * 1000) + 1])
+        pool.read('SELECT * FROM test_data WHERE id = ?', [
+          Math.floor(Math.random() * 1000) + 1,
+        ]),
       );
     }
 
@@ -158,11 +162,10 @@ async function testWriteQueueUnderLoad() {
     for (let thread = 0; thread < CONCURRENT_CONNECTIONS; thread++) {
       for (let op = 0; op < OPERATIONS_PER_CONNECTION; op++) {
         writePromises.push(
-          pool.write('INSERT INTO load_test (thread_id, operation_id, value) VALUES (?, ?, ?)', [
-            thread,
-            op,
-            `data-${thread}-${op}`,
-          ])
+          pool.write(
+            'INSERT INTO load_test (thread_id, operation_id, value) VALUES (?, ?, ?)',
+            [thread, op, `data-${thread}-${op}`],
+          ),
         );
       }
     }
@@ -176,7 +179,9 @@ async function testWriteQueueUnderLoad() {
     const count = await pool.read('SELECT COUNT(*) as total FROM load_test');
     if (count[0].total === totalOperations) {
     } else {
-      throw new Error(`Expected ${totalOperations} writes, got ${count[0].total}`);
+      throw new Error(
+        `Expected ${totalOperations} writes, got ${count[0].total}`,
+      );
     }
 
     await pool.close();
@@ -214,11 +219,14 @@ async function testWorkerThreadPerformance() {
 
     // Insert test data
     for (let i = 0; i < 5000; i++) {
-      await pool.write('INSERT INTO worker_test (category, value, description) VALUES (?, ?, ?)', [
-        `category-${i % 10}`,
-        Math.floor(Math.random() * 1000),
-        `description-${i}`,
-      ]);
+      await pool.write(
+        'INSERT INTO worker_test (category, value, description) VALUES (?, ?, ?)',
+        [
+          `category-${i % 10}`,
+          Math.floor(Math.random() * 1000),
+          `description-${i}`,
+        ],
+      );
     }
 
     // Test CPU-intensive queries in worker threads
@@ -238,8 +246,8 @@ async function testWorkerThreadPerformance() {
           WHERE category = ? 
           GROUP BY category
         `,
-          [`category-${i % 10}`]
-        )
+          [`category-${i % 10}`],
+        ),
       );
     }
 
@@ -291,7 +299,7 @@ async function testHAPersistenceLayer() {
           name: `Agent ${i}`,
           type: 'researcher',
           capabilities: ['research', 'analysis'],
-        })
+        }),
       );
     }
 
@@ -304,7 +312,7 @@ async function testHAPersistenceLayer() {
         persistence.storeMemory(`agent-${i}`, 'test-key', {
           value: `test-value-${i}`,
           timestamp: Date.now(),
-        })
+        }),
       );
     }
 
@@ -318,7 +326,9 @@ async function testHAPersistenceLayer() {
         mixedPromises.push(persistence.getAgent(`agent-${i % 50}`));
       } else {
         // Write operation
-        mixedPromises.push(persistence.updateAgentStatus(`agent-${i % 50}`, 'busy'));
+        mixedPromises.push(
+          persistence.updateAgentStatus(`agent-${i % 50}`, 'busy'),
+        );
       }
     }
 
@@ -329,7 +339,9 @@ async function testHAPersistenceLayer() {
     const persistenceStats = persistence.getPersistenceStats();
 
     if (persistenceStats.totalErrors > 0) {
-      throw new Error(`${persistenceStats.totalErrors} errors occurred during testing`);
+      throw new Error(
+        `${persistenceStats.totalErrors} errors occurred during testing`,
+      );
     }
 
     await persistence.close();
@@ -380,15 +392,17 @@ async function testStressTestSustainedLoad() {
               pool
                 .read('SELECT COUNT(*) as count FROM stress_test')
                 .then(() => operationCount++)
-                .catch(() => errorCount++)
+                .catch(() => errorCount++),
             );
           } else {
             // Write operation (30% of operations)
             operations.push(
               pool
-                .write('INSERT INTO stress_test (data) VALUES (?)', [`data-${operationCount}`])
+                .write('INSERT INTO stress_test (data) VALUES (?)', [
+                  `data-${operationCount}`,
+                ])
                 .then(() => operationCount++)
-                .catch(() => errorCount++)
+                .catch(() => errorCount++),
             );
           }
         }
@@ -409,7 +423,9 @@ async function testStressTestSustainedLoad() {
 
     if (errorCount / operationCount > 0.01) {
       // Allow up to 1% error rate
-      throw new Error(`Error rate too high: ${((errorCount / operationCount) * 100).toFixed(2)}%`);
+      throw new Error(
+        `Error rate too high: ${((errorCount / operationCount) * 100).toFixed(2)}%`,
+      );
     }
 
     // Check pool health after stress test
@@ -450,22 +466,30 @@ async function testConnectionRecovery() {
     `);
 
     // Test normal operations
-    await pool.write('INSERT INTO recovery_test (value) VALUES (?)', ['test-1']);
+    await pool.write('INSERT INTO recovery_test (value) VALUES (?)', [
+      'test-1',
+    ]);
     const _result1 = await pool.read('SELECT * FROM recovery_test');
 
     // Simulate some stress to trigger potential issues
     const stressPromises = [];
     for (let i = 0; i < 100; i++) {
       stressPromises.push(
-        pool.write('INSERT INTO recovery_test (value) VALUES (?)', [`stress-${i}`])
+        pool.write('INSERT INTO recovery_test (value) VALUES (?)', [
+          `stress-${i}`,
+        ]),
       );
     }
 
     await Promise.all(stressPromises);
 
     // Test operations after stress
-    await pool.write('INSERT INTO recovery_test (value) VALUES (?)', ['test-2']);
-    const _result2 = await pool.read('SELECT COUNT(*) as count FROM recovery_test');
+    await pool.write('INSERT INTO recovery_test (value) VALUES (?)', [
+      'test-2',
+    ]);
+    const _result2 = await pool.read(
+      'SELECT COUNT(*) as count FROM recovery_test',
+    );
 
     // Check pool health
     const stats = pool.getStats();

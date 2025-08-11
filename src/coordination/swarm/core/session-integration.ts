@@ -21,7 +21,13 @@ import { ZenSwarm } from './base-swarm.ts';
 import type { SessionConfig, SessionState } from './session-manager.ts';
 import { SessionManager } from './session-manager.ts';
 import { SessionRecovery, SessionValidator } from './session-utils.ts';
-import type { AgentConfig, SwarmEvent, SwarmOptions, SwarmState, Task } from './types.ts';
+import type {
+  AgentConfig,
+  SwarmEvent,
+  SwarmOptions,
+  SwarmState,
+  Task,
+} from './types.ts';
 
 /**
  * Enhanced ZenSwarm with session management capabilities.
@@ -54,7 +60,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   constructor(
     options: SwarmOptions = {},
     sessionConfig: SessionConfig = {},
-    persistence?: SessionCoordinationDao
+    persistence?: SessionCoordinationDao,
   ) {
     super(options);
 
@@ -98,7 +104,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
           owner: 'mock-session-integration',
         }),
         releaseLock: async (_lockId: string) => {},
-        subscribe: async (_pattern: string, _callback: any) => `mock-sub-${Date.now()}`,
+        subscribe: async (_pattern: string, _callback: any) =>
+          `mock-sub-${Date.now()}`,
         unsubscribe: async (_subscriptionId: string) => {},
         publish: async (_channel: string, _event: any) => {},
         getCoordinationStats: async () => ({
@@ -108,7 +115,9 @@ export class SessionEnabledSwarm extends ZenSwarm {
           messagesReceived: 0,
           uptime: Date.now(),
         }),
-        execute: async (_sql: string, _params?: unknown[]) => ({ affectedRows: 1 }),
+        execute: async (_sql: string, _params?: unknown[]) => ({
+          affectedRows: 1,
+        }),
         query: async (_sql: string, _params?: unknown[]) => [],
       } satisfies SessionCoordinationDao;
     }
@@ -156,7 +165,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
     const sessionId = await this.sessionManager.createSession(
       sessionName,
       this.options,
-      currentState
+      currentState,
     );
 
     this.currentSessionId = sessionId;
@@ -181,7 +190,10 @@ export class SessionEnabledSwarm extends ZenSwarm {
     await this.restoreFromSessionState(session);
 
     this.currentSessionId = sessionId;
-    this.emit('session:loaded' as SwarmEvent, { sessionId, sessionName: session.name });
+    this.emit('session:loaded' as SwarmEvent, {
+      sessionId,
+      sessionName: session.name,
+    });
   }
 
   /**
@@ -195,7 +207,9 @@ export class SessionEnabledSwarm extends ZenSwarm {
     const currentState = await this.captureCurrentState();
     await this.sessionManager.saveSession(this.currentSessionId, currentState);
 
-    this.emit('session:saved' as SwarmEvent, { sessionId: this.currentSessionId });
+    this.emit('session:saved' as SwarmEvent, {
+      sessionId: this.currentSessionId,
+    });
   }
 
   /**
@@ -213,7 +227,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
     const checkpointId = await this.sessionManager.createCheckpoint(
       this.currentSessionId,
-      description || 'Manual checkpoint'
+      description || 'Manual checkpoint',
     );
 
     this.emit('session:checkpoint_created' as SwarmEvent, {
@@ -235,10 +249,15 @@ export class SessionEnabledSwarm extends ZenSwarm {
       throw new Error('No active session. Create or load a session first.');
     }
 
-    await this.sessionManager.restoreFromCheckpoint(this.currentSessionId, checkpointId);
+    await this.sessionManager.restoreFromCheckpoint(
+      this.currentSessionId,
+      checkpointId,
+    );
 
     // Reload the session to get the restored state
-    const session = await this.sessionManager.loadSession(this.currentSessionId);
+    const session = await this.sessionManager.loadSession(
+      this.currentSessionId,
+    );
     await this.restoreFromSessionState(session);
 
     this.emit('session:restored' as SwarmEvent, {
@@ -259,7 +278,9 @@ export class SessionEnabledSwarm extends ZenSwarm {
     await this.saveSession();
 
     await this.sessionManager.pauseSession(this.currentSessionId);
-    this.emit('session:paused' as SwarmEvent, { sessionId: this.currentSessionId });
+    this.emit('session:paused' as SwarmEvent, {
+      sessionId: this.currentSessionId,
+    });
   }
 
   /**
@@ -271,7 +292,9 @@ export class SessionEnabledSwarm extends ZenSwarm {
     }
 
     await this.sessionManager.resumeSession(this.currentSessionId);
-    this.emit('session:resumed' as SwarmEvent, { sessionId: this.currentSessionId });
+    this.emit('session:resumed' as SwarmEvent, {
+      sessionId: this.currentSessionId,
+    });
   }
 
   /**
@@ -287,7 +310,9 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
     await this.sessionManager.hibernateSession(this.currentSessionId);
 
-    this.emit('session:hibernated' as SwarmEvent, { sessionId: this.currentSessionId });
+    this.emit('session:hibernated' as SwarmEvent, {
+      sessionId: this.currentSessionId,
+    });
     this.currentSessionId = undefined as string | undefined;
   }
 
@@ -338,7 +363,9 @@ export class SessionEnabledSwarm extends ZenSwarm {
    * @param sessionId
    */
   async getSessionStats(sessionId?: string): Promise<Record<string, any>> {
-    return this.sessionManager.getSessionStats(sessionId || this.currentSessionId);
+    return this.sessionManager.getSessionStats(
+      sessionId || this.currentSessionId,
+    );
   }
 
   /**
@@ -362,7 +389,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
             operation: 'addAgent',
             agentId,
           });
-        })
+        }),
       );
     }
 
@@ -390,7 +417,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
             operation: 'submitTask',
             taskId,
           });
-        })
+        }),
       );
     }
 
@@ -534,7 +561,10 @@ export class SessionEnabledSwarm extends ZenSwarm {
     });
 
     this.sessionManager.on('checkpoint:error', (data) => {
-      this.emit('session:error' as SwarmEvent, { ...data, operation: 'checkpoint' });
+      this.emit('session:error' as SwarmEvent, {
+        ...data,
+        operation: 'checkpoint',
+      });
     });
   }
 }
@@ -585,7 +615,10 @@ export class SessionRecoveryService extends EventEmitter {
       });
 
       // Attempt recovery using checkpoints
-      const recoveredSession = await SessionRecovery.recoverSession(session, session.checkpoints);
+      const recoveredSession = await SessionRecovery.recoverSession(
+        session,
+        session.checkpoints,
+      );
 
       if (!recoveredSession) {
         this.emit('recovery:failed', {
@@ -596,11 +629,15 @@ export class SessionRecoveryService extends EventEmitter {
       }
 
       // Save recovered session
-      await this.sessionManager.saveSession(sessionId, recoveredSession.swarmState);
+      await this.sessionManager.saveSession(
+        sessionId,
+        recoveredSession.swarmState,
+      );
 
       this.emit('recovery:completed', {
         sessionId,
-        recoveredFromCheckpoint: recoveredSession.metadata['recoveredFromCheckpoint'],
+        recoveredFromCheckpoint:
+          recoveredSession.metadata['recoveredFromCheckpoint'],
       });
 
       return true;
@@ -709,7 +746,7 @@ export class SessionRecoveryService extends EventEmitter {
 export function createSessionEnabledSwarm(
   swarmOptions?: SwarmOptions,
   sessionConfig?: SessionConfig,
-  persistence?: SessionCoordinationDao
+  persistence?: SessionCoordinationDao,
 ): SessionEnabledSwarm {
   return new SessionEnabledSwarm(swarmOptions, sessionConfig, persistence);
 }

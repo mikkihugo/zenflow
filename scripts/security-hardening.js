@@ -76,7 +76,7 @@ class SecurityHardeningSystem {
 
       await fs.promises.writeFile(
         `${this.securityDir}/configs/npm-audit-config.json`,
-        JSON.stringify(npmAuditConfig, null, 2)
+        JSON.stringify(npmAuditConfig, null, 2),
       );
 
       // 2. Create dependency monitoring script
@@ -109,11 +109,14 @@ echo "📊 Dependency audit complete"
 
       await fs.promises.writeFile(
         `${this.securityDir}/scripts/dependency-monitor.sh`,
-        depMonitorScript
+        depMonitorScript,
       );
 
       // Make script executable
-      await fs.promises.chmod(`${this.securityDir}/scripts/dependency-monitor.sh`, 0o755);
+      await fs.promises.chmod(
+        `${this.securityDir}/scripts/dependency-monitor.sh`,
+        0o755,
+      );
 
       // 3. Create dependency analysis script
       const depAnalysisScript = `const fs = require('fs');
@@ -166,12 +169,14 @@ new DependencyAnalyzer().analyze();
 
       await fs.promises.writeFile(
         `${this.securityDir}/scripts/dependency-analysis.js`,
-        depAnalysisScript
+        depAnalysisScript,
       );
 
       this.hardeningResults.implemented.push('Dependency Security Monitoring');
     } catch (error) {
-      this.hardeningResults.failed.push(`Dependency Security: ${error.message}`);
+      this.hardeningResults.failed.push(
+        `Dependency Security: ${error.message}`,
+      );
     }
   }
 
@@ -322,7 +327,7 @@ export class SecurityMiddleware {
 
       await fs.promises.writeFile(
         `${this.securityDir}/input-validation.js`,
-        inputValidationFramework
+        inputValidationFramework,
       );
 
       this.hardeningResults.implemented.push('Input Validation Framework');
@@ -448,7 +453,10 @@ export class SessionSecurity {
 }
 `;
 
-      await fs.promises.writeFile(`${this.securityDir}/auth-security.js`, authFramework);
+      await fs.promises.writeFile(
+        `${this.securityDir}/auth-security.js`,
+        authFramework,
+      );
 
       this.hardeningResults.implemented.push('Authentication & Authorization');
     } catch (error) {
@@ -531,7 +539,10 @@ export class SecureStorage {
 }
 `;
 
-      await fs.promises.writeFile(`${this.securityDir}/data-protection.js`, dataProtection);
+      await fs.promises.writeFile(
+        `${this.securityDir}/data-protection.js`,
+        dataProtection,
+      );
 
       this.hardeningResults.implemented.push('Data Protection & Encryption');
     } catch (error) {
@@ -608,7 +619,10 @@ export class NetworkSecurity {
 }
 `;
 
-      await fs.promises.writeFile(`${this.securityDir}/network-security.js`, networkSecurity);
+      await fs.promises.writeFile(
+        `${this.securityDir}/network-security.js`,
+        networkSecurity,
+      );
 
       this.hardeningResults.implemented.push('Network Security Headers');
     } catch (error) {
@@ -662,7 +676,10 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \\
 CMD ["node", "dist/index.js"]
 `;
 
-      await fs.promises.writeFile(`${this.securityDir}/Dockerfile.secure`, dockerSecurity);
+      await fs.promises.writeFile(
+        `${this.securityDir}/Dockerfile.secure`,
+        dockerSecurity,
+      );
 
       // Environment security template
       const envSecurity = `# Environment Security Configuration
@@ -697,11 +714,16 @@ MONITORING_ENABLED=true
 ALERT_WEBHOOK_URL=https://your-monitoring-webhook
 `;
 
-      await fs.promises.writeFile(`${this.securityDir}/templates/env.secure.template`, envSecurity);
+      await fs.promises.writeFile(
+        `${this.securityDir}/templates/env.secure.template`,
+        envSecurity,
+      );
 
       this.hardeningResults.implemented.push('Infrastructure Security');
     } catch (error) {
-      this.hardeningResults.failed.push(`Infrastructure Security: ${error.message}`);
+      this.hardeningResults.failed.push(
+        `Infrastructure Security: ${error.message}`,
+      );
     }
   }
 
@@ -832,11 +854,16 @@ export const securityMonitor = new SecurityMonitor({
 });
 `;
 
-      await fs.promises.writeFile(`${this.securityDir}/monitoring.js`, securityMonitoring);
+      await fs.promises.writeFile(
+        `${this.securityDir}/monitoring.js`,
+        securityMonitoring,
+      );
 
       this.hardeningResults.implemented.push('Security Monitoring & Alerting');
     } catch (error) {
-      this.hardeningResults.failed.push(`Security Monitoring: ${error.message}`);
+      this.hardeningResults.failed.push(
+        `Security Monitoring: ${error.message}`,
+      );
     }
   }
 
@@ -910,7 +937,10 @@ This document outlines the security policies and procedures for Claude-Zen.
 - Emergency: +1-XXX-XXX-XXXX
 `;
 
-      await fs.promises.writeFile(`${this.policyDir}/security-policy.md`, securityPolicy);
+      await fs.promises.writeFile(
+        `${this.policyDir}/security-policy.md`,
+        securityPolicy,
+      );
 
       // Security checklist
       const securityChecklist = `# Security Implementation Checklist
@@ -950,7 +980,10 @@ This document outlines the security policies and procedures for Claude-Zen.
 - [ ] Security metrics
 `;
 
-      await fs.promises.writeFile(`${this.policyDir}/security-checklist.md`, securityChecklist);
+      await fs.promises.writeFile(
+        `${this.policyDir}/security-checklist.md`,
+        securityChecklist,
+      );
 
       this.hardeningResults.implemented.push('Security Policies & Procedures');
     } catch (error) {
@@ -960,8 +993,10 @@ This document outlines the security policies and procedures for Claude-Zen.
 
   async generateSecurityReport() {
     const totalTasks =
-      this.hardeningResults.implemented.length + this.hardeningResults.failed.length;
-    const successRate = (this.hardeningResults.implemented.length / totalTasks) * 100;
+      this.hardeningResults.implemented.length +
+      this.hardeningResults.failed.length;
+    const successRate =
+      (this.hardeningResults.implemented.length / totalTasks) * 100;
 
     this.hardeningResults.score = Math.round(successRate);
 
@@ -1004,7 +1039,10 @@ ${this.hardeningResults.failed.map((item) => `❌ ${item}`).join('\n')}
 *For questions about this report, contact the security team.*
 `;
 
-    await fs.promises.writeFile(`${this.securityDir}/hardening-report.md`, report);
+    await fs.promises.writeFile(
+      `${this.securityDir}/hardening-report.md`,
+      report,
+    );
   }
 }
 

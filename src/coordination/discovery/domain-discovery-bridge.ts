@@ -38,7 +38,11 @@
 import { EventEmitter } from 'node:events';
 import { basename } from 'node:path';
 import { getLogger } from '../../config/logging-config.ts';
-import type { Document, DocumentProcessor, DocumentType } from '../../core/document-processor.ts';
+import type {
+  Document,
+  DocumentProcessor,
+  DocumentType,
+} from '../../core/document-processor.ts';
 import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system.ts';
 import type {
   MonorepoInfo,
@@ -193,7 +197,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     private domainAnalyzer: DomainAnalysisEngine,
     private projectAnalyzer: ProjectContextAnalyzer,
     _intelligenceCoordinator: IntelligenceCoordinationSystem, // xxx NEEDS_HUMAN: Parameter not used - confirm if needed for future features
-    config: DomainDiscoveryBridgeConfig = {}
+    config: DomainDiscoveryBridgeConfig = {},
   ) {
     super();
     this.config = {
@@ -261,11 +265,17 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Step 4: Analyze code domains
     const projectRoot = monorepoInfo?.hasRootPackageJson ? process.cwd() : '.';
-    const domainAnalysis = await this.domainAnalyzer.analyzeDomainComplexity(projectRoot);
-    logger.info(`Identified ${Object.keys(domainAnalysis.categories).length} domain categories`);
+    const domainAnalysis =
+      await this.domainAnalyzer.analyzeDomainComplexity(projectRoot);
+    logger.info(
+      `Identified ${Object.keys(domainAnalysis.categories).length} domain categories`,
+    );
 
     // Step 5: Create document-domain mappings
-    const mappings = await this.createDocumentDomainMappings(relevantDocs, domainAnalysis);
+    const mappings = await this.createDocumentDomainMappings(
+      relevantDocs,
+      domainAnalysis,
+    );
     logger.debug(`Created ${mappings.length} document-domain mappings`);
 
     // Step 6: Validate mappings with human
@@ -276,7 +286,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const domains = await this.generateEnrichedDomains(
       validatedMappings,
       domainAnalysis,
-      monorepoInfo
+      monorepoInfo,
     );
 
     // Store discovered domains
@@ -291,7 +301,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
       mappingCount: validatedMappings.length,
     });
 
-    logger.info(`Domain discovery complete: ${domains.length} domains discovered`);
+    logger.info(
+      `Domain discovery complete: ${domains.length} domains discovered`,
+    );
     return domains;
   }
 
@@ -309,7 +321,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Analyze each document for relevance suggestions
     const relevanceAnalysis = await Promise.all(
-      documents.map((doc) => this.analyzeDocumentRelevance(doc))
+      documents.map((doc) => this.analyzeDocumentRelevance(doc)),
     );
 
     // Create AGUI validation request (for future implementation)
@@ -352,7 +364,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
       return analysis ? (analysis.suggestedRelevance ?? 0) > 0.6 : false;
     });
 
-    logger.info(`Selected ${selected.length} relevant documents for domain discovery`);
+    logger.info(
+      `Selected ${selected.length} relevant documents for domain discovery`,
+    );
     return selected;
   }
 
@@ -363,7 +377,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @returns Human-validated mappings.
    */
   async validateMappingsWithHuman(
-    mappings: DocumentDomainMapping[]
+    mappings: DocumentDomainMapping[],
   ): Promise<DocumentDomainMapping[]> {
     if (mappings.length === 0) return [];
 
@@ -401,10 +415,13 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Simulate human validation - in reality this would use AGUI
     const validated = mappings.filter(
-      (mapping) => Math.max(...mapping.confidenceScores) > this.config.confidenceThreshold
+      (mapping) =>
+        Math.max(...mapping.confidenceScores) > this.config.confidenceThreshold,
     );
 
-    logger.info(`Human validated ${validated.length} of ${mappings.length} mappings`);
+    logger.info(
+      `Human validated ${validated.length} of ${mappings.length} mappings`,
+    );
     return validated;
   }
 
@@ -493,7 +510,10 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @param domain - Domain to compare against.
    * @returns Relevance score between 0 and 1.
    */
-  private calculateRelevance(concepts: string[], domain: DomainAnalysis): number {
+  private calculateRelevance(
+    concepts: string[],
+    domain: DomainAnalysis,
+  ): number {
     if (concepts.length === 0) return 0;
 
     let relevanceScore = 0;
@@ -502,7 +522,12 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // Check category matches
     const categoryKeywords: Record<string, string[]> = {
       agents: ['agent', 'coordinator', 'orchestrator', 'swarm', 'multi-agent'],
-      coordination: ['coordination', 'orchestration', 'workflow', 'synchronization'],
+      coordination: [
+        'coordination',
+        'orchestration',
+        'workflow',
+        'synchronization',
+      ],
       neural: ['neural', 'network', 'ai', 'machine learning', 'deep learning'],
       memory: ['memory', 'storage', 'cache', 'persistence', 'database'],
       wasm: ['wasm', 'webassembly', 'binary', 'performance', 'acceleration'],
@@ -515,7 +540,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
       if ((files as string[]).length > 0 && categoryKeywords[category]) {
         const keywords = categoryKeywords[category];
         const categoryMatches = concepts.filter((concept) =>
-          keywords.some((keyword) => concept.includes(keyword))
+          keywords.some((keyword) => concept.includes(keyword)),
         ).length;
 
         if (categoryMatches > 0) {
@@ -528,7 +553,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     // Check file name matches
     const allFiles = Object.values(domain.categories).flat();
     const fileNameMatches = concepts.filter((concept) =>
-      allFiles.some((file) => (file as string).toLowerCase().includes(concept))
+      allFiles.some((file) => (file as string).toLowerCase().includes(concept)),
     ).length;
 
     if (fileNameMatches > 0) {
@@ -560,7 +585,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @param document - Document to analyze.
    * @returns Relevance analysis with score and reasoning.
    */
-  private async analyzeDocumentRelevance(document: Document): Promise<DocumentRelevance> {
+  private async analyzeDocumentRelevance(
+    document: Document,
+  ): Promise<DocumentRelevance> {
     const concepts = this.extractConcepts(document.content || '');
 
     // Base relevance on document type
@@ -622,7 +649,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    */
   private async createDocumentDomainMappings(
     documents: Document[],
-    domainAnalysis: DomainAnalysis
+    domainAnalysis: DomainAnalysis,
   ): Promise<DocumentDomainMapping[]> {
     const mappings: DocumentDomainMapping[] = [];
 
@@ -634,18 +661,20 @@ export class DomainDiscoveryBridge extends EventEmitter {
         // Find best matching categories
         const categoryScores = new Map<string, number>();
 
-        Object.entries(domainAnalysis.categories).forEach(([category, files]) => {
-          if ((files as string[]).length > 0) {
-            const categoryRelevance = this.calculateCategoryRelevance(
-              concepts,
-              category,
-              files as string[]
-            );
-            if (categoryRelevance > 0.3) {
-              categoryScores.set(category, categoryRelevance);
+        Object.entries(domainAnalysis.categories).forEach(
+          ([category, files]) => {
+            if ((files as string[]).length > 0) {
+              const categoryRelevance = this.calculateCategoryRelevance(
+                concepts,
+                category,
+                files as string[],
+              );
+              if (categoryRelevance > 0.3) {
+                categoryScores.set(category, categoryRelevance);
+              }
             }
-          }
-        });
+          },
+        );
 
         // Sort by score and take top matches
         const topCategories = Array.from(categoryScores.entries())
@@ -661,8 +690,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
             matchedConcepts: concepts.filter((concept) =>
               topCategories.some(
                 ([cat]) =>
-                  cat.toLowerCase().includes(concept) || concept.includes(cat.toLowerCase())
-              )
+                  cat.toLowerCase().includes(concept) ||
+                  concept.includes(cat.toLowerCase()),
+              ),
             ),
             timestamp: Date.now(),
           };
@@ -687,7 +717,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private async generateEnrichedDomains(
     mappings: DocumentDomainMapping[],
     domainAnalysis: DomainAnalysis,
-    monorepoInfo: MonorepoInfo | null
+    monorepoInfo: MonorepoInfo | null,
   ): Promise<DiscoveredDomain[]> {
     const domains: Map<string, DiscoveredDomain> = new Map();
 
@@ -701,7 +731,11 @@ export class DomainDiscoveryBridge extends EventEmitter {
         if (confidence === undefined) continue; // Skip if confidence is undefined
 
         if (!domains.has(domainId)) {
-          const domain = await this.createDomain(domainId, domainAnalysis, monorepoInfo);
+          const domain = await this.createDomain(
+            domainId,
+            domainAnalysis,
+            monorepoInfo,
+          );
           domains.set(domainId, domain);
         }
 
@@ -720,7 +754,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
         // Update confidence (weighted average)
         const docCount = domain.documents.length;
-        domain.confidence = (domain.confidence * (docCount - 1) + (confidence ?? 0)) / docCount;
+        domain.confidence =
+          (domain.confidence * (docCount - 1) + (confidence ?? 0)) / docCount;
       }
     }
 
@@ -728,7 +763,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const domainArray = await this.enhanceDomainsWithNeuralAnalysis(
       Array.from(domains.values()),
       domainAnalysis,
-      monorepoInfo
+      monorepoInfo,
     );
 
     return domainArray;
@@ -745,7 +780,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private async enhanceDomainsWithNeuralAnalysis(
     domains: DiscoveredDomain[],
     domainAnalysis: DomainAnalysis,
-    monorepoInfo: MonorepoInfo | null
+    monorepoInfo: MonorepoInfo | null,
   ): Promise<DiscoveredDomain[]> {
     if (!this.config.useNeuralAnalysis || domains.length < 2) {
       // Fall back to simple concept-based relationships
@@ -758,7 +793,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
     try {
       logger.info('🧠 Performing GNN-enhanced domain analysis', {
         domainCount: domains.length,
-        hasBazelMetadata: !!(monorepoInfo?.type === 'bazel' && (monorepoInfo as any).bazelMetadata),
+        hasBazelMetadata: !!(
+          monorepoInfo?.type === 'bazel' && (monorepoInfo as any).bazelMetadata
+        ),
       });
 
       // Convert discovered domains to neural format
@@ -770,39 +807,51 @@ export class DomainDiscoveryBridge extends EventEmitter {
       }));
 
       // Build dependency graph from domain analysis
-      const dependencyGraph = this.buildDomainDependencyGraph(neuralDomains, domainAnalysis);
+      const dependencyGraph = this.buildDomainDependencyGraph(
+        neuralDomains,
+        domainAnalysis,
+      );
 
       // Get Bazel metadata if available
       const bazelMetadata =
-        monorepoInfo?.type === 'bazel' ? (monorepoInfo as any).bazelMetadata : null;
+        monorepoInfo?.type === 'bazel'
+          ? (monorepoInfo as any).bazelMetadata
+          : null;
 
       // Perform neural domain relationship analysis
-      const relationshipMap = await this.neuralDomainMapper.mapDomainRelationships(
-        neuralDomains,
-        dependencyGraph,
-        bazelMetadata
-      );
+      const relationshipMap =
+        await this.neuralDomainMapper.mapDomainRelationships(
+          neuralDomains,
+          dependencyGraph,
+          bazelMetadata,
+        );
 
       // Apply neural insights to enhance domains
       const enhancedDomains = this.applyNeuralInsightsToDemons(
         domains,
         relationshipMap,
-        bazelMetadata
+        bazelMetadata,
       );
 
       logger.info('✅ Neural domain enhancement complete', {
         relationships: relationshipMap.relationships.length,
         avgCohesion:
-          relationshipMap.cohesionScores && relationshipMap.cohesionScores.length > 0
-            ? relationshipMap.cohesionScores.reduce((sum, score) => sum + score.score, 0) /
-              relationshipMap.cohesionScores.length
+          relationshipMap.cohesionScores &&
+          relationshipMap.cohesionScores.length > 0
+            ? relationshipMap.cohesionScores.reduce(
+                (sum, score) => sum + score.score,
+                0,
+              ) / relationshipMap.cohesionScores.length
             : 0,
         bazelEnhanced: !!bazelMetadata,
       });
 
       return enhancedDomains;
     } catch (error) {
-      logger.warn('⚠️  Neural domain analysis failed, falling back to basic analysis:', error);
+      logger.warn(
+        '⚠️  Neural domain analysis failed, falling back to basic analysis:',
+        error,
+      );
 
       // Fallback to concept-based relationships
       for (const domain of domains) {
@@ -820,17 +869,20 @@ export class DomainDiscoveryBridge extends EventEmitter {
    */
   private extractDomainDependencies(
     domain: DiscoveredDomain,
-    domainAnalysis: DomainAnalysis
+    domainAnalysis: DomainAnalysis,
   ): string[] {
     const dependencies: string[] = [];
 
     // Check coupling analysis for dependencies
-    for (const coupledGroup of domainAnalysis.coupling?.tightlyCoupledGroups || []) {
-      const hasFiles = coupledGroup.files.some((file: string) => domain.codeFiles.includes(file));
+    for (const coupledGroup of domainAnalysis.coupling?.tightlyCoupledGroups ||
+      []) {
+      const hasFiles = coupledGroup.files.some((file: string) =>
+        domain.codeFiles.includes(file),
+      );
       if (hasFiles) {
         // Add other domains that share files in this coupled group
         const relatedFiles = coupledGroup.files.filter(
-          (file: string) => !domain.codeFiles.includes(file)
+          (file: string) => !domain.codeFiles.includes(file),
         );
         dependencies.push(...relatedFiles);
       }
@@ -847,7 +899,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    */
   private buildDomainDependencyGraph(
     domains: Domain[],
-    domainAnalysis: DomainAnalysis
+    domainAnalysis: DomainAnalysis,
   ): DependencyGraph {
     const dependencyGraph: DependencyGraph = {};
 
@@ -862,17 +914,20 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
         // Check file coupling
         const sharedDependencies = domain.dependencies.filter((dep) =>
-          otherDomain.files.some((file) => file.includes(dep) || dep.includes(file))
+          otherDomain.files.some(
+            (file) => file.includes(dep) || dep.includes(file),
+          ),
         );
         relationshipStrength += sharedDependencies.length;
 
         // Check coupling groups
-        for (const coupledGroup of domainAnalysis.coupling?.tightlyCoupledGroups || []) {
+        for (const coupledGroup of domainAnalysis.coupling
+          ?.tightlyCoupledGroups || []) {
           const domainHasFiles = coupledGroup.files.some((file: string) =>
-            domain.files.includes(file)
+            domain.files.includes(file),
           );
           const otherHasFiles = coupledGroup.files.some((file: string) =>
-            otherDomain.files.includes(file)
+            otherDomain.files.includes(file),
           );
 
           if (domainHasFiles && otherHasFiles) {
@@ -882,7 +937,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
         }
 
         if (relationshipStrength > 0) {
-          dependencyGraph[domain.name]![otherDomain.name] = relationshipStrength;
+          dependencyGraph[domain.name]![otherDomain.name] =
+            relationshipStrength;
         }
       }
     }
@@ -900,7 +956,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private applyNeuralInsightsToDemons(
     domains: DiscoveredDomain[],
     relationshipMap: any,
-    bazelMetadata: any
+    bazelMetadata: any,
   ): DiscoveredDomain[] {
     // Create domain name to index mapping
     const domainIndexMap = new Map(domains.map((d, i) => [d.name, i]));
@@ -931,8 +987,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
         }
 
         // Apply Bazel-specific insights
-        if (bazelMetadata && (relationship).bazelInsights) {
-          const bazelInsights = (relationship).bazelInsights;
+        if (bazelMetadata && relationship.bazelInsights) {
+          const bazelInsights = relationship.bazelInsights;
 
           // Add Bazel target information to domain descriptions
           if (bazelInsights.targetTypes?.length > 0) {
@@ -954,8 +1010,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
     }
 
     // Add Bazel workspace insights to domain descriptions
-    if (bazelMetadata && (relationshipMap).bazelEnhancements) {
-      const enhancements = (relationshipMap).bazelEnhancements;
+    if (bazelMetadata && relationshipMap.bazelEnhancements) {
+      const enhancements = relationshipMap.bazelEnhancements;
       logger.info('📊 Applied Bazel enhancements to domains', {
         totalTargets: enhancements.totalTargets,
         languages: enhancements.languages,
@@ -978,11 +1034,18 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private async createDomain(
     domainId: string,
     domainAnalysis: DomainAnalysis,
-    _monorepoInfo: MonorepoInfo | null
+    _monorepoInfo: MonorepoInfo | null,
   ): Promise<DiscoveredDomain> {
     const category = (domainAnalysis.categories as any)[domainId] || [];
-    const description = this.generateDomainDescription(domainId, category.length);
-    const topology = this.suggestTopology(domainId, category.length, domainAnalysis);
+    const description = this.generateDomainDescription(
+      domainId,
+      category.length,
+    );
+    const topology = this.suggestTopology(
+      domainId,
+      category.length,
+      domainAnalysis,
+    );
 
     return {
       id: `domain-${domainId}-${Date.now()}`,
@@ -1006,7 +1069,10 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @param fileCount - Number of files in domain.
    * @returns Domain description.
    */
-  private generateDomainDescription(domainId: string, fileCount: number): string {
+  private generateDomainDescription(
+    domainId: string,
+    fileCount: number,
+  ): string {
     const descriptions: Record<string, string> = {
       agents: `Agent coordination and orchestration domain with ${fileCount} files`,
       coordination: `System coordination and workflow management domain with ${fileCount} files`,
@@ -1019,7 +1085,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
       utilities: `Utility functions and helpers with ${fileCount} files`,
     };
 
-    return descriptions[domainId] || `${domainId} domain with ${fileCount} files`;
+    return (
+      descriptions[domainId] || `${domainId} domain with ${fileCount} files`
+    );
   }
 
   /**
@@ -1033,21 +1101,28 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private suggestTopology(
     domainId: string,
     fileCount: number,
-    analysis: DomainAnalysis
+    analysis: DomainAnalysis,
   ): 'mesh' | 'hierarchical' | 'ring' | 'star' {
     // Large domains with many files benefit from hierarchical
     if (fileCount > 50) return 'hierarchical';
 
     // Highly coupled domains benefit from mesh
     const domainCoupling =
-      analysis.coupling?.tightlyCoupledGroups?.filter((group: { files: string[] }) =>
-        group.files.some((file: string) =>
-          (analysis.categories as Record<string, string[]>)[domainId]?.includes(file)
-        )
+      analysis.coupling?.tightlyCoupledGroups?.filter(
+        (group: { files: string[] }) =>
+          group.files.some((file: string) =>
+            (analysis.categories as Record<string, string[]>)[
+              domainId
+            ]?.includes(file),
+          ),
       ) || [];
     // Use file count as a proxy for coupling strength since couplingScore doesn't exist
     const firstCoupling = domainCoupling[0];
-    if (domainCoupling.length > 0 && firstCoupling && firstCoupling.files.length > 3) {
+    if (
+      domainCoupling.length > 0 &&
+      firstCoupling &&
+      firstCoupling.files.length > 3
+    ) {
       return 'mesh';
     }
 
@@ -1072,20 +1147,28 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @param allDomains - All discovered domains.
    * @returns Array of related domain IDs.
    */
-  private findRelatedDomains(domain: DiscoveredDomain, allDomains: DiscoveredDomain[]): string[] {
+  private findRelatedDomains(
+    domain: DiscoveredDomain,
+    allDomains: DiscoveredDomain[],
+  ): string[] {
     const related: Array<{ id: string; score: number }> = [];
 
     for (const other of allDomains) {
       if (other.id === domain.id) continue;
 
       // Calculate shared concepts
-      const sharedConcepts = domain.concepts.filter((concept) => other.concepts.includes(concept));
+      const sharedConcepts = domain.concepts.filter((concept) =>
+        other.concepts.includes(concept),
+      );
 
       // Calculate shared documents
-      const sharedDocs = domain.documents.filter((doc) => other.documents.includes(doc));
+      const sharedDocs = domain.documents.filter((doc) =>
+        other.documents.includes(doc),
+      );
 
       // Calculate relationship score
-      const conceptScore = sharedConcepts.length / Math.max(domain.concepts.length, 1);
+      const conceptScore =
+        sharedConcepts.length / Math.max(domain.concepts.length, 1);
       const docScore = sharedDocs.length / Math.max(domain.documents.length, 1);
       const totalScore = conceptScore * 0.7 + docScore * 0.3;
 
@@ -1112,7 +1195,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
   private calculateCategoryRelevance(
     concepts: string[],
     category: string,
-    files: string[]
+    files: string[],
   ): number {
     let score = 0;
 
@@ -1123,7 +1206,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
 
     // Check file name matches
     const fileMatches = files.filter((file) =>
-      concepts.some((concept) => file.toLowerCase().includes(concept))
+      concepts.some((concept) => file.toLowerCase().includes(concept)),
     ).length;
 
     score += Math.min(0.3, (fileMatches / files.length) * 0.3);
@@ -1138,7 +1221,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const bonusCategory = categoryBonuses[category];
     if (bonusCategory) {
       const bonusMatches = concepts.filter((c) =>
-        bonusCategory.some((bonus) => c.includes(bonus))
+        bonusCategory.some((bonus) => c.includes(bonus)),
       ).length;
       score += Math.min(0.3, (bonusMatches / bonusCategory.length) * 0.3);
     }
@@ -1161,11 +1244,19 @@ export class DomainDiscoveryBridge extends EventEmitter {
       'data-storage': ['database', 'storage', 'persistence', 'cache', 'memory'],
       'api-gateway': ['api', 'rest', 'graphql', 'gateway', 'endpoint'],
       messaging: ['message', 'queue', 'broker', 'pubsub', 'event'],
-      monitoring: ['monitor', 'metrics', 'logging', 'telemetry', 'observability'],
+      monitoring: [
+        'monitor',
+        'metrics',
+        'logging',
+        'telemetry',
+        'observability',
+      ],
     };
 
     Object.entries(domainPatterns).forEach(([domain, keywords]) => {
-      if (concepts.some((concept) => keywords.some((kw) => concept.includes(kw)))) {
+      if (
+        concepts.some((concept) => keywords.some((kw) => concept.includes(kw)))
+      ) {
         domains.add(domain);
       }
     });
@@ -1183,7 +1274,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const workspaces = this.docProcessor.getWorkspaces();
 
     for (const workspaceId of workspaces) {
-      const workspaceDocs = this.docProcessor.getWorkspaceDocuments(workspaceId);
+      const workspaceDocs =
+        this.docProcessor.getWorkspaceDocuments(workspaceId);
       documents.push(...Array.from(workspaceDocs.values()));
     }
 
@@ -1196,7 +1288,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @param documents - Documents to group.
    * @returns Grouped documents by type.
    */
-  private groupDocumentsByType(documents: Document[]): Record<DocumentType, Document[]> {
+  private groupDocumentsByType(
+    documents: Document[],
+  ): Record<DocumentType, Document[]> {
     const grouped: Partial<Record<DocumentType, Document[]>> = {};
 
     documents.forEach((doc) => {
@@ -1216,7 +1310,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @returns Mappings grouped by domain.
    */
   private groupMappingsByDomain(
-    mappings: DocumentDomainMapping[]
+    mappings: DocumentDomainMapping[],
   ): Record<string, DocumentDomainMapping[]> {
     const grouped: Record<string, DocumentDomainMapping[]> = {};
 
@@ -1238,12 +1332,15 @@ export class DomainDiscoveryBridge extends EventEmitter {
    * @param mappings - Mappings to analyze.
    * @returns Average confidence score.
    */
-  private calculateAverageConfidence(mappings: DocumentDomainMapping[]): number {
+  private calculateAverageConfidence(
+    mappings: DocumentDomainMapping[],
+  ): number {
     if (mappings.length === 0) return 0;
 
     const totalConfidence = mappings.reduce((sum, mapping) => {
       const avgMappingConfidence =
-        mapping.confidenceScores.reduce((a, b) => a + b, 0) / mapping.confidenceScores.length;
+        mapping.confidenceScores.reduce((a, b) => a + b, 0) /
+        mapping.confidenceScores.length;
       return sum + avgMappingConfidence;
     }, 0);
 
@@ -1298,12 +1395,14 @@ export class DomainDiscoveryBridge extends EventEmitter {
     const { workspaceId, documentCount } = event;
 
     if (documentCount > 0) {
-      logger.info(`Workspace ${workspaceId} loaded with ${documentCount} documents`);
+      logger.info(
+        `Workspace ${workspaceId} loaded with ${documentCount} documents`,
+      );
       // Trigger discovery in background
       setImmediate(() =>
         this.discoverDomains().catch((err) =>
-          logger.error('Background domain discovery failed:', err)
-        )
+          logger.error('Background domain discovery failed:', err),
+        ),
       );
     }
   }
@@ -1363,13 +1462,13 @@ export function createDomainDiscoveryBridge(
   domainAnalyzer: DomainAnalysisEngine,
   projectAnalyzer: ProjectContextAnalyzer,
   intelligenceCoordinator: IntelligenceCoordinationSystem,
-  config?: DomainDiscoveryBridgeConfig
+  config?: DomainDiscoveryBridgeConfig,
 ): DomainDiscoveryBridge {
   return new DomainDiscoveryBridge(
     docProcessor,
     domainAnalyzer,
     projectAnalyzer,
     intelligenceCoordinator,
-    config
+    config,
   );
 }

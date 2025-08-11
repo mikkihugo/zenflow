@@ -10,7 +10,7 @@
  * - AGUI integration scenarios
  */
 
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Agent, Task } from '../../coordination/types.ts';
 import {
   Domain,
@@ -39,7 +39,10 @@ import {
   type TypeSafeEventBus,
   type WorkflowStartedEvent,
 } from '../../core/type-safe-event-system.ts';
-import type { WorkflowContext, WorkflowDefinition } from '../../workflows/types.ts';
+import type {
+  WorkflowContext,
+  WorkflowDefinition,
+} from '../../workflows/types.ts';
 
 // Mock the logging system
 vi.mock('../../config/logging-config', () => ({
@@ -72,7 +75,28 @@ describe('TypeSafeEventBus', () => {
     // Mock objects for testing
     mockAgent = {
       id: 'test-agent-1',
-      capabilities: ['test', 'mock'],
+      capabilities: {
+        codeGeneration: true,
+        codeReview: false,
+        testing: true,
+        documentation: false,
+        research: false,
+        analysis: false,
+        webSearch: false,
+        apiIntegration: false,
+        fileSystem: false,
+        terminalAccess: false,
+        languages: ['test'],
+        frameworks: ['mock'],
+        domains: ['testing'],
+        tools: [],
+        maxConcurrentTasks: 5,
+        maxMemoryUsage: 1024,
+        maxExecutionTime: 30000,
+        reliability: 0.95,
+        speed: 0.8,
+        quality: 0.9,
+      },
       status: 'idle',
     };
 
@@ -90,6 +114,7 @@ describe('TypeSafeEventBus', () => {
       id: 'test-workflow-1',
       name: 'Test Workflow',
       version: '1.0.0',
+      steps: [],
     } as WorkflowDefinition;
 
     mockWorkflowContext = {
@@ -111,21 +136,21 @@ describe('TypeSafeEventBus', () => {
         'test.event',
         Domain.CORE,
         {},
-        { correlationId: createCorrelationId() }
+        { correlationId: createCorrelationId() },
       );
 
       const result = await eventBus.emitEvent(testEvent);
 
       expect(result.success).toBe(true);
       expect(result.handlerResults).toHaveLength(1);
-      expect(result.handlerResults[0].success).toBe(true);
+      expect(result.handlerResults[0]?.success).toBe(true);
       expect(mockHandler).toHaveBeenCalledTimes(1);
       expect(mockHandler).toHaveBeenCalledWith(
         testEvent,
         expect.objectContaining({
           eventBus,
           correlationId: expect.any(String),
-        })
+        }),
       );
     });
 
@@ -139,16 +164,19 @@ describe('TypeSafeEventBus', () => {
         {
           payload: {
             agent: mockAgent,
-            capabilities: mockAgent.capabilities,
-            initialStatus: mockAgent.status,
+            capabilities: ['test', 'mock'],
+            initialStatus: 'idle',
           },
-        }
+        },
       );
 
       const result = await eventBus.emitEvent(agentCreatedEvent);
 
       expect(result.success).toBe(true);
-      expect(mockHandler).toHaveBeenCalledWith(agentCreatedEvent, expect.any(Object));
+      expect(mockHandler).toHaveBeenCalledWith(
+        agentCreatedEvent,
+        expect.any(Object),
+      );
     });
 
     test('should handle AGUI events for human validation', async () => {
@@ -166,13 +194,16 @@ describe('TypeSafeEventBus', () => {
             priority: EventPriority.HIGH,
             timeout: 30000,
           },
-        }
+        },
       );
 
       const result = await eventBus.emitEvent(humanValidationEvent);
 
       expect(result.success).toBe(true);
-      expect(mockHandler).toHaveBeenCalledWith(humanValidationEvent, expect.any(Object));
+      expect(mockHandler).toHaveBeenCalledWith(
+        humanValidationEvent,
+        expect.any(Object),
+      );
     });
 
     test('should process event batch efficiently', async () => {
@@ -180,7 +211,12 @@ describe('TypeSafeEventBus', () => {
       eventBus.registerHandler('batch.test', mockHandler);
 
       const events = Array.from({ length: 10 }, (_, i) =>
-        createEvent<BaseEvent>('batch.test', Domain.CORE, {}, { tags: [`batch-${i}`] })
+        createEvent<BaseEvent>(
+          'batch.test',
+          Domain.CORE,
+          {},
+          { tags: [`batch-${i}`] },
+        ),
       );
 
       const results = await eventBus.emitEventBatch(events);
@@ -207,20 +243,34 @@ describe('TypeSafeEventBus', () => {
     test('should handle handler priorities correctly', async () => {
       const callOrder: number[] = [];
 
-      const highPriorityHandler = vi.fn(() => callOrder.push(1));
-      const lowPriorityHandler = vi.fn(() => callOrder.push(2));
+      const highPriorityHandler = vi.fn(() => {
+        callOrder.push(1);
+      });
+      const lowPriorityHandler = vi.fn(() => {
+        callOrder.push(2);
+      });
 
-      eventBus.registerHandler('priority.test', highPriorityHandler, { priority: 10 });
-      eventBus.registerHandler('priority.test', lowPriorityHandler, { priority: 1 });
+      eventBus.registerHandler('priority.test', highPriorityHandler, {
+        priority: 10,
+      });
+      eventBus.registerHandler('priority.test', lowPriorityHandler, {
+        priority: 1,
+      });
 
-      const testEvent = createEvent<BaseEvent>('priority.test', Domain.CORE, {});
+      const testEvent = createEvent<BaseEvent>(
+        'priority.test',
+        Domain.CORE,
+        {},
+      );
       await eventBus.emitEvent(testEvent);
 
       expect(callOrder).toEqual([1, 2]); // High priority first
     });
 
     test('should handle handler timeouts', async () => {
-      const slowHandler = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 1000)));
+      const slowHandler = vi.fn(
+        () => new Promise<void>((resolve) => setTimeout(resolve, 1000)),
+      );
 
       eventBus.registerHandler('timeout.test', slowHandler, { timeout: 100 });
 
@@ -228,25 +278,32 @@ describe('TypeSafeEventBus', () => {
       const result = await eventBus.emitEvent(testEvent, { timeout: 200 });
 
       expect(result.success).toBe(true);
-      expect(result.handlerResults[0].success).toBe(false);
-      expect(result.handlerResults[0].error?.message).toContain('timeout');
+      expect(result.handlerResults[0]?.success).toBe(false);
+      expect(result.handlerResults[0]?.error?.message).toContain('timeout');
     });
 
     test('should handle domain-wide handlers', async () => {
       const domainHandler = vi.fn();
       eventBus.registerDomainHandler(Domain.COORDINATION, domainHandler);
 
-      const agentEvent: AgentCreatedEvent = createEvent('agent.created', Domain.COORDINATION, {
-        payload: {
-          agent: mockAgent,
-          capabilities: mockAgent.capabilities,
-          initialStatus: mockAgent.status,
+      const agentEvent: AgentCreatedEvent = createEvent(
+        'agent.created',
+        Domain.COORDINATION,
+        {
+          payload: {
+            agent: mockAgent,
+            capabilities: ['test', 'mock'],
+            initialStatus: 'idle',
+          },
         },
-      });
+      );
 
       await eventBus.emitEvent(agentEvent);
 
-      expect(domainHandler).toHaveBeenCalledWith(agentEvent, expect.any(Object));
+      expect(domainHandler).toHaveBeenCalledWith(
+        agentEvent,
+        expect.any(Object),
+      );
     });
 
     test('should handle wildcard handlers', async () => {
@@ -254,7 +311,11 @@ describe('TypeSafeEventBus', () => {
       eventBus.registerWildcardHandler(wildcardHandler);
 
       const event1 = createEvent<BaseEvent>('test.event1', Domain.CORE, {});
-      const event2 = createEvent<BaseEvent>('test.event2', Domain.WORKFLOWS, {});
+      const event2 = createEvent<BaseEvent>(
+        'test.event2',
+        Domain.WORKFLOWS,
+        {},
+      );
 
       await eventBus.emitEvent(event1);
       await eventBus.emitEvent(event2);
@@ -272,14 +333,14 @@ describe('TypeSafeEventBus', () => {
         'cross.domain.test',
         Domain.WORKFLOWS,
         {},
-        { source: 'coordination-domain' }
+        { source: 'coordination-domain' },
       );
 
       const result = await eventBus.routeCrossDomainEvent(
         crossDomainEvent,
         Domain.COORDINATION,
         Domain.WORKFLOWS,
-        'test_cross_domain_routing'
+        'test_cross_domain_routing',
       );
 
       expect(result.success).toBe(true);
@@ -298,7 +359,7 @@ describe('TypeSafeEventBus', () => {
             }),
           }),
         }),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -317,7 +378,7 @@ describe('TypeSafeEventBus', () => {
         invalidEvent,
         Domain.CORE,
         Domain.COORDINATION,
-        'invalid_test'
+        'invalid_test',
       );
 
       // The result might succeed if there's no specific validation for this event type
@@ -336,16 +397,20 @@ describe('TypeSafeEventBus', () => {
         'agent.created',
         mockHandler,
         { validatePayload: true },
-        EventSchemas.AgentCreated
+        EventSchemas.AgentCreated,
       );
 
-      const validEvent: AgentCreatedEvent = createEvent('agent.created', Domain.COORDINATION, {
-        payload: {
-          agent: mockAgent,
-          capabilities: mockAgent.capabilities,
-          initialStatus: mockAgent.status,
+      const validEvent: AgentCreatedEvent = createEvent(
+        'agent.created',
+        Domain.COORDINATION,
+        {
+          payload: {
+            agent: mockAgent,
+            capabilities: ['test', 'mock'],
+            initialStatus: 'idle',
+          },
         },
-      });
+      );
 
       const result = await eventBus.emitEvent(validEvent);
 
@@ -360,7 +425,7 @@ describe('TypeSafeEventBus', () => {
         'agent.created',
         mockHandler,
         { validatePayload: true },
-        EventSchemas.AgentCreated
+        EventSchemas.AgentCreated,
       );
 
       const invalidEvent = createEvent('agent.created', Domain.COORDINATION, {
@@ -368,7 +433,7 @@ describe('TypeSafeEventBus', () => {
           // Missing required fields
           invalidField: 'invalid',
         },
-      });
+      } as any);
 
       const result = await eventBus.emitEvent(invalidEvent);
 
@@ -380,7 +445,11 @@ describe('TypeSafeEventBus', () => {
   describe('Event History and Querying', () => {
     test('should maintain event history', async () => {
       const event1 = createEvent<BaseEvent>('history.test1', Domain.CORE, {});
-      const event2 = createEvent<BaseEvent>('history.test2', Domain.WORKFLOWS, {});
+      const event2 = createEvent<BaseEvent>(
+        'history.test2',
+        Domain.WORKFLOWS,
+        {},
+      );
 
       await eventBus.emitEvent(event1);
       await eventBus.emitEvent(event2);
@@ -402,13 +471,13 @@ describe('TypeSafeEventBus', () => {
         'correlation.test1',
         Domain.CORE,
         {},
-        { correlationId }
+        { correlationId },
       );
       const event2 = createEvent<BaseEvent>(
         'correlation.test2',
         Domain.CORE,
         {},
-        { correlationId }
+        { correlationId },
       );
 
       await eventBus.emitEvent(event1);
@@ -416,7 +485,11 @@ describe('TypeSafeEventBus', () => {
 
       const correlatedEvents = eventBus.getEventsByCorrelation(correlationId);
       expect(correlatedEvents).toHaveLength(2);
-      expect(correlatedEvents.every((e) => e.metadata?.correlationId === correlationId)).toBe(true);
+      expect(
+        correlatedEvents.every(
+          (e) => e.metadata?.correlationId === correlationId,
+        ),
+      ).toBe(true);
     });
 
     test('should retrieve individual events by ID', async () => {
@@ -441,7 +514,9 @@ describe('TypeSafeEventBus', () => {
 
   describe('Performance Monitoring', () => {
     test('should track performance metrics', async () => {
-      const mockHandler = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 10)));
+      const mockHandler = vi.fn(
+        () => new Promise<void>((resolve) => setTimeout(resolve, 10)),
+      );
       eventBus.registerHandler('metrics.test', mockHandler);
 
       const event = createEvent<BaseEvent>('metrics.test', Domain.CORE, {});
@@ -466,8 +541,8 @@ describe('TypeSafeEventBus', () => {
 
       const stats = eventBus.getPerformanceStats();
       expect(stats['stats.test']).toBeDefined();
-      expect(stats['stats.test'].count).toBe(5);
-      expect(stats['stats.test'].averageTime).toBeGreaterThanOrEqual(0);
+      expect(stats['stats.test']?.count).toBe(5);
+      expect(stats['stats.test']?.averageTime).toBeGreaterThanOrEqual(0);
     });
 
     test('should reset metrics', async () => {
@@ -502,8 +577,8 @@ describe('TypeSafeEventBus', () => {
 
       expect(result.success).toBe(true); // Overall success despite one handler failing
       expect(result.handlerResults).toHaveLength(2);
-      expect(result.handlerResults[0].success).toBe(false);
-      expect(result.handlerResults[1].success).toBe(true);
+      expect(result.handlerResults[0]?.success).toBe(false);
+      expect(result.handlerResults[1]?.success).toBe(true);
     });
 
     test('should handle domain validation errors', async () => {
@@ -548,26 +623,28 @@ describe('TypeSafeEventBus', () => {
 
           // Simulate human approval after delay
           setTimeout(async () => {
-            const completionEvent = createEvent('human.validation.completed', Domain.INTERFACES, {
-              payload: {
-                requestId: event.payload.requestId,
+            const completionEvent = createEvent(
+              'human.validation.completed',
+              Domain.INTERFACES,
+              {
+                requestId: (event as any).payload.requestId,
                 approved: true,
                 processingTime: 1000,
                 feedback: 'Approved by human operator',
-              },
-            });
+              } as any,
+            );
 
             await eventBus.emitEvent(completionEvent);
           }, 10);
-        }
+        },
       );
 
       // Register handler for validation completions
       eventBus.registerHandler('human.validation.completed', async (event) => {
         validationResults.push({
-          requestId: event.payload.requestId,
-          approved: event.payload.approved,
-          feedback: event.payload.feedback,
+          requestId: (event as any).requestId,
+          approved: (event as any).approved,
+          feedback: (event as any).feedback,
         });
       });
 
@@ -583,7 +660,7 @@ describe('TypeSafeEventBus', () => {
             priority: EventPriority.HIGH,
             timeout: 30000,
           },
-        }
+        },
       );
 
       await eventBus.emitEvent(validationRequest);
@@ -599,35 +676,42 @@ describe('TypeSafeEventBus', () => {
     test('should handle AGUI gate operations', async () => {
       const gateOperations: any[] = [];
 
-      eventBus.registerHandler('agui.gate.opened', async (event: AGUIGateOpenedEvent) => {
-        gateOperations.push({
-          operation: 'opened',
-          gateId: event.payload.gateId,
-          gateType: event.payload.gateType,
-          requiresApproval: event.payload.requiredApproval,
-        });
-
-        // Simulate gate processing and closure
-        setTimeout(async () => {
-          const closeEvent = createEvent('agui.gate.closed', Domain.INTERFACES, {
-            payload: {
-              gateId: event.payload.gateId,
-              approved: event.payload.requiredApproval ? true : false,
-              duration: 500,
-              humanInput: event.payload.requiredApproval ? { decision: 'approve' } : undefined,
-            },
+      eventBus.registerHandler(
+        'agui.gate.opened',
+        async (event: AGUIGateOpenedEvent) => {
+          gateOperations.push({
+            operation: 'opened',
+            gateId: event.payload.gateId,
+            gateType: event.payload.gateType,
+            requiresApproval: event.payload.requiredApproval,
           });
 
-          await eventBus.emitEvent(closeEvent);
-        }, 10);
-      });
+          // Simulate gate processing and closure
+          setTimeout(async () => {
+            const closeEvent = createEvent(
+              'agui.gate.closed',
+              Domain.INTERFACES,
+              {
+                gateId: event.payload.gateId,
+                approved: event.payload.requiredApproval ? true : false,
+                duration: 500,
+                humanInput: event.payload.requiredApproval
+                  ? { decision: 'approve' }
+                  : undefined,
+              } as any,
+            );
+
+            await eventBus.emitEvent(closeEvent);
+          }, 10);
+        },
+      );
 
       eventBus.registerHandler('agui.gate.closed', async (event) => {
         gateOperations.push({
           operation: 'closed',
-          gateId: event.payload.gateId,
-          approved: event.payload.approved,
-          duration: event.payload.duration,
+          gateId: (event as any).gateId,
+          approved: (event as any).approved,
+          duration: (event as any).duration,
         });
       });
 
@@ -642,7 +726,7 @@ describe('TypeSafeEventBus', () => {
             requiredApproval: true,
             context: { operation: 'deploy', target: 'production' },
           },
-        }
+        },
       );
 
       await eventBus.emitEvent(gateOpenEvent);
@@ -664,7 +748,7 @@ describe('TypeSafeEventBus', () => {
         'utility.test',
         Domain.CORE,
         {},
-        { priority: EventPriority.HIGH }
+        { priority: EventPriority.HIGH },
       );
 
       expect(event.id).toBeDefined();
@@ -694,7 +778,11 @@ describe('TypeSafeEventBus', () => {
 
     test('should validate domain events', () => {
       const coreEvent = createEvent<BaseEvent>('test.event', Domain.CORE, {});
-      const workflowEvent = createEvent<BaseEvent>('test.event', Domain.WORKFLOWS, {});
+      const workflowEvent = createEvent<BaseEvent>(
+        'test.event',
+        Domain.WORKFLOWS,
+        {},
+      );
 
       expect(isDomainEvent(coreEvent, Domain.CORE)).toBe(true);
       expect(isDomainEvent(coreEvent, Domain.WORKFLOWS)).toBe(false);
@@ -713,13 +801,17 @@ describe('TypeSafeEventBus', () => {
     });
 
     test('should track domain crossings', async () => {
-      const crossDomainEvent = createEvent<BaseEvent>('crossing.test', Domain.WORKFLOWS, {});
+      const crossDomainEvent = createEvent<BaseEvent>(
+        'crossing.test',
+        Domain.WORKFLOWS,
+        {},
+      );
 
       const result = await eventBus.routeCrossDomainEvent(
         crossDomainEvent,
         Domain.COORDINATION,
         Domain.WORKFLOWS,
-        'test_crossing'
+        'test_crossing',
       );
 
       expect(result.success).toBe(true);
@@ -746,7 +838,7 @@ describe('TypeSafeEventBus', () => {
       await eventBus.shutdown();
 
       expect(systemEvents).toHaveLength(1);
-      expect(systemEvents[0].type).toBe('system.shutdown');
+      expect(systemEvents[0]?.type).toBe('system.shutdown');
     });
   });
 });
@@ -769,7 +861,11 @@ describe('Event System Edge Cases', () => {
   test('should handle event history size limits', async () => {
     // Emit more events than the history limit
     for (let i = 0; i < 10; i++) {
-      const event = createEvent<BaseEvent>(`history.limit.${i}`, Domain.CORE, {});
+      const event = createEvent<BaseEvent>(
+        `history.limit.${i}`,
+        Domain.CORE,
+        {},
+      );
       await eventBus.emitEvent(event);
     }
 
@@ -784,8 +880,13 @@ describe('Event System Edge Cases', () => {
     // Emit many events concurrently
     const promises = Array.from({ length: 50 }, (_, i) =>
       eventBus.emitEvent(
-        createEvent<BaseEvent>('concurrency.test', Domain.CORE, {}, { tags: [`test-${i}`] })
-      )
+        createEvent<BaseEvent>(
+          'concurrency.test',
+          Domain.CORE,
+          {},
+          { tags: [`test-${i}`] },
+        ),
+      ),
     );
 
     const results = await Promise.all(promises);
@@ -815,8 +916,18 @@ describe('Event System Edge Cases', () => {
     // Route events across multiple domains
     const event = createEvent<BaseEvent>('complex.routing', Domain.CORE, {});
 
-    await eventBus.routeCrossDomainEvent(event, Domain.CORE, Domain.COORDINATION, 'route1');
-    await eventBus.routeCrossDomainEvent(event, Domain.CORE, Domain.WORKFLOWS, 'route2');
+    await eventBus.routeCrossDomainEvent(
+      event,
+      Domain.CORE,
+      Domain.COORDINATION,
+      'route1',
+    );
+    await eventBus.routeCrossDomainEvent(
+      event,
+      Domain.CORE,
+      Domain.WORKFLOWS,
+      'route2',
+    );
 
     expect(routingResults).toHaveLength(2);
     expect(routingResults.some((r) => r.domain === 'coordination')).toBe(true);

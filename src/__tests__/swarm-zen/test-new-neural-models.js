@@ -3,12 +3,18 @@
  * Tests GNN, ResNet, and VAE implementations
  */
 
-import { createNeuralModel, MODEL_PRESETS } from '../src/neural-models/index.js';
+import {
+  createNeuralModel,
+  MODEL_PRESETS,
+} from '../src/neural-models/index.js';
 
 async function testGNNModel() {
   try {
     // Create GNN with social network preset
-    const gnn = await createNeuralModel('gnn', MODEL_PRESETS.gnn.social_network);
+    const gnn = await createNeuralModel(
+      'gnn',
+      MODEL_PRESETS.gnn.social_network,
+    );
 
     // Create sample graph data
     const graphData = {
@@ -42,7 +48,10 @@ async function testGNNModel() {
     const trainingData = [
       {
         graphs: graphData,
-        targets: { taskType: 'node_classification', labels: new Float32Array(10).fill(0) },
+        targets: {
+          taskType: 'node_classification',
+          labels: new Float32Array(10).fill(0),
+        },
       },
     ];
 
@@ -82,7 +91,10 @@ async function testResNetModel() {
       },
     ];
 
-    const _result = await resnet.train(trainingData, { epochs: 2, batchSize: 2 });
+    const _result = await resnet.train(trainingData, {
+      epochs: 2,
+      batchSize: 2,
+    });
   } catch (error) {
     console.error('  ❌ ResNet test failed:', error);
   }

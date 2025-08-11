@@ -50,7 +50,9 @@ interface ProtocolResponse {
 // Use a const with a generic identity to ensure usage
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const __protocolTypesIdentity = <T>(v: T) => v;
-__protocolTypesIdentity<ProtocolMessage | ProtocolResponse | ExpectedCall | undefined>(undefined);
+__protocolTypesIdentity<
+  ProtocolMessage | ProtocolResponse | ExpectedCall | undefined
+>(undefined);
 
 // Enhanced mock configuration for London TDD
 beforeEach(() => {
@@ -148,12 +150,14 @@ waitForInteraction = async (spy: vi.Mock, timeout = 1000): Promise<void> => {
  */
 simulateProtocolHandshake = (mockProtocol: vi.Mock): void => {
   // Relax typing because jest v30 mockImplementation expects (...args: unknown[]) => unknown
-  mockProtocol.mockImplementation((message: unknown): Promise<ProtocolResponse> => {
-    if (message && message.type === 'handshake') {
-      return Promise.resolve({ type: 'handshake_ack', success: true });
-    }
-    return Promise.resolve({ type: 'response', data: 'mock_response' });
-  });
+  mockProtocol.mockImplementation(
+    (message: unknown): Promise<ProtocolResponse> => {
+      if (message && message.type === 'handshake') {
+        return Promise.resolve({ type: 'handshake_ack', success: true });
+      }
+      return Promise.resolve({ type: 'response', data: 'mock_response' });
+    },
+  );
 };
 
 declare global {
@@ -161,7 +165,9 @@ declare global {
     interface Global {
       createInteractionSpy(name: string): vi.Mock;
       verifyInteractions(spy: vi.Mock, expectedCalls: ExpectedCall[]): void;
-      createMockFactory<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
+      createMockFactory<T>(
+        defaults?: Partial<T>,
+      ): (overrides?: Partial<T>) => T;
       waitForInteraction(spy: vi.Mock, timeout?: number): Promise<void>;
       simulateProtocolHandshake(mockProtocol: vi.Mock): void;
     }

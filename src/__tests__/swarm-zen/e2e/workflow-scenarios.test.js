@@ -114,7 +114,13 @@ describe('E2E Workflow Scenarios', () => {
         task: 'evaluate-model',
         networkId: network.id,
         testData: dataset.test,
-        metrics: ['accuracy', 'precision', 'recall', 'f1-score', 'confusion-matrix'],
+        metrics: [
+          'accuracy',
+          'precision',
+          'recall',
+          'f1-score',
+          'confusion-matrix',
+        ],
       });
 
       expect(evaluation.accuracy).toBeGreaterThan(0.75);
@@ -295,7 +301,8 @@ describe('E2E Workflow Scenarios', () => {
       // Step 6: Check agent utilization
       const utilization = await processingSwarm.getAgentUtilization();
       const avgUtilization =
-        utilization.reduce((sum, u) => sum + u.utilization, 0) / utilization.length;
+        utilization.reduce((sum, u) => sum + u.utilization, 0) /
+        utilization.length;
       expect(avgUtilization).toBeGreaterThan(0.6); // At least 60% average utilization
     });
   });
@@ -337,7 +344,7 @@ describe('E2E Workflow Scenarios', () => {
             text: 'Section 1: Introduction\n',
           },
           documentId: document.id,
-        })
+        }),
       );
 
       // Editor 2 adds content concurrently
@@ -350,7 +357,7 @@ describe('E2E Workflow Scenarios', () => {
             text: 'Section 2: Methods\n',
           },
           documentId: document.id,
-        })
+        }),
       );
 
       // Reviewer adds comments
@@ -362,7 +369,7 @@ describe('E2E Workflow Scenarios', () => {
             text: 'Needs more detail in introduction',
           },
           documentId: document.id,
-        })
+        }),
       );
 
       const results = await Promise.all(editPromises);
@@ -430,7 +437,8 @@ describe('E2E Workflow Scenarios', () => {
             complexity: 'medium',
             learningEnabled: true,
             feedback: {
-              previousPerformance: data.performances[data.performances.length - 1],
+              previousPerformance:
+                data.performances[data.performances.length - 1],
               targetImprovement: 0.05,
             },
           });
@@ -441,7 +449,8 @@ describe('E2E Workflow Scenarios', () => {
       for (const [_agentId, data] of performanceTracker.agents) {
         const initialPerf = data.performances[0];
         const finalPerf = data.performances[data.performances.length - 1];
-        const improvement = (finalPerf.score - initialPerf.score) / initialPerf.score;
+        const improvement =
+          (finalPerf.score - initialPerf.score) / initialPerf.score;
 
         expect(improvement).toBeGreaterThan(0.1); // At least 10% improvement
       }
@@ -449,7 +458,9 @@ describe('E2E Workflow Scenarios', () => {
 
       for (const [agentId, data] of performanceTracker.agents) {
         // Test on a different task type
-        const newTaskType = performanceTracker.taskTypes.find((t) => t !== data.taskType);
+        const newTaskType = performanceTracker.taskTypes.find(
+          (t) => t !== data.taskType,
+        );
         const result = await data.agent.execute({
           task: newTaskType,
           complexity: 'medium',
@@ -465,7 +476,8 @@ describe('E2E Workflow Scenarios', () => {
 
       // Verify some knowledge transfer
       const avgNewTaskPerf =
-        newTaskResults.reduce((sum, r) => sum + r.performance, 0) / newTaskResults.length;
+        newTaskResults.reduce((sum, r) => sum + r.performance, 0) /
+        newTaskResults.length;
       expect(avgNewTaskPerf).toBeGreaterThan(0.6); // Reasonable performance on new tasks
     });
   });
@@ -498,7 +510,7 @@ describe('E2E Workflow Scenarios', () => {
       const agents = await Promise.all(
         Array(4)
           .fill(null)
-          .map(() => resilientSwarm.spawn({ type: 'analyst' }))
+          .map(() => resilientSwarm.spawn({ type: 'analyst' })),
       );
 
       let _completedSteps = 0;

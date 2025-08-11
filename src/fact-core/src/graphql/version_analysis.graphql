@@ -1,0 +1,161 @@
+query VersionRepositoryAnalysis(
+  $owner: String!
+  $name: String!
+  $refName: String!
+) {
+  repository(owner: $owner, name: $name) {
+    name
+    description
+    stargazers {
+      totalCount
+    }
+    primaryLanguage {
+      name
+    }
+    releases(first: 10, orderBy: { field: CREATED_AT, direction: DESC }) {
+      nodes {
+        tagName
+        name
+        description
+        publishedAt
+        createdAt
+        isPrerelease
+        isDraft
+      }
+    }
+    ref(qualifiedName: $refName) {
+      name
+      target {
+        __typename
+        ... on Commit {
+          oid
+          committedDate
+          message
+          author {
+            name
+            email
+            date
+          }
+        }
+        ... on Tag {
+          name
+          target {
+            __typename
+            ... on Commit {
+              oid
+              committedDate
+            }
+          }
+        }
+      }
+    }
+    object(expression: $refName) {
+      __typename
+      ... on Tree {
+        entries {
+          name
+          type
+          mode
+          object {
+            __typename
+            ... on Tree {
+              entries {
+                name
+                type
+                mode
+              }
+            }
+            ... on Blob {
+              byteSize
+              text
+            }
+          }
+        }
+      }
+    }
+    packageFiles: object(expression: $refName) {
+      __typename
+      ... on Tree {
+        # Look for package manager files
+        mixExs: entries(first: 1, name: "mix.exs") {
+          name
+          object {
+            __typename
+            ... on Blob {
+              text
+              byteSize
+            }
+          }
+        }
+        cargoToml: entries(first: 1, name: "Cargo.toml") {
+          name
+          object {
+            __typename
+            ... on Blob {
+              text
+              byteSize
+            }
+          }
+        }
+        packageJson: entries(first: 1, name: "package.json") {
+          name
+          object {
+            __typename
+            ... on Blob {
+              text
+              byteSize
+            }
+          }
+        }
+        pyprojectToml: entries(first: 1, name: "pyproject.toml") {
+          name
+          object {
+            __typename
+            ... on Blob {
+              text
+              byteSize
+            }
+          }
+        }
+        setupPy: entries(first: 1, name: "setup.py") {
+          name
+          object {
+            __typename
+            ... on Blob {
+              text
+              byteSize
+            }
+          }
+        }
+        gleamToml: entries(first: 1, name: "gleam.toml") {
+          name
+          object {
+            __typename
+            ... on Blob {
+              text
+              byteSize
+            }
+          }
+        }
+      }
+    }
+    licenseInfo {
+      name
+      key
+      spdxId
+    }
+    repositoryTopics(first: 10) {
+      nodes {
+        topic {
+          name
+        }
+      }
+    }
+  }
+  rateLimit {
+    limit
+    cost
+    remaining
+    resetAt
+  }
+}

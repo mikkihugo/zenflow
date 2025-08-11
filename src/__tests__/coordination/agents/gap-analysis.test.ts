@@ -25,12 +25,20 @@ describe('Agent System Gap Analysis', () => {
       'migration-coordinator',
     ];
 
-    const newSPARCAgents: AgentType[] = ['quality-gate-agent', 'validation-specialist'];
+    const newSPARCAgents: AgentType[] = [
+      'quality-gate-agent',
+      'validation-specialist',
+    ];
 
-    const newUIUXAgents: AgentType[] = ['ux-designer', 'ui-designer', 'accessibility-specialist'];
+    const newUIUXAgents: AgentType[] = [
+      'ux-designer',
+      'ui-designer',
+      'accessibility-specialist',
+    ];
 
     test('should include new performance optimization agents', () => {
-      const performanceCategory = OUR_AGENT_CATEGORIES['Performance & Optimization'];
+      const performanceCategory =
+        OUR_AGENT_CATEGORIES['Performance & Optimization'];
 
       for (const agent of newPerformanceAgents) {
         expect(performanceCategory).toContain(agent);
@@ -103,8 +111,12 @@ describe('Agent System Gap Analysis', () => {
 
       // We should have advantages in these categories
       expect(comparison['GitHub Integration']?.advantage).toBeGreaterThan(0);
-      expect(comparison['Consensus & Distributed']?.advantage).toBeGreaterThan(0);
-      expect(comparison['Performance & Optimization']?.advantage).toBeGreaterThan(0);
+      expect(comparison['Consensus & Distributed']?.advantage).toBeGreaterThan(
+        0,
+      );
+      expect(
+        comparison['Performance & Optimization']?.advantage,
+      ).toBeGreaterThan(0);
     });
 
     test('should identify strategic missing capabilities', () => {
@@ -201,7 +213,8 @@ describe('Agent System Gap Analysis', () => {
     });
 
     test('should have reasonable agent distribution', () => {
-      for (const [category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) { // eslint-disable-line @typescript-eslint/no-unused-vars
+      for (const [category, agents] of Object.entries(OUR_AGENT_CATEGORIES)) {
+        // eslint-disable-line @typescript-eslint/no-unused-vars
         // Each category should have at least 1 agent
         expect(agents.length).toBeGreaterThan(0);
 
@@ -229,7 +242,7 @@ describe('Agent System Gap Analysis', () => {
 
       // Should have advantages in most categories
       const advantageCount = Object.values(analysis.categoryComparison).filter(
-        (cat) => cat.advantage > 0
+        (cat) => cat.advantage > 0,
       ).length;
 
       expect(advantageCount).toBeGreaterThan(coverageCategories.length / 2);
@@ -259,15 +272,27 @@ describe('Integration with Agent Registry', () => {
     const testScenarios = [
       {
         task: 'optimize database performance',
-        expectedAgents: ['performance-analyzer', 'database-architect', 'bottleneck-analyzer'],
+        expectedAgents: [
+          'performance-analyzer',
+          'database-architect',
+          'bottleneck-analyzer',
+        ],
       },
       {
         task: 'migrate legacy system',
-        expectedAgents: ['legacy-analyzer', 'modernization-agent', 'migration-coordinator'],
+        expectedAgents: [
+          'legacy-analyzer',
+          'modernization-agent',
+          'migration-coordinator',
+        ],
       },
       {
         task: 'improve UI accessibility',
-        expectedAgents: ['ux-designer', 'ui-designer', 'accessibility-specialist'],
+        expectedAgents: [
+          'ux-designer',
+          'ui-designer',
+          'accessibility-specialist',
+        ],
       },
     ];
 

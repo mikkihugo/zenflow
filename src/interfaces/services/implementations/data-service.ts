@@ -38,7 +38,10 @@ export interface DataServiceOptions {
  */
 export class DataService extends BaseService implements IService {
   private webDataService?: WebDataService;
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private cache = new Map<
+    string,
+    { data: any; timestamp: number; ttl: number }
+  >();
   private validators = new Map<string, (data: any) => boolean>();
   private persistenceTimer?: NodeJS.Timeout;
 
@@ -70,7 +73,9 @@ export class DataService extends BaseService implements IService {
 
     // Initialize caching if enabled
     if (config?.caching?.enabled) {
-      this.logger.debug(`Caching enabled with TTL: ${config?.caching?.ttl || 3600}s`);
+      this.logger.debug(
+        `Caching enabled with TTL: ${config?.caching?.ttl || 3600}s`,
+      );
     }
 
     // Initialize validation if enabled
@@ -94,10 +99,13 @@ export class DataService extends BaseService implements IService {
     const config = this.config as DataServiceConfig;
 
     // Start persistence timer if enabled
-    if (config?.options?.enablePersistence && config?.options?.persistenceInterval) {
+    if (
+      config?.options?.enablePersistence &&
+      config?.options?.persistenceInterval
+    ) {
       this.persistenceTimer = setInterval(
         () => this.persistData(),
-        config?.options?.persistenceInterval
+        config?.options?.persistenceInterval,
       );
       this.logger.debug('Persistence timer started');
     }
@@ -153,7 +161,9 @@ export class DataService extends BaseService implements IService {
         const maxSize = config?.caching?.maxSize || 1000;
         if (this.cache.size > maxSize * 1.1) {
           // Allow 10% overage
-          this.logger.warn(`Cache size (${this.cache.size}) exceeds limit (${maxSize})`);
+          this.logger.warn(
+            `Cache size (${this.cache.size}) exceeds limit (${maxSize})`,
+          );
           return false;
         }
       }
@@ -165,7 +175,7 @@ export class DataService extends BaseService implements IService {
           if (stats.averageResponseTime > 5000) {
             // 5 second threshold
             this.logger.warn(
-              `Web data service response time too high: ${stats.averageResponseTime}ms`
+              `Web data service response time too high: ${stats.averageResponseTime}ms`,
             );
             return false;
           }
@@ -177,7 +187,10 @@ export class DataService extends BaseService implements IService {
 
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed for data service ${this.name}:`, error);
+      this.logger.error(
+        `Health check failed for data service ${this.name}:`,
+        error,
+      );
       return false;
     }
   }
@@ -185,7 +198,7 @@ export class DataService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     this.logger.debug(`Executing data operation: ${operation}`);
 
@@ -194,7 +207,11 @@ export class DataService extends BaseService implements IService {
         return (await this.getData(params?.key, params?.useCache)) as T;
 
       case 'set':
-        return (await this.setData(params?.key, params?.value, params?.ttl)) as T;
+        return (await this.setData(
+          params?.key,
+          params?.value,
+          params?.ttl,
+        )) as T;
 
       case 'delete':
         return (await this.deleteData(params?.key)) as T;
@@ -203,7 +220,10 @@ export class DataService extends BaseService implements IService {
         return (await this.validateData(params?.type, params?.data)) as T;
 
       case 'process':
-        return (await this.processData(params?.data, params?.processingType)) as T;
+        return (await this.processData(
+          params?.data,
+          params?.processingType,
+        )) as T;
 
       case 'cache-stats':
         return this.getCacheStats() as T;
@@ -289,7 +309,11 @@ export class DataService extends BaseService implements IService {
    * @param value
    * @param ttl
    */
-  private async setData(key: string, value: any, ttl?: number): Promise<boolean> {
+  private async setData(
+    key: string,
+    value: any,
+    ttl?: number,
+  ): Promise<boolean> {
     if (!key) {
       throw new Error('Data key is required');
     }
@@ -372,7 +396,7 @@ export class DataService extends BaseService implements IService {
    */
   private async processData(
     data: any,
-    processingType: 'transform' | 'aggregate' | 'filter' = 'transform'
+    processingType: 'transform' | 'aggregate' | 'filter' = 'transform',
   ): Promise<any> {
     this.logger.debug(`Processing data with type: ${processingType}`);
 
@@ -480,10 +504,19 @@ export class DataService extends BaseService implements IService {
 
   private initializeValidators(): void {
     // Register default validators
-    this.validators.set('generic', (data: any) => data !== null && data !== undefined);
+    this.validators.set(
+      'generic',
+      (data: any) => data !== null && data !== undefined,
+    );
     this.validators.set('string', (data: any) => typeof data === 'string');
-    this.validators.set('number', (data: any) => typeof data === 'number' && !Number.isNaN(data));
-    this.validators.set('object', (data: any) => typeof data === 'object' && data !== null);
+    this.validators.set(
+      'number',
+      (data: any) => typeof data === 'number' && !Number.isNaN(data),
+    );
+    this.validators.set(
+      'object',
+      (data: any) => typeof data === 'object' && data !== null,
+    );
     this.validators.set('array', (data: any) => Array.isArray(data));
   }
 
@@ -522,7 +555,11 @@ export class DataService extends BaseService implements IService {
     }
   }
 
-  private isCacheValid(cached: { data: any; timestamp: number; ttl: number }): boolean {
+  private isCacheValid(cached: {
+    data: any;
+    timestamp: number;
+    ttl: number;
+  }): boolean {
     return Date.now() - cached.timestamp < cached.ttl;
   }
 
@@ -567,7 +604,8 @@ export class DataService extends BaseService implements IService {
         transformed: true,
         transformedAt: new Date().toISOString(),
       }));
-    } else if (typeof data === 'object' && data !== null) {
+    }
+    if (typeof data === 'object' && data !== null) {
       return {
         ...data,
         transformed: true,
@@ -585,7 +623,11 @@ export class DataService extends BaseService implements IService {
         aggregatedAt: new Date().toISOString(),
       };
     }
-    return { count: 1, type: typeof data, aggregatedAt: new Date().toISOString() };
+    return {
+      count: 1,
+      type: typeof data,
+      aggregatedAt: new Date().toISOString(),
+    };
   }
 
   private filterData(data: any): any {

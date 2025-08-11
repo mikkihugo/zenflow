@@ -16,9 +16,16 @@ import type {
   SessionCoordinationDao,
   SessionEntity,
 } from '../database';
-import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration.ts';
+import {
+  SessionEnabledSwarm,
+  SessionRecoveryService,
+} from './session-integration.ts';
 import { SessionManager, type SessionState } from './session-manager.ts';
-import { SessionSerializer, SessionStats, SessionValidator } from './session-utils.ts';
+import {
+  SessionSerializer,
+  SessionStats,
+  SessionValidator,
+} from './session-utils.ts';
 import type { SwarmOptions, SwarmState } from './types.ts';
 
 // TDD London Mock - Tests INTERACTIONS, not state
@@ -26,24 +33,45 @@ class MockCoordinationDao implements SessionCoordinationDao {
   public initialized: boolean = true;
 
   // Jest spies for interaction testing (TDD London approach) - properly typed
-  query: vi.MockedFunction<(sql: string, params?: unknown[]) => Promise<any[]>> = vi.fn();
+  query: vi.MockedFunction<
+    (sql: string, params?: unknown[]) => Promise<any[]>
+  > = vi.fn();
   execute: vi.MockedFunction<
-    (sql: string, params?: unknown[]) => Promise<{ affectedRows?: number; insertId?: number }>
+    (
+      sql: string,
+      params?: unknown[],
+    ) => Promise<{ affectedRows?: number; insertId?: number }>
   > = vi.fn();
-  findById: vi.MockedFunction<(id: string | number) => Promise<SessionEntity | null>> = vi.fn();
+  findById: vi.MockedFunction<
+    (id: string | number) => Promise<SessionEntity | null>
+  > = vi.fn();
   findBy: vi.MockedFunction<
-    (criteria: Partial<SessionEntity>, options?: QueryOptions) => Promise<SessionEntity[]>
+    (
+      criteria: Partial<SessionEntity>,
+      options?: QueryOptions,
+    ) => Promise<SessionEntity[]>
   > = vi.fn();
-  findAll: vi.MockedFunction<(options?: QueryOptions) => Promise<SessionEntity[]>> = vi.fn();
-  create: vi.MockedFunction<(entity: Omit<SessionEntity, 'id'>) => Promise<SessionEntity>> =
-    vi.fn();
+  findAll: vi.MockedFunction<
+    (options?: QueryOptions) => Promise<SessionEntity[]>
+  > = vi.fn();
+  create: vi.MockedFunction<
+    (entity: Omit<SessionEntity, 'id'>) => Promise<SessionEntity>
+  > = vi.fn();
   update: vi.MockedFunction<
-    (id: string | number, updates: Partial<SessionEntity>) => Promise<SessionEntity>
+    (
+      id: string | number,
+      updates: Partial<SessionEntity>,
+    ) => Promise<SessionEntity>
   > = vi.fn();
-  delete: vi.MockedFunction<(id: string | number) => Promise<boolean>> = vi.fn();
-  count: vi.MockedFunction<(criteria?: Partial<SessionEntity>) => Promise<number>> = vi.fn();
-  exists: vi.MockedFunction<(id: string | number) => Promise<boolean>> = vi.fn();
-  executeCustomQuery: vi.MockedFunction<(query: CustomQuery) => Promise<any>> = vi.fn();
+  delete: vi.MockedFunction<(id: string | number) => Promise<boolean>> =
+    vi.fn();
+  count: vi.MockedFunction<
+    (criteria?: Partial<SessionEntity>) => Promise<number>
+  > = vi.fn();
+  exists: vi.MockedFunction<(id: string | number) => Promise<boolean>> =
+    vi.fn();
+  executeCustomQuery: vi.MockedFunction<(query: CustomQuery) => Promise<any>> =
+    vi.fn();
   acquireLock: vi.MockedFunction<
     (resourceId: string, lockTimeout?: number) => Promise<CoordinationLock>
   > = vi.fn();
@@ -51,14 +79,16 @@ class MockCoordinationDao implements SessionCoordinationDao {
   subscribe: vi.MockedFunction<
     (
       pattern: string,
-      callback: (change: CoordinationChange<SessionEntity>) => void
+      callback: (change: CoordinationChange<SessionEntity>) => void,
     ) => Promise<string>
   > = vi.fn();
-  unsubscribe: vi.MockedFunction<(subscriptionId: string) => Promise<void>> = vi.fn();
+  unsubscribe: vi.MockedFunction<(subscriptionId: string) => Promise<void>> =
+    vi.fn();
   publish: vi.MockedFunction<
     (channel: string, event: CoordinationEvent<SessionEntity>) => Promise<void>
   > = vi.fn();
-  getCoordinationStats: vi.MockedFunction<() => Promise<CoordinationStats>> = vi.fn();
+  getCoordinationStats: vi.MockedFunction<() => Promise<CoordinationStats>> =
+    vi.fn();
 
   constructor() {
     // Configure default return values for London TDD - with correct types
@@ -94,7 +124,10 @@ class MockCoordinationDao implements SessionCoordinationDao {
   }
 
   // Helper methods for test setup (TDD London approach)
-  setupSessionExists(sessionId: string, sessionData: Partial<SessionEntity> = {}) {
+  setupSessionExists(
+    sessionId: string,
+    sessionData: Partial<SessionEntity> = {},
+  ) {
     this.findById.mockResolvedValueOnce({
       id: sessionId,
       name: 'Test Session',
@@ -120,15 +153,26 @@ class MockCoordinationDao implements SessionCoordinationDao {
   }
 
   expectCreateCalled(expectedEntity: Partial<SessionEntity>) {
-    expect(this.create).toHaveBeenCalledWith(expect.objectContaining(expectedEntity));
+    expect(this.create).toHaveBeenCalledWith(
+      expect.objectContaining(expectedEntity),
+    );
   }
 
-  expectUpdateCalled(expectedId: string, expectedUpdates: Partial<SessionEntity>) {
-    expect(this.update).toHaveBeenCalledWith(expectedId, expect.objectContaining(expectedUpdates));
+  expectUpdateCalled(
+    expectedId: string,
+    expectedUpdates: Partial<SessionEntity>,
+  ) {
+    expect(this.update).toHaveBeenCalledWith(
+      expectedId,
+      expect.objectContaining(expectedUpdates),
+    );
   }
 
   expectLockAcquired(expectedResourceId: string, expectedTimeout?: number) {
-    expect(this.acquireLock).toHaveBeenCalledWith(expectedResourceId, expectedTimeout);
+    expect(this.acquireLock).toHaveBeenCalledWith(
+      expectedResourceId,
+      expectedTimeout,
+    );
   }
 
   clearAllMocks() {
@@ -194,7 +238,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState
+        mockSwarmState,
       );
 
       // ASSERT: Verify interactions (London TDD)
@@ -252,7 +296,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState
+        mockSwarmState,
       );
 
       await sessionManager.pauseSession(sessionId);
@@ -268,7 +312,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState
+        mockSwarmState,
       );
 
       await sessionManager.hibernateSession(sessionId);
@@ -282,7 +326,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState
+        mockSwarmState,
       );
 
       await sessionManager.terminateSession(sessionId);
@@ -307,11 +351,16 @@ describe('SessionManager', () => {
       });
 
       // ACT: Create checkpoint
-      const checkpointId = await sessionManager.createCheckpoint(sessionId, 'Test checkpoint');
+      const checkpointId = await sessionManager.createCheckpoint(
+        sessionId,
+        'Test checkpoint',
+      );
 
       // ASSERT: Verify coordination interactions (London TDD)
       persistence.expectLockAcquired(`session:${sessionId}`, undefined);
-      expect(persistence.releaseLock).toHaveBeenCalledWith('checkpoint_lock_123');
+      expect(persistence.releaseLock).toHaveBeenCalledWith(
+        'checkpoint_lock_123',
+      );
       persistence.expectExecuteCalled('INSERT INTO session_checkpoints', [
         expect.any(String),
         sessionId,
@@ -324,11 +373,14 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState
+        mockSwarmState,
       );
 
       // Create initial checkpoint
-      const checkpointId = await sessionManager.createCheckpoint(sessionId, 'Initial state');
+      const checkpointId = await sessionManager.createCheckpoint(
+        sessionId,
+        'Initial state',
+      );
 
       // Modify session state
       const modifiedState = {
@@ -353,7 +405,7 @@ describe('SessionManager', () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState
+        mockSwarmState,
       );
 
       const stats = await sessionManager.getSessionStats(sessionId);
@@ -366,8 +418,16 @@ describe('SessionManager', () => {
     });
 
     test('should get global statistics', async () => {
-      await sessionManager.createSession('Session 1', mockSwarmOptions, mockSwarmState);
-      await sessionManager.createSession('Session 2', mockSwarmOptions, mockSwarmState);
+      await sessionManager.createSession(
+        'Session 1',
+        mockSwarmOptions,
+        mockSwarmState,
+      );
+      await sessionManager.createSession(
+        'Session 2',
+        mockSwarmOptions,
+        mockSwarmState,
+      );
 
       const globalStats = await sessionManager.getSessionStats();
 
@@ -379,20 +439,20 @@ describe('SessionManager', () => {
 
   describe('Error Handling', () => {
     test('should handle non-existent session', async () => {
-      await expect(sessionManager.loadSession('non-existent-session')).rejects.toThrow(
-        'Session non-existent-session not found'
-      );
+      await expect(
+        sessionManager.loadSession('non-existent-session'),
+      ).rejects.toThrow('Session non-existent-session not found');
     });
 
     test('should handle invalid checkpoint restoration', async () => {
       const sessionId = await sessionManager.createSession(
         'Test Session',
         mockSwarmOptions,
-        mockSwarmState
+        mockSwarmState,
       );
 
       await expect(
-        sessionManager.restoreFromCheckpoint(sessionId, 'invalid-checkpoint')
+        sessionManager.restoreFromCheckpoint(sessionId, 'invalid-checkpoint'),
       ).rejects.toThrow('Checkpoint invalid-checkpoint not found');
     });
   });
@@ -412,7 +472,7 @@ describe('SessionEnabledSwarm', () => {
       {
         autoCheckpoint: false,
       },
-      persistence
+      persistence,
     );
 
     await swarm.initialize();
@@ -526,7 +586,9 @@ describe('SessionValidator', () => {
 describe('SessionSerializer', () => {
   const testSwarmState: SwarmState = {
     agents: new Map([['agent1', { id: 'agent1', type: 'researcher' } as any]]),
-    tasks: new Map([['task1', { id: 'task1', description: 'Test task' } as any]]),
+    tasks: new Map([
+      ['task1', { id: 'task1', description: 'Test task' } as any],
+    ]),
     topology: 'mesh',
     connections: [],
     metrics: {
@@ -665,7 +727,9 @@ describe('SessionRecoveryService', () => {
   test('should run health check', async () => {
     // Create a few test sessions
     await sessionManager.createSession('Session 1', { topology: 'mesh' });
-    await sessionManager.createSession('Session 2', { topology: 'hierarchical' });
+    await sessionManager.createSession('Session 2', {
+      topology: 'hierarchical',
+    });
 
     const healthReport = await recoveryService.runHealthCheck();
 
@@ -688,7 +752,7 @@ describe('Session Management Integration', () => {
     const swarm = new SessionEnabledSwarm(
       { topology: 'mesh', maxAgents: 10 },
       { autoCheckpoint: false },
-      persistence
+      persistence,
     );
 
     await swarm.initialize();
@@ -720,7 +784,9 @@ describe('Session Management Integration', () => {
       });
 
       // Create checkpoint
-      const checkpointId = await swarm.createCheckpoint('Integration checkpoint');
+      const checkpointId = await swarm.createCheckpoint(
+        'Integration checkpoint',
+      );
       expect(checkpointId).toBeDefined();
 
       // Verify session state

@@ -113,7 +113,7 @@ export class MemoryService extends BaseService implements IService {
         if (currentUsage > config?.storage?.maxMemory * 1.1) {
           // Allow 10% overage
           this.logger.warn(
-            `Memory usage (${currentUsage}) exceeds limit (${config?.storage?.maxMemory})`
+            `Memory usage (${currentUsage}) exceeds limit (${config?.storage?.maxMemory})`,
           );
           return false;
         }
@@ -124,7 +124,7 @@ export class MemoryService extends BaseService implements IService {
         if (this.store.size > config?.eviction?.maxSize * 1.1) {
           // Allow 10% overage
           this.logger.warn(
-            `Store size (${this.store.size}) exceeds limit (${config?.eviction?.maxSize})`
+            `Store size (${this.store.size}) exceeds limit (${config?.eviction?.maxSize})`,
           );
           return false;
         }
@@ -132,7 +132,10 @@ export class MemoryService extends BaseService implements IService {
 
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed for memory service ${this.name}:`, error);
+      this.logger.error(
+        `Health check failed for memory service ${this.name}:`,
+        error,
+      );
       return false;
     }
   }
@@ -140,7 +143,7 @@ export class MemoryService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     this.logger.debug(`Executing memory operation: ${operation}`);
 
@@ -313,7 +316,7 @@ export class MemoryService extends BaseService implements IService {
     }
 
     const meta = this.metadata.get(key);
-    if (!meta || !meta.ttl) {
+    if (!(meta && meta.ttl)) {
       return null;
     }
 
@@ -341,7 +344,7 @@ export class MemoryService extends BaseService implements IService {
   private getStats(): any {
     const totalSize = Array.from(this.metadata.values()).reduce(
       (sum, meta) => sum + (meta.size || 0),
-      0
+      0,
     );
 
     return {
@@ -403,17 +406,21 @@ export class MemoryService extends BaseService implements IService {
   private estimateValueSize(value: any): number {
     if (typeof value === 'string') {
       return value.length * 2; // Assume UTF-16
-    } else if (typeof value === 'number') {
-      return 8;
-    } else if (typeof value === 'boolean') {
-      return 1;
-    } else {
-      return JSON.stringify(value).length * 2;
     }
+    if (typeof value === 'number') {
+      return 8;
+    }
+    if (typeof value === 'boolean') {
+      return 1;
+    }
+    return JSON.stringify(value).length * 2;
   }
 
   private estimateMemoryUsage(): number {
-    return Array.from(this.metadata.values()).reduce((sum, meta) => sum + (meta.size || 0), 0);
+    return Array.from(this.metadata.values()).reduce(
+      (sum, meta) => sum + (meta.size || 0),
+      0,
+    );
   }
 
   private startEvictionProcess(): void {
@@ -427,7 +434,10 @@ export class MemoryService extends BaseService implements IService {
   private async checkEviction(): Promise<void> {
     const config = this.config as MemoryServiceConfig;
 
-    if (config?.eviction?.maxSize && this.store.size >= config?.eviction?.maxSize) {
+    if (
+      config?.eviction?.maxSize &&
+      this.store.size >= config?.eviction?.maxSize
+    ) {
       await this.performEviction();
     }
   }
@@ -441,12 +451,17 @@ export class MemoryService extends BaseService implements IService {
     this.removeExpiredItems();
 
     // Check if we still need to evict
-    if (config?.eviction?.maxSize && this.store.size <= config?.eviction?.maxSize) {
+    if (
+      config?.eviction?.maxSize &&
+      this.store.size <= config?.eviction?.maxSize
+    ) {
       return;
     }
 
     const policy = config?.eviction?.policy;
-    const targetSize = Math.floor((config?.eviction?.maxSize || this.store.size) * 0.8);
+    const targetSize = Math.floor(
+      (config?.eviction?.maxSize || this.store.size) * 0.8,
+    );
     const toEvict = this.store.size - targetSize;
 
     if (toEvict <= 0) return;
@@ -472,7 +487,9 @@ export class MemoryService extends BaseService implements IService {
     keysToEvict.forEach((key) => this.delete(key));
 
     if (keysToEvict.length > 0) {
-      this.logger.debug(`Evicted ${keysToEvict.length} keys using ${policy} policy`);
+      this.logger.debug(
+        `Evicted ${keysToEvict.length} keys using ${policy} policy`,
+      );
     }
   }
 
@@ -495,7 +512,7 @@ export class MemoryService extends BaseService implements IService {
 
   private getLRUKeys(count: number): string[] {
     const sortedEntries = Array.from(this.metadata.entries()).sort(
-      ([, a], [, b]) => a.lastAccessed - b.lastAccessed
+      ([, a], [, b]) => a.lastAccessed - b.lastAccessed,
     );
 
     return sortedEntries.slice(0, count).map(([key]) => key);
@@ -504,7 +521,7 @@ export class MemoryService extends BaseService implements IService {
   private getLFUKeys(count: number): string[] {
     // For simplicity, use creation time as proxy for frequency
     const sortedEntries = Array.from(this.metadata.entries()).sort(
-      ([, a], [, b]) => a.createdAt - b.createdAt
+      ([, a], [, b]) => a.createdAt - b.createdAt,
     );
 
     return sortedEntries.slice(0, count).map(([key]) => key);
@@ -512,7 +529,7 @@ export class MemoryService extends BaseService implements IService {
 
   private getFIFOKeys(count: number): string[] {
     const sortedEntries = Array.from(this.metadata.entries()).sort(
-      ([, a], [, b]) => a.createdAt - b.createdAt
+      ([, a], [, b]) => a.createdAt - b.createdAt,
     );
 
     return sortedEntries.slice(0, count).map(([key]) => key);
@@ -528,7 +545,9 @@ export class MemoryService extends BaseService implements IService {
 
   private countExpiredKeys(): number {
     const now = Date.now();
-    return Array.from(this.metadata.values()).filter((meta) => meta.ttl && now > meta.ttl).length;
+    return Array.from(this.metadata.values()).filter(
+      (meta) => meta.ttl && now > meta.ttl,
+    ).length;
   }
 
   private async loadPersistedData(): Promise<void> {

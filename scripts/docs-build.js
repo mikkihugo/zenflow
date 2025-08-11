@@ -15,8 +15,8 @@
 const fs = require('node:fs').promises;
 const path = require('node:path');
 const { execSync } = require('node:child_process');
-const { JSDocValidator } = require('./jsdoc-validator');
-const { DocsCoverageReporter } = require('./docs-coverage');
+const { JSDocValidator } = require('./jsdoc-validator.js');
+const { DocsCoverageReporter } = require('./docs-coverage.js');
 
 /**
  * Documentation Build System - Automated documentation pipeline
@@ -126,7 +126,9 @@ class DocsBuilder {
   async build() {
     try {
       // Step 1: Initialize build environment
-      await this.executeStep('initialize', () => this.initializeBuildEnvironment());
+      await this.executeStep('initialize', () =>
+        this.initializeBuildEnvironment(),
+      );
 
       // Step 2: Validate JSDoc if enabled
       if (this.enableValidation) {
@@ -284,9 +286,12 @@ class DocsBuilder {
     this.results.validation = validationResults;
 
     // Check if validation should fail the build
-    if (this.buildConfig.validation.failOnError && validationResults.quality.failed > 0) {
+    if (
+      this.buildConfig.validation.failOnError &&
+      validationResults.quality.failed > 0
+    ) {
       throw new Error(
-        `JSDoc validation failed: ${validationResults.quality.failed} files have errors`
+        `JSDoc validation failed: ${validationResults.quality.failed} files have errors`,
       );
     }
     return validationResults;
@@ -314,7 +319,10 @@ class DocsBuilder {
     try {
       // Run TypeDoc with configuration file
       const command = `npx typedoc --options ${this.buildConfig.typedoc.configFile} --out ${outputPath}`;
-      const output = execSync(command, { encoding: 'utf8', cwd: process.cwd() });
+      const output = execSync(command, {
+        encoding: 'utf8',
+        cwd: process.cwd(),
+      });
 
       // Parse TypeDoc output for statistics
       const stats = this.parseTypeDocOutput(output);
@@ -499,16 +507,22 @@ class DocsBuilder {
   async generateBuildReport() {
     // HTML Report
     const htmlReport = this.buildHTMLReport();
-    await fs.writeFile(path.join(this.outputDir, 'build-report.html'), htmlReport);
+    await fs.writeFile(
+      path.join(this.outputDir, 'build-report.html'),
+      htmlReport,
+    );
 
     // Markdown Report
     const markdownReport = this.buildMarkdownReport();
-    await fs.writeFile(path.join(this.outputDir, 'build-report.md'), markdownReport);
+    await fs.writeFile(
+      path.join(this.outputDir, 'build-report.md'),
+      markdownReport,
+    );
 
     // JSON Results
     await fs.writeFile(
       path.join(this.outputDir, 'build-results.json'),
-      JSON.stringify(this.results, null, 2)
+      JSON.stringify(this.results, null, 2),
     );
   }
 
@@ -755,7 +769,10 @@ class DocsBuilder {
     const navigationJS = `// Site navigation data
 window.SITE_STRUCTURE = ${JSON.stringify(structure, null, 2)};`;
 
-    await fs.writeFile(path.join(siteDir, 'assets', 'navigation.js'), navigationJS);
+    await fs.writeFile(
+      path.join(siteDir, 'assets', 'navigation.js'),
+      navigationJS,
+    );
   }
 
   /**
@@ -773,7 +790,7 @@ window.SITE_STRUCTURE = ${JSON.stringify(structure, null, 2)};`;
     // This would be enhanced with full-text search indexing
     await fs.writeFile(
       path.join(siteDir, 'assets', 'search-index.json'),
-      JSON.stringify(searchIndex, null, 2)
+      JSON.stringify(searchIndex, null, 2),
     );
   }
 
@@ -997,7 +1014,10 @@ document.addEventListener('DOMContentLoaded', function() {
       },
     };
 
-    await fs.writeFile(path.join(deployDir, 'deploy.json'), JSON.stringify(config, null, 2));
+    await fs.writeFile(
+      path.join(deployDir, 'deploy.json'),
+      JSON.stringify(config, null, 2),
+    );
 
     return config;
   }
@@ -1054,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <td>${result.duration}ms</td>
                     <td>${result.error || 'Completed successfully'}</td>
                 </tr>
-                `
+                `,
                   )
                   .join('')}
             </tbody>
@@ -1109,7 +1129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ${Object.entries(this.results.steps)
   .map(
     ([step, result]) =>
-      `- **${step}**: ${result.success ? '✅' : '❌'} (${result.duration}ms)${result.error ? ` - ${result.error}` : ''}`
+      `- **${step}**: ${result.success ? '✅' : '❌'} (${result.duration}ms)${result.error ? ` - ${result.error}` : ''}`,
   )
   .join('\n')}
 
@@ -1138,7 +1158,10 @@ ${
 ## Artifacts Generated
 
 ${this.results.artifacts
-  .map((artifact) => `- **${artifact.type}**: ${artifact.path} (${artifact.size} bytes)`)
+  .map(
+    (artifact) =>
+      `- **${artifact.type}**: ${artifact.path} (${artifact.size} bytes)`,
+  )
   .join('\n')}
 
 ---
@@ -1151,7 +1174,10 @@ ${this.results.artifacts
    * @returns {number} Total duration in milliseconds
    */
   getTotalDuration() {
-    return Object.values(this.results.steps).reduce((total, step) => total + step.duration, 0);
+    return Object.values(this.results.steps).reduce(
+      (total, step) => total + step.duration,
+      0,
+    );
   }
 }
 

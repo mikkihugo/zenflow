@@ -94,7 +94,10 @@ async function runTests() {
       // Simulate task completion by updating database
       mcpTools.persistence.updateTask(taskResult.taskId, {
         status: 'completed',
-        result: JSON.stringify({ output: 'Task completed successfully', data: [1, 2, 3, 4, 5] }),
+        result: JSON.stringify({
+          output: 'Task completed successfully',
+          data: [1, 2, 3, 4, 5],
+        }),
         execution_time_ms: 1500,
         completed_at: new Date().toISOString(),
       });

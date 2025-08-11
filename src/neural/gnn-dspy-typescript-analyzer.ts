@@ -1,12 +1,12 @@
 /**
  * @fileoverview GNN-Enhanced DSPy TypeScript Error Analyzer
- * 
+ *
  * This module provides an advanced TypeScript error analysis system that combines the power
  * of Graph Neural Networks (GNN) with DSPy (Declarative Self-improving Python) for intelligent
  * error understanding and automated fix generation. The system analyzes TypeScript compilation
  * errors as a graph where nodes represent errors and edges represent relationships such as
  * dependencies, cascading effects, and semantic similarity.
- * 
+ *
  * **Core Capabilities:**
  * - **Graph-Based Error Modeling**: Models TypeScript errors as connected nodes in a graph
  * - **Neural Relationship Analysis**: Uses GNN to understand complex error interdependencies
@@ -14,7 +14,7 @@
  * - **Domain-Aware Clustering**: Groups related errors by domain for systematic fixing
  * - **Performance Optimization**: WASM-accelerated neural computations for large codebases
  * - **Priority-Driven Fixing**: Orders fixes by impact and dependency relationships
- * 
+ *
  * **Technical Architecture:**
  * ```
  * TypeScript Errors → Graph Construction → GNN Analysis → DSPy Enhancement → Fix Generation
@@ -22,36 +22,36 @@
  *                    Node Features      Relationship       Context         Intelligent
  *                    Edge Features      Embeddings        Analysis         Solutions
  * ```
- * 
+ *
  * **Error Graph Structure:**
  * - **Nodes**: Individual TypeScript errors with features (severity, category, location, context)
  * - **Edges**: Relationships between errors (cascade, dependency, similarity, root_cause)
  * - **Features**: Multi-dimensional error characteristics for neural processing
  * - **Weights**: Relationship strength scores for prioritization
- * 
+ *
  * **Performance Characteristics:**
  * - **Memory Usage**: O(n²) for n errors due to relationship matrix storage
  * - **Time Complexity**: O(n² + k*d) where k is feature dimension and d is GNN depth
  * - **WASM Acceleration**: 3-5x speedup for graphs with >500 errors
  * - **Scalability**: Handles up to 10,000 errors with acceptable performance (<30s analysis)
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
  * @since 2024-01-01
- * 
+ *
  * @example Basic Error Analysis
  * ```typescript
  * const analyzer = new GNNDSPyTypeScriptAnalyzer({
  *   model: 'claude-3-5-sonnet-20241022',
  *   temperature: 0.1
  * });
- * 
+ *
  * const errors = await loadTypeScriptErrors();
  * const analysis = await analyzer.analyzeTypeScriptErrors(errors);
- * 
+ *
  * console.log(`Found ${analysis.errorClusters.length} error clusters`);
  * console.log(`Confidence: ${analysis.confidence}`);
- * 
+ *
  * // Process clusters in priority order
  * for (const cluster of analysis.errorClusters) {
  *   console.log(`Cluster ${cluster.clusterId}: ${cluster.errors.length} errors`);
@@ -59,43 +59,43 @@
  *   console.log(`Priority: ${cluster.priority}`);
  * }
  * ```
- * 
+ *
  * @example Advanced Fix Generation
  * ```typescript
  * const codeContext = await loadProjectFiles();
  * const fixes = await analyzer.generateIntelligentFixes(errors, analysis, codeContext);
- * 
+ *
  * // Apply fixes in dependency order
  * for (const fix of fixes) {
  *   console.log(`Fix for error ${fix.errorId}: ${fix.description}`);
  *   console.log(`Type: ${fix.fixType}, Confidence: ${fix.confidence}`);
- *   
+ *
  *   // Review impact analysis
  *   console.log(`Affected files: ${fix.impactAnalysis.affectedFiles.length}`);
  *   console.log(`Risk level: ${fix.impactAnalysis.riskLevel}`);
- *   
+ *
  *   if (fix.confidence > 0.8 && fix.impactAnalysis.riskLevel === 'low') {
  *     // Auto-apply high confidence, low risk fixes
  *     await applyCodeChanges(fix.codeChanges);
  *   }
  * }
  * ```
- * 
+ *
  * @example Domain-Specific Analysis
  * ```typescript
  * const analysis = await analyzer.analyzeTypeScriptErrors(errors);
- * 
+ *
  * // Analyze domain mapping for architectural insights
  * for (const domain of analysis.domainMapping.errorDomains) {
  *   console.log(`Domain: ${domain.domain}`);
  *   console.log(`Errors: ${domain.errors.length}`);
  *   console.log(`Cohesion: ${domain.cohesionScore}`);
- *   
+ *
  *   if (domain.cohesionScore < 0.5) {
  *     console.warn(`Low cohesion in ${domain.domain} - consider refactoring`);
  *   }
  * }
- * 
+ *
  * // Check cross-domain dependencies
  * for (const dep of analysis.domainMapping.crossDomainDependencies) {
  *   console.log(`${dep.sourceDomain} → ${dep.targetDomain}: ${dep.errorCount} errors`);
@@ -105,11 +105,11 @@
 
 import { getLogger } from '../config/logging-config.ts';
 import { NeuralDomainMapper } from '../coordination/discovery/neural-domain-mapper.ts';
+import { LLMIntegrationService } from '../coordination/services/llm-integration.service.ts';
 import { createDSPyWrapper, type DSPyWrapper } from './dspy-wrapper.ts';
-import { GNNModel } from './models/presets/gnn';
+import { GNNModel } from './models/presets/gnn.js';
 import type { DSPyConfig, DSPyProgram } from './types/dspy-types.ts';
 import { WASMNeuralAccelerator } from './wasm/wasm-neural-accelerator.ts';
-import { LLMIntegrationService } from '../coordination/services/llm-integration.service.ts';
 
 const logger = getLogger('GNN-DSPy-TS-Analyzer');
 
@@ -121,7 +121,13 @@ export interface TypeScriptError {
   line: number;
   column: number;
   severity: 'error' | 'warning' | 'info';
-  category: 'type' | 'syntax' | 'import' | 'declaration' | 'assignment' | 'generic';
+  category:
+    | 'type'
+    | 'syntax'
+    | 'import'
+    | 'declaration'
+    | 'assignment'
+    | 'generic';
   relatedErrors?: string[];
   context: {
     codeSnippet: string;
@@ -176,7 +182,12 @@ export interface GNNErrorAnalysis {
 
 export interface IntelligentFixSuggestion {
   errorId: string;
-  fixType: 'type_annotation' | 'import_fix' | 'refactor' | 'config_change' | 'dependency_update';
+  fixType:
+    | 'type_annotation'
+    | 'import_fix'
+    | 'refactor'
+    | 'config_change'
+    | 'dependency_update';
   description: string;
   codeChanges: Array<{
     file: string;
@@ -198,34 +209,34 @@ export interface IntelligentFixSuggestion {
 
 /**
  * GNN-Enhanced DSPy TypeScript Error Analyzer class.
- * 
+ *
  * This class integrates Graph Neural Networks with DSPy (Declarative Self-improving Python)
  * to provide intelligent TypeScript error analysis and automated fix generation. It models
  * TypeScript compilation errors as a graph where relationships between errors are learned
  * through neural networks and enhanced with domain-specific knowledge.
- * 
+ *
  * **Architecture Overview:**
  * - **GNN Core**: Message passing neural network for error relationship understanding
  * - **DSPy Integration**: Advanced language model programs for intelligent fix generation
  * - **Domain Mapping**: Neural domain mapper for architectural insights and error clustering
  * - **WASM Acceleration**: High-performance tensor operations for large error sets
  * - **Multi-Program Pipeline**: Specialized DSPy programs for different analysis phases
- * 
+ *
  * **Key Components:**
  * 1. **Error Graph Construction**: Converts TypeScript errors into graph representation
  * 2. **Neural Analysis**: GNN processes error relationships and generates embeddings
  * 3. **Domain Mapping**: Neural domain mapper provides architectural context
  * 4. **DSPy Enhancement**: Language model programs analyze and generate fixes
  * 5. **Fix Generation**: Context-aware code change suggestions with impact analysis
- * 
+ *
  * **Performance Optimizations:**
  * - WASM acceleration for neural computations (3-5x speedup)
  * - Parallel DSPy program execution for faster analysis
  * - Intelligent caching of GNN embeddings and domain mappings
  * - Batch processing for large error sets
- * 
+ *
  * @class GNNDSPyTypeScriptAnalyzer
- * 
+ *
  * @example Complete Analysis Pipeline
  * ```typescript
  * // Initialize analyzer with custom configuration
@@ -234,17 +245,17 @@ export interface IntelligentFixSuggestion {
  *   temperature: 0.1,
  *   maxTokens: 4000
  * });
- * 
+ *
  * // Load TypeScript errors from compilation
  * const errors = await loadCompilationErrors();
- * 
+ *
  * // Perform neural analysis
  * const analysis = await analyzer.analyzeTypeScriptErrors(errors);
- * 
+ *
  * // Generate intelligent fixes
  * const codeContext = await loadSourceFiles();
  * const fixes = await analyzer.generateIntelligentFixes(errors, analysis, codeContext);
- * 
+ *
  * // Apply fixes systematically
  * await applyFixesInOrder(fixes);
  * ```
@@ -316,23 +327,23 @@ export class GNNDSPyTypeScriptAnalyzer {
 
   /**
    * Creates a new GNN-DSPy TypeScript Error Analyzer with specified configuration.
-   * 
+   *
    * Initializes the complete analysis pipeline including GNN model, domain mapper,
    * WASM accelerator, and DSPy programs. The analyzer is configured for TypeScript
    * error-specific features and optimized for production use.
-   * 
+   *
    * @constructor
    * @param {DSPyConfig} [config={}] - Configuration for DSPy integration and analysis
    * @param {string} [config.model='claude-3-5-sonnet-20241022'] - Language model for DSPy programs
    * @param {number} [config.temperature=0.1] - Temperature for LLM generation (0-1)
    * @param {number} [config.maxTokens=4000] - Maximum tokens for DSPy program outputs
-   * 
+   *
    * @example Basic Initialization
    * ```typescript
    * // Default configuration with Claude Sonnet
    * const analyzer = new GNNDSPyTypeScriptAnalyzer();
    * ```
-   * 
+   *
    * @example Custom Configuration
    * ```typescript
    * // Custom model and parameters
@@ -351,7 +362,7 @@ export class GNNDSPyTypeScriptAnalyzer {
       model: 'openai/gpt-5', // Free, high-performance model
       temperature: config.temperature || 0.1,
       maxTokens: config.maxTokens || 128000, // Full 128K context window
-      debug: config.debug || false
+      debug: config.debug,
     });
 
     // Initialize GNN model with TypeScript error-specific configuration
@@ -401,19 +412,19 @@ export class GNNDSPyTypeScriptAnalyzer {
       // Error Analysis Program
       this.errorAnalysisProgram = await this.dspyWrapper.createProgram(
         'typescript_errors: array, error_graph: object, domain_analysis: object -> error_clusters: array, root_causes: array, fix_priority: array, reasoning: string',
-        'Analyze TypeScript errors using GNN relationship understanding to identify clusters, root causes, and optimal fix strategies'
+        'Analyze TypeScript errors using GNN relationship understanding to identify clusters, root causes, and optimal fix strategies',
       );
 
       // Fix Generation Program
       this.fixGenerationProgram = await this.dspyWrapper.createProgram(
         'error_analysis: object, code_context: string, project_structure: object -> fix_suggestions: array, code_changes: array, impact_analysis: object, confidence: number',
-        'Generate intelligent TypeScript error fixes based on GNN analysis and code understanding'
+        'Generate intelligent TypeScript error fixes based on GNN analysis and code understanding',
       );
 
       // Relationship Analysis Program
       this.relationshipAnalysisProgram = await this.dspyWrapper.createProgram(
         'error_graph: object, gnn_predictions: array, domain_mapping: object -> relationship_insights: array, cascade_analysis: object, optimization_suggestions: array',
-        'Analyze error relationships and cascading effects using GNN predictions for optimal fix sequencing'
+        'Analyze error relationships and cascading effects using GNN predictions for optimal fix sequencing',
       );
 
       logger.info('DSPy programs initialized for TypeScript error analysis');
@@ -425,30 +436,30 @@ export class GNNDSPyTypeScriptAnalyzer {
 
   /**
    * Analyzes TypeScript errors using GNN-enhanced DSPy intelligence.
-   * 
+   *
    * This is the main analysis method that orchestrates the complete error analysis pipeline.
    * It combines graph neural network analysis with domain-specific knowledge and DSPy
    * language model programs to provide comprehensive insights into TypeScript compilation errors.
-   * 
+   *
    * **Analysis Pipeline:**
    * 1. **Graph Construction**: Builds error relationship graph with node/edge features
    * 2. **GNN Analysis**: Runs message passing neural network to understand relationships
    * 3. **Domain Mapping**: Maps errors to architectural domains for context
    * 4. **DSPy Enhancement**: Uses language model programs for intelligent clustering
    * 5. **Result Assembly**: Combines neural insights with domain knowledge
-   * 
+   *
    * **Output Analysis:**
    * - **Error Clusters**: Groups of related errors with root cause analysis
    * - **Relationship Map**: Inter-error dependencies and cascading effects
    * - **Domain Insights**: Architectural patterns and cross-domain error analysis
    * - **Priority Recommendations**: Optimal fix ordering based on dependencies
-   * 
+   *
    * **Performance Considerations:**
    * - Memory usage scales O(n²) with error count due to relationship matrix
    * - WASM acceleration provides 3-5x speedup for >500 errors
    * - Analysis time ranges from 2-30 seconds depending on error count and complexity
    * - Results are cached for repeated analysis with similar error sets
-   * 
+   *
    * @async
    * @method analyzeTypeScriptErrors
    * @param {TypeScriptError[]} errors - Array of TypeScript compilation errors to analyze
@@ -464,7 +475,7 @@ export class GNNDSPyTypeScriptAnalyzer {
    * @param {string} errors[].context.codeSnippet - Code snippet around the error
    * @param {string[]} errors[].context.imports - Import statements in the file
    * @param {string[]} errors[].context.dependencies - Dependencies of the file
-   * 
+   *
    * @returns {Promise<GNNErrorAnalysis>} Comprehensive error analysis results
    * @returns {Array<Object>} returns.errorClusters - Clustered errors with root cause analysis
    * @returns {string} returns.errorClusters[].clusterId - Unique cluster identifier
@@ -475,11 +486,11 @@ export class GNNDSPyTypeScriptAnalyzer {
    * @returns {Array<Object>} returns.errorRelationships - Relationships between individual errors
    * @returns {Object} returns.domainMapping - Domain-level error analysis and architectural insights
    * @returns {number} returns.confidence - Overall analysis confidence score (0-1)
-   * 
+   *
    * @throws {Error} When error analysis fails due to invalid input or system errors
    * @throws {Error} When GNN model fails to process error relationships
    * @throws {Error} When DSPy programs fail to generate analysis results
-   * 
+   *
    * @example Basic Error Analysis
    * ```typescript
    * const errors = [
@@ -500,17 +511,17 @@ export class GNNDSPyTypeScriptAnalyzer {
    *   }
    *   // ... more errors
    * ];
-   * 
+   *
    * const analysis = await analyzer.analyzeTypeScriptErrors(errors);
-   * 
+   *
    * console.log(`Analysis confidence: ${analysis.confidence}`);
    * console.log(`Found ${analysis.errorClusters.length} error clusters`);
-   * 
+   *
    * // Process high-priority clusters first
    * const highPriority = analysis.errorClusters
    *   .filter(cluster => cluster.priority > 0.8)
    *   .sort((a, b) => b.priority - a.priority);
-   * 
+   *
    * for (const cluster of highPriority) {
    *   console.log(`Cluster ${cluster.clusterId}:`);
    *   console.log(`  Root cause: ${cluster.rootCause}`);
@@ -518,21 +529,21 @@ export class GNNDSPyTypeScriptAnalyzer {
    *   console.log(`  Fix order: ${cluster.suggestedFixOrder.join(' → ')}`);
    * }
    * ```
-   * 
+   *
    * @example Domain-Focused Analysis
    * ```typescript
    * const analysis = await analyzer.analyzeTypeScriptErrors(errors);
-   * 
+   *
    * // Examine domain-level patterns
    * console.log('Domain Error Distribution:');
    * for (const domain of analysis.domainMapping.errorDomains) {
    *   console.log(`  ${domain.domain}: ${domain.errors.length} errors (cohesion: ${domain.cohesionScore})`);
-   *   
+   *
    *   if (domain.cohesionScore < 0.5) {
    *     console.warn(`    ⚠️  Low cohesion - consider domain refactoring`);
    *   }
    * }
-   * 
+   *
    * // Check for architectural anti-patterns
    * console.log('\nCross-Domain Dependencies:');
    * for (const dep of analysis.domainMapping.crossDomainDependencies) {
@@ -541,11 +552,11 @@ export class GNNDSPyTypeScriptAnalyzer {
    *   }
    * }
    * ```
-   * 
+   *
    * @example Relationship Analysis
    * ```typescript
    * const analysis = await analyzer.analyzeTypeScriptErrors(errors);
-   * 
+   *
    * // Analyze error cascades and dependencies
    * console.log('Error Relationships:');
    * for (const rel of analysis.errorRelationships) {
@@ -553,7 +564,7 @@ export class GNNDSPyTypeScriptAnalyzer {
    *     console.log(`  ${rel.sourceError} → ${rel.targetError} (${rel.relationshipType}, strength: ${rel.strength})`);
    *   }
    * }
-   * 
+   *
    * // Identify root cause errors (errors that cause many others)
    * const errorCauseCounts = new Map();
    * for (const rel of analysis.errorRelationships) {
@@ -561,18 +572,20 @@ export class GNNDSPyTypeScriptAnalyzer {
    *     errorCauseCounts.set(rel.sourceError, (errorCauseCounts.get(rel.sourceError) || 0) + 1);
    *   }
    * }
-   * 
+   *
    * const rootCauses = Array.from(errorCauseCounts.entries())
    *   .filter(([, count]) => count >= 3)
    *   .sort((a, b) => b[1] - a[1]);
-   * 
+   *
    * console.log('Root Cause Errors (fix these first):');
    * for (const [errorId, cascadeCount] of rootCauses) {
    *   console.log(`  ${errorId}: causes ${cascadeCount} other errors`);
    * }
    * ```
    */
-  async analyzeTypeScriptErrors(errors: TypeScriptError[]): Promise<GNNErrorAnalysis> {
+  async analyzeTypeScriptErrors(
+    errors: TypeScriptError[],
+  ): Promise<GNNErrorAnalysis> {
     logger.info('Starting GNN-enhanced TypeScript error analysis', {
       errorCount: errors.length,
     });
@@ -592,7 +605,7 @@ export class GNNDSPyTypeScriptAnalyzer {
         errors,
         errorGraph,
         gnnPredictions,
-        domainMapping
+        domainMapping,
       );
 
       logger.info('GNN-enhanced analysis completed', {
@@ -618,9 +631,9 @@ export class GNNDSPyTypeScriptAnalyzer {
   async generateIntelligentFixes(
     errors: TypeScriptError[],
     analysis: GNNErrorAnalysis,
-    codeContext: Record<string, string>
+    codeContext: Record<string, string>,
   ): Promise<IntelligentFixSuggestion[]> {
-    if (!this.fixGenerationProgram || !this.dspyWrapper) {
+    if (!(this.fixGenerationProgram && this.dspyWrapper)) {
       throw new Error('Fix generation program not initialized');
     }
 
@@ -629,36 +642,42 @@ export class GNNDSPyTypeScriptAnalyzer {
     const fixes: IntelligentFixSuggestion[] = [];
 
     // Process errors in order of priority from GNN analysis
-    for (const cluster of analysis.errorClusters.sort((a, b) => b.priority - a.priority)) {
+    for (const cluster of analysis.errorClusters.sort(
+      (a, b) => b.priority - a.priority,
+    )) {
       for (const errorId of cluster.suggestedFixOrder) {
         const error = errors.find((e) => e.id === errorId);
         if (!error) continue;
 
         try {
-          const result = await this.dspyWrapper.execute(this.fixGenerationProgram, {
-            error_analysis: {
-              error: error,
-              cluster: cluster,
-              relationships: analysis.errorRelationships.filter(
-                (r) => r.sourceError === errorId || r.targetError === errorId
-              ),
-              domain_context: analysis.domainMapping.errorDomains.find((d) =>
-                d.errors.includes(errorId)
-              ),
+          const result = await this.dspyWrapper.execute(
+            this.fixGenerationProgram,
+            {
+              error_analysis: {
+                error: error,
+                cluster: cluster,
+                relationships: analysis.errorRelationships.filter(
+                  (r) => r.sourceError === errorId || r.targetError === errorId,
+                ),
+                domain_context: analysis.domainMapping.errorDomains.find((d) =>
+                  d.errors.includes(errorId),
+                ),
+              },
+              code_context: codeContext[error.file] || '',
+              project_structure: {
+                domains: analysis.domainMapping.errorDomains,
+                dependencies: analysis.domainMapping.crossDomainDependencies,
+              },
             },
-            code_context: codeContext[error.file] || '',
-            project_structure: {
-              domains: analysis.domainMapping.errorDomains,
-              dependencies: analysis.domainMapping.crossDomainDependencies,
-            },
-          });
+          );
 
           if (result?.success && result?.result) {
             const suggestion: IntelligentFixSuggestion = {
               errorId: error.id,
               fixType: this.determinateFixType(error, result.result),
               description:
-                result.result['fix_suggestions']?.[0]?.description || 'Fix TypeScript error',
+                result.result['fix_suggestions']?.[0]?.description ||
+                'Fix TypeScript error',
               codeChanges: result.result['code_changes'] || [],
               impactAnalysis: result.result['impact_analysis'] || {
                 affectedFiles: [error.file],
@@ -667,7 +686,9 @@ export class GNNDSPyTypeScriptAnalyzer {
                 rollbackStrategy: 'Revert code changes',
               },
               confidence: result.result['confidence'] || 0.8,
-              reasoning: result.result['reasoning'] || 'Generated using GNN-enhanced analysis',
+              reasoning:
+                result.result['reasoning'] ||
+                'Generated using GNN-enhanced analysis',
             };
 
             fixes.push(suggestion);
@@ -683,7 +704,7 @@ export class GNNDSPyTypeScriptAnalyzer {
   }
 
   private async buildErrorRelationshipGraph(
-    errors: TypeScriptError[]
+    errors: TypeScriptError[],
   ): Promise<ErrorRelationshipGraph> {
     const numErrors = errors.length;
 
@@ -727,13 +748,13 @@ export class GNNDSPyTypeScriptAnalyzer {
             relationship.strength,
             error1?.file === error2?.file ? 1 : 0,
             this.areSameFunction(error1!, error2) ? 1 : 0,
-            Math.abs((error1?.line || 0) - (error2?.line || 0)) / 100
+            Math.abs((error1?.line || 0) - (error2?.line || 0)) / 100,
           );
           edgeFeaturesList.push(
             relationship.strength,
             error1?.file === error2?.file ? 1 : 0,
             this.areSameFunction(error1!, error2) ? 1 : 0,
-            Math.abs((error1?.line || 0) - (error2?.line || 0)) / 100
+            Math.abs((error1?.line || 0) - (error2?.line || 0)) / 100,
           );
         }
       }
@@ -750,7 +771,9 @@ export class GNNDSPyTypeScriptAnalyzer {
     };
   }
 
-  private async runGNNAnalysis(graph: ErrorRelationshipGraph): Promise<Float32Array> {
+  private async runGNNAnalysis(
+    graph: ErrorRelationshipGraph,
+  ): Promise<Float32Array> {
     logger.debug('Running GNN analysis on error relationship graph');
 
     try {
@@ -762,13 +785,12 @@ export class GNNDSPyTypeScriptAnalyzer {
           edges: graph.edges,
           adjacency: graph.adjacency,
         });
-      } else {
-        return await this.gnnModel.forward({
-          nodes: graph.nodes,
-          edges: graph.edges,
-          adjacency: graph.adjacency,
-        });
       }
+      return await this.gnnModel.forward({
+        nodes: graph.nodes,
+        edges: graph.edges,
+        adjacency: graph.adjacency,
+      });
     } catch (error) {
       logger.error('GNN analysis failed:', error);
       throw error;
@@ -777,22 +799,25 @@ export class GNNDSPyTypeScriptAnalyzer {
 
   private async mapErrorsToDomains(
     errors: TypeScriptError[],
-    graph: ErrorRelationshipGraph
+    graph: ErrorRelationshipGraph,
   ): Promise<any> {
     // Convert errors to domain format for neural domain mapper
     const domains = this.extractDomainsFromErrors(errors);
     const dependencies = this.buildDomainDependencies(errors, graph);
 
-    return await this.domainMapper.mapDomainRelationships(domains, dependencies);
+    return await this.domainMapper.mapDomainRelationships(
+      domains,
+      dependencies,
+    );
   }
 
   private async performDSPyErrorAnalysis(
     errors: TypeScriptError[],
     graph: ErrorRelationshipGraph,
     gnnPredictions: Float32Array,
-    domainMapping: any
+    domainMapping: any,
   ): Promise<GNNErrorAnalysis> {
-    if (!this.errorAnalysisProgram || !this.dspyWrapper) {
+    if (!(this.errorAnalysisProgram && this.dspyWrapper)) {
       throw new Error('Error analysis program not initialized');
     }
 
@@ -813,12 +838,16 @@ export class GNNDSPyTypeScriptAnalyzer {
       domain_analysis: domainMapping,
     });
 
-    if (!result?.success || !result?.result) {
+    if (!(result?.success && result?.result)) {
       throw new Error('DSPy error analysis failed');
     }
 
     // Extract relationships from GNN predictions
-    const relationships = this.extractRelationshipsFromGNN(errors, gnnPredictions, graph.adjacency);
+    const relationships = this.extractRelationshipsFromGNN(
+      errors,
+      gnnPredictions,
+      graph.adjacency,
+    );
 
     return {
       errorClusters: result.result['error_clusters'] || [],
@@ -827,7 +856,9 @@ export class GNNDSPyTypeScriptAnalyzer {
         errorDomains:
           domainMapping.cohesionScores?.map((cs: any) => ({
             domain: cs.domainName,
-            errors: errors.filter((e) => e.file.includes(cs.domainName)).map((e) => e.id),
+            errors: errors
+              .filter((e) => e.file.includes(cs.domainName))
+              .map((e) => e.id),
             cohesionScore: cs.score,
           })) || [],
         crossDomainDependencies: domainMapping.crossDomainDependencies || [],
@@ -838,7 +869,7 @@ export class GNNDSPyTypeScriptAnalyzer {
 
   private calculateErrorRelationship(
     error1: TypeScriptError,
-    error2: TypeScriptError
+    error2: TypeScriptError,
   ): {
     strength: number;
     type: 'dependency' | 'cascade' | 'similar' | 'root_cause';
@@ -859,7 +890,11 @@ export class GNNDSPyTypeScriptAnalyzer {
 
     // Import/dependency relationship
     if (error1.category === 'import' || error2.category === 'import') {
-      if (error1.context.imports.some((imp) => error2.context.imports.includes(imp))) {
+      if (
+        error1.context.imports.some((imp) =>
+          error2.context.imports.includes(imp),
+        )
+      ) {
         strength += 0.4;
         type = 'dependency';
       }
@@ -874,7 +909,10 @@ export class GNNDSPyTypeScriptAnalyzer {
     }
 
     // Related errors
-    if (error1.relatedErrors?.includes(error2.id) || error2.relatedErrors?.includes(error1.id)) {
+    if (
+      error1.relatedErrors?.includes(error2.id) ||
+      error2.relatedErrors?.includes(error1.id)
+    ) {
       strength += 0.5;
       type = 'root_cause';
     }
@@ -885,7 +923,7 @@ export class GNNDSPyTypeScriptAnalyzer {
   private extractRelationshipsFromGNN(
     errors: TypeScriptError[],
     predictions: Float32Array,
-    adjacency: number[][]
+    adjacency: number[][],
   ): Array<{
     sourceError: string;
     targetError: string;
@@ -901,15 +939,16 @@ export class GNNDSPyTypeScriptAnalyzer {
     const outputDim = predictions.length / errors.length;
 
     for (const [sourceIdx, targetIdx] of adjacency) {
-      if (sourceIdx == null || targetIdx == null || sourceIdx >= targetIdx) continue; // Avoid duplicates
+      if (sourceIdx == null || targetIdx == null || sourceIdx >= targetIdx)
+        continue; // Avoid duplicates
 
       const sourceEmbedding = predictions.slice(
         (sourceIdx || 0) * outputDim,
-        ((sourceIdx || 0) + 1) * outputDim
+        ((sourceIdx || 0) + 1) * outputDim,
       );
       const targetEmbedding = predictions.slice(
         (targetIdx || 0) * outputDim,
-        ((targetIdx || 0) + 1) * outputDim
+        ((targetIdx || 0) + 1) * outputDim,
       );
 
       // Calculate similarity using dot product
@@ -926,7 +965,10 @@ export class GNNDSPyTypeScriptAnalyzer {
         relationships.push({
           sourceError: sourceError.id,
           targetError: targetError.id,
-          relationshipType: this.determineRelationshipType(sourceError, targetError),
+          relationshipType: this.determineRelationshipType(
+            sourceError,
+            targetError,
+          ),
           strength: similarity,
         });
       }
@@ -957,7 +999,10 @@ export class GNNDSPyTypeScriptAnalyzer {
     return mapping[category] || 0.5;
   }
 
-  private areSameFunction(error1: TypeScriptError, error2: TypeScriptError): boolean {
+  private areSameFunction(
+    error1: TypeScriptError,
+    error2: TypeScriptError,
+  ): boolean {
     return (
       error1.file === error2.file &&
       error1.context.functionContext === error2.context.functionContext &&
@@ -967,19 +1012,21 @@ export class GNNDSPyTypeScriptAnalyzer {
 
   private determinateFixType(
     error: TypeScriptError,
-    result: any
+    result: any,
   ): IntelligentFixSuggestion['fixType'] {
     if (error.category === 'type') return 'type_annotation';
     if (error.category === 'import') return 'import_fix';
-    if (result.fix_suggestions?.[0]?.type) return result.fix_suggestions[0].type;
+    if (result.fix_suggestions?.[0]?.type)
+      return result.fix_suggestions[0].type;
     return 'refactor';
   }
 
   private determineRelationshipType(
     error1: TypeScriptError,
-    error2: TypeScriptError
+    error2: TypeScriptError,
   ): 'causes' | 'similar_to' | 'depends_on' {
-    if (error1.category === 'import' && error2.category !== 'import') return 'causes';
+    if (error1.category === 'import' && error2.category !== 'import')
+      return 'causes';
     if (error1.category === error2.category) return 'similar_to';
     return 'depends_on';
   }
@@ -998,7 +1045,9 @@ export class GNNDSPyTypeScriptAnalyzer {
     return Array.from(fileGroups.entries()).map(([domain, domainErrors]) => ({
       name: domain,
       files: Array.from(new Set(domainErrors.map((e) => e.file))),
-      dependencies: Array.from(new Set(domainErrors.flatMap((e) => e.context.dependencies))),
+      dependencies: Array.from(
+        new Set(domainErrors.flatMap((e) => e.context.dependencies)),
+      ),
       confidenceScore: domainErrors.length / errors.length,
     }));
   }
@@ -1012,14 +1061,17 @@ export class GNNDSPyTypeScriptAnalyzer {
     return 'root';
   }
 
-  private buildDomainDependencies(errors: TypeScriptError[], graph: ErrorRelationshipGraph): any {
+  private buildDomainDependencies(
+    errors: TypeScriptError[],
+    graph: ErrorRelationshipGraph,
+  ): any {
     const dependencies: Record<string, Record<string, number>> = {};
 
     for (const [sourceIdx, targetIdx] of graph.adjacency) {
       if (sourceIdx == null || targetIdx == null) continue;
       const sourceError = errors[sourceIdx];
       const targetError = errors[targetIdx];
-      if (!sourceError || !targetError) continue;
+      if (!(sourceError && targetError)) continue;
 
       const sourceDomain = this.extractDomainFromFile(sourceError.file);
       const targetDomain = this.extractDomainFromFile(targetError.file);

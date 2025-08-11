@@ -9,11 +9,20 @@
  */
 
 import { Box, Text } from 'ink';
+import React from 'react';
 import { useEffect, useState } from 'react';
 
 export interface SpinnerProps {
   text?: string;
-  type?: 'dots' | 'line' | 'arc' | 'bounce' | 'swarm' | 'neural' | 'coordination' | 'processing';
+  type?:
+    | 'dots'
+    | 'line'
+    | 'arc'
+    | 'bounce'
+    | 'swarm'
+    | 'neural'
+    | 'coordination'
+    | 'processing';
   color?: string;
   speed?: number;
   testId?: string;
@@ -58,9 +67,15 @@ export const Spinner: React.FC<SpinnerProps> = ({
   };
 
   // Determine which animation set to use
-  const isSwarmType = ['swarm', 'neural', 'coordination', 'processing'].includes(type);
+  const isSwarmType = [
+    'swarm',
+    'neural',
+    'coordination',
+    'processing',
+  ].includes(type);
   const animations = isSwarmType ? swarmAnimations : standardAnimations;
-  const frames: string[] = animations[type as keyof typeof animations] || standardAnimations.dots;
+  const frames: string[] =
+    animations[type as keyof typeof animations] || standardAnimations.dots;
 
   // Adjust speed for swarm animations (they tend to be more visual, so slower)
   const adjustedSpeed = isSwarmType ? Math.max(speed, 120) : speed;
@@ -71,7 +86,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
     }, adjustedSpeed);
 
     return () => clearInterval(interval);
-  }, [frames.length, adjustedSpeed]);
+  }, [type, speed]); // Use stable props instead of computed values
 
   return (
     <Box>
@@ -85,32 +100,60 @@ export const Spinner: React.FC<SpinnerProps> = ({
 export const SpinnerPresets = {
   // Standard presets (from command execution mode)
   loading: { type: 'dots' as const, text: 'Loading...', color: 'cyan' },
-  processing_standard: { type: 'arc' as const, text: 'Processing...', color: 'yellow' },
+  processing_standard: {
+    type: 'arc' as const,
+    text: 'Processing...',
+    color: 'yellow',
+  },
   thinking: { type: 'bounce' as const, text: 'Thinking...', color: 'magenta' },
   working: { type: 'line' as const, text: 'Working...', color: 'green' },
 
   // Swarm presets (from TUI)
-  initializing: { type: 'swarm' as const, text: 'Initializing swarm...', color: 'cyan' },
-  spawningAgents: { type: 'coordination' as const, text: 'Spawning agents...', color: 'yellow' },
+  initializing: {
+    type: 'swarm' as const,
+    text: 'Initializing swarm...',
+    color: 'cyan',
+  },
+  spawningAgents: {
+    type: 'coordination' as const,
+    text: 'Spawning agents...',
+    color: 'yellow',
+  },
   neuralTraining: {
     type: 'neural' as const,
     text: 'Training neural patterns...',
     color: 'magenta',
   },
-  processing: { type: 'processing' as const, text: 'Processing tasks...', color: 'green' },
-  coordinating: { type: 'swarm' as const, text: 'Coordinating swarm...', color: 'blue' },
+  processing: {
+    type: 'processing' as const,
+    text: 'Processing tasks...',
+    color: 'green',
+  },
+  coordinating: {
+    type: 'swarm' as const,
+    text: 'Coordinating swarm...',
+    color: 'blue',
+  },
 };
 
 // Convenience components for common use cases
 export const LoadingSpinner: React.FC<{ text?: string }> = ({ text }) => (
-  <Spinner {...SpinnerPresets.loading} text={text ?? undefined} />
+  <Spinner
+    {...SpinnerPresets.loading}
+    text={text ?? undefined}
+  />
 );
 
 export const SwarmSpinner: React.FC<{
   text?: string;
   type?: 'swarm' | 'neural' | 'coordination' | 'processing';
 }> = ({ text, type = 'swarm' }) => (
-  <Spinner type={type} text={text ?? undefined} color="cyan" speed={120} />
+  <Spinner
+    type={type}
+    text={text ?? undefined}
+    color="cyan"
+    speed={120}
+  />
 );
 
 export default Spinner;

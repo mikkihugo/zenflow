@@ -16,7 +16,11 @@ import type {
 } from '../database/interfaces.ts';
 import type { HealthStatus } from '../types/health-types';
 import type { PerformanceMetrics } from '../types/performance-types';
-import type { IDataAccessObject, IRepository, QueryOptions } from './interfaces.ts';
+import type {
+  IDataAccessObject,
+  IRepository,
+  QueryOptions,
+} from './interfaces.ts';
 
 // Create a simple logger interface to avoid import issues
 interface ILogger {
@@ -28,8 +32,14 @@ interface ILogger {
 
 // Create a simple database adapter interface
 interface DatabaseAdapter {
-  query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
-  execute(sql: string, params?: any[]): Promise<{ affectedRows: number; insertId?: any }>;
+  query(
+    sql: string,
+    params?: any[],
+  ): Promise<{ rows: any[]; rowCount: number }>;
+  execute(
+    sql: string,
+    params?: any[],
+  ): Promise<{ affectedRows: number; insertId?: any }>;
   transaction<T>(fn: (tx: any) => Promise<T>): Promise<T>;
   getSchema?(): Promise<any>;
 }
@@ -45,7 +55,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     protected adapter: DatabaseAdapter,
     protected logger: ILogger,
     protected tableName: string,
-    protected entitySchema?: Record<string, any>
+    protected entitySchema?: Record<string, any>,
   ) {}
 
   /**
@@ -60,7 +70,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
    * @param id
    */
   async findById(id: string | number): Promise<T | null> {
-    this.logger.debug(`Finding entity by ID: ${id} in table: ${this.tableName}`);
+    this.logger.debug(
+      `Finding entity by ID: ${id} in table: ${this.tableName}`,
+    );
 
     try {
       const query = this.buildFindByIdQuery(id);
@@ -74,7 +86,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to find entity by ID: ${error}`);
       throw new Error(
-        `Find by ID failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find by ID failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -86,10 +98,13 @@ export abstract class BaseDao<T> implements IRepository<T> {
    * @param options
    */
   async findBy(criteria: Partial<T>, options?: QueryOptions): Promise<T[]> {
-    this.logger.debug(`Finding entities by criteria in table: ${this.tableName}`, {
-      criteria,
-      options,
-    });
+    this.logger.debug(
+      `Finding entities by criteria in table: ${this.tableName}`,
+      {
+        criteria,
+        options,
+      },
+    );
 
     try {
       const query = this.buildFindByQuery(criteria, options);
@@ -99,7 +114,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to find entities by criteria: ${error}`);
       throw new Error(
-        `Find by criteria failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find by criteria failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -122,7 +137,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to find all entities: ${error}`);
       throw new Error(
-        `Find all failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find all failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -158,7 +173,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
       throw new Error('Failed to retrieve created entity');
     } catch (error) {
       this.logger.error(`Failed to create entity: ${error}`);
-      throw new Error(`Create failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Create failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -186,7 +203,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
       return updated;
     } catch (error) {
       this.logger.error(`Failed to update entity: ${error}`);
-      throw new Error(`Update failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Update failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -205,7 +224,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
       return result?.rowCount > 0;
     } catch (error) {
       this.logger.error(`Failed to delete entity: ${error}`);
-      throw new Error(`Delete failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Delete failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -226,7 +247,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
       return result?.rows?.[0]?.count || 0;
     } catch (error) {
       this.logger.error(`Failed to count entities: ${error}`);
-      throw new Error(`Count failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Count failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -236,7 +259,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
    * @param id
    */
   async exists(id: string | number): Promise<boolean> {
-    this.logger.debug(`Checking if entity ${id} exists in table: ${this.tableName}`);
+    this.logger.debug(
+      `Checking if entity ${id} exists in table: ${this.tableName}`,
+    );
 
     try {
       const entity = await this.findById(id);
@@ -273,7 +298,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Custom query failed: ${error}`);
       throw new Error(
-        `Custom query failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Custom query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -295,12 +320,15 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   protected buildFindByQuery(
     criteria: Partial<T>,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): { sql: string; params: any[] } {
     const mappedCriteria = this.mapEntityToRow(criteria);
     const whereClause = this.buildWhereClause(mappedCriteria);
     const orderClause = this.buildOrderClause(options?.['sort']);
-    const limitClause = this.buildLimitClause(options?.['limit'], options?.['offset']);
+    const limitClause = this.buildLimitClause(
+      options?.['limit'],
+      options?.['offset'],
+    );
 
     const sql =
       `SELECT * FROM ${this.tableName} ${whereClause} ${orderClause} ${limitClause}`.trim();
@@ -314,9 +342,13 @@ export abstract class BaseDao<T> implements IRepository<T> {
     params: any[];
   } {
     const orderClause = this.buildOrderClause(options?.['sort']);
-    const limitClause = this.buildLimitClause(options?.['limit'], options?.['offset']);
+    const limitClause = this.buildLimitClause(
+      options?.['limit'],
+      options?.['offset'],
+    );
 
-    const sql = `SELECT * FROM ${this.tableName} ${orderClause} ${limitClause}`.trim();
+    const sql =
+      `SELECT * FROM ${this.tableName} ${orderClause} ${limitClause}`.trim();
 
     return { sql, params: [] };
   }
@@ -339,7 +371,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   protected buildUpdateQuery(
     id: string | number,
-    updates: Partial<T>
+    updates: Partial<T>,
   ): { sql: string; params: any[] } {
     const mappedUpdates = this.mapEntityToRow(updates);
     const setClause = Object.keys(mappedUpdates)
@@ -426,7 +458,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
   protected constructor(
     protected repository: IRepository<T>,
     protected adapter: DatabaseAdapter,
-    protected logger: ILogger
+    protected logger: ILogger,
   ) {}
 
   /**
@@ -442,7 +474,9 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
    * @param operations
    */
   async executeTransaction<R>(operations: TransactionOperation[]): Promise<R> {
-    this.logger.debug(`Executing transaction with ${operations.length} operations`);
+    this.logger.debug(
+      `Executing transaction with ${operations.length} operations`,
+    );
 
     try {
       return await this.adapter.transaction(async (_tx) => {
@@ -473,7 +507,9 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
 
             case 'custom':
               if (operation.customQuery) {
-                result = await this.repository.executeCustomQuery(operation.customQuery);
+                result = await this.repository.executeCustomQuery(
+                  operation.customQuery,
+                );
               }
               break;
 
@@ -489,7 +525,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
     } catch (error) {
       this.logger.error(`Transaction failed: ${error}`);
       throw new Error(
-        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -501,7 +537,9 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
     this.logger.debug('Getting database metadata');
 
     try {
-      const schema = this.adapter.getSchema ? await this.adapter.getSchema() : {};
+      const schema = this.adapter.getSchema
+        ? await this.adapter.getSchema()
+        : {};
 
       return {
         type: this.getDatabaseType(),
@@ -513,7 +551,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
     } catch (error) {
       this.logger.error(`Failed to get database metadata: ${error}`);
       throw new Error(
-        `Get metadata failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Get metadata failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -581,7 +619,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
     } catch (error) {
       this.logger.error(`Failed to get performance metrics: ${error}`);
       throw new Error(
-        `Get metrics failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Get metrics failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }

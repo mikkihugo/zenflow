@@ -19,7 +19,7 @@ export interface FileSystemTestHelper {
   listFiles(path: string): Promise<string[]>;
   copyFile(src: string, dest: string): Promise<void>;
   moveFile(src: string, dest: string): Promise<void>;
-  getFileStats(path: string): Promise<any>;
+  getFileStats(path: string): Promise<unknown>;
   watchFile(path: string, callback: (event: string) => void): () => void;
   createSymlink(target: string, link: string): Promise<void>;
   cleanup(): Promise<void>;
@@ -33,7 +33,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
   async createTempDir(prefix: string = 'test'): Promise<string> {
     const tempPath = join(
       tmpdir(),
-      `claude-test-${prefix}-${Date.now()}-${Math.random().toString(36).substring(2)}`
+      `claude-test-${prefix}-${Date.now()}-${Math.random().toString(36).substring(2)}`,
     );
 
     await fs.mkdir(tempPath, { recursive: true });
@@ -93,7 +93,9 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
   async listFiles(path: string): Promise<string[]> {
     try {
       const entries = await fs.readdir(path, { withFileTypes: true });
-      return entries.filter((entry) => entry.isFile()).map((entry) => join(path, entry.name));
+      return entries
+        .filter((entry) => entry.isFile())
+        .map((entry) => join(path, entry.name));
     } catch {
       return [];
     }
@@ -119,7 +121,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
     }
   }
 
-  async getFileStats(path: string): Promise<any> {
+  async getFileStats(path: string): Promise<unknown> {
     const stats = await fs.stat(path);
     return {
       size: stats.size,
@@ -184,11 +186,15 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
     this.watchers = [];
 
     // Clean up created files
-    await Promise.allSettled(this.createdFiles.map((file) => this.deleteFile(file)));
+    await Promise.allSettled(
+      this.createdFiles.map((file) => this.deleteFile(file)),
+    );
     this.createdFiles = [];
 
     // Clean up temp directories
-    await Promise.allSettled(this.tempDirs.map((dir) => this.deleteDirectory(dir)));
+    await Promise.allSettled(
+      this.tempDirs.map((dir) => this.deleteDirectory(dir)),
+    );
     this.tempDirs = [];
   }
 }
@@ -235,7 +241,9 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
 
   async fileExists(path: string): Promise<boolean> {
     const normalizedPath = this.normalizePath(path);
-    return this.files.has(normalizedPath) || this.directories.has(normalizedPath);
+    return (
+      this.files.has(normalizedPath) || this.directories.has(normalizedPath)
+    );
   }
 
   async deleteFile(path: string): Promise<void> {
@@ -295,7 +303,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
     await this.deleteFile(src);
   }
 
-  async getFileStats(path: string): Promise<any> {
+  async getFileStats(path: string): Promise<unknown> {
     const normalizedPath = this.normalizePath(path);
 
     if (!this.fileExists(normalizedPath)) {
@@ -359,7 +367,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
   getAllFiles(): Record<string, string> {
     const result: Record<string, string> = {};
     for (const [path, content] of this.files.entries()) {
-      result?.[path] = content;
+      result[path] = content;
     }
     return result;
   }
@@ -412,7 +420,7 @@ export function createMockFileSystemHelper(): FileSystemTestHelper {
 export async function createTestProject(
   helper: FileSystemTestHelper,
   projectName: string,
-  files: Record<string, string>
+  files: Record<string, string>,
 ): Promise<string> {
   const projectDir = await helper.createTempDir(projectName);
 
@@ -426,7 +434,7 @@ export async function createTestProject(
 
 export async function createTestWorkspace(
   helper: FileSystemTestHelper,
-  workspaceName: string
+  workspaceName: string,
 ): Promise<{
   workspaceDir: string;
   srcDir: string;

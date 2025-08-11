@@ -2,8 +2,13 @@
 declare global {
   // London TDD utilities
   function createInteractionSpy(name: string): jest.Mock;
-  function verifyInteractions(spy: jest.Mock, expectedCalls: ExpectedCall[]): void;
-  function createMockFactory<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
+  function verifyInteractions(
+    spy: jest.Mock,
+    expectedCalls: ExpectedCall[],
+  ): void;
+  function createMockFactory<T>(
+    defaults?: Partial<T>,
+  ): (overrides?: Partial<T>) => T;
   function waitForInteraction(spy: jest.Mock, timeout?: number): Promise<void>;
   function simulateProtocolHandshake(mockProtocol: jest.Mock): void;
 
@@ -11,15 +16,23 @@ declare global {
   const testStartTime: number;
   const testStartMemory: NodeJS.MemoryUsage | undefined;
   function generateNeuralTestData(config: NeuralTestConfig): NeuralTestData[];
-  function expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
-  function createCoordinationMock<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
+  function expectNearlyEqual(
+    actual: number,
+    expected: number,
+    tolerance?: number,
+  ): void;
+  function createCoordinationMock<T>(
+    defaults?: Partial<T>,
+  ): (overrides?: Partial<T>) => T;
 
   // Hybrid testing utilities
   function testWithApproach(
     approach: 'london' | 'classical',
-    testFn: () => void | Promise<void>
+    testFn: () => void | Promise<void>,
   ): void;
-  function createMemoryTestScenario(type: 'sqlite' | 'lancedb' | 'json'): MemoryTestScenario;
+  function createMemoryTestScenario(
+    type: 'sqlite' | 'lancedb' | 'json',
+  ): MemoryTestScenario;
 
   // Node.js garbage collection (optional)
   function gc(): void;
@@ -27,7 +40,9 @@ declare global {
   // Custom Vitest matchers
   namespace jest {
     interface Matchers<R> {
-      toHaveBeenCalledWithObjectContaining(expected: Record<string, unknown>): R;
+      toHaveBeenCalledWithObjectContaining(
+        expected: Record<string, unknown>,
+      ): R;
     }
   }
 }

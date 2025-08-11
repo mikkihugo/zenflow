@@ -20,7 +20,10 @@ import { DatabaseProviderFactory } from '../database/providers/database-provider
 import { DIContainer } from '../di/container/di-container.ts';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens.ts';
 // Memory domain
-import { initializeMemorySystem, registerMemoryProviders } from '../memory/memory-integration.ts';
+import {
+  initializeMemorySystem,
+  registerMemoryProviders,
+} from '../memory/memory-integration.ts';
 
 /**
  * Complete system integration example.
@@ -53,11 +56,13 @@ export async function unifiedIntegrationExample(): Promise<void> {
       name: 'John Doe',
       preferences: { theme: 'dark' },
     });
-    const userData = await memorySystem.backends['session']?.retrieve('user:123');
+    const userData =
+      await memorySystem.backends['session']?.retrieve('user:123');
     const swarmId = 'example-swarm-001';
 
     // Create swarm cluster (repositories via DAL Factory)
-    const cluster = await swarmSystem.databaseManager.createSwarmCluster(swarmId);
+    const cluster =
+      await swarmSystem.databaseManager.createSwarmCluster(swarmId);
 
     // Store agent in graph database
     await swarmSystem.databaseManager.storeSwarmAgent(swarmId, {
@@ -82,7 +87,10 @@ export async function unifiedIntegrationExample(): Promise<void> {
       status: 'active',
       lastUpdate: new Date().toISOString(),
     };
-    await memorySystem.backends['cache']?.store(`swarm:${swarmId}:metadata`, swarmMetadata);
+    await memorySystem.backends['cache']?.store(
+      `swarm:${swarmId}:metadata`,
+      swarmMetadata,
+    );
 
     // Use semantic memory to store swarm context
     await memorySystem.backends['semantic']?.store(`swarm:${swarmId}:context`, {
@@ -90,7 +98,9 @@ export async function unifiedIntegrationExample(): Promise<void> {
       capabilities: ['coordination', 'task execution', 'monitoring'],
       domain: 'system integration',
     });
-    for (const [name, spec] of Object.entries(memorySystem.metrics.performance)) {
+    for (const [name, spec] of Object.entries(
+      memorySystem.metrics.performance,
+    )) {
     }
     const healthChecks = await Promise.allSettled([
       memorySystem.backends['session']?.health(),
@@ -123,8 +133,10 @@ function registerCoreServices(container: DIContainer): void {
     create: () => ({
       debug: (msg: string, meta?: any) => {},
       info: (msg: string, meta?: any) => {},
-      warn: (msg: string, meta?: any) => console.warn(`[WARN] ${msg}`, meta || ''),
-      error: (msg: string, meta?: any) => console.error(`[ERROR] ${msg}`, meta || ''),
+      warn: (msg: string, meta?: any) =>
+        console.warn(`[WARN] ${msg}`, meta || ''),
+      error: (msg: string, meta?: any) =>
+        console.error(`[ERROR] ${msg}`, meta || ''),
     }),
   });
 
@@ -145,7 +157,9 @@ function registerCoreServices(container: DIContainer): void {
       },
       set: (key: string, value: any) => {},
       has: (key: string) =>
-        key.startsWith('database.') || key.startsWith('memory.') || key.startsWith('swarm.'),
+        key.startsWith('database.') ||
+        key.startsWith('memory.') ||
+        key.startsWith('swarm.'),
     }),
   });
 }
@@ -163,7 +177,7 @@ function registerDatabaseServices(container: DIContainer): void {
     create: (container) =>
       new DatabaseProviderFactory(
         container.resolve(CORE_TOKENS.Logger),
-        container.resolve(CORE_TOKENS.Config)
+        container.resolve(CORE_TOKENS.Config),
       ),
   });
 
@@ -174,7 +188,9 @@ function registerDatabaseServices(container: DIContainer): void {
       new DALFactory(
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
-        container.resolve(DATABASE_TOKENS?.ProviderFactory) as DatabaseProviderFactory
+        container.resolve(
+          DATABASE_TOKENS?.ProviderFactory,
+        ) as DatabaseProviderFactory,
       ),
   });
 }
@@ -199,13 +215,19 @@ export async function specializedUsageExamples(): Promise<void> {
 
   // Simulate API response caching
   const apiResponse = { data: 'expensive computation result', cached: true };
-  await memorySystem.backends['cache']?.store('api:expensive-call', apiResponse);
-  const _cachedResult = await memorySystem.backends['cache']?.retrieve('api:expensive-call');
+  await memorySystem.backends['cache']?.store(
+    'api:expensive-call',
+    apiResponse,
+  );
+  const _cachedResult =
+    await memorySystem.backends['cache']?.retrieve('api:expensive-call');
   const swarmSystem = await initializeSwarmStorage(container);
 
   // Create related swarms sharing dependencies
-  const parentSwarm = await swarmSystem.databaseManager.createSwarmCluster('parent-swarm');
-  const childSwarm = await swarmSystem.databaseManager.createSwarmCluster('child-swarm');
+  const parentSwarm =
+    await swarmSystem.databaseManager.createSwarmCluster('parent-swarm');
+  const childSwarm =
+    await swarmSystem.databaseManager.createSwarmCluster('child-swarm');
 
   // Store dependency relationship in graph
   await swarmSystem.databaseManager.storeSwarmTask('parent-swarm', {
@@ -219,7 +241,11 @@ export async function specializedUsageExamples(): Promise<void> {
   // Store related concepts
   await semanticMemory.store('concept:ai-coordination', {
     domain: 'artificial intelligence',
-    concepts: ['multi-agent systems', 'swarm intelligence', 'coordination protocols'],
+    concepts: [
+      'multi-agent systems',
+      'swarm intelligence',
+      'coordination protocols',
+    ],
   });
 }
 

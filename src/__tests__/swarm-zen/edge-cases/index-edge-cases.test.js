@@ -66,11 +66,17 @@ describe('Index.js Edge Cases and E2E Tests', () => {
           return { active: true, agents: this.agents.size };
         }
       }
-      `
+      `,
     );
 
-    await fs.writeFile(path.join(mockWasmPath, 'ruv_swarm_wasm_bg.wasm'), 'mock-wasm-binary');
-    await fs.writeFile(path.join(mockWasmPath, 'ruv_swarm_simd.wasm'), 'mock-simd-wasm-binary');
+    await fs.writeFile(
+      path.join(mockWasmPath, 'ruv_swarm_wasm_bg.wasm'),
+      'mock-wasm-binary',
+    );
+    await fs.writeFile(
+      path.join(mockWasmPath, 'ruv_swarm_simd.wasm'),
+      'mock-simd-wasm-binary',
+    );
   });
 
   afterEach(async () => {
@@ -110,7 +116,7 @@ describe('Index.js Edge Cases and E2E Tests', () => {
         ZenSwarm.initialize({
           wasmPath: invalidPath,
           debug: true,
-        })
+        }),
       ).rejects.toThrow();
     });
 
@@ -118,14 +124,14 @@ describe('Index.js Edge Cases and E2E Tests', () => {
       // Create invalid JS file that will fail to import
       await fs.writeFile(
         path.join(mockWasmPath, 'ruv_swarm_wasm.js'),
-        'invalid javascript syntax {'
+        'invalid javascript syntax {',
       );
 
       await expect(
         ZenSwarm.initialize({
           wasmPath: mockWasmPath,
           debug: true,
-        })
+        }),
       ).rejects.toThrow();
     });
 
@@ -138,16 +144,19 @@ describe('Index.js Edge Cases and E2E Tests', () => {
         export class RuntimeFeatures {
           constructor() { this.simd_available = false; }
         }
-        `
+        `,
       );
 
-      await fs.writeFile(path.join(mockWasmPath, 'ruv_swarm_wasm_bg.wasm'), 'invalid-wasm');
+      await fs.writeFile(
+        path.join(mockWasmPath, 'ruv_swarm_wasm_bg.wasm'),
+        'invalid-wasm',
+      );
 
       await expect(
         ZenSwarm.initialize({
           wasmPath: mockWasmPath,
           useSIMD: false,
-        })
+        }),
       ).rejects.toThrow();
     });
 
@@ -163,7 +172,7 @@ describe('Index.js Edge Cases and E2E Tests', () => {
         await expect(
           ZenSwarm.initialize({
             wasmPath: mockWasmPath,
-          })
+          }),
         ).rejects.toThrow();
       } finally {
         globalThis.window = originalWindow;
@@ -231,7 +240,9 @@ describe('Index.js Edge Cases and E2E Tests', () => {
       });
 
       const tasks = Array.from({ length: 10 }, (_, i) => `task-${i}`);
-      const results = await Promise.all(tasks.map((task) => ruvSwarm._workerPool.execute(task)));
+      const results = await Promise.all(
+        tasks.map((task) => ruvSwarm._workerPool.execute(task)),
+      );
 
       expect(results).toHaveLength(10);
       results.forEach((result, index) => {
@@ -248,7 +259,9 @@ describe('Index.js Edge Cases and E2E Tests', () => {
 
       await expect(ruvSwarm.createSwarm(null)).rejects.toThrow();
 
-      await expect(ruvSwarm.createSwarm({ invalid: 'config' })).rejects.toThrow();
+      await expect(
+        ruvSwarm.createSwarm({ invalid: 'config' }),
+      ).rejects.toThrow();
     });
 
     it('should handle swarm creation with valid configuration', async () => {
@@ -307,7 +320,7 @@ describe('Index.js Edge Cases and E2E Tests', () => {
       });
 
       await expect(swarm._retryOperation(alwaysFailOperation)).rejects.toThrow(
-        'Persistent failure'
+        'Persistent failure',
       );
 
       expect(alwaysFailOperation).toHaveBeenCalledTimes(2);
@@ -536,7 +549,7 @@ describe('Index.js Edge Cases and E2E Tests', () => {
             // Some agents might not have execute method implemented
             return { taskId: `task-${index}`, completed: true };
           }
-        })
+        }),
       );
 
       expect(taskResults).toHaveLength(3);
@@ -572,7 +585,7 @@ describe('Index.js Edge Cases and E2E Tests', () => {
         ruvSwarm.createSwarm({
           name: `concurrent-swarm-${i}`,
           maxAgents: 2,
-        })
+        }),
       );
 
       const swarms = await Promise.all(swarmPromises);
@@ -584,8 +597,8 @@ describe('Index.js Edge Cases and E2E Tests', () => {
           swarm.spawn({
             type: `agent-${swarmIndex}-${agentIndex}`,
             capabilities: [`swarm-${swarmIndex}`],
-          })
-        )
+          }),
+        ),
       );
 
       const agents = await Promise.all(agentPromises);

@@ -9,8 +9,14 @@
  */
 
 import { getLogger } from '../../../config/logging-config.ts';
-import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces.ts';
-import type { IEventManager, IEventManagerFactory } from '../core/interfaces.ts';
+import type {
+  IConfig,
+  ILogger,
+} from '../../../core/interfaces/base-interfaces.ts';
+import type {
+  IEventManager,
+  IEventManagerFactory,
+} from '../core/interfaces.ts';
 import { EventManagerTypes } from '../core/interfaces.ts';
 import type { SystemEventAdapterConfig } from './system-event-adapter.ts';
 import {
@@ -26,7 +32,9 @@ import {
  *
  * @example
  */
-export class SystemEventManagerFactory implements IEventManagerFactory<SystemEventAdapterConfig> {
+export class SystemEventManagerFactory
+  implements IEventManagerFactory<SystemEventAdapterConfig>
+{
   private logger: ILogger;
   private config: IConfig;
   private instances = new Map<string, SystemEventAdapter>();
@@ -55,10 +63,15 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
       // Store instance for management
       this.instances.set(config?.name, adapter);
 
-      this.logger.info(`System event manager created successfully: ${config?.name}`);
+      this.logger.info(
+        `System event manager created successfully: ${config?.name}`,
+      );
       return adapter;
     } catch (error) {
-      this.logger.error(`Failed to create system event manager ${config?.name}:`, error);
+      this.logger.error(
+        `Failed to create system event manager ${config?.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -68,7 +81,9 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
    *
    * @param configs
    */
-  async createMultiple(configs: SystemEventAdapterConfig[]): Promise<IEventManager[]> {
+  async createMultiple(
+    configs: SystemEventAdapterConfig[],
+  ): Promise<IEventManager[]> {
     this.logger.info(`Creating ${configs.length} system event managers`);
 
     const createPromises = configs.map((config) => this.create(config));
@@ -82,17 +97,21 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
         managers.push(result?.value);
       } else {
         errors.push(
-          new Error(`Failed to create manager ${configs?.[index]?.name}: ${result?.reason}`)
+          new Error(
+            `Failed to create manager ${configs?.[index]?.name}: ${result?.reason}`,
+          ),
         );
       }
     });
 
     if (errors.length > 0) {
       this.logger.warn(
-        `Created ${managers.length}/${configs.length} system event managers, ${errors.length} failed`
+        `Created ${managers.length}/${configs.length} system event managers, ${errors.length} failed`,
       );
     } else {
-      this.logger.info(`Successfully created ${managers.length} system event managers`);
+      this.logger.info(
+        `Successfully created ${managers.length} system event managers`,
+      );
     }
 
     return managers;
@@ -147,7 +166,10 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
       this.logger.info(`System event manager removed: ${name}`);
       return true;
     } catch (error) {
-      this.logger.error(`Failed to remove system event manager ${name}:`, error);
+      this.logger.error(
+        `Failed to remove system event manager ${name}:`,
+        error,
+      );
       return false;
     }
   }
@@ -158,24 +180,28 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
   async healthCheckAll(): Promise<Map<string, any>> {
     const results = new Map<string, any>();
 
-    const healthPromises = Array.from(this.instances.entries()).map(async ([name, manager]) => {
-      try {
-        const status = await manager.healthCheck();
-        results?.set(name, status);
-      } catch (error) {
-        results?.set(name, {
-          name: manager.name,
-          type: manager.type,
-          status: 'unhealthy',
-          lastCheck: new Date(),
-          subscriptions: 0,
-          queueSize: 0,
-          errorRate: 1.0,
-          uptime: 0,
-          metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
-        });
-      }
-    });
+    const healthPromises = Array.from(this.instances.entries()).map(
+      async ([name, manager]) => {
+        try {
+          const status = await manager.healthCheck();
+          results?.set(name, status);
+        } catch (error) {
+          results?.set(name, {
+            name: manager.name,
+            type: manager.type,
+            status: 'unhealthy',
+            lastCheck: new Date(),
+            subscriptions: 0,
+            queueSize: 0,
+            errorRate: 1.0,
+            uptime: 0,
+            metadata: {
+              error: error instanceof Error ? error.message : 'Unknown error',
+            },
+          });
+        }
+      },
+    );
 
     await Promise.allSettled(healthPromises);
     return results;
@@ -187,14 +213,19 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
   async getMetricsAll(): Promise<Map<string, any>> {
     const results = new Map<string, any>();
 
-    const metricsPromises = Array.from(this.instances.entries()).map(async ([name, manager]) => {
-      try {
-        const metrics = await manager.getMetrics();
-        results?.set(name, metrics);
-      } catch (error) {
-        this.logger.warn(`Failed to get metrics for system event manager ${name}:`, error);
-      }
-    });
+    const metricsPromises = Array.from(this.instances.entries()).map(
+      async ([name, manager]) => {
+        try {
+          const metrics = await manager.getMetrics();
+          results?.set(name, metrics);
+        } catch (error) {
+          this.logger.warn(
+            `Failed to get metrics for system event manager ${name}:`,
+            error,
+          );
+        }
+      },
+    );
 
     await Promise.allSettled(metricsPromises);
     return results;
@@ -206,15 +237,20 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
   async startAll(): Promise<void> {
     this.logger.info(`Starting ${this.instances.size} system event managers`);
 
-    const startPromises = Array.from(this.instances.values()).map(async (manager) => {
-      try {
-        if (!manager.isRunning()) {
-          await manager.start();
+    const startPromises = Array.from(this.instances.values()).map(
+      async (manager) => {
+        try {
+          if (!manager.isRunning()) {
+            await manager.start();
+          }
+        } catch (error) {
+          this.logger.error(
+            `Failed to start system event manager ${manager.name}:`,
+            error,
+          );
         }
-      } catch (error) {
-        this.logger.error(`Failed to start system event manager ${manager.name}:`, error);
-      }
-    });
+      },
+    );
 
     await Promise.allSettled(startPromises);
     this.logger.info('All system event managers start operation completed');
@@ -226,15 +262,20 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
   async stopAll(): Promise<void> {
     this.logger.info(`Stopping ${this.instances.size} system event managers`);
 
-    const stopPromises = Array.from(this.instances.values()).map(async (manager) => {
-      try {
-        if (manager.isRunning()) {
-          await manager.stop();
+    const stopPromises = Array.from(this.instances.values()).map(
+      async (manager) => {
+        try {
+          if (manager.isRunning()) {
+            await manager.stop();
+          }
+        } catch (error) {
+          this.logger.error(
+            `Failed to stop system event manager ${manager.name}:`,
+            error,
+          );
         }
-      } catch (error) {
-        this.logger.error(`Failed to stop system event manager ${manager.name}:`, error);
-      }
-    });
+      },
+    );
 
     await Promise.allSettled(stopPromises);
     this.logger.info('All system event managers stop operation completed');
@@ -250,13 +291,18 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
     await this.stopAll();
 
     // Destroy all managers
-    const destroyPromises = Array.from(this.instances.values()).map(async (manager) => {
-      try {
-        await manager.destroy();
-      } catch (error) {
-        this.logger.error(`Failed to destroy system event manager ${manager.name}:`, error);
-      }
-    });
+    const destroyPromises = Array.from(this.instances.values()).map(
+      async (manager) => {
+        try {
+          await manager.destroy();
+        } catch (error) {
+          this.logger.error(
+            `Failed to destroy system event manager ${manager.name}:`,
+            error,
+          );
+        }
+      },
+    );
 
     await Promise.allSettled(destroyPromises);
 
@@ -270,7 +316,9 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
    * Get active manager count.
    */
   getActiveCount(): number {
-    return Array.from(this.instances.values()).filter((manager) => manager.isRunning()).length;
+    return Array.from(this.instances.values()).filter((manager) =>
+      manager.isRunning(),
+    ).length;
   }
 
   /**
@@ -294,11 +342,15 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
    */
   private validateConfig(config: SystemEventAdapterConfig): void {
     if (!config?.name || typeof config?.name !== 'string') {
-      throw new Error('System event manager configuration must have a valid name');
+      throw new Error(
+        'System event manager configuration must have a valid name',
+      );
     }
 
     if (config?.type !== EventManagerTypes.SYSTEM) {
-      throw new Error(`System event manager must have type '${EventManagerTypes.SYSTEM}'`);
+      throw new Error(
+        `System event manager must have type '${EventManagerTypes.SYSTEM}'`,
+      );
     }
 
     // Validate system-specific configuration
@@ -307,11 +359,18 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
     }
 
     if (config?.correlation?.enabled && !config?.correlation?.correlationTTL) {
-      throw new Error('Correlation TTL must be specified when correlation is enabled');
+      throw new Error(
+        'Correlation TTL must be specified when correlation is enabled',
+      );
     }
 
-    if (config?.healthMonitoring?.enabled && !config?.healthMonitoring?.healthCheckInterval) {
-      throw new Error('Health check interval must be specified when health monitoring is enabled');
+    if (
+      config?.healthMonitoring?.enabled &&
+      !config?.healthMonitoring?.healthCheckInterval
+    ) {
+      throw new Error(
+        'Health check interval must be specified when health monitoring is enabled',
+      );
     }
   }
 }
@@ -329,7 +388,7 @@ export class SystemEventManagerFactory implements IEventManagerFactory<SystemEve
  */
 export async function createSystemEventManager(
   name: string,
-  overrides?: Partial<SystemEventAdapterConfig>
+  overrides?: Partial<SystemEventAdapterConfig>,
 ): Promise<SystemEventAdapter> {
   const factory = new SystemEventManagerFactory();
   const config = createDefaultSystemEventAdapterConfig(name, overrides);
@@ -344,7 +403,7 @@ export async function createSystemEventManager(
  * @example
  */
 export async function createCoreSystemEventManager(
-  name: string = 'core-system-events'
+  name: string = 'core-system-events',
 ): Promise<SystemEventAdapter> {
   return await createSystemEventManager(name, {
     coreSystem: {
@@ -361,7 +420,10 @@ export async function createCoreSystemEventManager(
       strategy: 'component',
       correlationTTL: 600000, // 10 minutes for core system events
       maxCorrelationDepth: 15,
-      correlationPatterns: ['system:startup->system:health', 'system:error->system:recovery'],
+      correlationPatterns: [
+        'system:startup->system:health',
+        'system:error->system:recovery',
+      ],
     },
   });
 }
@@ -373,7 +435,7 @@ export async function createCoreSystemEventManager(
  * @example
  */
 export async function createApplicationCoordinatorEventManager(
-  name: string = 'app-coordinator-events'
+  name: string = 'app-coordinator-events',
 ): Promise<SystemEventAdapter> {
   return await createSystemEventManager(name, {
     coreSystem: {
@@ -390,7 +452,10 @@ export async function createApplicationCoordinatorEventManager(
       strategy: 'operation',
       correlationTTL: 300000, // 5 minutes for app events
       maxCorrelationDepth: 10,
-      correlationPatterns: ['workspace:loaded->system:health', 'component:error->system:recovery'],
+      correlationPatterns: [
+        'workspace:loaded->system:health',
+        'component:error->system:recovery',
+      ],
     },
   });
 }
@@ -402,7 +467,7 @@ export async function createApplicationCoordinatorEventManager(
  * @example
  */
 export async function createErrorRecoveryEventManager(
-  name: string = 'error-recovery-events'
+  name: string = 'error-recovery-events',
 ): Promise<SystemEventAdapter> {
   return await createSystemEventManager(name, {
     coreSystem: {
@@ -444,7 +509,7 @@ export async function createErrorRecoveryEventManager(
  * @example
  */
 export async function createComprehensiveSystemEventManager(
-  name: string = 'comprehensive-system-events'
+  name: string = 'comprehensive-system-events',
 ): Promise<SystemEventAdapter> {
   return await createSystemEventManager(name, {
     coreSystem: {

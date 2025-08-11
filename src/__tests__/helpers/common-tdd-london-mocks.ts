@@ -19,10 +19,16 @@ import { vi } from 'vitest';
  */
 export class MockCoordinationService {
   coordinateAgents: vi.MockedFunction<
-    (agentIds: string[], topology: string, task?: string) => Promise<CoordinationResult>
+    (
+      agentIds: string[],
+      topology: string,
+      task?: string,
+    ) => Promise<CoordinationResult>
   > = vi.fn();
 
-  releaseCoordination: vi.MockedFunction<(coordinationId: string) => Promise<void>> = vi.fn();
+  releaseCoordination: vi.MockedFunction<
+    (coordinationId: string) => Promise<void>
+  > = vi.fn();
 
   getCoordinationStatus: vi.MockedFunction<
     (coordinationId: string) => Promise<CoordinationStatus>
@@ -46,8 +52,16 @@ export class MockCoordinationService {
   }
 
   // TDD London interaction testing helpers
-  expectCoordinationCalled(agentIds: string[], topology: string, task?: string) {
-    expect(this.coordinateAgents).toHaveBeenCalledWith(agentIds, topology, task);
+  expectCoordinationCalled(
+    agentIds: string[],
+    topology: string,
+    task?: string,
+  ) {
+    expect(this.coordinateAgents).toHaveBeenCalledWith(
+      agentIds,
+      topology,
+      task,
+    );
     return this;
   }
 
@@ -77,8 +91,9 @@ export class MockCoordinationService {
  * Replaces: mockMemoryStore = { store: vi.fn(), retrieve: vi.fn()... }
  */
 export class MockMemoryStoreService {
-  store: vi.MockedFunction<(key: string, value: any) => Promise<void>> = vi.fn();
-  retrieve: vi.MockedFunction<(key: string) => Promise<any>> = vi.fn();
+  store: vi.MockedFunction<(key: string, value: unknown) => Promise<void>> =
+    vi.fn();
+  retrieve: vi.MockedFunction<(key: string) => Promise<unknown>> = vi.fn();
   delete: vi.MockedFunction<(key: string) => Promise<boolean>> = vi.fn();
   query: vi.MockedFunction<(pattern: string) => Promise<any[]>> = vi.fn();
   close: vi.MockedFunction<() => Promise<void>> = vi.fn();
@@ -112,9 +127,9 @@ export class MockMemoryStoreService {
     return this;
   }
 
-  setupRetrieveValue(key: string, value: any) {
+  setupRetrieveValue(key: string, value: unknown) {
     this.retrieve.mockImplementationOnce((k) =>
-      k === key ? Promise.resolve(value) : Promise.resolve(null)
+      k === key ? Promise.resolve(value) : Promise.resolve(null),
     );
     return this;
   }
@@ -130,10 +145,12 @@ export class MockMemoryStoreService {
  * Replaces: mockLogger = { info: vi.fn(), error: vi.fn()... }
  */
 export class MockLoggerService {
-  info: vi.MockedFunction<(message: string, meta?: any) => void> = vi.fn();
-  error: vi.MockedFunction<(message: string, error?: Error, meta?: any) => void> = vi.fn();
-  warn: vi.MockedFunction<(message: string, meta?: any) => void> = vi.fn();
-  debug: vi.MockedFunction<(message: string, meta?: any) => void> = vi.fn();
+  info: vi.MockedFunction<(message: string, meta?: unknown) => void> = vi.fn();
+  error: vi.MockedFunction<
+    (message: string, error?: Error, meta?: unknown) => void
+  > = vi.fn();
+  warn: vi.MockedFunction<(message: string, meta?: unknown) => void> = vi.fn();
+  debug: vi.MockedFunction<(message: string, meta?: unknown) => void> = vi.fn();
 
   constructor() {
     // No return values needed for logger methods
@@ -146,9 +163,17 @@ export class MockLoggerService {
 
   expectErrorLogged(message: string, error?: Error) {
     if (error) {
-      expect(this.error).toHaveBeenCalledWith(message, error, expect.anything());
+      expect(this.error).toHaveBeenCalledWith(
+        message,
+        error,
+        expect.anything(),
+      );
     } else {
-      expect(this.error).toHaveBeenCalledWith(message, expect.any(Error), expect.anything());
+      expect(this.error).toHaveBeenCalledWith(
+        message,
+        expect.any(Error),
+        expect.anything(),
+      );
     }
     return this;
   }
@@ -175,10 +200,12 @@ export class MockLoggerService {
  */
 export class MockSwarmService {
   initialize: vi.MockedFunction<() => Promise<void>> = vi.fn();
-  spawnAgent: vi.MockedFunction<(config: any) => Promise<string>> = vi.fn();
-  terminateAgent: vi.MockedFunction<(agentId: string) => Promise<void>> = vi.fn();
+  spawnAgent: vi.MockedFunction<(config: unknown) => Promise<string>> = vi.fn();
+  terminateAgent: vi.MockedFunction<(agentId: string) => Promise<void>> =
+    vi.fn();
   getSwarmStatus: vi.MockedFunction<() => Promise<SwarmStatus>> = vi.fn();
-  orchestrateTask: vi.MockedFunction<(task: any) => Promise<any>> = vi.fn();
+  orchestrateTask: vi.MockedFunction<(task: unknown) => Promise<unknown>> =
+    vi.fn();
 
   constructor() {
     this.initialize.mockResolvedValue(undefined);
@@ -197,22 +224,28 @@ export class MockSwarmService {
     return this;
   }
 
-  expectAgentSpawned(config?: any) {
+  expectAgentSpawned(config?: unknown) {
     if (config) {
-      expect(this.spawnAgent).toHaveBeenCalledWith(expect.objectContaining(config));
+      expect(this.spawnAgent).toHaveBeenCalledWith(
+        expect.objectContaining(config),
+      );
     } else {
       expect(this.spawnAgent).toHaveBeenCalled();
     }
     return this;
   }
 
-  expectTaskOrchestrated(task: any) {
-    expect(this.orchestrateTask).toHaveBeenCalledWith(expect.objectContaining(task));
+  expectTaskOrchestrated(task: unknown) {
+    expect(this.orchestrateTask).toHaveBeenCalledWith(
+      expect.objectContaining(task),
+    );
     return this;
   }
 
   setupSwarmFailure(method: keyof MockSwarmService, error: string) {
-    (this[method] as vi.MockedFunction<any>).mockRejectedValueOnce(new Error(error));
+    (this[method] as vi.MockedFunction<unknown>).mockRejectedValueOnce(
+      new Error(error),
+    );
     return this;
   }
 
@@ -227,10 +260,15 @@ export class MockSwarmService {
  * Replaces: mockDatabase = { query: vi.fn(), transaction: vi.fn()... }
  */
 export class MockDatabaseService {
-  query: vi.MockedFunction<(sql: string, params?: any[]) => Promise<any[]>> = vi.fn();
-  execute: vi.MockedFunction<(sql: string, params?: any[]) => Promise<{ affectedRows: number }>> =
-    vi.fn();
-  transaction: vi.MockedFunction<(fn: (tx: any) => Promise<any>) => Promise<any>> = vi.fn();
+  query: vi.MockedFunction<
+    (sql: string, params?: unknown[]) => Promise<any[]>
+  > = vi.fn();
+  execute: vi.MockedFunction<
+    (sql: string, params?: unknown[]) => Promise<{ affectedRows: number }>
+  > = vi.fn();
+  transaction: vi.MockedFunction<
+    (fn: (tx: unknown) => Promise<unknown>) => Promise<unknown>
+  > = vi.fn();
   connect: vi.MockedFunction<() => Promise<void>> = vi.fn();
   disconnect: vi.MockedFunction<() => Promise<void>> = vi.fn();
 
@@ -242,7 +280,7 @@ export class MockDatabaseService {
     this.disconnect.mockResolvedValue(undefined);
   }
 
-  expectQueryCalled(sql: string, params?: any[]) {
+  expectQueryCalled(sql: string, params?: unknown[]) {
     if (params) {
       expect(this.query).toHaveBeenCalledWith(sql, params);
     } else {
@@ -256,9 +294,9 @@ export class MockDatabaseService {
     return this;
   }
 
-  setupQueryResult(sql: string, result: any[]) {
+  setupQueryResult(sql: string, result: unknown[]) {
     this.query.mockImplementationOnce((querySql) =>
-      querySql.includes(sql) ? Promise.resolve(result) : Promise.resolve([])
+      querySql.includes(sql) ? Promise.resolve(result) : Promise.resolve([]),
     );
     return this;
   }
@@ -275,8 +313,9 @@ export class MockDatabaseService {
  */
 export class MockMCPServerService {
   initialize: vi.MockedFunction<() => Promise<void>> = vi.fn();
-  handleMessage: vi.MockedFunction<(message: unknown) => Promise<any>> = vi.fn();
-  registerTool: vi.MockedFunction<(tool: any) => Promise<void>> = vi.fn();
+  handleMessage: vi.MockedFunction<(message: unknown) => Promise<unknown>> =
+    vi.fn();
+  registerTool: vi.MockedFunction<(tool: unknown) => Promise<void>> = vi.fn();
   shutdown: vi.MockedFunction<() => Promise<void>> = vi.fn();
 
   constructor() {
@@ -291,17 +330,21 @@ export class MockMCPServerService {
     return this;
   }
 
-  expectMessageHandled(message?: any) {
+  expectMessageHandled(message?: unknown) {
     if (message) {
-      expect(this.handleMessage).toHaveBeenCalledWith(expect.objectContaining(message));
+      expect(this.handleMessage).toHaveBeenCalledWith(
+        expect.objectContaining(message),
+      );
     } else {
       expect(this.handleMessage).toHaveBeenCalled();
     }
     return this;
   }
 
-  expectToolRegistered(tool: any) {
-    expect(this.registerTool).toHaveBeenCalledWith(expect.objectContaining(tool));
+  expectToolRegistered(tool: unknown) {
+    expect(this.registerTool).toHaveBeenCalledWith(
+      expect.objectContaining(tool),
+    );
     return this;
   }
 
@@ -356,7 +399,9 @@ export function createCommonMocks() {
 /**
  * Helper to clear all mocks in a collection
  */
-export function clearAllCommonMocks(mocks: ReturnType<typeof createCommonMocks>) {
+export function clearAllCommonMocks(
+  mocks: ReturnType<typeof createCommonMocks>,
+) {
   Object.values(mocks).forEach((mock) => mock.clearAllMocks());
 }
 

@@ -87,7 +87,12 @@ export interface WorkflowDependency {
   readonly id: string;
 
   /** Dependency type */
-  readonly type: 'blocking' | 'blocked_by' | 'related' | 'impacts' | 'impacted_by';
+  readonly type:
+    | 'blocking'
+    | 'blocked_by'
+    | 'related'
+    | 'impacts'
+    | 'impacted_by';
 
   /** Reference to dependent workflow/task/resource */
   readonly reference: string;
@@ -127,7 +132,12 @@ export interface RiskFactor {
   readonly id: string;
 
   /** Risk category */
-  readonly category: 'technical' | 'business' | 'compliance' | 'security' | 'operational';
+  readonly category:
+    | 'technical'
+    | 'business'
+    | 'compliance'
+    | 'security'
+    | 'operational';
 
   /** Risk severity */
   readonly severity: 'low' | 'medium' | 'high' | 'critical';
@@ -350,7 +360,13 @@ export interface WorkflowGateRequest extends ValidationQuestion {
   readonly escalationChain?: EscalationChain;
 
   /** Gate type for categorization and handling */
-  readonly gateType: 'approval' | 'checkpoint' | 'review' | 'decision' | 'escalation' | 'emergency';
+  readonly gateType:
+    | 'approval'
+    | 'checkpoint'
+    | 'review'
+    | 'decision'
+    | 'escalation'
+    | 'emergency';
 
   /** Required approval level for this gate */
   readonly requiredApprovalLevel?: GateEscalationLevel;
@@ -415,7 +431,7 @@ export interface GateCondition {
     | 'exists';
 
   /** Value to compare against */
-  readonly value: any;
+  readonly value: unknown;
 
   /** Field or property to evaluate */
   readonly field: string;
@@ -440,7 +456,15 @@ export const WorkflowGateRequestSchema: TypeSchema<WorkflowGateRequest> = {
     type: {
       type: 'string',
       required: true,
-      enum: ['relevance', 'boundary', 'relationship', 'naming', 'priority', 'checkpoint', 'review'],
+      enum: [
+        'relevance',
+        'boundary',
+        'relationship',
+        'naming',
+        'priority',
+        'checkpoint',
+        'review',
+      ],
     },
     question: { type: 'string', required: true },
     context: { type: 'object', required: true },
@@ -492,7 +516,13 @@ export const WorkflowGateRequestSchema: TypeSchema<WorkflowGateRequest> = {
               type: {
                 type: 'string',
                 required: true,
-                enum: ['blocking', 'blocked_by', 'related', 'impacts', 'impacted_by'],
+                enum: [
+                  'blocking',
+                  'blocked_by',
+                  'related',
+                  'impacts',
+                  'impacted_by',
+                ],
               },
               reference: { type: 'string', required: true },
               criticality: {
@@ -510,7 +540,14 @@ export const WorkflowGateRequestSchema: TypeSchema<WorkflowGateRequest> = {
     gateType: {
       type: 'string',
       required: true,
-      enum: ['approval', 'checkpoint', 'review', 'decision', 'escalation', 'emergency'],
+      enum: [
+        'approval',
+        'checkpoint',
+        'review',
+        'decision',
+        'escalation',
+        'emergency',
+      ],
     },
 
     requiredApprovalLevel: {
@@ -680,7 +717,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   constructor(
     private readonly eventBus: TypeSafeEventBus,
     private readonly aguiInterface: AGUIInterface,
-    private readonly config: WorkflowGateProcessorConfig = {}
+    private readonly config: WorkflowGateProcessorConfig = {},
   ) {
     super();
 
@@ -712,10 +749,11 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
       skipValidation?: boolean;
       timeout?: number;
       escalationOverride?: EscalationChain;
-    } = {}
+    } = {},
   ): Promise<WorkflowGateResult> {
     const startTime = Date.now();
-    const correlationId = gateRequest.integrationConfig?.correlationId || createCorrelationId();
+    const correlationId =
+      gateRequest.integrationConfig?.correlationId || createCorrelationId();
 
     this.logger.info('Processing workflow gate request', {
       gateId: gateRequest.id,
@@ -731,7 +769,9 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
       if (!options.skipValidation && this.config.enableDomainValidation) {
         const validationResult = await this.validateGateRequest(gateRequest);
         if (!validationResult.success) {
-          throw new Error(`Gate validation failed: ${validationResult.error?.message}`);
+          throw new Error(
+            `Gate validation failed: ${validationResult.error?.message}`,
+          );
         }
       }
 
@@ -743,7 +783,9 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
           gateId: gateRequest.id,
           approved: false,
           processingTime: Date.now() - startTime,
-          error: new Error(`Prerequisites not met: ${prerequisiteResult.missing.join(', ')}`),
+          error: new Error(
+            `Prerequisites not met: ${prerequisiteResult.missing.join(', ')}`,
+          ),
           escalationLevel: GateEscalationLevel.NONE,
           correlationId,
         };
@@ -798,14 +840,14 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
       const validationResult = await this.requestHumanValidation(
         gateRequest,
         escalationChain,
-        correlationId
+        correlationId,
       );
 
       // 7. Process the validation result through escalation chain if needed
       const finalResult = await this.processEscalationChain(
         gateRequest.id,
         validationResult,
-        escalationChain
+        escalationChain,
       );
 
       // 8. Emit gate closed event
@@ -861,7 +903,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
       escalationChain?: EscalationChain;
       timeoutConfig?: WorkflowGateRequest['timeoutConfig'];
       integrationConfig?: WorkflowGateRequest['integrationConfig'];
-    } = {}
+    } = {},
   ): WorkflowGateRequest {
     const gateId = `gate-${Date.now()}-${++this.gateCounter}`;
 
@@ -930,7 +972,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
         error: new Error(`Gate cancelled: ${reason}`),
         correlationId: pendingGate.correlationId,
       },
-      pendingGate.correlationId
+      pendingGate.correlationId,
     );
 
     // Cleanup
@@ -944,13 +986,13 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   // ============================================================================
 
   private async validateGateRequest(
-    gateRequest: WorkflowGateRequest
+    gateRequest: WorkflowGateRequest,
   ): Promise<Result<WorkflowGateRequest>> {
     try {
       // Validate using domain boundary validator with schema
       const validatedRequest = this.domainValidator.validateInput(
         gateRequest,
-        WorkflowGateRequestSchema
+        WorkflowGateRequestSchema,
       );
 
       // Additional business logic validation
@@ -994,7 +1036,10 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     const missing: string[] = [];
 
     for (const prerequisite of prerequisites) {
-      const result = await this.evaluateCondition(prerequisite, gateRequest.workflowContext);
+      const result = await this.evaluateCondition(
+        prerequisite,
+        gateRequest.workflowContext,
+      );
       if (!result && prerequisite.required !== false) {
         missing.push(prerequisite.id);
       }
@@ -1010,14 +1055,18 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     approved: boolean;
     reason?: string;
   }> {
-    const autoApprovalConditions = gateRequest.conditionalLogic?.autoApprovalConditions || [];
+    const autoApprovalConditions =
+      gateRequest.conditionalLogic?.autoApprovalConditions || [];
 
     if (autoApprovalConditions.length === 0) {
       return { approved: false };
     }
 
     for (const condition of autoApprovalConditions) {
-      const result = await this.evaluateCondition(condition, gateRequest.workflowContext);
+      const result = await this.evaluateCondition(
+        condition,
+        gateRequest.workflowContext,
+      );
       if (result) {
         return {
           approved: true,
@@ -1031,13 +1080,13 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
 
   private async evaluateCondition(
     condition: GateCondition,
-    context: WorkflowContext
+    context: WorkflowContext,
   ): Promise<boolean> {
     // Production-ready sophisticated condition evaluation with type safety and error handling
     try {
       const fieldValue = this.getFieldValue(context, condition.field);
       const expectedValue = condition.value;
-      
+
       // Log condition evaluation for debugging
       logger.debug('Evaluating condition:', {
         field: condition.field,
@@ -1045,7 +1094,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
         fieldValue,
         expectedValue,
         fieldType: typeof fieldValue,
-        expectedType: typeof expectedValue
+        expectedType: typeof expectedValue,
       });
 
       // Enhanced condition evaluation with type coercion and validation
@@ -1053,7 +1102,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
         condition.operator,
         fieldValue,
         expectedValue,
-        condition
+        condition,
       );
 
       // Log evaluation result
@@ -1063,19 +1112,18 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
         result,
         metadata: {
           evaluation_time: new Date().toISOString(),
-          context_keys: Object.keys(context || {})
-        }
+          context_keys: Object.keys(context || {}),
+        },
       });
 
       return result;
-
     } catch (error) {
       logger.error('Error evaluating condition:', {
         condition,
         error: error.message,
-        context_summary: this.summarizeContext(context)
+        context_summary: this.summarizeContext(context),
       });
-      
+
       // Fail-safe: return false on evaluation error unless it's an 'exists' check
       return condition.operator === 'not_exists';
     }
@@ -1085,78 +1133,78 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     operator: string,
     fieldValue: any,
     expectedValue: any,
-    condition: GateCondition
+    condition: GateCondition,
   ): Promise<boolean> {
     switch (operator) {
       case 'equals':
         return this.evaluateEquals(fieldValue, expectedValue);
-        
+
       case 'not_equals':
         return !this.evaluateEquals(fieldValue, expectedValue);
-        
+
       case 'greater_than':
         return this.evaluateGreaterThan(fieldValue, expectedValue);
-        
+
       case 'greater_than_or_equal':
         return this.evaluateGreaterThanOrEqual(fieldValue, expectedValue);
-        
+
       case 'less_than':
         return this.evaluateLessThan(fieldValue, expectedValue);
-        
+
       case 'less_than_or_equal':
         return this.evaluateLessThanOrEqual(fieldValue, expectedValue);
-        
+
       case 'contains':
         return this.evaluateContains(fieldValue, expectedValue);
-        
+
       case 'not_contains':
         return !this.evaluateContains(fieldValue, expectedValue);
-        
+
       case 'starts_with':
         return this.evaluateStartsWith(fieldValue, expectedValue);
-        
+
       case 'ends_with':
         return this.evaluateEndsWith(fieldValue, expectedValue);
-        
+
       case 'matches':
         return this.evaluateMatches(fieldValue, expectedValue);
-        
+
       case 'not_matches':
         return !this.evaluateMatches(fieldValue, expectedValue);
-        
+
       case 'exists':
         return this.evaluateExists(fieldValue);
-        
+
       case 'not_exists':
         return !this.evaluateExists(fieldValue);
-        
+
       case 'empty':
         return this.evaluateEmpty(fieldValue);
-        
+
       case 'not_empty':
         return !this.evaluateEmpty(fieldValue);
-        
+
       case 'in':
         return this.evaluateIn(fieldValue, expectedValue);
-        
+
       case 'not_in':
         return !this.evaluateIn(fieldValue, expectedValue);
-        
+
       case 'between':
         return this.evaluateBetween(fieldValue, expectedValue);
-        
+
       case 'type_is':
         return this.evaluateTypeIs(fieldValue, expectedValue);
-        
+
       case 'length_equals':
         return this.evaluateLengthEquals(fieldValue, expectedValue);
-        
+
       case 'length_greater_than':
         return this.evaluateLengthGreaterThan(fieldValue, expectedValue);
-        
+
       case 'length_less_than':
         return this.evaluateLengthLessThan(fieldValue, expectedValue);
-        
+
       default:
         logger.warn('Unknown condition operator:', operator);
         throw new Error(`Unsupported condition operator: ${operator}`);
@@ -1170,70 +1218,86 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     if (fieldValue === null || fieldValue === undefined) {
       return expectedValue === null || expectedValue === undefined;
     }
-    
+
     // Try strict equality first
     if (fieldValue === expectedValue) return true;
-    
+
     // Try type coercion for numbers and strings
     if (typeof fieldValue !== typeof expectedValue) {
       return String(fieldValue) === String(expectedValue);
     }
-    
+
     return false;
   }
 
   private evaluateGreaterThan(fieldValue: any, expectedValue: any): boolean {
     const numField = this.toNumber(fieldValue);
     const numExpected = this.toNumber(expectedValue);
-    
+
     if (numField === null || numExpected === null) {
       // Fallback to string comparison
       return String(fieldValue) > String(expectedValue);
     }
-    
+
     return numField > numExpected;
   }
 
-  private evaluateGreaterThanOrEqual(fieldValue: any, expectedValue: any): boolean {
-    return this.evaluateGreaterThan(fieldValue, expectedValue) || 
-           this.evaluateEquals(fieldValue, expectedValue);
+  private evaluateGreaterThanOrEqual(
+    fieldValue: any,
+    expectedValue: any,
+  ): boolean {
+    return (
+      this.evaluateGreaterThan(fieldValue, expectedValue) ||
+      this.evaluateEquals(fieldValue, expectedValue)
+    );
   }
 
   private evaluateLessThan(fieldValue: any, expectedValue: any): boolean {
     const numField = this.toNumber(fieldValue);
     const numExpected = this.toNumber(expectedValue);
-    
+
     if (numField === null || numExpected === null) {
       // Fallback to string comparison
       return String(fieldValue) < String(expectedValue);
     }
-    
+
     return numField < numExpected;
   }
 
-  private evaluateLessThanOrEqual(fieldValue: any, expectedValue: any): boolean {
-    return this.evaluateLessThan(fieldValue, expectedValue) || 
-           this.evaluateEquals(fieldValue, expectedValue);
+  private evaluateLessThanOrEqual(
+    fieldValue: any,
+    expectedValue: any,
+  ): boolean {
+    return (
+      this.evaluateLessThan(fieldValue, expectedValue) ||
+      this.evaluateEquals(fieldValue, expectedValue)
+    );
   }
 
   private evaluateContains(fieldValue: any, expectedValue: any): boolean {
     if (Array.isArray(fieldValue)) {
       return fieldValue.includes(expectedValue);
     }
-    
+
     if (fieldValue && typeof fieldValue === 'object') {
-      return Object.prototype.hasOwnProperty.call(fieldValue, expectedValue);
+      return Object.hasOwn(fieldValue, expectedValue);
     }
-    
-    return String(fieldValue).toLowerCase().includes(String(expectedValue).toLowerCase());
+
+    return String(fieldValue)
+      .toLowerCase()
+      .includes(String(expectedValue).toLowerCase());
   }
 
   private evaluateStartsWith(fieldValue: any, expectedValue: any): boolean {
-    return String(fieldValue).toLowerCase().startsWith(String(expectedValue).toLowerCase());
+    return String(fieldValue)
+      .toLowerCase()
+      .startsWith(String(expectedValue).toLowerCase());
   }
 
   private evaluateEndsWith(fieldValue: any, expectedValue: any): boolean {
-    return String(fieldValue).toLowerCase().endsWith(String(expectedValue).toLowerCase());
+    return String(fieldValue)
+      .toLowerCase()
+      .endsWith(String(expectedValue).toLowerCase());
   }
 
   private evaluateMatches(fieldValue: any, expectedValue: any): boolean {
@@ -1246,24 +1310,28 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     }
   }
 
-  private evaluateExists(fieldValue: any): boolean {
+  private evaluateExists(fieldValue: unknown): boolean {
     return fieldValue !== undefined && fieldValue !== null;
   }
 
-  private evaluateEmpty(fieldValue: any): boolean {
+  private evaluateEmpty(fieldValue: unknown): boolean {
     if (fieldValue === null || fieldValue === undefined) return true;
     if (typeof fieldValue === 'string') return fieldValue.trim() === '';
     if (Array.isArray(fieldValue)) return fieldValue.length === 0;
-    if (typeof fieldValue === 'object') return Object.keys(fieldValue).length === 0;
+    if (typeof fieldValue === 'object')
+      return Object.keys(fieldValue).length === 0;
     return false;
   }
 
   private evaluateIn(fieldValue: any, expectedValue: any): boolean {
     if (!Array.isArray(expectedValue)) {
-      logger.warn('Expected array for "in" operator, got:', typeof expectedValue);
+      logger.warn(
+        'Expected array for "in" operator, got:',
+        typeof expectedValue,
+      );
       return false;
     }
-    
+
     return expectedValue.includes(fieldValue);
   }
 
@@ -1272,15 +1340,15 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
       logger.warn('Expected array of length 2 for "between" operator');
       return false;
     }
-    
+
     const numField = this.toNumber(fieldValue);
     const minValue = this.toNumber(expectedValue[0]);
     const maxValue = this.toNumber(expectedValue[1]);
-    
+
     if (numField === null || minValue === null || maxValue === null) {
       return false;
     }
-    
+
     return numField >= minValue && numField <= maxValue;
   }
 
@@ -1294,7 +1362,10 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     return length !== null && length === this.toNumber(expectedValue);
   }
 
-  private evaluateLengthGreaterThan(fieldValue: any, expectedValue: any): boolean {
+  private evaluateLengthGreaterThan(
+    fieldValue: any,
+    expectedValue: any,
+  ): boolean {
     const length = this.getLength(fieldValue);
     const expected = this.toNumber(expectedValue);
     return length !== null && expected !== null && length > expected;
@@ -1308,14 +1379,14 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
 
   // ==================== HELPER METHODS ====================
 
-  private toNumber(value: any): number | null {
+  private toNumber(value: unknown): number | null {
     if (typeof value === 'number' && !isNaN(value)) return value;
-    
+
     const parsed = Number(value);
     return isNaN(parsed) ? null : parsed;
   }
 
-  private getLength(value: any): number | null {
+  private getLength(value: unknown): number | null {
     if (typeof value === 'string') return value.length;
     if (Array.isArray(value)) return value.length;
     if (value && typeof value === 'object') return Object.keys(value).length;
@@ -1324,20 +1395,23 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
 
   private summarizeContext(context: WorkflowContext): any {
     if (!context) return null;
-    
+
     return {
       keys: Object.keys(context),
       hasData: Object.keys(context).length > 0,
-      types: Object.entries(context).reduce((acc, [key, value]) => {
-        acc[key] = Array.isArray(value) ? 'array' : typeof value;
-        return acc;
-      }, {} as Record<string, string>)
+      types: Object.entries(context).reduce(
+        (acc, [key, value]) => {
+          acc[key] = Array.isArray(value) ? 'array' : typeof value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
     };
   }
 
   private getFieldValue(context: WorkflowContext, field: string): any {
     const parts = field.split('.');
-    let value: any = context;
+    let value: unknown = context;
 
     for (const part of parts) {
       value = value?.[part];
@@ -1346,7 +1420,9 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     return value;
   }
 
-  private createDefaultEscalationChain(gateRequest: WorkflowGateRequest): EscalationChain {
+  private createDefaultEscalationChain(
+    gateRequest: WorkflowGateRequest,
+  ): EscalationChain {
     const levels: EscalationLevel[] = [];
 
     // Create escalation levels based on business impact
@@ -1373,7 +1449,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
             approvers: ['manager'],
             requiredApprovals: 1,
             timeLimit: 3600000, // 1 hour
-          }
+          },
         );
         break;
 
@@ -1397,7 +1473,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
             approvers: ['director'],
             requiredApprovals: 1,
             timeLimit: 3600000, // 1 hour
-          }
+          },
         );
         break;
     }
@@ -1424,7 +1500,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   private async requestHumanValidation(
     gateRequest: WorkflowGateRequest,
     escalationChain: EscalationChain,
-    correlationId: string
+    correlationId: string,
   ): Promise<HumanValidationResult> {
     // Create human validation request event for integration with existing AGUI system
     const validationRequestEvent: HumanValidationRequestedEvent = createEvent(
@@ -1433,25 +1509,30 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
       {
         payload: {
           requestId: `gate-${gateRequest.id}`,
-          validationType: gateRequest.gateType === 'approval' ? 'approval' : 'review',
+          validationType:
+            gateRequest.gateType === 'approval' ? 'approval' : 'review',
           context: {
             workflowGate: gateRequest,
             escalationChain,
           },
           priority: this.mapPriorityToEventPriority(gateRequest.priority),
-          timeout: gateRequest.timeoutConfig?.initialTimeout || this.config.defaultTimeout,
+          timeout:
+            gateRequest.timeoutConfig?.initialTimeout ||
+            this.config.defaultTimeout,
         },
       },
       {
         correlationId,
         source: 'workflow-gate-processor',
-      }
+      },
     );
 
     // Emit validation request event
     const eventResult = await this.eventBus.emitEvent(validationRequestEvent);
     if (!eventResult.success) {
-      throw new Error(`Failed to emit validation request: ${eventResult.error?.message}`);
+      throw new Error(
+        `Failed to emit validation request: ${eventResult.error?.message}`,
+      );
     }
 
     // Use existing AGUI interface for actual validation
@@ -1467,7 +1548,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
       };
     } catch (error) {
       throw new Error(
-        `Human validation failed: ${error instanceof Error ? error.message : String(error)}`
+        `Human validation failed: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -1475,7 +1556,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   private async processEscalationChain(
     gateId: string,
     initialResult: HumanValidationResult,
-    escalationChain: EscalationChain
+    escalationChain: EscalationChain,
   ): Promise<WorkflowGateResult> {
     const pendingGate = this.pendingGates.get(gateId);
     if (!pendingGate) {
@@ -1537,7 +1618,8 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
         finalLevel = currentLevel;
         decisionMaker = approval.approver;
         break;
-      } else if (approval.decision === 'reject') {
+      }
+      if (approval.decision === 'reject') {
         finalApproval = false;
         finalLevel = currentLevel;
         decisionMaker = approval.approver;
@@ -1571,7 +1653,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
 
   private async simulateApprovalAtLevel(
     level: EscalationLevel,
-    pendingGate: PendingGateRequest
+    pendingGate: PendingGateRequest,
   ): Promise<{
     decision: 'approve' | 'reject' | 'escalate';
     approver: string;
@@ -1581,17 +1663,24 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     const startTime = Date.now();
 
     // Simulate decision making based on business impact and level
-    const businessImpact = pendingGate.gateRequest.workflowContext.businessImpact;
+    const businessImpact =
+      pendingGate.gateRequest.workflowContext.businessImpact;
     const approver = level.approvers[0] || 'unknown';
 
     // Simple simulation logic
     let decision: 'approve' | 'reject' | 'escalate' = 'approve';
     let comments = `Approved at ${GateEscalationLevel[level.level]} level`;
 
-    if (businessImpact === 'critical' && level.level < GateEscalationLevel.DIRECTOR) {
+    if (
+      businessImpact === 'critical' &&
+      level.level < GateEscalationLevel.DIRECTOR
+    ) {
       decision = 'escalate';
       comments = 'Critical impact requires higher level approval';
-    } else if (businessImpact === 'high' && level.level < GateEscalationLevel.MANAGER) {
+    } else if (
+      businessImpact === 'high' &&
+      level.level < GateEscalationLevel.MANAGER
+    ) {
       decision = 'escalate';
       comments = 'High impact requires management approval';
     }
@@ -1609,7 +1698,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
 
   private async emitGateOpenedEvent(
     gateRequest: WorkflowGateRequest,
-    correlationId: string
+    correlationId: string,
   ): Promise<void> {
     const gateOpenedEvent: AGUIGateOpenedEvent = createEvent(
       'agui.gate.opened',
@@ -1626,7 +1715,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
           },
         },
       },
-      { correlationId, source: 'workflow-gate-processor' }
+      { correlationId, source: 'workflow-gate-processor' },
     );
 
     const result = await this.eventBus.emitEvent(gateOpenedEvent);
@@ -1641,7 +1730,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   private async emitGateClosedEvent(
     gateRequest: WorkflowGateRequest,
     result: WorkflowGateResult,
-    correlationId: string
+    correlationId: string,
   ): Promise<void> {
     const gateClosedEvent: AGUIGateClosedEvent = createEvent(
       'agui.gate.closed',
@@ -1658,7 +1747,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
           },
         },
       },
-      { correlationId, causationId: `gate-${gateRequest.id}` }
+      { correlationId, causationId: `gate-${gateRequest.id}` },
     );
 
     const eventResult = await this.eventBus.emitEvent(gateClosedEvent);
@@ -1696,11 +1785,15 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
             processingTime: event.payload.processingTime,
           });
         }
-      }
+      },
     );
   }
 
-  private setEscalationTimer(gateId: string, timeLimit: number, level: GateEscalationLevel): void {
+  private setEscalationTimer(
+    gateId: string,
+    timeLimit: number,
+    level: GateEscalationLevel,
+  ): void {
     const timerId = setTimeout(() => {
       this.logger.info('Escalation timer triggered', { gateId, level });
       this.emit('escalation-timeout', { gateId, level });
@@ -1727,8 +1820,18 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   }
 
   private interpretResponse(response: string): boolean {
-    const positiveResponses = ['yes', 'approve', 'approved', 'accept', 'ok', 'continue', '1'];
-    return positiveResponses.some((pos) => response.toLowerCase().includes(pos));
+    const positiveResponses = [
+      'yes',
+      'approve',
+      'approved',
+      'accept',
+      'ok',
+      'continue',
+      '1',
+    ];
+    return positiveResponses.some((pos) =>
+      response.toLowerCase().includes(pos),
+    );
   }
 
   private mapPriorityToEventPriority(priority?: string): EventPriority {
@@ -1819,7 +1922,7 @@ export function createApprovalGate(
     businessImpact?: WorkflowContext['businessImpact'];
     deadline?: Date;
     priority?: ValidationQuestion['priority'];
-  } = {}
+  } = {},
 ): WorkflowGateRequest {
   const gateId = `gate-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -1859,7 +1962,7 @@ export function createCheckpointGate(
   options: {
     autoApprovalThreshold?: number;
     businessImpact?: WorkflowContext['businessImpact'];
-  } = {}
+  } = {},
 ): WorkflowGateRequest {
   const gateId = `gate-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -1914,7 +2017,7 @@ export function createEmergencyGate(
   workflowId: string,
   stepName: string,
   emergencyContext: any,
-  stakeholders: string[]
+  stakeholders: string[],
 ): WorkflowGateRequest {
   const gateId = `gate-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 

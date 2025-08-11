@@ -19,7 +19,12 @@ export default [
       ecmaVersion: 2024,
       sourceType: 'module',
       parserOptions: {
-        project: './tsconfig.json',
+        project: [
+          './tsconfig.json',
+          './copilot-api/tsconfig.json',
+          './gemini-cli-source/packages/cli/tsconfig.json',
+          './gemini-cli-source/packages/core/tsconfig.json',
+        ],
         tsconfigRootDir: __dirname,
         ecmaFeatures: {
           modules: true,

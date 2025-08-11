@@ -6,10 +6,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { configManager } from './manager.ts';
-import type { ConfigHealthReport, SystemConfiguration, ValidationResult } from './types.ts';
-import { ConfigValidator } from './validator.ts';
 import { logRepoConfigStatus } from './default-repo-config.ts';
+import { configManager } from './manager.ts';
+import type {
+  ConfigHealthReport,
+  SystemConfiguration,
+  ValidationResult,
+} from './types.ts';
+import { ConfigValidator } from './validator.ts';
 
 /**
  * Configuration health checker with monitoring capabilities.
@@ -46,7 +50,7 @@ export class ConfigHealthChecker extends EventEmitter {
    * @param options.healthCheckFrequency
    */
   async initialize(
-    options: { enableMonitoring?: boolean; healthCheckFrequency?: number } = {}
+    options: { enableMonitoring?: boolean; healthCheckFrequency?: number } = {},
   ): Promise<void> {
     const { enableMonitoring = true, healthCheckFrequency = 30000 } = options;
 
@@ -81,12 +85,15 @@ export class ConfigHealthChecker extends EventEmitter {
    */
   async getHealthReport(): Promise<ConfigHealthReport>;
   async getHealthReport(
-    includeDetails: true
+    includeDetails: true,
   ): Promise<ConfigHealthReport & { validationDetails: ValidationResult }>;
   async getHealthReport(includeDetails: false): Promise<ConfigHealthReport>;
   async getHealthReport(
-    includeDetails = false
-  ): Promise<ConfigHealthReport | (ConfigHealthReport & { validationDetails: ValidationResult })> {
+    includeDetails = false,
+  ): Promise<
+    | ConfigHealthReport
+    | (ConfigHealthReport & { validationDetails: ValidationResult })
+  > {
     const config = configManager?.getConfig();
     const healthReport = this.validator.getHealthReport(config);
 
@@ -150,17 +157,23 @@ export class ConfigHealthChecker extends EventEmitter {
     }
 
     if (result?.failsafeApplied.length > 0) {
-      recommendations.push('Failsafe defaults were applied - review configuration');
+      recommendations.push(
+        'Failsafe defaults were applied - review configuration',
+      );
     }
 
     // Environment-specific recommendations
     if (this.environment === 'production') {
       if (!process.env['ANTHROPIC_API_KEY']) {
-        blockers.push('ANTHROPIC_API_KEY environment variable required in production');
+        blockers.push(
+          'ANTHROPIC_API_KEY environment variable required in production',
+        );
       }
 
       if (configToValidate?.core?.logger?.level === 'debug') {
-        recommendations.push('Consider using "info" log level in production instead of "debug"');
+        recommendations.push(
+          'Consider using "info" log level in production instead of "debug"',
+        );
       }
     }
 
@@ -211,14 +224,19 @@ export class ConfigHealthChecker extends EventEmitter {
     ].filter((mapping) => typeof mapping.port === 'number');
 
     // Group by port
-    const portGroups = new Map<number, Array<{ name: string; critical: boolean }>>();
+    const portGroups = new Map<
+      number,
+      Array<{ name: string; critical: boolean }>
+    >();
 
     for (const mapping of portMappings) {
       if (typeof mapping.port === 'number') {
         if (!portGroups.has(mapping.port)) {
           portGroups.set(mapping.port, []);
         }
-        portGroups.get(mapping.port)!.push({ name: mapping.name, critical: mapping.critical });
+        portGroups
+          .get(mapping.port)!
+          .push({ name: mapping.name, critical: mapping.critical });
       }
     }
 
@@ -237,8 +255,12 @@ export class ConfigHealthChecker extends EventEmitter {
     // Generate recommendations
     if (conflicts.length > 0) {
       recommendations.push('Configure unique ports for each service');
-      recommendations.push('Use environment variables to override default ports');
-      recommendations.push('Consider using a reverse proxy for port management');
+      recommendations.push(
+        'Use environment variables to override default ports',
+      );
+      recommendations.push(
+        'Consider using a reverse proxy for port management',
+      );
     }
 
     return { conflicts, recommendations };
@@ -304,12 +326,15 @@ export class ConfigHealthChecker extends EventEmitter {
    *
    * @param format - Export format.
    */
-  async exportHealthReport(format: 'json' | 'prometheus' = 'json'): Promise<string> {
+  async exportHealthReport(
+    format: 'json' | 'prometheus' = 'json',
+  ): Promise<string> {
     const report = await this.getHealthReport(true);
 
     if (format === 'json') {
       return JSON.stringify(report, null, 2);
-    } else if (format === 'prometheus') {
+    }
+    if (format === 'prometheus') {
       return this.toPrometheusFormat(report);
     }
 
@@ -349,7 +374,7 @@ export class ConfigHealthChecker extends EventEmitter {
 
       this.emit('health:checked', currentReport);
       this.lastHealthReport = currentReport;
-      
+
       // Log detailed repo config status for diagnostics (wired up!)
       if (currentReport?.configuration) {
         try {
@@ -373,34 +398,43 @@ export class ConfigHealthChecker extends EventEmitter {
     const lines: string[] = [];
 
     // Overall health score
-    lines.push('# HELP claude_zen_config_health_score Configuration health score (0-100)');
+    lines.push(
+      '# HELP claude_zen_config_health_score Configuration health score (0-100)',
+    );
     lines.push('# TYPE claude_zen_config_health_score gauge');
-    lines.push(`claude_zen_config_health_score{environment="${this.environment}"} ${report.score}`);
+    lines.push(
+      `claude_zen_config_health_score{environment="${this.environment}"} ${report.score}`,
+    );
 
     // Health status as numeric (0=critical, 1=warning, 2=healthy)
-    const statusValue = report.status === 'healthy' ? 2 : report.status === 'warning' ? 1 : 0;
-    lines.push('# HELP claude_zen_config_health_status Configuration health status');
+    const statusValue =
+      report.status === 'healthy' ? 2 : report.status === 'warning' ? 1 : 0;
+    lines.push(
+      '# HELP claude_zen_config_health_status Configuration health status',
+    );
     lines.push('# TYPE claude_zen_config_health_status gauge');
     lines.push(
-      `claude_zen_config_health_status{environment="${this.environment}",status="${report.status}"} ${statusValue}`
+      `claude_zen_config_health_status{environment="${this.environment}",status="${report.status}"} ${statusValue}`,
     );
 
     // Component health details
     for (const [component, healthy] of Object.entries(report.details)) {
-      lines.push(`# HELP claude_zen_config_${component}_health ${component} configuration health`);
+      lines.push(
+        `# HELP claude_zen_config_${component}_health ${component} configuration health`,
+      );
       lines.push(`# TYPE claude_zen_config_${component}_health gauge`);
       lines.push(
-        `claude_zen_config_${component}_health{environment="${this.environment}"} ${healthy ? 1 : 0}`
+        `claude_zen_config_${component}_health{environment="${this.environment}"} ${healthy ? 1 : 0}`,
       );
     }
 
     // Recommendation count
     lines.push(
-      '# HELP claude_zen_config_recommendations_total Number of configuration recommendations'
+      '# HELP claude_zen_config_recommendations_total Number of configuration recommendations',
     );
     lines.push('# TYPE claude_zen_config_recommendations_total gauge');
     lines.push(
-      `claude_zen_config_recommendations_total{environment="${this.environment}"} ${report.recommendations.length}`
+      `claude_zen_config_recommendations_total{environment="${this.environment}"} ${report.recommendations.length}`,
     );
 
     return `${lines.join('\n')}\n`;
@@ -434,13 +468,17 @@ export async function initializeConfigHealthChecker(options?: {
  * ```
  */
 export function createConfigHealthEndpoint() {
-  return async (_req: any, res: any) => {
+  return async (_req: unknown, res: unknown) => {
     try {
       const healthReport = await configHealthChecker?.getHealthReport(true);
 
       // Set appropriate HTTP status
       const statusCode =
-        healthReport.status === 'healthy' ? 200 : healthReport.status === 'warning' ? 200 : 503;
+        healthReport.status === 'healthy'
+          ? 200
+          : healthReport.status === 'warning'
+            ? 200
+            : 503;
 
       res.status(statusCode).json({
         success: healthReport.status !== 'critical',
@@ -467,16 +505,20 @@ export function createConfigHealthEndpoint() {
  * ```
  */
 export function createDeploymentReadinessEndpoint() {
-  return async (_req: any, res: any) => {
+  return async (_req: unknown, res: unknown) => {
     try {
-      const deploymentCheck = await configHealthChecker?.validateForProduction();
+      const deploymentCheck =
+        await configHealthChecker?.validateForProduction();
       const portCheck = await configHealthChecker?.checkPortConflicts();
 
       const statusCode =
-        deploymentCheck.deploymentReady && portCheck.conflicts.length === 0 ? 200 : 503;
+        deploymentCheck.deploymentReady && portCheck.conflicts.length === 0
+          ? 200
+          : 503;
 
       res.status(statusCode).json({
-        success: deploymentCheck.deploymentReady && portCheck.conflicts.length === 0,
+        success:
+          deploymentCheck.deploymentReady && portCheck.conflicts.length === 0,
         deployment: {
           ready: deploymentCheck.deploymentReady,
           blockers: deploymentCheck.blockers,

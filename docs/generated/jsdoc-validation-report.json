@@ -27,9 +27,7 @@
         "total": 2,
         "percentage": "50.00"
       },
-      "errors": [
-        "Class EnhancedWebSocketClient missing JSDoc"
-      ],
+      "errors": ["Class EnhancedWebSocketClient missing JSDoc"],
       "warnings": []
     },
     {
@@ -75,9 +73,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -279,9 +275,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -348,9 +342,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -361,10 +353,7 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag",
-        "Class UACL missing JSDoc"
-      ],
+      "errors": ["Missing @fileoverview tag", "Class UACL missing JSDoc"],
       "warnings": []
     },
     {
@@ -446,9 +435,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -492,9 +479,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -560,10 +545,7 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag",
-        "Class GraphDao missing JSDoc"
-      ],
+      "errors": ["Missing @fileoverview tag", "Class GraphDao missing JSDoc"],
       "warnings": []
     },
     {
@@ -574,10 +556,7 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag",
-        "Class MemoryDao missing JSDoc"
-      ],
+      "errors": ["Missing @fileoverview tag", "Class MemoryDao missing JSDoc"],
       "warnings": []
     },
     {
@@ -602,10 +581,7 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag",
-        "Class VectorDao missing JSDoc"
-      ],
+      "errors": ["Missing @fileoverview tag", "Class VectorDao missing JSDoc"],
       "warnings": []
     },
     {
@@ -616,9 +592,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -629,9 +603,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -642,9 +614,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -655,9 +625,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -668,10 +636,7 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag",
-        "Class VectorDao missing JSDoc"
-      ],
+      "errors": ["Missing @fileoverview tag", "Class VectorDao missing JSDoc"],
       "warnings": []
     },
     {
@@ -811,10 +776,7 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag",
-        "Class ADRManager missing JSDoc"
-      ],
+      "errors": ["Missing @fileoverview tag", "Class ADRManager missing JSDoc"],
       "warnings": []
     },
     {
@@ -853,9 +815,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -1220,9 +1180,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -1332,10 +1290,7 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag",
-        "Class WebService missing JSDoc"
-      ],
+      "errors": ["Missing @fileoverview tag", "Class WebService missing JSDoc"],
       "warnings": []
     },
     {
@@ -1346,10 +1301,7 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag",
-        "Class USL missing JSDoc"
-      ],
+      "errors": ["Missing @fileoverview tag", "Class USL missing JSDoc"],
       "warnings": []
     },
     {
@@ -1416,9 +1368,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -1532,9 +1482,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -1577,9 +1525,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -1675,10 +1621,7 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag",
-        "Class UEL missing JSDoc"
-      ],
+      "errors": ["Missing @fileoverview tag", "Class UEL missing JSDoc"],
       "warnings": []
     },
     {
@@ -1726,9 +1669,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -1756,9 +1697,7 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": [
-        "Missing @fileoverview tag"
-      ],
+      "errors": ["Missing @fileoverview tag"],
       "warnings": []
     },
     {
@@ -1882,9 +1821,7 @@
             "total": 2,
             "percentage": "50.00"
           },
-          "errors": [
-            "Class EnhancedWebSocketClient missing JSDoc"
-          ],
+          "errors": ["Class EnhancedWebSocketClient missing JSDoc"],
           "warnings": []
         },
         {
@@ -1930,9 +1867,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -2134,9 +2069,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -2203,9 +2136,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -2216,10 +2147,7 @@
             "total": 2,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag",
-            "Class UACL missing JSDoc"
-          ],
+          "errors": ["Missing @fileoverview tag", "Class UACL missing JSDoc"],
           "warnings": []
         },
         {
@@ -2301,9 +2229,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -2362,9 +2288,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -2486,9 +2410,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -2499,9 +2421,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -2512,9 +2432,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -2525,9 +2443,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -2723,9 +2639,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -3105,9 +3019,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -3231,10 +3143,7 @@
             "total": 2,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag",
-            "Class USL missing JSDoc"
-          ],
+          "errors": ["Missing @fileoverview tag", "Class USL missing JSDoc"],
           "warnings": []
         },
         {
@@ -3301,9 +3210,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -3432,9 +3339,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -3477,9 +3382,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -3575,10 +3478,7 @@
             "total": 2,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag",
-            "Class UEL missing JSDoc"
-          ],
+          "errors": ["Missing @fileoverview tag", "Class UEL missing JSDoc"],
           "warnings": []
         },
         {
@@ -3626,9 +3526,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {
@@ -3656,9 +3554,7 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": [
-            "Missing @fileoverview tag"
-          ],
+          "errors": ["Missing @fileoverview tag"],
           "warnings": []
         },
         {

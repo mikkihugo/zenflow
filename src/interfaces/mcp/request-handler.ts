@@ -208,7 +208,7 @@ export class MCPRequestHandler {
    * @param params
    */
   private async handleToolCall(params: any): Promise<any> {
-    if (!params || !params?.name) {
+    if (!(params && params?.name)) {
       throw new Error('Tool name is required');
     }
 
@@ -288,7 +288,7 @@ export class MCPRequestHandler {
    * @param params
    */
   private async handleResourceRead(params: any): Promise<any> {
-    if (!params || !params?.uri) {
+    if (!(params && params?.uri)) {
       throw new Error('Resource URI is required');
     }
 

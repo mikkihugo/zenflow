@@ -79,25 +79,36 @@ class EnhancedDocumentationGenerator {
 
     // Generate comprehensive API documentation
     const apiMarkdown = this.generateAPIMarkdown(apiDocData);
-    await fs.promises.writeFile(`${this.apiDir}/comprehensive-api.md`, apiMarkdown);
+    await fs.promises.writeFile(
+      `${this.apiDir}/comprehensive-api.md`,
+      apiMarkdown,
+    );
 
     // Generate JSON schema for API
     await fs.promises.writeFile(
       `${this.apiDir}/api-schema.json`,
-      JSON.stringify(apiDocData, null, 2)
+      JSON.stringify(apiDocData, null, 2),
     );
   }
 
   async generateTypeScriptDocumentation() {
     try {
       // Use TypeDoc for comprehensive TypeScript documentation
-      await this.runCommand('npx', ['typedoc', '--out', 'docs/api/typedoc', 'src']);
+      await this.runCommand('npx', [
+        'typedoc',
+        '--out',
+        'docs/api/typedoc',
+        'src',
+      ]);
     } catch (_error) {
       // Fallback: Manual TypeScript interface extraction
       const interfaces = await this.extractTypeScriptInterfaces();
       const interfaceMarkdown = this.generateInterfaceMarkdown(interfaces);
 
-      await fs.promises.writeFile(`${this.apiDir}/typescript-interfaces.md`, interfaceMarkdown);
+      await fs.promises.writeFile(
+        `${this.apiDir}/typescript-interfaces.md`,
+        interfaceMarkdown,
+      );
     }
   }
 
@@ -111,10 +122,11 @@ class EnhancedDocumentationGenerator {
       neural: await this.analyzeNeuralArchitecture(),
     };
 
-    const architectureMarkdown = this.generateArchitectureMarkdown(architectureData);
+    const architectureMarkdown =
+      this.generateArchitectureMarkdown(architectureData);
     await fs.promises.writeFile(
       `${this.architectureDir}/system-architecture.md`,
-      architectureMarkdown
+      architectureMarkdown,
     );
 
     // Generate domain maps
@@ -130,10 +142,11 @@ class EnhancedDocumentationGenerator {
       bottlenecks: await this.analyzePerformanceBottlenecks(),
     };
 
-    const performanceMarkdown = this.generatePerformanceMarkdown(performanceData);
+    const performanceMarkdown =
+      this.generatePerformanceMarkdown(performanceData);
     await fs.promises.writeFile(
       `${this.performanceDir}/performance-analysis.md`,
-      performanceMarkdown
+      performanceMarkdown,
     );
   }
 
@@ -148,7 +161,10 @@ class EnhancedDocumentationGenerator {
     };
 
     const securityMarkdown = this.generateSecurityMarkdown(securityData);
-    await fs.promises.writeFile(`${this.securityDir}/security-analysis.md`, securityMarkdown);
+    await fs.promises.writeFile(
+      `${this.securityDir}/security-analysis.md`,
+      securityMarkdown,
+    );
 
     // Generate security checklist
     await this.generateSecurityChecklist(securityData);
@@ -156,12 +172,18 @@ class EnhancedDocumentationGenerator {
 
   async generateADRDocumentation() {
     const adrTemplate = this.generateADRTemplate();
-    await fs.promises.writeFile(`${this.docsDir}/adrs/adr-template.md`, adrTemplate);
+    await fs.promises.writeFile(
+      `${this.docsDir}/adrs/adr-template.md`,
+      adrTemplate,
+    );
 
     // Generate automated ADRs from code analysis
     const autoADRs = await this.generateAutomatedADRs();
     for (const adr of autoADRs) {
-      await fs.promises.writeFile(`${this.docsDir}/adrs/${adr.filename}`, adr.content);
+      await fs.promises.writeFile(
+        `${this.docsDir}/adrs/${adr.filename}`,
+        adr.content,
+      );
     }
   }
 
@@ -176,7 +198,7 @@ class EnhancedDocumentationGenerator {
 
       await fs.promises.writeFile(
         `${this.docsDir}/coverage/coverage-analysis.md`,
-        coverageMarkdown
+        coverageMarkdown,
       );
     } catch (_error) {}
   }
@@ -224,7 +246,10 @@ ${await this.generateDeploymentGuide()}
 ${await this.generateTroubleshootingGuide()}
 `;
 
-    await fs.promises.writeFile(`${this.docsDir}/guides/developer-guide.md`, developerGuide);
+    await fs.promises.writeFile(
+      `${this.docsDir}/guides/developer-guide.md`,
+      developerGuide,
+    );
   }
 
   async generateDocumentationIndex() {
@@ -340,7 +365,8 @@ ${await this.generateTroubleshootingGuide()}
   }
 
   extractTSExports(content) {
-    const exportRegex = /export\s+(?:interface|class|function|const|let|var)\s+(\w+)/g;
+    const exportRegex =
+      /export\s+(?:interface|class|function|const|let|var)\s+(\w+)/g;
     const matches = [...content.matchAll(exportRegex)];
     return matches.map((match) => ({ name: match[1], type: 'export' }));
   }
@@ -379,7 +405,9 @@ ${await this.generateTroubleshootingGuide()}
 
   async analyzeDependencies() {
     try {
-      const packageJson = JSON.parse(await fs.promises.readFile('package.json', 'utf-8'));
+      const packageJson = JSON.parse(
+        await fs.promises.readFile('package.json', 'utf-8'),
+      );
       return {
         dependencies: Object.keys(packageJson.dependencies || {}),
         devDependencies: Object.keys(packageJson.devDependencies || {}),
@@ -405,8 +433,12 @@ ${await this.generateTroubleshootingGuide()}
 
   async getSubdirectories(dirPath) {
     try {
-      const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
-      return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+      const entries = await fs.promises.readdir(dirPath, {
+        withFileTypes: true,
+      });
+      return entries
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name);
     } catch (_error) {
       return [];
     }
@@ -436,7 +468,7 @@ ${file.interfaces.map((iface) => `- \`${iface.name}\``).join('\n')}
 
 **Exports (${file.exports.length}):**
 ${file.exports.map((exp) => `- \`${exp.name}\``).join('\n')}
-`
+`,
   )
   .join('\n')}
 
@@ -451,7 +483,7 @@ ${apiData.javascript
 
 **JSDoc Comments:** ${file.jsdoc.length}
 **Exports:** ${file.exports.length}
-`
+`,
   )
   .join('\n')}
 
@@ -476,7 +508,7 @@ ${data.domains
 - **Files:** ${domain.fileCount}
 - **Lines of Code:** ${domain.lineCount}
 - **Subdirectories:** ${domain.subdirectories.join(', ')}
-`
+`,
   )
   .join('\n')}
 
@@ -494,7 +526,9 @@ ${data.domains
 
   async getProjectVersion() {
     try {
-      const packageJson = JSON.parse(await fs.promises.readFile('package.json', 'utf-8'));
+      const packageJson = JSON.parse(
+        await fs.promises.readFile('package.json', 'utf-8'),
+      );
       return packageJson.version || '0.0.0';
     } catch (_error) {
       return '0.0.0';
@@ -529,7 +563,10 @@ ${data.domains
   async scanVulnerabilities() {
     try {
       // Run npm audit and parse results
-      const { stdout } = await this.runCommandWithOutput('npm', ['audit', '--json']);
+      const { stdout } = await this.runCommandWithOutput('npm', [
+        'audit',
+        '--json',
+      ]);
       return JSON.parse(stdout);
     } catch (_error) {
       return { vulnerabilities: {}, metadata: { totalDependencies: 0 } };
@@ -590,7 +627,12 @@ ${data.recommendations?.map((rec) => `- ${rec}`).join('\n') || 'No specific reco
 
   async getGeneratedDocuments() {
     const documents = [];
-    const searchDirs = [this.apiDir, this.securityDir, this.performanceDir, this.architectureDir];
+    const searchDirs = [
+      this.apiDir,
+      this.securityDir,
+      this.performanceDir,
+      this.architectureDir,
+    ];
 
     for (const dir of searchDirs) {
       try {

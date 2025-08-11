@@ -240,7 +240,10 @@ describe('CLI Command Processing - TDD London', () => {
       const result = await mockRegistry.execute('failing-command', context);
 
       // Assert - verify failure handling
-      expect(mockRegistry.execute).toHaveBeenCalledWith('failing-command', context);
+      expect(mockRegistry.execute).toHaveBeenCalledWith(
+        'failing-command',
+        context,
+      );
       expect(result?.success).toBe(false);
       expect(result?.exitCode).toBe(1);
     });
@@ -348,7 +351,10 @@ describe('CLI Command Processing - TDD London', () => {
       mockErrorHandler.register(errorType, handler);
 
       // Assert - verify handler registration
-      expect(mockErrorHandler.register).toHaveBeenCalledWith(errorType, handler);
+      expect(mockErrorHandler.register).toHaveBeenCalledWith(
+        errorType,
+        handler,
+      );
     });
 
     it('should handle different error severity levels', async () => {
@@ -417,8 +423,14 @@ describe('CLI Command Processing - TDD London', () => {
 
       // Assert - Verify complete interaction chain
       expect(mockParser.parse).toHaveBeenCalledWith(input);
-      expect(mockRegistry.execute).toHaveBeenCalledWith('status', expect.any(Object));
-      expect(mockFormatter.format).toHaveBeenCalledWith(executionResult?.data, parseResult?.flags);
+      expect(mockRegistry.execute).toHaveBeenCalledWith(
+        'status',
+        expect.any(Object),
+      );
+      expect(mockFormatter.format).toHaveBeenCalledWith(
+        executionResult?.data,
+        parseResult?.flags,
+      );
       expect(formatted).toBe(formattedOutput);
     });
 
@@ -457,8 +469,14 @@ describe('CLI Command Processing - TDD London', () => {
 
       // Assert - Verify error handling chain
       expect(mockParser.parse).toHaveBeenCalledWith(input);
-      expect(mockRegistry.execute).toHaveBeenCalledWith('invalid-command', expect.any(Object));
-      expect(mockErrorHandler.handle).toHaveBeenCalledWith(executionError, expect.any(Object));
+      expect(mockRegistry.execute).toHaveBeenCalledWith(
+        'invalid-command',
+        expect.any(Object),
+      );
+      expect(mockErrorHandler.handle).toHaveBeenCalledWith(
+        executionError,
+        expect.any(Object),
+      );
     });
 
     it('should validate arguments before command execution', () => {

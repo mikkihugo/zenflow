@@ -124,20 +124,27 @@ export { SQLiteBackend } from './storage-backends/sqlite-backend.ts';
 export async function createKnowledgeSharingSystem(
   config?: any,
   logger?: any,
-  eventBus?: any
+  eventBus?: any,
 ): Promise<any> {
   const { CrossAgentKnowledgeIntegration, getDefaultConfig } = await import(
     './cross-agent-knowledge-integration.ts'
   );
 
   // Use provided config or create default
-  const finalConfig = config ? { ...getDefaultConfig(), ...config } : getDefaultConfig();
+  const finalConfig = config
+    ? { ...getDefaultConfig(), ...config }
+    : getDefaultConfig();
 
   // Create logger and event bus if not provided
   const finalLogger = logger || console;
-  const finalEventBus = eventBus || new (await import('node:events')).EventEmitter();
+  const finalEventBus =
+    eventBus || new (await import('node:events')).EventEmitter();
 
-  const system = new CrossAgentKnowledgeIntegration(finalConfig, finalLogger, finalEventBus);
+  const system = new CrossAgentKnowledgeIntegration(
+    finalConfig,
+    finalLogger,
+    finalEventBus,
+  );
   await system.initialize();
 
   return system;
@@ -179,22 +186,26 @@ export function validateKnowledgeConfig(config: any): {
   }
 
   // Validate integration config
-  if (!config?.integration) {
-    errors.push('Missing integration configuration');
-  } else {
+  if (config?.integration) {
     if (
       config?.integration?.factIntegration?.enabled &&
       !config?.integration?.factIntegration?.knowledgeSwarmIntegration
     ) {
-      warnings.push('FACT integration enabled but knowledge swarm integration disabled');
+      warnings.push(
+        'FACT integration enabled but knowledge swarm integration disabled',
+      );
     }
 
     if (
       config?.integration?.ragIntegration?.enabled &&
       !config?.integration?.ragIntegration?.vectorStoreIntegration
     ) {
-      warnings.push('RAG integration enabled but vector store integration disabled');
+      warnings.push(
+        'RAG integration enabled but vector store integration disabled',
+      );
     }
+  } else {
+    errors.push('Missing integration configuration');
   }
 
   // Validate distributed learning config
@@ -235,8 +246,8 @@ export function getSystemCapabilities(config: any): {
     crossDomainTransfer: !!config?.intelligenceCoordination,
     qualityManagement: !!config?.qualityManagement,
     performanceOptimization: !!config?.performanceOptimization,
-    factIntegration: config?.integration?.factIntegration?.enabled || false,
-    ragIntegration: config?.integration?.ragIntegration?.enabled || false,
+    factIntegration: config?.integration?.factIntegration?.enabled,
+    ragIntegration: config?.integration?.ragIntegration?.enabled,
   };
 }
 
@@ -274,7 +285,9 @@ export function createTestConfig(): any {
  * @param basePath
  * @example
  */
-export async function ensureStorageDirectory(basePath: string = process.cwd()): Promise<{
+export async function ensureStorageDirectory(
+  basePath: string = process.cwd(),
+): Promise<{
   swarmDir: string;
   hiveMindDir: string;
   knowledgeDir: string;

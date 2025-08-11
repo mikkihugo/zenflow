@@ -7,7 +7,11 @@
  */
 
 import 'reflect-metadata';
-import type { Constructor, DIToken, InjectionMetadata } from '../types/di-types.ts';
+import type {
+  Constructor,
+  DIToken,
+  InjectionMetadata,
+} from '../types/di-types.ts';
 
 // Metadata keys
 const INJECTION_TOKENS_KEY = Symbol('injection_tokens');
@@ -24,8 +28,10 @@ export function injectable<T extends Constructor>(constructor: T): T {
   Reflect.defineMetadata(INJECTABLE_KEY, true, constructor);
 
   // Get parameter types from TypeScript metadata
-  const paramTypes = Reflect.getMetadata('design:paramtypes', constructor) || [];
-  const injectionTokens = getInjectionTokens(constructor) || new Array(paramTypes.length);
+  const paramTypes =
+    Reflect.getMetadata('design:paramtypes', constructor) || [];
+  const injectionTokens =
+    getInjectionTokens(constructor) || new Array(paramTypes.length);
 
   // Store injection metadata
   setInjectionMetadata(constructor, {
@@ -43,8 +49,13 @@ export function injectable<T extends Constructor>(constructor: T): T {
  * @example
  */
 export function inject<T>(token: DIToken<T>) {
-  return (target: any, _propertyKey: string | symbol | undefined, parameterIndex: number) => {
-    const existingTokens = Reflect.getMetadata(INJECTION_TOKENS_KEY, target) || [];
+  return (
+    target: any,
+    _propertyKey: string | symbol | undefined,
+    parameterIndex: number,
+  ) => {
+    const existingTokens =
+      Reflect.getMetadata(INJECTION_TOKENS_KEY, target) || [];
     existingTokens[parameterIndex] = token;
     Reflect.defineMetadata(INJECTION_TOKENS_KEY, existingTokens, target);
   };
@@ -67,7 +78,7 @@ export function isInjectable(constructor: Constructor): boolean {
  * @example
  */
 export function getInjectionTokens(
-  constructor: Constructor
+  constructor: Constructor,
 ): (DIToken<any> | undefined)[] | undefined {
   return Reflect.getMetadata(INJECTION_TOKENS_KEY, constructor);
 }
@@ -81,7 +92,7 @@ export function getInjectionTokens(
  */
 export function setInjectionTokens(
   constructor: Constructor,
-  tokens: (DIToken<any> | undefined)[]
+  tokens: (DIToken<any> | undefined)[],
 ): void {
   Reflect.defineMetadata(INJECTION_TOKENS_KEY, tokens, constructor);
 }
@@ -92,7 +103,9 @@ export function setInjectionTokens(
  * @param constructor
  * @example
  */
-export function getInjectionMetadata(constructor: Constructor): InjectionMetadata | undefined {
+export function getInjectionMetadata(
+  constructor: Constructor,
+): InjectionMetadata | undefined {
   const parameterTypes = Reflect.getMetadata('design:paramtypes', constructor);
   const injectionTokens = getInjectionTokens(constructor);
 
@@ -113,8 +126,15 @@ export function getInjectionMetadata(constructor: Constructor): InjectionMetadat
  * @param metadata
  * @example
  */
-export function setInjectionMetadata(constructor: Constructor, metadata: InjectionMetadata): void {
-  Reflect.defineMetadata('design:paramtypes', metadata?.parameterTypes, constructor);
+export function setInjectionMetadata(
+  constructor: Constructor,
+  metadata: InjectionMetadata,
+): void {
+  Reflect.defineMetadata(
+    'design:paramtypes',
+    metadata?.parameterTypes,
+    constructor,
+  );
   setInjectionTokens(constructor, metadata?.injectionTokens);
 }
 

@@ -140,7 +140,12 @@ export class Agent extends EventEmitter implements AgentComponent {
     id: string,
     name: string,
     initialCapabilities: AgentCapability[] = [],
-    resourceLimits: ResourceRequirements = { cpu: 1.0, memory: 1024, network: 100, storage: 1024 }
+    resourceLimits: ResourceRequirements = {
+      cpu: 1.0,
+      memory: 1024,
+      network: 100,
+      storage: 1024,
+    },
   ) {
     super();
     this.id = id;
@@ -199,14 +204,16 @@ export class Agent extends EventEmitter implements AgentComponent {
   getMetrics(): AgentMetrics {
     const successRate =
       this.status.completedTasks > 0
-        ? this.status.completedTasks / (this.status.completedTasks + this.status.failedTasks)
+        ? this.status.completedTasks /
+          (this.status.completedTasks + this.status.failedTasks)
         : 1.0;
 
     const avgExecutionTime =
       this.taskHistory.length > 0
         ? this.taskHistory
             .filter((t) => t.metrics?.executionTime)
-            .reduce((sum, t) => sum + (t.metrics?.executionTime || 0), 0) / this.taskHistory.length
+            .reduce((sum, t) => sum + (t.metrics?.executionTime || 0), 0) /
+          this.taskHistory.length
         : 0;
 
     return {
@@ -246,7 +253,7 @@ export class Agent extends EventEmitter implements AgentComponent {
   canHandleTask(task: TaskDefinition): boolean {
     // Check if agent has required capabilities
     const hasCapabilities = task.requiredCapabilities.every((reqCap) =>
-      this.capabilities.has(reqCap)
+      this.capabilities.has(reqCap),
     );
 
     if (!hasCapabilities) return false;
@@ -285,19 +292,19 @@ export class Agent extends EventEmitter implements AgentComponent {
   releaseResources(requirements: ResourceRequirements): void {
     this.status.resources.allocated.cpu = Math.max(
       0,
-      this.status.resources.allocated.cpu - requirements.cpu
+      this.status.resources.allocated.cpu - requirements.cpu,
     );
     this.status.resources.allocated.memory = Math.max(
       0,
-      this.status.resources.allocated.memory - requirements.memory
+      this.status.resources.allocated.memory - requirements.memory,
     );
     this.status.resources.allocated.network = Math.max(
       0,
-      this.status.resources.allocated.network - requirements.network
+      this.status.resources.allocated.network - requirements.network,
     );
     this.status.resources.allocated.storage = Math.max(
       0,
-      this.status.resources.allocated.storage - requirements.storage
+      this.status.resources.allocated.storage - requirements.storage,
     );
 
     this.updateAvailableResources();
@@ -361,7 +368,9 @@ export class Agent extends EventEmitter implements AgentComponent {
   }
 
   // Private helper methods
-  private async executeTaskImmediately(task: TaskDefinition): Promise<TaskResult> {
+  private async executeTaskImmediately(
+    task: TaskDefinition,
+  ): Promise<TaskResult> {
     const startTime = new Date();
     const requiredResources = this.estimateTaskResources(task);
 
@@ -434,7 +443,7 @@ export class Agent extends EventEmitter implements AgentComponent {
 
   private async performTaskExecution(
     task: TaskDefinition,
-    executionTime: number
+    executionTime: number,
   ): Promise<Record<string, any>> {
     // Simulate task execution
     return new Promise((resolve, reject) => {
@@ -526,13 +535,15 @@ export class Agent extends EventEmitter implements AgentComponent {
     };
 
     // Update efficiency
-    const totalAllocated = allocated.cpu + allocated.memory + allocated.network + allocated.storage;
+    const totalAllocated =
+      allocated.cpu + allocated.memory + allocated.network + allocated.storage;
     const totalLimits =
       this.resourceLimits.cpu +
       this.resourceLimits.memory +
       this.resourceLimits.network +
       this.resourceLimits.storage;
-    this.status.resources.efficiency = totalLimits > 0 ? 1 - totalAllocated / totalLimits : 1;
+    this.status.resources.efficiency =
+      totalLimits > 0 ? 1 - totalAllocated / totalLimits : 1;
   }
 
   private updateHealth(taskSuccess: boolean): void {
@@ -622,8 +633,10 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
   private name: string;
   private members: Map<string, AgentComponent> = new Map();
   private groupCapabilities: Map<string, AgentCapability> = new Map();
-  private loadBalancingStrategy: 'round-robin' | 'least-loaded' | 'capability-based' =
-    'capability-based';
+  private loadBalancingStrategy:
+    | 'round-robin'
+    | 'least-loaded'
+    | 'capability-based' = 'capability-based';
   private currentRoundRobinIndex = 0;
 
   constructor(id: string, name: string, members: AgentComponent[] = []) {
@@ -652,8 +665,12 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
   }
 
   getStatus(): CompositeStatus {
-    const memberStatuses = Array.from(this.members.values()).map((member) => member.getStatus());
-    const individualStatuses = memberStatuses.filter((s) => 'state' in s) as AgentStatus[];
+    const memberStatuses = Array.from(this.members.values()).map((member) =>
+      member.getStatus(),
+    );
+    const individualStatuses = memberStatuses.filter(
+      (s) => 'state' in s,
+    ) as AgentStatus[];
     const compositeStatuses = memberStatuses.filter((s) => 'memberCount' in s);
 
     const activeMemberCount =
@@ -665,7 +682,9 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
       ...compositeStatuses.map((s) => s.health),
     ];
     const avgHealth =
-      totalHealth.length > 0 ? totalHealth.reduce((sum, h) => sum + h, 0) / totalHealth.length : 1;
+      totalHealth.length > 0
+        ? totalHealth.reduce((sum, h) => sum + h, 0) / totalHealth.length
+        : 1;
 
     const totalQueuedTasks =
       individualStatuses.reduce((sum, s) => sum + s.queuedTasks, 0) +
@@ -681,21 +700,25 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
     // Aggregate resources
     const totalAllocated = this.aggregateResources(
-      individualStatuses.map((s) => s.resources.allocated)
+      individualStatuses.map((s) => s.resources.allocated),
     );
     const totalAvailable = this.aggregateResources(
-      individualStatuses.map((s) => s.resources.available)
+      individualStatuses.map((s) => s.resources.available),
     );
     const avgEfficiency =
       individualStatuses.length > 0
-        ? individualStatuses.reduce((sum, s) => sum + s.resources.efficiency, 0) /
-          individualStatuses.length
+        ? individualStatuses.reduce(
+            (sum, s) => sum + s.resources.efficiency,
+            0,
+          ) / individualStatuses.length
         : 1;
 
     const lastActivity = new Date(
       Math.max(
-        ...memberStatuses.map((s) => ('lastActivity' in s ? s.lastActivity.getTime() : Date.now()))
-      )
+        ...memberStatuses.map((s) =>
+          'lastActivity' in s ? s.lastActivity.getTime() : Date.now(),
+        ),
+      ),
     );
 
     return {
@@ -722,21 +745,27 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
   }
 
   getMetrics(): CompositeMetrics {
-    const memberMetrics = Array.from(this.members.values()).map((member) => member.getMetrics());
+    const memberMetrics = Array.from(this.members.values()).map((member) =>
+      member.getMetrics(),
+    );
 
     const totalTasks = memberMetrics.reduce((sum, m) => sum + m.totalTasks, 0);
     const weightedSuccessRate =
-      memberMetrics.reduce((sum, m) => sum + m.successRate * m.totalTasks, 0) / totalTasks || 1;
+      memberMetrics.reduce((sum, m) => sum + m.successRate * m.totalTasks, 0) /
+        totalTasks || 1;
     const avgExecutionTime =
-      memberMetrics.reduce((sum, m) => sum + m.averageExecutionTime, 0) / memberMetrics.length || 0;
+      memberMetrics.reduce((sum, m) => sum + m.averageExecutionTime, 0) /
+        memberMetrics.length || 0;
     const avgResourceEfficiency =
-      memberMetrics.reduce((sum, m) => sum + m.resourceEfficiency, 0) / memberMetrics.length || 1;
+      memberMetrics.reduce((sum, m) => sum + m.resourceEfficiency, 0) /
+        memberMetrics.length || 1;
     const avgReliability =
-      memberMetrics.reduce((sum, m) => sum + m.reliability, 0) / memberMetrics.length || 1;
+      memberMetrics.reduce((sum, m) => sum + m.reliability, 0) /
+        memberMetrics.length || 1;
 
     // Aggregate weekly activity
     const weeklyActivity = Array.from({ length: 7 }, (_, day) =>
-      memberMetrics.reduce((sum, m) => sum + (m.lastWeekActivity[day] || 0), 0)
+      memberMetrics.reduce((sum, m) => sum + (m.lastWeekActivity[day] || 0), 0),
     );
 
     // Distribution by type
@@ -762,10 +791,9 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
           if ('memberCount' in status) {
             // CompositeStatus
             return status.state !== 'inactive';
-          } else {
-            // AgentStatus
-            return status.state !== 'offline';
           }
+          // AgentStatus
+          return status.state !== 'offline';
         }).length,
         averageHealth: avgReliability,
         distributionByType,
@@ -804,7 +832,9 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
   canHandleTask(task: TaskDefinition): boolean {
     // Check if any member can handle the task
-    return Array.from(this.members.values()).some((member) => member.canHandleTask(task));
+    return Array.from(this.members.values()).some((member) =>
+      member.canHandleTask(task),
+    );
   }
 
   addCapability(capability: AgentCapability): void {
@@ -815,7 +845,10 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
   removeCapability(capabilityName: string): void {
     const removed = this.groupCapabilities.delete(capabilityName);
     if (removed) {
-      this.emit('group:capability_removed', { groupId: this.id, capabilityName });
+      this.emit('group:capability_removed', {
+        groupId: this.id,
+        capabilityName,
+      });
     }
   }
 
@@ -839,7 +872,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
   getAvailableResources(): ResourceRequirements {
     const allResources = Array.from(this.members.values()).map((member) =>
-      member.getAvailableResources()
+      member.getAvailableResources(),
     );
     return this.aggregateResources(allResources);
   }
@@ -849,11 +882,16 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     const initPromises = Array.from(this.members.values()).map((member) =>
       member
         .initialize(config)
-        .catch((error) => logger.error(`Failed to initialize member ${member.getId()}:`, error))
+        .catch((error) =>
+          logger.error(`Failed to initialize member ${member.getId()}:`, error),
+        ),
     );
 
     await Promise.allSettled(initPromises);
-    this.emit('group:initialized', { groupId: this.id, memberCount: this.members.size });
+    this.emit('group:initialized', {
+      groupId: this.id,
+      memberCount: this.members.size,
+    });
   }
 
   async shutdown(): Promise<void> {
@@ -861,7 +899,9 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     const shutdownPromises = Array.from(this.members.values()).map((member) =>
       member
         .shutdown()
-        .catch((error) => logger.error(`Failed to shutdown member ${member.getId()}:`, error))
+        .catch((error) =>
+          logger.error(`Failed to shutdown member ${member.getId()}:`, error),
+        ),
     );
 
     await Promise.allSettled(shutdownPromises);
@@ -870,14 +910,18 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
   async pause(): Promise<void> {
     // Pause all members
-    const pausePromises = Array.from(this.members.values()).map((member) => member.pause());
+    const pausePromises = Array.from(this.members.values()).map((member) =>
+      member.pause(),
+    );
     await Promise.allSettled(pausePromises);
     this.emit('group:paused', { groupId: this.id });
   }
 
   async resume(): Promise<void> {
     // Resume all members
-    const resumePromises = Array.from(this.members.values()).map((member) => member.resume());
+    const resumePromises = Array.from(this.members.values()).map((member) =>
+      member.resume(),
+    );
     await Promise.allSettled(resumePromises);
     this.emit('group:resumed', { groupId: this.id });
   }
@@ -889,10 +933,17 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
     // Forward member events
     member.on('task:completed', (result) => {
-      this.emit('member:task_completed', { groupId: this.id, memberId: member.getId(), result });
+      this.emit('member:task_completed', {
+        groupId: this.id,
+        memberId: member.getId(),
+        result,
+      });
     });
 
-    this.emit('group:member_added', { groupId: this.id, memberId: member.getId() });
+    this.emit('group:member_added', {
+      groupId: this.id,
+      memberId: member.getId(),
+    });
   }
 
   removeMember(memberId: string): boolean {
@@ -921,7 +972,9 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     return Array.from(this.members.keys());
   }
 
-  setLoadBalancingStrategy(strategy: 'round-robin' | 'least-loaded' | 'capability-based'): void {
+  setLoadBalancingStrategy(
+    strategy: 'round-robin' | 'least-loaded' | 'capability-based',
+  ): void {
     this.loadBalancingStrategy = strategy;
     this.emit('group:strategy_changed', { groupId: this.id, strategy });
   }
@@ -929,7 +982,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
   // Broadcast task to all members (parallel execution)
   async broadcastTask(task: TaskDefinition): Promise<TaskResult[]> {
     const eligibleMembers = Array.from(this.members.values()).filter((member) =>
-      member.canHandleTask(task)
+      member.canHandleTask(task),
     );
 
     if (eligibleMembers.length === 0) {
@@ -940,7 +993,11 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
       const memberTask = {
         ...task,
         id: `${task.id}-${index}`,
-        metadata: { ...task.metadata, originalTaskId: task.id, memberId: member.getId() },
+        metadata: {
+          ...task.metadata,
+          originalTaskId: task.id,
+          memberId: member.getId(),
+        },
       };
 
       return member.executeTask(memberTask);
@@ -951,24 +1008,23 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     return results?.map((result, index) => {
       if (result?.status === 'fulfilled') {
         return result?.value;
-      } else {
-        const agent = eligibleMembers[index];
-        return {
-          taskId: `${task.id}-${index}`,
-          agentId: agent ? agent.getId() : `unknown-${index}`,
-          status: 'failed' as const,
-          startTime: new Date(),
-          endTime: new Date(),
-          error: result?.reason?.message,
-        };
       }
+      const agent = eligibleMembers[index];
+      return {
+        taskId: `${task.id}-${index}`,
+        agentId: agent ? agent.getId() : `unknown-${index}`,
+        status: 'failed' as const,
+        startTime: new Date(),
+        endTime: new Date(),
+        error: result?.reason?.message,
+      };
     });
   }
 
   // Private helper methods
   private selectAgentForTask(task: TaskDefinition): AgentComponent | null {
     const eligibleMembers = Array.from(this.members.values()).filter((member) =>
-      member.canHandleTask(task)
+      member.canHandleTask(task),
     );
 
     if (eligibleMembers.length === 0) return null;
@@ -988,17 +1044,22 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     }
   }
 
-  private selectRoundRobin(eligibleMembers: AgentComponent[]): AgentComponent | null {
+  private selectRoundRobin(
+    eligibleMembers: AgentComponent[],
+  ): AgentComponent | null {
     if (eligibleMembers.length === 0) {
       return null;
     }
 
-    const selected = eligibleMembers[this.currentRoundRobinIndex % eligibleMembers.length];
+    const selected =
+      eligibleMembers[this.currentRoundRobinIndex % eligibleMembers.length];
     this.currentRoundRobinIndex++;
     return selected ?? null;
   }
 
-  private selectLeastLoaded(eligibleMembers: AgentComponent[]): AgentComponent | null {
+  private selectLeastLoaded(
+    eligibleMembers: AgentComponent[],
+  ): AgentComponent | null {
     if (eligibleMembers.length === 0) {
       return null;
     }
@@ -1007,8 +1068,10 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
       const leastStatus = least.getStatus();
       const currentStatus = current?.getStatus();
 
-      const leastLoad = 'queuedTasks' in leastStatus ? leastStatus.queuedTasks : 0;
-      const currentLoad = 'queuedTasks' in currentStatus ? currentStatus?.queuedTasks : 0;
+      const leastLoad =
+        'queuedTasks' in leastStatus ? leastStatus.queuedTasks : 0;
+      const currentLoad =
+        'queuedTasks' in currentStatus ? currentStatus?.queuedTasks : 0;
 
       return leastLoad <= currentLoad ? least : current;
     });
@@ -1016,7 +1079,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
 
   protected selectByCapability(
     eligibleMembers: AgentComponent[],
-    task: TaskDefinition
+    task: TaskDefinition,
   ): AgentComponent | null {
     if (eligibleMembers.length === 0) {
       return null;
@@ -1028,11 +1091,11 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
       const currentCapabilities = current?.getCapabilities();
 
       const bestMatches = task.requiredCapabilities.filter((req) =>
-        bestCapabilities.some((cap) => cap.name === req)
+        bestCapabilities.some((cap) => cap.name === req),
       ).length;
 
       const currentMatches = task.requiredCapabilities.filter((req) =>
-        currentCapabilities?.some((cap) => cap.name === req)
+        currentCapabilities?.some((cap) => cap.name === req),
       ).length;
 
       return bestMatches >= currentMatches ? best : current;
@@ -1057,7 +1120,9 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
     this.groupCapabilities = allCapabilities;
   }
 
-  private aggregateResources(resourcesList: ResourceRequirements[]): ResourceRequirements {
+  private aggregateResources(
+    resourcesList: ResourceRequirements[],
+  ): ResourceRequirements {
     return resourcesList.reduce(
       (total, resources) => ({
         cpu: total.cpu + resources.cpu,
@@ -1065,7 +1130,7 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
         network: total.network + resources.network,
         storage: total.storage + resources.storage,
       }),
-      { cpu: 0, memory: 0, network: 0, storage: 0 }
+      { cpu: 0, memory: 0, network: 0, storage: 0 },
     );
   }
 }
@@ -1081,7 +1146,7 @@ export class HierarchicalAgentGroup extends AgentGroup {
     name: string,
     members: AgentComponent[] = [],
     maxDepth: number = 3,
-    currentDepth: number = 0
+    currentDepth: number = 0,
   ) {
     super(id, name, members);
     this.maxDepth = maxDepth;
@@ -1155,16 +1220,24 @@ export class HierarchicalAgentGroup extends AgentGroup {
     const bestHandler = this.findBestHandlerInHierarchy(task);
 
     if (!bestHandler) {
-      throw new Error(`No suitable handler found in hierarchy for task ${task.id}`);
+      throw new Error(
+        `No suitable handler found in hierarchy for task ${task.id}`,
+      );
     }
 
     return bestHandler.executeTask(task);
   }
 
-  private findBestHandlerInHierarchy(task: TaskDefinition): AgentComponent | null {
+  private findBestHandlerInHierarchy(
+    task: TaskDefinition,
+  ): AgentComponent | null {
     // First, try individual agents at this level
-    const individualAgents = this.getMembers().filter((m) => m.getType() === 'individual');
-    const capableIndividuals = individualAgents.filter((agent) => agent.canHandleTask(task));
+    const individualAgents = this.getMembers().filter(
+      (m) => m.getType() === 'individual',
+    );
+    const capableIndividuals = individualAgents.filter((agent) =>
+      agent.canHandleTask(task),
+    );
 
     if (capableIndividuals.length > 0) {
       return this.selectByCapability(capableIndividuals, task);
@@ -1187,12 +1260,16 @@ export class AgentFactory {
     id: string,
     name: string,
     capabilities: AgentCapability[],
-    resourceLimits?: ResourceRequirements
+    resourceLimits?: ResourceRequirements,
   ): Agent {
     return new Agent(id, name, capabilities, resourceLimits);
   }
 
-  static createGroup(id: string, name: string, members: AgentComponent[] = []): AgentGroup {
+  static createGroup(
+    id: string,
+    name: string,
+    members: AgentComponent[] = [],
+  ): AgentGroup {
     return new AgentGroup(id, name, members);
   }
 
@@ -1201,9 +1278,15 @@ export class AgentFactory {
     name: string,
     members: AgentComponent[] = [],
     maxDepth: number = 3,
-    currentDepth: number = 0
+    currentDepth: number = 0,
   ): HierarchicalAgentGroup {
-    return new HierarchicalAgentGroup(id, name, members, maxDepth, currentDepth);
+    return new HierarchicalAgentGroup(
+      id,
+      name,
+      members,
+      maxDepth,
+      currentDepth,
+    );
   }
 
   static createCapability(
@@ -1211,7 +1294,7 @@ export class AgentFactory {
     version: string = '1.0.0',
     description: string = '',
     parameters?: Record<string, any>,
-    requiredResources?: ResourceRequirements
+    requiredResources?: ResourceRequirements,
   ): AgentCapability {
     const capability: AgentCapability = {
       name,

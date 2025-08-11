@@ -246,8 +246,15 @@ export { createDao } from './core/dao-factory.ts';
  */
 export async function createManager<T>(
   entityType: string,
-  databaseType: 'postgresql' | 'sqlite' | 'kuzu' | 'lancedb' | 'mysql' | 'memory' | 'coordination',
-  config?: any
+  databaseType:
+    | 'postgresql'
+    | 'sqlite'
+    | 'kuzu'
+    | 'lancedb'
+    | 'mysql'
+    | 'memory'
+    | 'coordination',
+  config?: any,
 ): Promise<IManager<T>> {
   const { DALFactory } = await import('./factory.ts');
   const { DIContainer } = await import('../di/container/di-container.ts');
@@ -269,7 +276,7 @@ export async function createManager<T>(
   // TODO: TypeScript error TS2345/TS18046 - DALFactory DI token type mismatch (AI unsure of safe fix - human review needed)
   const factory = container.resolve(DALFactory as any);
 
-  return await (factory).createManager({
+  return await factory.createManager({
     databaseType,
     entityType,
     databaseConfig: config || getDefaultConfig(databaseType),
@@ -370,7 +377,7 @@ export async function createMultiDatabaseSetup<T>(
       | 'memory'
       | 'coordination';
     config?: any;
-  }>
+  }>,
 ): Promise<import('./factory.ts').MultiDatabaseDAO<T>> {
   const { DALFactory } = await import('./factory.ts');
   const { DIContainer } = await import('../di/container/di-container.ts');
@@ -395,7 +402,8 @@ export async function createMultiDatabaseSetup<T>(
   const primaryDaoConfig = {
     databaseType: primaryConfig?.databaseType,
     entityType,
-    databaseConfig: primaryConfig?.config || getDefaultConfig(primaryConfig?.databaseType),
+    databaseConfig:
+      primaryConfig?.config || getDefaultConfig(primaryConfig?.databaseType),
   };
 
   const secondaryDaoConfigs = secondaryConfigs?.map((sc) => ({
@@ -404,10 +412,10 @@ export async function createMultiDatabaseSetup<T>(
     databaseConfig: sc.config || getDefaultConfig(sc.databaseType),
   }));
 
-  return await (factory).createMultiDatabaseDAO(
+  return await factory.createMultiDatabaseDAO(
     entityType,
     primaryDaoConfig,
-    secondaryDaoConfigs
+    secondaryDaoConfigs,
   );
 }
 
@@ -679,20 +687,28 @@ export const QuickSetup = {
       agents: await createDaoFn<any>(
         'agent',
         'coordination' as any,
-        getDefaultConfig('coordination')
+        getDefaultConfig('coordination'),
       ),
       tasks: await createDaoFn<any>(
         'task',
         'coordination' as any,
-        getDefaultConfig('coordination')
+        getDefaultConfig('coordination'),
       ),
       executions: await createDaoFn<any>(
         'coordination',
         'coordination' as any,
-        getDefaultConfig('coordination')
+        getDefaultConfig('coordination'),
       ),
-      memory: await createDaoFn<any>('memory', 'memory' as any, getDefaultConfig('memory')),
-      vectors: await createDaoFn<any>('vector', 'lancedb' as any, getDefaultConfig('lancedb')),
+      memory: await createDaoFn<any>(
+        'memory',
+        'memory' as any,
+        getDefaultConfig('memory'),
+      ),
+      vectors: await createDaoFn<any>(
+        'vector',
+        'lancedb' as any,
+        getDefaultConfig('lancedb'),
+      ),
     };
   },
 
@@ -705,11 +721,23 @@ export const QuickSetup = {
       documents: await createDaoFn<any>(
         'document',
         'postgresql' as any,
-        getDefaultConfig('postgresql')
+        getDefaultConfig('postgresql'),
       ),
-      embeddings: await createDaoFn<any>('vector', 'lancedb' as any, getDefaultConfig('lancedb')),
-      relationships: await createDaoFn<any>('node', 'kuzu' as any, getDefaultConfig('kuzu')),
-      cache: await createDaoFn<any>('memory', 'memory' as any, getDefaultConfig('memory')),
+      embeddings: await createDaoFn<any>(
+        'vector',
+        'lancedb' as any,
+        getDefaultConfig('lancedb'),
+      ),
+      relationships: await createDaoFn<any>(
+        'node',
+        'kuzu' as any,
+        getDefaultConfig('kuzu'),
+      ),
+      cache: await createDaoFn<any>(
+        'memory',
+        'memory' as any,
+        getDefaultConfig('memory'),
+      ),
     };
   },
 
@@ -719,7 +747,10 @@ export const QuickSetup = {
   async distributedApp() {
     const primaryDB = await createManager('User', 'postgresql');
     const cacheDB = await createManager('User', 'memory');
-    const coordinationDB = await createManager('DistributedLock', 'coordination');
+    const coordinationDB = await createManager(
+      'DistributedLock',
+      'coordination',
+    );
 
     return {
       primary: primaryDB,

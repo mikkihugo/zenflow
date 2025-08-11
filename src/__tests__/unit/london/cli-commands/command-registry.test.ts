@@ -35,7 +35,7 @@ vi.mock('fs/promises', () => ({
 vi.mock('path', () => ({
   join: vi.fn((...args: string[]) => args.join('/')),
   extname: vi.fn((path: string) => {
-    const parts = (path).split('.');
+    const parts = path.split('.');
     return parts.length > 1 ? `.${parts[parts.length - 1]}` : '';
   }),
 }));
@@ -131,7 +131,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Act & Assert - verify error behavior
       expect(() => registry.register(metadata2)).toThrow(
-        "Command 'duplicate' is already registered"
+        "Command 'duplicate' is already registered",
       );
     });
 
@@ -153,7 +153,9 @@ describe('CommandRegistry - TDD London', () => {
       registry.register(metadata1);
 
       // Act & Assert - verify alias conflict behavior
-      expect(() => registry.register(metadata2)).toThrow("Alias 'c' is already registered");
+      expect(() => registry.register(metadata2)).toThrow(
+        "Alias 'c' is already registered",
+      );
     });
   });
 
@@ -161,9 +163,21 @@ describe('CommandRegistry - TDD London', () => {
     beforeEach(() => {
       // Setup test commands
       const commands = [
-        { name: 'status', description: 'Show status', category: 'core' as const },
-        { name: 'init', description: 'Initialize project', category: 'core' as const },
-        { name: 'deploy', description: 'Deploy application', category: 'utility' as const },
+        {
+          name: 'status',
+          description: 'Show status',
+          category: 'core' as const,
+        },
+        {
+          name: 'init',
+          description: 'Initialize project',
+          category: 'core' as const,
+        },
+        {
+          name: 'deploy',
+          description: 'Deploy application',
+          category: 'utility' as const,
+        },
         {
           name: 'experimental-feature',
           description: 'Test feature',
@@ -189,7 +203,7 @@ describe('CommandRegistry - TDD London', () => {
       // Assert - verify filtering behavior
       expect(coreCommands).toHaveLength(2);
       expect(coreCommands.map((cmd) => cmd.config.name)).toEqual(
-        expect.arrayContaining(['status', 'init'])
+        expect.arrayContaining(['status', 'init']),
       );
       expect(utilityCommands).toHaveLength(1);
       expect(utilityCommands[0]?.config?.name).toBe('deploy');
@@ -219,7 +233,12 @@ describe('CommandRegistry - TDD London', () => {
       // Assert - verify listing behavior
       expect(allCommands).toHaveLength(4);
       const names = allCommands.map((cmd) => cmd.config.name);
-      expect(names).toEqual(['deploy', 'experimental-feature', 'init', 'status']);
+      expect(names).toEqual([
+        'deploy',
+        'experimental-feature',
+        'init',
+        'status',
+      ]);
     });
   });
 

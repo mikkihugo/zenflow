@@ -86,7 +86,13 @@ declare module 'escomplex' {
     column?: number;
   }
 
-  export function analyze(code: string, options?: AnalyzeOptions): ComplexityReport;
+  export function analyze(
+    code: string,
+    options?: AnalyzeOptions,
+  ): ComplexityReport;
 
-  export function analyzeModule(ast: unknown, options?: AnalyzeOptions): ComplexityReport;
+  export function analyzeModule(
+    ast: unknown,
+    options?: AnalyzeOptions,
+  ): ComplexityReport;
 }

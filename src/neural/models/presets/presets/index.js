@@ -3,14 +3,22 @@
  * Centralized access to all production-ready neural network configurations
  */
 
-import { availableGraphPresets, getGraphPreset, graphPresets } from './graph.js';
+import {
+  availableGraphPresets,
+  getGraphPreset,
+  graphPresets,
+} from './graph.js';
 import { availableNLPPresets, getNLPPreset, nlpPresets } from './nlp.js';
 import {
   availableTimeSeriesPresets,
   getTimeSeriesPreset,
   timeSeriesPresets,
 } from './timeseries.js';
-import { availableVisionPresets, getVisionPreset, visionPresets } from './vision.js';
+import {
+  availableVisionPresets,
+  getVisionPreset,
+  visionPresets,
+} from './vision.js';
 
 // Combined presets object
 export const NEURAL_PRESETS = {
@@ -42,7 +50,7 @@ export const getPreset = (category, presetName) => {
 
   if (!categoryMap[category]) {
     throw new Error(
-      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`
+      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`,
     );
   }
 
@@ -60,7 +68,7 @@ export const getCategoryPresets = (category) => {
 
   if (!categoryMap[category]) {
     throw new Error(
-      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`
+      `Unknown preset category: ${category}. Available categories: ${Object.keys(categoryMap).join(', ')}`,
     );
   }
 
@@ -111,7 +119,7 @@ export const searchPresetsByAccuracy = (minAccuracy) => {
       const accuracyMatch = accuracyStr.match(/(\d+)-?(\d+)?%/);
 
       if (accuracyMatch) {
-        const minAcc = parseInt(accuracyMatch[1], 10);
+        const minAcc = Number.parseInt(accuracyMatch[1], 10);
         if (minAcc >= minAccuracy) {
           results.push({
             category,
@@ -137,7 +145,7 @@ export const searchPresetsByInferenceTime = (maxTimeMs) => {
       const timeMatch = timeStr.match(/(\d+)ms/);
 
       if (timeMatch) {
-        const timeMs = parseInt(timeMatch[1], 10);
+        const timeMs = Number.parseInt(timeMatch[1], 10);
         if (timeMs <= maxTimeMs) {
           results.push({
             category,
@@ -186,7 +194,7 @@ export const getPresetStatistics = () => {
       const accuracyStr = preset.performance.expectedAccuracy;
       const accuracyMatch = accuracyStr.match(/(\d+)-?(\d+)?%/);
       if (accuracyMatch) {
-        const minAcc = parseInt(accuracyMatch[1], 10);
+        const minAcc = Number.parseInt(accuracyMatch[1], 10);
         if (minAcc >= 90) {
           stats.accuracyRanges['90-100%']++;
         } else if (minAcc >= 80) {
@@ -202,7 +210,7 @@ export const getPresetStatistics = () => {
       const timeStr = preset.performance.inferenceTime;
       const timeMatch = timeStr.match(/(\d+)ms/);
       if (timeMatch) {
-        const timeMs = parseInt(timeMatch[1], 10);
+        const timeMs = Number.parseInt(timeMatch[1], 10);
         if (timeMs < 10) {
           stats.inferenceTimeRanges['under-10ms']++;
         } else if (timeMs < 50) {
@@ -253,7 +261,9 @@ export const validatePresetConfig = (preset) => {
   const missingFields = requiredFields.filter((field) => !preset[field]);
 
   if (missingFields.length > 0) {
-    throw new Error(`Preset validation failed. Missing fields: ${missingFields.join(', ')}`);
+    throw new Error(
+      `Preset validation failed. Missing fields: ${missingFields.join(', ')}`,
+    );
   }
 
   // Validate performance fields
@@ -263,11 +273,13 @@ export const validatePresetConfig = (preset) => {
     'memoryUsage',
     'trainingTime',
   ];
-  const missingPerfFields = requiredPerformanceFields.filter((field) => !preset.performance[field]);
+  const missingPerfFields = requiredPerformanceFields.filter(
+    (field) => !preset.performance[field],
+  );
 
   if (missingPerfFields.length > 0) {
     throw new Error(
-      `Preset performance validation failed. Missing fields: ${missingPerfFields.join(', ')}`
+      `Preset performance validation failed. Missing fields: ${missingPerfFields.join(', ')}`,
     );
   }
 
@@ -280,7 +292,10 @@ export const DEFAULT_RECOMMENDATIONS = {
   sentiment_analysis: { category: 'nlp', preset: 'sentiment_analysis_social' },
   object_detection: { category: 'vision', preset: 'object_detection_realtime' },
   face_recognition: { category: 'vision', preset: 'facial_recognition_secure' },
-  stock_prediction: { category: 'timeseries', preset: 'stock_market_prediction' },
+  stock_prediction: {
+    category: 'timeseries',
+    preset: 'stock_market_prediction',
+  },
   weather_forecast: { category: 'timeseries', preset: 'weather_forecasting' },
   fraud_detection: { category: 'graph', preset: 'fraud_detection_financial' },
   recommendation: { category: 'graph', preset: 'recommendation_engine' },

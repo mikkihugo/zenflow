@@ -31,7 +31,9 @@ describe('Memory Efficiency - Classical TDD', () => {
       }
       _initialMemory = process.memoryUsage();
     } catch (_error) {
-      console.warn('WASM module not available, skipping memory efficiency tests');
+      console.warn(
+        'WASM module not available, skipping memory efficiency tests',
+      );
     }
   });
 
@@ -95,7 +97,9 @@ describe('Memory Efficiency - Classical TDD', () => {
 
         const networkConfig: NetworkConfig = {
           inputSize: size.inputs,
-          hiddenLayers: [{ size: size.hidden, activation: ACTIVATION_FUNCTIONS.SIGMOID }],
+          hiddenLayers: [
+            { size: size.hidden, activation: ACTIVATION_FUNCTIONS.SIGMOID },
+          ],
           outputSize: size.outputs,
           outputActivation: ACTIVATION_FUNCTIONS.SIGMOID,
         };
@@ -262,8 +266,15 @@ describe('Memory Efficiency - Classical TDD', () => {
       };
 
       for (let i = 0; i < 1000; i++) {
-        largeDataset?.inputs?.push([Math.random(), Math.random(), Math.random()]);
-        largeDataset?.outputs?.push([Math.random() > 0.5 ? 1 : 0, Math.random() > 0.5 ? 1 : 0]);
+        largeDataset?.inputs?.push([
+          Math.random(),
+          Math.random(),
+          Math.random(),
+        ]);
+        largeDataset?.outputs?.push([
+          Math.random() > 0.5 ? 1 : 0,
+          Math.random() > 0.5 ? 1 : 0,
+        ]);
       }
 
       const preMemory = process.memoryUsage().heapUsed;

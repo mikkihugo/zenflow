@@ -13,7 +13,10 @@ import {
   WorkflowHumanGateType,
 } from '../../coordination/orchestration/workflow-gates.ts';
 import { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { type WorkflowDefinition, WorkflowEngine } from '../../workflows/workflow-engine.ts';
+import {
+  type WorkflowDefinition,
+  WorkflowEngine,
+} from '../../workflows/workflow-engine.ts';
 
 const logger = getLogger('gate-performance-validation');
 
@@ -40,7 +43,7 @@ describe('Gate Performance Validation', () => {
       },
       undefined,
       undefined,
-      gatesManager
+      gatesManager,
     );
 
     await gatesManager.initialize();
@@ -65,7 +68,11 @@ describe('Gate Performance Validation', () => {
       for (let batch = 0; batch < Math.ceil(gateCount / batchSize); batch++) {
         const batchPromises = [];
 
-        for (let i = 0; i < batchSize && batch * batchSize + i < gateCount; i++) {
+        for (
+          let i = 0;
+          i < batchSize && batch * batchSize + i < gateCount;
+          i++
+        ) {
           const index = batch * batchSize + i;
 
           const gatePromise = gatesManager.createGate(
@@ -85,11 +92,17 @@ describe('Gate Performance Validation', () => {
                   timeHours: 10 + index,
                   costImpact: 1000 + index * 100,
                   teamSize: 1 + (index % 3),
-                  criticality: ['low', 'medium', 'high'][index % 3] as 'low' | 'medium' | 'high',
+                  criticality: ['low', 'medium', 'high'][index % 3] as
+                    | 'low'
+                    | 'medium'
+                    | 'high',
                 },
                 complianceImpact: {
                   regulations: index % 2 === 0 ? ['regulation-1'] : [],
-                  riskLevel: ['low', 'medium', 'high'][index % 3] as 'low' | 'medium' | 'high',
+                  riskLevel: ['low', 'medium', 'high'][index % 3] as
+                    | 'low'
+                    | 'medium'
+                    | 'high',
                   requiredReviews: [],
                   deadlines: [],
                 },
@@ -108,7 +121,7 @@ describe('Gate Performance Validation', () => {
                 WorkflowGatePriority.MEDIUM,
                 WorkflowGatePriority.HIGH,
               ][index % 3],
-            }
+            },
           );
 
           batchPromises.push(gatePromise);
@@ -142,8 +155,8 @@ describe('Gate Performance Validation', () => {
 
       await Promise.all(
         gatesToResolve.map((gateId) =>
-          gatesManager.resolveGate(gateId, 'approved', 'performance-tester')
-        )
+          gatesManager.resolveGate(gateId, 'approved', 'performance-tester'),
+        ),
       );
 
       const resolveTime = Date.now() - resolveStartTime;
@@ -196,7 +209,9 @@ describe('Gate Performance Validation', () => {
             },
           },
           {
-            structured: { type: ['strategic', 'quality', 'business'][i % 3] as any },
+            structured: {
+              type: ['strategic', 'quality', 'business'][i % 3] as any,
+            },
             payload: { queueTest: true, priority: i % 3 },
             attachments: [],
             externalReferences: [],
@@ -207,8 +222,8 @@ describe('Gate Performance Validation', () => {
               WorkflowGatePriority.MEDIUM,
               WorkflowGatePriority.LOW,
             ][i % 3],
-          }
-        )
+          },
+        ),
       );
 
       const createdGates = await Promise.all(gatePromises);
@@ -331,32 +346,35 @@ describe('Gate Performance Validation', () => {
       const startTime = Date.now();
 
       // Create workflows that require manual gate approval
-      const workflowPromises = Array.from({ length: concurrentCount }, (_, i) => {
-        const definition: WorkflowDefinition = {
-          name: `concurrent-approval-${i}`,
-          description: `Concurrent approval test ${i}`,
-          version: '1.0.0',
-          steps: [
-            {
-              type: 'log',
-              name: `Concurrent Gate ${i}`,
-              params: { message: `Concurrent gate ${i}` },
-              gateConfig: {
-                enabled: true,
-                gateType: 'approval',
-                businessImpact: 'medium',
-                stakeholders: [`approver-${i % 3}`],
-                autoApproval: false,
+      const workflowPromises = Array.from(
+        { length: concurrentCount },
+        (_, i) => {
+          const definition: WorkflowDefinition = {
+            name: `concurrent-approval-${i}`,
+            description: `Concurrent approval test ${i}`,
+            version: '1.0.0',
+            steps: [
+              {
+                type: 'log',
+                name: `Concurrent Gate ${i}`,
+                params: { message: `Concurrent gate ${i}` },
+                gateConfig: {
+                  enabled: true,
+                  gateType: 'approval',
+                  businessImpact: 'medium',
+                  stakeholders: [`approver-${i % 3}`],
+                  autoApproval: false,
+                },
               },
-            },
-          ],
-        };
+            ],
+          };
 
-        return workflowEngine.startWorkflow(definition, {
-          concurrentApproval: true,
-          index: i,
-        });
-      });
+          return workflowEngine.startWorkflow(definition, {
+            concurrentApproval: true,
+            index: i,
+          });
+        },
+      );
 
       const workflowResults = await Promise.all(workflowPromises);
       const setupTime = Date.now() - startTime;
@@ -368,12 +386,14 @@ describe('Gate Performance Validation', () => {
 
       // Approve all gates concurrently
       const approvalPromises = workflowResults.map(async (result) => {
-        const gateStatus = workflowEngine.getWorkflowGateStatus(result.workflowId!);
+        const gateStatus = workflowEngine.getWorkflowGateStatus(
+          result.workflowId!,
+        );
         if (gateStatus.pausedForGate) {
           return workflowEngine.resumeWorkflowAfterGate(
             result.workflowId!,
             gateStatus.pausedForGate.gateId,
-            true
+            true,
           );
         }
       });
@@ -387,7 +407,9 @@ describe('Gate Performance Validation', () => {
       const totalTime = Date.now() - startTime;
 
       // Count successful approvals
-      const successfulApprovals = approvalResults.filter((result) => result?.success).length;
+      const successfulApprovals = approvalResults.filter(
+        (result) => result?.success,
+      ).length;
 
       logger.info('Concurrent gate approval performance', {
         concurrentCount,
@@ -396,7 +418,9 @@ describe('Gate Performance Validation', () => {
         totalTime,
         successfulApprovals,
         avgApprovalTime: approvalTime / successfulApprovals,
-        approvalThroughput: Math.round(successfulApprovals / (approvalTime / 1000)),
+        approvalThroughput: Math.round(
+          successfulApprovals / (approvalTime / 1000),
+        ),
       });
 
       // Performance assertions
@@ -453,7 +477,7 @@ describe('Gate Performance Validation', () => {
             payload: { memoryTest: true, size: 'small' },
             attachments: [],
             externalReferences: [],
-          }
+          },
         );
 
         gates.push(gate.id);
@@ -493,7 +517,9 @@ describe('Gate Performance Validation', () => {
       await Promise.all(
         gates
           .slice(0, 50)
-          .map((gateId) => gatesManager.resolveGate(gateId, 'approved', 'memory-tester'))
+          .map((gateId) =>
+            gatesManager.resolveGate(gateId, 'approved', 'memory-tester'),
+          ),
       );
 
       const cleanupTime = Date.now() - cleanupStartTime;
@@ -519,77 +545,84 @@ describe('Gate Performance Validation', () => {
       const startTime = Date.now();
 
       // Create various operations that compete for resources
-      const operations = Array.from({ length: contendingOperations }, (_, i) => {
-        const operationType = i % 4;
+      const operations = Array.from(
+        { length: contendingOperations },
+        (_, i) => {
+          const operationType = i % 4;
 
-        switch (operationType) {
-          case 0: // Gate creation
-            return gatesManager.createGate(
-              WorkflowHumanGateType.QUALITY,
-              `contention-${i}`,
-              {
-                gateWorkflowId: `contention-workflow-${i}`,
-                phaseName: `contention-phase-${i}`,
-                businessDomain: 'contention-testing',
-                technicalDomain: 'performance',
-                stakeholderGroups: ['contention-tester'],
-                impactAssessment: {
-                  businessImpact: 0.6,
-                  technicalImpact: 0.5,
-                  riskImpact: 0.4,
-                  resourceImpact: {
-                    timeHours: 12,
-                    costImpact: 3000,
-                    teamSize: 2,
-                    criticality: 'high',
-                  },
-                  complianceImpact: {
-                    regulations: ['test-reg'],
-                    riskLevel: 'medium',
-                    requiredReviews: ['review-1'],
-                    deadlines: [],
-                  },
-                  userExperienceImpact: 0.7,
-                },
-              },
-              {
-                structured: { type: 'quality' },
-                payload: { contentionTest: true },
-                attachments: [],
-                externalReferences: [],
-              }
-            );
-
-          case 1: // Workflow creation
-            return workflowEngine.startWorkflow({
-              name: `contention-workflow-${i}`,
-              description: 'Resource contention test',
-              version: '1.0.0',
-              steps: [
+          switch (operationType) {
+            case 0: // Gate creation
+              return gatesManager.createGate(
+                WorkflowHumanGateType.QUALITY,
+                `contention-${i}`,
                 {
-                  type: 'delay',
-                  name: 'Contention Step',
-                  params: { duration: 50 },
+                  gateWorkflowId: `contention-workflow-${i}`,
+                  phaseName: `contention-phase-${i}`,
+                  businessDomain: 'contention-testing',
+                  technicalDomain: 'performance',
+                  stakeholderGroups: ['contention-tester'],
+                  impactAssessment: {
+                    businessImpact: 0.6,
+                    technicalImpact: 0.5,
+                    riskImpact: 0.4,
+                    resourceImpact: {
+                      timeHours: 12,
+                      costImpact: 3000,
+                      teamSize: 2,
+                      criticality: 'high',
+                    },
+                    complianceImpact: {
+                      regulations: ['test-reg'],
+                      riskLevel: 'medium',
+                      requiredReviews: ['review-1'],
+                      deadlines: [],
+                    },
+                    userExperienceImpact: 0.7,
+                  },
                 },
-              ],
-            });
+                {
+                  structured: { type: 'quality' },
+                  payload: { contentionTest: true },
+                  attachments: [],
+                  externalReferences: [],
+                },
+              );
 
-          case 2: // Queue processing simulation
-            return gatesManager.getQueuedGates();
+            case 1: // Workflow creation
+              return workflowEngine.startWorkflow({
+                name: `contention-workflow-${i}`,
+                description: 'Resource contention test',
+                version: '1.0.0',
+                steps: [
+                  {
+                    type: 'delay',
+                    name: 'Contention Step',
+                    params: { duration: 50 },
+                  },
+                ],
+              });
 
-          case 3: // Metrics retrieval
-            return gatesManager.getMetrics();
+            case 2: // Queue processing simulation
+              return gatesManager.getQueuedGates();
 
-          default:
-            return Promise.resolve({ success: true });
-        }
-      });
+            case 3: // Metrics retrieval
+              return gatesManager.getMetrics();
+
+            default:
+              return Promise.resolve({ success: true });
+          }
+        },
+      );
 
       const results = await Promise.allSettled(operations);
       const operationTime = Date.now() - startTime;
 
-      const successCount = results.filter((result) => result.status === 'fulfilled').length;
-      const failureCount = results.filter((result) => result.status === 'rejected').length;
+      const successCount = results.filter(
+        (result) => result.status === 'fulfilled',
+      ).length;
+      const failureCount = results.filter(
+        (result) => result.status === 'rejected',
+      ).length;
 
       logger.info('Resource contention test results', {
         contendingOperations,

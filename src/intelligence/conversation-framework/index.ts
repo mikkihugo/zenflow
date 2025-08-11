@@ -40,7 +40,10 @@ export interface ConversationFrameworkSystem {
 }
 
 // MCP integration
-export { ConversationMCPTools, ConversationMCPToolsFactory } from './mcp-tools.ts';
+export {
+  ConversationMCPTools,
+  ConversationMCPToolsFactory,
+} from './mcp-tools.ts';
 // Memory and persistence
 export { ConversationMemoryFactory, ConversationMemoryImpl } from './memory.ts';
 // Conversation orchestration
@@ -62,7 +65,7 @@ export class ConversationFramework {
    * @param config
    */
   static async create(
-    config: ConversationFrameworkConfig = {}
+    config: ConversationFrameworkConfig = {},
   ): Promise<ConversationFrameworkSystem> {
     const { memoryBackend = 'json', memoryConfig = {} } = config;
 
@@ -70,17 +73,23 @@ export class ConversationFramework {
     let memory;
     switch (memoryBackend) {
       case 'sqlite': {
-        const { ConversationMemoryFactory: SQLiteFactory } = await import('./memory.ts');
+        const { ConversationMemoryFactory: SQLiteFactory } = await import(
+          './memory.ts'
+        );
         memory = await SQLiteFactory.createWithSQLite(memoryConfig);
         break;
       }
       case 'lancedb': {
-        const { ConversationMemoryFactory: LanceFactory } = await import('./memory.ts');
+        const { ConversationMemoryFactory: LanceFactory } = await import(
+          './memory.ts'
+        );
         memory = await LanceFactory.createWithLanceDB(memoryConfig);
         break;
       }
       default: {
-        const { ConversationMemoryFactory: JSONFactory } = await import('./memory.ts');
+        const { ConversationMemoryFactory: JSONFactory } = await import(
+          './memory.ts'
+        );
         memory = await JSONFactory.createWithJSON(memoryConfig);
       }
     }
@@ -158,14 +167,19 @@ export class ConversationFramework {
       errors.push('Domain is required and must be a string');
     }
 
-    if (!Array.isArray(config?.participants) || config?.participants.length === 0) {
+    if (
+      !Array.isArray(config?.participants) ||
+      config?.participants.length === 0
+    ) {
       errors.push('At least one participant is required');
     }
 
     if (config?.participants) {
       config?.participants?.forEach((participant: any, index: number) => {
-        if (!participant.id || !participant.type || !participant.swarmId) {
-          errors.push(`Participant ${index} missing required fields (id, type, swarmId)`);
+        if (!(participant.id && participant.type && participant.swarmId)) {
+          errors.push(
+            `Participant ${index} missing required fields (id, type, swarmId)`,
+          );
         }
       });
     }

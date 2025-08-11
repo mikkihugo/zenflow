@@ -7,7 +7,7 @@
  * @file REST API schemas for all domains.
  */
 
-import { getMCPServerURL } from '../config/url-builder';
+import { getMCPServerURL } from '../../../../config/defaults.js';
 
 // Re-export coordination types that are actually available
 export type {
@@ -31,7 +31,8 @@ export const RestAPISchema = {
   info: {
     title: 'Claude Code Flow API',
     version: '1.0.0',
-    description: 'Unified API for coordination, neural networks, memory, and database operations',
+    description:
+      'Unified API for coordination, neural networks, memory, and database operations',
     contact: {
       name: 'Claude Code Flow Team',
       url: 'https://github.com/claude-zen-flow',
@@ -132,7 +133,8 @@ export const RestAPISchema = {
       post: {
         tags: ['Agents'],
         summary: 'Create a new agent',
-        description: 'Create and register a new agent in the coordination system',
+        description:
+          'Create and register a new agent in the coordination system',
         requestBody: {
           required: true,
           content: {
@@ -143,7 +145,13 @@ export const RestAPISchema = {
                 properties: {
                   type: {
                     type: 'string',
-                    enum: ['researcher', 'coder', 'analyst', 'tester', 'coordinator'],
+                    enum: [
+                      'researcher',
+                      'coder',
+                      'analyst',
+                      'tester',
+                      'coordinator',
+                    ],
                   },
                   capabilities: {
                     type: 'array',
@@ -188,7 +196,12 @@ export const RestAPISchema = {
             name: 'type',
             schema: {
               type: 'string',
-              enum: ['feedforward', 'convolutional', 'recurrent', 'transformer'],
+              enum: [
+                'feedforward',
+                'convolutional',
+                'recurrent',
+                'transformer',
+              ],
             },
           },
           {
@@ -233,7 +246,12 @@ export const RestAPISchema = {
                 properties: {
                   type: {
                     type: 'string',
-                    enum: ['feedforward', 'convolutional', 'recurrent', 'transformer'],
+                    enum: [
+                      'feedforward',
+                      'convolutional',
+                      'recurrent',
+                      'transformer',
+                    ],
                   },
                   layers: {
                     type: 'array',
@@ -243,7 +261,13 @@ export const RestAPISchema = {
                       properties: {
                         type: {
                           type: 'string',
-                          enum: ['input', 'hidden', 'output', 'convolutional', 'pooling'],
+                          enum: [
+                            'input',
+                            'hidden',
+                            'output',
+                            'convolutional',
+                            'pooling',
+                          ],
                         },
                         size: {
                           type: 'integer',
@@ -251,7 +275,13 @@ export const RestAPISchema = {
                         },
                         activation: {
                           type: 'string',
-                          enum: ['relu', 'sigmoid', 'tanh', 'softmax', 'linear'],
+                          enum: [
+                            'relu',
+                            'sigmoid',
+                            'tanh',
+                            'softmax',
+                            'linear',
+                          ],
                         },
                       },
                     },
@@ -403,7 +433,11 @@ export const RestAPISchema = {
             type: 'array',
             items: { type: 'string' },
             description: 'List of agent capabilities',
-            example: ['code_analysis', 'bug_detection', 'performance_optimization'],
+            example: [
+              'code_analysis',
+              'bug_detection',
+              'performance_optimization',
+            ],
           },
           created: {
             type: 'string',
@@ -431,7 +465,14 @@ export const RestAPISchema = {
 
       Task: {
         type: 'object',
-        required: ['id', 'type', 'description', 'status', 'priority', 'created'],
+        required: [
+          'id',
+          'type',
+          'description',
+          'status',
+          'priority',
+          'created',
+        ],
         properties: {
           id: {
             type: 'string',
@@ -502,7 +543,13 @@ export const RestAPISchema = {
               properties: {
                 type: {
                   type: 'string',
-                  enum: ['input', 'hidden', 'output', 'convolutional', 'pooling'],
+                  enum: [
+                    'input',
+                    'hidden',
+                    'output',
+                    'convolutional',
+                    'pooling',
+                  ],
                 },
                 size: {
                   type: 'integer',

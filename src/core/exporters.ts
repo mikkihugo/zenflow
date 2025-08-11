@@ -96,7 +96,7 @@ export class ExportSystem {
       if (config?.['outputPath'] && config?.['fileName']) {
         const filePath = path.join(
           config?.['outputPath'],
-          config?.['fileName'] + exporter.extension
+          config?.['fileName'] + exporter.extension,
         );
 
         // Ensure directory exists
@@ -113,16 +113,15 @@ export class ExportSystem {
 
         this.exportHistory.push(result);
         return result;
-      } else {
-        const result: ExportResult = {
-          success: true,
-          data: exportedData,
-          timestamp,
-        };
-
-        this.exportHistory.push(result);
-        return result;
       }
+      const result: ExportResult = {
+        success: true,
+        data: exportedData,
+        timestamp,
+      };
+
+      this.exportHistory.push(result);
+      return result;
     } catch (error) {
       const result: ExportResult = {
         success: false,
@@ -147,7 +146,10 @@ export class ExportSystem {
       const values = headers.map((header) => {
         const value = row[header];
         // Escape commas and quotes
-        if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+        if (
+          typeof value === 'string' &&
+          (value.includes(',') || value.includes('"'))
+        ) {
           return `"${value.replace(/"/g, '""')}"`;
         }
         return value?.toString() || '';
@@ -168,7 +170,9 @@ export class ExportSystem {
       }
 
       if (typeof obj === 'string') {
-        return obj.includes('\n') ? `|\n${spaces}  ${obj['replace'](/\n/g, `\n${spaces}  `)}` : obj;
+        return obj.includes('\n')
+          ? `|\n${spaces}  ${obj['replace'](/\n/g, `\n${spaces}  `)}`
+          : obj;
       }
 
       if (typeof obj === 'number' || typeof obj === 'boolean') {
@@ -177,14 +181,18 @@ export class ExportSystem {
 
       if (Array.isArray(obj)) {
         return obj
-          .map((item) => `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}`)
+          .map(
+            (item) =>
+              `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}`,
+          )
           .join('\n');
       }
 
       if (typeof obj === 'object') {
         return Object.entries(obj)
           .map(
-            ([key, value]) => `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`
+            ([key, value]) =>
+              `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`,
           )
           .join('\n');
       }
@@ -201,7 +209,11 @@ export class ExportSystem {
         return `<${name}></${name}>`;
       }
 
-      if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
+      if (
+        typeof obj === 'string' ||
+        typeof obj === 'number' ||
+        typeof obj === 'boolean'
+      ) {
         return `<${name}>${obj}</${name}>`;
       }
 
@@ -238,19 +250,23 @@ export class ExportSystem {
       }
 
       if (Array.isArray(obj)) {
-        if (obj.length > 0 && typeof obj[0] === 'object' && !Array.isArray(obj[0])) {
+        if (
+          obj.length > 0 &&
+          typeof obj[0] === 'object' &&
+          !Array.isArray(obj[0])
+        ) {
           // Convert array of objects to table
           const headers = Object.keys(obj[0]);
           const headerRow = `| ${headers.join(' | ')} |`;
           const separatorRow = `| ${headers.map(() => '---').join(' | ')} |`;
           const dataRows = obj.map(
-            (item) => `| ${headers.map((header) => item?.[header]?.toString() || '').join(' | ')} |`
+            (item) =>
+              `| ${headers.map((header) => item?.[header]?.toString() || '').join(' | ')} |`,
           );
           return [headerRow, separatorRow, ...dataRows].join('\n');
-        } else {
-          // Convert to list
-          return obj.map((item) => `- ${mdify(item, level + 1)}`).join('\n');
         }
+        // Convert to list
+        return obj.map((item) => `- ${mdify(item, level + 1)}`).join('\n');
       }
 
       if (typeof obj === 'object') {

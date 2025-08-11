@@ -2,7 +2,7 @@
  * @file Main entry point for REST API layer.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../../config/logging-config.js';
 
 const logger = getLogger('interfaces-api-http-index');
 
@@ -14,12 +14,20 @@ const logger = getLogger('interfaces-api-http-index');
  * Clean separation between API layer and business domains.
  */
 
-import { getCORSOrigins, getMCPServerURL } from '../config/url-builder';
+import { getCORSOrigins, getMCPServerURL } from '../../../config/defaults.js';
 import { APIClient } from './client.ts';
 // Import server types for internal use
-import { type APIClientConfig, APIServer, type APIServerConfig } from './server.ts';
+import {
+  type APIClientConfig,
+  APIServer,
+  type APIServerConfig,
+} from './server.ts';
 
-export type { APIClientConfig, PaginationOptions, RequestOptions } from './client.ts';
+export type {
+  APIClientConfig,
+  PaginationOptions,
+  RequestOptions,
+} from './client.ts';
 // ===== API CLIENT SDK =====
 export { APIClient, apiClient, createAPIClient } from './client.ts';
 export type { AuthContext, User } from './middleware/auth.ts';
@@ -43,7 +51,13 @@ export {
   errorHandler,
   notFoundHandler,
 } from './middleware/errors.ts';
-export { LogLevel, log, logError, logPerformance, requestLogger } from './middleware/logging.ts';
+export {
+  LogLevel,
+  log,
+  logError,
+  logPerformance,
+  requestLogger,
+} from './middleware/logging.ts';
 export type {
   // Coordination types (re-exported from domain)
   Agent,
@@ -205,7 +219,7 @@ export const createAPILayer = (config?: Partial<APILayerConfig>): APILayer => {
  * @param layer
  */
 export const checkAPILayerHealth = async (
-  layer: APILayer
+  layer: APILayer,
 ): Promise<{
   status: 'healthy' | 'unhealthy';
   checks: {

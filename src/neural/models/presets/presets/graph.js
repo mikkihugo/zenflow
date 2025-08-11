@@ -37,7 +37,8 @@ export const graphPresets = {
       memoryUsage: '800MB',
       trainingTime: '12-16 hours on GPU',
     },
-    useCase: 'Social media marketing, viral content prediction, community detection',
+    useCase:
+      'Social media marketing, viral content prediction, community detection',
   },
 
   // Fraud Detection Financial
@@ -384,7 +385,7 @@ export const graphPresets = {
 export const getGraphPreset = (presetName) => {
   if (!graphPresets[presetName]) {
     throw new Error(
-      `Graph preset '${presetName}' not found. Available presets: ${Object.keys(graphPresets).join(', ')}`
+      `Graph preset '${presetName}' not found. Available presets: ${Object.keys(graphPresets).join(', ')}`,
     );
   }
   return graphPresets[presetName];

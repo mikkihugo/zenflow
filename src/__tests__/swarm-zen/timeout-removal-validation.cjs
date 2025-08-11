@@ -11,7 +11,12 @@ const { promisify } = require('node:util');
 const execAsync = promisify(exec);
 
 // File paths
-const noTimeoutPath = path.join(__dirname, '..', 'bin', 'ruv-swarm-no-timeout.js');
+const noTimeoutPath = path.join(
+  __dirname,
+  '..',
+  'bin',
+  'ruv-swarm-no-timeout.js',
+);
 const originalPath = path.join(__dirname, '..', 'bin', 'ruv-swarm-secure.js');
 
 // Read file contents
@@ -112,7 +117,9 @@ for (const { name, pattern } of versionPatterns) {
 
 async function testCommand(command, _description) {
   try {
-    const { stdout, stderr } = await execAsync(`node ${noTimeoutPath} ${command}`);
+    const { stdout, stderr } = await execAsync(
+      `node ${noTimeoutPath} ${command}`,
+    );
     if (stderr && stderr.trim() !== '') {
       return false;
     }
@@ -140,22 +147,29 @@ async function runFunctionalTests() {
 }
 
 const qualityChecks = [
-  { name: 'Proper shebang', test: () => noTimeoutCode.startsWith('#!/usr/bin/env node') },
+  {
+    name: 'Proper shebang',
+    test: () => noTimeoutCode.startsWith('#!/usr/bin/env node'),
+  },
   {
     name: 'ES modules syntax',
-    test: () => /import.*from/.test(noTimeoutCode) && /export.*{/.test(noTimeoutCode),
+    test: () =>
+      /import.*from/.test(noTimeoutCode) && /export.*{/.test(noTimeoutCode),
   },
   {
     name: 'Error handling',
-    test: () => /try.*catch/.test(noTimeoutCode) && /process\.exit/.test(noTimeoutCode),
+    test: () =>
+      /try.*catch/.test(noTimeoutCode) && /process\.exit/.test(noTimeoutCode),
   },
   {
     name: 'Async/await usage',
-    test: () => /async.*function/.test(noTimeoutCode) && /await/.test(noTimeoutCode),
+    test: () =>
+      /async.*function/.test(noTimeoutCode) && /await/.test(noTimeoutCode),
   },
   {
     name: 'Proper logging',
-    test: () => /console\.log/.test(noTimeoutCode) && /logger\./.test(noTimeoutCode),
+    test: () =>
+      /console\.log/.test(noTimeoutCode) && /logger\./.test(noTimeoutCode),
   },
 ];
 
@@ -177,7 +191,8 @@ const overallScore = {
 };
 
 const averageScore =
-  Object.values(overallScore).reduce((a, b) => a + b, 0) / Object.keys(overallScore).length;
+  Object.values(overallScore).reduce((a, b) => a + b, 0) /
+  Object.keys(overallScore).length;
 
 if (averageScore >= 0.95) {
 } else if (averageScore >= 0.85) {

@@ -62,7 +62,9 @@ class MCPTestClient {
       setTimeout(() => {
         if (this.ws && this.ws.readyState !== WebSocket.OPEN) {
           this.ws.close();
-          reject(new Error('Connection timeout - MCP server may not be running'));
+          reject(
+            new Error('Connection timeout - MCP server may not be running'),
+          );
         }
       }, 5000);
     });
@@ -136,7 +138,10 @@ async function runMCPIntegrationTests() {
     try {
       await client.connect();
     } catch (_connectError) {
-      results.errors.push({ test: 'MCP Connection', error: 'Server not available' });
+      results.errors.push({
+        test: 'MCP Connection',
+        error: 'Server not available',
+      });
       results.failed++;
       return results;
     }
@@ -159,7 +164,7 @@ async function runMCPIntegrationTests() {
       assert(result, 'Initialize should return a result');
       assert(
         result.protocolVersion || result.capabilities,
-        'Should have protocol version or capabilities'
+        'Should have protocol version or capabilities',
       );
 
       if (result.serverInfo) {
@@ -171,7 +176,10 @@ async function runMCPIntegrationTests() {
       const result = await client.sendRequest('tools/list');
 
       assert(result, 'Tools list should return a result');
-      assert(result.tools || result.available_tools, 'Should have tools or available_tools');
+      assert(
+        result.tools || result.available_tools,
+        'Should have tools or available_tools',
+      );
 
       const tools = result.tools || result.available_tools || [];
 
@@ -280,7 +288,8 @@ async function runMCPIntegrationTests() {
         name: 'ruv-swarm.task.create',
         arguments: {
           task_type: 'research',
-          description: 'Analyze performance characteristics of modern web frameworks',
+          description:
+            'Analyze performance characteristics of modern web frameworks',
           priority: 'high',
           assigned_agent: agentId,
         },
@@ -339,7 +348,8 @@ async function runMCPIntegrationTests() {
       const result = await client.sendRequest('tools/call', {
         name: 'ruv-swarm.orchestrate',
         arguments: {
-          objective: 'Create comprehensive comparison of React, Vue, and Angular frameworks',
+          objective:
+            'Create comprehensive comparison of React, Vue, and Angular frameworks',
           strategy: 'research',
           mode: 'distributed',
           max_agents: 3,
@@ -384,7 +394,10 @@ async function runMCPIntegrationTests() {
           { action: 'spawn', params: { agent_type: 'tester' } },
           {
             action: 'create_task',
-            params: { task_type: 'development', description: 'Build feature X' },
+            params: {
+              task_type: 'development',
+              description: 'Build feature X',
+            },
           },
         ],
       };
@@ -420,10 +433,16 @@ async function runMCPIntegrationTests() {
           client.sendRequest('tools/call', {
             name: 'ruv-swarm.spawn',
             arguments: {
-              agent_type: ['researcher', 'coder', 'analyst', 'tester', 'reviewer'][i],
+              agent_type: [
+                'researcher',
+                'coder',
+                'analyst',
+                'tester',
+                'reviewer',
+              ][i],
               name: `concurrent-agent-${i}`,
             },
-          })
+          }),
         );
       }
 
@@ -508,7 +527,7 @@ async function runMCPIntegrationTests() {
               agent_type: 'researcher',
               name: `perf-test-agent-${i}`,
             },
-          })
+          }),
         );
       }
 
@@ -596,8 +615,14 @@ async function runIntegrationScenarios() {
         value: {
           frameworks: {
             react: { pros: ['ecosystem', 'flexibility'], cons: ['complexity'] },
-            vue: { pros: ['simplicity', 'performance'], cons: ['smaller ecosystem'] },
-            angular: { pros: ['enterprise', 'typescript'], cons: ['learning curve'] },
+            vue: {
+              pros: ['simplicity', 'performance'],
+              cons: ['smaller ecosystem'],
+            },
+            angular: {
+              pros: ['enterprise', 'typescript'],
+              cons: ['learning curve'],
+            },
           },
           timestamp: new Date().toISOString(),
         },

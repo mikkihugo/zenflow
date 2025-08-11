@@ -274,12 +274,12 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
    * @param label
    * @param properties
    */
-  async findNodesByLabel(label: string, properties?: Record<string, any>): Promise<GraphNode[]> {
+  async findNodesByLabel(label: string, properties?: Record<string, unknown>): Promise<GraphNode[]> {
     this.logger.debug(`Finding nodes by label: ${label}`, { properties });
 
     try {
       let cypher = `MATCH (n:${label})`;
-      const parameters: Record<string, any> = {};
+      const parameters: Record<string, unknown> = {};
 
       // Add property filters if provided
       if (properties && Object.keys(properties).length > 0) {
@@ -296,7 +296,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
 
       cypher += ' RETURN n';
 
-      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, any> (AI review needed)
+      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, unknown> (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, Object.values(parameters));
       return result.nodes as GraphNode[];
     } catch (error) {
@@ -325,7 +325,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
 
     try {
       let cypher = 'MATCH (a)-[r';
-      const parameters: Record<string, any> = {
+      const parameters: Record<string, unknown> = {
         fromNodeId,
         toNodeId,
       };
@@ -336,7 +336,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
 
       cypher += ']->(b) WHERE a.id = $fromNodeId AND b.id = $toNodeId RETURN r';
 
-      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, any> (AI review needed)
+      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, unknown> (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, Object.values(parameters));
       return result.relationships as GraphRelationship[];
     } catch (error) {
@@ -359,7 +359,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
     fromNodeId: string | number,
     toNodeId: string | number,
     relationshipType: string,
-    properties?: Record<string, any>
+    properties?: Record<string, unknown>
   ): Promise<GraphRelationship> {
     this.logger.debug(
       `Creating relationship: ${fromNodeId} -[:${relationshipType}]-> ${toNodeId}`,
@@ -373,7 +373,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
         CREATE (a)-[r:${relationshipType}
       `;
 
-      const parameters: Record<string, any> = {
+      const parameters: Record<string, unknown> = {
         fromNodeId,
         toNodeId,
       };
@@ -393,7 +393,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
 
       cypher += ']->(b) RETURN r';
 
-      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, any> (AI review needed)
+      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, unknown> (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, Object.values(parameters));
 
       if (result.relationships.length === 0) {
@@ -428,7 +428,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
    * @async
    * @method executeCypher
    * @param {string} cypher - Cypher query string with parameter placeholders ($param)
-   * @param {Record<string, any>} [parameters] - Query parameters as key-value pairs
+   * @param {Record<string, unknown>} [parameters] - Query parameters as key-value pairs
    * 
    * @returns {Promise<GraphQueryResult>} Query results with nodes, relationships, and execution info
    * @returns {GraphNode[]} returns.nodes - Node results from query execution
@@ -504,11 +504,11 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
    * });
    * ```
    */
-  async executeCypher(cypher: string, parameters?: Record<string, any>): Promise<GraphQueryResult> {
+  async executeCypher(cypher: string, parameters?: Record<string, unknown>): Promise<GraphQueryResult> {
     this.logger.debug(`Executing Cypher query: ${cypher}`, { parameters });
 
     try {
-      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, any> (AI review needed)
+      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, unknown> (AI review needed)
       const paramArray = parameters ? Object.values(parameters) : [];
       const result = await this.graphAdapter.queryGraph(cypher, paramArray);
 
@@ -660,7 +660,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
    * Override base repository methods for graph-specific implementations.
    */
 
-  protected mapRowToEntity(row: any): T {
+  protected mapRowToEntity(row: unknown): T {
     // For graph databases, rows might be nodes with id, labels, and properties
     if (row.id && row.labels && row.properties) {
       return {
@@ -674,7 +674,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
     return row as T;
   }
 
-  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
+  protected mapEntityToRow(entity: Partial<T>): Record<string, unknown> {
     if (!entity) return {};
 
     const { id, labels, ...properties } = entity as any;
@@ -686,7 +686,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
     };
   }
 
-  override protected buildFindByIdQuery(id: string | number): { sql: string; params: any[] } {
+  override protected buildFindByIdQuery(id: string | number): { sql: string; params: unknown[] } {
     return {
       sql: `MATCH (n:${this.tableName} {id: $id}) RETURN n`,
       params: [id],
@@ -713,7 +713,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
    * @param result
    * @param _result
    */
-  private extractPathsFromResult(_result: any): any[] {
+  private extractPathsFromResult(_result: unknown): unknown[] {
     // Extract path information from Kuzu result
     // This would need to be implemented based on actual Kuzu response format
     return [];

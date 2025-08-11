@@ -18,9 +18,13 @@ import { vi } from 'vitest';
 export class MockHiveMindService {
   initialize: vi.MockedFunction<() => Promise<void>> = vi.fn();
   spawnQueen: vi.MockedFunction<(config: any) => Promise<string>> = vi.fn();
-  coordinateQueens: vi.MockedFunction<(task: any) => Promise<CoordinationResult>> = vi.fn();
-  processTask: vi.MockedFunction<(taskId: string) => Promise<TaskResult>> = vi.fn();
-  getQueenStatus: vi.MockedFunction<(queenId: string) => Promise<QueenStatus>> = vi.fn();
+  coordinateQueens: vi.MockedFunction<
+    (task: any) => Promise<CoordinationResult>
+  > = vi.fn();
+  processTask: vi.MockedFunction<(taskId: string) => Promise<TaskResult>> =
+    vi.fn();
+  getQueenStatus: vi.MockedFunction<(queenId: string) => Promise<QueenStatus>> =
+    vi.fn();
 
   constructor() {
     this.initialize.mockResolvedValue(undefined);
@@ -51,7 +55,9 @@ export class MockHiveMindService {
 
   expectQueenSpawned(config?: any) {
     if (config) {
-      expect(this.spawnQueen).toHaveBeenCalledWith(expect.objectContaining(config));
+      expect(this.spawnQueen).toHaveBeenCalledWith(
+        expect.objectContaining(config),
+      );
     } else {
       expect(this.spawnQueen).toHaveBeenCalled();
     }
@@ -59,7 +65,9 @@ export class MockHiveMindService {
   }
 
   expectQueensCoordinated(task: any) {
-    expect(this.coordinateQueens).toHaveBeenCalledWith(expect.objectContaining(task));
+    expect(this.coordinateQueens).toHaveBeenCalledWith(
+      expect.objectContaining(task),
+    );
     return this;
   }
 
@@ -95,14 +103,14 @@ export class MockQueensService {
     design: vi.fn(),
     coordinate: vi.fn(),
   };
-  
+
   // Code Queen structure
   codeQueen = {
     generate: vi.fn(),
     refactor: vi.fn(),
     optimize: vi.fn(),
   };
-  
+
   // Debug Queen structure
   debugQueen = {
     diagnose: vi.fn(),
@@ -111,19 +119,27 @@ export class MockQueensService {
   };
 
   // Architect Queen methods (legacy support)
-  architectAnalyze: vi.MockedFunction<(requirements: any) => Promise<ArchitectureResult>> = vi.fn();
-  architectDesign: vi.MockedFunction<(spec: any) => Promise<DesignResult>> = vi.fn();
-  architectCoordinate: vi.MockedFunction<(teams: string[]) => Promise<void>> = vi.fn();
+  architectAnalyze: vi.MockedFunction<
+    (requirements: any) => Promise<ArchitectureResult>
+  > = vi.fn();
+  architectDesign: vi.MockedFunction<(spec: any) => Promise<DesignResult>> =
+    vi.fn();
+  architectCoordinate: vi.MockedFunction<(teams: string[]) => Promise<void>> =
+    vi.fn();
 
   // Code Queen methods
   codeGenerate: vi.MockedFunction<(spec: any) => Promise<CodeResult>> = vi.fn();
   codeRefactor: vi.MockedFunction<(code: string) => Promise<string>> = vi.fn();
-  codeOptimize: vi.MockedFunction<(code: string) => Promise<OptimizationResult>> = vi.fn();
+  codeOptimize: vi.MockedFunction<
+    (code: string) => Promise<OptimizationResult>
+  > = vi.fn();
 
   // Debug Queen methods
-  debugDiagnose: vi.MockedFunction<(issue: any) => Promise<DiagnosisResult>> = vi.fn();
+  debugDiagnose: vi.MockedFunction<(issue: any) => Promise<DiagnosisResult>> =
+    vi.fn();
   debugFix: vi.MockedFunction<(issue: any) => Promise<FixResult>> = vi.fn();
-  debugValidate: vi.MockedFunction<(fix: any) => Promise<ValidationResult>> = vi.fn();
+  debugValidate: vi.MockedFunction<(fix: any) => Promise<ValidationResult>> =
+    vi.fn();
 
   constructor() {
     // Initialize nested Queen structures
@@ -211,23 +227,31 @@ export class MockQueensService {
 
   // TDD London helpers for Architect Queen
   expectArchitectAnalyzeCalled(requirements: any) {
-    expect(this.architectAnalyze).toHaveBeenCalledWith(expect.objectContaining(requirements));
+    expect(this.architectAnalyze).toHaveBeenCalledWith(
+      expect.objectContaining(requirements),
+    );
     return this;
   }
 
   expectArchitectDesignCalled(spec: any) {
-    expect(this.architectDesign).toHaveBeenCalledWith(expect.objectContaining(spec));
+    expect(this.architectDesign).toHaveBeenCalledWith(
+      expect.objectContaining(spec),
+    );
     return this;
   }
 
   expectArchitectCoordinationCalled(teams: string[]) {
-    expect(this.architectCoordinate).toHaveBeenCalledWith(expect.arrayContaining(teams));
+    expect(this.architectCoordinate).toHaveBeenCalledWith(
+      expect.arrayContaining(teams),
+    );
     return this;
   }
 
   // TDD London helpers for Code Queen
   expectCodeGenerationCalled(spec: any) {
-    expect(this.codeGenerate).toHaveBeenCalledWith(expect.objectContaining(spec));
+    expect(this.codeGenerate).toHaveBeenCalledWith(
+      expect.objectContaining(spec),
+    );
     return this;
   }
 
@@ -243,7 +267,9 @@ export class MockQueensService {
 
   // TDD London helpers for Debug Queen
   expectDiagnosisCalled(issue: any) {
-    expect(this.debugDiagnose).toHaveBeenCalledWith(expect.objectContaining(issue));
+    expect(this.debugDiagnose).toHaveBeenCalledWith(
+      expect.objectContaining(issue),
+    );
     return this;
   }
 
@@ -253,7 +279,9 @@ export class MockQueensService {
   }
 
   expectValidationCalled(fix: any) {
-    expect(this.debugValidate).toHaveBeenCalledWith(expect.objectContaining(fix));
+    expect(this.debugValidate).toHaveBeenCalledWith(
+      expect.objectContaining(fix),
+    );
     return this;
   }
 
@@ -290,15 +318,21 @@ export class MockQueensService {
  * Replaces: mockNeuralFramework = { initializeNetwork: vi.fn()... }
  */
 export class MockNeuralFrameworkService {
-  initializeNetwork: vi.MockedFunction<(config: NetworkConfig) => Promise<string>> = vi.fn();
+  initializeNetwork: vi.MockedFunction<
+    (config: NetworkConfig) => Promise<string>
+  > = vi.fn();
   trainModel: vi.MockedFunction<
     (networkId: string, data: TrainingData) => Promise<TrainingResult>
   > = vi.fn();
-  predict: vi.MockedFunction<(networkId: string, input: number[]) => Promise<number[]>> = vi.fn();
+  predict: vi.MockedFunction<
+    (networkId: string, input: number[]) => Promise<number[]>
+  > = vi.fn();
   evaluateModel: vi.MockedFunction<
     (networkId: string, testData: TestData) => Promise<EvaluationResult>
   > = vi.fn();
-  saveModel: vi.MockedFunction<(networkId: string, path: string) => Promise<void>> = vi.fn();
+  saveModel: vi.MockedFunction<
+    (networkId: string, path: string) => Promise<void>
+  > = vi.fn();
   loadModel: vi.MockedFunction<(path: string) => Promise<string>> = vi.fn();
 
   constructor() {
@@ -321,26 +355,40 @@ export class MockNeuralFrameworkService {
   }
 
   expectNetworkInitialized(config: NetworkConfig) {
-    expect(this.initializeNetwork).toHaveBeenCalledWith(expect.objectContaining(config));
+    expect(this.initializeNetwork).toHaveBeenCalledWith(
+      expect.objectContaining(config),
+    );
     return this;
   }
 
   expectModelTrained(networkId: string, data?: TrainingData) {
     if (data) {
-      expect(this.trainModel).toHaveBeenCalledWith(networkId, expect.objectContaining(data));
+      expect(this.trainModel).toHaveBeenCalledWith(
+        networkId,
+        expect.objectContaining(data),
+      );
     } else {
-      expect(this.trainModel).toHaveBeenCalledWith(networkId, expect.any(Object));
+      expect(this.trainModel).toHaveBeenCalledWith(
+        networkId,
+        expect.any(Object),
+      );
     }
     return this;
   }
 
   expectPredictionMade(networkId: string, input: number[]) {
-    expect(this.predict).toHaveBeenCalledWith(networkId, expect.arrayContaining(input));
+    expect(this.predict).toHaveBeenCalledWith(
+      networkId,
+      expect.arrayContaining(input),
+    );
     return this;
   }
 
   expectModelEvaluated(networkId: string) {
-    expect(this.evaluateModel).toHaveBeenCalledWith(networkId, expect.any(Object));
+    expect(this.evaluateModel).toHaveBeenCalledWith(
+      networkId,
+      expect.any(Object),
+    );
     return this;
   }
 
@@ -371,9 +419,15 @@ export class MockNeuralFrameworkService {
  */
 export class MockClaudeZenApiService {
   startServer: vi.MockedFunction<(port: number) => Promise<void>> = vi.fn();
-  registerQueenEndpoints: vi.MockedFunction<(queens: string[]) => Promise<void>> = vi.fn();
-  handleRequest: vi.MockedFunction<(request: ApiRequest) => Promise<ApiResponse>> = vi.fn();
-  handleTaskRequest: vi.MockedFunction<(request: ApiRequest) => Promise<ApiResponse>> = vi.fn();
+  registerQueenEndpoints: vi.MockedFunction<
+    (queens: string[]) => Promise<void>
+  > = vi.fn();
+  handleRequest: vi.MockedFunction<
+    (request: ApiRequest) => Promise<ApiResponse>
+  > = vi.fn();
+  handleTaskRequest: vi.MockedFunction<
+    (request: ApiRequest) => Promise<ApiResponse>
+  > = vi.fn();
   stopServer: vi.MockedFunction<() => Promise<void>> = vi.fn();
 
   constructor() {
@@ -398,12 +452,16 @@ export class MockClaudeZenApiService {
   }
 
   expectQueenEndpointsRegistered(queens: string[]) {
-    expect(this.registerQueenEndpoints).toHaveBeenCalledWith(expect.arrayContaining(queens));
+    expect(this.registerQueenEndpoints).toHaveBeenCalledWith(
+      expect.arrayContaining(queens),
+    );
     return this;
   }
 
   expectRequestHandled(request: ApiRequest) {
-    expect(this.handleRequest).toHaveBeenCalledWith(expect.objectContaining(request));
+    expect(this.handleRequest).toHaveBeenCalledWith(
+      expect.objectContaining(request),
+    );
     return this;
   }
 
@@ -545,6 +603,8 @@ export function createClaudeZenMocks() {
 /**
  * Helper to clear all Claude-Zen mocks
  */
-export function clearAllClaudeZenMocks(mocks: ReturnType<typeof createClaudeZenMocks>) {
+export function clearAllClaudeZenMocks(
+  mocks: ReturnType<typeof createClaudeZenMocks>,
+) {
   Object.values(mocks).forEach((mock) => mock.clearAllMocks());
 }

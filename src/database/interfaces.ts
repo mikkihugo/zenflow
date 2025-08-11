@@ -78,17 +78,20 @@ export interface IGraphRepository<T> extends IRepository<T> {
   traverse(
     startNode: string | number,
     relationshipType: string,
-    maxDepth?: number
+    maxDepth?: number,
   ): Promise<GraphTraversalResult>;
 
   /** Find nodes by label and properties */
-  findNodesByLabel(label: string, properties?: Record<string, any>): Promise<GraphNode[]>;
+  findNodesByLabel(
+    label: string,
+    properties?: Record<string, any>,
+  ): Promise<GraphNode[]>;
 
   /** Find relationships between nodes */
   findRelationships(
     fromNodeId: string | number,
     toNodeId: string | number,
-    relationshipType?: string
+    relationshipType?: string,
   ): Promise<GraphRelationship[]>;
 
   /** Create relationship between nodes */
@@ -96,11 +99,14 @@ export interface IGraphRepository<T> extends IRepository<T> {
     fromNodeId: string | number,
     toNodeId: string | number,
     relationshipType: string,
-    properties?: Record<string, any>
+    properties?: Record<string, any>,
   ): Promise<GraphRelationship>;
 
   /** Execute Cypher query */
-  executeCypher(cypher: string, parameters?: Record<string, any>): Promise<GraphQueryResult>;
+  executeCypher(
+    cypher: string,
+    parameters?: Record<string, any>,
+  ): Promise<GraphQueryResult>;
 }
 
 /**
@@ -112,7 +118,7 @@ export interface IVectorRepository<T> extends IRepository<T> {
   /** Perform vector similarity search */
   similaritySearch(
     queryVector: number[],
-    options?: VectorSearchOptions
+    options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[]>;
 
   /** Add vectors in batch */
@@ -202,7 +208,10 @@ export interface IAgentMemoryDao<T> extends ICoordinationDao<T> {
   storeAgentMemory(agentId: string, key: string, value: any): Promise<void>;
 
   /** Retrieve specific memory for an agent */
-  getAgentMemory(agentId: string, key: string): Promise<{ key: string; value: any } | null>;
+  getAgentMemory(
+    agentId: string,
+    key: string,
+  ): Promise<{ key: string; value: any } | null>;
 
   /** Get all memory for an agent */
   getAllMemory(agentId: string): Promise<Array<{ key: string; value: any }>>;
@@ -217,8 +226,12 @@ export interface IAgentMemoryDao<T> extends ICoordinationDao<T> {
 // Utility type aliases for common coordination DAO patterns.
 export type SessionCoordinationDao = ICoordinationDao<SessionEntity>;
 export type CheckpointCoordinationDao = ICoordinationDao<CheckpointEntity>;
-export type EventCoordinationDao<T = any> = ICoordinationDao<CoordinationEvent<T>>;
-export type AgentMemoryCoordinationDao<T = any> = IAgentMemoryDao<CoordinationEvent<T>>;
+export type EventCoordinationDao<T = any> = ICoordinationDao<
+  CoordinationEvent<T>
+>;
+export type AgentMemoryCoordinationDao<T = any> = IAgentMemoryDao<
+  CoordinationEvent<T>
+>;
 export type GenericCoordinationDao<T = any> = ICoordinationDao<T>;
 
 /**
@@ -281,13 +294,19 @@ export interface DatabaseQuery {
  */
 export interface ICoordinationRepository<T> extends IRepository<T> {
   /** Lock resource for coordination */
-  acquireLock(resourceId: string, lockTimeout?: number): Promise<CoordinationLock>;
+  acquireLock(
+    resourceId: string,
+    lockTimeout?: number,
+  ): Promise<CoordinationLock>;
 
   /** Release lock */
   releaseLock(lockId: string): Promise<void>;
 
   /** Subscribe to changes */
-  subscribe(pattern: string, callback: (change: CoordinationChange<T>) => void): Promise<string>;
+  subscribe(
+    pattern: string,
+    callback: (change: CoordinationChange<T>) => void,
+  ): Promise<string>;
 
   /** Unsubscribe from changes */
   unsubscribe(subscriptionId: string): Promise<void>;
@@ -299,7 +318,10 @@ export interface ICoordinationRepository<T> extends IRepository<T> {
   getCoordinationStats(): Promise<CoordinationStats>;
 
   /** Execute raw SQL/query - legacy compatibility */
-  execute(sql: string, params?: unknown[]): Promise<{ affectedRows?: number; insertId?: number }>;
+  execute(
+    sql: string,
+    params?: unknown[],
+  ): Promise<{ affectedRows?: number; insertId?: number }>;
 
   /** Query database directly - legacy compatibility */
   query(sql: string, params?: unknown[]): Promise<any[]>;

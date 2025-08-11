@@ -33,11 +33,16 @@ export interface LogConfiguration {
 class DiagnosticsLogger implements LoggerInterface {
   constructor(
     private name: string,
-    private options: { level: string }
+    private options: { level: string },
   ) {}
 
   private shouldLog(level: string): boolean {
-    const levels: Record<string, number> = { DEBUG: 0, INFO: 1, WARN: 2, ERROR: 3 };
+    const levels: Record<string, number> = {
+      DEBUG: 0,
+      INFO: 1,
+      WARN: 2,
+      ERROR: 3,
+    };
     const currentLevel = levels[this.options.level.toUpperCase()] ?? 1;
     const messageLevel = levels[level.toUpperCase()] ?? 1;
     return messageLevel >= currentLevel;

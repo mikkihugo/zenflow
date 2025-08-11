@@ -108,7 +108,7 @@ export class DocumentationManager extends EventEmitter {
         type: document.type,
         indexedAt: new Date().toISOString(),
       },
-      'documentation'
+      'documentation',
     );
 
     this.stats.indexedDocuments++;

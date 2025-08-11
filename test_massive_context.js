@@ -1,10 +1,10 @@
 // Test GPT-5 with truly massive context - approaching 128K tokens
-import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-import { AzureKeyCredential } from "@azure/core-auth";
+import ModelClient, { isUnexpected } from '@azure-rest/ai-inference';
+import { AzureKeyCredential } from '@azure/core-auth';
 
-const token = process.env["GITHUB_TOKEN"];
-const endpoint = "https://models.github.ai/inference";
-const model = "openai/gpt-5";
+const token = process.env['GITHUB_TOKEN'];
+const endpoint = 'https://models.github.ai/inference';
+const model = 'openai/gpt-5';
 
 function generateMassiveContext() {
   // Generate a context that approaches 100K+ tokens (~400K+ characters)
@@ -43,7 +43,7 @@ class MessagePassingLayer${layer} {
       candidate: new Float32Array(hiddenDim).fill(0.01)
     };
     this.activationFunction = this.selectActivation('${layer % 5 === 0 ? 'gelu' : layer % 3 === 0 ? 'swish' : 'relu'}');
-    this.dropoutRate = ${0.1 + (layer * 0.01)};
+    this.dropoutRate = ${0.1 + layer * 0.01};
     this.layerNormalization = new LayerNorm(hiddenDim);
     this.attentionMechanism = new MultiHeadAttention(hiddenDim, ${Math.min(8, layer)});
   }
@@ -396,13 +396,15 @@ Projected scaling capacity:
 
 `;
 
-  console.log(`Generated context: ${context.length} characters (~${Math.round(context.length / 4)} tokens)`);
+  console.log(
+    `Generated context: ${context.length} characters (~${Math.round(context.length / 4)} tokens)`,
+  );
   return context;
 }
 
 async function testMassiveContext() {
   if (!token) {
-    console.log("❌ GITHUB_TOKEN not set");
+    console.log('❌ GITHUB_TOKEN not set');
     return;
   }
 
@@ -411,53 +413,76 @@ async function testMassiveContext() {
 
   try {
     console.log('🚀 Testing GPT-5 with MASSIVE Context...');
-    console.log('  - Context size:', massiveContext.length.toLocaleString(), 'characters');
-    console.log('  - Estimated input tokens:', estimatedTokens.toLocaleString());
-    console.log('  - Context utilization:', ((estimatedTokens / 128000) * 100).toFixed(1), '% of 128K limit');
-    
+    console.log(
+      '  - Context size:',
+      massiveContext.length.toLocaleString(),
+      'characters',
+    );
+    console.log(
+      '  - Estimated input tokens:',
+      estimatedTokens.toLocaleString(),
+    );
+    console.log(
+      '  - Context utilization:',
+      ((estimatedTokens / 128000) * 100).toFixed(1),
+      '% of 128K limit',
+    );
+
     const client = ModelClient(endpoint, new AzureKeyCredential(token));
 
-    const response = await client.path("/chat/completions").post({
+    const response = await client.path('/chat/completions').post({
       body: {
         messages: [
-          { 
-            role: "system", 
-            content: "You are a world-class software architect. Analyze this massive system comprehensively. Provide detailed, structured analysis covering all aspects."
+          {
+            role: 'system',
+            content:
+              'You are a world-class software architect. Analyze this massive system comprehensively. Provide detailed, structured analysis covering all aspects.',
           },
-          { 
-            role: "user", 
-            content: massiveContext + "\n\nProvide comprehensive analysis of this entire system including performance optimization recommendations, architectural improvements, and scaling strategies."
-          }
+          {
+            role: 'user',
+            content:
+              massiveContext +
+              '\n\nProvide comprehensive analysis of this entire system including performance optimization recommendations, architectural improvements, and scaling strategies.',
+          },
         ],
         model: model,
-        max_completion_tokens: 128000
-      }
+        max_completion_tokens: 128000,
+      },
     });
 
     if (isUnexpected(response)) {
-      throw new Error(`Massive Context API Error: ${JSON.stringify(response.body?.error || response.body)}`);
+      throw new Error(
+        `Massive Context API Error: ${JSON.stringify(response.body?.error || response.body)}`,
+      );
     }
 
     const content = response.body.choices[0].message.content;
     const responseTokens = Math.round(content.length / 4);
     const totalTokens = estimatedTokens + responseTokens;
 
-    console.log("✅ MASSIVE Context Success!");
+    console.log('✅ MASSIVE Context Success!');
     console.log('\n📊 Token Usage Analysis:');
     console.log('  - Input tokens:', estimatedTokens.toLocaleString());
-    console.log('  - Output tokens:', responseTokens.toLocaleString()); 
+    console.log('  - Output tokens:', responseTokens.toLocaleString());
     console.log('  - Total tokens:', totalTokens.toLocaleString());
-    console.log('  - Context utilization:', ((totalTokens / 128000) * 100).toFixed(1), '%');
-    console.log('  - Response length:', content.length.toLocaleString(), 'characters');
+    console.log(
+      '  - Context utilization:',
+      ((totalTokens / 128000) * 100).toFixed(1),
+      '%',
+    );
+    console.log(
+      '  - Response length:',
+      content.length.toLocaleString(),
+      'characters',
+    );
 
     console.log('\n🎯 System Stress Test Results:');
     console.log('  - ✅ Handled massive context successfully');
     console.log('  - ✅ Generated comprehensive response');
     console.log('  - ✅ No truncation or errors');
     console.log('  - ✅ Full 128K token capacity utilized');
-
   } catch (error) {
-    console.error("❌ Massive context test failed:", error.message);
+    console.error('❌ Massive context test failed:', error.message);
   }
 }
 

@@ -33,7 +33,7 @@ describe('Performance Optimization System', () => {
         swarm: swarmOptimizer,
         data: dataOptimizer,
         wasm: wasmOptimizer,
-      }
+      },
     );
   });
 
@@ -80,7 +80,9 @@ describe('Performance Optimization System', () => {
 
       performanceOptimizer.registerOptimizer('custom', customOptimizer);
 
-      expect(spy).toHaveBeenCalledWith('optimizer:registered', { domain: 'custom' });
+      expect(spy).toHaveBeenCalledWith('optimizer:registered', {
+        domain: 'custom',
+      });
     });
   });
 
@@ -118,13 +120,16 @@ describe('Performance Optimization System', () => {
         epochs: 100,
       };
 
-      const result = await neuralOptimizer.implementBatchProcessing(mockTrainer);
+      const result =
+        await neuralOptimizer.implementBatchProcessing(mockTrainer);
 
       expect(result).toBeDefined();
       expect(result?.batchSize).toBeGreaterThan(0);
       expect(result?.parallelism).toBeGreaterThan(0);
       expect(result?.memoryLimit).toBeGreaterThan(0);
-      expect(['sequential', 'parallel', 'adaptive']).toContain(result?.processingMode);
+      expect(['sequential', 'parallel', 'adaptive']).toContain(
+        result?.processingMode,
+      );
     });
 
     it('should enable GPU acceleration', async () => {
@@ -133,7 +138,8 @@ describe('Performance Optimization System', () => {
         { id: 'cpu-1', type: 'CPU' as const, memory: 16384, cores: 8 },
       ];
 
-      const result = await neuralOptimizer.enableGPUAcceleration(mockComputeUnits);
+      const result =
+        await neuralOptimizer.enableGPUAcceleration(mockComputeUnits);
 
       expect(result).toBeDefined();
       expect(['GPU', 'WASM']).toContain(result?.accelerationType);
@@ -190,12 +196,16 @@ describe('Performance Optimization System', () => {
         compressionEnabled: true,
       };
 
-      const result = await swarmOptimizer.implementCaching(mockCoordinationLayer);
+      const result = await swarmOptimizer.implementCaching(
+        mockCoordinationLayer,
+      );
 
       expect(result).toBeDefined();
       expect(result?.hitRatio).toBeGreaterThanOrEqual(0);
       expect(result?.hitRatio).toBeLessThanOrEqual(1);
-      expect(['LRU', 'LFU', 'TTL', 'adaptive']).toContain(result?.evictionPolicy);
+      expect(['LRU', 'LFU', 'TTL', 'adaptive']).toContain(
+        result?.evictionPolicy,
+      );
       expect(result?.cacheSize).toBeGreaterThanOrEqual(0);
       expect(result?.layers).toBeGreaterThan(0);
     });
@@ -222,9 +232,12 @@ describe('Performance Optimization System', () => {
 
       expect(result).toBeDefined();
       expect(result?.maxAgents).toBeGreaterThanOrEqual(swarmSize);
-      expect(['round_robin', 'least_connections', 'weighted', 'adaptive']).toContain(
-        result?.loadBalancing
-      );
+      expect([
+        'round_robin',
+        'least_connections',
+        'weighted',
+        'adaptive',
+      ]).toContain(result?.loadBalancing);
       expect(typeof result?.autoScaling).toBe('boolean');
       expect(result?.resourceAllocation).toBeDefined();
     });
@@ -233,8 +246,16 @@ describe('Performance Optimization System', () => {
   describe('Data Performance Optimization', () => {
     it('should optimize query performance', async () => {
       const mockQueries = [
-        { sql: 'SELECT * FROM users WHERE id = ?', parameters: [1], estimatedCost: 100 },
-        { sql: 'SELECT * FROM orders WHERE user_id = ?', parameters: [1], estimatedCost: 500 },
+        {
+          sql: 'SELECT * FROM users WHERE id = ?',
+          parameters: [1],
+          estimatedCost: 100,
+        },
+        {
+          sql: 'SELECT * FROM orders WHERE user_id = ?',
+          parameters: [1],
+          estimatedCost: 500,
+        },
       ];
 
       const result = await dataOptimizer?.optimizeQueryPerformance(mockQueries);
@@ -248,11 +269,22 @@ describe('Performance Optimization System', () => {
 
     it('should implement connection pooling', async () => {
       const mockConnections = [
-        { id: 'conn1', type: 'database' as const, isActive: true, lastUsed: new Date() },
-        { id: 'conn2', type: 'network' as const, isActive: false, lastUsed: new Date() },
+        {
+          id: 'conn1',
+          type: 'database' as const,
+          isActive: true,
+          lastUsed: new Date(),
+        },
+        {
+          id: 'conn2',
+          type: 'network' as const,
+          isActive: false,
+          lastUsed: new Date(),
+        },
       ];
 
-      const result = await dataOptimizer?.implementConnectionPooling(mockConnections);
+      const result =
+        await dataOptimizer?.implementConnectionPooling(mockConnections);
 
       expect(result).toBeDefined();
       expect(result?.minConnections).toBeGreaterThan(0);
@@ -300,17 +332,30 @@ describe('Performance Optimization System', () => {
   describe('WASM Performance Optimization', () => {
     it('should optimize WASM module loading', async () => {
       const mockModules = [
-        { name: 'module1', size: 1024 * 1024, compilationTime: 100, instantiated: false },
-        { name: 'module2', size: 2 * 1024 * 1024, compilationTime: 200, instantiated: true },
+        {
+          name: 'module1',
+          size: 1024 * 1024,
+          compilationTime: 100,
+          instantiated: false,
+        },
+        {
+          name: 'module2',
+          size: 2 * 1024 * 1024,
+          compilationTime: 200,
+          instantiated: true,
+        },
       ];
 
-      const result = await wasmOptimizer['optimizeWasmModuleLoading'](mockModules);
+      const result =
+        await wasmOptimizer['optimizeWasmModuleLoading'](mockModules);
 
       expect(result).toBeDefined();
       expect(result?.loadTime).toBeGreaterThanOrEqual(0);
       expect(typeof result?.cacheUtilization).toBe('boolean');
       expect(typeof result?.streamingEnabled).toBe('boolean');
-      expect(['eager', 'lazy', 'predictive']).toContain(result?.preloadStrategy);
+      expect(['eager', 'lazy', 'predictive']).toContain(
+        result?.preloadStrategy,
+      );
     });
 
     it('should implement streaming compilation', async () => {
@@ -319,7 +364,8 @@ describe('Performance Optimization System', () => {
         { path: '/wasm/module2.wasm', size: 2 * 1024 * 1024, optimized: true },
       ];
 
-      const result = await wasmOptimizer['implementStreamingCompilation'](mockWasmFiles);
+      const result =
+        await wasmOptimizer['implementStreamingCompilation'](mockWasmFiles);
 
       expect(result).toBeDefined();
       expect(result?.compilationTime).toBeGreaterThanOrEqual(0);
@@ -346,7 +392,11 @@ describe('Performance Optimization System', () => {
 
     it('should enable SIMD acceleration', async () => {
       const mockKernels = [
-        { name: 'kernel1', operations: ['add', 'multiply'], simdOptimized: false },
+        {
+          name: 'kernel1',
+          operations: ['add', 'multiply'],
+          simdOptimized: false,
+        },
         { name: 'kernel2', operations: ['dot_product'], simdOptimized: false },
       ];
 
@@ -383,12 +433,14 @@ describe('Performance Optimization System', () => {
     it('should handle optimization failures gracefully', async () => {
       // Create optimizer with failing domain optimizer
       const failingOptimizer = {
-        optimizeTrainingSpeed: vi.fn().mockRejectedValue(new Error('Test failure')),
+        optimizeTrainingSpeed: vi
+          .fn()
+          .mockRejectedValue(new Error('Test failure')),
       };
 
       const testOptimizer = new PerformanceOptimizer(
         { enabled: true },
-        { neural: failingOptimizer as any }
+        { neural: failingOptimizer as any },
       );
 
       const results = await testOptimizer.optimizeNow();
@@ -433,7 +485,11 @@ describe('Performance Optimization System', () => {
 
     it('should validate data performance targets', async () => {
       const mockQueries = [
-        { sql: 'SELECT * FROM users WHERE id = ?', parameters: [1], estimatedCost: 100 },
+        {
+          sql: 'SELECT * FROM users WHERE id = ?',
+          parameters: [1],
+          estimatedCost: 100,
+        },
       ];
 
       const result = await dataOptimizer?.optimizeQueryPerformance(mockQueries);
@@ -445,10 +501,16 @@ describe('Performance Optimization System', () => {
 
     it('should validate WASM performance targets', async () => {
       const mockModules = [
-        { name: 'module1', size: 1024 * 1024, compilationTime: 100, instantiated: false },
+        {
+          name: 'module1',
+          size: 1024 * 1024,
+          compilationTime: 100,
+          instantiated: false,
+        },
       ];
 
-      const result = await wasmOptimizer['optimizeWasmModuleLoading'](mockModules);
+      const result =
+        await wasmOptimizer['optimizeWasmModuleLoading'](mockModules);
 
       // Validate against target: <100ms module loading
       expect(result?.loadTime).toBeDefined();

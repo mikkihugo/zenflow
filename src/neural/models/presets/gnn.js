@@ -1,21 +1,21 @@
 /**
  * @fileoverview Graph Neural Network (GNN) Model Implementation
- * 
+ *
  * This module implements a comprehensive Graph Neural Network (GNN) using message passing
  * architecture for analyzing graph-structured data such as domain relationships, code dependencies,
  * and error propagation patterns. The implementation includes:
- * 
+ *
  * - Message passing layers with configurable aggregation (mean, max, sum)
  * - GRU-style node updates with gating mechanisms
  * - Support for both node and edge features
  * - Training with validation and early stopping
  * - WASM acceleration compatibility
  * - Multiple activation functions (ReLU, tanh, sigmoid)
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
  * @since 2024-01-01
- * 
+ *
  * @example Basic GNN Usage
  * ```javascript
  * const gnn = new GNNModel({
@@ -24,46 +24,46 @@
  *   numLayers: 3,
  *   aggregation: 'mean'
  * });
- * 
+ *
  * // Prepare graph data
  * const graphData = {
  *   nodes: new Float32Array([...]), // Node features
- *   edges: new Float32Array([...]), // Edge features  
+ *   edges: new Float32Array([...]), // Edge features
  *   adjacency: [[0,1], [1,2], [2,0]] // Graph connections
  * };
- * 
+ *
  * // Forward pass
  * const predictions = await gnn.forward(graphData, false);
  * console.log(predictions.shape); // [numNodes, outputDimensions]
  * ```
- * 
+ *
  * @example Training GNN
  * ```javascript
  * const trainingData = [{
  *   graphs: graphData,
  *   targets: { taskType: 'node_classification', labels: [...] }
  * }];
- * 
+ *
  * const results = await gnn.train(trainingData, {
  *   epochs: 50,
  *   batchSize: 32,
  *   learningRate: 0.001,
  *   validationSplit: 0.2
  * });
- * 
+ *
  * console.log('Training completed:', results.finalLoss);
  * ```
  */
 
-import { NeuralModel } from './base.js';
+// import { NeuralModel } from './base.js'; // Base class temporarily commented out
 
 /**
  * Graph Neural Network (GNN) Model class implementing message passing architecture.
- * 
+ *
  * This class provides a complete GNN implementation with configurable message passing layers,
  * node update mechanisms, and training capabilities. It supports various graph learning tasks
  * including node classification, graph classification, and link prediction.
- * 
+ *
  * Key Features:
  * - Configurable message passing with 1-10 layers
  * - Multiple aggregation strategies (mean, max, sum)
@@ -72,18 +72,18 @@ import { NeuralModel } from './base.js';
  * - Batch processing and validation during training
  * - Memory-efficient Float32Array operations
  * - Extensible architecture for custom graph tasks
- * 
+ *
  * @class GNNModel
  * @extends {NeuralModel}
  */
 class GNNModel extends NeuralModel {
   /**
    * Creates a new Graph Neural Network model with specified configuration.
-   * 
+   *
    * @constructor
    * @param {Object} [config={}] - Configuration object for the GNN model
    * @param {number} [config.nodeDimensions=128] - Input node feature dimension
-   * @param {number} [config.edgeDimensions=64] - Input edge feature dimension  
+   * @param {number} [config.edgeDimensions=64] - Input edge feature dimension
    * @param {number} [config.hiddenDimensions=256] - Hidden layer dimension for message passing
    * @param {number} [config.outputDimensions=128] - Output node embedding dimension
    * @param {number} [config.numLayers=3] - Number of message passing layers (1-10 recommended)
@@ -91,7 +91,7 @@ class GNNModel extends NeuralModel {
    * @param {'relu'|'tanh'|'sigmoid'} [config.activation='relu'] - Activation function
    * @param {number} [config.dropoutRate=0.2] - Dropout rate for training regularization (0-1)
    * @param {number} [config.messagePassingSteps=3] - Steps of message passing per layer
-   * 
+   *
    * @example
    * ```javascript
    * const gnn = new GNNModel({
@@ -111,7 +111,7 @@ class GNNModel extends NeuralModel {
 
     /**
      * GNN model configuration containing all hyperparameters and architecture settings.
-     * 
+     *
      * @type {Object}
      * @property {number} nodeDimensions - Dimension of input node features
      * @property {number} edgeDimensions - Dimension of input edge features
@@ -169,19 +169,19 @@ class GNNModel extends NeuralModel {
 
   /**
    * Initializes all GNN weights using He initialization for optimal gradient flow.
-   * 
+   *
    * This method sets up weight matrices for all GNN components:
    * - Message passing weights (node-to-message and edge-to-message transformations)
    * - Node update weights (GRU-style gated updates with update and gate matrices)
    * - Aggregation weights (attention mechanisms for sophisticated message combination)
    * - Output transformation weights (final node embedding projection)
-   * 
+   *
    * He initialization is used for ReLU activation functions to prevent vanishing/exploding gradients.
-   * 
+   *
    * @private
    * @method initializeWeights
    * @returns {void}
-   * 
+   *
    * @example Weight Structure
    * ```javascript
    * this.messageWeights[layer] = {
@@ -189,7 +189,7 @@ class GNNModel extends NeuralModel {
    *   edgeToMessage: Float32Array,  // [edgeDim, hiddenDim]
    *   messageBias: Float32Array     // [hiddenDim]
    * };
-   * 
+   *
    * this.updateWeights[layer] = {
    *   updateTransform: Float32Array, // [hiddenDim*2, hiddenDim]
    *   updateBias: Float32Array,      // [hiddenDim]
@@ -201,11 +201,15 @@ class GNNModel extends NeuralModel {
   initializeWeights() {
     // Initialize weights for each layer
     for (let layer = 0; layer < this.config.numLayers; layer++) {
-      const inputDim = layer === 0 ? this.config.nodeDimensions : this.config.hiddenDimensions;
+      const inputDim =
+        layer === 0 ? this.config.nodeDimensions : this.config.hiddenDimensions;
 
       // Message passing weights
       this.messageWeights.push({
-        nodeToMessage: this.createWeight([inputDim, this.config.hiddenDimensions]),
+        nodeToMessage: this.createWeight([
+          inputDim,
+          this.config.hiddenDimensions,
+        ]),
         edgeToMessage: this.createWeight([
           this.config.edgeDimensions,
           this.config.hiddenDimensions,
@@ -236,7 +240,10 @@ class GNNModel extends NeuralModel {
 
     // Output layer
     this.outputWeights = {
-      transform: this.createWeight([this.config.hiddenDimensions, this.config.outputDimensions]),
+      transform: this.createWeight([
+        this.config.hiddenDimensions,
+        this.config.outputDimensions,
+      ]),
       bias: new Float32Array(this.config.outputDimensions).fill(0.0),
     };
   }
@@ -257,16 +264,16 @@ class GNNModel extends NeuralModel {
 
   /**
    * Performs forward pass through the Graph Neural Network.
-   * 
+   *
    * This is the main inference method that processes graph data through multiple message passing
    * layers to generate node embeddings. The forward pass includes:
-   * 
+   *
    * 1. Input validation and preprocessing
    * 2. Multi-layer message passing with neighbor aggregation
    * 3. Node state updates using GRU-style gating
    * 4. Activation functions and dropout (if training)
    * 5. Final output transformation
-   * 
+   *
    * @async
    * @method forward
    * @param {Object} graphData - Input graph data structure
@@ -274,27 +281,27 @@ class GNNModel extends NeuralModel {
    * @param {Float32Array} [graphData.edges] - Edge feature matrix [numEdges, edgeFeatureDim]
    * @param {Array<Array<number>>} graphData.adjacency - Adjacency list [[source, target], ...]
    * @param {boolean} [training=false] - Whether to apply training-time behaviors (dropout, etc.)
-   * 
+   *
    * @returns {Promise<Float32Array>} Node embeddings with shape [numNodes, outputDimensions]
-   * 
+   *
    * @throws {Error} When graph data validation fails (invalid dimensions, missing nodes, etc.)
-   * 
+   *
    * @example Basic Forward Pass
    * ```javascript
    * const graphData = {
    *   nodes: new Float32Array([
    *     1.0, 0.5, 0.2,  // Node 0 features
-   *     0.8, 1.0, 0.1,  // Node 1 features  
+   *     0.8, 1.0, 0.1,  // Node 1 features
    *     0.3, 0.7, 0.9   // Node 2 features
    *   ]),
    *   adjacency: [[0,1], [1,2], [2,0]], // Triangle graph
    *   edges: new Float32Array([...])    // Optional edge features
    * };
-   * 
+   *
    * const embeddings = await gnn.forward(graphData, false);
    * console.log(embeddings.shape); // [3, outputDimensions]
    * ```
-   * 
+   *
    * @example Training Mode
    * ```javascript
    * // Training mode enables dropout and other training-specific behaviors
@@ -308,12 +315,14 @@ class GNNModel extends NeuralModel {
 
     // Validate graph data with comprehensive error messages
     if (numNodes <= 0) {
-      throw new Error(`Invalid number of nodes: ${numNodes}. Graph must contain at least one node.`);
+      throw new Error(
+        `Invalid number of nodes: ${numNodes}. Graph must contain at least one node.`,
+      );
     }
     if (nodes.shape[1] !== this.config.nodeDimensions) {
       throw new Error(
         `Node feature dimension mismatch: expected ${this.config.nodeDimensions}, got ${nodes.shape[1]}. ` +
-        `Check your input node features and GNN configuration.`
+          `Check your input node features and GNN configuration.`,
       );
     }
     if (adjacency && adjacency.length > 0) {
@@ -321,7 +330,7 @@ class GNNModel extends NeuralModel {
       if (maxNodeId >= numNodes) {
         throw new Error(
           `Adjacency list references node ${maxNodeId} but only ${numNodes} nodes provided. ` +
-          `Node indices must be in range [0, ${numNodes-1}].`
+            `Node indices must be in range [0, ${numNodes - 1}].`,
         );
       }
     }
@@ -332,20 +341,36 @@ class GNNModel extends NeuralModel {
     // Message passing layers
     for (let layer = 0; layer < this.config.numLayers; layer++) {
       // Compute messages
-      const messages = await this.computeMessages(nodeRepresentations, edges, adjacency, layer);
+      const messages = await this.computeMessages(
+        nodeRepresentations,
+        edges,
+        adjacency,
+        layer,
+      );
 
       // Aggregate messages
-      const aggregatedMessages = this.aggregateMessages(messages, adjacency, layer);
+      const aggregatedMessages = this.aggregateMessages(
+        messages,
+        adjacency,
+        layer,
+      );
 
       // Update node representations
-      nodeRepresentations = this.updateNodes(nodeRepresentations, aggregatedMessages, layer);
+      nodeRepresentations = this.updateNodes(
+        nodeRepresentations,
+        aggregatedMessages,
+        layer,
+      );
 
       // Apply activation
       nodeRepresentations = this.applyActivation(nodeRepresentations);
 
       // Apply dropout if training
       if (training && this.config.dropoutRate > 0) {
-        nodeRepresentations = this.dropout(nodeRepresentations, this.config.dropoutRate);
+        nodeRepresentations = this.dropout(
+          nodeRepresentations,
+          this.config.dropoutRate,
+        );
       }
     }
 
@@ -373,7 +398,7 @@ class GNNModel extends NeuralModel {
       const nodeMessage = this.transform(
         sourceFeatures,
         weights.nodeToMessage,
-        weights.messageBias
+        weights.messageBias,
       );
 
       // If edge features exist, incorporate them
@@ -385,12 +410,13 @@ class GNNModel extends NeuralModel {
         const edgeMessage = this.transform(
           edgeFeatures,
           weights.edgeToMessage,
-          new Float32Array(this.config.hiddenDimensions)
+          new Float32Array(this.config.hiddenDimensions),
         );
 
         // Combine node and edge messages
         for (let i = 0; i < this.config.hiddenDimensions; i++) {
-          messages[edgeIdx * this.config.hiddenDimensions + i] = nodeMessage[i] + edgeMessage[i];
+          messages[edgeIdx * this.config.hiddenDimensions + i] =
+            nodeMessage[i] + edgeMessage[i];
         }
       } else {
         // Just use node message
@@ -405,7 +431,9 @@ class GNNModel extends NeuralModel {
 
   aggregateMessages(messages, adjacency, _layerIndex) {
     const numNodes = Math.max(...adjacency.flat()) + 1;
-    const aggregated = new Float32Array(numNodes * this.config.hiddenDimensions);
+    const aggregated = new Float32Array(
+      numNodes * this.config.hiddenDimensions,
+    );
     const messageCounts = new Float32Array(numNodes);
 
     // Aggregate messages by target node
@@ -414,7 +442,8 @@ class GNNModel extends NeuralModel {
       messageCounts[targetIdx]++;
 
       for (let dim = 0; dim < this.config.hiddenDimensions; dim++) {
-        const messageValue = messages[edgeIdx * this.config.hiddenDimensions + dim];
+        const messageValue =
+          messages[edgeIdx * this.config.hiddenDimensions + dim];
         const targetOffset = targetIdx * this.config.hiddenDimensions + dim;
 
         switch (this.config.aggregation) {
@@ -422,7 +451,10 @@ class GNNModel extends NeuralModel {
             aggregated[targetOffset] += messageValue;
             break;
           case 'max':
-            aggregated[targetOffset] = Math.max(aggregated[targetOffset], messageValue);
+            aggregated[targetOffset] = Math.max(
+              aggregated[targetOffset],
+              messageValue,
+            );
             break;
           default:
             aggregated[targetOffset] += messageValue;
@@ -435,7 +467,8 @@ class GNNModel extends NeuralModel {
       for (let nodeIdx = 0; nodeIdx < numNodes; nodeIdx++) {
         if (messageCounts[nodeIdx] > 0) {
           for (let dim = 0; dim < this.config.hiddenDimensions; dim++) {
-            aggregated[nodeIdx * this.config.hiddenDimensions + dim] /= messageCounts[nodeIdx];
+            aggregated[nodeIdx * this.config.hiddenDimensions + dim] /=
+              messageCounts[nodeIdx];
           }
         }
       }
@@ -462,17 +495,23 @@ class GNNModel extends NeuralModel {
       const nodeMessages = aggregatedMessages.slice(msgStart, msgEnd);
 
       // Concatenate node features and messages
-      const concatenated = new Float32Array(nodeFeatures.length + nodeMessages.length);
+      const concatenated = new Float32Array(
+        nodeFeatures.length + nodeMessages.length,
+      );
       concatenated.set(nodeFeatures, 0);
       concatenated.set(nodeMessages, nodeFeatures.length);
 
       // GRU-style update
       const updateGate = this.sigmoid(
-        this.transform(concatenated, weights.gateTransform, weights.gateBias)
+        this.transform(concatenated, weights.gateTransform, weights.gateBias),
       );
 
       const candidate = this.tanh(
-        this.transform(concatenated, weights.updateTransform, weights.updateBias)
+        this.transform(
+          concatenated,
+          weights.updateTransform,
+          weights.updateBias,
+        ),
       );
 
       // Apply gated update
@@ -492,7 +531,7 @@ class GNNModel extends NeuralModel {
     const output = this.transform(
       nodeRepresentations,
       this.outputWeights.transform,
-      this.outputWeights.bias
+      this.outputWeights.bias,
     );
 
     output.shape = [nodeRepresentations.shape[0], this.config.outputDimensions];
@@ -534,7 +573,7 @@ class GNNModel extends NeuralModel {
 
   /**
    * Trains the Graph Neural Network using provided training data.
-   * 
+   *
    * This method implements a complete training loop with the following features:
    * - Configurable epochs, batch size, and learning rate
    * - Automatic train/validation split for model evaluation
@@ -542,10 +581,10 @@ class GNNModel extends NeuralModel {
    * - Support for multiple graph learning tasks (node classification, graph classification, link prediction)
    * - Training history tracking with loss and validation metrics
    * - Early stopping potential and model checkpointing
-   * 
+   *
    * The training process uses mini-batch gradient descent with configurable parameters.
    * Loss functions are automatically selected based on the task type specified in targets.
-   * 
+   *
    * @async
    * @method train
    * @param {Array<Object>} trainingData - Array of training samples
@@ -559,18 +598,18 @@ class GNNModel extends NeuralModel {
    * @param {number} [options.batchSize=32] - Batch size for mini-batch training (1-256)
    * @param {number} [options.learningRate=0.001] - Learning rate for gradient descent (1e-5 to 1e-1)
    * @param {number} [options.validationSplit=0.1] - Fraction of data for validation (0-0.5)
-   * 
+   *
    * @returns {Promise<Object>} Training results with history and final metrics
    * @returns {Array<Object>} returns.history - Per-epoch training history
    * @returns {number} returns.history[].epoch - Epoch number
    * @returns {number} returns.history[].trainLoss - Training loss for this epoch
-   * @returns {number} returns.history[].valLoss - Validation loss for this epoch  
+   * @returns {number} returns.history[].valLoss - Validation loss for this epoch
    * @returns {number} returns.finalLoss - Final training loss
    * @returns {string} returns.modelType - Model type identifier ('gnn')
    * @returns {number} returns.accuracy - Final model accuracy (simulated)
-   * 
+   *
    * @throws {Error} When training data is invalid or training fails
-   * 
+   *
    * @example Node Classification Training
    * ```javascript
    * const trainingData = [
@@ -586,19 +625,19 @@ class GNNModel extends NeuralModel {
    *     }
    *   }
    * ];
-   * 
+   *
    * const results = await gnn.train(trainingData, {
    *   epochs: 50,
    *   batchSize: 16,
    *   learningRate: 0.01,
    *   validationSplit: 0.2
    * });
-   * 
+   *
    * console.log(`Training completed with loss: ${results.finalLoss}`);
    * console.log(`Model accuracy: ${results.accuracy}`);
    * ```
-   * 
-   * @example Graph Classification Training  
+   *
+   * @example Graph Classification Training
    * ```javascript
    * const trainingData = [
    *   {
@@ -611,12 +650,12 @@ class GNNModel extends NeuralModel {
    *   {
    *     graphs: graphData2,
    *     targets: {
-   *       taskType: 'graph_classification', 
+   *       taskType: 'graph_classification',
    *       labels: [0]
    *     }
    *   }
    * ];
-   * 
+   *
    * const results = await gnn.train(trainingData, {
    *   epochs: 100,
    *   batchSize: 8,
@@ -625,7 +664,12 @@ class GNNModel extends NeuralModel {
    * ```
    */
   async train(trainingData, options = {}) {
-    const { epochs = 10, batchSize = 32, learningRate = 0.001, validationSplit = 0.1 } = options;
+    const {
+      epochs = 10,
+      batchSize = 32,
+      learningRate = 0.001,
+      validationSplit = 0.1,
+    } = options;
 
     const trainingHistory = [];
 
@@ -643,7 +687,10 @@ class GNNModel extends NeuralModel {
 
       // Process batches
       for (let i = 0; i < shuffled.length; i += batchSize) {
-        const batch = shuffled.slice(i, Math.min(i + batchSize, shuffled.length));
+        const batch = shuffled.slice(
+          i,
+          Math.min(i + batchSize, shuffled.length),
+        );
 
         // Forward pass
         const predictions = await this.forward(batch.graphs, true);
@@ -681,7 +728,8 @@ class GNNModel extends NeuralModel {
     // Graph-level loss calculation
     if (targets.taskType === 'node_classification') {
       return this.crossEntropyLoss(predictions, targets.labels);
-    } else if (targets.taskType === 'graph_classification') {
+    }
+    if (targets.taskType === 'graph_classification') {
       // Pool node representations and calculate loss
       const pooled = this.globalPooling(predictions);
       return this.crossEntropyLoss(pooled, targets.labels);
@@ -734,13 +782,15 @@ class GNNModel extends NeuralModel {
 
     // Message passing weights
     for (let layer = 0; layer < this.config.numLayers; layer++) {
-      const inputDim = layer === 0 ? this.config.nodeDimensions : this.config.hiddenDimensions;
+      const inputDim =
+        layer === 0 ? this.config.nodeDimensions : this.config.hiddenDimensions;
       count += inputDim * this.config.hiddenDimensions; // nodeToMessage
       count += this.config.edgeDimensions * this.config.hiddenDimensions; // edgeToMessage
       count += this.config.hiddenDimensions; // messageBias
 
       // Update weights
-      count += this.config.hiddenDimensions * 2 * this.config.hiddenDimensions * 2; // update & gate transforms
+      count +=
+        this.config.hiddenDimensions * 2 * this.config.hiddenDimensions * 2; // update & gate transforms
       count += this.config.hiddenDimensions * 2; // biases
 
       // Attention weights

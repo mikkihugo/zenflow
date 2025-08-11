@@ -318,11 +318,14 @@ const config = {
       },
     },
   },
-  hiveMind: {
+  collective: {
     maxQueens: parseInt(process.env.MAX_QUEENS ?? '10', 10),
+    maxMatrons: parseInt(process.env.MAX_MATRONS ?? '5', 10),
+    maxCubes: parseInt(process.env.MAX_CUBES ?? '3', 10),
     consensusThreshold: 0.66, // 66% consensus required
     memoryRetention: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
     autoBackup: true,
+    borgProtocol: true, // Enable Borg-style coordination
   },
   // Production-grade logging and monitoring configuration
   logging: {

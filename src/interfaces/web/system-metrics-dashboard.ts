@@ -12,7 +12,11 @@ const logger = getLogger('interfaces-web-system-metrics-dashboard');
 import { EventEmitter } from 'node:events';
 // URL builders - using direct URL construction since url-builder module doesn't exist
 // import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
-import { createRepository, DatabaseTypes, EntityTypes } from '../../database/index.ts';
+import {
+  createRepository,
+  DatabaseTypes,
+  EntityTypes,
+} from '../../database/index.ts';
 import type { IRepository } from '../../database/interfaces.ts';
 // Import UACL for unified client management
 import { UACLHelpers, uacl } from '../clients/index.ts';
@@ -62,7 +66,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   constructor(
     mcpMetrics: MCPPerformanceMetrics,
     enhancedMemory: EnhancedMemory,
-    config: DashboardConfig = {}
+    config: DashboardConfig = {},
   ) {
     super();
 
@@ -113,7 +117,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         {
           database: './data/dashboard-metrics',
           options: { vectorSize: 384, metricType: 'cosine' },
-        }
+        },
       );
 
       // Vector DAO removed since createDAO doesn't exist in interfaces
@@ -174,7 +178,12 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     // Get UACL client metrics
     const clientMetrics = await this.getClientMetrics();
 
-    const health = this.assessSystemHealth(mcpMetrics, memoryStats, dbStats, clientMetrics);
+    const health = this.assessSystemHealth(
+      mcpMetrics,
+      memoryStats,
+      dbStats,
+      clientMetrics,
+    );
 
     return {
       health,
@@ -206,16 +215,17 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     mcpMetrics: any,
     memoryStats: any,
     dbStats: any,
-    clientMetrics?: any
+    clientMetrics?: any,
   ): SystemHealth {
     const alerts: SystemHealth['alerts'] = [];
 
     // Check MCP health
-    const mcpErrorRate = mcpMetrics.requests.failed / Math.max(1, mcpMetrics.requests.total);
+    const mcpErrorRate =
+      mcpMetrics.requests.failed / Math.max(1, mcpMetrics.requests.total);
     const mcpHealth = this.assessComponentHealth(
       mcpMetrics.requests.averageLatency,
       mcpErrorRate,
-      'mcp'
+      'mcp',
     );
 
     if (mcpHealth !== 'healthy') {
@@ -232,7 +242,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       0, // No latency for memory
       0, // No error rate for memory
       'memory',
-      memoryStats.totalSize
+      memoryStats.totalSize,
     );
 
     if (memoryHealth !== 'healthy') {
@@ -248,7 +258,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     const dbHealth = this.assessComponentHealth(
       dbStats.averageSearchTime,
       0, // No error rate available
-      'database'
+      'database',
     );
 
     if (dbHealth !== 'healthy' && dbStats.totalVectors > 0) {
@@ -261,7 +271,8 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     }
 
     // Check neural health
-    const neuralHealth = mcpMetrics.neural.accuracy < 0.8 ? 'warning' : 'healthy';
+    const neuralHealth =
+      mcpMetrics.neural.accuracy < 0.8 ? 'warning' : 'healthy';
 
     if (neuralHealth !== 'healthy') {
       alerts.push({
@@ -276,7 +287,13 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     const clientHealth = this.assessClientHealth(clientMetrics, alerts);
 
     // Determine overall health
-    const componentHealths = [mcpHealth, memoryHealth, dbHealth, neuralHealth, clientHealth];
+    const componentHealths = [
+      mcpHealth,
+      memoryHealth,
+      dbHealth,
+      neuralHealth,
+      clientHealth,
+    ];
     const overall = componentHealths.includes('critical')
       ? 'critical'
       : componentHealths.includes('warning')
@@ -308,12 +325,13 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     latency: number,
     errorRate: number,
     component: string,
-    memoryUsage?: number
+    memoryUsage?: number,
   ): 'healthy' | 'warning' | 'critical' {
     if (component === 'memory' && memoryUsage) {
       if (memoryUsage > this.config.alertThresholds.memoryUsage! * 2) {
         return 'critical';
-      } else if (memoryUsage > this.config.alertThresholds.memoryUsage!) {
+      }
+      if (memoryUsage > this.config.alertThresholds.memoryUsage!) {
         return 'warning';
       }
     }
@@ -323,7 +341,8 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       errorRate > this.config.alertThresholds.errorRate! * 2
     ) {
       return 'critical';
-    } else if (
+    }
+    if (
       latency > this.config.alertThresholds.latency! ||
       errorRate > this.config.alertThresholds.errorRate!
     ) {
@@ -407,12 +426,21 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   private displayConsoleStatus(status: any): void {
     // Overall health.
     const _healthEmoji =
-      status.health.overall === 'healthy' ? '✅' : status.health.overall === 'warning' ? '⚠️' : '❌';
+      status.health.overall === 'healthy'
+        ? '✅'
+        : status.health.overall === 'warning'
+          ? '⚠️'
+          : '❌';
 
     // Alerts
     if (status.health.alerts.length > 0) {
       status.health.alerts.forEach((alert: any) => {
-        const _alertEmoji = alert.level === 'error' ? '❌' : alert.level === 'warning' ? '⚠️' : 'ℹ️';
+        const _alertEmoji =
+          alert.level === 'error'
+            ? '❌'
+            : alert.level === 'warning'
+              ? '⚠️'
+              : 'ℹ️';
       });
     } else {
     }
@@ -422,7 +450,10 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   private async getClientMetrics(): Promise<{
     total: number;
     connected: number;
-    byType: Record<string, { total: number; connected: number; avgLatency: number }>;
+    byType: Record<
+      string,
+      { total: number; connected: number; avgLatency: number }
+    >;
     avgLatency: number;
     errors: number;
     healthPercentage: number;
@@ -440,7 +471,8 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       }
 
       const metrics = uacl.getMetrics();
-      const healthPercentage = metrics.total > 0 ? (metrics.connected / metrics.total) * 100 : 100;
+      const healthPercentage =
+        metrics.total > 0 ? (metrics.connected / metrics.total) * 100 : 100;
 
       return {
         total: metrics.total,
@@ -471,7 +503,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
    */
   private assessClientHealth(
     clientMetrics: any,
-    alerts: SystemHealth['alerts']
+    alerts: SystemHealth['alerts'],
   ): 'healthy' | 'warning' | 'critical' {
     if (!clientMetrics || clientMetrics.total === 0) {
       return 'healthy'; // No clients configured is considered healthy
@@ -542,8 +574,9 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       recommendations,
       summary: {
         totalComponents: 4,
-        healthyComponents: Object.values(status.health.components).filter((h) => h === 'healthy')
-          .length,
+        healthyComponents: Object.values(status.health.components).filter(
+          (h) => h === 'healthy',
+        ).length,
         totalAlerts: status.health.alerts.length,
         uptime: status.performance.uptime,
         systemLoad: status.performance.systemLoad,

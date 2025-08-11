@@ -9,7 +9,10 @@
  */
 
 import { nanoid } from 'nanoid';
-import type { ADRDocumentEntity, ProjectEntity } from '../entities/document-entities.ts';
+import type {
+  ADRDocumentEntity,
+  ProjectEntity,
+} from '../entities/document-entities.ts';
 import { documentManager } from './document-manager.ts';
 
 export interface ADRCreateOptions {
@@ -29,11 +32,17 @@ export interface ADRCreateOptions {
   stakeholders?: string[];
   implementation_notes?: string;
   success_criteria?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ADRQueryOptions {
-  status?: 'proposed' | 'discussion' | 'decided' | 'implemented' | 'superseded' | 'deprecated';
+  status?:
+    | 'proposed'
+    | 'discussion'
+    | 'decided'
+    | 'implemented'
+    | 'superseded'
+    | 'deprecated';
   priority?: 'low' | 'medium' | 'high' | 'critical';
   author?: string;
   project_id?: string;
@@ -74,13 +83,16 @@ export class ADRManager {
       type: 'project' as any, // Cast needed as queryDocuments expects DocumentType
     });
 
-    this.architectureProject = documents.find((p) => p.name === 'Architecture Decisions') as any;
+    this.architectureProject = documents.find(
+      (p) => p.name === 'Architecture Decisions',
+    ) as any;
 
     if (!this.architectureProject) {
       // TODO: TypeScript error TS2353 - 'owner' does not exist in type (AI unsure of safe fix - human review needed)
       this.architectureProject = await documentManager.createProject({
         name: 'Architecture Decisions',
-        description: 'Architecture Decision Records (ADRs) for Claude-Zen system',
+        description:
+          'Architecture Decision Records (ADRs) for Claude-Zen system',
         // owner: 'architecture-team', // Commented out due to type error
         status: 'active',
         metadata: {
@@ -148,7 +160,7 @@ export class ADRManager {
         autoGenerateRelationships: true,
         startWorkflow: 'adr_workflow',
         generateSearchIndex: true,
-      }
+      },
     );
 
     return adr;
@@ -214,7 +226,8 @@ export class ADRManager {
       filteredADRs = filteredADRs.filter((adr) => {
         const created = new Date(adr.created_at);
         return (
-          (!options?.date_range?.start || created >= options?.date_range?.start) &&
+          (!options?.date_range?.start ||
+            created >= options?.date_range?.start) &&
           (!options?.date_range?.end || created <= options?.date_range?.end)
         );
       });
@@ -222,7 +235,7 @@ export class ADRManager {
 
     if (options?.tags) {
       filteredADRs = filteredADRs.filter((adr) =>
-        options?.tags?.some((tag) => adr.keywords.includes(tag))
+        options?.tags?.some((tag) => adr.keywords.includes(tag)),
       );
     }
 
@@ -248,11 +261,11 @@ export class ADRManager {
       searchType?: 'fulltext' | 'semantic' | 'keyword' | 'combined';
       limit?: number;
       filters?: ADRQueryOptions;
-    } = {}
+    } = {},
   ): Promise<{
     adrs: ADRDocumentEntity[];
     total: number;
-    searchMetadata: any;
+    searchMetadata: unknown;
   }> {
     const searchOptions: any = {
       searchType: options?.searchType || 'combined',
@@ -264,8 +277,10 @@ export class ADRManager {
 
     // Apply additional filters
     if (options?.filters) {
-      if (options?.filters?.status) searchOptions.status = [options?.filters?.status];
-      if (options?.filters?.priority) searchOptions.priority = [options?.filters?.priority];
+      if (options?.filters?.status)
+        searchOptions.status = [options?.filters?.status];
+      if (options?.filters?.priority)
+        searchOptions.priority = [options?.filters?.priority];
       if (options?.filters?.date_range)
         searchOptions.dateRange = {
           start: options?.filters?.date_range?.start,
@@ -274,7 +289,8 @@ export class ADRManager {
         };
     }
 
-    const result = await documentManager.searchDocuments<ADRDocumentEntity>(searchOptions);
+    const result =
+      await documentManager.searchDocuments<ADRDocumentEntity>(searchOptions);
 
     return {
       adrs: result?.documents,
@@ -312,8 +328,14 @@ export class ADRManager {
    */
   async updateADRStatus(
     adrNumber: number,
-    newStatus: 'proposed' | 'discussion' | 'decided' | 'implemented' | 'superseded' | 'deprecated',
-    notes?: string
+    newStatus:
+      | 'proposed'
+      | 'discussion'
+      | 'decided'
+      | 'implemented'
+      | 'superseded'
+      | 'deprecated',
+    notes?: string,
   ): Promise<ADRDocumentEntity> {
     const adr = await this.getADRByNumber(adrNumber);
     if (!adr) {
@@ -351,7 +373,11 @@ export class ADRManager {
    * @param oldADRNumber
    * @param reason
    */
-  async supersede(newADRNumber: number, oldADRNumber: number, reason: string): Promise<void> {
+  async supersede(
+    newADRNumber: number,
+    oldADRNumber: number,
+    reason: string,
+  ): Promise<void> {
     const [newADR, oldADR] = await Promise.all([
       this.getADRByNumber(newADRNumber),
       this.getADRByNumber(oldADRNumber),
@@ -376,7 +402,10 @@ export class ADRManager {
     await documentManager.updateDocument(newADR.id, {
       metadata: {
         ...newADR.metadata,
-        supersedes: [...(newADR.metadata?.['supersedes'] || []), oldADR.metadata?.['adr_id']], // Fixed bracket notation
+        supersedes: [
+          ...(newADR.metadata?.['supersedes'] || []),
+          oldADR.metadata?.['adr_id'],
+        ], // Fixed bracket notation
       },
     });
 
@@ -430,7 +459,8 @@ export class ADRManager {
       // Priority stats
       if (adr.priority) {
         // Added null check
-        stats.by_priority[adr.priority] = (stats.by_priority[adr.priority] || 0) + 1;
+        stats.by_priority[adr.priority] =
+          (stats.by_priority[adr.priority] || 0) + 1;
       }
 
       // Author stats
@@ -455,7 +485,8 @@ export class ADRManager {
       */
     }
 
-    stats.implementation_rate = decidedCount > 0 ? (implementedCount / decidedCount) * 100 : 0;
+    stats.implementation_rate =
+      decidedCount > 0 ? (implementedCount / decidedCount) * 100 : 0;
 
     return stats;
   }
@@ -609,7 +640,10 @@ export class ADRManager {
 
     const keywords = [
       ...new Set(
-        words.filter((word) => !stopWords.has(word) && word.length >= 3 && !/^\d+$/.test(word))
+        words.filter(
+          (word) =>
+            !stopWords.has(word) && word.length >= 3 && !/^\d+$/.test(word),
+        ),
       ),
     ];
 

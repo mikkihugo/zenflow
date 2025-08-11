@@ -8,7 +8,11 @@
  * @file Web module exports.
  */
 
-export { type ApiConfig, ApiRouteHandler, type SystemStatus } from './api-route-handler.ts';
+export {
+  type ApiConfig,
+  ApiRouteHandler,
+  type SystemStatus,
+} from './api-route-handler.ts';
 export {
   type DaemonConfig,
   DaemonProcessManager,

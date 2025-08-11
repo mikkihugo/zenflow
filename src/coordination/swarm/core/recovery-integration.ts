@@ -27,15 +27,15 @@ import RecoveryWorkflows from './recovery-workflows.ts';
 
 export class RecoveryIntegration extends EventEmitter {
   // Public properties
-  public options: any;
+  public options: unknown;
   public logger: Logger;
   public healthMonitor: HealthMonitor | null;
   public recoveryWorkflows: RecoveryWorkflows | null;
   public connectionManager: ConnectionStateManager | null;
   public monitoringDashboard: MonitoringDashboard | null;
   public chaosEngineering: ChaosEngineering | null;
-  public mcpTools: any;
-  public persistence: any;
+  public mcpTools: unknown;
+  public persistence: unknown;
   public isInitialized: boolean;
   public isRunning: boolean;
   public components: Map<string, any>;
@@ -143,9 +143,12 @@ export class RecoveryIntegration extends EventEmitter {
         {
           error: error.message,
           component: 'recovery-integration',
-        }
+        },
       );
-      this.logger.error('Recovery Integration initialization failed', integrationError);
+      this.logger.error(
+        'Recovery Integration initialization failed',
+        integrationError,
+      );
       throw integrationError;
     }
   }
@@ -176,22 +179,30 @@ export class RecoveryIntegration extends EventEmitter {
 
     // Initialize Connection State Manager
     if (this.options.enableConnectionManagement) {
-      await this.initializeComponent('connectionManager', ConnectionStateManager, {
-        maxConnections: 10,
-        connectionTimeout: 30000,
-        healthCheckInterval: 30000,
-        persistenceEnabled: true,
-      });
+      await this.initializeComponent(
+        'connectionManager',
+        ConnectionStateManager,
+        {
+          maxConnections: 10,
+          connectionTimeout: 30000,
+          healthCheckInterval: 30000,
+          persistenceEnabled: true,
+        },
+      );
     }
 
     // Initialize Monitoring Dashboard
     if (this.options.enableMonitoringDashboard) {
-      await this.initializeComponent('monitoringDashboard', MonitoringDashboard, {
-        enableRealTimeStreaming: true,
-        enableTrendAnalysis: true,
-        metricsRetentionPeriod: 86400000, // 24 hours
-        aggregationInterval: 60000, // 1 minute
-      });
+      await this.initializeComponent(
+        'monitoringDashboard',
+        MonitoringDashboard,
+        {
+          enableRealTimeStreaming: true,
+          enableTrendAnalysis: true,
+          metricsRetentionPeriod: 86400000, // 24 hours
+          aggregationInterval: 60000, // 1 minute
+        },
+      );
     }
 
     // Initialize Chaos Engineering (if enabled)
@@ -234,7 +245,10 @@ export class RecoveryIntegration extends EventEmitter {
         options: componentOptions,
       });
 
-      this.performanceMetrics.componentStartupTimes.set(name, Date.now() - startTime);
+      this.performanceMetrics.componentStartupTimes.set(
+        name,
+        Date.now() - startTime,
+      );
 
       this.logger.debug(`Component initialized: ${name}`, {
         initTime: Date.now() - startTime,
@@ -356,9 +370,9 @@ export class RecoveryIntegration extends EventEmitter {
 
     this.logger.info('Component integrations completed', {
       totalIntegrations: integrations.length,
-      successfulIntegrations: Array.from(this.integrationStatus.values()).filter(
-        (status) => status.status === 'success'
-      ).length,
+      successfulIntegrations: Array.from(
+        this.integrationStatus.values(),
+      ).filter((status) => status.status === 'success').length,
     });
   }
 
@@ -380,7 +394,7 @@ export class RecoveryIntegration extends EventEmitter {
             : this[from];
       const toComponent = this[to];
 
-      if (!fromComponent || !toComponent) {
+      if (!(fromComponent && toComponent)) {
         this.integrationStatus.set(integrationKey, {
           status: 'skipped',
           reason: `Component not available: from=${!!fromComponent}, to=${!!toComponent}`,
@@ -400,7 +414,9 @@ export class RecoveryIntegration extends EventEmitter {
           latency,
         });
 
-        this.logger.debug(`Integration completed: ${integrationKey}`, { latency });
+        this.logger.debug(`Integration completed: ${integrationKey}`, {
+          latency,
+        });
       } else {
         this.integrationStatus.set(integrationKey, {
           status: 'failed',
@@ -450,7 +466,7 @@ export class RecoveryIntegration extends EventEmitter {
         'Failed to start recovery integration system',
         {
           error: error.message,
-        }
+        },
       );
       this.logger.error('Recovery Integration start failed', startError);
       throw startError;
@@ -527,14 +543,20 @@ export class RecoveryIntegration extends EventEmitter {
     if (!method) return;
 
     for (const [name, componentData] of this.components) {
-      if (componentData?.instance && typeof componentData?.instance?.[method] === 'function') {
+      if (
+        componentData?.instance &&
+        typeof componentData?.instance?.[method] === 'function'
+      ) {
         try {
           await componentData?.instance?.[method](integration);
           this.logger.debug(`Propagated ${integrationType} to ${name}`);
         } catch (error) {
-          this.logger.error(`Failed to propagate ${integrationType} to ${name}`, {
-            error: error.message,
-          });
+          this.logger.error(
+            `Failed to propagate ${integrationType} to ${name}`,
+            {
+              error: error.message,
+            },
+          );
         }
       }
     }
@@ -557,7 +579,9 @@ export class RecoveryIntegration extends EventEmitter {
 
     // Register with connection manager if it has MCP connections
     if (this.connectionManager && swarmInstance.mcpConnections) {
-      for (const [connectionId, connectionConfig] of Object.entries(swarmInstance.mcpConnections)) {
+      for (const [connectionId, connectionConfig] of Object.entries(
+        swarmInstance.mcpConnections,
+      )) {
         await this.connectionManager.registerConnection({
           id: connectionId,
           ...(connectionConfig as any),
@@ -587,8 +611,10 @@ export class RecoveryIntegration extends EventEmitter {
     if (this.connectionManager) {
       const connectionStatus = this.connectionManager.getConnectionStatus();
       if (connectionStatus && connectionStatus.connections) {
-        for (const [connectionId, connection] of Object.entries(connectionStatus.connections)) {
-          if ((connection).metadata?.swarmId === swarmId) {
+        for (const [connectionId, connection] of Object.entries(
+          connectionStatus.connections,
+        )) {
+          if (connection.metadata?.swarmId === swarmId) {
             await this.connectionManager.removeConnection(connectionId);
           }
         }
@@ -605,14 +631,14 @@ export class RecoveryIntegration extends EventEmitter {
     const status: {
       isInitialized: boolean;
       isRunning: boolean;
-      components: Record<string, any>;
-      integrations: Record<string, any>;
-      performance: any;
-      health: any;
-      recovery: any;
-      connections: any;
-      monitoring: any;
-      chaos: any;
+      components: Record<string, unknown>;
+      integrations: Record<string, unknown>;
+      performance?: unknown;
+      health?: unknown;
+      recovery?: unknown;
+      connections?: unknown;
+      monitoring?: unknown;
+      chaos?: unknown;
     } = {
       isInitialized: this.isInitialized,
       isRunning: this.isRunning,
@@ -694,8 +720,12 @@ export class RecoveryIntegration extends EventEmitter {
 
     return {
       ...this.performanceMetrics,
-      componentStartupTimes: Object.fromEntries(this.performanceMetrics.componentStartupTimes),
-      integrationLatency: Object.fromEntries(this.performanceMetrics.integrationLatency),
+      componentStartupTimes: Object.fromEntries(
+        this.performanceMetrics.componentStartupTimes,
+      ),
+      integrationLatency: Object.fromEntries(
+        this.performanceMetrics.integrationLatency,
+      ),
       currentMemoryUsage: memUsage,
       timestamp: new Date(),
     };
@@ -779,16 +809,25 @@ export class RecoveryIntegration extends EventEmitter {
       }
     }
 
-    if (this.options.enableRecoveryWorkflows && this.options.recoveryWorkflows) {
+    if (
+      this.options.enableRecoveryWorkflows &&
+      this.options.recoveryWorkflows
+    ) {
       const recoveryConfig = this.options.recoveryWorkflows;
-      if (recoveryConfig?.maxConcurrentRecoveries && recoveryConfig?.maxConcurrentRecoveries > 10) {
+      if (
+        recoveryConfig?.maxConcurrentRecoveries &&
+        recoveryConfig?.maxConcurrentRecoveries > 10
+      ) {
         validationErrors.push('Too many concurrent recoveries (maximum 10)');
       }
     }
 
     if (this.options.enableChaosEngineering && this.options.chaosEngineering) {
       const chaosConfig = this.options.chaosEngineering;
-      if (chaosConfig?.blastRadiusLimit && chaosConfig?.blastRadiusLimit > 0.5) {
+      if (
+        chaosConfig?.blastRadiusLimit &&
+        chaosConfig?.blastRadiusLimit > 0.5
+      ) {
         validationErrors.push('Blast radius limit too high (maximum 0.5)');
       }
     }
@@ -796,7 +835,7 @@ export class RecoveryIntegration extends EventEmitter {
     if (validationErrors.length > 0) {
       throw ErrorFactory.createError(
         'configuration',
-        `Configuration validation failed: ${validationErrors.join(', ')}`
+        `Configuration validation failed: ${validationErrors.join(', ')}`,
       );
     }
 
@@ -816,12 +855,12 @@ export class RecoveryIntegration extends EventEmitter {
     // Check component health
     for (const [name, componentData] of this.components) {
       if (componentData?.status === 'failed') {
-        if (healthResults?.components) healthResults.components[name] = 'failed';
+        if (healthResults?.components)
+          healthResults.components[name] = 'failed';
         healthResults?.issues?.push(`Component ${name} failed to initialize`);
         healthResults.overall = 'degraded';
-      } else {
-        if (healthResults?.components) healthResults.components[name] = 'healthy';
-      }
+      } else if (healthResults?.components)
+        healthResults.components[name] = 'healthy';
     }
 
     // Check integration health
@@ -859,10 +898,18 @@ export class RecoveryIntegration extends EventEmitter {
       timestamp: new Date(),
       status: this.getSystemStatus(),
       health: this.healthMonitor ? {} : null, // TODO: this.healthMonitor.exportHealthData() after API finalized
-      recovery: this.recoveryWorkflows ? this.recoveryWorkflows.exportRecoveryData() : null,
-      connections: this.connectionManager ? this.connectionManager.exportConnectionData() : null,
-      monitoring: this.monitoringDashboard ? this.monitoringDashboard.exportDashboardData() : null,
-      chaos: this.chaosEngineering ? this.chaosEngineering.exportChaosData() : null,
+      recovery: this.recoveryWorkflows
+        ? this.recoveryWorkflows.exportRecoveryData()
+        : null,
+      connections: this.connectionManager
+        ? this.connectionManager.exportConnectionData()
+        : null,
+      monitoring: this.monitoringDashboard
+        ? this.monitoringDashboard.exportDashboardData()
+        : null,
+      chaos: this.chaosEngineering
+        ? this.chaosEngineering.exportChaosData()
+        : null,
     };
   }
 

@@ -143,7 +143,8 @@ export class ApplicationCoordinator extends EventEmitter {
 
     // Workflow engine
     this.workflowEngine = new WorkflowEngine(this.memorySystem, {
-      maxConcurrentWorkflows: this.config.workflow?.maxConcurrentWorkflows || 10,
+      maxConcurrentWorkflows:
+        this.config.workflow?.maxConcurrentWorkflows || 10,
       workspaceRoot: './',
       templatesPath: './templates',
       outputPath: './output',
@@ -184,11 +185,13 @@ export class ApplicationCoordinator extends EventEmitter {
       try {
         const workflowIds = await this.workflowEngine.processDocumentEvent(
           'document:created',
-          event.document
+          event.document,
         );
 
         if (workflowIds.length > 0) {
-          logger.info(`Started ${workflowIds.length} workflows for new document`);
+          logger.info(
+            `Started ${workflowIds.length} workflows for new document`,
+          );
         }
       } catch (error) {
         logger.error('Failed to process document creation event:', error);
@@ -207,7 +210,9 @@ export class ApplicationCoordinator extends EventEmitter {
       // Auto-export workflow results if configured
       if (this.config.export?.defaultFormat) {
         try {
-          const workflowData = await this.memorySystem.retrieve(`workflow:${event.workflowId}`);
+          const workflowData = await this.memorySystem.retrieve(
+            `workflow:${event.workflowId}`,
+          );
           if (workflowData) {
             const exportOptions = {
               ...(this.config.export.outputPath !== undefined && {
@@ -218,7 +223,7 @@ export class ApplicationCoordinator extends EventEmitter {
             await this.exportSystem.exportData(
               workflowData,
               this.config.export.defaultFormat,
-              exportOptions
+              exportOptions,
             );
           }
         } catch (error) {
@@ -277,14 +282,15 @@ export class ApplicationCoordinator extends EventEmitter {
       if (this.config.workspace?.root) {
         logger.info(`Loading workspace: ${this.config.workspace.root}`);
         this.activeWorkspaceId = await this.documentSystem.loadWorkspace(
-          this.config.workspace.root
+          this.config.workspace.root,
         );
       } else if (this.config.workspace?.autoDetect) {
         // Try to auto-detect workspace
         const workspaceRoot = this.detectWorkspaceRoot();
         if (workspaceRoot) {
           logger.info(`Auto-detected workspace: ${workspaceRoot}`);
-          this.activeWorkspaceId = await this.documentSystem.loadWorkspace(workspaceRoot);
+          this.activeWorkspaceId =
+            await this.documentSystem.loadWorkspace(workspaceRoot);
         }
       }
 
@@ -374,7 +380,8 @@ export class ApplicationCoordinator extends EventEmitter {
         },
         documentation: {
           status: 'ready',
-          documentsIndexed: this.documentationLinker.getDocumentationIndex().size,
+          documentsIndexed:
+            this.documentationLinker.getDocumentationIndex().size,
         },
         workspace: {
           status: this.activeWorkspaceId ? 'ready' : 'none',
@@ -407,7 +414,7 @@ export class ApplicationCoordinator extends EventEmitter {
       // Process through document system
       await this.documentSystem.processVisionaryDocument(
         this.activeWorkspaceId || 'default',
-        documentPath
+        documentPath,
       );
 
       return {
@@ -432,7 +439,7 @@ export class ApplicationCoordinator extends EventEmitter {
    */
   async exportSystemData(
     format: string,
-    options: any = {}
+    options: any = {},
   ): Promise<{
     success: boolean;
     filename?: string;
@@ -443,7 +450,8 @@ export class ApplicationCoordinator extends EventEmitter {
     try {
       const systemStatus = await this.getSystemStatus();
       const workflowHistory = await this.workflowEngine.getWorkflowHistory();
-      const documentationReport = await this.documentationLinker.generateDocumentationReport();
+      const documentationReport =
+        await this.documentationLinker.generateDocumentationReport();
 
       const systemData = {
         system: systemStatus,
@@ -452,7 +460,11 @@ export class ApplicationCoordinator extends EventEmitter {
         exportedAt: new Date().toISOString(),
       };
 
-      const result = await this.exportSystem.exportSystemStatus(systemData, format, options);
+      const result = await this.exportSystem.exportSystemStatus(
+        systemData,
+        format,
+        options,
+      );
 
       return {
         success: result?.success,
@@ -474,7 +486,8 @@ export class ApplicationCoordinator extends EventEmitter {
     await this.ensureInitialized();
 
     const status = await this.getSystemStatus();
-    const docReport = await this.documentationLinker.generateDocumentationReport();
+    const docReport =
+      await this.documentationLinker.generateDocumentationReport();
     const exportStats = this.exportSystem.getExportStats();
 
     const report: string[] = [];
@@ -493,7 +506,8 @@ export class ApplicationCoordinator extends EventEmitter {
     for (const [component, info] of Object.entries(status.components)) {
       report.push(`- **${component}**: ${info.status}`);
       if ('sessions' in info) report.push(`  - Sessions: ${info.sessions}`);
-      if ('activeWorkflows' in info) report.push(`  - Active Workflows: ${info.activeWorkflows}`);
+      if ('activeWorkflows' in info)
+        report.push(`  - Active Workflows: ${info.activeWorkflows}`);
       if ('documentsIndexed' in info)
         report.push(`  - Documents Indexed: ${info.documentsIndexed}`);
     }
@@ -582,7 +596,9 @@ export class ApplicationCoordinator extends EventEmitter {
    *
    * @param config
    */
-  static async create(config?: ApplicationCoordinatorConfig): Promise<ApplicationCoordinator> {
+  static async create(
+    config?: ApplicationCoordinatorConfig,
+  ): Promise<ApplicationCoordinator> {
     const system = new ApplicationCoordinator(config);
     await system.initialize();
     return system;
@@ -593,7 +609,9 @@ export class ApplicationCoordinator extends EventEmitter {
    *
    * @param config
    */
-  static async quickStart(config?: ApplicationCoordinatorConfig): Promise<ApplicationCoordinator> {
+  static async quickStart(
+    config?: ApplicationCoordinatorConfig,
+  ): Promise<ApplicationCoordinator> {
     const system = await ApplicationCoordinator.create(config);
     await system.launch();
     return system;

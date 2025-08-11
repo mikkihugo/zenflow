@@ -1,26 +1,26 @@
 /**
  * @fileoverview Neural Event Manager Factory Implementation
- * 
+ *
  * Factory for creating neural event managers that handle AI/ML operations,
  * model training, inference requests, and neural network lifecycle events.
  * Provides specialized event management for machine learning workflows.
- * 
+ *
  * ## Features
- * 
+ *
  * - **Training Events**: Model training progress, checkpoints, completion
  * - **Inference Events**: Prediction requests, batch processing, results
  * - **Model Lifecycle**: Loading, optimization, versioning, deployment
  * - **Performance Monitoring**: Training metrics, inference latency, accuracy
  * - **Resource Management**: GPU utilization, memory usage, compute allocation
- * 
+ *
  * ## Event Types Handled
- * 
+ *
  * - `neural:training` - Model training and optimization events
  * - `neural:inference` - Prediction and inference request events
  * - `neural:model` - Model lifecycle and management events
  * - `neural:performance` - Performance metrics and monitoring events
  * - `neural:resource` - Compute resource allocation and usage events
- * 
+ *
  * @example
  * ```typescript
  * const factory = new NeuralEventManagerFactory(logger, config);
@@ -28,17 +28,17 @@
  *   name: 'ai-neural',
  *   type: 'neural',
  *   maxListeners: 200,
- *   processing: { 
+ *   processing: {
  *     strategy: 'queued',
  *     batchSize: 50
  *   }
  * });
- * 
+ *
  * // Subscribe to training events
  * manager.subscribeTrainingEvents((event) => {
  *   console.log(`Training progress: ${event.data.epoch}/${event.data.totalEpochs}`);
  * });
- * 
+ *
  * // Emit neural event
  * await manager.emitNeuralEvent({
  *   id: 'train-001',
@@ -47,54 +47,60 @@
  *   type: 'neural:training',
  *   operation: 'epoch-complete',
  *   modelId: 'gpt-classifier-v1',
- *   data: { 
- *     epoch: 5, 
+ *   data: {
+ *     epoch: 5,
  *     totalEpochs: 100,
  *     loss: 0.234,
- *     accuracy: 0.876 
+ *     accuracy: 0.876
  *   }
  * });
  * ```
- * 
- * @author Claude Code Zen Team  
+ *
+ * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
  * @since 1.0.0
  */
 
-import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces.ts';
-import type { 
-  EventManagerConfig, 
-  EventManagerStatus,
-  EventManagerMetrics,
-  IEventManagerFactory,
-  IEventManager
-} from '../core/interfaces.ts';
+import type {
+  IConfig,
+  ILogger,
+} from '../../../core/interfaces/base-interfaces.ts';
 import { BaseEventManager } from '../core/base-event-manager.ts';
-import type { NeuralEvent } from '../types.ts';
+import type {
+  EventManagerConfig,
+  EventManagerMetrics,
+  EventManagerStatus,
+  IEventManager,
+  IEventManagerFactory,
+} from '../core/interfaces.ts';
 import type { INeuralEventManager } from '../factories.ts';
+import type { NeuralEvent } from '../types.ts';
 
 /**
  * Neural Event Manager implementation for AI/ML operations.
- * 
+ *
  * Specialized event manager for handling machine learning and neural network
  * events including training, inference, model management, and performance
  * monitoring. Optimized for high-throughput ML workloads.
- * 
+ *
  * ## Operation Types
- * 
+ *
  * - **Training Operations**: Model training, validation, checkpointing
- * - **Inference Operations**: Prediction, batch processing, real-time inference  
+ * - **Inference Operations**: Prediction, batch processing, real-time inference
  * - **Model Operations**: Loading, saving, optimization, deployment
  * - **Resource Operations**: GPU allocation, memory management, scaling
- * 
+ *
  * ## Performance Features
- * 
+ *
  * - **Batch Processing**: Efficient handling of training/inference batches
  * - **Async Operations**: Non-blocking ML operations with progress tracking
  * - **Resource Monitoring**: GPU/CPU utilization and memory tracking
  * - **Model Metrics**: Training loss, accuracy, validation scores
  */
-class NeuralEventManager extends BaseEventManager implements INeuralEventManager {
+class NeuralEventManager
+  extends BaseEventManager
+  implements INeuralEventManager
+{
   private neuralMetrics = {
     trainingJobs: 0,
     inferenceRequests: 0,
@@ -107,8 +113,8 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
     resourceUsage: {
       gpuUtilization: 0,
       memoryUsage: 0,
-      computeHours: 0
-    }
+      computeHours: 0,
+    },
   };
 
   private subscriptions = {
@@ -116,7 +122,7 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
     inference: new Map<string, (event: NeuralEvent) => void>(),
     model: new Map<string, (event: NeuralEvent) => void>(),
     performance: new Map<string, (event: NeuralEvent) => void>(),
-    resource: new Map<string, (event: NeuralEvent) => void>()
+    resource: new Map<string, (event: NeuralEvent) => void>(),
   };
 
   constructor(config: EventManagerConfig, logger: ILogger) {
@@ -131,7 +137,7 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
     try {
       // Update neural metrics
       this.updateNeuralMetrics(event);
-      
+
       // Add neural-specific metadata
       const enrichedEvent = {
         ...event,
@@ -140,8 +146,8 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
           timestamp: new Date(),
           processingTime: Date.now(),
           modelVersion: event.data?.modelVersion || 'unknown',
-          computeResource: event.data?.computeResource || 'cpu'
-        }
+          computeResource: event.data?.computeResource || 'cpu',
+        },
       };
 
       // Emit through base manager
@@ -150,7 +156,9 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
       // Route to specific neural handlers
       await this.routeNeuralEvent(enrichedEvent);
 
-      this.logger.debug(`Neural event emitted: ${event.operation} for model ${event.modelId}`);
+      this.logger.debug(
+        `Neural event emitted: ${event.operation} for model ${event.modelId}`,
+      );
     } catch (error) {
       this.neuralMetrics.errorCount++;
       this.logger.error('Failed to emit neural event:', error);
@@ -164,7 +172,7 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
   subscribeTrainingEvents(listener: (event: NeuralEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.training.set(subscriptionId, listener);
-    
+
     this.logger.debug(`Training event subscription created: ${subscriptionId}`);
     return subscriptionId;
   }
@@ -175,8 +183,10 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
   subscribeInferenceEvents(listener: (event: NeuralEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.inference.set(subscriptionId, listener);
-    
-    this.logger.debug(`Inference event subscription created: ${subscriptionId}`);
+
+    this.logger.debug(
+      `Inference event subscription created: ${subscriptionId}`,
+    );
     return subscriptionId;
   }
 
@@ -186,7 +196,7 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
   subscribeModelEvents(listener: (event: NeuralEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.model.set(subscriptionId, listener);
-    
+
     this.logger.debug(`Model event subscription created: ${subscriptionId}`);
     return subscriptionId;
   }
@@ -197,8 +207,10 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
   subscribePerformanceEvents(listener: (event: NeuralEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.performance.set(subscriptionId, listener);
-    
-    this.logger.debug(`Performance event subscription created: ${subscriptionId}`);
+
+    this.logger.debug(
+      `Performance event subscription created: ${subscriptionId}`,
+    );
     return subscriptionId;
   }
 
@@ -208,7 +220,7 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
   subscribeResourceEvents(listener: (event: NeuralEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.resource.set(subscriptionId, listener);
-    
+
     this.logger.debug(`Resource event subscription created: ${subscriptionId}`);
     return subscriptionId;
   }
@@ -232,8 +244,10 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
       errorRate: number;
     };
   }> {
-    const totalOperations = this.neuralMetrics.trainingJobs + this.neuralMetrics.inferenceRequests;
-    const errorRate = totalOperations > 0 ? this.neuralMetrics.errorCount / totalOperations : 0;
+    const totalOperations =
+      this.neuralMetrics.trainingJobs + this.neuralMetrics.inferenceRequests;
+    const errorRate =
+      totalOperations > 0 ? this.neuralMetrics.errorCount / totalOperations : 0;
 
     return {
       activeModels: this.neuralMetrics.activeModels.size,
@@ -243,13 +257,13 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
       resourceUtilization: {
         gpu: this.neuralMetrics.resourceUsage.gpuUtilization,
         memory: this.neuralMetrics.resourceUsage.memoryUsage,
-        computeHours: this.neuralMetrics.resourceUsage.computeHours
+        computeHours: this.neuralMetrics.resourceUsage.computeHours,
       },
       performance: {
         trainingTime: this.neuralMetrics.totalTrainingTime,
         inferenceTime: this.neuralMetrics.totalInferenceTime,
-        errorRate
-      }
+        errorRate,
+      },
     };
   }
 
@@ -263,8 +277,8 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
     return {
       ...baseMetrics,
       customMetrics: {
-        neural: neuralMetrics
-      }
+        neural: neuralMetrics,
+      },
     };
   }
 
@@ -280,10 +294,11 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
     const lowAccuracy = neuralMetrics.averageAccuracy < 0.5; // 50% accuracy threshold
     const highResourceUsage = neuralMetrics.resourceUtilization.gpu > 0.95; // 95% GPU usage
 
-    const isHealthy = baseStatus.status === 'healthy' && 
-                     !highErrorRate && 
-                     !lowAccuracy && 
-                     !highResourceUsage;
+    const isHealthy =
+      baseStatus.status === 'healthy' &&
+      !highErrorRate &&
+      !lowAccuracy &&
+      !highResourceUsage;
 
     return {
       ...baseStatus,
@@ -294,9 +309,9 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
           activeModels: neuralMetrics.activeModels,
           averageAccuracy: neuralMetrics.averageAccuracy,
           errorRate: neuralMetrics.performance.errorRate,
-          resourceUtilization: neuralMetrics.resourceUtilization
-        }
-      }
+          resourceUtilization: neuralMetrics.resourceUtilization,
+        },
+      },
     };
   }
 
@@ -306,20 +321,27 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
 
   private initializeNeuralHandlers(): void {
     this.logger.debug('Initializing neural event handlers');
-    
+
     // Set up event type routing
-    this.subscribe(['neural:training', 'neural:inference', 'neural:model', 
-                   'neural:performance', 'neural:resource'], 
-                  this.handleNeuralEvent.bind(this));
+    this.subscribe(
+      [
+        'neural:training',
+        'neural:inference',
+        'neural:model',
+        'neural:performance',
+        'neural:resource',
+      ],
+      this.handleNeuralEvent.bind(this),
+    );
   }
 
   private async handleNeuralEvent(event: NeuralEvent): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       // Route based on operation type
       const operationType = event.type.split(':')[1];
-      
+
       switch (operationType) {
         case 'training':
           await this.notifySubscribers(this.subscriptions.training, event);
@@ -347,7 +369,6 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
       } else if (operationType === 'inference') {
         this.neuralMetrics.totalInferenceTime += processingTime;
       }
-
     } catch (error) {
       this.neuralMetrics.errorCount++;
       this.logger.error('Neural event handling failed:', error);
@@ -383,11 +404,14 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
         this.logger.info(`Model unloaded: ${event.modelId}`);
         break;
       case 'inference-batch':
-        this.logger.debug(`Batch inference completed: ${event.data?.batchSize} samples`);
+        this.logger.debug(
+          `Batch inference completed: ${event.data?.batchSize} samples`,
+        );
         break;
       case 'resource-allocated':
         if (event.data?.resourceType === 'gpu') {
-          this.neuralMetrics.resourceUsage.gpuUtilization = event.data.utilization || 0;
+          this.neuralMetrics.resourceUsage.gpuUtilization =
+            event.data.utilization || 0;
         }
         break;
       case 'error':
@@ -398,7 +422,7 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
 
   private updateNeuralMetrics(event: NeuralEvent): void {
     const operationType = event.type.split(':')[1];
-    
+
     switch (operationType) {
       case 'training':
         this.neuralMetrics.trainingJobs++;
@@ -412,7 +436,7 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
     if (event.data?.resourceUsage) {
       this.neuralMetrics.resourceUsage = {
         ...this.neuralMetrics.resourceUsage,
-        ...event.data.resourceUsage
+        ...event.data.resourceUsage,
       };
     }
   }
@@ -423,22 +447,25 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
     } else {
       // Running average calculation
       const totalWeight = this.neuralMetrics.trainingJobs;
-      this.neuralMetrics.averageAccuracy = 
-        (this.neuralMetrics.averageAccuracy * (totalWeight - 1) + newAccuracy) / totalWeight;
+      this.neuralMetrics.averageAccuracy =
+        (this.neuralMetrics.averageAccuracy * (totalWeight - 1) + newAccuracy) /
+        totalWeight;
     }
   }
 
   private async notifySubscribers(
-    subscribers: Map<string, (event: NeuralEvent) => void>, 
-    event: NeuralEvent
+    subscribers: Map<string, (event: NeuralEvent) => void>,
+    event: NeuralEvent,
   ): Promise<void> {
-    const notifications = Array.from(subscribers.values()).map(async (listener) => {
-      try {
-        await listener(event);
-      } catch (error) {
-        this.logger.error('Neural event listener failed:', error);
-      }
-    });
+    const notifications = Array.from(subscribers.values()).map(
+      async (listener) => {
+        try {
+          await listener(event);
+        } catch (error) {
+          this.logger.error('Neural event listener failed:', error);
+        }
+      },
+    );
 
     await Promise.allSettled(notifications);
   }
@@ -450,35 +477,35 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
 
 /**
  * Factory for creating NeuralEventManager instances.
- * 
+ *
  * Provides configuration management and instance creation for neural
  * event managers with optimized settings for ML workloads and
  * high-throughput neural network operations.
- * 
+ *
  * ## Configuration Options
- * 
+ *
  * - **Batch Processing**: Efficient handling of training/inference batches
  * - **Resource Monitoring**: GPU and memory usage tracking
  * - **Performance Analytics**: Training metrics and model performance
  * - **Error Recovery**: Robust handling of ML operation failures
- * 
+ *
  * @example
  * ```typescript
  * const factory = new NeuralEventManagerFactory(logger, config);
- * 
+ *
  * const trainingManager = await factory.create({
  *   name: 'training-neural',
  *   type: 'neural',
  *   maxListeners: 100,
- *   processing: { 
+ *   processing: {
  *     strategy: 'queued',
  *     batchSize: 100,
  *     timeout: 30000
  *   }
  * });
- * 
+ *
  * const inferenceManager = await factory.create({
- *   name: 'inference-neural', 
+ *   name: 'inference-neural',
  *   type: 'neural',
  *   processing: {
  *     strategy: 'immediate',
@@ -487,17 +514,19 @@ class NeuralEventManager extends BaseEventManager implements INeuralEventManager
  * });
  * ```
  */
-export class NeuralEventManagerFactory implements IEventManagerFactory<EventManagerConfig> {
+export class NeuralEventManagerFactory
+  implements IEventManagerFactory<EventManagerConfig>
+{
   constructor(
     private logger: ILogger,
-    private config: IConfig
+    private config: IConfig,
   ) {
     this.logger.debug('NeuralEventManagerFactory initialized');
   }
 
   /**
    * Create a new NeuralEventManager instance.
-   * 
+   *
    * @param config - Configuration for the neural event manager
    * @returns Promise resolving to configured manager instance
    */
@@ -512,11 +541,13 @@ export class NeuralEventManagerFactory implements IEventManagerFactory<EventMana
 
     // Create and configure manager
     const manager = new NeuralEventManager(optimizedConfig, this.logger);
-    
+
     // Initialize with neural-specific settings
     await this.configureNeuralManager(manager, optimizedConfig);
 
-    this.logger.info(`Neural event manager created successfully: ${config.name}`);
+    this.logger.info(
+      `Neural event manager created successfully: ${config.name}`,
+    );
     return manager;
   }
 
@@ -534,11 +565,15 @@ export class NeuralEventManagerFactory implements IEventManagerFactory<EventMana
 
     // Validate neural-specific settings
     if (config.processing?.timeout && config.processing.timeout < 1000) {
-      this.logger.warn('Neural processing timeout < 1000ms may be too short for ML operations');
+      this.logger.warn(
+        'Neural processing timeout < 1000ms may be too short for ML operations',
+      );
     }
 
     if (config.maxListeners && config.maxListeners < 50) {
-      this.logger.warn('Neural managers should support at least 50 listeners for ML workflows');
+      this.logger.warn(
+        'Neural managers should support at least 50 listeners for ML workflows',
+      );
     }
   }
 
@@ -554,19 +589,19 @@ export class NeuralEventManagerFactory implements IEventManagerFactory<EventMana
         timeout: 30000, // 30 second timeout for ML operations
         retries: 3,
         batchSize: 50, // Efficient batch processing
-        ...config.processing
+        ...config.processing,
       },
       persistence: {
         enabled: true, // Important to track ML metrics
         maxAge: 86400000, // 24 hours
-        ...config.persistence
+        ...config.persistence,
       },
       monitoring: {
         enabled: true,
         metricsInterval: 60000, // 1 minute metrics collection
         healthCheckInterval: 300000, // 5 minute health checks
-        ...config.monitoring
-      }
+        ...config.monitoring,
+      },
     };
   }
 
@@ -574,13 +609,15 @@ export class NeuralEventManagerFactory implements IEventManagerFactory<EventMana
    * Configure neural-specific manager settings.
    */
   private async configureNeuralManager(
-    manager: NeuralEventManager, 
-    config: EventManagerConfig
+    manager: NeuralEventManager,
+    config: EventManagerConfig,
   ): Promise<void> {
     // Start monitoring if enabled
     if (config.monitoring?.enabled) {
       await manager.start();
-      this.logger.debug(`Neural event manager monitoring started: ${config.name}`);
+      this.logger.debug(
+        `Neural event manager monitoring started: ${config.name}`,
+      );
     }
 
     // Set up health checking with ML-specific intervals
@@ -589,10 +626,16 @@ export class NeuralEventManagerFactory implements IEventManagerFactory<EventMana
         try {
           const status = await manager.healthCheck();
           if (status.status !== 'healthy') {
-            this.logger.warn(`Neural manager health degraded: ${config.name}`, status.metadata);
+            this.logger.warn(
+              `Neural manager health degraded: ${config.name}`,
+              status.metadata,
+            );
           }
         } catch (error) {
-          this.logger.error(`Neural manager health check failed: ${config.name}`, error);
+          this.logger.error(
+            `Neural manager health check failed: ${config.name}`,
+            error,
+          );
         }
       }, config.monitoring.healthCheckInterval);
     }

@@ -41,9 +41,9 @@ class ConfigValidator {
     this.options = {
       env: options.env || process.env.NODE_ENV || 'development',
       envFile: options.file || '.env',
-      strict: options.strict || false,
+      strict: options.strict,
       output: options.output || 'table',
-      fix: options.fix || false,
+      fix: options.fix,
       ...options,
     };
 
@@ -259,9 +259,7 @@ class ConfigValidator {
   validateSecurity() {
     // JWT Secret validation
     const jwtSecret = this.config.JWT_SECRET;
-    if (!jwtSecret) {
-      this.errors.push('JWT_SECRET is required for authentication');
-    } else {
+    if (jwtSecret) {
       if (jwtSecret.length < 32) {
         this.errors.push('JWT_SECRET must be at least 32 characters long');
         this.fixes.push({
@@ -277,6 +275,8 @@ class ConfigValidator {
       if (weakSecrets.some((weak) => jwtSecret.toLowerCase().includes(weak))) {
         this.errors.push('JWT_SECRET appears to be a default/weak value');
       }
+    } else {
+      this.errors.push('JWT_SECRET is required for authentication');
     }
 
     // Encryption key validation
@@ -333,9 +333,7 @@ class ConfigValidator {
   validateAIServices() {
     // Anthropic API key
     const anthropicKey = this.config.ANTHROPIC_API_KEY || this.config.CLAUDE_API_KEY;
-    if (!anthropicKey) {
-      this.errors.push('ANTHROPIC_API_KEY is required for AI functionality');
-    } else {
+    if (anthropicKey) {
       if (!anthropicKey.startsWith('sk-ant-api03-')) {
         this.warnings.push('ANTHROPIC_API_KEY format may be incorrect');
       }
@@ -343,6 +341,8 @@ class ConfigValidator {
       if (anthropicKey.includes('your-') || anthropicKey.includes('replace')) {
         this.errors.push('ANTHROPIC_API_KEY appears to be a placeholder value');
       }
+    } else {
+      this.errors.push('ANTHROPIC_API_KEY is required for AI functionality');
     }
 
     // OpenAI key (optional but recommended for failover)
@@ -373,7 +373,7 @@ class ConfigValidator {
   validateDatabase() {
     const databaseUrl = this.config.DATABASE_URL || this.config.POSTGRES_URL;
 
-    if (!databaseUrl && !this.config.SQLITE_DB_PATH) {
+    if (!(databaseUrl || this.config.SQLITE_DB_PATH)) {
       this.errors.push('Either DATABASE_URL or SQLITE_DB_PATH must be configured');
       return;
     }
@@ -412,8 +412,8 @@ class ConfigValidator {
     this.checkNumeric('DATABASE_POOL_MIN', 'DB pool min', 1, 100);
     this.checkNumeric('DATABASE_POOL_MAX', 'DB pool max', 1, 1000);
 
-    const poolMin = parseInt(this.config.DATABASE_POOL_MIN) || 5;
-    const poolMax = parseInt(this.config.DATABASE_POOL_MAX) || 20;
+    const poolMin = Number.parseInt(this.config.DATABASE_POOL_MIN) || 5;
+    const poolMax = Number.parseInt(this.config.DATABASE_POOL_MAX) || 20;
     if (poolMin >= poolMax) {
       this.errors.push('DATABASE_POOL_MIN must be less than DATABASE_POOL_MAX');
     }
@@ -504,8 +504,8 @@ class ConfigValidator {
     }
 
     // Performance recommendations
-    const maxAgents = parseInt(this.config.SWARM_MAX_AGENTS) || 50;
-    const maxMemory = parseInt(this.config.AGENT_MAX_MEMORY) || 512;
+    const maxAgents = Number.parseInt(this.config.SWARM_MAX_AGENTS) || 50;
+    const maxMemory = Number.parseInt(this.config.AGENT_MAX_MEMORY) || 512;
     const totalMemory = maxAgents * maxMemory;
 
     if (totalMemory > 16384) {
@@ -672,7 +672,7 @@ class ConfigValidator {
     }
 
     // Performance recommendations
-    if (!this.config.NODE_OPTIONS || !this.config.NODE_OPTIONS.includes('--max-old-space-size')) {
+    if (!(this.config.NODE_OPTIONS && this.config.NODE_OPTIONS.includes('--max-old-space-size'))) {
       this.warnings.push('NODE_OPTIONS should include --max-old-space-size for production');
     }
 
@@ -723,7 +723,7 @@ class ConfigValidator {
    */
   validateKubernetes() {
     // Resource limits
-    const workerThreads = parseInt(this.config.WORKER_THREADS) || 4;
+    const workerThreads = Number.parseInt(this.config.WORKER_THREADS) || 4;
     if (workerThreads > 8) {
       this.warnings.push('WORKER_THREADS > 8 may require higher CPU limits in Kubernetes');
     }
@@ -902,7 +902,7 @@ class ConfigValidator {
     const value = this.config[key];
     if (!value) return;
 
-    const num = parseInt(value);
+    const num = Number.parseInt(value);
     if (isNaN(num)) {
       this.errors.push(`${key} must be a number (${description})`);
       return;
@@ -921,7 +921,7 @@ class ConfigValidator {
     const value = this.config[key];
     if (!value) return;
 
-    const num = parseFloat(value);
+    const num = Number.parseFloat(value);
     if (isNaN(num)) {
       this.errors.push(`${key} must be a number (${description})`);
       return;

@@ -9,6 +9,7 @@
  */
 
 import { Box, Text, useInput } from 'ink';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import {
   AgentProgress,
@@ -17,7 +18,8 @@ import {
   StatusBadge,
   SwarmSpinner,
   TaskProgress,
-} from '../components/index';
+} from '../components/index/index.js';
+import { formatUptimeFromStart } from '../utils/time-utils.js';
 
 export interface SwarmAgent {
   id: string;
@@ -96,9 +98,9 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
   showHeader = true,
 }) => {
   const [refreshKey, setRefreshKey] = useState(0);
-  const [selectedSection, setSelectedSection] = useState<'overview' | 'agents' | 'tasks'>(
-    'overview'
-  );
+  const [selectedSection, setSelectedSection] = useState<
+    'overview' | 'agents' | 'tasks'
+  >('overview');
 
   // Auto-refresh every 2 seconds
   useEffect(() => {
@@ -141,20 +143,6 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
     }
   });
 
-  const formatUptime = (uptime: number): string => {
-    const seconds = Math.floor(uptime / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-
-    if (hours > 0) {
-      return `${hours}h ${minutes % 60}m`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${seconds % 60}s`;
-    } else {
-      return `${seconds}s`;
-    }
-  };
-
   const getStatusIcon = (status: string): string => {
     switch (status) {
       case 'active':
@@ -171,16 +159,30 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
   };
 
   const renderOverview = () => (
-    <Box flexDirection="column" padding={1}>
+    <Box
+      flexDirection="column"
+      paddingX={2}
+      paddingY={1}
+    >
       {/* Swarm Status */}
-      <Box marginBottom={1}>
-        <Text bold color="cyan">
+      <Box marginBottom={2}>
+        <Text
+          bold
+          color="cyan"
+          wrap="wrap"
+        >
           🐝 Swarm Status Overview
         </Text>
       </Box>
 
-      <Box flexDirection="row" marginBottom={2}>
-        <Box flexDirection="column" width="50%">
+      <Box
+        flexDirection="row"
+        marginBottom={3}
+      >
+        <Box
+          flexDirection="column"
+          width="50%"
+        >
           <Box marginBottom={1}>
             <StatusBadge
               status={swarmStatus.status}
@@ -193,11 +195,16 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
             🔗 Topology: <Text color="cyan">{swarmStatus.topology}</Text>
           </Text>
           <Text>
-            ⏱️ Uptime: <Text color="green">{formatUptime(swarmStatus.uptime)}</Text>
+            ⏱️ Uptime:{' '}
+            <Text color="green">
+              {formatUptimeFromStart(swarmStatus.uptime)}
+            </Text>
           </Text>
           <Text>
             🎯 Throughput:{' '}
-            <Text color="yellow">{metrics.performance.throughput.toFixed(1)} ops/sec</Text>
+            <Text color="yellow">
+              {metrics.performance.throughput.toFixed(1)} ops/sec
+            </Text>
           </Text>
           <Text>
             📊 Error Rate:{' '}
@@ -207,7 +214,10 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
           </Text>
         </Box>
 
-        <Box flexDirection="column" width="50%">
+        <Box
+          flexDirection="column"
+          width="50%"
+        >
           <AgentProgress
             active={metrics.activeAgents}
             total={metrics.totalAgents}
@@ -229,9 +239,15 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
         <Text bold>👥 Agent Status Summary:</Text>
       </Box>
 
-      <Box flexDirection="column" marginLeft={2}>
+      <Box
+        flexDirection="column"
+        marginLeft={2}
+      >
         {agents.slice(0, 5).map((agent) => (
-          <Box key={agent.id} marginBottom={0}>
+          <Box
+            key={agent.id}
+            marginBottom={0}
+          >
             <Text>
               {getStatusIcon(agent.status)}
               <Text color="cyan">{agent.id}</Text>
@@ -241,18 +257,30 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
           </Box>
         ))}
 
-        {agents.length > 5 && <Text color="gray">... and {agents.length - 5} more agents</Text>}
+        {agents.length > 5 && (
+          <Text color="gray">... and {agents.length - 5} more agents</Text>
+        )}
       </Box>
 
       {/* Recent Tasks */}
       {tasks.length > 0 && (
         <Box marginTop={1}>
           <Text bold>📋 Recent Tasks:</Text>
-          <Box flexDirection="column" marginLeft={2}>
+          <Box
+            flexDirection="column"
+            marginLeft={2}
+          >
             {tasks.slice(0, 3).map((task) => (
-              <Box key={task.id} marginBottom={0}>
+              <Box
+                key={task.id}
+                marginBottom={0}
+              >
                 <Text>
-                  {task.status === 'completed' ? '✅' : task.status === 'in_progress' ? '🔄' : '⏳'}
+                  {task.status === 'completed'
+                    ? '✅'
+                    : task.status === 'in_progress'
+                      ? '🔄'
+                      : '⏳'}
                   <Text>{task.description}</Text>
                   <Text color="gray"> ({task.progress}%)</Text>
                 </Text>
@@ -265,36 +293,57 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
   );
 
   return (
-    <Box flexDirection="column" height="100%">
-      {/* Header */}
+    <Box
+      flexDirection="column"
+      height="100%"
+    >
+      {/* Header - starts at very top */}
       {showHeader && (
-        <Header title="Swarm Dashboard" swarmStatus={swarmStatus} mode="swarm" showBorder={true} />
+        <Header
+          title="Swarm Dashboard"
+          swarmStatus={swarmStatus}
+          mode="swarm"
+          showBorder={true}
+        />
       )}
 
-      {/* Main content */}
-      <Box flexGrow={1}>
+      {/* Main content with more spacing */}
+      <Box
+        flexGrow={1}
+        paddingX={2}
+        paddingY={1}
+      >
         {swarmStatus.status === 'initializing' ? (
-          <Box flexDirection="column" alignItems="center" justifyContent="center">
-            <SwarmSpinner type="swarm" text="Initializing swarm coordination..." />
+          <Box
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <SwarmSpinner
+              type="swarm"
+              text="Initializing swarm coordination..."
+            />
           </Box>
         ) : (
           renderOverview()
         )}
       </Box>
 
-      {/* Footer */}
-      <InteractiveFooter
-        currentScreen="Swarm Dashboard"
-        availableScreens={[
-          { key: '2', name: 'Agents' },
-          { key: '3', name: 'Tasks' },
-          { key: '4', name: 'New Agent' },
-          { key: '5', name: 'New Task' },
-          { key: '6', name: 'Settings' },
-          { key: 'R', name: 'Refresh' },
-        ]}
-        status={`${metrics.activeAgents}/${metrics.totalAgents} agents • ${metrics.tasksInProgress} tasks in progress`}
-      />
+      {/* Footer - fixed at bottom */}
+      <Box marginTop={1}>
+        <InteractiveFooter
+          currentScreen="Swarm Dashboard"
+          availableScreens={[
+            { key: '2', name: 'Agents' },
+            { key: '3', name: 'Tasks' },
+            { key: '4', name: 'New Agent' },
+            { key: '5', name: 'New Task' },
+            { key: '6', name: 'Settings' },
+            { key: 'R', name: 'Refresh' },
+          ]}
+          status={`${metrics.activeAgents}/${metrics.totalAgents} agents • ${metrics.tasksInProgress} tasks in progress`}
+        />
+      </Box>
     </Box>
   );
 };

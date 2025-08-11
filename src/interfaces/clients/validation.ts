@@ -77,7 +77,8 @@ export class UACLValidator {
       warnings: results.filter((r) => r.status === 'warning').length,
     };
 
-    const overall = summary.failed > 0 ? 'fail' : summary.warnings > 0 ? 'warning' : 'pass';
+    const overall =
+      summary.failed > 0 ? 'fail' : summary.warnings > 0 ? 'warning' : 'pass';
 
     return {
       overall,
@@ -191,7 +192,7 @@ export class UACLValidator {
       const httpClient = await uacl.createHTTPClient(
         'test-http',
         getMCPServerURL(),
-        { enabled: false, priority: 1 } // Disabled to avoid actual connections
+        { enabled: false, priority: 1 }, // Disabled to avoid actual connections
       );
       results.push({
         component: 'HTTP Client Creation',
@@ -216,7 +217,7 @@ export class UACLValidator {
         {
           enabled: false,
           priority: 1,
-        }
+        },
       );
       results.push({
         component: 'WebSocket Client Creation',
@@ -239,7 +240,7 @@ export class UACLValidator {
         'test-knowledge',
         '/fake/path',
         'fake-key',
-        { enabled: false, priority: 1 }
+        { enabled: false, priority: 1 },
       );
       results.push({
         component: 'Knowledge Client Creation',
@@ -251,7 +252,8 @@ export class UACLValidator {
       results.push({
         component: 'Knowledge Client Creation',
         status: 'warning',
-        message: 'Knowledge client creation failed (expected without valid FACT setup)',
+        message:
+          'Knowledge client creation failed (expected without valid FACT setup)',
         error: error as Error,
       });
     }
@@ -260,8 +262,14 @@ export class UACLValidator {
     try {
       const mcpClient = await uacl.createMCPClient(
         'test-mcp',
-        { 'test-server': { url: getMCPServerURL(), type: 'http', capabilities: [] } },
-        { enabled: false, priority: 1 }
+        {
+          'test-server': {
+            url: getMCPServerURL(),
+            type: 'http',
+            capabilities: [],
+          },
+        },
+        { enabled: false, priority: 1 },
       );
       results.push({
         component: 'MCP Client Creation',
@@ -289,7 +297,9 @@ export class UACLValidator {
 
     // Test compatible client creation functions
     try {
-      const _apiClient = createCompatibleAPIClient({ baseURL: 'http://test.local' });
+      const _apiClient = createCompatibleAPIClient({
+        baseURL: 'http://test.local',
+      });
       results.push({
         component: 'HTTP Compatibility',
         status: 'pass',
@@ -334,7 +344,8 @@ export class UACLValidator {
       results.push({
         component: 'Knowledge Compatibility',
         status: 'warning',
-        message: 'Compatible Knowledge client creation failed (expected without valid FACT setup)',
+        message:
+          'Compatible Knowledge client creation failed (expected without valid FACT setup)',
         error: error as Error,
       });
     }
@@ -440,7 +451,12 @@ export class UACLValidator {
       output += `### ${component}\n\n`;
 
       for (const result of componentResults) {
-        const icon = result?.status === 'pass' ? '✅' : result?.status === 'fail' ? '❌' : '⚠️';
+        const icon =
+          result?.status === 'pass'
+            ? '✅'
+            : result?.status === 'fail'
+              ? '❌'
+              : '⚠️';
         output += `${icon} **${result?.status?.toUpperCase()}**: ${result?.message}\n`;
 
         if (result?.error) {

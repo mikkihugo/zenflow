@@ -120,7 +120,7 @@ export class WebSocketClient extends EventEmitter {
   /** Send message to server */
 
   send(data): void;
-  send(data: any): void {
+  send(data: unknown): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
     if (this.isConnected && this.ws) {
       try {

@@ -249,7 +249,7 @@ export default defineConfig({
      * @type {string[]}
      * @see './tests/vitest-setup.ts' Global test setup and mocks
      */
-    setupFiles: ['./tests/vitest-setup.ts'],
+  setupFiles: ['./tests/vitest-setup.ts', './tests/jest-compat-setup.ts'],
 
     /**
      * Test result reporting configuration.

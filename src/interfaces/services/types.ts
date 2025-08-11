@@ -132,7 +132,11 @@ export interface DataServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface WebServiceConfig extends BaseServiceConfig {
-  type: ServiceType.WEB | ServiceType.API | ServiceType.SAFE_API | ServiceType.WEBSOCKET;
+  type:
+    | ServiceType.WEB
+    | ServiceType.API
+    | ServiceType.SAFE_API
+    | ServiceType.WEBSOCKET;
   server?: {
     host?: string;
     port?: number;
@@ -202,7 +206,10 @@ export interface CoordinationServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface NeuralServiceConfig extends BaseServiceConfig {
-  type: ServiceType.NEURAL | ServiceType.LEARNING | ServiceType.PATTERN_RECOGNITION;
+  type:
+    | ServiceType.NEURAL
+    | ServiceType.LEARNING
+    | ServiceType.PATTERN_RECOGNITION;
   model?: {
     type: 'neural-network' | 'transformer' | 'custom';
     path?: string;
@@ -379,7 +386,10 @@ export interface WorkflowServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface IntegrationServiceConfig extends BaseServiceConfig {
-  type: ServiceType.API | ServiceType.SAFE_API | ServiceType.ARCHITECTURE_STORAGE;
+  type:
+    | ServiceType.API
+    | ServiceType.SAFE_API
+    | ServiceType.ARCHITECTURE_STORAGE;
   integration?: {
     architectureStorage?: boolean;
     safeAPI?: boolean;
@@ -412,7 +422,10 @@ export interface IntegrationServiceConfig extends BaseServiceConfig {
  * @example
  */
 export interface InfrastructureServiceConfig extends BaseServiceConfig {
-  type: ServiceType.INFRASTRUCTURE | ServiceType.SYSTEM | ServiceType.MONITORING;
+  type:
+    | ServiceType.INFRASTRUCTURE
+    | ServiceType.SYSTEM
+    | ServiceType.MONITORING;
   facade?: {
     enabled: boolean;
     autoInitialize?: boolean;
@@ -506,7 +519,7 @@ export class ServiceConfigFactory {
    */
   static createDataServiceConfig(
     name: string,
-    options?: Partial<DataServiceConfig>
+    options?: Partial<DataServiceConfig>,
   ): DataServiceConfig {
     return {
       name,
@@ -542,7 +555,7 @@ export class ServiceConfigFactory {
    */
   static createWebServiceConfig(
     name: string,
-    options?: Partial<WebServiceConfig>
+    options?: Partial<WebServiceConfig>,
   ): WebServiceConfig {
     return {
       name,
@@ -593,7 +606,7 @@ export class ServiceConfigFactory {
    */
   static createCoordinationServiceConfig(
     name: string,
-    options?: Partial<CoordinationServiceConfig>
+    options?: Partial<CoordinationServiceConfig>,
   ): CoordinationServiceConfig {
     return {
       name,
@@ -646,7 +659,7 @@ export class ServiceConfigFactory {
    */
   static createNeuralServiceConfig(
     name: string,
-    options?: Partial<NeuralServiceConfig>
+    options?: Partial<NeuralServiceConfig>,
   ): NeuralServiceConfig {
     return {
       name,
@@ -700,7 +713,7 @@ export class ServiceConfigFactory {
    */
   static createMemoryServiceConfig(
     name: string,
-    options?: Partial<MemoryServiceConfig>
+    options?: Partial<MemoryServiceConfig>,
   ): MemoryServiceConfig {
     return {
       name,
@@ -752,7 +765,7 @@ export class ServiceConfigFactory {
    */
   static createDatabaseServiceConfig(
     name: string,
-    options?: Partial<DatabaseServiceConfig>
+    options?: Partial<DatabaseServiceConfig>,
   ): DatabaseServiceConfig {
     return {
       name,
@@ -808,7 +821,7 @@ export class ServiceConfigFactory {
    */
   static createMonitoringServiceConfig(
     name: string,
-    options?: Partial<MonitoringServiceConfig>
+    options?: Partial<MonitoringServiceConfig>,
   ): MonitoringServiceConfig {
     return {
       name,
@@ -862,7 +875,7 @@ export class ServiceConfigFactory {
    */
   static createIntegrationServiceConfig(
     name: string,
-    options?: Partial<IntegrationServiceConfig>
+    options?: Partial<IntegrationServiceConfig>,
   ): IntegrationServiceConfig {
     return {
       name,
@@ -922,7 +935,7 @@ export class ServiceConfigFactory {
    */
   static createInfrastructureServiceConfig(
     name: string,
-    options?: Partial<InfrastructureServiceConfig>
+    options?: Partial<InfrastructureServiceConfig>,
   ): InfrastructureServiceConfig {
     return {
       name,
@@ -1018,7 +1031,7 @@ export class ServiceConfigFactory {
    */
   static createWorkflowServiceConfig(
     name: string,
-    options?: Partial<WorkflowServiceConfig>
+    options?: Partial<WorkflowServiceConfig>,
   ): WorkflowServiceConfig {
     return {
       name,
@@ -1073,20 +1086,29 @@ export class ServiceConfigFactory {
  * @param config
  * @example
  */
-export function isDataServiceConfig(config: AnyServiceConfig): config is DataServiceConfig {
-  return [ServiceType.DATA, ServiceType.WEB_DATA, ServiceType.DOCUMENT].includes(
-    config?.type as ServiceType
-  );
+export function isDataServiceConfig(
+  config: AnyServiceConfig,
+): config is DataServiceConfig {
+  return [
+    ServiceType.DATA,
+    ServiceType.WEB_DATA,
+    ServiceType.DOCUMENT,
+  ].includes(config?.type as ServiceType);
 }
 
-export function isWebServiceConfig(config: AnyServiceConfig): config is WebServiceConfig {
-  return [ServiceType.WEB, ServiceType.API, ServiceType.SAFE_API, ServiceType.WEBSOCKET].includes(
-    config?.type as ServiceType
-  );
+export function isWebServiceConfig(
+  config: AnyServiceConfig,
+): config is WebServiceConfig {
+  return [
+    ServiceType.WEB,
+    ServiceType.API,
+    ServiceType.SAFE_API,
+    ServiceType.WEBSOCKET,
+  ].includes(config?.type as ServiceType);
 }
 
 export function isCoordinationServiceConfig(
-  config: AnyServiceConfig
+  config: AnyServiceConfig,
 ): config is CoordinationServiceConfig {
   return [
     ServiceType.COORDINATION,
@@ -1097,44 +1119,58 @@ export function isCoordinationServiceConfig(
   ].includes(config?.type as ServiceType);
 }
 
-export function isNeuralServiceConfig(config: AnyServiceConfig): config is NeuralServiceConfig {
-  return [ServiceType.NEURAL, ServiceType.LEARNING, ServiceType.PATTERN_RECOGNITION].includes(
-    config?.type as ServiceType
-  );
+export function isNeuralServiceConfig(
+  config: AnyServiceConfig,
+): config is NeuralServiceConfig {
+  return [
+    ServiceType.NEURAL,
+    ServiceType.LEARNING,
+    ServiceType.PATTERN_RECOGNITION,
+  ].includes(config?.type as ServiceType);
 }
 
-export function isMemoryServiceConfig(config: AnyServiceConfig): config is MemoryServiceConfig {
+export function isMemoryServiceConfig(
+  config: AnyServiceConfig,
+): config is MemoryServiceConfig {
   return [ServiceType.MEMORY, ServiceType.CACHE, ServiceType.SESSION].includes(
-    config?.type as ServiceType
+    config?.type as ServiceType,
   );
 }
 
-export function isDatabaseServiceConfig(config: AnyServiceConfig): config is DatabaseServiceConfig {
+export function isDatabaseServiceConfig(
+  config: AnyServiceConfig,
+): config is DatabaseServiceConfig {
   return [ServiceType.DATABASE, ServiceType.VECTOR, ServiceType.GRAPH].includes(
-    config?.type as ServiceType
+    config?.type as ServiceType,
   );
 }
 
 export function isIntegrationServiceConfig(
-  config: AnyServiceConfig
+  config: AnyServiceConfig,
 ): config is IntegrationServiceConfig {
-  return [ServiceType.API, ServiceType.SAFE_API, ServiceType.ARCHITECTURE_STORAGE].includes(
-    config?.type as ServiceType
-  );
+  return [
+    ServiceType.API,
+    ServiceType.SAFE_API,
+    ServiceType.ARCHITECTURE_STORAGE,
+  ].includes(config?.type as ServiceType);
 }
 
 export function isInfrastructureServiceConfig(
-  config: AnyServiceConfig
+  config: AnyServiceConfig,
 ): config is InfrastructureServiceConfig {
-  return [ServiceType.INFRASTRUCTURE, ServiceType.SYSTEM, ServiceType.MONITORING].includes(
-    config?.type as ServiceType
-  );
+  return [
+    ServiceType.INFRASTRUCTURE,
+    ServiceType.SYSTEM,
+    ServiceType.MONITORING,
+  ].includes(config?.type as ServiceType);
 }
 
 export function isMonitoringServiceConfig(
-  config: AnyServiceConfig
+  config: AnyServiceConfig,
 ): config is MonitoringServiceConfig {
-  return [ServiceType.HEALTH, ServiceType.MONITORING, ServiceType.LOGGING].includes(
-    config?.type as ServiceType
-  );
+  return [
+    ServiceType.HEALTH,
+    ServiceType.MONITORING,
+    ServiceType.LOGGING,
+  ].includes(config?.type as ServiceType);
 }

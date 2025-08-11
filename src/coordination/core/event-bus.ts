@@ -57,7 +57,10 @@ export class EventBus extends EventEmitter implements EventBusInterface {
     return super.off(eventType, handler);
   }
 
-  override once(eventType: string, handler: (event: SystemEvent) => void): this {
+  override once(
+    eventType: string,
+    handler: (event: SystemEvent) => void,
+  ): this {
     return super.once(eventType, handler);
   }
 

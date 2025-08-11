@@ -68,7 +68,10 @@ export interface QueueMetrics {
   totalExecuted: number;
   totalFailed: number;
   averageExecutionTime: number;
-  commandTypeStats: Map<string, { count: number; avgTime: number; failureRate: number }>;
+  commandTypeStats: Map<
+    string,
+    { count: number; avgTime: number; failureRate: number }
+  >;
   queueSize: number;
   processingTime: number;
 }
@@ -115,7 +118,7 @@ export class SwarmInitCommand implements MCPCommand<SwarmInitResult> {
   constructor(
     private config: SwarmConfig,
     private swarmManager: any,
-    private context: CommandContext
+    private context: CommandContext,
   ) {}
 
   async validate(): Promise<ValidationResult> {
@@ -134,7 +137,12 @@ export class SwarmInitCommand implements MCPCommand<SwarmInitResult> {
     }
 
     // Validate topology
-    const validTopologies: SwarmTopology[] = ['mesh', 'hierarchical', 'ring', 'star'];
+    const validTopologies: SwarmTopology[] = [
+      'mesh',
+      'hierarchical',
+      'ring',
+      'star',
+    ];
     if (!validTopologies.includes(this.config.topology)) {
       errors.push(`Invalid topology: ${this.config.topology}`);
     }
@@ -188,7 +196,7 @@ export class SwarmInitCommand implements MCPCommand<SwarmInitResult> {
           capabilities: this.config.capabilities,
           resourceLimits: this.config.resourceLimits,
           timeout: this.config.timeout,
-        }
+        },
       );
 
       this.swarmId = result?.swarmId;
@@ -198,7 +206,10 @@ export class SwarmInitCommand implements MCPCommand<SwarmInitResult> {
         success: true,
         data: result,
         executionTime: Date.now() - this.executionStartTime,
-        resourceUsage: this.calculateResourceDelta(startResources, endResources),
+        resourceUsage: this.calculateResourceDelta(
+          startResources,
+          endResources,
+        ),
         warnings: result?.warnings,
         metadata: {
           topology: this.config.topology,
@@ -256,7 +267,9 @@ export class SwarmInitCommand implements MCPCommand<SwarmInitResult> {
   }
 
   clone(): MCPCommand<SwarmInitResult> {
-    return new SwarmInitCommand({ ...this.config }, this.swarmManager, { ...this.context });
+    return new SwarmInitCommand({ ...this.config }, this.swarmManager, {
+      ...this.context,
+    });
   }
 
   private measureResources(): ResourceMetrics {
@@ -269,7 +282,10 @@ export class SwarmInitCommand implements MCPCommand<SwarmInitResult> {
     };
   }
 
-  private calculateResourceDelta(start: ResourceMetrics, end: ResourceMetrics): ResourceMetrics {
+  private calculateResourceDelta(
+    start: ResourceMetrics,
+    end: ResourceMetrics,
+  ): ResourceMetrics {
     return {
       cpu: end.cpu - start.cpu,
       memory: end.memory - start.memory,
@@ -292,7 +308,7 @@ export class AgentSpawnCommand implements MCPCommand<AgentSpawnResult> {
     },
     private swarmManager: any,
     private swarmId: string,
-    private context: CommandContext
+    private context: CommandContext,
   ) {}
 
   async validate(): Promise<ValidationResult> {
@@ -333,7 +349,10 @@ export class AgentSpawnCommand implements MCPCommand<AgentSpawnResult> {
     }
 
     try {
-      const result = await this.swarmManager.spawnAgent(this.swarmId, this.agentConfig);
+      const result = await this.swarmManager.spawnAgent(
+        this.swarmId,
+        this.agentConfig,
+      );
       this.agentId = result?.agentId;
 
       return {
@@ -395,7 +414,9 @@ export class AgentSpawnCommand implements MCPCommand<AgentSpawnResult> {
 }
 
 // Task Orchestration Command
-export class TaskOrchestrationCommand implements MCPCommand<TaskOrchestrationResult> {
+export class TaskOrchestrationCommand
+  implements MCPCommand<TaskOrchestrationResult>
+{
   constructor(
     private task: {
       description: string;
@@ -405,7 +426,7 @@ export class TaskOrchestrationCommand implements MCPCommand<TaskOrchestrationRes
     },
     private swarmManager: any,
     private swarmId: string,
-    private context: CommandContext
+    private context: CommandContext,
   ) {}
 
   async validate(): Promise<ValidationResult> {
@@ -436,7 +457,10 @@ export class TaskOrchestrationCommand implements MCPCommand<TaskOrchestrationRes
     }
 
     try {
-      const result = await this.swarmManager.orchestrateTask(this.swarmId, this.task);
+      const result = await this.swarmManager.orchestrateTask(
+        this.swarmId,
+        this.task,
+      );
 
       return {
         success: true,
@@ -500,15 +524,22 @@ export class TaskOrchestrationCommand implements MCPCommand<TaskOrchestrationRes
 
 // Advanced command queue with transaction support and batch operations
 export class MCPCommandQueue extends EventEmitter {
-  private commandHistory: Array<{ command: MCPCommand; result: CommandResult; timestamp: Date }> =
-    [];
+  private commandHistory: Array<{
+    command: MCPCommand;
+    result: CommandResult;
+    timestamp: Date;
+  }> = [];
   private undoStack: MCPCommand[] = [];
   private activeTransactions: Map<string, Transaction> = new Map();
   private metrics: QueueMetrics;
   private processing = false;
   private maxConcurrentCommands = 5;
   private currentlyExecuting = 0;
-  private queue: Array<{ command: MCPCommand; resolve: Function; reject: Function }> = [];
+  private queue: Array<{
+    command: MCPCommand;
+    resolve: Function;
+    reject: Function;
+  }> = [];
 
   constructor(private logger?: any) {
     super();
@@ -527,10 +558,16 @@ export class MCPCommandQueue extends EventEmitter {
   }
 
   // Execute multiple commands in parallel with concurrency control
-  async executeBatch<T>(commands: MCPCommand<T>[]): Promise<CommandResult<T>[]> {
+  async executeBatch<T>(
+    commands: MCPCommand<T>[],
+  ): Promise<CommandResult<T>[]> {
     // Separate commands by estimated duration for optimal batching
-    const fastCommands = commands.filter((cmd) => cmd.getEstimatedDuration() < 1000);
-    const slowCommands = commands.filter((cmd) => cmd.getEstimatedDuration() >= 1000);
+    const fastCommands = commands.filter(
+      (cmd) => cmd.getEstimatedDuration() < 1000,
+    );
+    const slowCommands = commands.filter(
+      (cmd) => cmd.getEstimatedDuration() >= 1000,
+    );
 
     // Execute fast commands in parallel (with concurrency limit)
     const parallelResults = await this.executeParallel(fastCommands);
@@ -597,7 +634,10 @@ export class MCPCommandQueue extends EventEmitter {
         this.emit('command:undone', { commandType: command.getCommandType() });
       } catch (error) {
         this.logger?.error('Undo operation failed:', error);
-        this.emit('command:undo_failed', { commandType: command.getCommandType(), error });
+        this.emit('command:undo_failed', {
+          commandType: command.getCommandType(),
+          error,
+        });
         throw error;
       }
     }
@@ -607,20 +647,23 @@ export class MCPCommandQueue extends EventEmitter {
   async retryCommand<T>(
     originalCommand: MCPCommand<T>,
     maxRetries = 3,
-    baseDelay = 1000
+    baseDelay = 1000,
   ): Promise<CommandResult<T>> {
     let lastError: Error;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         // Clone command if possible to avoid state issues
-        const command = originalCommand.clone ? originalCommand.clone() : originalCommand;
+        const command = originalCommand.clone
+          ? originalCommand.clone()
+          : originalCommand;
         const result = await this.execute(command);
 
         if (result?.success) {
           return result;
         }
-        lastError = result?.error || new Error('Command failed without error details');
+        lastError =
+          result?.error || new Error('Command failed without error details');
       } catch (error) {
         lastError = error as Error;
       }
@@ -638,7 +681,11 @@ export class MCPCommandQueue extends EventEmitter {
     return { ...this.metrics };
   }
 
-  getHistory(): Array<{ command: MCPCommand; result: CommandResult; timestamp: Date }> {
+  getHistory(): Array<{
+    command: MCPCommand;
+    result: CommandResult;
+    timestamp: Date;
+  }> {
     return [...this.commandHistory];
   }
 
@@ -653,7 +700,10 @@ export class MCPCommandQueue extends EventEmitter {
   }
 
   // Scheduled command execution
-  async scheduleCommand<T>(command: MCPCommand<T>, executeAt: Date): Promise<CommandResult<T>> {
+  async scheduleCommand<T>(
+    command: MCPCommand<T>,
+    executeAt: Date,
+  ): Promise<CommandResult<T>> {
     const delay = executeAt.getTime() - Date.now();
 
     if (delay <= 0) {
@@ -692,7 +742,9 @@ export class MCPCommandQueue extends EventEmitter {
     this.emit('queue:shutdown');
   }
 
-  private async executeParallel<T>(commands: MCPCommand<T>[]): Promise<CommandResult<T>[]> {
+  private async executeParallel<T>(
+    commands: MCPCommand<T>[],
+  ): Promise<CommandResult<T>[]> {
     const chunks = [];
     for (let i = 0; i < commands.length; i += this.maxConcurrentCommands) {
       chunks.push(commands.slice(i, i + this.maxConcurrentCommands));
@@ -700,7 +752,9 @@ export class MCPCommandQueue extends EventEmitter {
 
     const results: CommandResult<T>[] = [];
     for (const chunk of chunks) {
-      const chunkResults = await Promise.allSettled(chunk.map((cmd) => this.execute(cmd)));
+      const chunkResults = await Promise.allSettled(
+        chunk.map((cmd) => this.execute(cmd)),
+      );
 
       results.push(
         ...chunkResults?.map((result) =>
@@ -711,8 +765,8 @@ export class MCPCommandQueue extends EventEmitter {
                 error: result?.reason,
                 executionTime: 0,
                 resourceUsage: this.emptyResourceMetrics(),
-              }
-        )
+              },
+        ),
       );
     }
 
@@ -723,7 +777,10 @@ export class MCPCommandQueue extends EventEmitter {
     this.processing = true;
 
     const processNext = async () => {
-      if (!this.processing || this.currentlyExecuting >= this.maxConcurrentCommands) {
+      if (
+        !this.processing ||
+        this.currentlyExecuting >= this.maxConcurrentCommands
+      ) {
         setTimeout(processNext, 10);
         return;
       }
@@ -749,7 +806,9 @@ export class MCPCommandQueue extends EventEmitter {
     processNext();
   }
 
-  private async executeCommand<T>(command: MCPCommand<T>): Promise<CommandResult<T>> {
+  private async executeCommand<T>(
+    command: MCPCommand<T>,
+  ): Promise<CommandResult<T>> {
     const startTime = Date.now();
 
     try {
@@ -798,7 +857,7 @@ export class MCPCommandQueue extends EventEmitter {
 
   private async rollbackTransaction(
     transactionId: string,
-    results: CommandResult[]
+    results: CommandResult[],
   ): Promise<void> {
     const transaction = this.activeTransactions.get(transactionId);
     if (!transaction) return;
@@ -807,7 +866,13 @@ export class MCPCommandQueue extends EventEmitter {
     for (let i = results.length - 1; i >= 0; i--) {
       const command = transaction.commands[i];
       const result = results[i];
-      if (command && result && result?.success && command.canUndo() && command.undo) {
+      if (
+        command &&
+        result &&
+        result?.success &&
+        command.canUndo() &&
+        command.undo
+      ) {
         try {
           await command.undo();
         } catch (error) {
@@ -820,7 +885,7 @@ export class MCPCommandQueue extends EventEmitter {
   private updateMetrics(
     command: MCPCommand,
     result: CommandResult,
-    actualExecutionTime: number
+    actualExecutionTime: number,
   ): void {
     this.metrics.totalExecuted++;
     if (!result?.success) {
@@ -835,15 +900,18 @@ export class MCPCommandQueue extends EventEmitter {
     };
 
     stats.count++;
-    stats.avgTime = (stats.avgTime * (stats.count - 1) + actualExecutionTime) / stats.count;
+    stats.avgTime =
+      (stats.avgTime * (stats.count - 1) + actualExecutionTime) / stats.count;
     stats.failureRate =
-      (stats.failureRate * (stats.count - 1) + (result?.success ? 0 : 1)) / stats.count;
+      (stats.failureRate * (stats.count - 1) + (result?.success ? 0 : 1)) /
+      stats.count;
 
     this.metrics.commandTypeStats.set(commandType, stats);
 
     // Update overall average
     this.metrics.averageExecutionTime =
-      (this.metrics.averageExecutionTime * (this.metrics.totalExecuted - 1) + actualExecutionTime) /
+      (this.metrics.averageExecutionTime * (this.metrics.totalExecuted - 1) +
+        actualExecutionTime) /
       this.metrics.totalExecuted;
 
     this.metrics.queueSize = this.queue.length;
@@ -876,16 +944,20 @@ export class CommandFactory {
   static createSwarmInitCommand(
     config: SwarmConfig,
     swarmManager: any,
-    context: CommandContext
+    context: CommandContext,
   ): SwarmInitCommand {
     return new SwarmInitCommand(config, swarmManager, context);
   }
 
   static createAgentSpawnCommand(
-    agentConfig: { type: string; capabilities: string[]; resourceRequirements?: ResourceMetrics },
+    agentConfig: {
+      type: string;
+      capabilities: string[];
+      resourceRequirements?: ResourceMetrics;
+    },
     swarmManager: any,
     swarmId: string,
-    context: CommandContext
+    context: CommandContext,
   ): AgentSpawnCommand {
     return new AgentSpawnCommand(agentConfig, swarmManager, swarmId, context);
   }
@@ -899,7 +971,7 @@ export class CommandFactory {
     },
     swarmManager: any,
     swarmId: string,
-    context: CommandContext
+    context: CommandContext,
   ): TaskOrchestrationCommand {
     return new TaskOrchestrationCommand(task, swarmManager, swarmId, context);
   }

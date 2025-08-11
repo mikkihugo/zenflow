@@ -13,7 +13,7 @@
 import { EventEmitter } from 'events';
 import { promises as fs } from 'fs';
 import { join } from 'path';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   ArchitecturalGateFactory,
   BusinessGateFactory,
@@ -138,7 +138,15 @@ describe('WorkflowGatesManager', () => {
 
   beforeEach(async () => {
     // Setup test database path
-    testDbPath = join(__dirname, '..', '..', '..', '..', 'test-data', 'workflow-gates-test.db');
+    testDbPath = join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      '..',
+      'test-data',
+      'workflow-gates-test.db',
+    );
 
     // Create test directory
     await fs.mkdir(join(testDbPath, '..'), { recursive: true }).catch(() => {});
@@ -211,7 +219,7 @@ describe('WorkflowGatesManager', () => {
         WorkflowHumanGateType.STRATEGIC,
         'prd-approval',
         context,
-        data
+        data,
       );
 
       expect(gate).toBeDefined();
@@ -230,7 +238,7 @@ describe('WorkflowGatesManager', () => {
         WorkflowHumanGateType.ARCHITECTURAL,
         'system-design-review',
         context,
-        data
+        data,
       );
 
       expect(gate.type).toBe(WorkflowHumanGateType.ARCHITECTURAL);
@@ -245,7 +253,7 @@ describe('WorkflowGatesManager', () => {
         WorkflowHumanGateType.QUALITY,
         'security-review',
         context,
-        data
+        data,
       );
 
       expect(gate.type).toBe(WorkflowHumanGateType.QUALITY);
@@ -260,7 +268,7 @@ describe('WorkflowGatesManager', () => {
         WorkflowHumanGateType.BUSINESS,
         'feature-validation',
         context,
-        data
+        data,
       );
 
       expect(gate.type).toBe(WorkflowHumanGateType.BUSINESS);
@@ -275,7 +283,7 @@ describe('WorkflowGatesManager', () => {
         WorkflowHumanGateType.ETHICAL,
         'ai-behavior-review',
         context,
-        data
+        data,
       );
 
       expect(gate.type).toBe(WorkflowHumanGateType.ETHICAL);
@@ -294,7 +302,7 @@ describe('WorkflowGatesManager', () => {
         WorkflowHumanGateType.STRATEGIC,
         'test-gate',
         context,
-        data
+        data,
       );
 
       const emittedGate = await eventPromise;
@@ -318,7 +326,7 @@ describe('WorkflowGatesManager', () => {
         'custom-gate',
         context,
         data,
-        options
+        options,
       );
 
       expect(gate.title).toBe(options.title);
@@ -338,7 +346,12 @@ describe('WorkflowGatesManager', () => {
       });
 
       await expect(
-        emptyManager.createGate('unsupported' as WorkflowHumanGateType, 'test', context, data)
+        emptyManager.createGate(
+          'unsupported' as WorkflowHumanGateType,
+          'test',
+          context,
+          data,
+        ),
       ).rejects.toThrow();
 
       await emptyManager.shutdown();
@@ -358,7 +371,7 @@ describe('WorkflowGatesManager', () => {
         WorkflowHumanGateType.STRATEGIC,
         'test-gate',
         context,
-        data
+        data,
       );
     });
 
@@ -384,7 +397,12 @@ describe('WorkflowGatesManager', () => {
         gatesManager.once('gate-resolved', resolve);
       });
 
-      await gatesManager.resolveGate(gate.id, 'approved', 'test-user', 'Test resolution rationale');
+      await gatesManager.resolveGate(
+        gate.id,
+        'approved',
+        'test-user',
+        'Test resolution rationale',
+      );
 
       const resolvedEvent = await eventPromise;
       expect(resolvedEvent.gateId).toBe(gate.id);
@@ -397,7 +415,12 @@ describe('WorkflowGatesManager', () => {
         gatesManager.once('gate-resolved', resolve);
       });
 
-      await gatesManager.resolveGate(gate.id, 'rejected', 'test-user', 'Test rejection rationale');
+      await gatesManager.resolveGate(
+        gate.id,
+        'rejected',
+        'test-user',
+        'Test rejection rationale',
+      );
 
       const resolvedEvent = await eventPromise;
       expect(resolvedEvent.decision).toBe('rejected');
@@ -417,14 +440,14 @@ describe('WorkflowGatesManager', () => {
     });
 
     it('should throw error when updating non-existent gate', async () => {
-      await expect(gatesManager.updateGate('non-existent-gate', { title: 'Test' })).rejects.toThrow(
-        'Gate not found'
-      );
+      await expect(
+        gatesManager.updateGate('non-existent-gate', { title: 'Test' }),
+      ).rejects.toThrow('Gate not found');
     });
 
     it('should throw error when resolving non-existent gate', async () => {
       await expect(
-        gatesManager.resolveGate('non-existent-gate', 'approved', 'test-user')
+        gatesManager.resolveGate('non-existent-gate', 'approved', 'test-user'),
       ).rejects.toThrow('Gate not found');
     });
   });
@@ -462,7 +485,7 @@ describe('WorkflowGatesManager', () => {
         'trigger-test',
         context,
         data,
-        { triggers: [trigger] }
+        { triggers: [trigger] },
       );
 
       const triggeredEvent = await eventPromise;
@@ -498,7 +521,7 @@ describe('WorkflowGatesManager', () => {
         'no-trigger-test',
         context,
         data,
-        { triggers: [trigger] }
+        { triggers: [trigger] },
       );
 
       // Wait a bit to ensure trigger processing is complete
@@ -534,8 +557,8 @@ describe('WorkflowGatesManager', () => {
           'error-trigger-test',
           context,
           data,
-          { triggers: [trigger] }
-        )
+          { triggers: [trigger] },
+        ),
       ).resolves.toBeDefined(); // Should not throw, error handled gracefully
     });
   });
@@ -553,14 +576,21 @@ describe('WorkflowGatesManager', () => {
         WorkflowHumanGateType.STRATEGIC,
         'queue-test',
         context,
-        data
+        data,
       );
 
-      await gatesManager.addToQueue(gate.id, 1, GateTriggerUrgency.WITHIN_HOUR, new Date());
+      await gatesManager.addToQueue(
+        gate.id,
+        1,
+        GateTriggerUrgency.WITHIN_HOUR,
+        new Date(),
+      );
 
       const queuedGates = await gatesManager.getQueuedGates();
       expect(queuedGates.length).toBeGreaterThan(0);
-      expect(queuedGates.find((item) => item.gate.id === gate.id)).toBeDefined();
+      expect(
+        queuedGates.find((item) => item.gate.id === gate.id),
+      ).toBeDefined();
     });
 
     it('should process queue on interval', async () => {
@@ -591,7 +621,7 @@ describe('WorkflowGatesManager', () => {
         'queue-process-test',
         context,
         data,
-        { triggers: [trigger] }
+        { triggers: [trigger] },
       );
 
       // Wait for queue processing
@@ -614,15 +644,30 @@ describe('WorkflowGatesManager', () => {
 
       // Create gates of different types and statuses
       gates.push(
-        await gatesManager.createGate(WorkflowHumanGateType.STRATEGIC, 'strategic-1', context, data)
+        await gatesManager.createGate(
+          WorkflowHumanGateType.STRATEGIC,
+          'strategic-1',
+          context,
+          data,
+        ),
       );
 
       gates.push(
-        await gatesManager.createGate(WorkflowHumanGateType.ARCHITECTURAL, 'arch-1', context, data)
+        await gatesManager.createGate(
+          WorkflowHumanGateType.ARCHITECTURAL,
+          'arch-1',
+          context,
+          data,
+        ),
       );
 
       gates.push(
-        await gatesManager.createGate(WorkflowHumanGateType.QUALITY, 'quality-1', context, data)
+        await gatesManager.createGate(
+          WorkflowHumanGateType.QUALITY,
+          'quality-1',
+          context,
+          data,
+        ),
       );
 
       // Resolve one gate
@@ -644,7 +689,9 @@ describe('WorkflowGatesManager', () => {
       // Mock the persistence layer return
       mockStatement.all.mockReturnValue([]);
 
-      const pendingGates = await gatesManager.getGatesByStatus([WorkflowHumanGateStatus.PENDING]);
+      const pendingGates = await gatesManager.getGatesByStatus([
+        WorkflowHumanGateStatus.PENDING,
+      ]);
 
       expect(Array.isArray(pendingGates)).toBe(true);
     });
@@ -653,7 +700,9 @@ describe('WorkflowGatesManager', () => {
       // Mock the persistence layer return
       mockStatement.all.mockReturnValue([]);
 
-      const strategicGates = await gatesManager.getGatesByType(WorkflowHumanGateType.STRATEGIC);
+      const strategicGates = await gatesManager.getGatesByType(
+        WorkflowHumanGateType.STRATEGIC,
+      );
 
       expect(Array.isArray(strategicGates)).toBe(true);
     });
@@ -720,7 +769,15 @@ describe('GatePersistenceManager', () => {
   let testDbPath: string;
 
   beforeEach(async () => {
-    testDbPath = join(__dirname, '..', '..', '..', '..', 'test-data', 'persistence-test.db');
+    testDbPath = join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      '..',
+      'test-data',
+      'persistence-test.db',
+    );
 
     await fs.mkdir(join(testDbPath, '..'), { recursive: true }).catch(() => {});
 
@@ -756,7 +813,9 @@ describe('GatePersistenceManager', () => {
       // Check that table creation SQL was executed
       const execCalls = mockDatabase.exec.mock.calls;
       expect(
-        execCalls.some((call: any) => call[0].includes('CREATE TABLE IF NOT EXISTS workflow_gates'))
+        execCalls.some((call: any) =>
+          call[0].includes('CREATE TABLE IF NOT EXISTS workflow_gates'),
+        ),
       ).toBe(true);
     });
   });
@@ -881,14 +940,14 @@ describe('GatePersistenceManager', () => {
       await persistenceManager.updateGateStatus(
         'test-gate-001',
         WorkflowHumanGateStatus.APPROVED,
-        resolution
+        resolution,
       );
 
       expect(mockStatement.run).toHaveBeenCalledWith(
         WorkflowHumanGateStatus.APPROVED,
         expect.any(Number),
         JSON.stringify(resolution),
-        'test-gate-001'
+        'test-gate-001',
       );
     });
   });
@@ -904,14 +963,19 @@ describe('GatePersistenceManager', () => {
       const urgency = GateTriggerUrgency.IMMEDIATE;
       const scheduledAt = new Date();
 
-      await persistenceManager.addToQueue(gateId, priority, urgency, scheduledAt);
+      await persistenceManager.addToQueue(
+        gateId,
+        priority,
+        urgency,
+        scheduledAt,
+      );
 
       expect(mockStatement.run).toHaveBeenCalledWith(
         gateId,
         priority,
         urgency,
         scheduledAt.getTime(),
-        expect.any(Number)
+        expect.any(Number),
       );
     });
 
@@ -930,7 +994,10 @@ describe('GatePersistenceManager', () => {
           gate_data: JSON.stringify(createMockGateData()),
           triggers: JSON.stringify([]),
           priority: 'high',
-          approval_config: JSON.stringify({ approvers: [], requiredApprovals: 1 }),
+          approval_config: JSON.stringify({
+            approvers: [],
+            requiredApprovals: 1,
+          }),
           metrics: JSON.stringify({
             createdAt: Date.now(),
             escalationCount: 0,
@@ -992,7 +1059,7 @@ describe('GatePersistenceManager', () => {
         action,
         actor,
         expect.any(Number),
-        JSON.stringify(data)
+        JSON.stringify(data),
       );
     });
 

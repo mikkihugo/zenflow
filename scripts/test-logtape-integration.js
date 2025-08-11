@@ -33,7 +33,10 @@ async function testLogtapeIntegration() {
     // console.log('✅ Logger creation successful');
 
     // Test basic logging
-    logger.info('Test info message', { test: 'data', timestamp: new Date().toISOString() });
+    logger.info('Test info message', {
+      test: 'data',
+      timestamp: new Date().toISOString(),
+    });
     logger.debug('Test debug message', { detailed: true, level: 'debug' });
     logger.warn('Test warning message', { warning: 'example' });
 
@@ -70,8 +73,18 @@ async function testLogtapeIntegration() {
     });
 
     const mockErrors = [
-      { line: 10, rule: 'no-unused-vars', message: 'Variable not used', severity: 'warning' },
-      { line: 25, rule: 'missing-type', message: 'Missing type annotation', severity: 'error' },
+      {
+        line: 10,
+        rule: 'no-unused-vars',
+        message: 'Variable not used',
+        severity: 'warning',
+      },
+      {
+        line: 25,
+        rule: 'missing-type',
+        message: 'Missing type annotation',
+        severity: 'error',
+      },
     ];
 
     logErrorAnalysis(logger, 'test-file.ts', mockErrors, {

@@ -10,17 +10,33 @@
  */
 
 import { Box, Text, useInput } from 'ink';
-import { useEffect, useState } from 'react';
-import { ErrorMessage, SwarmSpinner, type SwarmStatus } from './components/index';
+import React from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
+  ErrorMessage,
+  SwarmSpinner,
+  type SwarmStatus,
+} from './components/index/index.js';
+import {
+  CommandPalette,
+  FileBrowser,
+  Help,
+  LogsViewer,
   MainMenu,
+  MCPServers,
+  MCPTester,
+  NixManager,
+  PerformanceMonitor,
   type ScreenType,
   ScreenUtils,
+  Settings,
+  Status,
   type SwarmAgent,
   SwarmDashboard,
   type SwarmMetrics,
   type SwarmTask,
-} from './screens/index';
+  Workspace,
+} from './screens/index/index.js';
 
 export interface TUIModeProps {
   flags: Record<string, any>;
@@ -47,7 +63,10 @@ interface TUIState {
  * @param root0.flags
  * @param root0.onExit
  */
-export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, onExit }) => {
+export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
+  flags,
+  onExit,
+}) => {
   const [state, setState] = useState<TUIState>({
     currentScreen: 'main-menu',
     isInitializing: true,
@@ -75,123 +94,73 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
     tasks: [],
   });
 
-  const initializeTUI = async () => {
+  const initializeTUI = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, isInitializing: true }));
 
-      // Simulate swarm initialization
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Store start time for proper uptime calculation
+      const startTime = Date.now();
 
-      // Initialize with mock data (replace with actual swarm integration)
-      const mockAgents: SwarmAgent[] = [
-        {
-          id: 'coordinator-1',
-          role: 'coordinator',
-          status: 'active',
-          capabilities: ['coordination', 'planning', 'monitoring'],
-          lastActivity: new Date(),
-          metrics: {
-            tasksCompleted: 15,
-            averageResponseTime: 150,
-            errors: 0,
-            successRate: 1.0,
-            totalTasks: 15,
-          },
-          cognitivePattern: 'systems-thinking',
-          performanceScore: 0.95,
-        },
-        {
-          id: 'worker-1',
-          role: 'worker',
-          status: 'busy',
-          capabilities: ['execution', 'analysis'],
-          lastActivity: new Date(),
-          metrics: {
-            tasksCompleted: 8,
-            averageResponseTime: 200,
-            errors: 1,
-            successRate: 0.89,
-            totalTasks: 9,
-          },
-          cognitivePattern: 'convergent',
-          performanceScore: 0.87,
-        },
-        {
-          id: 'worker-2',
-          role: 'worker',
-          status: 'active',
-          capabilities: ['execution', 'optimization'],
-          lastActivity: new Date(),
-          metrics: {
-            tasksCompleted: 12,
-            averageResponseTime: 180,
-            errors: 0,
-            successRate: 1.0,
-            totalTasks: 12,
-          },
-          cognitivePattern: 'creative',
-          performanceScore: 0.92,
-        },
-      ];
+      // Check for real swarm integration
+      const swarmModule = await import(
+        '../../coordination/swarm/index.ts'
+      ).catch(() => null);
+      let realAgents: SwarmAgent[] = [];
 
-      const mockTasks: SwarmTask[] = [
-        {
-          id: 'task-1',
-          description: 'Process documentation workflow',
-          status: 'in_progress',
-          progress: 65,
-          assignedAgents: ['coordinator-1', 'worker-1'],
-          priority: 'high',
-          startTime: new Date(Date.now() - 300000),
-          estimatedDuration: 600000,
-        },
-        {
-          id: 'task-2',
-          description: 'Optimize neural network training',
-          status: 'completed',
-          progress: 100,
-          assignedAgents: ['worker-2'],
-          priority: 'medium',
-          startTime: new Date(Date.now() - 600000),
-          endTime: new Date(Date.now() - 60000),
-        },
-        {
-          id: 'task-3',
-          description: 'Generate API documentation',
-          status: 'pending',
-          progress: 0,
-          assignedAgents: [],
-          priority: 'low',
-        },
-      ];
+      if (swarmModule?.SwarmManager) {
+        try {
+          const swarmManager = new swarmModule.SwarmManager();
+          const swarmData = await swarmManager.getStatus().catch(() => null);
+          realAgents = swarmData?.agents || [];
+        } catch (error) {
+          console.error('Failed to load swarm data:', error);
+        }
+      }
+
+      // Get real tasks from swarm or system
+      let realTasks: SwarmTask[] = [];
+
+      if (swarmModule?.SwarmManager) {
+        try {
+          const swarmManager = new swarmModule.SwarmManager();
+          const taskData = await swarmManager.getTasks().catch(() => null);
+          realTasks = taskData || [];
+        } catch (error) {
+          console.error('Failed to load task data:', error);
+        }
+      }
 
       setState((prev) => ({
         ...prev,
         isInitializing: false,
         swarmStatus: {
-          status: 'active',
+          status: realAgents.length > 0 ? 'active' : 'idle',
           topology: 'mesh',
-          totalAgents: mockAgents.length,
-          activeAgents: mockAgents.filter((a) => a.status === 'active' || a.status === 'busy')
-            .length,
-          uptime: Date.now(),
+          totalAgents: realAgents.length,
+          activeAgents: realAgents.filter(
+            (a) => a.status === 'active' || a.status === 'busy',
+          ).length,
+          uptime: startTime,
         },
         swarmMetrics: {
-          totalAgents: mockAgents.length,
-          activeAgents: mockAgents.filter((a) => a.status === 'active' || a.status === 'busy')
+          totalAgents: realAgents.length,
+          activeAgents: realAgents.filter(
+            (a) => a.status === 'active' || a.status === 'busy',
+          ).length,
+          tasksInProgress: realTasks.filter((t) => t.status === 'in_progress')
             .length,
-          tasksInProgress: mockTasks.filter((t) => t.status === 'in_progress').length,
-          tasksCompleted: mockTasks.filter((t) => t.status === 'completed').length,
-          totalTasks: mockTasks.length,
-          uptime: Date.now(),
+          tasksCompleted: realTasks.filter((t) => t.status === 'completed')
+            .length,
+          totalTasks: realTasks.length,
+          uptime: startTime,
           performance: {
-            throughput: 2.5,
-            errorRate: 0.05,
-            avgLatency: 175,
+            throughput: 0,
+            errorRate: 0,
+            avgLatency: 0,
           },
         },
-        agents: mockAgents,
-        tasks: mockTasks,
+        agents: realAgents,
+        tasks: realTasks,
       }));
     } catch (error) {
       setState((prev) => ({
@@ -200,27 +169,60 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
         error: error as Error,
       }));
     }
-  };
+  }, []);
 
-  const updateState = async () => {
-    // Update real-time metrics (simulate)
-    setState((prev) => ({
-      ...prev,
-      swarmStatus: {
-        ...prev.swarmStatus,
-        uptime: Date.now() - prev.swarmStatus.uptime,
-      },
-      swarmMetrics: {
-        ...prev.swarmMetrics,
-        uptime: Date.now() - prev.swarmMetrics.uptime,
-        performance: {
-          ...prev.swarmMetrics.performance,
-          throughput: 2.0 + Math.random() * 1.5,
-          avgLatency: 150 + Math.random() * 100,
-        },
-      },
-    }));
-  };
+  const updateState = useCallback(async () => {
+    // Update real-time metrics from actual system data
+    try {
+      const swarmModule = await import(
+        '../../coordination/swarm/index.ts'
+      ).catch(() => null);
+
+      if (swarmModule?.SwarmManager) {
+        const swarmManager = new swarmModule.SwarmManager();
+        const [swarmData, taskData, metricsData] = await Promise.all([
+          swarmManager.getStatus().catch(() => null),
+          swarmManager.getTasks().catch(() => null),
+          swarmManager.getMetrics().catch(() => null),
+        ]);
+
+        setState((prev) => ({
+          ...prev,
+          agents: swarmData?.agents || [],
+          tasks: taskData || [],
+          swarmStatus: {
+            ...prev.swarmStatus,
+            totalAgents: swarmData?.agents?.length || 0,
+            activeAgents:
+              swarmData?.agents?.filter((a: any) => a.status === 'active')
+                ?.length || 0,
+            status: swarmData?.agents?.length > 0 ? 'active' : 'idle',
+          },
+          swarmMetrics: {
+            ...prev.swarmMetrics,
+            totalAgents: swarmData?.agents?.length || 0,
+            activeAgents:
+              swarmData?.agents?.filter((a: any) => a.status === 'active')
+                ?.length || 0,
+            tasksInProgress:
+              taskData?.filter((t: any) => t.status === 'in_progress')
+                ?.length || 0,
+            tasksCompleted:
+              taskData?.filter((t: any) => t.status === 'completed')?.length ||
+              0,
+            totalTasks: taskData?.length || 0,
+            performance: metricsData?.performance || {
+              throughput: 0,
+              errorRate: 0,
+              avgLatency: 0,
+            },
+          },
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to update state with real data:', error);
+    }
+  }, []);
 
   // Initialize TUI on mount
   useEffect(() => {
@@ -230,7 +232,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
     const refreshInterval = setInterval(updateState, 3000);
 
     return () => clearInterval(refreshInterval);
-  }, [initializeTUI, updateState]);
+  }, []); // Remove dependencies to prevent infinite loop
 
   // Global keyboard shortcuts
   useInput((input, key) => {
@@ -241,7 +243,10 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
 
   const navigateToScreen = (screen: ScreenType) => {
     // Check if screen requires swarm and swarm is available
-    if (ScreenUtils.isSwarmRequired(screen) && state.swarmStatus.status !== 'active') {
+    if (
+      ScreenUtils.isSwarmRequired(screen) &&
+      state.swarmStatus.status !== 'active'
+    ) {
       setState((prev) => ({
         ...prev,
         error: new Error(`Screen "${screen}" requires an active swarm`),
@@ -258,6 +263,21 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
 
   const handleMainMenuSelect = (value: string) => {
     switch (value) {
+      case 'command-palette':
+        navigateToScreen('command-palette');
+        break;
+      case 'logs-viewer':
+        navigateToScreen('logs-viewer');
+        break;
+      case 'performance-monitor':
+        navigateToScreen('performance-monitor');
+        break;
+      case 'file-browser':
+        navigateToScreen('file-browser');
+        break;
+      case 'mcp-tester':
+        navigateToScreen('mcp-tester');
+        break;
       case 'status':
         navigateToScreen('status');
         break;
@@ -265,16 +285,25 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
         navigateToScreen('swarm-dashboard');
         break;
       case 'mcp':
-        // Handle MCP management
+        navigateToScreen('mcp-servers');
         break;
       case 'workspace':
-        // Handle workspace management
+        navigateToScreen('workspace');
         break;
       case 'settings':
         navigateToScreen('settings');
         break;
       case 'help':
         navigateToScreen('help');
+        break;
+      case 'document-ai':
+        navigateToScreen('document-ai');
+        break;
+      case 'adr-generator':
+        navigateToScreen('adr-generator');
+        break;
+      case 'nix-manager':
+        navigateToScreen('nix-manager');
         break;
       default:
         break;
@@ -298,8 +327,16 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
 
     if (state.isInitializing) {
       return (
-        <Box flexDirection="column" alignItems="center" justifyContent="center" height={20}>
-          <SwarmSpinner type="swarm" text="Initializing TUI interface..." />
+        <Box
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          height={20}
+        >
+          <SwarmSpinner
+            type="swarm"
+            text="Initializing TUI interface..."
+          />
         </Box>
       );
     }
@@ -330,6 +367,70 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
           />
         );
 
+      case 'mcp-servers':
+        return (
+          <MCPServers
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
+      case 'workspace':
+        return (
+          <Workspace
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
+      // New essential TUI screens
+      case 'command-palette':
+        return (
+          <CommandPalette
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
+      case 'logs-viewer':
+        return (
+          <LogsViewer
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
+      case 'performance-monitor':
+        return (
+          <PerformanceMonitor
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
+      case 'file-browser':
+        return (
+          <FileBrowser
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
+      case 'mcp-tester':
+        return (
+          <MCPTester
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
       // Other screens with placeholder implementations
       case 'agent-manager':
         return (
@@ -349,28 +450,239 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
         );
       case 'settings':
         return (
-          <Box flexDirection="column">
-            <Text color="yellow">⚙️ Settings</Text>
-            <Text>System settings interface coming soon...</Text>
-            <Text color="gray">Press 'q' to return to main menu</Text>
-          </Box>
+          <Settings
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
         );
       case 'help':
         return (
-          <Box flexDirection="column">
-            <Text color="cyan">❓ Help</Text>
-            <Text>Help documentation interface coming soon...</Text>
-            <Text color="gray">Press 'q' to return to main menu</Text>
-          </Box>
+          <Help
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
         );
       case 'status':
         return (
-          <Box flexDirection="column">
-            <Text color="magenta">📊 System Status</Text>
-            <Text>System status interface coming soon...</Text>
-            <Text color="gray">Press 'q' to return to main menu</Text>
+          <Status
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
+      case 'document-ai':
+        return (
+          <Box
+            flexDirection="column"
+            height="100%"
+          >
+            <Header
+              title="Document AI - Analysis & Rewriting"
+              swarmStatus={state.swarmStatus}
+              showBorder={true}
+            />
+            <Box
+              flexGrow={1}
+              padding={2}
+            >
+              <Box flexDirection="column">
+                <Text
+                  bold
+                  color="cyan"
+                >
+                  🤖 AI-Powered Document Intelligence
+                </Text>
+                <Box marginY={1} />
+
+                <Box
+                  borderStyle="single"
+                  borderColor="yellow"
+                  padding={2}
+                >
+                  <Text
+                    bold
+                    color="yellow"
+                  >
+                    📝 Document Analysis Features:
+                  </Text>
+                  <Box
+                    flexDirection="column"
+                    marginTop={1}
+                  >
+                    <Text>
+                      • Read any document type (README, specs, docs, etc.)
+                    </Text>
+                    <Text>• Analyze structure, clarity, and completeness</Text>
+                    <Text>• Suggest improvements and rewrites</Text>
+                    <Text>• Recommend optimal organization and placement</Text>
+                    <Text>• Extract key insights and action items</Text>
+                  </Box>
+                </Box>
+
+                <Box
+                  marginTop={2}
+                  borderStyle="single"
+                  borderColor="blue"
+                  padding={2}
+                >
+                  <Text
+                    bold
+                    color="blue"
+                  >
+                    🔄 Workflow:
+                  </Text>
+                  <Box
+                    flexDirection="column"
+                    marginTop={1}
+                  >
+                    <Text>1. Select document or directory to analyze</Text>
+                    <Text>2. AI reads and understands content</Text>
+                    <Text>3. Provides rewrite suggestions with reasoning</Text>
+                    <Text>4. User can approve, reject, or comment</Text>
+                    <Text>
+                      5. AI learns from feedback for better suggestions
+                    </Text>
+                  </Box>
+                </Box>
+
+                <Box marginTop={2}>
+                  <Text color="gray">
+                    Press 'Esc' or 'Q' to return to main menu
+                  </Text>
+                </Box>
+              </Box>
+            </Box>
+            <InteractiveFooter
+              currentScreen="Document AI"
+              availableScreens={[{ key: 'Esc/Q', name: 'Back' }]}
+              status="Ready to analyze documents"
+            />
           </Box>
         );
+
+      case 'adr-generator':
+        return (
+          <Box
+            flexDirection="column"
+            height="100%"
+          >
+            <Header
+              title="ADR Generator - Architecture Decisions"
+              swarmStatus={state.swarmStatus}
+              showBorder={true}
+            />
+            <Box
+              flexGrow={1}
+              padding={2}
+            >
+              <Box flexDirection="column">
+                <Text
+                  bold
+                  color="cyan"
+                >
+                  🏗️ Architecture Decision Records Generator
+                </Text>
+                <Box marginY={1} />
+
+                <Box
+                  borderStyle="single"
+                  borderColor="green"
+                  padding={2}
+                >
+                  <Text
+                    bold
+                    color="green"
+                  >
+                    🧠 Code Knowledge Analysis:
+                  </Text>
+                  <Box
+                    flexDirection="column"
+                    marginTop={1}
+                  >
+                    <Text>• Scan codebase for architectural patterns</Text>
+                    <Text>• Identify design decisions from code structure</Text>
+                    <Text>• Detect technology choices and frameworks</Text>
+                    <Text>• Analyze dependency relationships</Text>
+                    <Text>• Extract implicit architectural decisions</Text>
+                  </Box>
+                </Box>
+
+                <Box
+                  marginTop={2}
+                  borderStyle="single"
+                  borderColor="magenta"
+                  padding={2}
+                >
+                  <Text
+                    bold
+                    color="magenta"
+                  >
+                    📋 ADR Generation:
+                  </Text>
+                  <Box
+                    flexDirection="column"
+                    marginTop={1}
+                  >
+                    <Text>• Generate formal Architecture Decision Records</Text>
+                    <Text>• Include context, decision, and consequences</Text>
+                    <Text>• Suggest alternative approaches considered</Text>
+                    <Text>• Document rationale based on code evidence</Text>
+                    <Text>• Create templates for future decisions</Text>
+                  </Box>
+                </Box>
+
+                <Box
+                  marginTop={2}
+                  borderStyle="single"
+                  borderColor="cyan"
+                  padding={2}
+                >
+                  <Text
+                    bold
+                    color="cyan"
+                  >
+                    🎯 Smart Suggestions:
+                  </Text>
+                  <Box
+                    flexDirection="column"
+                    marginTop={1}
+                  >
+                    <Text>• Identify missing ADRs for existing decisions</Text>
+                    <Text>• Suggest documentation for implicit choices</Text>
+                    <Text>
+                      • Recommend decision review based on code changes
+                    </Text>
+                    <Text>• Generate decision trees for complex choices</Text>
+                  </Box>
+                </Box>
+
+                <Box marginTop={2}>
+                  <Text color="gray">
+                    Press 'Esc' or 'Q' to return to main menu
+                  </Text>
+                </Box>
+              </Box>
+            </Box>
+            <InteractiveFooter
+              currentScreen="ADR Generator"
+              availableScreens={[{ key: 'Esc/Q', name: 'Back' }]}
+              status="Ready to generate ADRs from code knowledge"
+            />
+          </Box>
+        );
+
+      case 'nix-manager':
+        return (
+          <NixManager
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
       case 'create-agent':
         return (
           <Box flexDirection="column">
@@ -403,7 +715,10 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({ flags, 
   };
 
   return (
-    <Box flexDirection="column" height="100%">
+    <Box
+      flexDirection="column"
+      height="100%"
+    >
       {renderCurrentScreen()}
     </Box>
   );

@@ -9,7 +9,7 @@
  */
 
 import { type Request, type Response, Router } from 'express';
-import { CoordinationAPI } from '../coordination/api';
+import { CoordinationAPI } from '../../../../coordination/api.ts';
 import { asyncHandler } from '../middleware/errors.ts';
 import { LogLevel, log } from '../middleware/logging.ts';
 
@@ -36,12 +36,16 @@ export const createCoordinationRoutes = (): Router => {
       const result = await CoordinationAPI.agents.listAgents({
         status: req.query.status as any,
         type: req.query.type as any,
-        limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
-        offset: req.query.offset ? parseInt(req.query.offset as string) : undefined,
+        limit: req.query.limit
+          ? Number.parseInt(req.query.limit as string)
+          : undefined,
+        offset: req.query.offset
+          ? Number.parseInt(req.query.offset as string)
+          : undefined,
       });
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -64,7 +68,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    })
+    }),
   );
 
   /**
@@ -82,7 +86,7 @@ export const createCoordinationRoutes = (): Router => {
 
       const result = await CoordinationAPI.agents.getAgent(agentId);
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -105,7 +109,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.status(204).send();
-    })
+    }),
   );
 
   // ===== TASK MANAGEMENT =====
@@ -130,7 +134,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    })
+    }),
   );
 
   /**
@@ -148,7 +152,7 @@ export const createCoordinationRoutes = (): Router => {
 
       const result = await CoordinationAPI.tasks.getTask(taskId);
       res.json(result);
-    })
+    }),
   );
 
   // ===== SWARM MANAGEMENT =====
@@ -164,7 +168,7 @@ export const createCoordinationRoutes = (): Router => {
 
       const result = await CoordinationAPI.swarm.getConfig();
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -186,7 +190,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.json(result);
-    })
+    }),
   );
 
   // ===== HEALTH & METRICS =====
@@ -203,7 +207,7 @@ export const createCoordinationRoutes = (): Router => {
       // Set appropriate HTTP status based on health
       const statusCode = result?.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(result);
-    })
+    }),
   );
 
   /**
@@ -213,7 +217,12 @@ export const createCoordinationRoutes = (): Router => {
   router.get(
     '/metrics',
     asyncHandler(async (req: Request, res: Response) => {
-      const timeRange = req.query.timeRange as '1h' | '24h' | '7d' | '30d' | undefined;
+      const timeRange = req.query.timeRange as
+        | '1h'
+        | '24h'
+        | '7d'
+        | '30d'
+        | undefined;
 
       log(LogLevel.DEBUG, 'Getting coordination metrics', req, {
         timeRange: timeRange || 'default',
@@ -221,7 +230,7 @@ export const createCoordinationRoutes = (): Router => {
 
       const result = await CoordinationAPI.health.getMetrics(timeRange);
       res.json(result);
-    })
+    }),
   );
 
   // ===== ADVANCED COORDINATION ENDPOINTS =====
@@ -254,7 +263,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.status(202).json(result);
-    })
+    }),
   );
 
   /**
@@ -281,7 +290,7 @@ export const createCoordinationRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -313,7 +322,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -340,7 +349,7 @@ export const createCoordinationRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   return router;

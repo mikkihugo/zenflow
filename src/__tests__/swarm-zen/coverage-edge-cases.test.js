@@ -36,7 +36,7 @@ describe('Edge Cases for 100% Coverage', () => {
           type: 'invalid-type',
           dimensions: -1,
         }),
-        /Invalid configuration/
+        /Invalid configuration/,
       );
     });
 
@@ -79,13 +79,19 @@ describe('Edge Cases for 100% Coverage', () => {
       // Force database error
       persistence._db = null;
 
-      await assert.rejects(persistence.saveState(swarm), /Database connection failed/);
+      await assert.rejects(
+        persistence.saveState(swarm),
+        /Database connection failed/,
+      );
     });
 
     it('should handle WASM loading failures', async () => {
       const loader = new WasmLoader();
 
-      await assert.rejects(loader.loadModule('/invalid/path/to/wasm'), /Failed to load WASM/);
+      await assert.rejects(
+        loader.loadModule('/invalid/path/to/wasm'),
+        /Failed to load WASM/,
+      );
     });
 
     it('should handle network timeouts', async () => {
@@ -94,7 +100,10 @@ describe('Edge Cases for 100% Coverage', () => {
       // Set unrealistic timeout
       agent.setTimeout(1);
 
-      await assert.rejects(agent.fetchData('https://example.com/large-data'), /Timeout/);
+      await assert.rejects(
+        agent.fetchData('https://example.com/large-data'),
+        /Timeout/,
+      );
     });
 
     it('should handle invalid configurations', async () => {
@@ -103,7 +112,7 @@ describe('Edge Cases for 100% Coverage', () => {
           topology: 'invalid-topology',
           maxAgents: -5,
         }),
-        /Invalid configuration/
+        /Invalid configuration/,
       );
     });
   });
@@ -121,7 +130,9 @@ describe('Edge Cases for 100% Coverage', () => {
         task: i === 1 ? null : { id: i }, // Invalid task for second agent
       }));
 
-      const results = await Promise.allSettled(tasks.map(({ agent, task }) => agent.execute(task)));
+      const results = await Promise.allSettled(
+        tasks.map(({ agent, task }) => agent.execute(task)),
+      );
 
       assert(results[1].status === 'rejected', 'Second task should fail');
     });
@@ -133,9 +144,11 @@ describe('Edge Cases for 100% Coverage', () => {
       await assert.rejects(
         Promise.race([
           promise,
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 100)),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), 100),
+          ),
         ]),
-        /Timeout/
+        /Timeout/,
       );
     });
 
@@ -173,7 +186,10 @@ describe('Edge Cases for 100% Coverage', () => {
       }
 
       const finalMemory = process.memoryUsage().heapUsed;
-      assert(finalMemory < initialMemory + 50 * 1024 * 1024, 'Memory usage should be controlled');
+      assert(
+        finalMemory < initialMemory + 50 * 1024 * 1024,
+        'Memory usage should be controlled',
+      );
     });
 
     it('should handle cache overflow', async () => {
@@ -195,13 +211,19 @@ describe('Edge Cases for 100% Coverage', () => {
     it('should handle benchmark with zero iterations', async () => {
       const benchmark = new Benchmark();
 
-      await assert.rejects(benchmark.run({ iterations: 0 }), /Invalid iterations/);
+      await assert.rejects(
+        benchmark.run({ iterations: 0 }),
+        /Invalid iterations/,
+      );
     });
 
     it('should handle performance analyzer with invalid metrics', async () => {
       const analyzer = new PerformanceAnalyzer();
 
-      await assert.rejects(analyzer.analyze({ metric: 'invalid-metric' }), /Unknown metric/);
+      await assert.rejects(
+        analyzer.analyze({ metric: 'invalid-metric' }),
+        /Unknown metric/,
+      );
     });
   });
 
@@ -215,7 +237,7 @@ describe('Edge Cases for 100% Coverage', () => {
           input: [[1, 2, 3]],
           attentionMask: null, // Invalid mask
         }),
-        /Invalid attention mask/
+        /Invalid attention mask/,
       );
     });
 
@@ -227,7 +249,7 @@ describe('Edge Cases for 100% Coverage', () => {
           type: 'cnn',
           kernelSize: -1,
         }),
-        /Invalid kernel size/
+        /Invalid kernel size/,
       );
     });
 
@@ -240,7 +262,7 @@ describe('Edge Cases for 100% Coverage', () => {
           input: [[1, 2, 3]],
           hiddenState: new Array(64).fill(0), // Wrong size
         }),
-        /Hidden state dimension mismatch/
+        /Hidden state dimension mismatch/,
       );
     });
 
@@ -248,7 +270,10 @@ describe('Edge Cases for 100% Coverage', () => {
       const manager = new NeuralNetworkManager();
       const autoencoder = await manager.create({ type: 'autoencoder' });
 
-      await assert.rejects(autoencoder.reconstruct(null), /Invalid input for reconstruction/);
+      await assert.rejects(
+        autoencoder.reconstruct(null),
+        /Invalid input for reconstruction/,
+      );
     });
   });
 
@@ -260,7 +285,10 @@ describe('Edge Cases for 100% Coverage', () => {
       // Simulate network partition
       agent2._communicationEnabled = false;
 
-      await assert.rejects(agent1.sendMessage(agent2.id, { data: 'test' }), /Communication failed/);
+      await assert.rejects(
+        agent1.sendMessage(agent2.id, { data: 'test' }),
+        /Communication failed/,
+      );
     });
 
     it('should handle topology reconfiguration during operation', async () => {

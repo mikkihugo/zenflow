@@ -17,7 +17,14 @@ const logger = getLogger('AGUIAdapter');
 // Define our own interface since we're adapting @ag-ui/core
 export interface ValidationQuestion {
   id: string;
-  type: 'relevance' | 'boundary' | 'relationship' | 'naming' | 'priority' | 'checkpoint' | 'review';
+  type:
+    | 'relevance'
+    | 'boundary'
+    | 'relationship'
+    | 'naming'
+    | 'priority'
+    | 'checkpoint'
+    | 'review';
   question: string;
   context: any;
   options?: string[];
@@ -32,7 +39,10 @@ export interface AGUIInterface {
   askQuestion(question: ValidationQuestion): Promise<string>;
   askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
   showProgress(progress: any): Promise<void>;
-  showMessage(message: string, type?: 'info' | 'warning' | 'error' | 'success'): Promise<void>;
+  showMessage(
+    message: string,
+    type?: 'info' | 'warning' | 'error' | 'success',
+  ): Promise<void>;
 }
 
 /**
@@ -82,7 +92,7 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
       rl.question(prompt, (answer) => {
         // Handle numeric choices
         if (question.options && /^\d+$/.test(answer)) {
-          const idx = parseInt(answer) - 1;
+          const idx = Number.parseInt(answer) - 1;
           if (idx >= 0 && idx < question.options.length) {
             resolve(question.options[idx] || '');
           } else if (answer === '0' && question.allowCustom) {
@@ -122,7 +132,7 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
 
   async showMessage(
     _message: string,
-    _type: 'info' | 'warning' | 'error' | 'success' = 'info'
+    _type: 'info' | 'warning' | 'error' | 'success' = 'info',
   ): Promise<void> {
     const _icons = {
       info: 'ℹ️ ',
@@ -165,7 +175,9 @@ export class MockAGUI implements AGUIInterface {
 
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {
     logger.debug(`Mock AGUI Batch: ${questions.length} questions`);
-    return questions.map((q) => this.responses.get(q.id) || this.defaultResponse);
+    return questions.map(
+      (q) => this.responses.get(q.id) || this.defaultResponse,
+    );
   }
 
   async showProgress(progress: any): Promise<void> {
@@ -174,7 +186,7 @@ export class MockAGUI implements AGUIInterface {
 
   async showMessage(
     message: string,
-    type?: 'info' | 'warning' | 'error' | 'success'
+    type?: 'info' | 'warning' | 'error' | 'success',
   ): Promise<void> {
     logger.debug(`Mock AGUI Message [${type || 'info'}]:`, message);
   }
@@ -186,7 +198,9 @@ export class MockAGUI implements AGUIInterface {
  * @param type
  * @example
  */
-export function createAGUI(type: 'terminal' | 'mock' = 'terminal'): AGUIInterface {
+export function createAGUI(
+  type: 'terminal' | 'mock' = 'terminal',
+): AGUIInterface {
   switch (type) {
     case 'mock':
       return new MockAGUI();

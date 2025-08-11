@@ -37,7 +37,7 @@ export function sleep(ms: number): Promise<void> {
 export async function retry<T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
-  baseDelay: number = 1000
+  baseDelay: number = 1000,
 ): Promise<T> {
   let lastError: Error;
 

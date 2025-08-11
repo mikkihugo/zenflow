@@ -32,13 +32,13 @@ async function main() {
     await launchTerminalInterface({
       mode: flags.mode || modeResult?.mode,
       theme: flags.theme || 'dark',
-      verbose: flags.verbose || false,
+      verbose: flags.verbose,
       autoRefresh: !flags['no-refresh'],
       refreshInterval:
         typeof flags['refresh-interval'] === 'number'
           ? flags['refresh-interval']
           : (typeof flags['refresh-interval'] === 'string'
-              ? parseInt(flags['refresh-interval'])
+              ? Number.parseInt(flags['refresh-interval'])
               : 3000) || 3000,
     });
   } catch (error) {
@@ -100,10 +100,10 @@ function parseFlags(args: string[]): TerminalFlags {
       if (nextArg && !nextArg.startsWith('-')) {
         // Handle special types
         if (key === 'refresh-interval') {
-          const parsed = parseInt(nextArg);
+          const parsed = Number.parseInt(nextArg);
           flags[key] = Number.isNaN(parsed) ? 3000 : parsed;
         } else if (key === 'port') {
-          const parsed = parseInt(nextArg);
+          const parsed = Number.parseInt(nextArg);
           flags[key] = Number.isNaN(parsed) ? nextArg : parsed;
         } else {
           flags[key] = nextArg;
@@ -131,7 +131,8 @@ process.on('SIGTERM', () => {
 });
 
 // Launch if called directly (compatible with CommonJS and ESM)
-const isMainModule = process.argv[1]?.endsWith('main.js') || process.argv[1]?.endsWith('main.ts');
+const isMainModule =
+  process.argv[1]?.endsWith('main.js') || process.argv[1]?.endsWith('main.ts');
 if (isMainModule) {
   main().catch((error) => {
     logger.error('💥 Fatal error:', error);

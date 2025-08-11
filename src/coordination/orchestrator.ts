@@ -33,7 +33,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     this.isActive = true;
     this.emit('initialized');
     this['_logger']?.info(
-      'Orchestrator initialized with full strategic capabilities and persistent database.'
+      'Orchestrator initialized with full strategic capabilities and persistent database.',
     );
   }
 
@@ -89,11 +89,20 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     }
   }
 
-  private async executeSequential(task: Task, plan: ExecutionPlan, execution: any): Promise<void> {
+  private async executeSequential(
+    task: Task,
+    plan: ExecutionPlan,
+    execution: unknown,
+  ): Promise<void> {
     for (let i = 0; i < plan.phases.length; i++) {
       const phase = plan.phases[i];
       execution.currentPhase = i;
-      const result = await this.executePhase(task, phase ?? '', plan, execution);
+      const result = await this.executePhase(
+        task,
+        phase ?? '',
+        plan,
+        execution,
+      );
       execution.phaseResults.push(result);
       await this.db.updateTask(task.id, {
         progress: Math.round(((i + 1) / plan.phases.length) * 100),
@@ -101,9 +110,13 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     }
   }
 
-  private async executeParallel(task: Task, plan: ExecutionPlan, execution: any): Promise<void> {
+  private async executeParallel(
+    task: Task,
+    plan: ExecutionPlan,
+    execution: unknown,
+  ): Promise<void> {
     const phasePromises = plan.phases.map((phase) =>
-      this.executePhase(task, phase, plan, execution)
+      this.executePhase(task, phase, plan, execution),
     );
     execution.phaseResults = await Promise.all(phasePromises);
   }
@@ -112,10 +125,12 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     task: Task,
     phase: string,
     plan: ExecutionPlan,
-    _execution: any
-  ): Promise<any> {
+    _execution: unknown,
+  ): Promise<unknown> {
     const phaseIndex = plan.phases.indexOf(phase);
-    const assignments = plan.phaseAssignments.filter((assignment) => assignment.phase === phase);
+    const assignments = plan.phaseAssignments.filter(
+      (assignment) => assignment.phase === phase,
+    );
     const agentAssignments = await this.assignAgentsToPhase(task, assignments);
     const results = await Promise.all(
       agentAssignments.map((agentAssignment) =>
@@ -123,19 +138,21 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
           ...task,
           id: `${task.id}-${phase}`,
           description: `${task.description} (Phase: ${phase})`,
-        })
-      )
+        }),
+      ),
     );
     return { phase, phaseIndex, results };
   }
 
   private async assignAgentsToPhase(
     task: Task,
-    assignments: any[]
-  ): Promise<Array<{ agent: any; assignment: any }>> {
-    const agentAssignments: Array<{ agent: any; assignment: any }> = [];
+    assignments: unknown[],
+  ): Promise<Array<{ agent: unknown; assignment: any }>> {
+    const agentAssignments: Array<{ agent: unknown; assignment: any }> = [];
     for (const assignment of assignments) {
-      const agent = await this.findSuitableAgent(assignment.requiredCapabilities);
+      const agent = await this.findSuitableAgent(
+        assignment.requiredCapabilities,
+      );
       if (agent) {
         await this.db.updateAgent(agent.id, { status: 'busy' });
         agentAssignments.push({ agent, assignment });
@@ -146,14 +163,16 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     return agentAssignments;
   }
 
-  private queueAssignment(taskId: string, assignment: any): void {
+  private queueAssignment(taskId: string, assignment: unknown): void {
     if (!this.taskAssignments.has(taskId)) {
       this.taskAssignments.set(taskId, []);
     }
     this.taskAssignments.get(taskId)?.push(assignment);
   }
 
-  private async findSuitableAgent(requiredCapabilities: string[]): Promise<Agent | null> {
+  private async findSuitableAgent(
+    requiredCapabilities: string[],
+  ): Promise<Agent | null> {
     const agents = await this.strategy.getAgents();
     // Convert SwarmAgents to Agent format for compatibility
     const compatibleAgents: Agent[] = agents
@@ -167,7 +186,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     const suitableAgents = compatibleAgents.filter(
       (agent) =>
         agent.status === 'idle' &&
-        requiredCapabilities.every((cap) => agent.capabilities.includes(cap))
+        requiredCapabilities.every((cap) => agent.capabilities.includes(cap)),
     );
 
     if (suitableAgents.length === 0) {
@@ -185,7 +204,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
         // Use the most recent performance score, default to 0.5
         const score = perf.length > 0 ? perf[0]?.['metric_value'] : 0.5;
         return { agent, score };
-      })
+      }),
     );
 
     // Return the agent with the highest score
@@ -209,7 +228,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   }
 
   private getStrategyImplementation(
-    strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus'
+    strategy: 'parallel' | 'sequential' | 'adaptive' | 'consensus',
   ): any {
     const strategies = {
       parallel: {
@@ -221,7 +240,8 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
         isParallelizable: () => false,
       },
       adaptive: {
-        determinePhases: (t: Task) => (t.description.length > 100 ? ['analyze', 'exec'] : ['exec']),
+        determinePhases: (t: Task) =>
+          t.description.length > 100 ? ['analyze', 'exec'] : ['exec'],
         isParallelizable: () => true,
       },
       consensus: {
@@ -253,7 +273,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
         const execution = this.activeExecutions.get(task.id);
         if (execution) {
           const progress = Math.round(
-            (execution.currentPhase / execution.plan.phases.length) * 100
+            (execution.currentPhase / execution.plan.phases.length) * 100,
           );
           if (task.progress !== progress) {
             await this.db.updateTask(task.id, { progress });
@@ -271,7 +291,10 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
       const idleAgents = agents.filter((a) => a.status === 'idle');
 
       if (busyAgents.length / agents.length > 0.8 && idleAgents.length > 0) {
-        const tasksToRebalance = await this.db.getSwarmTasks('default', 'executing');
+        const tasksToRebalance = await this.db.getSwarmTasks(
+          'default',
+          'executing',
+        );
         if (tasksToRebalance.length > 0) {
           // In a real implementation, we would have more sophisticated logic to choose which task to rebalance.
           const taskToRebalance = tasksToRebalance[0];
@@ -286,19 +309,19 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
   }
 
   // ISwarmCoordinator interface implementation
-  async initializeSwarm(options: any): Promise<void> {
+  async initializeSwarm(options: unknown): Promise<void> {
     this['_logger']?.info('Initializing swarm with options', options);
     await this.initialize();
   }
 
-  async addAgent(config: any): Promise<string> {
+  async addAgent(config: unknown): Promise<string> {
     const agentId = `agent_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     this['_logger']?.info(`Adding agent with config`, { agentId, config });
 
     // Create agent record in database
     await this.db.execute(
       'INSERT INTO agents (id, config, status, created_at) VALUES (?, ?, ?, ?)',
-      [agentId, JSON.stringify(config), 'active', new Date().toISOString()]
+      [agentId, JSON.stringify(config), 'active', new Date().toISOString()],
     );
 
     return agentId;
@@ -308,14 +331,13 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     this['_logger']?.info(`Removing agent`, { agentId });
 
     // Update agent status in database
-    await this.db.execute('UPDATE agents SET status = ?, removed_at = ? WHERE id = ?', [
-      'removed',
-      new Date().toISOString(),
-      agentId,
-    ]);
+    await this.db.execute(
+      'UPDATE agents SET status = ?, removed_at = ? WHERE id = ?',
+      ['removed', new Date().toISOString(), agentId],
+    );
   }
 
-  async assignTask(task: any): Promise<string> {
+  async assignTask(task: unknown): Promise<string> {
     const taskId = `task_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     this['_logger']?.info(`Assigning task`, { taskId, task });
 

@@ -63,7 +63,7 @@ if (typeof WebAssembly === 'undefined') {
         instance: {
           exports: {},
         },
-      })
+      }),
     ),
     Module: vi.fn(),
     Instance: vi.fn(),
@@ -105,12 +105,14 @@ expect.extend({
     const pass = received >= floor && received <= ceiling;
     if (pass) {
       return {
-        message: () => `expected ${received} not to be within range ${floor} - ${ceiling}`,
+        message: () =>
+          `expected ${received} not to be within range ${floor} - ${ceiling}`,
         pass: true,
       };
     }
     return {
-      message: () => `expected ${received} to be within range ${floor} - ${ceiling}`,
+      message: () =>
+        `expected ${received} to be within range ${floor} - ${ceiling}`,
       pass: false,
     };
   },
@@ -127,7 +129,8 @@ expect.extend({
       };
     }
     return {
-      message: () => `expected ${received} to be a valid ID (string with separator)`,
+      message: () =>
+        `expected ${received} to be a valid ID (string with separator)`,
       pass: false,
     };
   },

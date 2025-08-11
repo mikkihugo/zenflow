@@ -34,7 +34,9 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    *
    * @param spec
    */
-  async generateAlgorithmPseudocode(spec: DetailedSpecification): Promise<AlgorithmPseudocode[]> {
+  async generateAlgorithmPseudocode(
+    spec: DetailedSpecification,
+  ): Promise<AlgorithmPseudocode[]> {
     const algorithms: AlgorithmPseudocode[] = [];
 
     for (const requirement of spec.functionalRequirements) {
@@ -54,7 +56,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
 
   async designDataStructures(
-    requirements: FunctionalRequirement[]
+    requirements: FunctionalRequirement[],
   ): Promise<DataStructureDesign[]> {
     // Convert requirements to proper data structure specs
     const dataStructures: DataStructureDesign[] = [];
@@ -87,7 +89,9 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
     return dataStructures;
   }
 
-  async mapControlFlows(algorithms: AlgorithmPseudocode[]): Promise<ControlFlowDiagram[]> {
+  async mapControlFlows(
+    algorithms: AlgorithmPseudocode[],
+  ): Promise<ControlFlowDiagram[]> {
     return algorithms.map((alg) => ({
       name: `${alg.name}Flow`,
       nodes: [
@@ -105,7 +109,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   }
 
   async optimizeAlgorithmComplexity(
-    pseudocode: AlgorithmPseudocode
+    pseudocode: AlgorithmPseudocode,
   ): Promise<OptimizationSuggestion[]> {
     // Implementation for optimization suggestions
     return [
@@ -118,7 +122,9 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
     ];
   }
 
-  async validatePseudocodeLogic(pseudocode: AlgorithmPseudocode[]): Promise<LogicValidation> {
+  async validatePseudocodeLogic(
+    pseudocode: AlgorithmPseudocode[],
+  ): Promise<LogicValidation> {
     const validationResults: ValidationResult[] = [];
 
     for (const algorithm of pseudocode) {
@@ -128,14 +134,19 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
         passed: algorithm.steps.length > 0,
         score: algorithm.steps.length > 0 ? 1.0 : 0.0,
         details:
-          algorithm.steps.length > 0 ? 'Algorithm has valid steps' : 'Algorithm missing steps',
+          algorithm.steps.length > 0
+            ? 'Algorithm has valid steps'
+            : 'Algorithm missing steps',
       });
 
       // Validate input/output consistency
       validationResults.push({
         criterion: `${algorithm.name} I/O consistency`,
         passed: algorithm.inputs.length > 0 && algorithm.outputs.length > 0,
-        score: algorithm.inputs.length > 0 && algorithm.outputs.length > 0 ? 1.0 : 0.5,
+        score:
+          algorithm.inputs.length > 0 && algorithm.outputs.length > 0
+            ? 1.0
+            : 0.5,
         details: 'Input and output parameters defined',
       });
     }
@@ -147,10 +158,14 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    *
    * @param specification
    */
-  async generatePseudocode(specification: DetailedSpecification): Promise<PseudocodeStructure> {
+  async generatePseudocode(
+    specification: DetailedSpecification,
+  ): Promise<PseudocodeStructure> {
     // Generate algorithms using the interface-compliant method
     const algorithms = await this.generateAlgorithmPseudocode(specification);
-    const dataStructures = await this.designDataStructures(specification.functionalRequirements);
+    const dataStructures = await this.designDataStructures(
+      specification.functionalRequirements,
+    );
     const controlFlows = await this.mapControlFlows(algorithms);
     const complexityAnalysis = await this.analyzeComplexity(algorithms);
 
@@ -171,7 +186,9 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    *
    * @param algorithms
    */
-  private async analyzeComplexity(algorithms: AlgorithmPseudocode[]): Promise<ComplexityAnalysis> {
+  private async analyzeComplexity(
+    algorithms: AlgorithmPseudocode[],
+  ): Promise<ComplexityAnalysis> {
     const worstCase = this.calculateWorstCaseComplexity(algorithms);
     const averageCase = this.calculateAverageCaseComplexity(algorithms);
     const bestCase = this.calculateBestCaseComplexity(algorithms);
@@ -187,24 +204,32 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
     };
   }
 
-  private calculateWorstCaseComplexity(algorithms: AlgorithmPseudocode[]): string {
+  private calculateWorstCaseComplexity(
+    algorithms: AlgorithmPseudocode[],
+  ): string {
     // Find the algorithm with highest complexity
     const complexities = algorithms.map((alg) => alg.complexity.timeComplexity);
     return this.maxComplexity(complexities);
   }
 
-  private calculateAverageCaseComplexity(_algorithms: AlgorithmPseudocode[]): string {
+  private calculateAverageCaseComplexity(
+    _algorithms: AlgorithmPseudocode[],
+  ): string {
     // Average complexity across all algorithms
     return 'O(n log n)';
   }
 
-  private calculateBestCaseComplexity(_algorithms: AlgorithmPseudocode[]): string {
+  private calculateBestCaseComplexity(
+    _algorithms: AlgorithmPseudocode[],
+  ): string {
     // Best case when all optimizations apply
     return 'O(n)';
   }
 
   private calculateSpaceComplexity(algorithms: AlgorithmPseudocode[]): string {
-    const spaceComplexities = algorithms.map((alg) => alg.complexity.spaceComplexity);
+    const spaceComplexities = algorithms.map(
+      (alg) => alg.complexity.spaceComplexity,
+    );
     return this.maxComplexity(spaceComplexities);
   }
 
@@ -235,7 +260,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    * @param algorithms
    */
   private async identifyOptimizations(
-    algorithms: AlgorithmPseudocode[]
+    algorithms: AlgorithmPseudocode[],
   ): Promise<OptimizationOpportunity[]> {
     const optimizations: OptimizationOpportunity[] = [];
 
@@ -248,25 +273,28 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
     optimizations.push(
       {
         type: 'algorithmic',
-        description: 'Use WASM for performance-critical mathematical operations',
+        description:
+          'Use WASM for performance-critical mathematical operations',
         impact: 'high',
         effort: 'medium',
         estimatedImprovement: '300% performance increase for matrix operations',
       },
       {
         type: 'caching',
-        description: 'Implement intelligent caching for frequently accessed agent data',
+        description:
+          'Implement intelligent caching for frequently accessed agent data',
         impact: 'medium',
         effort: 'low',
         estimatedImprovement: '50% reduction in database queries',
       },
       {
         type: 'parallelization',
-        description: 'Parallelize independent algorithm execution across multiple threads',
+        description:
+          'Parallelize independent algorithm execution across multiple threads',
         impact: 'high',
         effort: 'high',
         estimatedImprovement: '200% throughput increase on multi-core systems',
-      }
+      },
     );
 
     return optimizations;
@@ -280,7 +308,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
    */
   private async generateAlgorithmPseudocodePrivate(
     requirement: any,
-    _domain: string
+    _domain: string,
   ): Promise<string> {
     return `
 ALGORITHM ${requirement.title.replace(/\s+/g, '')}
@@ -301,12 +329,15 @@ END
    *
    * @param _requirement
    */
-  private async estimateAlgorithmComplexity(_requirement: any): Promise<ComplexityAnalysis> {
+  private async estimateAlgorithmComplexity(
+    _requirement: any,
+  ): Promise<ComplexityAnalysis> {
     return {
       timeComplexity: 'O(n)',
       spaceComplexity: 'O(1)',
       scalability: 'Good linear scaling',
-      worstCase: 'Linear time complexity based on input size, constant space usage',
+      worstCase:
+        'Linear time complexity based on input size, constant space usage',
     };
   }
 
@@ -316,7 +347,9 @@ END
    * @param requirement.
    * @param requirement
    */
-  private async extractInputParameterDefinitions(requirement: any): Promise<ParameterDefinition[]> {
+  private async extractInputParameterDefinitions(
+    requirement: any,
+  ): Promise<ParameterDefinition[]> {
     const inputs = requirement.inputs || ['input'];
     return inputs.map((input: string) => ({
       name: input,
@@ -332,7 +365,9 @@ END
    * @param requirement.
    * @param requirement
    */
-  private async extractOutputDefinitions(requirement: any): Promise<ReturnDefinition[]> {
+  private async extractOutputDefinitions(
+    requirement: any,
+  ): Promise<ReturnDefinition[]> {
     const outputs = requirement.outputs || ['result'];
     return outputs.map((output: string) => ({
       name: output,
@@ -349,9 +384,12 @@ END
    */
   private async generatePseudocodeSteps(
     requirement: any,
-    domain: string
+    domain: string,
   ): Promise<PseudocodeStep[]> {
-    const pseudocodeText = await this.generateAlgorithmPseudocodePrivate(requirement, domain);
+    const pseudocodeText = await this.generateAlgorithmPseudocodePrivate(
+      requirement,
+      domain,
+    );
     const lines = pseudocodeText.split('\n').filter((line) => line.trim());
 
     return lines.map((line, index) => ({
@@ -369,7 +407,7 @@ END
    * @param requirement
    */
   private async identifyAlgorithmOptimizations(
-    requirement: any
+    requirement: any,
   ): Promise<OptimizationOpportunity[]> {
     return [
       {
@@ -387,7 +425,9 @@ END
    *
    * @param pseudocode
    */
-  async validatePseudocode(pseudocode: PseudocodeStructure): Promise<PseudocodeValidation> {
+  async validatePseudocode(
+    pseudocode: PseudocodeStructure,
+  ): Promise<PseudocodeValidation> {
     const validationResults: ValidationResult[] = [];
 
     // Validate algorithm completeness
@@ -423,13 +463,16 @@ END
     });
 
     const overallScore =
-      validationResults.reduce((sum, result) => sum + result?.score, 0) / validationResults.length;
+      validationResults.reduce((sum, result) => sum + result?.score, 0) /
+      validationResults.length;
 
     return {
       id: nanoid(),
       algorithmId: pseudocode.id,
       validationResults,
-      logicErrors: validationResults.filter((r) => !r.passed).map((r) => r.details || ''),
+      logicErrors: validationResults
+        .filter((r) => !r.passed)
+        .map((r) => r.details || ''),
       optimizationSuggestions: this.generateRecommendations(validationResults),
       complexityVerification: !!pseudocode.complexityAnalysis,
       overallScore,
@@ -443,21 +486,27 @@ END
    *
    * @param validationResults
    */
-  private generateRecommendations(validationResults: ValidationResult[]): string[] {
+  private generateRecommendations(
+    validationResults: ValidationResult[],
+  ): string[] {
     const recommendations: string[] = [];
 
     for (const result of validationResults) {
       if (!result?.passed) {
         switch (result?.criterion) {
           case 'Algorithm completeness':
-            recommendations.push('Add missing core algorithms for all functional requirements');
+            recommendations.push(
+              'Add missing core algorithms for all functional requirements',
+            );
             break;
           case 'Complexity analysis':
-            recommendations.push('Provide detailed time and space complexity analysis');
+            recommendations.push(
+              'Provide detailed time and space complexity analysis',
+            );
             break;
           case 'Data structure design':
             recommendations.push(
-              'Specify appropriate data structures for algorithm implementation'
+              'Specify appropriate data structures for algorithm implementation',
             );
             break;
         }

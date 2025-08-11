@@ -46,7 +46,10 @@ export {
 export * from './performance/real-time-monitor.ts';
 
 import { getConfig } from '../../config';
-import { type IntegrationConfig, SystemIntegration } from './integrations/system-integration.ts';
+import {
+  type IntegrationConfig,
+  SystemIntegration,
+} from './integrations/system-integration.ts';
 
 /**
  * Main monitoring system factory.
@@ -59,7 +62,8 @@ export class PerformanceMonitoringSystem {
   constructor(config: Partial<IntegrationConfig> = {}) {
     const centralConfig = getConfig();
     const defaultConfig: IntegrationConfig = {
-      metricsInterval: centralConfig?.core?.performance?.metricsInterval || 1000, // 1 second
+      metricsInterval:
+        centralConfig?.core?.performance?.metricsInterval || 1000, // 1 second
       dashboardPort: centralConfig?.monitoring?.dashboard?.port,
       enableOptimization: centralConfig?.core?.performance?.enableMetrics,
       enableAlerts: true,
@@ -113,7 +117,7 @@ export class PerformanceMonitoringSystem {
  * @example
  */
 export async function createMonitoringSystem(
-  config?: Partial<IntegrationConfig>
+  config?: Partial<IntegrationConfig>,
 ): Promise<PerformanceMonitoringSystem> {
   const system = new PerformanceMonitoringSystem(config);
   await system.start();
@@ -130,7 +134,11 @@ export async function createMonitoringSystem(
  * @example
  */
 export async function setupClaudeZenMonitoring(
-  options: { dashboardPort?: number; enableOptimization?: boolean; metricsInterval?: number } = {}
+  options: {
+    dashboardPort?: number;
+    enableOptimization?: boolean;
+    metricsInterval?: number;
+  } = {},
 ): Promise<{
   system: PerformanceMonitoringSystem;
   hooks: import('./integrations/system-integration.ts').SystemHooks;
@@ -138,10 +146,13 @@ export async function setupClaudeZenMonitoring(
 }> {
   const centralConfig = getConfig();
   const config: Partial<IntegrationConfig> = {
-    dashboardPort: options?.dashboardPort || centralConfig?.monitoring?.dashboard?.port,
+    dashboardPort:
+      options?.dashboardPort || centralConfig?.monitoring?.dashboard?.port,
     enableOptimization: options?.enableOptimization !== false,
     metricsInterval:
-      options?.metricsInterval || centralConfig?.core?.performance?.metricsInterval || 1000,
+      options?.metricsInterval ||
+      centralConfig?.core?.performance?.metricsInterval ||
+      1000,
     enableAlerts: true,
     logLevel: centralConfig?.core?.logger?.level as any,
   };
@@ -228,7 +239,9 @@ export const examples = {
 
     // Log critical issues
     integration.on('insights:processed', (insights) => {
-      const criticalAnomalies = insights.anomalies.filter((a) => a.severity === 'critical');
+      const criticalAnomalies = insights.anomalies.filter(
+        (a) => a.severity === 'critical',
+      );
       if (criticalAnomalies.length > 0) {
         logger.error('CRITICAL PERFORMANCE ISSUES:', criticalAnomalies);
         // In production, you might send alerts to external monitoring systems

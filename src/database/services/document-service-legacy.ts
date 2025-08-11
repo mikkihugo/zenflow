@@ -42,7 +42,12 @@ export interface DocumentQueryOptions {
   includeWorkflowState?: boolean;
   limit?: number;
   offset?: number;
-  sortBy?: 'created_at' | 'updated_at' | 'title' | 'priority' | 'completion_percentage';
+  sortBy?:
+    | 'created_at'
+    | 'updated_at'
+    | 'title'
+    | 'priority'
+    | 'completion_percentage';
   sortOrder?: 'asc' | 'desc';
 }
 
@@ -74,24 +79,35 @@ export class DocumentService {
   private documentDAO!: IRepository<BaseDocumentEntity>;
   private coordinator: any; // xxx NEEDS_HUMAN: Define proper coordinator type or import from a module
 
-  constructor(private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql') {}
+  constructor(
+    private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+  ) {}
 
   /**
    * Initialize document service and repositories.
    */
   async initialize(): Promise<void> {
     // Initialize repositories using DAL factory
-    this.documentRepository = await createDao<BaseDocumentEntity>('Document', this.databaseType);
-    this.projectRepository = await createDao<ProjectEntity>('Project', this.databaseType);
+    this.documentRepository = await createDao<BaseDocumentEntity>(
+      'Document',
+      this.databaseType,
+    );
+    this.projectRepository = await createDao<ProjectEntity>(
+      'Project',
+      this.databaseType,
+    );
     this.relationshipRepository = await createDao<DocumentRelationshipEntity>(
       'DocumentRelationship',
-      this.databaseType
+      this.databaseType,
     );
     this.workflowRepository = await createDao<DocumentWorkflowStateEntity>(
       'DocumentWorkflowState',
-      this.databaseType
+      this.databaseType,
     );
-    this.documentDAO = await createDao<BaseDocumentEntity>('Document', this.databaseType);
+    this.documentDAO = await createDao<BaseDocumentEntity>(
+      'Document',
+      this.databaseType,
+    );
   }
 
   // ==================== DOCUMENT CRUD OPERATIONS ====================
@@ -104,7 +120,7 @@ export class DocumentService {
    */
   async createDocument<T extends BaseDocumentEntity>(
     document: Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>,
-    options: DocumentCreateOptions = {}
+    options: DocumentCreateOptions = {},
   ): Promise<T> {
     const id = nanoid();
     const now = new Date();
@@ -147,7 +163,7 @@ export class DocumentService {
    */
   async getDocument<T extends BaseDocumentEntity>(
     id: string,
-    options: DocumentQueryOptions = {}
+    options: DocumentQueryOptions = {},
   ): Promise<T | null> {
     const query: DatabaseQuery = {
       type: 'select',
@@ -174,7 +190,9 @@ export class DocumentService {
       return null;
     }
 
-    const document: any = this.deserializeDocument<T>(result?.result?.documents?.[0]);
+    const document: any = this.deserializeDocument<T>(
+      result?.result?.documents?.[0],
+    );
 
     // Load relationships if requested
     if (options?.includeRelationships) {
@@ -199,7 +217,7 @@ export class DocumentService {
   async updateDocument<T extends BaseDocumentEntity>(
     id: string,
     updates: Partial<Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>>,
-    options: DocumentCreateOptions = {}
+    options: DocumentCreateOptions = {},
   ): Promise<T> {
     const existing = await this.getDocument<T>(id);
     if (!existing) {
@@ -211,7 +229,9 @@ export class DocumentService {
       ...existing,
       ...updates,
       updated_at: now,
-      checksum: updates.content ? this.generateChecksum(updates.content) : existing.checksum,
+      checksum: updates.content
+        ? this.generateChecksum(updates.content)
+        : existing.checksum,
     } as T;
 
     const updateQuery: DatabaseQuery = {
@@ -312,7 +332,7 @@ export class DocumentService {
       parentDocumentId?: string;
       workflowStage?: string;
     },
-    options: DocumentQueryOptions = {}
+    options: DocumentQueryOptions = {},
   ): Promise<{
     documents: T[];
     total: number;
@@ -346,12 +366,16 @@ export class DocumentService {
 
     const result = await this.coordinator.executeQuery(query);
     const documents =
-      result?.result?.documents.map((doc: any) => this.deserializeDocument<T>(doc)) || [];
+      result?.result?.documents.map((doc: any) =>
+        this.deserializeDocument<T>(doc),
+      ) || [];
 
     return {
       documents,
       total: result?.result?.total || documents.length,
-      hasMore: (options?.offset || 0) + documents.length < (result?.result?.total || 0),
+      hasMore:
+        (options?.offset || 0) + documents.length <
+        (result?.result?.total || 0),
     };
   }
 
@@ -361,7 +385,7 @@ export class DocumentService {
    * @param searchOptions
    */
   async searchDocuments<T extends BaseDocumentEntity>(
-    searchOptions: DocumentSearchOptions
+    searchOptions: DocumentSearchOptions,
   ): Promise<{
     documents: T[];
     total: number;
@@ -393,14 +417,18 @@ export class DocumentService {
 
     const result = await this.coordinator.executeQuery(query);
     const documents =
-      result?.result?.documents.map((doc: any) => this.deserializeDocument<T>(doc)) || [];
+      result?.result?.documents.map((doc: any) =>
+        this.deserializeDocument<T>(doc),
+      ) || [];
 
     const processingTime = Date.now() - startTime;
 
     return {
       documents,
       total: result?.result?.total || documents.length,
-      hasMore: (searchOptions?.offset || 0) + documents.length < (result?.result?.total || 0),
+      hasMore:
+        (searchOptions?.offset || 0) + documents.length <
+        (result?.result?.total || 0),
       searchMetadata: {
         searchType: searchOptions?.searchType,
         query: searchOptions?.query,
@@ -418,7 +446,7 @@ export class DocumentService {
    * @param project
    */
   async createProject(
-    project: Omit<ProjectEntity, 'id' | 'created_at' | 'updated_at'>
+    project: Omit<ProjectEntity, 'id' | 'created_at' | 'updated_at'>,
   ): Promise<ProjectEntity> {
     const id = nanoid();
     const now = new Date();
@@ -498,16 +526,20 @@ export class DocumentService {
     // Get all project documents
     const { documents } = await this.queryDocuments(
       { projectId },
-      { includeContent: true, includeRelationships: true }
+      { includeContent: true, includeRelationships: true },
     );
 
     // Group documents by type
     const groupedDocuments = {
-      visions: documents.filter((d) => d.type === 'vision') as VisionDocumentEntity[],
+      visions: documents.filter(
+        (d) => d.type === 'vision',
+      ) as VisionDocumentEntity[],
       adrs: documents.filter((d) => d.type === 'adr') as ADRDocumentEntity[],
       prds: documents.filter((d) => d.type === 'prd') as PRDDocumentEntity[],
       epics: documents.filter((d) => d.type === 'epic') as EpicDocumentEntity[],
-      features: documents.filter((d) => d.type === 'feature') as FeatureDocumentEntity[],
+      features: documents.filter(
+        (d) => d.type === 'feature',
+      ) as FeatureDocumentEntity[],
       tasks: documents.filter((d) => d.type === 'task') as TaskDocumentEntity[],
     };
 
@@ -529,7 +561,7 @@ export class DocumentService {
   async startDocumentWorkflow(
     documentId: string,
     workflowName: string,
-    initialStage = 'started'
+    initialStage = 'started',
   ): Promise<DocumentWorkflowStateEntity> {
     const id = nanoid();
     const now = new Date();
@@ -580,7 +612,7 @@ export class DocumentService {
   async advanceDocumentWorkflow(
     documentId: string,
     nextStage: string,
-    results?: Record<string, any>
+    results?: Record<string, any>,
   ): Promise<DocumentWorkflowStateEntity> {
     const existing = await this.getDocumentWorkflowState(documentId);
     if (!existing) {
@@ -675,7 +707,9 @@ export class DocumentService {
     return filter;
   }
 
-  private buildFullTextSearchQuery(options: DocumentSearchOptions): DatabaseQuery {
+  private buildFullTextSearchQuery(
+    options: DocumentSearchOptions,
+  ): DatabaseQuery {
     return {
       type: 'select',
       operation: 'fulltext_search',
@@ -700,7 +734,9 @@ export class DocumentService {
     };
   }
 
-  private buildSemanticSearchQuery(options: DocumentSearchOptions): DatabaseQuery {
+  private buildSemanticSearchQuery(
+    options: DocumentSearchOptions,
+  ): DatabaseQuery {
     return {
       type: 'select',
       operation: 'vector_search',
@@ -723,7 +759,9 @@ export class DocumentService {
     };
   }
 
-  private buildKeywordSearchQuery(options: DocumentSearchOptions): DatabaseQuery {
+  private buildKeywordSearchQuery(
+    options: DocumentSearchOptions,
+  ): DatabaseQuery {
     return {
       type: 'select',
       operation: 'keyword_search',
@@ -746,7 +784,9 @@ export class DocumentService {
     };
   }
 
-  private buildCombinedSearchQuery(options: DocumentSearchOptions): DatabaseQuery {
+  private buildCombinedSearchQuery(
+    options: DocumentSearchOptions,
+  ): DatabaseQuery {
     return {
       type: 'select',
       operation: 'hybrid_search',
@@ -808,41 +848,53 @@ export class DocumentService {
   }
 
   // Placeholder methods for relationship and workflow operations
-  private async generateDocumentRelationships(_document: BaseDocumentEntity): Promise<void> {
+  private async generateDocumentRelationships(
+    _document: BaseDocumentEntity,
+  ): Promise<void> {
     // Implementation would analyze document content and create relationships
   }
 
   private async getDocumentRelationships(
-    _documentId: string
+    _documentId: string,
   ): Promise<DocumentRelationshipEntity[]> {
     // Implementation would query relationships table
     return [];
   }
 
   private async getDocumentWorkflowState(
-    _documentId: string
+    _documentId: string,
   ): Promise<DocumentWorkflowStateEntity | null> {
     // Implementation would query workflow states table
     return null;
   }
 
-  private async generateSearchIndex(_document: BaseDocumentEntity): Promise<void> {
+  private async generateSearchIndex(
+    _document: BaseDocumentEntity,
+  ): Promise<void> {
     // Implementation would create search index entry
   }
 
-  private async updateSearchIndex(_document: BaseDocumentEntity): Promise<void> {
+  private async updateSearchIndex(
+    _document: BaseDocumentEntity,
+  ): Promise<void> {
     // Implementation would update search index
   }
 
-  private async updateDocumentRelationships(_document: BaseDocumentEntity): Promise<void> {
+  private async updateDocumentRelationships(
+    _document: BaseDocumentEntity,
+  ): Promise<void> {
     // Implementation would update relationships based on content changes
   }
 
-  private async deleteDocumentRelationships(_documentId: string): Promise<void> {
+  private async deleteDocumentRelationships(
+    _documentId: string,
+  ): Promise<void> {
     // Implementation would delete all relationships for document
   }
 
-  private async deleteDocumentWorkflowState(_documentId: string): Promise<void> {
+  private async deleteDocumentWorkflowState(
+    _documentId: string,
+  ): Promise<void> {
     // Implementation would delete workflow state
   }
 

@@ -20,7 +20,7 @@ export interface LoadBalancingAlgorithm {
   selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): Promise<RoutingResult>;
   updateConfiguration(config: Record<string, any>): Promise<void>;
   getPerformanceMetrics(): Promise<Record<string, number>>;
@@ -30,7 +30,10 @@ export interface CapacityManager {
   getCapacity(agentId: string): Promise<CapacityMetrics>;
   predictCapacity(agentId: string, timeHorizon: number): Promise<number>;
   updateCapacity(agentId: string, metrics: LoadMetrics): Promise<void>;
-  isCapacityAvailable(agentId: string, requiredResources: Record<string, number>): Promise<boolean>;
+  isCapacityAvailable(
+    agentId: string,
+    requiredResources: Record<string, number>,
+  ): Promise<boolean>;
 }
 
 export interface ResourceMonitor {
@@ -39,9 +42,12 @@ export interface ResourceMonitor {
   getCurrentMetrics(agentId: string): Promise<LoadMetrics | null>;
   getHistoricalMetrics(
     agentId: string,
-    timeRange: { start: Date; end: Date }
+    timeRange: { start: Date; end: Date },
   ): Promise<LoadMetrics[]>;
-  setThresholds(agentId: string, thresholds: Record<string, number>): Promise<void>;
+  setThresholds(
+    agentId: string,
+    thresholds: Record<string, number>,
+  ): Promise<void>;
 }
 
 export interface RoutingEngine {
@@ -64,7 +70,7 @@ export interface HealthChecker {
   startHealthChecks(agents: Agent[]): Promise<void>;
   stopHealthChecks(): Promise<void>;
   getHealthStatus(
-    agentId: string
+    agentId: string,
   ): Promise<{ healthy: boolean; lastCheck: Date; details?: string }>;
 }
 
@@ -80,7 +86,9 @@ export interface ConnectionPool {
   getConnection(agentId: string): Promise<any>;
   releaseConnection(agentId: string, connection: any): Promise<void>;
   closePool(agentId: string): Promise<void>;
-  getPoolStats(agentId: string): Promise<{ active: number; idle: number; total: number }>;
+  getPoolStats(
+    agentId: string,
+  ): Promise<{ active: number; idle: number; total: number }>;
 }
 
 export interface BatchProcessor {
@@ -99,7 +107,10 @@ export interface CacheManager {
 }
 
 export interface NetworkOptimizer {
-  optimizeLatency(source: string, destinations: string[]): Promise<Map<string, number>>;
+  optimizeLatency(
+    source: string,
+    destinations: string[],
+  ): Promise<Map<string, number>>;
   selectOptimalPath(source: string, destination: string): Promise<string[]>;
   monitorBandwidth(): Promise<Map<string, number>>;
   adjustQoS(requirements: QoSRequirement): Promise<void>;
@@ -110,11 +121,16 @@ export interface AutoScaler {
   shouldScaleDown(metrics: Map<string, LoadMetrics>): Promise<boolean>;
   scaleUp(count: number): Promise<Agent[]>;
   scaleDown(count: number): Promise<string[]>;
-  getScalingHistory(): Promise<Array<{ timestamp: Date; action: string; reason: string }>>;
+  getScalingHistory(): Promise<
+    Array<{ timestamp: Date; action: string; reason: string }>
+  >;
 }
 
 export interface EmergencyHandler {
-  handleEmergency(type: string, severity: 'low' | 'medium' | 'high' | 'critical'): Promise<void>;
+  handleEmergency(
+    type: string,
+    severity: 'low' | 'medium' | 'high' | 'critical',
+  ): Promise<void>;
   shedLoad(percentage: number): Promise<void>;
   activateFailover(): Promise<void>;
   throttleRequests(rate: number): Promise<void>;
@@ -125,11 +141,13 @@ export interface MetricsAggregator {
   aggregate(metrics: LoadMetrics[]): Promise<LoadMetrics>;
   calculateTrends(
     metrics: LoadMetrics[],
-    timeWindow: number
+    timeWindow: number,
   ): Promise<Record<string, 'up' | 'down' | 'stable'>>;
   detectAnomalies(
-    metrics: LoadMetrics[]
-  ): Promise<Array<{ timestamp: Date; metric: string; value: number; expected: number }>>;
+    metrics: LoadMetrics[],
+  ): Promise<
+    Array<{ timestamp: Date; metric: string; value: number; expected: number }>
+  >;
   generateReport(timeRange: { start: Date; end: Date }): Promise<string>;
 }
 
@@ -137,9 +155,18 @@ export interface LoadBalancingObserver {
   onAgentAdded(agent: Agent): Promise<void>;
   onAgentRemoved(agentId: string): Promise<void>;
   onTaskRouted(task: Task, agent: Agent): Promise<void>;
-  onTaskCompleted(task: Task, agent: Agent, duration: number, success: boolean): Promise<void>;
+  onTaskCompleted(
+    task: Task,
+    agent: Agent,
+    duration: number,
+    success: boolean,
+  ): Promise<void>;
   onAgentFailure(agentId: string, error: Error): Promise<void>;
-  onCapacityChanged(agentId: string, oldCapacity: number, newCapacity: number): Promise<void>;
+  onCapacityChanged(
+    agentId: string,
+    oldCapacity: number,
+    newCapacity: number,
+  ): Promise<void>;
 }
 
 export interface QoSManager {

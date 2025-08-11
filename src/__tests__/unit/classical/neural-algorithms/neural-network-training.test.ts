@@ -70,7 +70,7 @@ class NeuralNetwork {
 
   train(
     data: Array<{ input: number[]; output: number[] }>,
-    options: { epochs: number; learningRate?: number }
+    options: { epochs: number; learningRate?: number },
   ) {
     const learningRate = options?.learningRate || 0.5;
     let finalError = 0;
@@ -104,7 +104,8 @@ class NeuralNetwork {
         let error = output.map((o, i) => sample.output[i] - o);
         errors.unshift(error);
 
-        epochError += error.reduce((sum, e) => sum + Math.abs(e), 0) / error.length;
+        epochError +=
+          error.reduce((sum, e) => sum + Math.abs(e), 0) / error.length;
 
         // Backpropagation
         for (let i = this.weights.length - 1; i > 0; i--) {
@@ -125,10 +126,13 @@ class NeuralNetwork {
         // Update weights and biases
         for (let i = 0; i < this.weights.length; i++) {
           for (let j = 0; j < this.weights[i].length; j++) {
-            const delta = errors[i + 1]?.[j] * this.sigmoidDerivative(activations[i + 1]?.[j]);
+            const delta =
+              errors[i + 1]?.[j] *
+              this.sigmoidDerivative(activations[i + 1]?.[j]);
 
             for (let k = 0; k < this.weights[i]?.[j].length; k++) {
-              this.weights[i]?.[j][k] += learningRate * delta * activations[i]?.[k];
+              this.weights[i]?.[j][k] +=
+                learningRate * delta * activations[i]?.[k];
             }
 
             this.biases[i][j] += learningRate * delta;
@@ -156,7 +160,10 @@ describe('Neural Network Training - Classical TDD', () => {
       ];
 
       // Act
-      const result = network.train(xorData, { epochs: 5000, learningRate: 0.5 });
+      const result = network.train(xorData, {
+        epochs: 5000,
+        learningRate: 0.5,
+      });
 
       // Assert - Test actual results
       expect(network.predict([0, 0])[0]).toBeCloseTo(0, 1);
@@ -177,8 +184,14 @@ describe('Neural Network Training - Classical TDD', () => {
         { input: [1, 1], output: [0] },
       ];
 
-      const result1 = network1.train(xorData, { epochs: 1000, learningRate: 0.1 });
-      const result2 = network2.train(xorData, { epochs: 1000, learningRate: 0.8 });
+      const result1 = network1.train(xorData, {
+        epochs: 1000,
+        learningRate: 0.1,
+      });
+      const result2 = network2.train(xorData, {
+        epochs: 1000,
+        learningRate: 0.8,
+      });
 
       // Higher learning rate should achieve lower error in same epochs
       expect(result2?.finalError).toBeLessThan(result1?.finalError);

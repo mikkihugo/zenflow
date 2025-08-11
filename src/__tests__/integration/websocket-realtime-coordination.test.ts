@@ -64,7 +64,11 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
   });
 
   afterEach(async () => {
-    await Promise.all([wsManager.stop(), swarmCoordinator.shutdown(), realTimeMonitor.stop()]);
+    await Promise.all([
+      wsManager.stop(),
+      swarmCoordinator.shutdown(),
+      realTimeMonitor.stop(),
+    ]);
   });
 
   afterAll(async () => {
@@ -74,12 +78,12 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
   describe('Real-time Swarm Status Updates', () => {
     it('should broadcast swarm initialization events to all connected clients', async () => {
       const clients: WebSocket[] = [];
-      const receivedMessages: any[][] = [];
+      const receivedMessages: unknown[][] = [];
 
       // Create multiple WebSocket clients
       for (let i = 0; i < 3; i++) {
         const client = new WebSocket(`ws://localhost:${WS_PORT}`);
-        const clientMessages: any[] = [];
+        const clientMessages: unknown[] = [];
 
         client.on('message', (data) => {
           const message = JSON.parse(data.toString());
@@ -98,8 +102,14 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
           JSON.stringify({
             type: 'subscribe',
             channel: 'swarm_events',
-            filter: { eventTypes: ['agent_spawned', 'topology_changed', 'task_assigned'] },
-          })
+            filter: {
+              eventTypes: [
+                'agent_spawned',
+                'topology_changed',
+                'task_assigned',
+              ],
+            },
+          }),
         );
       }
 
@@ -117,7 +127,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       // All clients should receive the agent_spawned event
       for (const clientMessages of receivedMessages) {
         const agentSpawnedEvents = clientMessages.filter(
-          (msg) => msg.type === 'swarm_event' && msg.event === 'agent_spawned'
+          (msg) => msg.type === 'swarm_event' && msg.event === 'agent_spawned',
         );
 
         expect(agentSpawnedEvents.length).toBeGreaterThan(0);
@@ -137,7 +147,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       // All clients should receive the task_assigned event
       for (const clientMessages of receivedMessages) {
         const taskAssignedEvents = clientMessages.filter(
-          (msg) => msg.type === 'swarm_event' && msg.event === 'task_assigned'
+          (msg) => msg.type === 'swarm_event' && msg.event === 'task_assigned',
         );
 
         expect(taskAssignedEvents.length).toBeGreaterThan(0);
@@ -153,7 +163,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
     it('should handle real-time agent status changes', async () => {
       const client = new WebSocket(`ws://localhost:${WS_PORT}`);
-      const receivedEvents: any[] = [];
+      const receivedEvents: unknown[] = [];
 
       client.on('message', (data) => {
         const message = JSON.parse(data.toString());
@@ -170,7 +180,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
           type: 'subscribe',
           channel: 'agent_status',
           filter: { includeMetrics: true },
-        })
+        }),
       );
 
       await networkHelper.wait(500);
@@ -201,7 +211,9 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
         expect(event['data']?.['status']).toBe(expectedChange.status);
 
         if (expectedChange.workload !== undefined) {
-          expect(event['data']?.['metrics']?.['workload']).toBe(expectedChange.workload);
+          expect(event['data']?.['metrics']?.['workload']).toBe(
+            expectedChange.workload,
+          );
         }
 
         if (expectedChange.error) {
@@ -214,7 +226,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
     it('should provide real-time task progress tracking', async () => {
       const client = new WebSocket(`ws://localhost:${WS_PORT}`);
-      const progressUpdates: any[] = [];
+      const progressUpdates: unknown[] = [];
 
       client.on('message', (data) => {
         const message = JSON.parse(data.toString());
@@ -231,7 +243,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
           type: 'subscribe',
           channel: 'task_progress',
           filter: { includeSteps: true, includeTimestamps: true },
-        })
+        }),
       );
 
       await networkHelper.wait(500);
@@ -300,7 +312,9 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       expect(progressUpdates.length).toBeGreaterThan(8); // At least 2 updates per step + completion
 
       // Check progress sequence
-      const progressValues = progressUpdates.map((update) => update.data.overallProgress);
+      const progressValues = progressUpdates.map(
+        (update) => update.data.overallProgress,
+      );
 
       // Progress should be non-decreasing
       for (let i = 1; i < progressValues.length; i++) {
@@ -312,7 +326,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       // Should have completion event
       const completionEvent = progressUpdates.find(
-        (update) => update.data.taskStatus === 'completed'
+        (update) => update.data.taskStatus === 'completed',
       );
       expect(completionEvent).toBeDefined();
       expect(completionEvent.data.completedAt).toBeDefined();
@@ -324,7 +338,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
   describe('Real-time Performance Monitoring', () => {
     it('should stream live system metrics to connected clients', async () => {
       const client = new WebSocket(`ws://localhost:${WS_PORT}`);
-      const metricsUpdates: any[] = [];
+      const metricsUpdates: unknown[] = [];
 
       client.on('message', (data) => {
         const message = JSON.parse(data.toString());
@@ -344,7 +358,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             metrics: ['cpu', 'memory', 'network', 'agents', 'tasks'],
             updateInterval: 1000,
           },
-        })
+        }),
       );
 
       // Wait for several metric updates
@@ -388,7 +402,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
     it('should alert on performance threshold violations', async () => {
       const client = new WebSocket(`ws://localhost:${WS_PORT}`);
-      const alerts: any[] = [];
+      const alerts: unknown[] = [];
 
       client.on('message', (data) => {
         const message = JSON.parse(data.toString());
@@ -412,7 +426,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
               agentResponseTime: 5000,
             },
           },
-        })
+        }),
       );
 
       await networkHelper.wait(500);
@@ -428,7 +442,9 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       // Should receive CPU usage alert
       const cpuAlert = alerts.find(
-        (alert) => alert.data.metric === 'cpu_usage' && alert.data.severity === 'warning'
+        (alert) =>
+          alert.data.metric === 'cpu_usage' &&
+          alert.data.severity === 'warning',
       );
       expect(cpuAlert).toBeDefined();
       expect(cpuAlert.data.value).toBeGreaterThan(80);
@@ -445,7 +461,9 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       // Should receive memory alert
       const memoryAlert = alerts.find(
-        (alert) => alert.data.metric === 'memory_usage' && alert.data.severity === 'critical'
+        (alert) =>
+          alert.data.metric === 'memory_usage' &&
+          alert.data.severity === 'critical',
       );
       expect(memoryAlert).toBeDefined();
       expect(memoryAlert.data.value).toBeGreaterThan(85);
@@ -455,7 +473,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
     it('should provide real-time network latency monitoring', async () => {
       const client = new WebSocket(`ws://localhost:${WS_PORT}`);
-      const networkMetrics: any[] = [];
+      const networkMetrics: unknown[] = [];
 
       client.on('message', (data) => {
         const message = JSON.parse(data.toString());
@@ -476,7 +494,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             includeThroughput: true,
             updateInterval: 1000,
           },
-        })
+        }),
       );
 
       await networkHelper.wait(500);
@@ -489,12 +507,16 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
         const senderIndex = i % agents.length;
         const receiverIndex = (i + 1) % agents.length;
 
-        await swarmCoordinator.sendMessage(agents[senderIndex]?.id, agents[receiverIndex]?.id, {
-          id: `network-test-${i}`,
-          type: 'ping',
-          content: { ping: Date.now() },
-          measureLatency: true,
-        });
+        await swarmCoordinator.sendMessage(
+          agents[senderIndex]?.id,
+          agents[receiverIndex]?.id,
+          {
+            id: `network-test-${i}`,
+            type: 'ping',
+            content: { ping: Date.now() },
+            measureLatency: true,
+          },
+        );
 
         await networkHelper.wait(200);
       }
@@ -526,10 +548,10 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       expect(latestNetworkMetrics.data.latency.average).toBeGreaterThan(0);
       expect(latestNetworkMetrics.data.latency.average).toBeLessThan(1000); // < 1 second
       expect(latestNetworkMetrics.data.latency.min).toBeLessThanOrEqual(
-        latestNetworkMetrics.data.latency.average
+        latestNetworkMetrics.data.latency.average,
       );
       expect(latestNetworkMetrics.data.latency.max).toBeGreaterThanOrEqual(
-        latestNetworkMetrics.data.latency.average
+        latestNetworkMetrics.data.latency.average,
       );
 
       client.close();
@@ -539,7 +561,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
   describe('WebSocket Connection Management', () => {
     it('should handle client connections and disconnections gracefully', async () => {
       const clients: WebSocket[] = [];
-      const connectionEvents: any[] = [];
+      const connectionEvents: unknown[] = [];
 
       // Monitor connection events
       wsManager.on('client_connected', (clientInfo) => {
@@ -562,7 +584,9 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       const connectionCount = await wsManager.getConnectionCount();
       expect(connectionCount).toBe(5);
 
-      const connectedEvents = connectionEvents.filter((e) => e.type === 'connected');
+      const connectedEvents = connectionEvents.filter(
+        (e) => e.type === 'connected',
+      );
       expect(connectedEvents.length).toBe(5);
 
       // Disconnect clients randomly
@@ -576,7 +600,9 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
       await networkHelper.wait(1000);
 
       // All disconnections should be registered
-      const disconnectedEvents = connectionEvents.filter((e) => e.type === 'disconnected');
+      const disconnectedEvents = connectionEvents.filter(
+        (e) => e.type === 'disconnected',
+      );
       expect(disconnectedEvents.length).toBe(5);
 
       const finalConnectionCount = await wsManager.getConnectionCount();
@@ -604,7 +630,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
           await Promise.race([
             networkHelper.waitForWebSocketConnection(client),
             new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('Connection timeout')), 2000)
+              setTimeout(() => reject(new Error('Connection timeout')), 2000),
             ),
           ]);
 
@@ -629,7 +655,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
     it('should implement heartbeat and connection health monitoring', async () => {
       const client = new WebSocket(`ws://localhost:${WS_PORT}`);
-      const heartbeats: any[] = [];
+      const heartbeats: unknown[] = [];
 
       client.on('message', (data) => {
         const message = JSON.parse(data.toString());
@@ -645,7 +671,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
               type: 'heartbeat_response',
               id: message.id,
               timestamp: Date.now(),
-            })
+            }),
           );
         }
       });
@@ -657,7 +683,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
         JSON.stringify({
           type: 'enable_heartbeat',
           interval: 2000, // 2 seconds
-        })
+        }),
       );
 
       // Wait for several heartbeats
@@ -667,7 +693,8 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
       // Verify heartbeat timing
       for (let i = 1; i < heartbeats.length; i++) {
-        const timeDiff = heartbeats[i]?.timestamp - heartbeats[i - 1]?.timestamp;
+        const timeDiff =
+          heartbeats[i]?.timestamp - heartbeats[i - 1]?.timestamp;
         expect(timeDiff).toBeGreaterThan(1800); // Allow some variance
         expect(timeDiff).toBeLessThan(2200);
       }
@@ -691,12 +718,12 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
   describe('Real-time Collaboration Features', () => {
     it('should enable real-time document collaboration', async () => {
       const collaborators: WebSocket[] = [];
-      const documentUpdates: any[][] = [];
+      const documentUpdates: unknown[][] = [];
 
       // Create collaborator clients
       for (let i = 0; i < 3; i++) {
         const client = new WebSocket(`ws://localhost:${WS_PORT}`);
-        const clientUpdates: any[] = [];
+        const clientUpdates: unknown[] = [];
 
         client.on('message', (data) => {
           const message = JSON.parse(data.toString());
@@ -720,7 +747,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             type: 'join_document',
             documentId,
             userId: `user-${Date.now()}-${Math.random()}`,
-          })
+          }),
         );
       }
 
@@ -763,7 +790,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             type: 'document_edit',
             documentId,
             operation: edit.operation,
-          })
+          }),
         );
 
         await networkHelper.wait(200);
@@ -777,7 +804,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
         // Should receive updates from other collaborators (not their own)
         const receivedEdits = otherCollaboratorUpdates.filter(
-          (update) => update.data.documentId === documentId
+          (update) => update.data.documentId === documentId,
         );
 
         expect(receivedEdits.length).toBe(2); // Updates from 2 other collaborators
@@ -800,12 +827,12 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
     it('should handle real-time cursor position sharing', async () => {
       const collaborators: WebSocket[] = [];
-      const cursorUpdates: any[][] = [];
+      const cursorUpdates: unknown[][] = [];
 
       // Create collaborator clients
       for (let i = 0; i < 4; i++) {
         const client = new WebSocket(`ws://localhost:${WS_PORT}`);
-        const clientCursorUpdates: any[] = [];
+        const clientCursorUpdates: unknown[] = [];
 
         client.on('message', (data) => {
           const message = JSON.parse(data.toString());
@@ -831,7 +858,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             userId: `user-${i}`,
             userName: `Collaborator ${i}`,
             enableCursorSharing: true,
-          })
+          }),
         );
       }
 
@@ -843,14 +870,20 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
         {
           user: 1,
           position: { line: 2, column: 10 },
-          selection: { start: { line: 2, column: 8 }, end: { line: 2, column: 15 } },
+          selection: {
+            start: { line: 2, column: 8 },
+            end: { line: 2, column: 15 },
+          },
         },
         { user: 2, position: { line: 3, column: 0 }, selection: null },
         { user: 0, position: { line: 1, column: 12 }, selection: null },
         {
           user: 3,
           position: { line: 4, column: 20 },
-          selection: { start: { line: 4, column: 15 }, end: { line: 4, column: 25 } },
+          selection: {
+            start: { line: 4, column: 15 },
+            end: { line: 4, column: 25 },
+          },
         },
       ];
 
@@ -861,7 +894,7 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
             documentId,
             position: movement.position,
             selection: movement.selection,
-          })
+          }),
         );
 
         await networkHelper.wait(150);
@@ -875,7 +908,9 @@ describe('WebSocket Real-time Coordination Integration Tests', () => {
 
         // Should receive cursor updates from other users
         const receivedCursorUpdates = userCursorUpdates.filter(
-          (update) => update.data.documentId === documentId && update.data.userId !== `user-${i}`
+          (update) =>
+            update.data.documentId === documentId &&
+            update.data.userId !== `user-${i}`,
         );
 
         expect(receivedCursorUpdates.length).toBeGreaterThan(0);

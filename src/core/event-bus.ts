@@ -44,13 +44,26 @@ export interface EventMetrics {
   listenerCount: number;
 }
 
-export type EventMiddleware = (event: string | symbol, payload: any, next: () => void) => void;
+export type EventMiddleware = (
+  event: string | symbol,
+  payload: any,
+  next: () => void,
+) => void;
 
 export interface IEventBus {
-  on<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this;
-  off<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this;
+  on<T extends keyof EventMap>(
+    event: T,
+    listener: EventListener<EventMap[T]>,
+  ): this;
+  off<T extends keyof EventMap>(
+    event: T,
+    listener: EventListener<EventMap[T]>,
+  ): this;
   emit<T extends keyof EventMap>(event: T, payload: EventMap[T]): boolean;
-  once<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this;
+  once<T extends keyof EventMap>(
+    event: T,
+    listener: EventListener<EventMap[T]>,
+  ): this;
 }
 
 /**
@@ -109,7 +122,10 @@ export class EventBus extends EventEmitter implements IEventBus {
    * @param event
    * @param payload
    */
-  override emit<T extends keyof EventMap>(event: T, payload: EventMap[T]): boolean {
+  override emit<T extends keyof EventMap>(
+    event: T,
+    payload: EventMap[T],
+  ): boolean {
     const startTime = Date.now();
 
     try {
@@ -147,7 +163,10 @@ export class EventBus extends EventEmitter implements IEventBus {
    * @param event
    * @param listener
    */
-  override on<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this {
+  override on<T extends keyof EventMap>(
+    event: T,
+    listener: EventListener<EventMap[T]>,
+  ): this {
     super.on(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
     return this;
@@ -159,7 +178,10 @@ export class EventBus extends EventEmitter implements IEventBus {
    * @param event
    * @param listener
    */
-  override once<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this {
+  override once<T extends keyof EventMap>(
+    event: T,
+    listener: EventListener<EventMap[T]>,
+  ): this {
     super.once(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
     return this;
@@ -171,7 +193,10 @@ export class EventBus extends EventEmitter implements IEventBus {
    * @param event
    * @param listener
    */
-  override off<T extends keyof EventMap>(event: T, listener: EventListener<EventMap[T]>): this {
+  override off<T extends keyof EventMap>(
+    event: T,
+    listener: EventListener<EventMap[T]>,
+  ): this {
     super.off(event as string, listener as EventListenerAny);
     this.metrics.listenerCount = Math.max(0, this.metrics.listenerCount - 1);
     return this;
@@ -224,7 +249,10 @@ export class EventBus extends EventEmitter implements IEventBus {
    * @param event
    * @param payload
    */
-  private runMiddleware<T extends keyof EventMap>(event: T, payload: EventMap[T]): void {
+  private runMiddleware<T extends keyof EventMap>(
+    event: T,
+    payload: EventMap[T],
+  ): void {
     let index = 0;
 
     const next = (): void => {
@@ -244,7 +272,8 @@ export class EventBus extends EventEmitter implements IEventBus {
    */
   private updateProcessingTimeMetrics(processingTime: number): void {
     const totalTime =
-      this.metrics.avgProcessingTime * (this.metrics.eventCount - 1) + processingTime;
+      this.metrics.avgProcessingTime * (this.metrics.eventCount - 1) +
+      processingTime;
     this.metrics.avgProcessingTime = totalTime / this.metrics.eventCount;
   }
 
@@ -253,7 +282,10 @@ export class EventBus extends EventEmitter implements IEventBus {
    */
   getStats(): { eventNames: string[]; listenerCount: number } {
     const eventNames = this.eventNames().map((name) => String(name));
-    const listenerCount = eventNames.reduce((sum, name) => sum + this.listenerCount(name), 0);
+    const listenerCount = eventNames.reduce(
+      (sum, name) => sum + this.listenerCount(name),
+      0,
+    );
 
     return {
       eventNames,

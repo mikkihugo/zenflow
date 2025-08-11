@@ -1,1 +1,0 @@
-{"version":3,"file":"wasm-memory-optimizer.d.ts","sourceRoot":"","sources":["../../../../src/neural/wasm/wasm-memory-optimizer.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;;GAqBG;AACH;;GAEG;AAEH,qBAAa,mBAAmB;IAC9B,OAAO,CAAC,SAAS,CAAS;IAEpB,QAAQ,IAAI,OAAO,CAAC,IAAI,CAAC;IAO/B,WAAW,IAAI,OAAO;IAItB,KAAK,IAAI,IAAI;CAGd;AAED,eAAe,mBAAmB,CAAC"}

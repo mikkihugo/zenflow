@@ -12,7 +12,11 @@
 
 export * from './use-config.ts';
 // Re-export key hooks for convenience
-export { type TerminalConfig, type UseConfigReturn, useConfig } from './use-config.ts';
+export {
+  type TerminalConfig,
+  type UseConfigReturn,
+  useConfig,
+} from './use-config.ts';
 export * from './use-swarm-status.ts';
 
 export {

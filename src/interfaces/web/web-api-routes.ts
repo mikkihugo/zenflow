@@ -20,7 +20,11 @@ export class WebApiRoutes {
   private sessionManager: WebSessionManager;
   private dataService: WebDataService;
 
-  constructor(config: WebConfig, sessionManager: WebSessionManager, dataService: WebDataService) {
+  constructor(
+    config: WebConfig,
+    sessionManager: WebSessionManager,
+    dataService: WebDataService,
+  ) {
     this.config = config;
     this.sessionManager = sessionManager;
     this.dataService = dataService;
@@ -82,7 +86,10 @@ export class WebApiRoutes {
    * @param _req
    * @param res
    */
-  private async handleSystemStatus(_req: Request, res: Response): Promise<void> {
+  private async handleSystemStatus(
+    _req: Request,
+    res: Response,
+  ): Promise<void> {
     try {
       const status = await this.dataService.getSystemStatus();
       res.json(status);
@@ -164,7 +171,10 @@ export class WebApiRoutes {
    * @param _req
    * @param res
    */
-  private async handleGetDocuments(_req: Request, res: Response): Promise<void> {
+  private async handleGetDocuments(
+    _req: Request,
+    res: Response,
+  ): Promise<void> {
     try {
       const documents = await this.dataService.getDocuments();
       res.json(documents);
@@ -180,7 +190,10 @@ export class WebApiRoutes {
    * @param req
    * @param res
    */
-  private async handleExecuteCommand(req: Request, res: Response): Promise<void> {
+  private async handleExecuteCommand(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
     try {
       const { command, args } = req.body;
       const result = await this.dataService.executeCommand(command, args);
@@ -216,7 +229,10 @@ export class WebApiRoutes {
    * @param res
    */
   private handleUpdateSettings(req: Request, res: Response): void {
-    const success = this.sessionManager.updateSessionPreferences(req.sessionId!, req.body);
+    const success = this.sessionManager.updateSessionPreferences(
+      req.sessionId!,
+      req.body,
+    );
 
     if (success) {
       this.logger.debug(`Updated settings for session: ${req.sessionId}`);

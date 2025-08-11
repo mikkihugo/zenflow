@@ -4,7 +4,9 @@
 
 import { getLogger } from '../config/logging-config';
 
-const logger = getLogger('interfaces-clients-adapters-websocket-client-adapter');
+const logger = getLogger(
+  'interfaces-clients-adapters-websocket-client-adapter',
+);
 
 /**
  * WebSocket Client Adapter for UACL (Unified API Client Layer).
@@ -220,7 +222,7 @@ export interface WebSocketClientConfig extends ClientConfig {
   heartbeat?: {
     enabled: boolean;
     interval: number;
-    message: any;
+    message?: unknown;
     timeout?: number;
   };
 
@@ -290,7 +292,7 @@ export interface WebSocketMessage<T = any> {
   type?: string;
   data: T;
   timestamp?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -655,7 +657,10 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    * Generic GET request (UACL interface) - WebSocket doesn't have HTTP methods.
    * This is implemented as a request-response pattern over WebSocket.
    */
-  async get<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
+  async get<T = any>(
+    endpoint: string,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>> {
     return this.sendRequest('GET', endpoint, undefined, options);
   }
 
@@ -665,7 +670,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   async post<T = any>(
     endpoint: string,
     data?: any,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('POST', endpoint, data, options);
   }
@@ -676,7 +681,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   async put<T = any>(
     endpoint: string,
     data?: any,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('PUT', endpoint, data, options);
   }
@@ -684,7 +689,10 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   /**
    * Generic DELETE request (UACL interface).
    */
-  async delete<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
+  async delete<T = any>(
+    endpoint: string,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>> {
     return this.sendRequest('DELETE', endpoint, undefined, options);
   }
 
@@ -701,7 +709,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    */
   on(
     event: 'connect' | 'disconnect' | 'error' | 'retry' | string,
-    handler: (...args: any[]) => void
+    handler: (...args: unknown[]) => void,
   ): void {
     super.on(event, handler);
   }
@@ -709,7 +717,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   /**
    * Event handler removal (UACL interface).
    */
-  off(event: string, handler?: (...args: any[]) => void): void {
+  off(event: string, handler?: (...args: unknown[]) => void): void {
     if (handler) {
       super.off(event, handler);
     } else {
@@ -734,7 +742,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   /**
    * Send raw message (legacy method for backward compatibility).
    */
-  send(data: any): void {
+  send(data: unknown): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
 
     if (this._isConnected && this.ws) {
@@ -756,7 +764,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    */
   async sendMessage<T = any>(
     message: WebSocketMessage<T>,
-    _options?: WebSocketRequestOptions
+    _options?: WebSocketRequestOptions,
   ): Promise<void> {
     const messageWithId = {
       id: this.generateMessageId(),
@@ -778,12 +786,10 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
         this.updateMetrics(false, 0);
         throw error;
       }
+    } else if (this.config.messageQueue?.enabled) {
+      this.queueMessage(serialized);
     } else {
-      if (this.config.messageQueue?.enabled) {
-        this.queueMessage(serialized);
-      } else {
-        throw new Error('WebSocket not connected and queuing is disabled');
-      }
+      throw new Error('WebSocket not connected and queuing is disabled');
     }
   }
 
@@ -830,7 +836,10 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
     }
 
     // Add token as query parameter if configured
-    if (this.config.authentication?.type === 'query' && this.config.authentication.token) {
+    if (
+      this.config.authentication?.type === 'query' &&
+      this.config.authentication.token
+    ) {
       const separator = url.includes('?') ? '&' : '?';
       url += `${separator}token=${this.config.authentication.token}`;
     }
@@ -840,7 +849,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
   private handleMessage(event: MessageEvent): void {
     try {
-      let data: any;
+      let data: unknown;
 
       // Handle different message types
       if (typeof event.data === 'string') {
@@ -874,7 +883,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
     method: string,
     endpoint: string,
     data?: any,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ClientResponse<T>> {
     const requestId = this.generateMessageId();
     const startTime = Date.now();
@@ -897,10 +906,10 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
           this.off(`response:${requestId}`, responseHandler);
           reject(new Error('Request timeout'));
         },
-        options?.timeout || this.config.timeout || 30000
+        options?.timeout || this.config.timeout || 30000,
       );
 
-      const responseHandler = (responseData: any) => {
+      const responseHandler = (responseData: unknown) => {
         clearTimeout(timeout);
         const duration = Date.now() - startTime;
 
@@ -984,7 +993,9 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
         this.emit('reconnected');
       } catch (error) {
         this.emit('reconnectError', error);
-        if (this.reconnectAttempts < (this.config.reconnection?.maxAttempts || 10)) {
+        if (
+          this.reconnectAttempts < (this.config.reconnection?.maxAttempts || 10)
+        ) {
           this.scheduleReconnect();
         } else {
           this.emit('reconnectFailed');
@@ -1017,8 +1028,13 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
     }
   }
 
-  private isHeartbeatResponse(data: any): boolean {
-    return data && (data.type === 'pong' || data.type === 'heartbeat' || data.type === 'ping');
+  private isHeartbeatResponse(data: unknown): boolean {
+    return (
+      data &&
+      (data.type === 'pong' ||
+        data.type === 'heartbeat' ||
+        data.type === 'ping')
+    );
   }
 
   private async measurePingTime(): Promise<number> {
@@ -1028,7 +1044,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
       const startTime = Date.now();
       const pingId = this.generateMessageId();
 
-      const pongHandler = (data: any) => {
+      const pongHandler = (data: unknown) => {
         if (data.id === pingId) {
           const responseTime = Date.now() - startTime;
           this.off('message', pongHandler);
@@ -1087,8 +1103,10 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 
     // Update average latency (simple moving average)
     if (duration > 0) {
-      const totalLatency = this.metrics.averageLatency * (this.metrics.requestCount - 1);
-      this.metrics.averageLatency = (totalLatency + duration) / this.metrics.requestCount;
+      const totalLatency =
+        this.metrics.averageLatency * (this.metrics.requestCount - 1);
+      this.metrics.averageLatency =
+        (totalLatency + duration) / this.metrics.requestCount;
     }
 
     // Calculate throughput (requests per second)
@@ -1121,7 +1139,9 @@ export class WebSocketClientFactory {
    *
    * @param configs
    */
-  async createMultiple(configs: WebSocketClientConfig[]): Promise<WebSocketClientAdapter[]> {
+  async createMultiple(
+    configs: WebSocketClientConfig[],
+  ): Promise<WebSocketClientAdapter[]> {
     return Promise.all(configs.map((config) => this.create(config)));
   }
 
@@ -1183,7 +1203,9 @@ export class WebSocketClientFactory {
           responseTime: -1,
           errorRate: 1,
           uptime: 0,
-          metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+          metadata: {
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
         });
       }
     }
@@ -1227,7 +1249,7 @@ export class WebSocketClientFactory {
     const shutdownPromises = Array.from(this.clients.values()).map((client) =>
       client.destroy().catch((error) => {
         logger.error(`Error shutting down WebSocket client:`, error);
-      })
+      }),
     );
 
     await Promise.all(shutdownPromises);
@@ -1244,7 +1266,7 @@ export class WebSocketClientFactory {
 
 // Export convenience functions
 export async function createWebSocketClient(
-  config: WebSocketClientConfig
+  config: WebSocketClientConfig,
 ): Promise<WebSocketClientAdapter> {
   const factory = new WebSocketClientFactory();
   return await factory.create(config);

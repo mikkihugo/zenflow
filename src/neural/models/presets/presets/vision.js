@@ -96,10 +96,34 @@ export const visionPresets = {
       inputShape: [512, 512, 1], // Grayscale medical images
       architecture: 'unet_3d',
       convLayers: [
-        { filters: 64, kernelSize: 3, stride: 1, activation: 'relu', batchNorm: true },
-        { filters: 128, kernelSize: 3, stride: 1, activation: 'relu', batchNorm: true },
-        { filters: 256, kernelSize: 3, stride: 1, activation: 'relu', batchNorm: true },
-        { filters: 512, kernelSize: 3, stride: 1, activation: 'relu', batchNorm: true },
+        {
+          filters: 64,
+          kernelSize: 3,
+          stride: 1,
+          activation: 'relu',
+          batchNorm: true,
+        },
+        {
+          filters: 128,
+          kernelSize: 3,
+          stride: 1,
+          activation: 'relu',
+          batchNorm: true,
+        },
+        {
+          filters: 256,
+          kernelSize: 3,
+          stride: 1,
+          activation: 'relu',
+          batchNorm: true,
+        },
+        {
+          filters: 512,
+          kernelSize: 3,
+          stride: 1,
+          activation: 'relu',
+          batchNorm: true,
+        },
       ],
       skipConnections: true,
       attentionGates: true,
@@ -389,7 +413,7 @@ export const visionPresets = {
 export const getVisionPreset = (presetName) => {
   if (!visionPresets[presetName]) {
     throw new Error(
-      `Vision preset '${presetName}' not found. Available presets: ${Object.keys(visionPresets).join(', ')}`
+      `Vision preset '${presetName}' not found. Available presets: ${Object.keys(visionPresets).join(', ')}`,
     );
   }
   return visionPresets[presetName];

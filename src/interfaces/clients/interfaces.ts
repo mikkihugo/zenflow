@@ -67,7 +67,11 @@ export interface IClientFactory {
  */
 export interface IHttpClient<T = any> extends IClient<T> {
   /** GET request */
-  get<R = any>(path: string, params?: Record<string, any>, options?: RequestOptions): Promise<R>;
+  get<R = any>(
+    path: string,
+    params?: Record<string, any>,
+    options?: RequestOptions,
+  ): Promise<R>;
 
   /** POST request */
   post<R = any>(path: string, data?: T, options?: RequestOptions): Promise<R>;
@@ -79,7 +83,11 @@ export interface IHttpClient<T = any> extends IClient<T> {
   delete<R = any>(path: string, options?: RequestOptions): Promise<R>;
 
   /** PATCH request */
-  patch<R = any>(path: string, data?: Partial<T>, options?: RequestOptions): Promise<R>;
+  patch<R = any>(
+    path: string,
+    data?: Partial<T>,
+    options?: RequestOptions,
+  ): Promise<R>;
 
   /** Set request headers */
   setHeaders(headers: Record<string, string>): void;
@@ -129,7 +137,10 @@ export interface IKnowledgeClient<T = any> extends IClient<T> {
   query<R = any>(query: string, options?: KnowledgeQueryOptions): Promise<R>;
 
   /** Search knowledge entries */
-  search<R = any>(searchTerm: string, options?: KnowledgeSearchOptions): Promise<R[]>;
+  search<R = any>(
+    searchTerm: string,
+    options?: KnowledgeSearchOptions,
+  ): Promise<R[]>;
 
   /** Get knowledge entry by ID */
   getEntry<R = any>(id: string): Promise<R | null>;
@@ -147,7 +158,10 @@ export interface IKnowledgeClient<T = any> extends IClient<T> {
   getKnowledgeStats(): Promise<KnowledgeStats>;
 
   /** Execute semantic search */
-  semanticSearch<R = any>(query: string, options?: SemanticSearchOptions): Promise<R[]>;
+  semanticSearch<R = any>(
+    query: string,
+    options?: SemanticSearchOptions,
+  ): Promise<R[]>;
 }
 
 /**
@@ -161,13 +175,18 @@ export interface IMcpClient<T = any> extends IClient<T> {
   listTools(): Promise<McpTool[]>;
 
   /** Execute tool */
-  executeTool<R = any>(toolName: string, parameters: Record<string, any>): Promise<R>;
+  executeTool<R = any>(
+    toolName: string,
+    parameters: Record<string, any>,
+  ): Promise<R>;
 
   /** Get tool schema */
   getToolSchema(toolName: string): Promise<McpToolSchema>;
 
   /** Subscribe to tool notifications */
-  subscribeToNotifications(callback: (notification: McpNotification) => void): Promise<string>;
+  subscribeToNotifications(
+    callback: (notification: McpNotification) => void,
+  ): Promise<string>;
 
   /** Get server capabilities */
   getCapabilities(): Promise<McpCapabilities>;

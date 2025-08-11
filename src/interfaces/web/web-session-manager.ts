@@ -26,10 +26,14 @@ export class WebSessionManager {
    */
   middleware() {
     return (req: Request, _res: Response, next: NextFunction) => {
-      const sessionId = (req.headers['x-session-id'] as string) || this.generateSessionId();
+      const sessionId =
+        (req.headers['x-session-id'] as string) || this.generateSessionId();
       req.sessionId = sessionId;
 
-      if (!this.sessions.has(sessionId)) {
+      if (this.sessions.has(sessionId)) {
+        const session = this.sessions.get(sessionId)!;
+        session.lastActivity = new Date();
+      } else {
         this.sessions.set(sessionId, {
           id: sessionId,
           createdAt: new Date(),
@@ -41,9 +45,6 @@ export class WebSessionManager {
           },
         });
         this.logger.debug(`Created new session: ${sessionId}`);
-      } else {
-        const session = this.sessions.get(sessionId)!;
-        session.lastActivity = new Date();
       }
 
       next();
@@ -67,7 +68,7 @@ export class WebSessionManager {
    */
   updateSessionPreferences(
     sessionId: string,
-    preferences: Partial<WebSession['preferences']>
+    preferences: Partial<WebSession['preferences']>,
   ): boolean {
     const session = this.sessions.get(sessionId);
     if (session) {
@@ -128,7 +129,8 @@ export class WebSessionManager {
     const now = new Date();
 
     const ages = sessions.map((s) => now.getTime() - s.createdAt.getTime());
-    const averageAge = ages.length > 0 ? ages.reduce((a, b) => a + b, 0) / ages.length : 0;
+    const averageAge =
+      ages.length > 0 ? ages.reduce((a, b) => a + b, 0) / ages.length : 0;
 
     return {
       total: sessions.length,

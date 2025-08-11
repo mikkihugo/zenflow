@@ -52,7 +52,7 @@ class TemplateValidator {
   constructor(config) {
     this.rootDir = config.rootDir || './src';
     this.templatesDir = config.templatesDir || './docs/templates';
-    this.autoFix = config.autoFix || false;
+    this.autoFix = config.autoFix;
     this.validateExamples = config.validateExamples !== false;
     this.layers = config.layers || ['uacl', 'dal', 'usl', 'uel'];
 

@@ -10,11 +10,14 @@ import type { NetworkOptimizer } from '../interfaces.ts';
 
 export class NetworkLatencyOptimizer implements NetworkOptimizer {
   private bandwidthMeasurements: Map<string, number> = new Map();
-  private connectionLatencies: Map<string, { latency: number; timestamp: number }> = new Map();
+  private connectionLatencies: Map<
+    string,
+    { latency: number; timestamp: number }
+  > = new Map();
 
   public async optimizeLatency(
     source: string,
-    destinations: string[]
+    destinations: string[],
   ): Promise<Map<string, number>> {
     const optimizedLatencies = new Map<string, number>();
 
@@ -27,7 +30,10 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     return optimizedLatencies;
   }
 
-  public async selectOptimalPath(source: string, destination: string): Promise<string[]> {
+  public async selectOptimalPath(
+    source: string,
+    destination: string,
+  ): Promise<string[]> {
     // Mock path selection - in practice this would use network topology
     const possiblePaths = [
       [source, destination], // Direct path
@@ -36,7 +42,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     ];
 
     let bestPath = possiblePaths[0];
-    let bestLatency = Infinity;
+    let bestLatency = Number.POSITIVE_INFINITY;
 
     for (const path of possiblePaths) {
       const latency = await this.calculatePathLatency(path);

@@ -289,7 +289,7 @@ export class UACL {
   async createHTTPClient(
     id: string,
     baseURL: string,
-    options: Partial<HTTPClientConfig> = {}
+    options: Partial<HTTPClientConfig> = {},
   ): Promise<ClientInstance> {
     if (!this.initialized) {
       await this.initialize();
@@ -362,7 +362,7 @@ export class UACL {
   async createWebSocketClient(
     id: string,
     url: string,
-    options: Partial<WebSocketClientConfig> = {}
+    options: Partial<WebSocketClientConfig> = {},
   ): Promise<ClientInstance> {
     if (!this.initialized) {
       await this.initialize();
@@ -434,12 +434,17 @@ export class UACL {
     id: string,
     factRepoPath: string,
     anthropicApiKey: string,
-    options: Partial<KnowledgeClientConfig> = {}
+    options: Partial<KnowledgeClientConfig> = {},
   ): Promise<ClientInstance> {
     if (!this.initialized) {
       await this.initialize();
     }
-    return ClientManagerHelpers.createKnowledgeClient(id, factRepoPath, anthropicApiKey, options);
+    return ClientManagerHelpers.createKnowledgeClient(
+      id,
+      factRepoPath,
+      anthropicApiKey,
+      options,
+    );
   }
 
   /**
@@ -516,7 +521,7 @@ export class UACL {
   async createMCPClient(
     id: string,
     servers: MCPClientConfig['servers'],
-    options: Partial<MCPClientConfig> = {}
+    options: Partial<MCPClientConfig> = {},
   ): Promise<ClientInstance> {
     if (!this.initialized) {
       await this.initialize();
@@ -710,7 +715,9 @@ export class UACL {
    * console.log(`Health Checks: ${status.configuration.enableHealthChecks ? 'Enabled' : 'Disabled'}`);
    * ```
    */
-  getSystemStatus(): ReturnType<(typeof ClientManagerHelpers)['getSystemStatus']> {
+  getSystemStatus(): ReturnType<
+    (typeof ClientManagerHelpers)['getSystemStatus']
+  > {
     return ClientManagerHelpers.getSystemStatus();
   }
 
@@ -794,7 +801,7 @@ export class UACL {
   async disconnectAll(): Promise<void> {
     const allClients = globalClientManager.registry.getAll();
     const disconnectionPromises = allClients.map((client) =>
-      globalClientManager.disconnectClient(client.id)
+      globalClientManager.disconnectClient(client.id),
     );
 
     await Promise.allSettled(disconnectionPromises);
@@ -907,7 +914,9 @@ export const uacl = UACL.getInstance();
  * }
  * ```
  */
-export const initializeUACL = async (config?: ClientManagerConfig): Promise<void> => {
+export const initializeUACL = async (
+  config?: ClientManagerConfig,
+): Promise<void> => {
   await uacl.initialize(config);
 };
 
@@ -1004,13 +1013,16 @@ export const UACLHelpers = {
 
     try {
       if (config?.httpBaseURL) {
-        clients.http = await uacl.createHTTPClient('default-http', config?.httpBaseURL);
+        clients.http = await uacl.createHTTPClient(
+          'default-http',
+          config?.httpBaseURL,
+        );
       }
 
       if (config?.websocketURL) {
         clients.websocket = await uacl.createWebSocketClient(
           'default-websocket',
-          config?.websocketURL
+          config?.websocketURL,
         );
       }
 
@@ -1018,12 +1030,15 @@ export const UACLHelpers = {
         clients.knowledge = await uacl.createKnowledgeClient(
           'default-knowledge',
           config?.factRepoPath,
-          config?.anthropicApiKey
+          config?.anthropicApiKey,
         );
       }
 
       if (config?.mcpServers) {
-        clients.mcp = await uacl.createMCPClient('default-mcp', config?.mcpServers);
+        clients.mcp = await uacl.createMCPClient(
+          'default-mcp',
+          config?.mcpServers,
+        );
       }
 
       // Connect all created clients
@@ -1112,10 +1127,15 @@ export const UACLHelpers = {
     }
 
     const metrics = uacl.getMetrics();
-    const healthPercentage = metrics.total > 0 ? (metrics.connected / metrics.total) * 100 : 100;
+    const healthPercentage =
+      metrics.total > 0 ? (metrics.connected / metrics.total) * 100 : 100;
 
     const status =
-      healthPercentage >= 80 ? 'healthy' : healthPercentage >= 50 ? 'warning' : 'critical';
+      healthPercentage >= 80
+        ? 'healthy'
+        : healthPercentage >= 50
+          ? 'warning'
+          : 'critical';
 
     return {
       initialized: true,
@@ -1215,7 +1235,7 @@ export const UACLHelpers = {
         }
         return acc;
       },
-      {} as Record<string, boolean>
+      {} as Record<string, boolean>,
     );
   },
 };

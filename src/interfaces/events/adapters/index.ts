@@ -86,7 +86,11 @@ export {
   createCommunicationEventAdapter,
   createDefaultCommunicationEventAdapterConfig,
 } from './communication-event-adapter.ts';
-export { CommunicationEventAdapter, CommunicationEventAdapterConfig, CommunicationEventHelpers };
+export {
+  CommunicationEventAdapter,
+  CommunicationEventAdapterConfig,
+  CommunicationEventHelpers,
+};
 export type { CommunicationEventAdapterConfig as CommunicationEventAdapterConfigType } from './communication-event-adapter.ts';
 // Communication Event Factory - Factory pattern
 // Re-export CommunicationEventFactory for compatibility
@@ -105,7 +109,11 @@ export {
   createCoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
 } from './coordination-event-adapter.ts';
-export { CoordinationEventAdapter, CoordinationEventAdapterConfig, CoordinationEventHelpers };
+export {
+  CoordinationEventAdapter,
+  CoordinationEventAdapterConfig,
+  CoordinationEventHelpers,
+};
 export type { CoordinationEventAdapterConfig as CoordinationEventAdapterConfigType } from './coordination-event-adapter.ts';
 // Coordination Event Factory - Factory pattern
 export {
@@ -124,7 +132,11 @@ export {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
 } from './monitoring-event-adapter.ts';
-export { MonitoringEventAdapter, MonitoringEventAdapterConfig, MonitoringEventHelpers };
+export {
+  MonitoringEventAdapter,
+  MonitoringEventAdapterConfig,
+  MonitoringEventHelpers,
+};
 export type { MonitoringEventAdapterConfig as MonitoringEventAdapterConfigType } from './monitoring-event-adapter.ts';
 // Monitoring Event Factory - Factory pattern
 export {
@@ -161,7 +173,8 @@ export const EventAdapterTypes = {
   MONITORING: 'monitoring',
 } as const;
 
-export type EventAdapterType = (typeof EventAdapterTypes)[keyof typeof EventAdapterTypes];
+export type EventAdapterType =
+  (typeof EventAdapterTypes)[keyof typeof EventAdapterTypes];
 
 /**
  * Adapter factory registry for easy access to all adapter factories.
@@ -183,7 +196,10 @@ export const EventAdapterUtils = {
    * @param name
    * @param overrides
    */
-  createSystemAdapter: (name: string, overrides?: Partial<SystemEventAdapterConfig>) => {
+  createSystemAdapter: (
+    name: string,
+    overrides?: Partial<SystemEventAdapterConfig>,
+  ) => {
     const config = _createDefaultSystemEventAdapterConfig(name, overrides);
     return _createSystemEventAdapter(config);
   },
@@ -196,9 +212,12 @@ export const EventAdapterUtils = {
    */
   createCoordinationAdapter: (
     name: string,
-    overrides?: Partial<CoordinationEventAdapterConfig>
+    overrides?: Partial<CoordinationEventAdapterConfig>,
   ) => {
-    const config = _createDefaultCoordinationEventAdapterConfig(name, overrides);
+    const config = _createDefaultCoordinationEventAdapterConfig(
+      name,
+      overrides,
+    );
     return _createCoordinationEventAdapter(config);
   },
 
@@ -210,9 +229,12 @@ export const EventAdapterUtils = {
    */
   createCommunicationAdapter: (
     name: string,
-    overrides?: Partial<CommunicationEventAdapterConfig>
+    overrides?: Partial<CommunicationEventAdapterConfig>,
   ) => {
-    const config = _createDefaultCommunicationEventAdapterConfig(name, overrides);
+    const config = _createDefaultCommunicationEventAdapterConfig(
+      name,
+      overrides,
+    );
     return _createCommunicationEventAdapter(config);
   },
 
@@ -222,7 +244,10 @@ export const EventAdapterUtils = {
    * @param name
    * @param overrides
    */
-  createMonitoringAdapter: (name: string, overrides?: Partial<MonitoringEventAdapterConfig>) => {
+  createMonitoringAdapter: (
+    name: string,
+    overrides?: Partial<MonitoringEventAdapterConfig>,
+  ) => {
     const config = _createDefaultMonitoringEventAdapterConfig(name, overrides);
     return _createMonitoringEventAdapter(config);
   },

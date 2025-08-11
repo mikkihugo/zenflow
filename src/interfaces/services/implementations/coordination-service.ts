@@ -9,7 +9,10 @@
  */
 
 import type { IService } from '../core/interfaces.ts';
-import type { CoordinationServiceConfig, ServiceOperationOptions } from '../types.ts';
+import type {
+  CoordinationServiceConfig,
+  ServiceOperationOptions,
+} from '../types.ts';
 import { BaseService } from './base-service.ts';
 
 /**
@@ -64,7 +67,7 @@ export class CoordinationService extends BaseService implements IService {
     }
 
     this.logger.info(
-      `Coordination service ${this.name} initialized with ${coordination.topology} topology`
+      `Coordination service ${this.name} initialized with ${coordination.topology} topology`,
     );
   }
 
@@ -116,7 +119,9 @@ export class CoordinationService extends BaseService implements IService {
     this.coordinationState.clear();
     this.activeWorkflows.clear();
 
-    this.logger.info(`Coordination service ${this.name} destroyed successfully`);
+    this.logger.info(
+      `Coordination service ${this.name} destroyed successfully`,
+    );
   }
 
   protected async doHealthCheck(): Promise<boolean> {
@@ -131,16 +136,20 @@ export class CoordinationService extends BaseService implements IService {
       const maxAgents = config?.coordination?.maxAgents || 10;
 
       if (this.agents.size > maxAgents) {
-        this.logger.warn(`Agent count (${this.agents.size}) exceeds maximum (${maxAgents})`);
+        this.logger.warn(
+          `Agent count (${this.agents.size}) exceeds maximum (${maxAgents})`,
+        );
         return false;
       }
 
       // Check for stuck workflows
-      const stuckWorkflows = Array.from(this.activeWorkflows.values()).filter((workflow) => {
-        const runTime = Date.now() - workflow.startTime;
-        const timeout = config?.coordination?.timeout || 30000;
-        return runTime > timeout * 3; // 3x timeout threshold
-      });
+      const stuckWorkflows = Array.from(this.activeWorkflows.values()).filter(
+        (workflow) => {
+          const runTime = Date.now() - workflow.startTime;
+          const timeout = config?.coordination?.timeout || 30000;
+          return runTime > timeout * 3; // 3x timeout threshold
+        },
+      );
 
       if (stuckWorkflows.length > 0) {
         this.logger.warn(`Found ${stuckWorkflows.length} stuck workflows`);
@@ -149,7 +158,10 @@ export class CoordinationService extends BaseService implements IService {
 
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed for coordination service ${this.name}:`, error);
+      this.logger.error(
+        `Health check failed for coordination service ${this.name}:`,
+        error,
+      );
       return false;
     }
   }
@@ -157,7 +169,7 @@ export class CoordinationService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     this.logger.debug(`Executing coordination operation: ${operation}`);
 
@@ -267,9 +279,13 @@ export class CoordinationService extends BaseService implements IService {
       const swarm = this.swarms.get(config?.swarmId);
       if (swarm) {
         swarm.agents.push(agentId);
-        this.logger.info(`Spawned agent ${agentId} in swarm ${config?.swarmId}`);
+        this.logger.info(
+          `Spawned agent ${agentId} in swarm ${config?.swarmId}`,
+        );
       } else {
-        this.logger.warn(`Swarm ${config?.swarmId} not found for agent ${agentId}`);
+        this.logger.warn(
+          `Swarm ${config?.swarmId} not found for agent ${agentId}`,
+        );
       }
     } else {
       this.logger.info(`Spawned independent agent: ${agentId}`);
@@ -352,7 +368,7 @@ export class CoordinationService extends BaseService implements IService {
   }
 
   private async coordinate(task: any, agentIds: string[]): Promise<any> {
-    if (!task || !agentIds || agentIds.length === 0) {
+    if (!(task && agentIds) || agentIds.length === 0) {
       throw new Error('Task and agent IDs are required for coordination');
     }
 
@@ -379,7 +395,7 @@ export class CoordinationService extends BaseService implements IService {
         }));
         this.logger.info(`Coordination completed: ${coordinationId}`);
       },
-      Math.random() * 2000 + 1000
+      Math.random() * 2000 + 1000,
     );
 
     return coordination;
@@ -401,10 +417,14 @@ export class CoordinationService extends BaseService implements IService {
       workflowCount: this.activeWorkflows.size,
       coordinationCount: this.coordinationState.size,
       operationCount: this.operationCount,
-      successRate: this.operationCount > 0 ? (this.successCount / this.operationCount) * 100 : 100,
+      successRate:
+        this.operationCount > 0
+          ? (this.successCount / this.operationCount) * 100
+          : 100,
       averageResponseTime:
         this.latencyMetrics.length > 0
-          ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) / this.latencyMetrics.length
+          ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) /
+            this.latencyMetrics.length
           : 0,
     };
   }
@@ -442,7 +462,7 @@ export class CoordinationService extends BaseService implements IService {
   private monitorCoordination(): void {
     // Monitor coordination health and performance
     const inactiveAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === 'disconnected'
+      (agent) => agent.status === 'disconnected',
     );
 
     if (inactiveAgents.length > 0) {
@@ -459,7 +479,9 @@ export class CoordinationService extends BaseService implements IService {
     // Check for stuck workflows
     Array.from(this.activeWorkflows.values()).forEach((workflow) => {
       if (now - workflow.startTime > timeout * 2) {
-        this.logger.warn(`Workflow ${workflow.id} may be stuck, considering recovery`);
+        this.logger.warn(
+          `Workflow ${workflow.id} may be stuck, considering recovery`,
+        );
         // In real implementation, would attempt recovery
       }
     });

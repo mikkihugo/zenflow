@@ -20,14 +20,14 @@ declare global {
   const afterEach: typeof import('vitest').afterEach;
 
   // Type alias for MockedFunction and Mocked
-  type MockedFunction<T extends (...args: any[]) => any> = import('vitest').MockedFunction<T>;
+  type MockedFunction<T extends (...args: any[]) => any> =
+    import('vitest').MockedFunction<T>;
   type Mocked<T> = import('vitest').Mocked<T>;
-  
+
   // Add vi namespace to global
   namespace vi {
     type Mocked<T> = import('vitest').Mocked<T>;
-    type MockedFunction<T extends (...args: any[]) => any> = import('vitest').MockedFunction<T>;
+    type MockedFunction<T extends (...args: any[]) => any> =
+      import('vitest').MockedFunction<T>;
   }
 }
-
-export {};

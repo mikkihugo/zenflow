@@ -30,7 +30,11 @@ export class WebProcessManager {
 
   constructor(config: WebConfig) {
     this.config = config;
-    this.pidFile = join(process.cwd(), '.hive-mind', 'claude-zen-web.pid');
+    this.pidFile = join(
+      process.cwd(),
+      '.collective-mind',
+      'claude-zen-web.pid',
+    );
   }
 
   /**
@@ -121,7 +125,9 @@ export class WebProcessManager {
     }
 
     this.isShuttingDown = true;
-    this.logger.info(`Starting graceful shutdown${signal ? ` (${signal})` : ''}`);
+    this.logger.info(
+      `Starting graceful shutdown${signal ? ` (${signal})` : ''}`,
+    );
 
     try {
       // Cleanup PID file
@@ -147,7 +153,7 @@ export class WebProcessManager {
       }
 
       const pidContent = await readFile(this.pidFile, 'utf-8');
-      const pid = parseInt(pidContent.trim());
+      const pid = Number.parseInt(pidContent.trim());
 
       if (Number.isNaN(pid)) {
         this.logger.warn('Invalid PID file content, removing');
@@ -191,7 +197,8 @@ export class WebProcessManager {
       if (error.code === 'ESRCH') {
         // Process doesn't exist
         return false;
-      } else if (error.code === 'EPERM') {
+      }
+      if (error.code === 'EPERM') {
         // Process exists but we don't have permission to signal it
         return true;
       }
@@ -288,7 +295,7 @@ export class WebProcessManager {
       status: 'healthy',
       pid: process.pid,
       uptime: process.uptime(),
-      daemonMode: this.config.daemon || false,
+      daemonMode: this.config.daemon,
       pidFile: this.pidFile,
       pidFileExists: existsSync(this.pidFile),
     };

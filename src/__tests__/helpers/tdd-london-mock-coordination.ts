@@ -31,10 +31,16 @@ const OLD_PATTERN_mockCoordination = {
 export class MockCoordinationService {
   // Jest spies for interaction testing (TDD London approach) - properly typed
   coordinateAgents: vi.MockedFunction<
-    (agentIds: string[], topology: string, task?: string) => Promise<CoordinationResult>
+    (
+      agentIds: string[],
+      topology: string,
+      task?: string,
+    ) => Promise<CoordinationResult>
   > = vi.fn();
 
-  releaseCoordination: vi.MockedFunction<(coordinationId: string) => Promise<void>> = vi.fn();
+  releaseCoordination: vi.MockedFunction<
+    (coordinationId: string) => Promise<void>
+  > = vi.fn();
 
   getCoordinationStatus: vi.MockedFunction<
     (coordinationId: string) => Promise<CoordinationStatus>
@@ -79,8 +85,16 @@ export class MockCoordinationService {
   /**
    * Verify coordination was called with specific parameters
    */
-  expectCoordinationCalled(agentIds: string[], topology: string, task?: string) {
-    expect(this.coordinateAgents).toHaveBeenCalledWith(agentIds, topology, task);
+  expectCoordinationCalled(
+    agentIds: string[],
+    topology: string,
+    task?: string,
+  ) {
+    expect(this.coordinateAgents).toHaveBeenCalledWith(
+      agentIds,
+      topology,
+      task,
+    );
     return this;
   }
 
@@ -103,16 +117,19 @@ export class MockCoordinationService {
   /**
    * Verify metrics were updated
    */
-  expectMetricsUpdated(coordinationId: string, metrics?: Partial<CoordinationMetrics>) {
+  expectMetricsUpdated(
+    coordinationId: string,
+    metrics?: Partial<CoordinationMetrics>,
+  ) {
     if (metrics) {
       expect(this.updateCoordinationMetrics).toHaveBeenCalledWith(
         coordinationId,
-        expect.objectContaining(metrics)
+        expect.objectContaining(metrics),
       );
     } else {
       expect(this.updateCoordinationMetrics).toHaveBeenCalledWith(
         coordinationId,
-        expect.any(Object)
+        expect.any(Object),
       );
     }
     return this;
@@ -197,7 +214,10 @@ export interface CoordinationMetrics {
 
 export class MockMemoryPool {
   allocate: vi.MockedFunction<
-    (type: string, size: number) => { success: boolean; ptr: ArrayBuffer; id: string }
+    (
+      type: string,
+      size: number,
+    ) => { success: boolean; ptr: ArrayBuffer; id: string }
   > = vi.fn();
 
   deallocate: vi.MockedFunction<(id: string) => boolean> = vi.fn();

@@ -1,26 +1,26 @@
 /**
  * @fileoverview Workflow Event Manager Factory Implementation
- * 
+ *
  * Factory for creating workflow event managers that handle workflow execution,
  * orchestration, task management, and process lifecycle events. Provides
  * specialized event management for workflow automation and orchestration.
- * 
+ *
  * ## Features
- * 
+ *
  * - **Workflow Events**: Execution, completion, failure, retry events
  * - **Task Events**: Task creation, assignment, execution, completion
  * - **Process Events**: Process lifecycle, state transitions, dependencies
  * - **Orchestration Events**: Coordination, scheduling, resource allocation
  * - **Performance Monitoring**: Execution times, success rates, bottlenecks
- * 
+ *
  * ## Event Types Handled
- * 
+ *
  * - `workflow:execution` - Workflow execution and lifecycle events
  * - `workflow:task` - Individual task management and execution events
  * - `workflow:orchestration` - Process coordination and scheduling events
  * - `workflow:performance` - Performance metrics and monitoring events
  * - `workflow:dependency` - Dependency resolution and management events
- * 
+ *
  * @example
  * ```typescript
  * const factory = new WorkflowEventManagerFactory(logger, config);
@@ -28,17 +28,17 @@
  *   name: 'main-workflow',
  *   type: 'workflow',
  *   maxListeners: 250,
- *   processing: { 
+ *   processing: {
  *     strategy: 'reliable',
  *     batchSize: 25
  *   }
  * });
- * 
+ *
  * // Subscribe to execution events
  * manager.subscribeExecutionEvents((event) => {
  *   console.log(`Workflow ${event.workflowId}: ${event.operation} (${event.data.status})`);
  * });
- * 
+ *
  * // Emit workflow event
  * await manager.emitWorkflowEvent({
  *   id: 'workflow-001',
@@ -47,7 +47,7 @@
  *   type: 'workflow:execution',
  *   operation: 'start',
  *   workflowId: 'user-onboarding-v2',
- *   data: { 
+ *   data: {
  *     status: 'running',
  *     totalTasks: 5,
  *     completedTasks: 0,
@@ -55,46 +55,52 @@
  *   }
  * });
  * ```
- * 
- * @author Claude Code Zen Team  
+ *
+ * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
  * @since 1.0.0
  */
 
-import type { IConfig, ILogger } from '../../../core/interfaces/base-interfaces.ts';
-import type { 
-  EventManagerConfig, 
-  EventManagerStatus,
-  EventManagerMetrics,
-  IEventManagerFactory,
-  IEventManager
-} from '../core/interfaces.ts';
+import type {
+  IConfig,
+  ILogger,
+} from '../../../core/interfaces/base-interfaces.ts';
 import { BaseEventManager } from '../core/base-event-manager.ts';
-import type { WorkflowEvent } from '../types.ts';
+import type {
+  EventManagerConfig,
+  EventManagerMetrics,
+  EventManagerStatus,
+  IEventManager,
+  IEventManagerFactory,
+} from '../core/interfaces.ts';
 import type { IWorkflowEventManager } from '../factories.ts';
+import type { WorkflowEvent } from '../types.ts';
 
 /**
  * Workflow Event Manager implementation for workflow orchestration.
- * 
+ *
  * Specialized event manager for handling workflow-related events including
  * execution, task management, orchestration, and performance monitoring.
  * Optimized for reliable workflow processing with comprehensive tracking.
- * 
+ *
  * ## Operation Types
- * 
+ *
  * - **Execution Operations**: Start, pause, resume, complete, fail, retry
  * - **Task Operations**: Create, assign, execute, complete, fail, timeout
  * - **Orchestration Operations**: Schedule, coordinate, balance, optimize
  * - **Dependency Operations**: Resolve, wait, block, satisfy, timeout
- * 
+ *
  * ## Performance Features
- * 
+ *
  * - **Reliable Processing**: Guaranteed delivery with retry mechanisms
  * - **Workflow Tracking**: Comprehensive execution state management
  * - **Performance Analytics**: Execution times, success rates, bottlenecks
  * - **Dependency Management**: Complex workflow dependency resolution
  */
-class WorkflowEventManager extends BaseEventManager implements IWorkflowEventManager {
+class WorkflowEventManager
+  extends BaseEventManager
+  implements IWorkflowEventManager
+{
   private workflowMetrics = {
     totalWorkflows: 0,
     activeWorkflows: 0,
@@ -113,8 +119,8 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
       successRate: 0,
       averageTaskTime: 0,
       bottleneckTasks: new Set<string>(),
-      lastCalculated: new Date()
-    }
+      lastCalculated: new Date(),
+    },
   };
 
   private subscriptions = {
@@ -122,17 +128,20 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
     task: new Map<string, (event: WorkflowEvent) => void>(),
     orchestration: new Map<string, (event: WorkflowEvent) => void>(),
     performance: new Map<string, (event: WorkflowEvent) => void>(),
-    dependency: new Map<string, (event: WorkflowEvent) => void>()
+    dependency: new Map<string, (event: WorkflowEvent) => void>(),
   };
 
-  private activeWorkflows = new Map<string, {
-    id: string;
-    status: string;
-    startTime: number;
-    totalTasks: number;
-    completedTasks: number;
-    failedTasks: number;
-  }>();
+  private activeWorkflows = new Map<
+    string,
+    {
+      id: string;
+      status: string;
+      startTime: number;
+      totalTasks: number;
+      completedTasks: number;
+      failedTasks: number;
+    }
+  >();
 
   constructor(config: EventManagerConfig, logger: ILogger) {
     super(config, logger);
@@ -146,7 +155,7 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
     try {
       // Update workflow metrics
       this.updateWorkflowMetrics(event);
-      
+
       // Add workflow-specific metadata
       const enrichedEvent = {
         ...event,
@@ -156,8 +165,8 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
           processingTime: Date.now(),
           workflowId: event.workflowId,
           taskId: event.taskId,
-          orchestrationId: event.data?.orchestrationId
-        }
+          orchestrationId: event.data?.orchestrationId,
+        },
       };
 
       // Emit through base manager
@@ -166,7 +175,9 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
       // Route to specific workflow handlers
       await this.routeWorkflowEvent(enrichedEvent);
 
-      this.logger.debug(`Workflow event emitted: ${event.operation} for ${event.workflowId}`);
+      this.logger.debug(
+        `Workflow event emitted: ${event.operation} for ${event.workflowId}`,
+      );
     } catch (error) {
       this.workflowMetrics.failedWorkflows++;
       this.logger.error('Failed to emit workflow event:', error);
@@ -180,8 +191,10 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
   subscribeExecutionEvents(listener: (event: WorkflowEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.execution.set(subscriptionId, listener);
-    
-    this.logger.debug(`Execution event subscription created: ${subscriptionId}`);
+
+    this.logger.debug(
+      `Execution event subscription created: ${subscriptionId}`,
+    );
     return subscriptionId;
   }
 
@@ -191,7 +204,7 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
   subscribeTaskEvents(listener: (event: WorkflowEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.task.set(subscriptionId, listener);
-    
+
     this.logger.debug(`Task event subscription created: ${subscriptionId}`);
     return subscriptionId;
   }
@@ -199,11 +212,15 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
   /**
    * Subscribe to orchestration events.
    */
-  subscribeOrchestrationEvents(listener: (event: WorkflowEvent) => void): string {
+  subscribeOrchestrationEvents(
+    listener: (event: WorkflowEvent) => void,
+  ): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.orchestration.set(subscriptionId, listener);
-    
-    this.logger.debug(`Orchestration event subscription created: ${subscriptionId}`);
+
+    this.logger.debug(
+      `Orchestration event subscription created: ${subscriptionId}`,
+    );
     return subscriptionId;
   }
 
@@ -213,8 +230,10 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
   subscribePerformanceEvents(listener: (event: WorkflowEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.performance.set(subscriptionId, listener);
-    
-    this.logger.debug(`Performance event subscription created: ${subscriptionId}`);
+
+    this.logger.debug(
+      `Performance event subscription created: ${subscriptionId}`,
+    );
     return subscriptionId;
   }
 
@@ -224,8 +243,10 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
   subscribeDependencyEvents(listener: (event: WorkflowEvent) => void): string {
     const subscriptionId = this.generateSubscriptionId();
     this.subscriptions.dependency.set(subscriptionId, listener);
-    
-    this.logger.debug(`Dependency event subscription created: ${subscriptionId}`);
+
+    this.logger.debug(
+      `Dependency event subscription created: ${subscriptionId}`,
+    );
     return subscriptionId;
   }
 
@@ -260,13 +281,15 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
     };
   }> {
     const totalWorkflows = this.workflowMetrics.totalWorkflows;
-    const failureRate = totalWorkflows > 0 
-      ? this.workflowMetrics.failedWorkflows / totalWorkflows 
-      : 0;
+    const failureRate =
+      totalWorkflows > 0
+        ? this.workflowMetrics.failedWorkflows / totalWorkflows
+        : 0;
 
-    const taskFailureRate = this.workflowMetrics.totalTasks > 0
-      ? this.workflowMetrics.failedTasks / this.workflowMetrics.totalTasks
-      : 0;
+    const taskFailureRate =
+      this.workflowMetrics.totalTasks > 0
+        ? this.workflowMetrics.failedTasks / this.workflowMetrics.totalTasks
+        : 0;
 
     // Update performance stats
     this.updatePerformanceStats();
@@ -279,24 +302,26 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
         successRate: this.workflowMetrics.performanceStats.successRate,
         averageExecutionTime: this.workflowMetrics.averageExecutionTime,
         averageTaskTime: this.workflowMetrics.performanceStats.averageTaskTime,
-        longestWorkflow: this.workflowMetrics.longestWorkflow
+        longestWorkflow: this.workflowMetrics.longestWorkflow,
       },
       execution: {
         totalWorkflows: this.workflowMetrics.totalWorkflows,
         completedWorkflows: this.workflowMetrics.completedWorkflows,
         failedWorkflows: this.workflowMetrics.failedWorkflows,
-        retryCount: this.workflowMetrics.retryCount
+        retryCount: this.workflowMetrics.retryCount,
       },
       tasks: {
         total: this.workflowMetrics.totalTasks,
         completed: this.workflowMetrics.completedTasks,
         failed: this.workflowMetrics.failedTasks,
-        bottlenecks: Array.from(this.workflowMetrics.performanceStats.bottleneckTasks)
+        bottlenecks: Array.from(
+          this.workflowMetrics.performanceStats.bottleneckTasks,
+        ),
       },
       orchestration: {
         events: this.workflowMetrics.orchestrationEvents,
-        dependencyResolutions: this.workflowMetrics.dependencyResolutions
-      }
+        dependencyResolutions: this.workflowMetrics.dependencyResolutions,
+      },
     };
   }
 
@@ -310,8 +335,8 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
     return {
       ...baseMetrics,
       customMetrics: {
-        workflow: workflowMetrics
-      }
+        workflow: workflowMetrics,
+      },
     };
   }
 
@@ -326,13 +351,15 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
     const highFailureRate = workflowMetrics.failureRate > 0.2; // 20% failure rate
     const manyActiveWorkflows = workflowMetrics.activeWorkflows > 100; // 100 active workflows
     const lowSuccessRate = workflowMetrics.performance.successRate < 0.8; // 80% success rate
-    const slowExecution = workflowMetrics.performance.averageExecutionTime > 60000; // 1 minute
+    const slowExecution =
+      workflowMetrics.performance.averageExecutionTime > 60000; // 1 minute
 
-    const isHealthy = baseStatus.status === 'healthy' && 
-                     !highFailureRate && 
-                     !manyActiveWorkflows && 
-                     !lowSuccessRate &&
-                     !slowExecution;
+    const isHealthy =
+      baseStatus.status === 'healthy' &&
+      !highFailureRate &&
+      !manyActiveWorkflows &&
+      !lowSuccessRate &&
+      !slowExecution;
 
     return {
       ...baseStatus,
@@ -343,9 +370,10 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
           activeWorkflows: workflowMetrics.activeWorkflows,
           failureRate: workflowMetrics.failureRate,
           successRate: workflowMetrics.performance.successRate,
-          averageExecutionTime: workflowMetrics.performance.averageExecutionTime
-        }
-      }
+          averageExecutionTime:
+            workflowMetrics.performance.averageExecutionTime,
+        },
+      },
     };
   }
 
@@ -355,18 +383,25 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
 
   private initializeWorkflowHandlers(): void {
     this.logger.debug('Initializing workflow event handlers');
-    
+
     // Set up event type routing
-    this.subscribe(['workflow:execution', 'workflow:task', 'workflow:orchestration', 
-                   'workflow:performance', 'workflow:dependency'], 
-                  this.handleWorkflowEvent.bind(this));
+    this.subscribe(
+      [
+        'workflow:execution',
+        'workflow:task',
+        'workflow:orchestration',
+        'workflow:performance',
+        'workflow:dependency',
+      ],
+      this.handleWorkflowEvent.bind(this),
+    );
   }
 
   private async handleWorkflowEvent(event: WorkflowEvent): Promise<void> {
     try {
       // Route based on operation type
       const operationType = event.type.split(':')[1];
-      
+
       switch (operationType) {
         case 'execution':
           await this.notifySubscribers(this.subscriptions.execution, event);
@@ -386,7 +421,6 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
         default:
           this.logger.warn(`Unknown workflow operation type: ${operationType}`);
       }
-
     } catch (error) {
       this.logger.error('Workflow event handling failed:', error);
       throw error;
@@ -411,12 +445,15 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
             startTime: Date.now(),
             totalTasks: event.data?.totalTasks || 0,
             completedTasks: 0,
-            failedTasks: 0
+            failedTasks: 0,
           });
         }
         break;
       case 'complete':
-        this.workflowMetrics.activeWorkflows = Math.max(0, this.workflowMetrics.activeWorkflows - 1);
+        this.workflowMetrics.activeWorkflows = Math.max(
+          0,
+          this.workflowMetrics.activeWorkflows - 1,
+        );
         this.workflowMetrics.completedWorkflows++;
         this.logger.info(`Workflow completed: ${event.workflowId}`);
         if (event.workflowId && this.activeWorkflows.has(event.workflowId)) {
@@ -430,16 +467,23 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
         }
         break;
       case 'fail':
-        this.workflowMetrics.activeWorkflows = Math.max(0, this.workflowMetrics.activeWorkflows - 1);
+        this.workflowMetrics.activeWorkflows = Math.max(
+          0,
+          this.workflowMetrics.activeWorkflows - 1,
+        );
         this.workflowMetrics.failedWorkflows++;
-        this.logger.error(`Workflow failed: ${event.workflowId} - ${event.data?.error}`);
+        this.logger.error(
+          `Workflow failed: ${event.workflowId} - ${event.data?.error}`,
+        );
         if (event.workflowId) {
           this.activeWorkflows.delete(event.workflowId);
         }
         break;
       case 'retry':
         this.workflowMetrics.retryCount++;
-        this.logger.warn(`Workflow retry: ${event.workflowId} (attempt ${event.data?.attempt})`);
+        this.logger.warn(
+          `Workflow retry: ${event.workflowId} (attempt ${event.data?.attempt})`,
+        );
         break;
       case 'task-complete':
         this.workflowMetrics.completedTasks++;
@@ -453,24 +497,35 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
           this.activeWorkflows.get(event.workflowId)!.failedTasks++;
         }
         // Track bottleneck tasks
-        if (event.taskId && event.data?.duration && event.data.duration > 30000) { // 30 second threshold
-          this.workflowMetrics.performanceStats.bottleneckTasks.add(event.taskId);
+        if (
+          event.taskId &&
+          event.data?.duration &&
+          event.data.duration > 30000
+        ) {
+          // 30 second threshold
+          this.workflowMetrics.performanceStats.bottleneckTasks.add(
+            event.taskId,
+          );
         }
         break;
       case 'dependency-resolved':
         this.workflowMetrics.dependencyResolutions++;
-        this.logger.debug(`Dependency resolved: ${event.data?.dependency} for ${event.workflowId}`);
+        this.logger.debug(
+          `Dependency resolved: ${event.data?.dependency} for ${event.workflowId}`,
+        );
         break;
       case 'orchestrate':
         this.workflowMetrics.orchestrationEvents++;
-        this.logger.debug(`Orchestration event: ${event.data?.action} for ${event.workflowId}`);
+        this.logger.debug(
+          `Orchestration event: ${event.data?.action} for ${event.workflowId}`,
+        );
         break;
     }
   }
 
   private updateWorkflowMetrics(event: WorkflowEvent): void {
     const operationType = event.type.split(':')[1];
-    
+
     switch (operationType) {
       case 'execution':
         if (event.operation === 'start') {
@@ -513,34 +568,37 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
   private updatePerformanceStats(): void {
     const totalWorkflows = this.workflowMetrics.totalWorkflows;
     const completedWorkflows = this.workflowMetrics.completedWorkflows;
-    
-    this.workflowMetrics.performanceStats.successRate = totalWorkflows > 0 
-      ? completedWorkflows / totalWorkflows 
-      : 0;
 
-    this.workflowMetrics.averageExecutionTime = completedWorkflows > 0
-      ? this.workflowMetrics.totalExecutionTime / completedWorkflows
-      : 0;
+    this.workflowMetrics.performanceStats.successRate =
+      totalWorkflows > 0 ? completedWorkflows / totalWorkflows : 0;
+
+    this.workflowMetrics.averageExecutionTime =
+      completedWorkflows > 0
+        ? this.workflowMetrics.totalExecutionTime / completedWorkflows
+        : 0;
 
     const completedTasks = this.workflowMetrics.completedTasks;
-    this.workflowMetrics.performanceStats.averageTaskTime = completedTasks > 0
-      ? this.workflowMetrics.totalExecutionTime / completedTasks
-      : 0;
+    this.workflowMetrics.performanceStats.averageTaskTime =
+      completedTasks > 0
+        ? this.workflowMetrics.totalExecutionTime / completedTasks
+        : 0;
 
     this.workflowMetrics.performanceStats.lastCalculated = new Date();
   }
 
   private async notifySubscribers(
-    subscribers: Map<string, (event: WorkflowEvent) => void>, 
-    event: WorkflowEvent
+    subscribers: Map<string, (event: WorkflowEvent) => void>,
+    event: WorkflowEvent,
   ): Promise<void> {
-    const notifications = Array.from(subscribers.values()).map(async (listener) => {
-      try {
-        await listener(event);
-      } catch (error) {
-        this.logger.error('Workflow event listener failed:', error);
-      }
-    });
+    const notifications = Array.from(subscribers.values()).map(
+      async (listener) => {
+        try {
+          await listener(event);
+        } catch (error) {
+          this.logger.error('Workflow event listener failed:', error);
+        }
+      },
+    );
 
     await Promise.allSettled(notifications);
   }
@@ -552,27 +610,27 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
 
 /**
  * Factory for creating WorkflowEventManager instances.
- * 
+ *
  * Provides configuration management and instance creation for workflow
  * event managers with optimized settings for workflow orchestration and
  * reliable process execution with comprehensive tracking.
- * 
+ *
  * ## Configuration Options
- * 
+ *
  * - **Reliable Processing**: Guaranteed delivery with retry mechanisms
  * - **Workflow Tracking**: Comprehensive execution state management
  * - **Performance Analytics**: Execution times, success rates, bottlenecks
  * - **Dependency Management**: Complex workflow dependency resolution
- * 
+ *
  * @example
  * ```typescript
  * const factory = new WorkflowEventManagerFactory(logger, config);
- * 
+ *
  * const orchestrationManager = await factory.create({
  *   name: 'main-orchestration',
  *   type: 'workflow',
  *   maxListeners: 200,
- *   processing: { 
+ *   processing: {
  *     strategy: 'reliable',
  *     retries: 3,
  *     timeout: 60000
@@ -580,10 +638,12 @@ class WorkflowEventManager extends BaseEventManager implements IWorkflowEventMan
  * });
  * ```
  */
-export class WorkflowEventManagerFactory implements IEventManagerFactory<EventManagerConfig> {
+export class WorkflowEventManagerFactory
+  implements IEventManagerFactory<EventManagerConfig>
+{
   constructor(
     private logger: ILogger,
-    private config: IConfig
+    private config: IConfig,
   ) {
     this.logger.debug('WorkflowEventManagerFactory initialized');
   }
@@ -599,7 +659,9 @@ export class WorkflowEventManagerFactory implements IEventManagerFactory<EventMa
     const manager = new WorkflowEventManager(optimizedConfig, this.logger);
     await this.configureWorkflowManager(manager, optimizedConfig);
 
-    this.logger.info(`Workflow event manager created successfully: ${config.name}`);
+    this.logger.info(
+      `Workflow event manager created successfully: ${config.name}`,
+    );
     return manager;
   }
 
@@ -613,11 +675,15 @@ export class WorkflowEventManagerFactory implements IEventManagerFactory<EventMa
     }
 
     if (config.processing?.timeout && config.processing.timeout < 5000) {
-      this.logger.warn('Workflow processing timeout < 5000ms may be too short for complex workflows');
+      this.logger.warn(
+        'Workflow processing timeout < 5000ms may be too short for complex workflows',
+      );
     }
   }
 
-  private applyWorkflowDefaults(config: EventManagerConfig): EventManagerConfig {
+  private applyWorkflowDefaults(
+    config: EventManagerConfig,
+  ): EventManagerConfig {
     return {
       ...config,
       maxListeners: config.maxListeners || 200,
@@ -626,29 +692,31 @@ export class WorkflowEventManagerFactory implements IEventManagerFactory<EventMa
         timeout: 30000, // 30 second timeout for workflow operations
         retries: 3, // Multiple retries for workflow reliability
         batchSize: 25, // Moderate batch size for workflows
-        ...config.processing
+        ...config.processing,
       },
       persistence: {
         enabled: true, // Important to track workflow state
         maxAge: 2592000000, // 30 days
-        ...config.persistence
+        ...config.persistence,
       },
       monitoring: {
         enabled: true,
         metricsInterval: 60000, // 1 minute metrics collection
         healthCheckInterval: 180000, // 3 minute health checks
-        ...config.monitoring
-      }
+        ...config.monitoring,
+      },
     };
   }
 
   private async configureWorkflowManager(
-    manager: WorkflowEventManager, 
-    config: EventManagerConfig
+    manager: WorkflowEventManager,
+    config: EventManagerConfig,
   ): Promise<void> {
     if (config.monitoring?.enabled) {
       await manager.start();
-      this.logger.debug(`Workflow event manager monitoring started: ${config.name}`);
+      this.logger.debug(
+        `Workflow event manager monitoring started: ${config.name}`,
+      );
     }
 
     if (config.monitoring?.healthCheckInterval) {
@@ -656,10 +724,16 @@ export class WorkflowEventManagerFactory implements IEventManagerFactory<EventMa
         try {
           const status = await manager.healthCheck();
           if (status.status !== 'healthy') {
-            this.logger.warn(`Workflow manager health degraded: ${config.name}`, status.metadata);
+            this.logger.warn(
+              `Workflow manager health degraded: ${config.name}`,
+              status.metadata,
+            );
           }
         } catch (error) {
-          this.logger.error(`Workflow manager health check failed: ${config.name}`, error);
+          this.logger.error(
+            `Workflow manager health check failed: ${config.name}`,
+            error,
+          );
         }
       }, config.monitoring.healthCheckInterval);
     }

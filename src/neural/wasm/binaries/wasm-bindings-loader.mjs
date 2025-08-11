@@ -113,7 +113,8 @@ class WasmBindingsLoader {
     // Helper functions for memory management
     const getObject = (idx) => this.heap[idx];
     const addHeapObject = (obj) => {
-      if (this.heap_next === this.heap.length) this.heap.push(this.heap.length + 1);
+      if (this.heap_next === this.heap.length)
+        this.heap.push(this.heap.length + 1);
       const idx = this.heap_next;
       this.heap_next = this.heap[idx];
       this.heap[idx] = obj;
@@ -135,7 +136,10 @@ class WasmBindingsLoader {
     };
 
     // String handling for WASM
-    const cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
+    const cachedTextDecoder = new TextDecoder('utf-8', {
+      ignoreBOM: true,
+      fatal: true,
+    });
     let cachedUint8Memory0 = null;
 
     const getUint8Memory0 = () => {
@@ -152,7 +156,9 @@ class WasmBindingsLoader {
 
     const getStringFromWasm0 = (ptr, len) => {
       ptr = ptr >>> 0;
-      return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
+      return cachedTextDecoder.decode(
+        getUint8Memory0().subarray(ptr, ptr + len),
+      );
     };
 
     // Error handling function
@@ -171,10 +177,14 @@ class WasmBindingsLoader {
     const isLikeNone = (x) => x === undefined || x === null;
 
     // Add all the required import functions
-    imports.wbg.__wbg_buffer_609cc3eee51ed158 = (arg0) => addHeapObject(getObject(arg0).buffer);
+    imports.wbg.__wbg_buffer_609cc3eee51ed158 = (arg0) =>
+      addHeapObject(getObject(arg0).buffer);
 
     imports.wbg.__wbg_call_672a4d21634d4a24 = () =>
-      handleError((arg0, arg1) => addHeapObject(getObject(arg0).call(getObject(arg1))), arguments);
+      handleError(
+        (arg0, arg1) => addHeapObject(getObject(arg0).call(getObject(arg1))),
+        arguments,
+      );
 
     imports.wbg.__wbg_error_524f506f44df1645 = (arg0) => {
       console.error(getObject(arg0));
@@ -188,12 +198,14 @@ class WasmBindingsLoader {
       console.error(v0);
     }.bind(this);
 
-    imports.wbg.__wbg_from_2a5d3e218e67aa85 = (arg0) => addHeapObject(Array.from(getObject(arg0)));
+    imports.wbg.__wbg_from_2a5d3e218e67aa85 = (arg0) =>
+      addHeapObject(Array.from(getObject(arg0)));
 
     imports.wbg.__wbg_get_67b2ba62fc30de12 = () =>
       handleError(
-        (arg0, arg1) => addHeapObject(Reflect.get(getObject(arg0), getObject(arg1))),
-        arguments
+        (arg0, arg1) =>
+          addHeapObject(Reflect.get(getObject(arg0), getObject(arg1))),
+        arguments,
       );
 
     imports.wbg.__wbg_get_b9b93047fe3cf45b = (arg0, arg1) =>
@@ -220,11 +232,13 @@ class WasmBindingsLoader {
       return ret;
     };
 
-    imports.wbg.__wbg_length_e2d2a49132c1b256 = (arg0) => getObject(arg0).length;
+    imports.wbg.__wbg_length_e2d2a49132c1b256 = (arg0) =>
+      getObject(arg0).length;
 
     imports.wbg.__wbg_log_c222819a41e063d3 = (_arg0) => {};
 
-    imports.wbg.__wbg_message_97a2af9b89d693a3 = (arg0) => addHeapObject(getObject(arg0).message);
+    imports.wbg.__wbg_message_97a2af9b89d693a3 = (arg0) =>
+      addHeapObject(getObject(arg0).message);
 
     imports.wbg.__wbg_new_780abee5c1739fd7 = (arg0) => {
       try {
@@ -247,21 +261,27 @@ class WasmBindingsLoader {
       }
     };
 
-    imports.wbg.__wbg_newwithbyteoffsetandlength_e6b7e69acd4c7354 = (arg0, arg1, arg2) =>
-      addHeapObject(new Uint8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0));
+    imports.wbg.__wbg_newwithbyteoffsetandlength_e6b7e69acd4c7354 = (
+      arg0,
+      arg1,
+      arg2,
+    ) => addHeapObject(new Uint8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0));
 
     imports.wbg.__wbg_now_807e54c39636c349 = () => Date.now();
 
     imports.wbg.__wbg_random_3ad904d98382defe = () => Math.random();
 
-    imports.wbg.__wbg_static_accessor_GLOBAL_88a902d13a557d07 = () => addHeapObject(globalThis);
+    imports.wbg.__wbg_static_accessor_GLOBAL_88a902d13a557d07 = () =>
+      addHeapObject(globalThis);
 
     imports.wbg.__wbg_static_accessor_GLOBAL_THIS_56578be7e9f832b0 = () =>
       addHeapObject(globalThis);
 
-    imports.wbg.__wbg_static_accessor_SELF_37c5d418e4bf5819 = () => addHeapObject(globalThis);
+    imports.wbg.__wbg_static_accessor_SELF_37c5d418e4bf5819 = () =>
+      addHeapObject(globalThis);
 
-    imports.wbg.__wbg_static_accessor_WINDOW_5de37043a91a9c40 = () => addHeapObject(globalThis);
+    imports.wbg.__wbg_static_accessor_WINDOW_5de37043a91a9c40 = () =>
+      addHeapObject(globalThis);
 
     imports.wbg.__wbg_warn_4ca3906c248c47c4 = (arg0) => {
       console.warn(getObject(arg0));
@@ -302,7 +322,8 @@ class WasmBindingsLoader {
       dataView.setInt32(arg0 + 4 * 0, ptr, true);
     }.bind(this);
 
-    imports.wbg.__wbindgen_is_undefined = (arg0) => getObject(arg0) === undefined;
+    imports.wbg.__wbindgen_is_undefined = (arg0) =>
+      getObject(arg0) === undefined;
 
     imports.wbg.__wbindgen_memory = function () {
       const wasm = globalWasm || this.wasm;
@@ -319,7 +340,8 @@ class WasmBindingsLoader {
       return 0;
     };
 
-    imports.wbg.__wbindgen_object_clone_ref = (arg0) => addHeapObject(getObject(arg0));
+    imports.wbg.__wbindgen_object_clone_ref = (arg0) =>
+      addHeapObject(getObject(arg0));
 
     imports.wbg.__wbindgen_object_drop_ref = (arg0) => {
       takeObject(arg0);

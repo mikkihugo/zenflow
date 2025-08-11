@@ -29,7 +29,12 @@ import type {
 
 export interface ExecutionPattern {
   id: string;
-  type: 'task_completion' | 'communication' | 'resource_utilization' | 'failure' | 'coordination';
+  type:
+    | 'task_completion'
+    | 'communication'
+    | 'resource_utilization'
+    | 'failure'
+    | 'coordination';
   pattern: any;
   frequency: number;
   confidence: number;
@@ -98,7 +103,10 @@ export interface FailurePattern {
   recoveryTime: number;
 }
 
-export class PatternRecognitionEngine extends EventEmitter implements IPatternRecognitionEngine {
+export class PatternRecognitionEngine
+  extends EventEmitter
+  implements IPatternRecognitionEngine
+{
   private patterns: Map<string, ExecutionPattern> = new Map();
   private traces: ExecutionTrace[] = [];
   private communicationPatterns: Map<string, CommunicationPattern> = new Map();
@@ -113,8 +121,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     super();
     this.config = config || this.getDefaultConfig();
     this.context = context || this.getDefaultContext();
-    this.minPatternFrequency = this.config.patternRecognition.minPatternFrequency;
-    this.confidenceThreshold = this.config.patternRecognition.confidenceThreshold;
+    this.minPatternFrequency =
+      this.config.patternRecognition.minPatternFrequency;
+    this.confidenceThreshold =
+      this.config.patternRecognition.confidenceThreshold;
     this.analysisWindow = this.config.patternRecognition.analysisWindow;
     this.startPatternAnalysis();
   }
@@ -124,7 +134,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
    *
    * @param data
    */
-  async analyzeExecutionPatterns(data: ExecutionData[]): Promise<PatternAnalysis> {
+  async analyzeExecutionPatterns(
+    data: ExecutionData[],
+  ): Promise<PatternAnalysis> {
     // Convert ExecutionData to ExecutionTrace format for compatibility
     const traces = data.map(this.convertToTrace.bind(this));
 
@@ -173,7 +185,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   classifyTaskCompletion(task: TaskResult): TaskCompletionPattern {
     // Find similar task completions from historical data
     const similarTasks = this.traces.filter(
-      (trace) => trace.action === 'task_completion' && trace.agentId === task.agentId
+      (trace) =>
+        trace.action === 'task_completion' && trace.agentId === task.agentId,
     );
 
     // Calculate pattern metrics
@@ -183,7 +196,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
         ? durations.reduce((sum, d) => sum + d, 0) / durations.length
         : task.duration;
 
-    const successfulTasks = similarTasks.filter((t) => t.result?.success !== false);
+    const successfulTasks = similarTasks.filter(
+      (t) => t.result?.success !== false,
+    );
     const successRate =
       similarTasks.length > 0
         ? successfulTasks.length / similarTasks.length
@@ -193,7 +208,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
     // Extract resource profile
     const resourceProfile = this.calculateAverageResourceUsage(
-      similarTasks.map((t) => t.resourceUsage)
+      similarTasks.map((t) => t.resourceUsage),
     );
 
     // Identify optimal conditions
@@ -304,7 +319,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
           trends: this.analyzeTrends(values),
           seasonality: this.detectSeasonality(values),
           anomalies: this.detectResourceAnomalies(values, resourceType),
-          optimization: this.generateResourceOptimizations(values, resourceType),
+          optimization: this.generateResourceOptimizations(
+            values,
+            resourceType,
+          ),
         };
 
         patterns.push(pattern);
@@ -332,7 +350,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
       // Calculate failure probability based on frequency and severity
       const probability = Math.min(
         0.95,
-        (pattern.frequency / 100) * this.getSeverityMultiplier(pattern.severity)
+        (pattern.frequency / 100) *
+          this.getSeverityMultiplier(pattern.severity),
       );
 
       // Estimate time to failure based on historical data
@@ -369,8 +388,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
     this.emit('failuresPredicted', {
       predictions: predictions.length,
-      highRisk: predictions.filter((p) => p.riskLevel === 'critical' || p.riskLevel === 'high')
-        .length,
+      highRisk: predictions.filter(
+        (p) => p.riskLevel === 'critical' || p.riskLevel === 'high',
+      ).length,
       timestamp: Date.now(),
     });
 
@@ -418,7 +438,11 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
       const completionTimes = traces.map((t) => t.duration);
       const resourceUsages = traces.map((t) => t.resourceUsage);
 
-      const pattern = this.calculateTaskPattern(taskType, completionTimes, resourceUsages);
+      const pattern = this.calculateTaskPattern(
+        taskType,
+        completionTimes,
+        resourceUsages,
+      );
 
       if (pattern.frequency >= this.minPatternFrequency) {
         this.patterns.set(`task_completion_${taskType}`, {
@@ -440,7 +464,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
    */
   private analyzeCommunicationPatterns(): void {
     const communicationTraces = this.traces.filter(
-      (t) => t.action.includes('message') || t.action.includes('communicate')
+      (t) => t.action.includes('message') || t.action.includes('communicate'),
     );
 
     const pairwiseCommunication = new Map<string, number>();
@@ -449,7 +473,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     for (const trace of communicationTraces) {
       if (trace.parameters?.target) {
         const key = `${trace.agentId}->${trace.parameters.target}`;
-        pairwiseCommunication.set(key, (pairwiseCommunication.get(key) || 0) + 1);
+        pairwiseCommunication.set(
+          key,
+          (pairwiseCommunication.get(key) || 0) + 1,
+        );
 
         const msgType = trace.parameters.messageType || 'unknown';
         messageTypes.set(msgType, (messageTypes.get(msgType) || 0) + 1);
@@ -468,12 +495,24 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
           messageType: this.getMostFrequentMessageTypeFromTraces(
             source,
             target,
-            communicationTraces
+            communicationTraces,
           ),
           frequency,
-          latency: this.calculateAverageLatencyFromTraces(source, target, communicationTraces),
-          payloadSize: this.calculateAveragePayloadSize(source, target, communicationTraces),
-          reliability: this.calculateReliabilityFromTraces(source, target, communicationTraces),
+          latency: this.calculateAverageLatencyFromTraces(
+            source,
+            target,
+            communicationTraces,
+          ),
+          payloadSize: this.calculateAveragePayloadSize(
+            source,
+            target,
+            communicationTraces,
+          ),
+          reliability: this.calculateReliabilityFromTraces(
+            source,
+            target,
+            communicationTraces,
+          ),
         };
 
         this.communicationPatterns.set(pair, commPattern);
@@ -509,7 +548,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
    * Analyze failure patterns.
    */
   private analyzeFailurePatterns(): void {
-    const failureTraces = this.traces.filter((t) => t.result?.error || t.result?.success === false);
+    const failureTraces = this.traces.filter(
+      (t) => t.result?.error || t.result?.success === false,
+    );
 
     const failureTypes = new Map<string, ExecutionTrace[]>();
 
@@ -542,7 +583,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
    */
   private analyzeCoordinationPatterns(): void {
     const coordinationTraces = this.traces.filter(
-      (t) => t.action.includes('coordinate') || t.action.includes('synchronize')
+      (t) =>
+        t.action.includes('coordinate') || t.action.includes('synchronize'),
     );
 
     const topologies = new Map<string, ExecutionTrace[]>();
@@ -615,7 +657,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     let patterns = Array.from(this.communicationPatterns.values());
 
     if (agentId) {
-      patterns = patterns.filter((p) => p.source === agentId || p.target === agentId);
+      patterns = patterns.filter(
+        (p) => p.source === agentId || p.target === agentId,
+      );
     }
 
     return patterns.sort((a, b) => b.frequency - a.frequency);
@@ -625,7 +669,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
    * Get failure patterns.
    */
   getFailurePatterns(): FailurePattern[] {
-    return Array.from(this.failurePatterns.values()).sort((a, b) => b.frequency - a.frequency);
+    return Array.from(this.failurePatterns.values()).sort(
+      (a, b) => b.frequency - a.frequency,
+    );
   }
 
   /**
@@ -658,10 +704,22 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     const groups = new Map<string, number[]>();
 
     for (const trace of this.traces) {
-      groups.set('cpu', (groups.get('cpu') || []).concat(trace.resourceUsage.cpu));
-      groups.set('memory', (groups.get('memory') || []).concat(trace.resourceUsage.memory));
-      groups.set('network', (groups.get('network') || []).concat(trace.resourceUsage.network));
-      groups.set('diskIO', (groups.get('diskIO') || []).concat(trace.resourceUsage.diskIO));
+      groups.set(
+        'cpu',
+        (groups.get('cpu') || []).concat(trace.resourceUsage.cpu),
+      );
+      groups.set(
+        'memory',
+        (groups.get('memory') || []).concat(trace.resourceUsage.memory),
+      );
+      groups.set(
+        'network',
+        (groups.get('network') || []).concat(trace.resourceUsage.network),
+      );
+      groups.set(
+        'diskIO',
+        (groups.get('diskIO') || []).concat(trace.resourceUsage.diskIO),
+      );
     }
 
     return groups;
@@ -670,7 +728,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   private calculateTaskPattern(
     taskType: string,
     durations: number[],
-    resources: ResourceUsage[]
+    resources: ResourceUsage[],
   ): any {
     return {
       taskType,
@@ -682,7 +740,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     };
   }
 
-  private calculateResourcePattern(resourceType: string, usages: number[]): any {
+  private calculateResourcePattern(
+    resourceType: string,
+    usages: number[],
+  ): any {
     return {
       resourceType,
       average: usages.reduce((a, b) => a + b, 0) / usages.length,
@@ -694,27 +755,38 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     };
   }
 
-  private calculateCoordinationPattern(topology: string, traces: ExecutionTrace[]): any {
+  private calculateCoordinationPattern(
+    topology: string,
+    traces: ExecutionTrace[],
+  ): any {
     const durations = traces.map((t) => t.duration);
-    const successRate = traces.filter((t) => t.result?.success !== false).length / traces.length;
+    const successRate =
+      traces.filter((t) => t.result?.success !== false).length / traces.length;
 
     return {
       topology,
-      averageCoordinationTime: durations.reduce((a, b) => a + b, 0) / durations.length,
+      averageCoordinationTime:
+        durations.reduce((a, b) => a + b, 0) / durations.length,
       successRate,
       agentParticipation: this.calculateAgentParticipation(traces),
-      effectiveness: successRate * (1 / (durations.reduce((a, b) => a + b, 0) / durations.length)),
+      effectiveness:
+        successRate *
+        (1 / (durations.reduce((a, b) => a + b, 0) / durations.length)),
     };
   }
 
   private calculateConfidence(pattern: any): number {
     // Simple confidence calculation based on frequency and stability
     const frequencyScore = Math.min(pattern.frequency / 10, 1);
-    const stabilityScore = 1 - (pattern.durationVariance || 0) / (pattern.averageDuration || 1);
+    const stabilityScore =
+      1 - (pattern.durationVariance || 0) / (pattern.averageDuration || 1);
     return (frequencyScore + stabilityScore) / 2;
   }
 
-  private calculateMetadata(pattern: any, traces: ExecutionTrace[]): PatternMetadata {
+  private calculateMetadata(
+    pattern: any,
+    traces: ExecutionTrace[],
+  ): PatternMetadata {
     return {
       complexity: this.calculateComplexity(pattern, traces),
       predictability: this.calculatePredictability(pattern, traces),
@@ -746,10 +818,14 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   // Additional helper methods would be implemented here...
   private calculateVariance(values: number[]): number {
     const mean = values.reduce((a, b) => a + b, 0) / values.length;
-    return values.reduce((acc, val) => acc + (val - mean) ** 2, 0) / values.length;
+    return (
+      values.reduce((acc, val) => acc + (val - mean) ** 2, 0) / values.length
+    );
   }
 
-  private calculateAverageResourceUsage(resources: ResourceUsage[]): ResourceUsage {
+  private calculateAverageResourceUsage(
+    resources: ResourceUsage[],
+  ): ResourceUsage {
     if (resources.length === 0) {
       return {
         cpu: 0,
@@ -764,11 +840,16 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
     return {
       cpu: resources.reduce((sum, r) => sum + r.cpu, 0) / resources.length,
-      memory: resources.reduce((sum, r) => sum + r.memory, 0) / resources.length,
-      network: resources.reduce((sum, r) => sum + r.network, 0) / resources.length,
-      diskIO: resources.reduce((sum, r) => sum + r.diskIO, 0) / resources.length,
+      memory:
+        resources.reduce((sum, r) => sum + r.memory, 0) / resources.length,
+      network:
+        resources.reduce((sum, r) => sum + r.network, 0) / resources.length,
+      diskIO:
+        resources.reduce((sum, r) => sum + r.diskIO, 0) / resources.length,
       timestamp: Date.now(),
-      duration: resources.reduce((sum, r) => sum + (r.duration || 0), 0) / resources.length,
+      duration:
+        resources.reduce((sum, r) => sum + (r.duration || 0), 0) /
+        resources.length,
       context: 'aggregated',
     };
   }
@@ -807,22 +888,36 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return paramCount / 10 + variance / 1000;
   }
 
-  private calculatePredictability(pattern: any, _traces: ExecutionTrace[]): number {
+  private calculatePredictability(
+    pattern: any,
+    _traces: ExecutionTrace[],
+  ): number {
     // Higher predictability for lower variance
     return 1 - Math.min(pattern.durationVariance || 0, 1);
   }
 
-  private calculateStabilityFromPattern(pattern: any, _traces: ExecutionTrace[]): number {
+  private calculateStabilityFromPattern(
+    pattern: any,
+    _traces: ExecutionTrace[],
+  ): number {
     // Simple stability metric
     return 1 - (pattern.durationVariance || 0) / (pattern.averageDuration || 1);
   }
 
-  private calculateAnomalyScore(pattern: any, _traces: ExecutionTrace[]): number {
+  private calculateAnomalyScore(
+    pattern: any,
+    _traces: ExecutionTrace[],
+  ): number {
     // Simple anomaly detection
-    return pattern.durationVariance || 0 > (pattern.averageDuration || 1) ? 0.8 : 0.2;
+    return pattern.durationVariance || 0 > (pattern.averageDuration || 1)
+      ? 0.8
+      : 0.2;
   }
 
-  private findCorrelations(_pattern: any, _traces: ExecutionTrace[]): PatternCorrelation[] {
+  private findCorrelations(
+    _pattern: any,
+    _traces: ExecutionTrace[],
+  ): PatternCorrelation[] {
     // Simplified correlation detection
     return [];
   }
@@ -830,10 +925,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   private getMostFrequentMessageTypeFromTraces(
     source: string,
     target: string,
-    traces: ExecutionTrace[]
+    traces: ExecutionTrace[],
   ): string {
     const relevantTraces = traces.filter(
-      (t) => t.agentId === source && t.parameters?.target === target
+      (t) => t.agentId === source && t.parameters?.target === target,
     );
 
     const types = new Map<string, number>();
@@ -857,40 +952,48 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   private calculateAverageLatencyFromTraces(
     source: string,
     target: string,
-    traces: ExecutionTrace[]
+    traces: ExecutionTrace[],
   ): number {
     const relevantTraces = traces.filter(
-      (t) => t.agentId === source && t.parameters?.target === target
+      (t) => t.agentId === source && t.parameters?.target === target,
     );
 
     const latencies = relevantTraces.map((t) => t.duration);
-    return latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0;
+    return latencies.length > 0
+      ? latencies.reduce((a, b) => a + b, 0) / latencies.length
+      : 0;
   }
 
   private calculateAveragePayloadSize(
     source: string,
     target: string,
-    traces: ExecutionTrace[]
+    traces: ExecutionTrace[],
   ): number {
     const relevantTraces = traces.filter(
-      (t) => t.agentId === source && t.parameters?.target === target
+      (t) => t.agentId === source && t.parameters?.target === target,
     );
 
-    const sizes = relevantTraces.map((t) => JSON.stringify(t.parameters || {}).length);
+    const sizes = relevantTraces.map(
+      (t) => JSON.stringify(t.parameters || {}).length,
+    );
 
-    return sizes.length > 0 ? sizes.reduce((a, b) => a + b, 0) / sizes.length : 0;
+    return sizes.length > 0
+      ? sizes.reduce((a, b) => a + b, 0) / sizes.length
+      : 0;
   }
 
   private calculateReliabilityFromTraces(
     source: string,
     target: string,
-    traces: ExecutionTrace[]
+    traces: ExecutionTrace[],
   ): number {
     const relevantTraces = traces.filter(
-      (t) => t.agentId === source && t.parameters?.target === target
+      (t) => t.agentId === source && t.parameters?.target === target,
     );
 
-    const successful = relevantTraces.filter((t) => t.result?.success !== false).length;
+    const successful = relevantTraces.filter(
+      (t) => t.result?.success !== false,
+    ).length;
     return relevantTraces.length > 0 ? successful / relevantTraces.length : 0;
   }
 
@@ -945,7 +1048,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     };
   }
 
-  private calculateResourceMetadata(pattern: any, _usages: number[]): PatternMetadata {
+  private calculateResourceMetadata(
+    pattern: any,
+    _usages: number[],
+  ): PatternMetadata {
     return {
       complexity: pattern.variance / pattern.average,
       predictability: 1 - pattern.variance / pattern.average,
@@ -955,7 +1061,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     };
   }
 
-  private extractCoordinationContext(traces: ExecutionTrace[]): ExecutionContext {
+  private extractCoordinationContext(
+    traces: ExecutionTrace[],
+  ): ExecutionContext {
     return {
       swarmId: traces[0]?.swarmId || 'unknown',
       agentIds: [...new Set(traces.map((t) => t.agentId))],
@@ -971,7 +1079,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     };
   }
 
-  private calculateCoordinationMetadata(pattern: any, traces: ExecutionTrace[]): PatternMetadata {
+  private calculateCoordinationMetadata(
+    pattern: any,
+    traces: ExecutionTrace[],
+  ): PatternMetadata {
     return {
       complexity: traces.length / 10,
       predictability: pattern.successRate,
@@ -983,7 +1094,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   private isContextRelevant(
     patternContext: ExecutionContext,
-    targetContext: ExecutionContext
+    targetContext: ExecutionContext,
   ): boolean {
     return (
       patternContext.taskType === targetContext?.taskType ||
@@ -1094,7 +1205,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   }
 
   private calculateCentroid(data: ExecutionData[]): any {
-    const avgDuration = data.reduce((sum, d) => sum + d.duration, 0) / data.length;
+    const avgDuration =
+      data.reduce((sum, d) => sum + d.duration, 0) / data.length;
     const avgResourceUsage = this.calculateAverageResourceUsage(
       data.map(
         (d) =>
@@ -1106,8 +1218,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
             timestamp: (d.resourceUsage as any)?.timestamp || Date.now(),
             duration: (d.resourceUsage as any)?.duration || d.duration,
             context: (d.resourceUsage as any)?.context || 'execution',
-          }) as ResourceUsage
-      )
+          }) as ResourceUsage,
+      ),
     );
 
     return {
@@ -1152,9 +1264,15 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     }
 
     // Detect resource anomalies
-    for (const resourceType of ['cpu', 'memory', 'network', 'diskIO'] as const) {
+    for (const resourceType of [
+      'cpu',
+      'memory',
+      'network',
+      'diskIO',
+    ] as const) {
       const values = data.map((d) => d.resourceUsage[resourceType]);
-      const resourceMean = values.reduce((sum, v) => sum + v, 0) / values.length;
+      const resourceMean =
+        values.reduce((sum, v) => sum + v, 0) / values.length;
       const resourceStd = Math.sqrt(this.calculateVariance(values));
 
       for (let i = 0; i < data.length; i++) {
@@ -1168,7 +1286,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
               anomalies.push({
                 id: `resource_anomaly_${dataItem?.id}_${resourceType}_${Date.now()}`,
                 type: 'resource',
-                severity: zScore > 4 ? 'critical' : zScore > 3 ? 'high' : 'medium',
+                severity:
+                  zScore > 4 ? 'critical' : zScore > 3 ? 'high' : 'medium',
                 description: `Unusual ${resourceType} usage: ${value.toFixed(2)} (expected ~${resourceMean.toFixed(2)})`,
                 affectedData: [dataItem],
                 confidence: Math.min(0.9, zScore / 4),
@@ -1183,7 +1302,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return anomalies;
   }
 
-  private generateInsights(clusters: PatternCluster[], anomalies: Anomaly[]): PatternInsight[] {
+  private generateInsights(
+    clusters: PatternCluster[],
+    anomalies: Anomaly[],
+  ): PatternInsight[] {
     const insights: PatternInsight[] = [];
 
     // Generate insights from clusters
@@ -1201,7 +1323,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     }
 
     // Generate insights from anomalies
-    const criticalAnomalies = anomalies.filter((a) => a.severity === 'critical');
+    const criticalAnomalies = anomalies.filter(
+      (a) => a.severity === 'critical',
+    );
     if (criticalAnomalies.length > 0) {
       insights.push({
         type: 'warning',
@@ -1215,7 +1339,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
     // Performance recommendations
     const lowPerformanceClusters = clusters.filter(
-      (c) => c.centroid.successRate < 0.8 || c.centroid.avgDuration > 5000
+      (c) => c.centroid.successRate < 0.8 || c.centroid.avgDuration > 5000,
     );
 
     if (lowPerformanceClusters.length > 0) {
@@ -1235,20 +1359,30 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
   private calculateOverallConfidence(clusters: PatternCluster[]): number {
     if (clusters.length === 0) return 0;
 
-    const avgConfidence = clusters.reduce((sum, c) => sum + c.confidence, 0) / clusters.length;
-    const stabilityFactor = clusters.reduce((sum, c) => sum + c.stability, 0) / clusters.length;
+    const avgConfidence =
+      clusters.reduce((sum, c) => sum + c.confidence, 0) / clusters.length;
+    const stabilityFactor =
+      clusters.reduce((sum, c) => sum + c.stability, 0) / clusters.length;
 
     return (avgConfidence + stabilityFactor) / 2;
   }
 
   private calculateAverageLatency(messages: Message[]): number {
-    const latencies = messages.filter((m) => m.latency !== undefined).map((m) => m.latency!);
-    return latencies.length > 0 ? latencies.reduce((sum, l) => sum + l, 0) / latencies.length : 0;
+    const latencies = messages
+      .filter((m) => m.latency !== undefined)
+      .map((m) => m.latency!);
+    return latencies.length > 0
+      ? latencies.reduce((sum, l) => sum + l, 0) / latencies.length
+      : 0;
   }
 
   private calculateAverageSize(messages: Message[]): number {
-    const sizes = messages.filter((m) => m.size !== undefined).map((m) => m.size!);
-    return sizes.length > 0 ? sizes.reduce((sum, s) => sum + s, 0) / sizes.length : 0;
+    const sizes = messages
+      .filter((m) => m.size !== undefined)
+      .map((m) => m.size!);
+    return sizes.length > 0
+      ? sizes.reduce((sum, s) => sum + s, 0) / sizes.length
+      : 0;
   }
 
   private calculateReliability(_messages: Message[]): number {
@@ -1303,7 +1437,8 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
 
-    let direction: 'increasing' | 'decreasing' | 'stable' | 'volatile' = 'stable';
+    let direction: 'increasing' | 'decreasing' | 'stable' | 'volatile' =
+      'stable';
     if (Math.abs(slope) > 0.1) {
       direction = slope > 0 ? 'increasing' : 'decreasing';
     }
@@ -1401,7 +1536,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return (max - min) / (2 * mean);
   }
 
-  private detectResourceAnomalies(values: number[], resourceType: string): any[] {
+  private detectResourceAnomalies(
+    values: number[],
+    resourceType: string,
+  ): any[] {
     const anomalies: any[] = [];
     const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
     const std = Math.sqrt(this.calculateVariance(values));
@@ -1426,7 +1564,10 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return anomalies;
   }
 
-  private generateResourceOptimizations(values: number[], resourceType: string): any[] {
+  private generateResourceOptimizations(
+    values: number[],
+    resourceType: string,
+  ): any[] {
     const optimizations: any[] = [];
     const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
     const max = Math.max(...values);
@@ -1456,7 +1597,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return optimizations;
   }
 
-  private getSeverityMultiplier(severity: 'low' | 'medium' | 'high' | 'critical'): number {
+  private getSeverityMultiplier(
+    severity: 'low' | 'medium' | 'high' | 'critical',
+  ): number {
     switch (severity) {
       case 'low':
         return 0.25;
@@ -1502,7 +1645,7 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
 
   private calculateRiskLevel(
     probability: number,
-    severity: 'low' | 'medium' | 'high' | 'critical'
+    severity: 'low' | 'medium' | 'high' | 'critical',
   ): 'low' | 'medium' | 'high' | 'critical' {
     const severityScore = this.getSeverityMultiplier(severity);
     const riskScore = probability * severityScore;
@@ -1513,7 +1656,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     return 'low';
   }
 
-  private getRiskScore(riskLevel: 'low' | 'medium' | 'high' | 'critical'): number {
+  private getRiskScore(
+    riskLevel: 'low' | 'medium' | 'high' | 'critical',
+  ): number {
     switch (riskLevel) {
       case 'low':
         return 1;
@@ -1534,7 +1679,9 @@ export class PatternRecognitionEngine extends EventEmitter implements IPatternRe
     if (traces.length === 0) return conditions;
 
     // Analyze resource usage patterns for successful tasks
-    const avgResourceUsage = this.calculateAverageResourceUsage(traces.map((t) => t.resourceUsage));
+    const avgResourceUsage = this.calculateAverageResourceUsage(
+      traces.map((t) => t.resourceUsage),
+    );
 
     if (avgResourceUsage.cpu < 0.7) conditions.push('moderate_cpu_usage');
     if (avgResourceUsage.memory < 0.8) conditions.push('adequate_memory');

@@ -26,7 +26,11 @@ program
   .command('generate')
   .description('Generate pseudocode algorithms from specification')
   .requiredOption('--spec-file <path>', 'Path to specification JSON file')
-  .option('--output <path>', 'Output file for generated pseudocode', 'pseudocode-output.json')
+  .option(
+    '--output <path>',
+    'Output file for generated pseudocode',
+    'pseudocode-output.json',
+  )
   .option('--format <type>', 'Output format (json|markdown)', 'json')
   .action(async (options) => {
     try {
@@ -42,7 +46,8 @@ program
       const specification = JSON.parse(specContent);
 
       // Generate pseudocode structure
-      const pseudocodeStructure = await engine.generatePseudocode(specification);
+      const pseudocodeStructure =
+        await engine.generatePseudocode(specification);
 
       // Format output
       let output: string;
@@ -86,11 +91,15 @@ program
       }
 
       if (validation.optimizationSuggestions.length > 0) {
-        validation.optimizationSuggestions.forEach((_suggestion: unknown, _index: number) => {});
+        validation.optimizationSuggestions.forEach(
+          (_suggestion: unknown, _index: number) => {},
+        );
       }
 
       if (validation.recommendations.length > 0) {
-        validation.recommendations.forEach((_rec: unknown, _index: number) => {});
+        validation.recommendations.forEach(
+          (_rec: unknown, _index: number) => {},
+        );
       }
 
       // Exit with appropriate code
@@ -108,9 +117,13 @@ program
   .option(
     '--domain <type>',
     'Domain type (swarm-coordination|neural-networks|memory-systems|general)',
-    'swarm-coordination'
+    'swarm-coordination',
   )
-  .option('--output <path>', 'Output file for example specification', 'example-spec.json')
+  .option(
+    '--output <path>',
+    'Output file for example specification',
+    'example-spec.json',
+  )
   .action(async (options) => {
     try {
       const exampleSpec = {
@@ -123,7 +136,10 @@ program
             description: `Primary algorithm for ${options?.domain} functionality`,
             type: 'algorithmic',
             priority: 'HIGH',
-            testCriteria: ['Algorithm executes correctly', 'Performance meets requirements'],
+            testCriteria: [
+              'Algorithm executes correctly',
+              'Performance meets requirements',
+            ],
           },
           {
             id: 'req-002',
@@ -170,7 +186,11 @@ program
         ],
       };
 
-      await writeFile(options?.output, JSON.stringify(exampleSpec, null, 2), 'utf8');
+      await writeFile(
+        options?.output,
+        JSON.stringify(exampleSpec, null, 2),
+        'utf8',
+      );
     } catch (error) {
       logger.error('❌ Failed to create example specification:', error);
       process.exit(1);

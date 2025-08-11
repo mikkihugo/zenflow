@@ -11,7 +11,9 @@ import { DependencyValidator } from '../../../../tools/domain-splitting/validato
 // Mock implementations
 vi.mock('../../../../tools/domain-splitting/analyzers/domain-analyzer.js');
 vi.mock('../../../../tools/domain-splitting/splitters/domain-splitter.js');
-vi.mock('../../../../tools/domain-splitting/validators/dependency-validator.js');
+vi.mock(
+  '../../../../tools/domain-splitting/validators/dependency-validator.js',
+);
 
 describe('Domain Splitting Orchestration - London TDD', () => {
   let orchestrator: DomainSplittingOrchestrator;
@@ -21,7 +23,8 @@ describe('Domain Splitting Orchestration - London TDD', () => {
 
   beforeEach(() => {
     // Create mock instances
-    mockAnalyzer = new DomainAnalysisEngine() as jest.Mocked<DomainAnalysisEngine>;
+    mockAnalyzer =
+      new DomainAnalysisEngine() as jest.Mocked<DomainAnalysisEngine>;
     mockSplitter = new SafeDomainSplitter();
     mockValidator = new DependencyValidator();
 
@@ -109,29 +112,35 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       // Setup mocks
       mockAnalyzer.analyzeDomainComplexity.mockResolvedValue(mockAnalysis);
       mockAnalyzer.identifySubDomains.mockResolvedValue(mockPlans);
-      mockValidator.validateNoCyclicDependencies.mockResolvedValue(mockValidation);
+      mockValidator.validateNoCyclicDependencies.mockResolvedValue(
+        mockValidation,
+      );
       mockSplitter.executeSplitting.mockResolvedValue(mockResult);
 
       // Act
       const result = await orchestrator.executeDomainSplit(domainPath);
 
       // Assert
-      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(domainPath);
-      expect(mockAnalyzer.identifySubDomains).toHaveBeenCalledWith(mockAnalysis);
+      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(
+        domainPath,
+      );
+      expect(mockAnalyzer.identifySubDomains).toHaveBeenCalledWith(
+        mockAnalysis,
+      );
       expect(mockValidator.validateNoCyclicDependencies).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
             sourceDomain: 'neural',
             targetSubDomains: expect.any(Array),
           }),
-        ])
+        ]),
       );
       expect(mockSplitter.executeSplitting).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
             sourceDomain: 'neural',
           }),
-        ])
+        ]),
       );
 
       expect(result).toEqual(mockResult);
@@ -147,9 +156,13 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       mockAnalyzer.analyzeDomainComplexity.mockRejectedValue(analysisError);
 
       // Act & Assert
-      await expect(orchestrator.executeDomainSplit(domainPath)).rejects.toThrow('Domain not found');
+      await expect(orchestrator.executeDomainSplit(domainPath)).rejects.toThrow(
+        'Domain not found',
+      );
 
-      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(domainPath);
+      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(
+        domainPath,
+      );
       expect(mockAnalyzer.identifySubDomains).not.toHaveBeenCalled();
       expect(mockSplitter.executeSplitting).not.toHaveBeenCalled();
     });
@@ -205,11 +218,13 @@ describe('Domain Splitting Orchestration - London TDD', () => {
 
       mockAnalyzer.analyzeDomainComplexity.mockResolvedValue(mockAnalysis);
       mockAnalyzer.identifySubDomains.mockResolvedValue(mockPlans);
-      mockValidator.validateNoCyclicDependencies.mockResolvedValue(mockValidation);
+      mockValidator.validateNoCyclicDependencies.mockResolvedValue(
+        mockValidation,
+      );
 
       // Act & Assert
       await expect(orchestrator.executeDomainSplit(domainPath)).rejects.toThrow(
-        'Plan validation failed'
+        'Plan validation failed',
       );
 
       expect(mockValidator.validateNoCyclicDependencies).toHaveBeenCalled();
@@ -282,14 +297,21 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       };
 
       mockAnalyzer.analyzeDomainComplexity.mockResolvedValue(mockAnalysis);
-      mockValidator.validateNoCyclicDependencies.mockResolvedValue(mockValidation);
+      mockValidator.validateNoCyclicDependencies.mockResolvedValue(
+        mockValidation,
+      );
       mockSplitter.executeSplitting.mockResolvedValue(mockResult);
 
       // Act
-      const result = await orchestrator.executeDomainSplit(domainPath, providedPlan);
+      const result = await orchestrator.executeDomainSplit(
+        domainPath,
+        providedPlan,
+      );
 
       // Assert
-      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(domainPath);
+      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(
+        domainPath,
+      );
       expect(mockAnalyzer.identifySubDomains).not.toHaveBeenCalled(); // Should not generate plans
       expect(mockSplitter.executeSplitting).toHaveBeenCalledWith(
         expect.arrayContaining([
@@ -301,7 +323,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
               }),
             ]),
           }),
-        ])
+        ]),
       );
 
       expect(result?.success).toBe(true);
@@ -357,9 +379,15 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       const result = await orchestrator.analyzeDomain(domainPath);
 
       // Assert
-      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(domainPath);
-      expect(mockAnalyzer.identifySubDomains).toHaveBeenCalledWith(mockAnalysis);
-      expect(mockAnalyzer.calculateSplittingBenefits).toHaveBeenCalledWith(mockPlans);
+      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(
+        domainPath,
+      );
+      expect(mockAnalyzer.identifySubDomains).toHaveBeenCalledWith(
+        mockAnalysis,
+      );
+      expect(mockAnalyzer.calculateSplittingBenefits).toHaveBeenCalledWith(
+        mockPlans,
+      );
 
       expect(result).toEqual({
         analysis: mockAnalysis,
@@ -455,14 +483,18 @@ describe('Domain Splitting Orchestration - London TDD', () => {
       };
 
       mockAnalyzer.analyzeDomainComplexity.mockResolvedValue(mockAnalysis);
-      mockValidator.validateNoCyclicDependencies.mockResolvedValue(mockValidation);
+      mockValidator.validateNoCyclicDependencies.mockResolvedValue(
+        mockValidation,
+      );
       mockSplitter.executeSplitting.mockResolvedValue(mockResult);
 
       // Act
       const result = await orchestrator.splitNeuralDomain();
 
       // Assert
-      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith('src/neural');
+      expect(mockAnalyzer.analyzeDomainComplexity).toHaveBeenCalledWith(
+        'src/neural',
+      );
       expect(mockSplitter.executeSplitting).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
@@ -476,7 +508,7 @@ describe('Domain Splitting Orchestration - London TDD', () => {
               expect.objectContaining({ name: 'neural-bridge' }),
             ]),
           }),
-        ])
+        ]),
       );
 
       expect(result?.success).toBe(true);
@@ -525,17 +557,27 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         warnings: [],
       };
 
-      mockValidator.validateNoCyclicDependencies.mockResolvedValue(mockCyclicValidation);
-      mockValidator.ensurePublicAPIStability.mockResolvedValue(mockApiValidation);
+      mockValidator.validateNoCyclicDependencies.mockResolvedValue(
+        mockCyclicValidation,
+      );
+      mockValidator.ensurePublicAPIStability.mockResolvedValue(
+        mockApiValidation,
+      );
       mockValidator.verifyBuildIntegrity.mockResolvedValue(mockBuildValidation);
 
       // Act
       const result = await orchestrator.validateSplit(mockPlans);
 
       // Assert
-      expect(mockValidator.validateNoCyclicDependencies).toHaveBeenCalledWith(mockPlans);
-      expect(mockValidator.ensurePublicAPIStability).toHaveBeenCalledWith(mockPlans);
-      expect(mockValidator.verifyBuildIntegrity).toHaveBeenCalledWith(mockPlans);
+      expect(mockValidator.validateNoCyclicDependencies).toHaveBeenCalledWith(
+        mockPlans,
+      );
+      expect(mockValidator.ensurePublicAPIStability).toHaveBeenCalledWith(
+        mockPlans,
+      );
+      expect(mockValidator.verifyBuildIntegrity).toHaveBeenCalledWith(
+        mockPlans,
+      );
 
       expect(result).toEqual({
         cyclicDependencies: mockCyclicValidation,
@@ -578,11 +620,24 @@ describe('Domain Splitting Orchestration - London TDD', () => {
         },
       };
 
-      const mockApiValidation = { compatibleAPIs: [], breakingChanges: [], deprecations: [] };
-      const mockBuildValidation = { success: true, buildTime: 1500, errors: [], warnings: [] };
+      const mockApiValidation = {
+        compatibleAPIs: [],
+        breakingChanges: [],
+        deprecations: [],
+      };
+      const mockBuildValidation = {
+        success: true,
+        buildTime: 1500,
+        errors: [],
+        warnings: [],
+      };
 
-      mockValidator.validateNoCyclicDependencies.mockResolvedValue(mockCyclicValidation);
-      mockValidator.ensurePublicAPIStability.mockResolvedValue(mockApiValidation);
+      mockValidator.validateNoCyclicDependencies.mockResolvedValue(
+        mockCyclicValidation,
+      );
+      mockValidator.ensurePublicAPIStability.mockResolvedValue(
+        mockApiValidation,
+      );
       mockValidator.verifyBuildIntegrity.mockResolvedValue(mockBuildValidation);
 
       // Act

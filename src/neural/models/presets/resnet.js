@@ -37,7 +37,10 @@ class ResNetModel extends NeuralModel {
 
     // Initial projection layer
     this.inputProjection = {
-      weight: this.createWeight([currentDimensions, this.config.initialChannels]),
+      weight: this.createWeight([
+        currentDimensions,
+        this.config.initialChannels,
+      ]),
       bias: new Float32Array(this.config.initialChannels).fill(0.0),
     };
     currentDimensions = this.config.initialChannels;
@@ -48,7 +51,10 @@ class ResNetModel extends NeuralModel {
       const blockBatchNorm = [];
 
       // Determine block dimensions
-      const outputDim = Math.min(currentDimensions * 2, this.config.hiddenDimensions);
+      const outputDim = Math.min(
+        currentDimensions * 2,
+        this.config.hiddenDimensions,
+      );
 
       // Create layers within block
       for (let layerIdx = 0; layerIdx < this.config.blockDepth; layerIdx++) {
@@ -87,7 +93,10 @@ class ResNetModel extends NeuralModel {
 
     // Output layer
     this.outputLayer = {
-      weight: this.createWeight([currentDimensions, this.config.outputDimensions]),
+      weight: this.createWeight([
+        currentDimensions,
+        this.config.outputDimensions,
+      ]),
       bias: new Float32Array(this.config.outputDimensions).fill(0.0),
     };
   }
@@ -108,7 +117,11 @@ class ResNetModel extends NeuralModel {
 
   async forward(input, training = false) {
     // Initial projection
-    let x = this.linearTransform(input, this.inputProjection.weight, this.inputProjection.bias);
+    let x = this.linearTransform(
+      input,
+      this.inputProjection.weight,
+      this.inputProjection.bias,
+    );
     x = this.applyActivation(x);
 
     // Process through residual blocks
@@ -122,7 +135,11 @@ class ResNetModel extends NeuralModel {
     }
 
     // Final classification layer
-    const output = this.linearTransform(x, this.outputLayer.weight, this.outputLayer.bias);
+    const output = this.linearTransform(
+      x,
+      this.outputLayer.weight,
+      this.outputLayer.bias,
+    );
 
     return output;
   }
@@ -137,7 +154,11 @@ class ResNetModel extends NeuralModel {
 
     // Apply skip connection projection if needed
     if (skipConnection) {
-      identity = this.linearTransform(input, skipConnection.weight, skipConnection.bias);
+      identity = this.linearTransform(
+        input,
+        skipConnection.weight,
+        skipConnection.bias,
+      );
     }
 
     // Forward through block layers
@@ -159,7 +180,11 @@ class ResNetModel extends NeuralModel {
       }
 
       // Dropout if training
-      if (training && this.config.dropoutRate > 0 && layerIdx < block.length - 1) {
+      if (
+        training &&
+        this.config.dropoutRate > 0 &&
+        layerIdx < block.length - 1
+      ) {
         x = this.dropout(x, this.config.dropoutRate);
       }
     }
@@ -228,9 +253,11 @@ class ResNetModel extends NeuralModel {
       // Update running statistics
       for (let f = 0; f < features; f++) {
         params.runningMean[f] =
-          params.momentum * params.runningMean[f] + (1 - params.momentum) * mean[f];
+          params.momentum * params.runningMean[f] +
+          (1 - params.momentum) * mean[f];
         params.runningVar[f] =
-          params.momentum * params.runningVar[f] + (1 - params.momentum) * variance[f];
+          params.momentum * params.runningVar[f] +
+          (1 - params.momentum) * variance[f];
       }
 
       // Normalize using batch statistics
@@ -247,7 +274,8 @@ class ResNetModel extends NeuralModel {
         for (let f = 0; f < features; f++) {
           const idx = b * features + f;
           const norm =
-            (input[idx] - params.runningMean[f]) / Math.sqrt(params.runningVar[f] + 1e-5);
+            (input[idx] - params.runningMean[f]) /
+            Math.sqrt(params.runningVar[f] + 1e-5);
           normalized[idx] = params.gamma[f] * norm + params.beta[f];
         }
       }
@@ -361,7 +389,10 @@ class ResNetModel extends NeuralModel {
 
       // Process batches
       for (let i = 0; i < shuffled.length; i += batchSize) {
-        const batch = shuffled.slice(i, Math.min(i + batchSize, shuffled.length));
+        const batch = shuffled.slice(
+          i,
+          Math.min(i + batchSize, shuffled.length),
+        );
 
         // Forward pass
         const predictions = await this.forward(batch.inputs, true);
@@ -490,7 +521,8 @@ class ResNetModel extends NeuralModel {
     let count = 0;
 
     // Input projection
-    count += this.inputProjection.weight.length + this.inputProjection.bias.length;
+    count +=
+      this.inputProjection.weight.length + this.inputProjection.bias.length;
 
     // Residual blocks
     for (let blockIdx = 0; blockIdx < this.blocks.length; blockIdx++) {

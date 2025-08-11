@@ -40,7 +40,9 @@ export class DSPyAIIntegration {
 
     try {
       // Dynamically import the DSPy integration manager (compiled version)
-      const dspyModule = await import('../../dist/core/dspy-integration-manager.js');
+      const dspyModule = await import(
+        '../../dist/core/dspy-integration-manager.js'
+      );
       DSPyIntegrationManager = dspyModule.DSPyIntegrationManager;
 
       // Initialize with optimized config for code fixing
@@ -87,24 +89,32 @@ export class DSPyAIIntegration {
       const patternKey = this.generatePatternKey(errors, filePath);
       if (this.patternCache.has(patternKey)) {
         console.log(`   ⚡ PATTERN MATCH: Using learned fix`);
-        return await this.applyLearnedPattern(filePath, patternKey, fileContent);
+        return await this.applyLearnedPattern(
+          filePath,
+          patternKey,
+          fileContent,
+        );
       }
 
       // Use DSPy error diagnosis
       const diagnosis = await this.dspyManager.coreOperations.diagnoseError(
         errors.map((e) => e.message || e).join('\n'),
         fileContent,
-        filePath
+        filePath,
       );
 
-      console.log(`   🎯 Confidence: ${(diagnosis.confidence * 100).toFixed(1)}%`);
-      console.log(`   📝 Diagnosis: ${diagnosis.diagnosis.substring(0, 100)}...`);
+      console.log(
+        `   🎯 Confidence: ${(diagnosis.confidence * 100).toFixed(1)}%`,
+      );
+      console.log(
+        `   📝 Diagnosis: ${diagnosis.diagnosis.substring(0, 100)}...`,
+      );
 
       // Generate fixes using DSPy
       const fixes = await this.dspyManager.coreOperations.generateCode(
         diagnosis.fixSuggestions.join('; '),
         fileContent,
-        'typescript-strict'
+        'typescript-strict',
       );
 
       // Apply fixes to file
@@ -120,7 +130,9 @@ export class DSPyAIIntegration {
         this.cachePattern(patternKey, fixes, diagnosis);
       }
 
-      console.log(`   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$0.05)`);
+      console.log(
+        `   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$0.05)`,
+      );
 
       return {
         success: true,
@@ -212,7 +224,9 @@ export class DSPyAIIntegration {
         confidence: pattern.confidence,
       };
     } catch (error) {
-      console.log(`   ⚠️ Pattern failed: ${error.message}, falling back to DSPy`);
+      console.log(
+        `   ⚠️ Pattern failed: ${error.message}, falling back to DSPy`,
+      );
       this.patternCache.delete(patternKey); // Remove broken pattern
       throw error;
     }
@@ -224,11 +238,17 @@ export class DSPyAIIntegration {
   applyTransformation(content, transform) {
     switch (transform.type) {
       case 'replace':
-        return content.replace(new RegExp(transform.pattern, 'g'), transform.replacement);
+        return content.replace(
+          new RegExp(transform.pattern, 'g'),
+          transform.replacement,
+        );
       case 'add-import':
         return `${transform.import}\n${content}`;
       case 'comment-out':
-        return content.replace(new RegExp(transform.pattern, 'g'), `// ${transform.pattern}`);
+        return content.replace(
+          new RegExp(transform.pattern, 'g'),
+          `// ${transform.pattern}`,
+        );
       default:
         return content;
     }
@@ -244,7 +264,8 @@ export class DSPyAIIntegration {
 
       // Basic checks
       if (content.trim().length === 0) return false;
-      if (content.includes('undefined') && !content.includes('undefined;')) return false;
+      if (content.includes('undefined') && !content.includes('undefined;'))
+        return false;
 
       // Could add more sophisticated verification here
       return true;
@@ -272,9 +293,10 @@ export class DSPyAIIntegration {
     };
 
     try {
-      await this.dspyManager.coreOperations.trainFromSuccessfulOperations('error_diagnosis', [
-        trainingExample,
-      ]);
+      await this.dspyManager.coreOperations.trainFromSuccessfulOperations(
+        'error_diagnosis',
+        [trainingExample],
+      );
 
       this.successHistory.push(trainingExample);
       console.log(`   🧠 LEARNED: DSPy trained from successful fix`);

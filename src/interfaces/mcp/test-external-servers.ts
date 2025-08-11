@@ -32,7 +32,9 @@ async function testExternalMCPServers(): Promise<void> {
 
     // Set up event listeners
     client.on('serverConnected', (data) => {
-      logger.info(`✅ Server connected: ${data?.server} (${data?.tools} tools)`);
+      logger.info(
+        `✅ Server connected: ${data?.server} (${data?.tools} tools)`,
+      );
     });
 
     client.on('serverError', (data) => {
@@ -53,7 +55,9 @@ async function testExternalMCPServers(): Promise<void> {
       if (result?.success) {
         logger.info(`Successfully connected to ${result?.serverName}`);
       } else {
-        logger.error(`Failed to connect to ${result?.serverName}: ${result?.error}`);
+        logger.error(
+          `Failed to connect to ${result?.serverName}: ${result?.error}`,
+        );
       }
     }
 
@@ -79,19 +83,35 @@ async function testExternalMCPServers(): Promise<void> {
     logger.info('\nTesting tool execution...');
 
     const testExecutions = [
-      { server: 'context7', tool: 'research_analysis', params: { topic: 'AI development' } },
+      {
+        server: 'context7',
+        tool: 'research_analysis',
+        params: { topic: 'AI development' },
+      },
       {
         server: 'deepwiki',
         tool: 'knowledge_search',
         params: { query: 'TypeScript best practices' },
       },
-      { server: 'gitmcp', tool: 'repository_analysis', params: { repo: 'claude-code-zen' } },
-      { server: 'semgrep', tool: 'security_scan', params: { language: 'typescript' } },
+      {
+        server: 'gitmcp',
+        tool: 'repository_analysis',
+        params: { repo: 'claude-code-zen' },
+      },
+      {
+        server: 'semgrep',
+        tool: 'security_scan',
+        params: { language: 'typescript' },
+      },
     ];
 
     for (const test of testExecutions) {
       try {
-        const result = await client.executeTool(test.server, test.tool, test.params);
+        const result = await client.executeTool(
+          test.server,
+          test.tool,
+          test.params,
+        );
 
         if (result?.success) {
         } else {
@@ -99,7 +119,10 @@ async function testExternalMCPServers(): Promise<void> {
       } catch (_error) {}
     }
 
-    const _totalTools = Object.values(availableTools).reduce((sum, tools) => sum + tools.length, 0);
+    const _totalTools = Object.values(availableTools).reduce(
+      (sum, tools) => sum + tools.length,
+      0,
+    );
 
     // Cleanup
     await client.disconnectAll();

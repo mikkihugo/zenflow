@@ -12,7 +12,15 @@ import type { BatchOperation } from './batch-engine.ts';
 const logger = getLogger('FileBatch');
 
 export interface FileOperation {
-  type: 'read' | 'write' | 'create' | 'delete' | 'copy' | 'move' | 'mkdir' | 'rmdir';
+  type:
+    | 'read'
+    | 'write'
+    | 'create'
+    | 'delete'
+    | 'copy'
+    | 'move'
+    | 'mkdir'
+    | 'rmdir';
   path: string;
   content?: string;
   destination?: string; // for copy/move operations
@@ -39,7 +47,10 @@ export class FileBatchOperator {
   private readonly maxConcurrentFiles: number;
   private readonly defaultEncoding: BufferEncoding;
 
-  constructor(maxConcurrentFiles = 10, defaultEncoding: BufferEncoding = 'utf8') {
+  constructor(
+    maxConcurrentFiles = 10,
+    defaultEncoding: BufferEncoding = 'utf8',
+  ) {
     this.maxConcurrentFiles = maxConcurrentFiles;
     this.defaultEncoding = defaultEncoding;
   }
@@ -50,7 +61,9 @@ export class FileBatchOperator {
    *
    * @param operations
    */
-  async executeBatch(operations: FileOperation[]): Promise<FileOperationResult[]> {
+  async executeBatch(
+    operations: FileOperation[],
+  ): Promise<FileOperationResult[]> {
     logger.info(`Starting batch file operations: ${operations.length} files`);
 
     // Group operations by type for optimization
@@ -63,7 +76,7 @@ export class FileBatchOperator {
     if (groupedOps.mkdir.length > 0) {
       const mkdirResults = await this.executeConcurrentOperations(
         groupedOps.mkdir,
-        this.executeMkdir.bind(this)
+        this.executeMkdir.bind(this),
       );
       results.push(...mkdirResults);
     }
@@ -80,7 +93,7 @@ export class FileBatchOperator {
     if (mainOperations.length > 0) {
       const mainResults = await this.executeConcurrentOperations(
         mainOperations,
-        this.executeFileOperation.bind(this)
+        this.executeFileOperation.bind(this),
       );
       results.push(...mainResults);
     }
@@ -90,12 +103,14 @@ export class FileBatchOperator {
     if (cleanupOperations.length > 0) {
       const cleanupResults = await this.executeConcurrentOperations(
         cleanupOperations,
-        this.executeFileOperation.bind(this)
+        this.executeFileOperation.bind(this),
       );
       results.push(...cleanupResults);
     }
 
-    logger.info(`Completed batch file operations: ${results.length} operations processed`);
+    logger.info(
+      `Completed batch file operations: ${results.length} operations processed`,
+    );
     return results;
   }
 
@@ -105,7 +120,7 @@ export class FileBatchOperator {
    * @param operations
    */
   private groupOperationsByType(
-    operations: FileOperation[]
+    operations: FileOperation[],
   ): Record<FileOperation['type'], FileOperation[]> {
     const groups: Record<FileOperation['type'], FileOperation[]> = {
       read: [],
@@ -133,7 +148,7 @@ export class FileBatchOperator {
    */
   private async executeConcurrentOperations<T>(
     operations: T[],
-    executor: (operation: T) => Promise<FileOperationResult>
+    executor: (operation: T) => Promise<FileOperationResult>,
   ): Promise<FileOperationResult[]> {
     const results: FileOperationResult[] = [];
 
@@ -168,7 +183,9 @@ export class FileBatchOperator {
    *
    * @param operation
    */
-  private async executeFileOperation(operation: FileOperation): Promise<FileOperationResult> {
+  private async executeFileOperation(
+    operation: FileOperation,
+  ): Promise<FileOperationResult> {
     const startTime = Date.now();
 
     try {
@@ -209,7 +226,7 @@ export class FileBatchOperator {
    */
   private async executeRead(
     operation: FileOperation,
-    startTime: number
+    startTime: number,
   ): Promise<FileOperationResult> {
     const encoding = operation.encoding || this.defaultEncoding;
     const content = await fs.readFile(operation.path, encoding);
@@ -232,7 +249,7 @@ export class FileBatchOperator {
    */
   private async executeWrite(
     operation: FileOperation,
-    startTime: number
+    startTime: number,
   ): Promise<FileOperationResult> {
     if (!operation.content) {
       throw new Error('Write operation requires content');
@@ -263,7 +280,7 @@ export class FileBatchOperator {
    */
   private async executeCreate(
     operation: FileOperation,
-    startTime: number
+    startTime: number,
   ): Promise<FileOperationResult> {
     if (!operation.content) {
       throw new Error('Create operation requires content');
@@ -273,7 +290,10 @@ export class FileBatchOperator {
     await this.ensureDirectoryExists(dirname(operation.path));
 
     const encoding = operation.encoding || this.defaultEncoding;
-    await fs.writeFile(operation.path, operation.content, { encoding, flag: 'wx' });
+    await fs.writeFile(operation.path, operation.content, {
+      encoding,
+      flag: 'wx',
+    });
 
     const stats = await fs.stat(operation.path);
 
@@ -294,7 +314,7 @@ export class FileBatchOperator {
    */
   private async executeDelete(
     operation: FileOperation,
-    startTime: number
+    startTime: number,
   ): Promise<FileOperationResult> {
     await fs.unlink(operation.path);
 
@@ -314,7 +334,7 @@ export class FileBatchOperator {
    */
   private async executeCopy(
     operation: FileOperation,
-    startTime: number
+    startTime: number,
   ): Promise<FileOperationResult> {
     if (!operation.destination) {
       throw new Error('Copy operation requires destination');
@@ -344,7 +364,7 @@ export class FileBatchOperator {
    */
   private async executeMove(
     operation: FileOperation,
-    startTime: number
+    startTime: number,
   ): Promise<FileOperationResult> {
     if (!operation.destination) {
       throw new Error('Move operation requires destination');
@@ -371,7 +391,9 @@ export class FileBatchOperator {
    *
    * @param operation
    */
-  private async executeMkdir(operation: FileOperation): Promise<FileOperationResult> {
+  private async executeMkdir(
+    operation: FileOperation,
+  ): Promise<FileOperationResult> {
     const startTime = Date.now();
 
     try {
@@ -408,7 +430,7 @@ export class FileBatchOperator {
    */
   private async executeRmdir(
     operation: FileOperation,
-    startTime: number
+    startTime: number,
   ): Promise<FileOperationResult> {
     await fs.rmdir(operation.path, { recursive: true });
 
@@ -465,7 +487,7 @@ export class FileBatchOperator {
       path: string;
       content: string;
       encoding?: BufferEncoding;
-    }>
+    }>,
   ): FileOperation[] {
     return files.map((file) => {
       const operation: FileOperation = {
@@ -491,7 +513,7 @@ export class FileBatchOperator {
    */
   static createProjectStructure(
     basePath: string,
-    structure: Record<string, string | null>
+    structure: Record<string, string | null>,
   ): FileOperation[] {
     const operations: FileOperation[] = [];
     const directories = new Set<string>();

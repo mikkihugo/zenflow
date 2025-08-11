@@ -16,7 +16,11 @@ const logger = getLogger('interfaces-events-adapters-monitoring-event-adapter');
 // Import monitoring system classes to wrap their EventEmitter usage
 // These would be actual monitoring components in production
 interface PerformanceAnalyzer {
-  healthCheck?(): Promise<{ responseTime?: number; errorRate?: number; healthScore?: number }>;
+  healthCheck?(): Promise<{
+    responseTime?: number;
+    errorRate?: number;
+    healthScore?: number;
+  }>;
   getMetrics?(): Promise<{
     averageLatency?: number;
     requestCount: number;
@@ -27,7 +31,11 @@ interface PerformanceAnalyzer {
 }
 
 interface MetricsCollector {
-  healthCheck?(): Promise<{ responseTime?: number; errorRate?: number; healthScore?: number }>;
+  healthCheck?(): Promise<{
+    responseTime?: number;
+    errorRate?: number;
+    healthScore?: number;
+  }>;
   getMetrics?(): Promise<{
     averageLatency?: number;
     requestCount: number;
@@ -38,7 +46,11 @@ interface MetricsCollector {
 }
 
 interface RealTimePerformanceMonitor {
-  healthCheck?(): Promise<{ responseTime?: number; errorRate?: number; healthScore?: number }>;
+  healthCheck?(): Promise<{
+    responseTime?: number;
+    errorRate?: number;
+    healthScore?: number;
+  }>;
   getMetrics?(): Promise<{
     averageLatency?: number;
     requestCount: number;
@@ -64,7 +76,10 @@ import type {
   IEventManager,
   SystemEvent,
 } from '../core/interfaces.ts';
-import { type EventManagerType, EventManagerTypes } from '../core/interfaces.ts';
+import {
+  type EventManagerType,
+  EventManagerTypes,
+} from '../core/interfaces.ts';
 import type { MonitoringEvent } from '../types.ts';
 import { EventPriorityMap } from '../types.ts';
 
@@ -75,7 +90,11 @@ interface Logger {
   info: (message: string, meta?: Record<string, unknown>) => void;
   debug: (message: string, meta?: Record<string, unknown>) => void;
   warn: (message: string, meta?: Record<string, unknown>) => void;
-  error: (message: string, meta?: Record<string, unknown>, error?: Error | unknown) => void;
+  error: (
+    message: string,
+    meta?: Record<string, unknown>,
+    error?: Error | unknown,
+  ) => void;
 }
 
 const createLogger = (name: string): Logger => ({
@@ -83,8 +102,11 @@ const createLogger = (name: string): Logger => ({
   debug: (_message: string, _meta?: Record<string, unknown>) => {},
   warn: (message: string, meta?: Record<string, unknown>) =>
     logger.warn(`[WARN] ${name}: ${message}`, meta),
-  error: (message: string, meta?: Record<string, unknown>, error?: Error | unknown) =>
-    logger.error(`[ERROR] ${name}: ${message}`, meta, error),
+  error: (
+    message: string,
+    meta?: Record<string, unknown>,
+    error?: Error | unknown,
+  ) => logger.error(`[ERROR] ${name}: ${message}`, meta, error),
 });
 
 import { EventEmitter } from 'node:events';
@@ -244,7 +266,7 @@ interface MonitoringCorrelation {
     dataAccuracy: number;
     resourceUtilization: number;
   };
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 /**
@@ -269,7 +291,7 @@ interface MonitoringHealthEntry {
   metricsCount?: number;
   alertsCount?: number;
   healthScore?: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 /**
@@ -387,7 +409,11 @@ export class MonitoringEventAdapter implements IEventManager {
         wrapAggregationEvents: true,
         wrapReportingEvents: true,
         wrapInsightEvents: true,
-        analyzers: ['performance-analyzer', 'trend-analyzer', 'anomaly-detector'],
+        analyzers: [
+          'performance-analyzer',
+          'trend-analyzer',
+          'anomaly-detector',
+        ],
         ...config?.analyticsMonitoring,
       },
       alertManagement: {
@@ -495,7 +521,9 @@ export class MonitoringEventAdapter implements IEventManager {
    */
   async start(): Promise<void> {
     if (this.running) {
-      this.logger.warn(`Monitoring event adapter ${this.name} is already running`);
+      this.logger.warn(
+        `Monitoring event adapter ${this.name} is already running`,
+      );
       return;
     }
 
@@ -527,9 +555,14 @@ export class MonitoringEventAdapter implements IEventManager {
       this.startTime = new Date();
       this.emitInternal('start');
 
-      this.logger.info(`Monitoring event adapter started successfully: ${this.name}`);
+      this.logger.info(
+        `Monitoring event adapter started successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to start monitoring event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to start monitoring event adapter ${this.name}:`,
+        error,
+      );
       this.emitInternal('error', error);
       throw error;
     }
@@ -559,9 +592,14 @@ export class MonitoringEventAdapter implements IEventManager {
       this.running = false;
       this.emitInternal('stop');
 
-      this.logger.info(`Monitoring event adapter stopped successfully: ${this.name}`);
+      this.logger.info(
+        `Monitoring event adapter stopped successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to stop monitoring event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to stop monitoring event adapter ${this.name}:`,
+        error,
+      );
       this.emitInternal('error', error);
       throw error;
     }
@@ -589,24 +627,36 @@ export class MonitoringEventAdapter implements IEventManager {
    * @param event
    * @param options
    */
-  async emit<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void> {
+  async emit<T extends SystemEvent>(
+    event: T,
+    options?: EventEmissionOptions,
+  ): Promise<void> {
     const startTime = Date.now();
     const _eventId = event.id || this.generateEventId();
 
     try {
       // Validate event (assume valid for SystemEvent - would check MonitoringEvent fields in real implementation)
-      if (!event.id || !event.timestamp || !event.source || !event.type) {
+      if (!(event.id && event.timestamp && event.source && event.type)) {
         throw new Error('Invalid monitoring event format');
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.performance?.monitoringInterval || 30000;
+      const timeout =
+        options?.timeout ||
+        this.config.performance?.monitoringInterval ||
+        30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error(`Event timeout after ${timeout}ms`)), timeout);
+        setTimeout(
+          () => reject(new Error(`Event timeout after ${timeout}ms`)),
+          timeout,
+        );
       });
 
       // Process event emission with timeout
-      const emissionPromise = this.processMonitoringEventEmission(event, options);
+      const emissionPromise = this.processMonitoringEventEmission(
+        event,
+        options,
+      );
       await Promise.race([emissionPromise, timeoutPromise]);
 
       const duration = Date.now() - startTime;
@@ -648,7 +698,8 @@ export class MonitoringEventAdapter implements IEventManager {
         alertLevel: this.extractAlertLevel(event),
         healthScore: this.extractHealthScore(event),
         performanceData: this.extractPerformanceData(event),
-        errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
+        errorType:
+          error instanceof Error ? error.constructor.name : 'UnknownError',
         recoveryAttempts: undefined,
         timestamp: new Date(),
       });
@@ -657,10 +708,18 @@ export class MonitoringEventAdapter implements IEventManager {
       this.errorCount++;
       this.totalLatency += duration;
 
-      this.eventEmitter.emit('emission', { event, success: false, duration, error });
+      this.eventEmitter.emit('emission', {
+        event,
+        success: false,
+        duration,
+        error,
+      });
       this.eventEmitter.emit('error', error);
 
-      this.logger.error(`Monitoring event emission failed for ${event.type}:`, error);
+      this.logger.error(
+        `Monitoring event emission failed for ${event.type}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -673,13 +732,13 @@ export class MonitoringEventAdapter implements IEventManager {
    */
   async emitBatch<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const startTime = Date.now();
 
     try {
       this.logger.debug(
-        `Emitting monitoring event batch: ${batch.id} (${batch.events.length} events)`
+        `Emitting monitoring event batch: ${batch.id} (${batch.events.length} events)`,
       );
 
       // Process events based on strategy
@@ -702,10 +761,13 @@ export class MonitoringEventAdapter implements IEventManager {
 
       const duration = Date.now() - startTime;
       this.logger.debug(
-        `Monitoring event batch processed successfully: ${batch.id} in ${duration}ms`
+        `Monitoring event batch processed successfully: ${batch.id} in ${duration}ms`,
       );
     } catch (error) {
-      this.logger.error(`Monitoring event batch processing failed for ${batch.id}:`, error);
+      this.logger.error(
+        `Monitoring event batch processing failed for ${batch.id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -729,7 +791,7 @@ export class MonitoringEventAdapter implements IEventManager {
   subscribe<T extends SystemEvent>(
     eventTypes: string | string[],
     listener: EventListener<T>,
-    options?: Partial<EventSubscription<T>>
+    options?: Partial<EventSubscription<T>>,
   ): string {
     const subscriptionId = this.generateSubscriptionId();
     const types = Array.isArray(eventTypes) ? eventTypes : [eventTypes];
@@ -749,7 +811,7 @@ export class MonitoringEventAdapter implements IEventManager {
     this.subscriptions.set(subscriptionId, subscription as EventSubscription);
 
     this.logger.debug(
-      `Created monitoring subscription ${subscriptionId} for events: ${types.join(', ')}`
+      `Created monitoring subscription ${subscriptionId} for events: ${types.join(', ')}`,
     );
     this.eventEmitter.emit('subscription', { subscriptionId, subscription });
 
@@ -784,7 +846,9 @@ export class MonitoringEventAdapter implements IEventManager {
 
     if (eventType) {
       // Remove subscriptions for specific event type
-      for (const [id, subscription] of Array.from(this.subscriptions.entries())) {
+      for (const [id, subscription] of Array.from(
+        this.subscriptions.entries(),
+      )) {
         if (subscription.eventTypes.includes(eventType)) {
           this.unsubscribe(id);
           removedCount++;
@@ -798,7 +862,7 @@ export class MonitoringEventAdapter implements IEventManager {
     }
 
     this.logger.debug(
-      `Removed ${removedCount} monitoring subscriptions${eventType ? ` for ${eventType}` : ''}`
+      `Removed ${removedCount} monitoring subscriptions${eventType ? ` for ${eventType}` : ''}`,
     );
     return removedCount;
   }
@@ -863,7 +927,9 @@ export class MonitoringEventAdapter implements IEventManager {
 
     // Apply filters
     if (options?.filter) {
-      events = events.filter((event) => this.applyFilter(event, options?.filter!));
+      events = events.filter((event) =>
+        this.applyFilter(event, options?.filter!),
+      );
     }
 
     // Apply sorting
@@ -890,8 +956,13 @@ export class MonitoringEventAdapter implements IEventManager {
    * @param eventType
    * @param limit
    */
-  async getEventHistory(eventType: string, limit?: number): Promise<SystemEvent[]> {
-    const events = this.eventHistory.filter((event) => event.type === eventType);
+  async getEventHistory(
+    eventType: string,
+    limit?: number,
+  ): Promise<SystemEvent[]> {
+    const events = this.eventHistory.filter(
+      (event) => event.type === eventType,
+    );
     return limit ? events.slice(-limit) : (events as SystemEvent[]);
   }
 
@@ -900,8 +971,11 @@ export class MonitoringEventAdapter implements IEventManager {
    */
   async healthCheck(): Promise<EventManagerStatus> {
     const now = new Date();
-    const uptime = this.startTime ? now.getTime() - this.startTime.getTime() : 0;
-    const errorRate = this.eventCount > 0 ? (this.errorCount / this.eventCount) * 100 : 0;
+    const uptime = this.startTime
+      ? now.getTime() - this.startTime.getTime()
+      : 0;
+    const errorRate =
+      this.eventCount > 0 ? (this.errorCount / this.eventCount) * 100 : 0;
 
     // Check monitoring component health
     const componentHealth = await this.checkMonitoringComponentHealth();
@@ -937,7 +1011,8 @@ export class MonitoringEventAdapter implements IEventManager {
         analyticsComponents: this.analyticsComponents.size,
         dashboardComponents: this.dashboardComponents.size,
         componentHealth,
-        avgMonitoringLatency: this.eventCount > 0 ? this.totalLatency / this.eventCount : 0,
+        avgMonitoringLatency:
+          this.eventCount > 0 ? this.totalLatency / this.eventCount : 0,
       },
     };
   }
@@ -948,14 +1023,18 @@ export class MonitoringEventAdapter implements IEventManager {
   async getMetrics(): Promise<EventManagerMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
-    const avgLatency = this.eventCount > 0 ? this.totalLatency / this.eventCount : 0;
-    const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // events per second
+    const avgLatency =
+      this.eventCount > 0 ? this.totalLatency / this.eventCount : 0;
+    const throughput =
+      recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // events per second
 
     // Calculate percentile latencies
-    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics
+      .map((m) => m.executionTime)
+      .sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
@@ -989,7 +1068,9 @@ export class MonitoringEventAdapter implements IEventManager {
    * @param config
    */
   updateConfig(config: Partial<MonitoringEventAdapterConfig>): void {
-    this.logger.info(`Updating configuration for monitoring event adapter: ${this.name}`);
+    this.logger.info(
+      `Updating configuration for monitoring event adapter: ${this.name}`,
+    );
     Object.assign(this.config, config);
     this.logger.info(`Configuration updated successfully for: ${this.name}`);
   }
@@ -1003,7 +1084,7 @@ export class MonitoringEventAdapter implements IEventManager {
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
-    handler: (...args: unknown[]) => void
+    handler: (...args: unknown[]) => void,
   ): void {
     this.eventEmitter.on(event, handler);
   }
@@ -1054,9 +1135,14 @@ export class MonitoringEventAdapter implements IEventManager {
       // Remove all event listeners
       this.eventEmitter.removeAllListeners();
 
-      this.logger.info(`Monitoring event adapter destroyed successfully: ${this.name}`);
+      this.logger.info(
+        `Monitoring event adapter destroyed successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to destroy monitoring event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to destroy monitoring event adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -1071,7 +1157,7 @@ export class MonitoringEventAdapter implements IEventManager {
    * @param event
    */
   async emitPerformanceMonitoringEvent(
-    event: Omit<MonitoringEvent, 'id' | 'timestamp'>
+    event: Omit<MonitoringEvent, 'id' | 'timestamp'>,
   ): Promise<void> {
     const monitoringEvent: MonitoringEvent = {
       ...event,
@@ -1094,7 +1180,9 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param event
    */
-  async emitHealthMonitoringEvent(event: Omit<MonitoringEvent, 'id' | 'timestamp'>): Promise<void> {
+  async emitHealthMonitoringEvent(
+    event: Omit<MonitoringEvent, 'id' | 'timestamp'>,
+  ): Promise<void> {
     const monitoringEvent: MonitoringEvent = {
       ...event,
       id: this.generateEventId(),
@@ -1117,7 +1205,7 @@ export class MonitoringEventAdapter implements IEventManager {
    * @param event
    */
   async emitAnalyticsMonitoringEvent(
-    event: Omit<MonitoringEvent, 'id' | 'timestamp'>
+    event: Omit<MonitoringEvent, 'id' | 'timestamp'>,
   ): Promise<void> {
     const monitoringEvent: MonitoringEvent = {
       ...event,
@@ -1140,7 +1228,9 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param event
    */
-  async emitAlertMonitoringEvent(event: Omit<MonitoringEvent, 'id' | 'timestamp'>): Promise<void> {
+  async emitAlertMonitoringEvent(
+    event: Omit<MonitoringEvent, 'id' | 'timestamp'>,
+  ): Promise<void> {
     const monitoringEvent: MonitoringEvent = {
       ...event,
       id: this.generateEventId(),
@@ -1162,7 +1252,9 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribePerformanceMonitoringEvents(listener: EventListener<MonitoringEvent>): string {
+  subscribePerformanceMonitoringEvents(
+    listener: EventListener<MonitoringEvent>,
+  ): string {
     return this.subscribe(['monitoring:performance'], listener);
   }
 
@@ -1171,7 +1263,9 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeHealthMonitoringEvents(listener: EventListener<MonitoringEvent>): string {
+  subscribeHealthMonitoringEvents(
+    listener: EventListener<MonitoringEvent>,
+  ): string {
     return this.subscribe(['monitoring:health'], listener);
   }
 
@@ -1196,10 +1290,14 @@ export class MonitoringEventAdapter implements IEventManager {
   /**
    * Get monitoring health status for all components.
    */
-  async getMonitoringHealthStatus(): Promise<Record<string, MonitoringHealthEntry>> {
+  async getMonitoringHealthStatus(): Promise<
+    Record<string, MonitoringHealthEntry>
+  > {
     const healthStatus: Record<string, MonitoringHealthEntry> = {};
 
-    for (const [component, health] of Array.from(this.monitoringHealth.entries())) {
+    for (const [component, health] of Array.from(
+      this.monitoringHealth.entries(),
+    )) {
       healthStatus[component] = { ...health };
     }
 
@@ -1211,7 +1309,9 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param correlationId
    */
-  getMonitoringCorrelatedEvents(correlationId: string): MonitoringCorrelation | null {
+  getMonitoringCorrelatedEvents(
+    correlationId: string,
+  ): MonitoringCorrelation | null {
     return this.monitoringCorrelations.get(correlationId) || null;
   }
 
@@ -1219,7 +1319,9 @@ export class MonitoringEventAdapter implements IEventManager {
    * Get active monitoring correlations.
    */
   getActiveMonitoringCorrelations(): MonitoringCorrelation[] {
-    return Array.from(this.monitoringCorrelations.values()).filter((c) => c.status === 'active');
+    return Array.from(this.monitoringCorrelations.values()).filter(
+      (c) => c.status === 'active',
+    );
   }
 
   /**
@@ -1227,7 +1329,7 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param metricName
    */
-  getMetricsData(metricName?: string): Record<string, any> {
+  getMetricsData(metricName?: string): Record<string, unknown> {
     if (metricName) {
       return this.metricsData.get(metricName) || {};
     }
@@ -1239,7 +1341,7 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param component
    */
-  getHealthData(component?: string): Record<string, any> {
+  getHealthData(component?: string): Record<string, unknown> {
     if (component) {
       return this.healthData.get(component) || {};
     }
@@ -1251,7 +1353,7 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param alertId
    */
-  getAlertData(alertId?: string): Record<string, any> {
+  getAlertData(alertId?: string): Record<string, unknown> {
     if (alertId) {
       return this.alertData.get(alertId) || {};
     }
@@ -1263,7 +1365,7 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param component
    */
-  getPerformanceInsights(component?: string): Record<string, any> {
+  getPerformanceInsights(component?: string): Record<string, unknown> {
     if (component) {
       return this.performanceInsights.get(component) || {};
     }
@@ -1273,10 +1375,14 @@ export class MonitoringEventAdapter implements IEventManager {
   /**
    * Force health check on all wrapped monitoring components.
    */
-  async performMonitoringHealthCheck(): Promise<Record<string, MonitoringHealthEntry>> {
+  async performMonitoringHealthCheck(): Promise<
+    Record<string, MonitoringHealthEntry>
+  > {
     const healthResults: Record<string, MonitoringHealthEntry> = {};
 
-    for (const [componentName, wrapped] of Array.from(this.wrappedComponents.entries())) {
+    for (const [componentName, wrapped] of Array.from(
+      this.wrappedComponents.entries(),
+    )) {
       try {
         const startTime = Date.now();
 
@@ -1287,21 +1393,30 @@ export class MonitoringEventAdapter implements IEventManager {
         let healthScore = 0.8;
 
         // Get component-specific health data if available
-        if (wrapped.component && typeof wrapped.component.healthCheck === 'function') {
+        if (
+          wrapped.component &&
+          typeof wrapped.component.healthCheck === 'function'
+        ) {
           const health = await wrapped.component.healthCheck();
           monitoringLatency = health.responseTime || 0;
           dataAccuracy = 1 - (health.errorRate || 0);
           healthScore = health.healthScore || 0.8;
-        } else if (wrapped.component && typeof wrapped.component.getMetrics === 'function') {
+        } else if (
+          wrapped.component &&
+          typeof wrapped.component.getMetrics === 'function'
+        ) {
           const metrics = await wrapped.component.getMetrics();
           monitoringLatency = metrics.averageLatency || 0;
-          dataAccuracy = 1 - metrics.errorCount / Math.max(metrics.requestCount, 1);
+          dataAccuracy =
+            1 - metrics.errorCount / Math.max(metrics.requestCount, 1);
           healthScore = metrics.performance?.healthScore || 0.8;
         }
 
         const responseTime = Date.now() - startTime;
         const threshold =
-          this.config.healthMonitoringConfig?.healthThresholds?.[componentName] || 0.7;
+          this.config.healthMonitoringConfig?.healthThresholds?.[
+            componentName
+          ] || 0.7;
         const calculatedHealthScore =
           dataAccuracy * (monitoringLatency < 200 ? 1 : 0.5) * healthScore;
 
@@ -1317,7 +1432,8 @@ export class MonitoringEventAdapter implements IEventManager {
           lastCheck: new Date(),
           consecutiveFailures: isHealthy
             ? 0
-            : (this.monitoringHealth.get(componentName)?.consecutiveFailures || 0) + 1,
+            : (this.monitoringHealth.get(componentName)?.consecutiveFailures ||
+                0) + 1,
           monitoringLatency,
           dataAccuracy,
           resourceUsage: {
@@ -1351,7 +1467,8 @@ export class MonitoringEventAdapter implements IEventManager {
           status: 'unhealthy',
           lastCheck: new Date(),
           consecutiveFailures:
-            (this.monitoringHealth.get(componentName)?.consecutiveFailures || 0) + 1,
+            (this.monitoringHealth.get(componentName)?.consecutiveFailures ||
+              0) + 1,
           monitoringLatency: 0,
           dataAccuracy: 0,
           resourceUsage: { cpu: 0, memory: 0, disk: 0, network: 0 },
@@ -1403,14 +1520,18 @@ export class MonitoringEventAdapter implements IEventManager {
       await this.wrapDashboardIntegration();
     }
 
-    this.logger.debug(`Wrapped ${this.wrappedComponents.size} monitoring components`);
+    this.logger.debug(
+      `Wrapped ${this.wrappedComponents.size} monitoring components`,
+    );
   }
 
   /**
    * Wrap performance monitor events with UEL integration.
    */
   private async wrapPerformanceMonitors(): Promise<void> {
-    const monitors = this.config.performanceMonitoring?.monitors || ['default-performance-monitor'];
+    const monitors = this.config.performanceMonitoring?.monitors || [
+      'default-performance-monitor',
+    ];
 
     for (const monitorName of monitors) {
       const wrapper = new EventEmitter();
@@ -1462,12 +1583,15 @@ export class MonitoringEventAdapter implements IEventManager {
           this.eventEmitter.emit(uelEvent, monitoringEvent);
           this.updateComponentHealthMetrics(
             `performance-monitor-${monitorName}`,
-            !originalEvent.includes('error')
+            !originalEvent.includes('error'),
           );
         });
       });
 
-      this.wrappedComponents.set(`performance-monitor-${monitorName}`, wrappedComponent);
+      this.wrappedComponents.set(
+        `performance-monitor-${monitorName}`,
+        wrappedComponent,
+      );
       this.logger.debug(`Wrapped performance monitor events: ${monitorName}`);
     }
   }
@@ -1534,12 +1658,15 @@ export class MonitoringEventAdapter implements IEventManager {
           this.eventEmitter.emit(uelEvent, monitoringEvent);
           this.updateComponentHealthMetrics(
             `health-component-${componentName}`,
-            !originalEvent.includes('failed')
+            !originalEvent.includes('failed'),
           );
         });
       });
 
-      this.wrappedComponents.set(`health-component-${componentName}`, wrappedComponent);
+      this.wrappedComponents.set(
+        `health-component-${componentName}`,
+        wrappedComponent,
+      );
       this.logger.debug(`Wrapped health component events: ${componentName}`);
     }
   }
@@ -1548,7 +1675,9 @@ export class MonitoringEventAdapter implements IEventManager {
    * Wrap analytics component events with UEL integration.
    */
   private async wrapAnalyticsComponents(): Promise<void> {
-    const analyzers = this.config.analyticsMonitoring?.analyzers || ['performance-analyzer'];
+    const analyzers = this.config.analyticsMonitoring?.analyzers || [
+      'performance-analyzer',
+    ];
 
     for (const analyzerName of analyzers) {
       const wrapper = new EventEmitter();
@@ -1589,7 +1718,8 @@ export class MonitoringEventAdapter implements IEventManager {
             details: {
               ...data,
               severity: data?.severity || 'info',
-              performanceData: data?.performanceData || data?.insights?.performance,
+              performanceData:
+                data?.performanceData || data?.insights?.performance,
             },
             metadata: { originalEvent, data, analyzerName },
           };
@@ -1597,12 +1727,15 @@ export class MonitoringEventAdapter implements IEventManager {
           this.eventEmitter.emit(uelEvent, monitoringEvent);
           this.updateComponentHealthMetrics(
             `analytics-component-${analyzerName}`,
-            !originalEvent.includes('error')
+            !originalEvent.includes('error'),
           );
         });
       });
 
-      this.wrappedComponents.set(`analytics-component-${analyzerName}`, wrappedComponent);
+      this.wrappedComponents.set(
+        `analytics-component-${analyzerName}`,
+        wrappedComponent,
+      );
       this.logger.debug(`Wrapped analytics component events: ${analyzerName}`);
     }
   }
@@ -1654,7 +1787,10 @@ export class MonitoringEventAdapter implements IEventManager {
         };
 
         this.eventEmitter.emit(uelEvent, monitoringEvent);
-        this.updateComponentHealthMetrics('alert-management', !originalEvent.includes('error'));
+        this.updateComponentHealthMetrics(
+          'alert-management',
+          !originalEvent.includes('error'),
+        );
       });
     });
 
@@ -1666,7 +1802,9 @@ export class MonitoringEventAdapter implements IEventManager {
    * Wrap dashboard integration events with UEL integration.
    */
   private async wrapDashboardIntegration(): Promise<void> {
-    const dashboards = this.config.dashboardIntegration?.dashboards || ['main-dashboard'];
+    const dashboards = this.config.dashboardIntegration?.dashboards || [
+      'main-dashboard',
+    ];
 
     for (const dashboardName of dashboards) {
       const wrapper = new EventEmitter();
@@ -1712,12 +1850,15 @@ export class MonitoringEventAdapter implements IEventManager {
           this.eventEmitter.emit(uelEvent, monitoringEvent);
           this.updateComponentHealthMetrics(
             `dashboard-${dashboardName}`,
-            !originalEvent.includes('error')
+            !originalEvent.includes('error'),
           );
         });
       });
 
-      this.wrappedComponents.set(`dashboard-${dashboardName}`, wrappedComponent);
+      this.wrappedComponents.set(
+        `dashboard-${dashboardName}`,
+        wrappedComponent,
+      );
       this.logger.debug(`Wrapped dashboard events: ${dashboardName}`);
     }
   }
@@ -1726,7 +1867,9 @@ export class MonitoringEventAdapter implements IEventManager {
    * Unwrap all monitoring components.
    */
   private async unwrapMonitoringComponents(): Promise<void> {
-    for (const [componentName, wrapped] of Array.from(this.wrappedComponents.entries())) {
+    for (const [componentName, wrapped] of Array.from(
+      this.wrappedComponents.entries(),
+    )) {
       try {
         // Restore original methods if they were wrapped
         wrapped.originalMethods.forEach((originalMethod, methodName) => {
@@ -1741,7 +1884,10 @@ export class MonitoringEventAdapter implements IEventManager {
 
         this.logger.debug(`Unwrapped monitoring component: ${componentName}`);
       } catch (error) {
-        this.logger.warn(`Failed to unwrap monitoring component ${componentName}:`, error);
+        this.logger.warn(
+          `Failed to unwrap monitoring component ${componentName}:`,
+          error,
+        );
       }
     }
 
@@ -1757,7 +1903,7 @@ export class MonitoringEventAdapter implements IEventManager {
    */
   private async processMonitoringEventEmission<T extends SystemEvent>(
     event: T,
-    _options?: EventEmissionOptions
+    _options?: EventEmissionOptions,
   ): Promise<void> {
     // Add to event history if it's a monitoring event
     if (event.type.startsWith('monitoring:')) {
@@ -1770,7 +1916,9 @@ export class MonitoringEventAdapter implements IEventManager {
 
       // Handle event correlation
       if (this.config.monitoring?.enabled && event.correlationId) {
-        this.updateMonitoringEventCorrelation(event as unknown as MonitoringEvent);
+        this.updateMonitoringEventCorrelation(
+          event as unknown as MonitoringEvent,
+        );
       }
 
       // Update monitoring-specific metrics
@@ -1793,27 +1941,44 @@ export class MonitoringEventAdapter implements IEventManager {
 
     // Process subscriptions manually to handle filtering and transformation per subscription
     for (const subscription of Array.from(this.subscriptions.values())) {
-      if (!subscription.active || !subscription.eventTypes.includes(transformedEvent.type)) {
+      if (
+        !(
+          subscription.active &&
+          subscription.eventTypes.includes(transformedEvent.type)
+        )
+      ) {
         continue;
       }
 
       try {
         // Apply subscription-specific filters
-        if (subscription.filter && !this.applyFilter(transformedEvent, subscription.filter)) {
+        if (
+          subscription.filter &&
+          !this.applyFilter(transformedEvent, subscription.filter)
+        ) {
           continue;
         }
 
         // Apply subscription-specific transforms
         let subscriptionEvent = transformedEvent;
         if (subscription.transform) {
-          subscriptionEvent = await this.applyTransform(transformedEvent, subscription.transform);
+          subscriptionEvent = await this.applyTransform(
+            transformedEvent,
+            subscription.transform,
+          );
         }
 
         // Call the listener
         await subscription.listener(subscriptionEvent);
       } catch (error) {
-        this.logger.error(`Monitoring subscription listener error for ${subscription.id}:`, error);
-        this.eventEmitter.emit('subscription-error', { subscriptionId: subscription.id, error });
+        this.logger.error(
+          `Monitoring subscription listener error for ${subscription.id}:`,
+          error,
+        );
+        this.eventEmitter.emit('subscription-error', {
+          subscriptionId: subscription.id,
+          error,
+        });
       }
     }
 
@@ -1854,14 +2019,17 @@ export class MonitoringEventAdapter implements IEventManager {
    * Start health monitoring for monitoring components.
    */
   private startMonitoringHealthMonitoring(): void {
-    const interval = this.config.healthMonitoringConfig?.healthCheckInterval || 30000;
+    const interval =
+      this.config.healthMonitoringConfig?.healthCheckInterval || 30000;
 
     setInterval(async () => {
       try {
         await this.performMonitoringHealthCheck();
 
         // Emit health status events for unhealthy components
-        for (const [component, health] of Array.from(this.monitoringHealth.entries())) {
+        for (const [component, health] of Array.from(
+          this.monitoringHealth.entries(),
+        )) {
           if (health.status !== 'healthy') {
             await this.emitHealthMonitoringEvent({
               source: component,
@@ -1870,7 +2038,10 @@ export class MonitoringEventAdapter implements IEventManager {
               component: component,
               details: {
                 healthScore: health.healthScore,
-                severity: health.status === 'unhealthy' ? ('error' as const) : ('warning' as const),
+                severity:
+                  health.status === 'unhealthy'
+                    ? ('error' as const)
+                    : ('warning' as const),
                 performanceData: {
                   cpu: health.resourceUsage.cpu,
                   memory: health.resourceUsage.memory,
@@ -1902,7 +2073,7 @@ export class MonitoringEventAdapter implements IEventManager {
       const expiredCorrelations: string[] = [];
 
       for (const [correlationId, correlation] of Array.from(
-        this.monitoringCorrelations.entries()
+        this.monitoringCorrelations.entries(),
       )) {
         if (now - correlation.lastUpdate.getTime() > correlationTTL) {
           expiredCorrelations.push(correlationId);
@@ -1919,7 +2090,7 @@ export class MonitoringEventAdapter implements IEventManager {
 
       if (expiredCorrelations.length > 0) {
         this.logger.debug(
-          `Cleaned up ${expiredCorrelations.length} expired monitoring correlations`
+          `Cleaned up ${expiredCorrelations.length} expired monitoring correlations`,
         );
       }
     }, cleanupInterval);
@@ -1929,7 +2100,8 @@ export class MonitoringEventAdapter implements IEventManager {
    * Start metrics optimization if enabled.
    */
   private startMetricsOptimization(): void {
-    const interval = this.config.metricsOptimization?.optimizationInterval || 120000;
+    const interval =
+      this.config.metricsOptimization?.optimizationInterval || 120000;
 
     setInterval(async () => {
       if (!this.config.metricsOptimization?.enabled) return;
@@ -1939,13 +2111,17 @@ export class MonitoringEventAdapter implements IEventManager {
         const monitoringHealth = await this.performMonitoringHealthCheck();
 
         // Check if optimization is needed
-        for (const [componentName, health] of Object.entries(monitoringHealth)) {
-          const thresholds = this.config.metricsOptimization.performanceThresholds;
+        for (const [componentName, health] of Object.entries(
+          monitoringHealth,
+        )) {
+          const thresholds =
+            this.config.metricsOptimization.performanceThresholds;
 
           if (
             health.monitoringLatency > thresholds.latency ||
             health.dataAccuracy < thresholds.accuracy ||
-            (health.resourceUsage.cpu + health.resourceUsage.memory) / 2 > thresholds.resourceUsage
+            (health.resourceUsage.cpu + health.resourceUsage.memory) / 2 >
+              thresholds.resourceUsage
           ) {
             this.logger.info(`Triggering optimization for ${componentName}`, {
               latency: health.monitoringLatency,
@@ -1960,7 +2136,10 @@ export class MonitoringEventAdapter implements IEventManager {
               operation: 'collect',
               component: componentName,
               details: {
-                severity: health.dataAccuracy < thresholds.accuracy ? 'warning' : 'info',
+                severity:
+                  health.dataAccuracy < thresholds.accuracy
+                    ? 'warning'
+                    : 'info',
                 performanceData: {
                   cpu: health.resourceUsage.cpu,
                   memory: health.resourceUsage.memory,
@@ -1988,7 +2167,9 @@ export class MonitoringEventAdapter implements IEventManager {
   private startMonitoringEventCorrelation(event: MonitoringEvent): void {
     const correlationId = event.correlationId || this.generateCorrelationId();
 
-    if (!this.monitoringCorrelations.has(correlationId)) {
+    if (this.monitoringCorrelations.has(correlationId)) {
+      this.updateMonitoringEventCorrelation(event);
+    } else {
       const correlation: MonitoringCorrelation = {
         correlationId,
         events: [event],
@@ -2009,8 +2190,6 @@ export class MonitoringEventAdapter implements IEventManager {
       };
 
       this.monitoringCorrelations.set(correlationId, correlation);
-    } else {
-      this.updateMonitoringEventCorrelation(event);
     }
   }
 
@@ -2041,11 +2220,13 @@ export class MonitoringEventAdapter implements IEventManager {
       }
 
       // Update performance metrics
-      const totalTime = correlation.lastUpdate.getTime() - correlation.startTime.getTime();
+      const totalTime =
+        correlation.lastUpdate.getTime() - correlation.startTime.getTime();
       correlation.performance.totalLatency = totalTime;
       correlation.performance.monitoringEfficiency =
         this.calculateMonitoringEfficiency(correlation);
-      correlation.performance.dataAccuracy = this.calculateDataAccuracy(correlation);
+      correlation.performance.dataAccuracy =
+        this.calculateDataAccuracy(correlation);
 
       // Check for completion patterns
       if (this.isMonitoringCorrelationComplete(correlation)) {
@@ -2059,7 +2240,9 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param correlation
    */
-  private isMonitoringCorrelationComplete(correlation: MonitoringCorrelation): boolean {
+  private isMonitoringCorrelationComplete(
+    correlation: MonitoringCorrelation,
+  ): boolean {
     const patterns = this.config.monitoring?.correlationPatterns || [];
 
     for (const pattern of patterns) {
@@ -2080,15 +2263,20 @@ export class MonitoringEventAdapter implements IEventManager {
    *
    * @param correlation
    */
-  private calculateMonitoringEfficiency(correlation: MonitoringCorrelation): number {
+  private calculateMonitoringEfficiency(
+    correlation: MonitoringCorrelation,
+  ): number {
     const events = correlation.events;
     if (events.length < 2) return 1.0;
 
     // Calculate efficiency based on event timing and success rate
     const successfulEvents = events.filter(
-      (e) => e.details?.severity !== 'error' && e.operation !== 'alert'
+      (e) => e.details?.severity !== 'error' && e.operation !== 'alert',
     ).length;
-    const timeEfficiency = Math.max(0, 1 - correlation.performance.totalLatency / 120000); // Penalize long correlations
+    const timeEfficiency = Math.max(
+      0,
+      1 - correlation.performance.totalLatency / 120000,
+    ); // Penalize long correlations
     const successRate = successfulEvents / events.length;
 
     return (timeEfficiency + successRate) / 2;
@@ -2105,7 +2293,9 @@ export class MonitoringEventAdapter implements IEventManager {
 
     // Calculate accuracy based on data quality and consistency
     const validEvents = events.filter(
-      (e) => e.details?.metricValue !== undefined || e.details?.healthScore !== undefined
+      (e) =>
+        e.details?.metricValue !== undefined ||
+        e.details?.healthScore !== undefined,
     ).length;
     const consistencyScore = validEvents / events.length;
 
@@ -2115,10 +2305,14 @@ export class MonitoringEventAdapter implements IEventManager {
   /**
    * Check health of all monitoring components.
    */
-  private async checkMonitoringComponentHealth(): Promise<Record<string, MonitoringHealthEntry>> {
+  private async checkMonitoringComponentHealth(): Promise<
+    Record<string, MonitoringHealthEntry>
+  > {
     const componentHealth: Record<string, MonitoringHealthEntry> = {};
 
-    for (const [componentName, wrapped] of Array.from(this.wrappedComponents.entries())) {
+    for (const [componentName, wrapped] of Array.from(
+      this.wrappedComponents.entries(),
+    )) {
       const existing = this.monitoringHealth.get(componentName);
       const healthEntry: MonitoringHealthEntry = existing || {
         component: componentName,
@@ -2146,25 +2340,25 @@ export class MonitoringEventAdapter implements IEventManager {
    */
   private async processMonitoringBatchImmediate<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     await Promise.all(batch.events.map((event) => this.emit(event, options)));
   }
 
   private async processMonitoringBatchQueued<T extends SystemEvent>(
     batch: EventBatch<T>,
-    _options?: EventEmissionOptions
+    _options?: EventEmissionOptions,
   ): Promise<void> {
     // Only queue monitoring events
     const monitoringEvents = batch.events.filter((e) =>
-      e.type.startsWith('monitoring:')
+      e.type.startsWith('monitoring:'),
     ) as unknown as MonitoringEvent[];
     this.eventQueue.push(...monitoringEvents);
   }
 
   private async processMonitoringBatchBatched<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const batchSize = this.config.processing?.batchSize || 50;
 
@@ -2176,7 +2370,7 @@ export class MonitoringEventAdapter implements IEventManager {
 
   private async processMonitoringBatchThrottled<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const throttleMs = this.config.processing?.throttleMs || 100;
 
@@ -2198,7 +2392,11 @@ export class MonitoringEventAdapter implements IEventManager {
     }
 
     // Priority filter
-    if (filter.priorities && event.priority && !filter.priorities.includes(event.priority)) {
+    if (
+      filter.priorities &&
+      event.priority &&
+      !filter.priorities.includes(event.priority)
+    ) {
       return false;
     }
 
@@ -2221,7 +2419,7 @@ export class MonitoringEventAdapter implements IEventManager {
 
   private async applyTransform<T extends SystemEvent>(
     event: T,
-    transform: EventTransform
+    transform: EventTransform,
   ): Promise<T> {
     let transformedEvent = event;
 
@@ -2237,7 +2435,9 @@ export class MonitoringEventAdapter implements IEventManager {
 
     // Apply validator
     if (transform.validator && !transform.validator(transformedEvent)) {
-      throw new Error(`Monitoring event transformation validation failed for ${event.id}`);
+      throw new Error(
+        `Monitoring event transformation validation failed for ${event.id}`,
+      );
     }
 
     return transformedEvent;
@@ -2262,7 +2462,9 @@ export class MonitoringEventAdapter implements IEventManager {
     }
   }
 
-  private extractMonitoringOperation(eventType: string): MonitoringEvent['operation'] {
+  private extractMonitoringOperation(
+    eventType: string,
+  ): MonitoringEvent['operation'] {
     if (eventType.includes('collect')) return 'collect';
     if (eventType.includes('report')) return 'report';
     if (eventType.includes('alert')) return 'alert';
@@ -2277,7 +2479,9 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   private extractMetricValue(event: SystemEvent): number | undefined {
-    return (event as any).details?.metricValue || event.metadata?.['metricValue'];
+    return (
+      (event as any).details?.metricValue || event.metadata?.['metricValue']
+    );
   }
 
   private extractAlertLevel(event: SystemEvent): string | undefined {
@@ -2285,11 +2489,16 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   private extractHealthScore(event: SystemEvent): number | undefined {
-    return (event as any).details?.healthScore || event.metadata?.['healthScore'];
+    return (
+      (event as any).details?.healthScore || event.metadata?.['healthScore']
+    );
   }
 
   private extractPerformanceData(event: SystemEvent): any {
-    return (event as any).details?.performanceData || event.metadata?.['performanceData'];
+    return (
+      (event as any).details?.performanceData ||
+      event.metadata?.['performanceData']
+    );
   }
 
   private extractMonitoringType(event: MonitoringEvent): string {
@@ -2306,7 +2515,11 @@ export class MonitoringEventAdapter implements IEventManager {
   }
 
   private determineMonitoringEventPriority(eventType: string): EventPriority {
-    if (eventType.includes('alert') || eventType.includes('failed') || eventType.includes('error'))
+    if (
+      eventType.includes('alert') ||
+      eventType.includes('failed') ||
+      eventType.includes('error')
+    )
       return 'high';
     if (
       eventType.includes('degraded') ||
@@ -2323,7 +2536,10 @@ export class MonitoringEventAdapter implements IEventManager {
     return 'low';
   }
 
-  private updateComponentHealthMetrics(componentName: string, success: boolean): void {
+  private updateComponentHealthMetrics(
+    componentName: string,
+    success: boolean,
+  ): void {
     const wrapped = this.wrappedComponents.get(componentName);
     if (wrapped) {
       wrapped.healthMetrics.lastSeen = new Date();
@@ -2338,7 +2554,10 @@ export class MonitoringEventAdapter implements IEventManager {
     // Update metrics data
     const metricName = this.extractMetricName(event);
     if (metricName && event.type === 'monitoring:metrics') {
-      const metrics = this.metricsData.get(metricName) || { eventCount: 0, lastUpdate: new Date() };
+      const metrics = this.metricsData.get(metricName) || {
+        eventCount: 0,
+        lastUpdate: new Date(),
+      };
       metrics.eventCount++;
       metrics.lastUpdate = new Date();
       if (event.details?.metricValue !== undefined) {
@@ -2350,7 +2569,10 @@ export class MonitoringEventAdapter implements IEventManager {
     // Update health data
     const component = event.component;
     if (component && event.type === 'monitoring:health') {
-      const health = this.healthData.get(component) || { eventCount: 0, lastUpdate: new Date() };
+      const health = this.healthData.get(component) || {
+        eventCount: 0,
+        lastUpdate: new Date(),
+      };
       health.eventCount++;
       health.lastUpdate = new Date();
       if (event.details?.healthScore !== undefined) {
@@ -2362,7 +2584,10 @@ export class MonitoringEventAdapter implements IEventManager {
     // Update alert data
     const alertId = event.details?.alertId;
     if (alertId && event.type === 'monitoring:alert') {
-      const alert = this.alertData.get(alertId) || { eventCount: 0, lastUpdate: new Date() };
+      const alert = this.alertData.get(alertId) || {
+        eventCount: 0,
+        lastUpdate: new Date(),
+      };
       alert.eventCount++;
       alert.lastUpdate = new Date();
       alert.severity = event.details?.severity || 'info';
@@ -2370,7 +2595,10 @@ export class MonitoringEventAdapter implements IEventManager {
     }
 
     // Update performance insights
-    if (event.type === 'monitoring:performance' && event.details?.performanceData) {
+    if (
+      event.type === 'monitoring:performance' &&
+      event.details?.performanceData
+    ) {
       const insights = this.performanceInsights.get(component) || {
         eventCount: 0,
         lastUpdate: new Date(),
@@ -2412,7 +2640,9 @@ export class MonitoringEventAdapter implements IEventManager {
     size += this.eventHistory.length * 1000;
 
     // Estimate correlations memory
-    for (const correlation of Array.from(this.monitoringCorrelations.values())) {
+    for (const correlation of Array.from(
+      this.monitoringCorrelations.values(),
+    )) {
       size += correlation.events.length * 600;
     }
 
@@ -2469,7 +2699,7 @@ export class MonitoringEventAdapter implements IEventManager {
  * @example
  */
 export function createMonitoringEventAdapter(
-  config: MonitoringEventAdapterConfig
+  config: MonitoringEventAdapterConfig,
 ): MonitoringEventAdapter {
   return new MonitoringEventAdapter(config);
 }
@@ -2483,7 +2713,7 @@ export function createMonitoringEventAdapter(
  */
 export function createDefaultMonitoringEventAdapterConfig(
   name: string,
-  overrides?: Partial<MonitoringEventAdapterConfig>
+  overrides?: Partial<MonitoringEventAdapterConfig>,
 ): MonitoringEventAdapterConfig {
   return {
     name,
@@ -2625,7 +2855,7 @@ export const MonitoringEventHelpers = {
     metricName: string,
     metricValue: number,
     component: string,
-    details?: any
+    details?: any,
   ): Omit<MonitoringEvent, 'id' | 'timestamp'> {
     return {
       source: 'performance-monitor',
@@ -2654,7 +2884,7 @@ export const MonitoringEventHelpers = {
     component: string,
     healthScore: number,
     status: string,
-    details?: any
+    details?: any,
   ): Omit<MonitoringEvent, 'id' | 'timestamp'> {
     return {
       source: 'health-monitor',
@@ -2665,7 +2895,12 @@ export const MonitoringEventHelpers = {
       details: {
         ...details,
         healthScore,
-        severity: status === 'unhealthy' ? 'error' : status === 'degraded' ? 'warning' : 'info',
+        severity:
+          status === 'unhealthy'
+            ? 'error'
+            : status === 'degraded'
+              ? 'warning'
+              : 'info',
       },
     };
   },
@@ -2682,14 +2917,19 @@ export const MonitoringEventHelpers = {
     alertId: string,
     severity: 'info' | 'warning' | 'error' | 'critical',
     component: string,
-    details?: any
+    details?: any,
   ): Omit<MonitoringEvent, 'id' | 'timestamp'> {
     return {
       source: 'alert-manager',
       type: 'monitoring:alert',
       operation: 'alert',
       component,
-      priority: severity === 'critical' ? 'critical' : severity === 'error' ? 'high' : 'medium',
+      priority:
+        severity === 'critical'
+          ? 'critical'
+          : severity === 'error'
+            ? 'high'
+            : 'medium',
       details: {
         ...details,
         alertId,
@@ -2708,7 +2948,7 @@ export const MonitoringEventHelpers = {
   createAnalyticsInsightEvent(
     component: string,
     insights: any,
-    details?: any
+    details?: any,
   ): Omit<MonitoringEvent, 'id' | 'timestamp'> {
     return {
       source: 'analytics-engine',
@@ -2737,7 +2977,7 @@ export const MonitoringEventHelpers = {
     component: string,
     error: Error,
     _operation: string,
-    details?: any
+    details?: any,
   ): Omit<MonitoringEvent, 'id' | 'timestamp'> {
     return {
       source: component,

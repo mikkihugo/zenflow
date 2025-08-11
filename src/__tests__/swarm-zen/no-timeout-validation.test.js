@@ -41,7 +41,8 @@ describe('No Timeout Validation Suite', () => {
       expect(setIntervalMatches).toBeNull();
 
       // Verify original had setInterval calls
-      const originalSetIntervalMatches = originalCode.match(/setInterval\s*\(/g);
+      const originalSetIntervalMatches =
+        originalCode.match(/setInterval\s*\(/g);
       expect(originalSetIntervalMatches).not.toBeNull();
       expect(originalSetIntervalMatches.length).toBeGreaterThan(0);
     });
@@ -173,7 +174,9 @@ describe('No Timeout Validation Suite', () => {
   describe('Functional Testing', () => {
     test('Help command should work without timeouts', async () => {
       try {
-        const { stdout, stderr } = await execAsync(`node ${noTimeoutPath} help`);
+        const { stdout, stderr } = await execAsync(
+          `node ${noTimeoutPath} help`,
+        );
         expect(stdout).toMatch(/NO TIMEOUT VERSION/);
         expect(stdout).toMatch(/INFINITE RUNTIME/);
         expect(stderr).toBe('');
@@ -185,7 +188,9 @@ describe('No Timeout Validation Suite', () => {
 
     test('Version command should work without timeouts', async () => {
       try {
-        const { stdout, stderr } = await execAsync(`node ${noTimeoutPath} version`);
+        const { stdout, stderr } = await execAsync(
+          `node ${noTimeoutPath} version`,
+        );
         expect(stdout).toMatch(/NO TIMEOUT VERSION/);
         expect(stdout).toMatch(/TIMEOUT MECHANISMS COMPLETELY REMOVED/);
         expect(stderr).toBe('');
@@ -197,7 +202,9 @@ describe('No Timeout Validation Suite', () => {
 
     test('MCP status should work without timeouts', async () => {
       try {
-        const { stdout, stderr } = await execAsync(`node ${noTimeoutPath} mcp status`);
+        const { stdout, stderr } = await execAsync(
+          `node ${noTimeoutPath} mcp status`,
+        );
         expect(stdout).toMatch(/NO TIMEOUT VERSION/);
         expect(stdout).toMatch(/TIMEOUT MECHANISMS: COMPLETELY DISABLED/);
         expect(stderr).toBe('');
@@ -209,7 +216,9 @@ describe('No Timeout Validation Suite', () => {
 
     test('MCP tools list should work without timeouts', async () => {
       try {
-        const { stdout, stderr } = await execAsync(`node ${noTimeoutPath} mcp tools`);
+        const { stdout, stderr } = await execAsync(
+          `node ${noTimeoutPath} mcp tools`,
+        );
         expect(stdout).toMatch(/NO TIMEOUT VERSION/);
         expect(stdout).toMatch(/NO TIMEOUT MECHANISMS/);
         expect(stderr).toBe('');
@@ -221,7 +230,9 @@ describe('No Timeout Validation Suite', () => {
 
     test('MCP help should work without timeouts', async () => {
       try {
-        const { stdout, stderr } = await execAsync(`node ${noTimeoutPath} mcp help`);
+        const { stdout, stderr } = await execAsync(
+          `node ${noTimeoutPath} mcp help`,
+        );
         expect(stdout).toMatch(/NO TIMEOUT VERSION/);
         expect(stdout).toMatch(/TIMEOUT MECHANISMS: COMPLETELY REMOVED/);
         expect(stdout).toMatch(/REMOVED VARIABLES/);
@@ -359,7 +370,9 @@ describe('Overall Validation Summary', () => {
       if (noTimeoutMatches !== null && originalMatches !== null) {
         preservedCount++;
       } else if (noTimeoutMatches === null) {
-        console.warn(`⚠️  Essential pattern ${pattern} not found in no-timeout version`);
+        console.warn(
+          `⚠️  Essential pattern ${pattern} not found in no-timeout version`,
+        );
       }
     }
 

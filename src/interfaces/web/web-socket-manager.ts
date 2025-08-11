@@ -26,7 +26,11 @@ export class WebSocketManager {
   private dataService: WebDataService;
   private broadcastIntervals: NodeJS.Timeout[] = [];
 
-  constructor(io: SocketIOServer, config: WebConfig, dataService: WebDataService) {
+  constructor(
+    io: SocketIOServer,
+    config: WebConfig,
+    dataService: WebDataService,
+  ) {
     this.io = io;
     this.config = config;
     this.dataService = dataService;
@@ -71,7 +75,9 @@ export class WebSocketManager {
       });
 
       socket.on('disconnect', (reason) => {
-        this.logger.debug(`Client disconnected: ${socket.id}, reason: ${reason}`);
+        this.logger.debug(
+          `Client disconnected: ${socket.id}, reason: ${reason}`,
+        );
       });
 
       socket.on('error', (error) => {
@@ -96,24 +102,36 @@ export class WebSocketManager {
       switch (channel) {
         case 'system': {
           const status = await this.dataService.getSystemStatus();
-          socket.emit('system:initial', { data: status, timestamp: new Date().toISOString() });
+          socket.emit('system:initial', {
+            data: status,
+            timestamp: new Date().toISOString(),
+          });
           break;
         }
         case 'swarms': {
           const swarms = await this.dataService.getSwarms();
-          socket.emit('swarms:initial', { data: swarms, timestamp: new Date().toISOString() });
+          socket.emit('swarms:initial', {
+            data: swarms,
+            timestamp: new Date().toISOString(),
+          });
           break;
         }
         case 'tasks': {
           const tasks = await this.dataService.getTasks();
-          socket.emit('tasks:initial', { data: tasks, timestamp: new Date().toISOString() });
+          socket.emit('tasks:initial', {
+            data: tasks,
+            timestamp: new Date().toISOString(),
+          });
           break;
         }
         default:
           this.logger.warn(`Unknown channel subscription: ${channel}`);
       }
     } catch (error) {
-      this.logger.error(`Failed to send initial data for channel ${channel}:`, error);
+      this.logger.error(
+        `Failed to send initial data for channel ${channel}:`,
+        error,
+      );
     }
   }
 
@@ -152,7 +170,11 @@ export class WebSocketManager {
     }, 10000);
 
     // Store intervals for cleanup
-    this.broadcastIntervals.push(systemInterval, tasksInterval, metricsInterval);
+    this.broadcastIntervals.push(
+      systemInterval,
+      tasksInterval,
+      metricsInterval,
+    );
 
     this.logger.info('Real-time data broadcasting started');
   }
@@ -207,7 +229,7 @@ export class WebSocketManager {
     const sockets = this.io.sockets.sockets;
     const connectedClients = Array.from(sockets.keys());
     const rooms = Array.from(this.io.sockets.adapter.rooms.keys()).filter(
-      (room) => !connectedClients.includes(room)
+      (room) => !connectedClients.includes(room),
     ); // Filter out client IDs
 
     return {

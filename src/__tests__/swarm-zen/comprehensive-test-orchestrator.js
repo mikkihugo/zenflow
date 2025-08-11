@@ -5,10 +5,14 @@
  * Master test suite that orchestrates all testing components
  */
 
-const { PerformanceValidator } = require('./comprehensive-performance-validation.test.js');
+const {
+  PerformanceValidator,
+} = require('./comprehensive-performance-validation.test.js');
 const { LoadTestingSuite } = require('./load-testing-suite.test.js');
 const { SecurityAuditor } = require('./security-audit.test.js');
-const { RegressionTestingPipeline } = require('./regression-testing-pipeline.test.js');
+const {
+  RegressionTestingPipeline,
+} = require('./regression-testing-pipeline.test.js');
 const fs = require('node:fs').promises;
 const _path = require('node:path');
 
@@ -133,126 +137,167 @@ class ComprehensiveTestOrchestrator {
     };
 
     // Test 1: MCP Tools Integration
-    await this.runClaudeFlowTest(claudeFlowTests, 'MCP Tools Integration', async () => {
-      try {
-        const { mcp } = require('../src/mcp-tools-enhanced');
+    await this.runClaudeFlowTest(
+      claudeFlowTests,
+      'MCP Tools Integration',
+      async () => {
+        try {
+          const { mcp } = require('../src/mcp-tools-enhanced');
 
-        // Test swarm initialization
-        await mcp.swarm_init({ topology: 'mesh', maxAgents: 3 });
+          // Test swarm initialization
+          await mcp.swarm_init({ topology: 'mesh', maxAgents: 3 });
 
-        // Test agent spawning
-        const _agentResult = await mcp.agent_spawn({ type: 'coder', name: 'claude-test-agent' });
+          // Test agent spawning
+          const _agentResult = await mcp.agent_spawn({
+            type: 'coder',
+            name: 'claude-test-agent',
+          });
 
-        // Test task orchestration
-        await mcp.task_orchestrate({
-          task: 'Test Claude Code Flow integration',
-          strategy: 'adaptive',
-        });
+          // Test task orchestration
+          await mcp.task_orchestrate({
+            task: 'Test Claude Code Flow integration',
+            strategy: 'adaptive',
+          });
 
-        return { passed: true, details: 'MCP tools working correctly' };
-      } catch (error) {
-        return { passed: false, details: `MCP error: ${error.message}` };
-      }
-    });
+          return { passed: true, details: 'MCP tools working correctly' };
+        } catch (error) {
+          return { passed: false, details: `MCP error: ${error.message}` };
+        }
+      },
+    );
 
     // Test 2: Neural Network Integration
-    await this.runClaudeFlowTest(claudeFlowTests, 'Neural Network Integration', async () => {
-      try {
-        const { ZenSwarm } = require('../src/index-enhanced');
+    await this.runClaudeFlowTest(
+      claudeFlowTests,
+      'Neural Network Integration',
+      async () => {
+        try {
+          const { ZenSwarm } = require('../src/index-enhanced');
 
-        const ruvSwarm = await ZenSwarm.initialize({
-          enableNeuralNetworks: true,
-          enableForecasting: true,
-        });
+          const ruvSwarm = await ZenSwarm.initialize({
+            enableNeuralNetworks: true,
+            enableForecasting: true,
+          });
 
-        const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 2 });
-        const agent = await swarm.spawn({ type: 'researcher' });
+          const swarm = await ruvSwarm.createSwarm({
+            topology: 'mesh',
+            maxAgents: 2,
+          });
+          const agent = await swarm.spawn({ type: 'researcher' });
 
-        await agent.execute({
-          task: 'Analyze neural network performance patterns',
-          timeout: 10000,
-        });
+          await agent.execute({
+            task: 'Analyze neural network performance patterns',
+            timeout: 10000,
+          });
 
-        return { passed: true, details: 'Neural networks integrated successfully' };
-      } catch (error) {
-        return { passed: false, details: `Neural integration error: ${error.message}` };
-      }
-    });
+          return {
+            passed: true,
+            details: 'Neural networks integrated successfully',
+          };
+        } catch (error) {
+          return {
+            passed: false,
+            details: `Neural integration error: ${error.message}`,
+          };
+        }
+      },
+    );
 
     // Test 3: Persistence Integration
-    await this.runClaudeFlowTest(claudeFlowTests, 'Persistence Integration', async () => {
-      try {
-        const { PersistenceManager } = require('../src/persistence');
+    await this.runClaudeFlowTest(
+      claudeFlowTests,
+      'Persistence Integration',
+      async () => {
+        try {
+          const { PersistenceManager } = require('../src/persistence');
 
-        const pm = new PersistenceManager(':memory:');
-        await pm.initialize();
+          const pm = new PersistenceManager(':memory:');
+          await pm.initialize();
 
-        // Test data storage and retrieval
-        await pm.storeAgentData({
-          id: 'claude-test-1',
-          type: 'coder',
-          name: 'test-agent',
-          status: 'active',
-        });
+          // Test data storage and retrieval
+          await pm.storeAgentData({
+            id: 'claude-test-1',
+            type: 'coder',
+            name: 'test-agent',
+            status: 'active',
+          });
 
-        const retrievedData = await pm.getAgentData('claude-test-1');
+          const retrievedData = await pm.getAgentData('claude-test-1');
 
-        return {
-          passed: retrievedData && retrievedData.name === 'test-agent',
-          details: 'Persistence working correctly',
-        };
-      } catch (error) {
-        return { passed: false, details: `Persistence error: ${error.message}` };
-      }
-    });
+          return {
+            passed: retrievedData && retrievedData.name === 'test-agent',
+            details: 'Persistence working correctly',
+          };
+        } catch (error) {
+          return {
+            passed: false,
+            details: `Persistence error: ${error.message}`,
+          };
+        }
+      },
+    );
 
     // Test 4: WASM Module Integration
-    await this.runClaudeFlowTest(claudeFlowTests, 'WASM Module Integration', async () => {
-      try {
-        const { ZenSwarm } = require('../src/index-enhanced');
+    await this.runClaudeFlowTest(
+      claudeFlowTests,
+      'WASM Module Integration',
+      async () => {
+        try {
+          const { ZenSwarm } = require('../src/index-enhanced');
 
-        const ruvSwarm = await ZenSwarm.initialize({ enableSIMD: true });
-        const simdSupported = await ruvSwarm.detectSIMDSupport();
+          const ruvSwarm = await ZenSwarm.initialize({ enableSIMD: true });
+          const simdSupported = await ruvSwarm.detectSIMDSupport();
 
-        // Test WASM-based operations
-        const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 1 });
-        const agent = await swarm.spawn({ type: 'optimizer' });
+          // Test WASM-based operations
+          const swarm = await ruvSwarm.createSwarm({
+            topology: 'mesh',
+            maxAgents: 1,
+          });
+          const agent = await swarm.spawn({ type: 'optimizer' });
 
-        await agent.execute({
-          task: 'WASM optimization test: matrix multiplication',
-          timeout: 8000,
-        });
+          await agent.execute({
+            task: 'WASM optimization test: matrix multiplication',
+            timeout: 8000,
+          });
 
-        return {
-          passed: true,
-          details: `WASM working, SIMD supported: ${simdSupported}`,
-        };
-      } catch (error) {
-        return { passed: false, details: `WASM error: ${error.message}` };
-      }
-    });
+          return {
+            passed: true,
+            details: `WASM working, SIMD supported: ${simdSupported}`,
+          };
+        } catch (error) {
+          return { passed: false, details: `WASM error: ${error.message}` };
+        }
+      },
+    );
 
     // Test 5: Hook System Integration
-    await this.runClaudeFlowTest(claudeFlowTests, 'Hook System Integration', async () => {
-      try {
-        const { hooks } = require('../src/hooks');
+    await this.runClaudeFlowTest(
+      claudeFlowTests,
+      'Hook System Integration',
+      async () => {
+        try {
+          const { hooks } = require('../src/hooks');
 
-        // Test pre-operation hooks
-        const _preResult = await hooks.preTask('claude-flow-test');
+          // Test pre-operation hooks
+          const _preResult = await hooks.preTask('claude-flow-test');
 
-        // Test post-operation hooks
-        const _postResult = await hooks.postEdit('/test/file.js', {
-          memoryKey: 'claude-flow-test',
-        });
+          // Test post-operation hooks
+          const _postResult = await hooks.postEdit('/test/file.js', {
+            memoryKey: 'claude-flow-test',
+          });
 
-        return {
-          passed: true,
-          details: 'Hook system functioning correctly',
-        };
-      } catch (error) {
-        return { passed: false, details: `Hook system error: ${error.message}` };
-      }
-    });
+          return {
+            passed: true,
+            details: 'Hook system functioning correctly',
+          };
+        } catch (error) {
+          return {
+            passed: false,
+            details: `Hook system error: ${error.message}`,
+          };
+        }
+      },
+    );
 
     return claudeFlowTests;
   }
@@ -312,7 +357,10 @@ class ComprehensiveTestOrchestrator {
 
     try {
       const nodeVersion = process.version;
-      const majorVersion = parseInt(nodeVersion.slice(1).split('.')[0], 10);
+      const majorVersion = Number.parseInt(
+        nodeVersion.slice(1).split('.')[0],
+        10,
+      );
       nodeTest.passed = majorVersion >= 14;
       nodeTest.details = `Node.js ${nodeVersion} ${nodeTest.passed ? 'supported' : 'unsupported (minimum: 14.x)'}`;
       platformTests.compatibility.nodejs = nodeTest.passed;
@@ -395,7 +443,7 @@ class ComprehensiveTestOrchestrator {
 
     // Overall platform compatibility
     platformTests.passed = Object.values(platformTests.compatibility).every(
-      (supported) => supported
+      (supported) => supported,
     );
 
     platformTests.tests.forEach((_test) => {});
@@ -406,17 +454,17 @@ class ComprehensiveTestOrchestrator {
   determineSuitePassed(suiteName, results) {
     switch (suiteName) {
       case 'Performance Validation':
-        return results.summary?.overallPassed || false;
+        return results.summary?.overallPassed;
       case 'Load Testing':
-        return results.passed || false;
+        return results.passed;
       case 'Security Audit':
         return results.overallSecurity?.level !== 'CRITICAL';
       case 'Regression Pipeline':
         return results.overallStatus === 'PASSED';
       case 'Claude Code Flow Integration':
-        return results.passed || false;
+        return results.passed;
       case 'Cross-Platform Compatibility':
-        return results.passed || false;
+        return results.passed;
       default:
         return false;
     }
@@ -454,7 +502,8 @@ class ComprehensiveTestOrchestrator {
             securityScore: results.overallSecurity.score,
             securityLevel: results.overallSecurity.level,
             vulnerabilities: results.vulnerabilities?.length || 0,
-            memoryLeaks: results.memoryTests?.filter((t) => !t.passed).length || 0,
+            memoryLeaks:
+              results.memoryTests?.filter((t) => !t.passed).length || 0,
           };
         }
         break;
@@ -475,20 +524,22 @@ class ComprehensiveTestOrchestrator {
 
   async generateOrchestrationReport() {
     // Calculate summary statistics
-    this.orchestrationResults.summary.totalSuites = this.orchestrationResults.testSuites.length;
-    this.orchestrationResults.summary.passedSuites = this.orchestrationResults.testSuites.filter(
-      (s) => s.passed
-    ).length;
+    this.orchestrationResults.summary.totalSuites =
+      this.orchestrationResults.testSuites.length;
+    this.orchestrationResults.summary.passedSuites =
+      this.orchestrationResults.testSuites.filter((s) => s.passed).length;
     this.orchestrationResults.summary.failedSuites =
       this.orchestrationResults.summary.totalSuites -
       this.orchestrationResults.summary.passedSuites;
-    this.orchestrationResults.summary.totalDuration = Date.now() - this.startTime;
+    this.orchestrationResults.summary.totalDuration =
+      Date.now() - this.startTime;
 
     // Determine overall status
     const successRate =
       this.orchestrationResults.summary.passedSuites /
       this.orchestrationResults.summary.totalSuites;
-    this.orchestrationResults.summary.overallStatus = successRate >= 0.8 ? 'PASSED' : 'FAILED';
+    this.orchestrationResults.summary.overallStatus =
+      successRate >= 0.8 ? 'PASSED' : 'FAILED';
 
     // Determine CI/CD readiness
     const criticalSuites = [
@@ -497,17 +548,24 @@ class ComprehensiveTestOrchestrator {
       'Claude Code Flow Integration',
     ];
     const criticalPassed = criticalSuites.every(
-      (suiteName) => this.orchestrationResults.testSuites.find((s) => s.name === suiteName)?.passed
+      (suiteName) =>
+        this.orchestrationResults.testSuites.find((s) => s.name === suiteName)
+          ?.passed,
     );
     this.orchestrationResults.cicdReadiness =
-      criticalPassed && this.orchestrationResults.summary.overallStatus === 'PASSED';
+      criticalPassed &&
+      this.orchestrationResults.summary.overallStatus === 'PASSED';
 
     // Generate recommendations
     this.generateRecommendations();
 
     // Save comprehensive report
-    const reportPath = '/workspaces/ruv-FANN/ruv-swarm/npm/test/comprehensive-test-report.json';
-    await fs.writeFile(reportPath, JSON.stringify(this.orchestrationResults, null, 2));
+    const reportPath =
+      '/workspaces/ruv-FANN/ruv-swarm/npm/test/comprehensive-test-report.json';
+    await fs.writeFile(
+      reportPath,
+      JSON.stringify(this.orchestrationResults, null, 2),
+    );
 
     // Generate executive summary
     await this.generateExecutiveSummary();
@@ -534,21 +592,33 @@ class ComprehensiveTestOrchestrator {
     // Performance recommendations
     if (
       this.orchestrationResults.metrics.performance.simdPerformance &&
-      !this.orchestrationResults.metrics.performance.simdPerformance.includes('6') &&
-      !this.orchestrationResults.metrics.performance.simdPerformance.includes('7') &&
-      !this.orchestrationResults.metrics.performance.simdPerformance.includes('8') &&
-      !this.orchestrationResults.metrics.performance.simdPerformance.includes('9')
+      !this.orchestrationResults.metrics.performance.simdPerformance.includes(
+        '6',
+      ) &&
+      !this.orchestrationResults.metrics.performance.simdPerformance.includes(
+        '7',
+      ) &&
+      !this.orchestrationResults.metrics.performance.simdPerformance.includes(
+        '8',
+      ) &&
+      !this.orchestrationResults.metrics.performance.simdPerformance.includes(
+        '9',
+      )
     ) {
       recommendations.push('Optimize SIMD performance to reach 6-10x target');
     }
 
     // Security recommendations
     if (this.orchestrationResults.metrics.security.securityScore < 90) {
-      recommendations.push('Address security vulnerabilities to improve security score');
+      recommendations.push(
+        'Address security vulnerabilities to improve security score',
+      );
     }
 
     // Reliability recommendations
-    if (this.orchestrationResults.metrics.reliability.maxConcurrentAgents < 50) {
+    if (
+      this.orchestrationResults.metrics.reliability.maxConcurrentAgents < 50
+    ) {
       recommendations.push('Optimize system to support 50+ concurrent agents');
     }
 
@@ -559,7 +629,7 @@ class ComprehensiveTestOrchestrator {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'All tests passed successfully - system ready for production deployment'
+        'All tests passed successfully - system ready for production deployment',
       );
     }
 
@@ -585,7 +655,7 @@ class ComprehensiveTestOrchestrator {
 ${this.orchestrationResults.testSuites
   .map(
     (suite) =>
-      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`
+      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
   )
   .join('\n')}
 
@@ -600,7 +670,10 @@ ${
 }
 `;
 
-    await fs.writeFile('/workspaces/ruv-FANN/ruv-swarm/npm/test/executive-summary.md', summary);
+    await fs.writeFile(
+      '/workspaces/ruv-FANN/ruv-swarm/npm/test/executive-summary.md',
+      summary,
+    );
   }
 }
 

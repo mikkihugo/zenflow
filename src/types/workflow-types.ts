@@ -81,7 +81,13 @@ export interface WorkflowContext {
 export interface WorkflowState {
   id: string;
   definition: WorkflowDefinition;
-  status: 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
+  status:
+    | 'pending'
+    | 'running'
+    | 'paused'
+    | 'completed'
+    | 'failed'
+    | 'cancelled';
   context: WorkflowContext;
   currentStepIndex: number;
   steps: Array<{
@@ -154,7 +160,14 @@ export interface StepExecutionResult {
 export type WorkflowData = Record<string, any>;
 
 // Document types for workflow processing
-export type DocumentType = 'vision' | 'adr' | 'prd' | 'epic' | 'feature' | 'task' | 'spec';
+export type DocumentType =
+  | 'vision'
+  | 'adr'
+  | 'prd'
+  | 'epic'
+  | 'feature'
+  | 'task'
+  | 'spec';
 
 // Execution plan interface
 export interface ExecutionPlan {

@@ -79,7 +79,11 @@ export const CLAUDE_FLOW_AGENTS: Record<string, string[]> = {
     'performance-tester',
     'production-validator',
   ],
-  'Migration & Planning': ['migration-planner', 'legacy-analyzer', 'modernization-agent'],
+  'Migration & Planning': [
+    'migration-planner',
+    'legacy-analyzer',
+    'modernization-agent',
+  ],
 };
 
 // Our comprehensive agent categories
@@ -126,7 +130,12 @@ export const OUR_AGENT_CATEGORIES: Record<string, AgentType[]> = {
     'cloud-architect',
     'security-architect',
   ],
-  'DevOps Agents': ['ops-cicd-github', 'infrastructure-ops', 'monitoring-ops', 'deployment-ops'],
+  'DevOps Agents': [
+    'ops-cicd-github',
+    'infrastructure-ops',
+    'monitoring-ops',
+    'deployment-ops',
+  ],
   'Documentation Agents': [
     'docs-api-openapi',
     'user-guide-writer',
@@ -151,7 +160,11 @@ export const OUR_AGENT_CATEGORIES: Record<string, AgentType[]> = {
     'blockchain-specialist',
     'ai-ml-specialist',
   ],
-  'UI/UX Enhancement': ['ux-designer', 'ui-designer', 'accessibility-specialist'],
+  'UI/UX Enhancement': [
+    'ux-designer',
+    'ui-designer',
+    'accessibility-specialist',
+  ],
   'GitHub Integration': [
     'code-review-swarm',
     'github-modes',
@@ -264,7 +277,7 @@ export function performGapAnalysis(): GapAnalysisResult {
     .filter((agent, index, array) => array.indexOf(agent) === index).length; // Remove duplicates
 
   // Category-by-category comparison
-  const categoryComparison: Record<string, any> = {};
+  const categoryComparison: Record<string, unknown> = {};
 
   // Compare similar categories
   const categoryMappings = {
@@ -296,7 +309,7 @@ export function performGapAnalysis(): GapAnalysisResult {
   const allOurAgents = Object.values(OUR_AGENT_CATEGORIES).flat();
 
   const missingCapabilities = allTheirAgents.filter(
-    (agent) => !allOurAgents.includes(agent as AgentType)
+    (agent) => !allOurAgents.includes(agent as AgentType),
   );
 
   // Identify our unique advantages
@@ -328,7 +341,9 @@ export function performGapAnalysis(): GapAnalysisResult {
     ourTotal: ourAgentCount,
     clauseFlowTotal: claudeFlowAgentCount,
     ourAdvantage: ourAgentCount - claudeFlowAgentCount,
-    advantageRatio: parseFloat((ourAgentCount / claudeFlowAgentCount).toFixed(2)),
+    advantageRatio: Number.parseFloat(
+      (ourAgentCount / claudeFlowAgentCount).toFixed(2),
+    ),
     categoryComparison,
     missingCapabilities,
     uniqueAdvantages,
@@ -354,8 +369,10 @@ export function generateComparisonReport(): string {
   report += `## 🎯 Category-by-Category Analysis\n\n`;
 
   for (const [category, data] of Object.entries(analysis.categoryComparison)) {
-    const advantage = data?.advantage > 0 ? `+${data?.advantage}` : `${data?.advantage}`;
-    const advantageEmoji = data?.advantage > 0 ? '✅' : data.advantage === 0 ? '🔄' : '❌';
+    const advantage =
+      data?.advantage > 0 ? `+${data?.advantage}` : `${data?.advantage}`;
+    const advantageEmoji =
+      data?.advantage > 0 ? '✅' : data.advantage === 0 ? '🔄' : '❌';
 
     report += `### ${category} ${advantageEmoji}\n`;
     report += `- **Ours**: ${data?.ours} agents\n`;

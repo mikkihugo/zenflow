@@ -132,11 +132,11 @@ class NeuralBenchmark {
       } else if (line.includes('•') && currentCategory) {
         patterns[currentCategory].push(line.replace('•', '').trim());
       } else if (line.includes('Inference Speed:')) {
-        patterns.inferenceSpeed = parseInt(line.match(/\d+/)[0], 10);
+        patterns.inferenceSpeed = Number.parseInt(line.match(/\d+/)[0], 10);
       } else if (line.includes('Memory Usage:')) {
-        patterns.memoryUsage = parseInt(line.match(/\d+/)[0], 10);
+        patterns.memoryUsage = Number.parseInt(line.match(/\d+/)[0], 10);
       } else if (line.includes('Energy Efficiency:')) {
-        patterns.energyEfficiency = parseFloat(line.match(/[\d.]+/)[0]);
+        patterns.energyEfficiency = Number.parseFloat(line.match(/[\d.]+/)[0]);
       }
     });
 
@@ -190,7 +190,9 @@ class NeuralBenchmark {
 
   calculateVariance(values) {
     const mean = values.reduce((a, b) => a + b) / values.length;
-    return values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
+    return (
+      values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length
+    );
   }
 
   async runFullBenchmark() {
@@ -207,7 +209,10 @@ class NeuralBenchmark {
     const analysis = this.generateComparativeAnalysis();
 
     // Save results
-    const outputFile = path.join(outputDir, `neural-benchmark-${Date.now()}.json`);
+    const outputFile = path.join(
+      outputDir,
+      `neural-benchmark-${Date.now()}.json`,
+    );
     await fs.writeFile(
       outputFile,
       JSON.stringify(
@@ -218,8 +223,8 @@ class NeuralBenchmark {
           analysis,
         },
         null,
-        2
-      )
+        2,
+      ),
     );
 
     // Display summary
@@ -239,8 +244,8 @@ class NeuralBenchmark {
       analysis.performance[model] = {
         trainingTime: data.timings.training,
         inferenceSpeed: data.inference?.mean || 0,
-        accuracy: parseFloat(data.architecture?.accuracy) || 0,
-        loss: parseFloat(data.architecture?.loss) || 0,
+        accuracy: Number.parseFloat(data.architecture?.accuracy) || 0,
+        loss: Number.parseFloat(data.architecture?.loss) || 0,
       };
 
       analysis.memory[model] = {
@@ -256,13 +261,13 @@ class NeuralBenchmark {
 
     // Generate recommendations
     const bestAccuracy = Object.entries(analysis.performance).sort(
-      (a, b) => b[1].accuracy - a[1].accuracy
+      (a, b) => b[1].accuracy - a[1].accuracy,
     )[0];
     const bestSpeed = Object.entries(analysis.performance).sort(
-      (a, b) => b[1].inferenceSpeed - a[1].inferenceSpeed
+      (a, b) => b[1].inferenceSpeed - a[1].inferenceSpeed,
     )[0];
     const mostEfficient = Object.entries(analysis.memory).sort(
-      (a, b) => b[1].efficiency - a[1].efficiency
+      (a, b) => b[1].efficiency - a[1].efficiency,
     )[0];
 
     analysis.recommendations = [

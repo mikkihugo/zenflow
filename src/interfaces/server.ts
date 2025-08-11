@@ -13,7 +13,7 @@ import { createServer } from 'http';
 import path from 'path';
 import type { Server as SocketIOServer } from 'socket.io';
 // Configuration system
-import { config } from '../config';
+import { config } from '../config/index.js';
 import type { SystemConfiguration } from '../config/types.ts';
 // LogTape integration
 import {
@@ -22,7 +22,7 @@ import {
   createExpressLoggingMiddleware,
   initializeLogging,
   logServerEvent,
-} from '../utils/logging-config';
+} from '../utils/logging-config.js';
 
 // Route handlers (to be created)
 // import { mcpRoutes } from './routes/mcp-routes';
@@ -141,7 +141,7 @@ export class UnifiedClaudeZenServer {
               imgSrc: ["'self'", 'data:', 'https:'],
             },
           },
-        })
+        }),
       );
     }
 
@@ -158,7 +158,7 @@ export class UnifiedClaudeZenServer {
           credentials: true,
           methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
           allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID'],
-        })
+        }),
       );
     }
 
@@ -171,7 +171,7 @@ export class UnifiedClaudeZenServer {
           message: 'Too many requests from this IP',
           standardHeaders: true,
           legacyHeaders: false,
-        })
+        }),
       );
     }
 
@@ -231,7 +231,12 @@ export class UnifiedClaudeZenServer {
 
     // Global error handler
     this.app.use(
-      (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+      (
+        err: Error,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+      ) => {
         logger.error('Unhandled server error', {
           error: err.message,
           stack: err.stack,
@@ -241,10 +246,13 @@ export class UnifiedClaudeZenServer {
 
         res.status((err as any).status || 500).json({
           error: 'Internal server error',
-          message: process.env['NODE_ENV'] === 'production' ? 'Something went wrong' : err.message,
+          message:
+            process.env['NODE_ENV'] === 'production'
+              ? 'Something went wrong'
+              : err.message,
           timestamp: new Date().toISOString(),
         });
-      }
+      },
     );
 
     // 404 handler
@@ -253,7 +261,7 @@ export class UnifiedClaudeZenServer {
         error: 'Not found',
         message: `Route ${req.originalUrl} not found`,
         availableEndpoints: Object.keys(this.config.features).filter(
-          (f) => this.config.features[f as keyof typeof this.config.features]
+          (f) => this.config.features[f as keyof typeof this.config.features],
         ),
       });
     });
@@ -293,7 +301,8 @@ export class UnifiedClaudeZenServer {
         res.json({
           service: 'Web Dashboard',
           status: 'active',
-          message: 'Dashboard routes will be migrated here from web-interface-server.ts',
+          message:
+            'Dashboard routes will be migrated here from web-interface-server.ts',
         });
       });
     }
@@ -305,7 +314,8 @@ export class UnifiedClaudeZenServer {
         res.json({
           service: 'Monitoring Dashboard',
           status: 'active',
-          message: 'Monitoring routes will be migrated here from dashboard-server.ts',
+          message:
+            'Monitoring routes will be migrated here from dashboard-server.ts',
         });
       });
     }
@@ -362,13 +372,20 @@ export class UnifiedClaudeZenServer {
         });
 
         console.log(`🚀 Unified Claude-Zen Server started:`);
-        console.log(`   📍 Address: http://${this.config.host}:${this.config.port}`);
+        console.log(
+          `   📍 Address: http://${this.config.host}:${this.config.port}`,
+        );
         console.log(
           `   🔧 Features: ${Object.keys(this.config.features)
-            .filter((f) => this.config.features[f as keyof typeof this.config.features])
-            .join(', ')}`
+            .filter(
+              (f) =>
+                this.config.features[f as keyof typeof this.config.features],
+            )
+            .join(', ')}`,
         );
-        console.log(`   💡 Health: http://${this.config.host}:${this.config.port}/health`);
+        console.log(
+          `   💡 Health: http://${this.config.host}:${this.config.port}/health`,
+        );
 
         resolve();
       }).on('error', (err) => {

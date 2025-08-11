@@ -17,7 +17,7 @@ class BenchmarkVisualizer {
       process.cwd(),
       '.ruv-swarm',
       'benchmarks',
-      'neural-benchmark-1751398753060.json'
+      'neural-benchmark-1751398753060.json',
     );
     this.benchmarkData = JSON.parse(await fs.readFile(benchmarkPath, 'utf8'));
   }
@@ -36,9 +36,15 @@ class BenchmarkVisualizer {
     // Accuracy Comparison
     const accuracyData = {};
     Object.entries(this.benchmarkData.results).forEach(([model, data]) => {
-      accuracyData[model.toUpperCase()] = parseFloat(data.architecture.accuracy);
+      accuracyData[model.toUpperCase()] = Number.parseFloat(
+        data.architecture.accuracy,
+      );
     });
-    this.generateASCIIChart(accuracyData, '🎯 MODEL ACCURACY COMPARISON (%)', 70);
+    this.generateASCIIChart(
+      accuracyData,
+      '🎯 MODEL ACCURACY COMPARISON (%)',
+      70,
+    );
 
     // Inference Speed Comparison
     const speedData = {};
@@ -64,7 +70,9 @@ class BenchmarkVisualizer {
     // Parameter Count Comparison
     const paramData = {};
     Object.entries(this.benchmarkData.results).forEach(([model, data]) => {
-      paramData[model.toUpperCase()] = Math.floor(data.architecture.parameters / 1000);
+      paramData[model.toUpperCase()] = Math.floor(
+        data.architecture.parameters / 1000,
+      );
     });
     this.generateASCIIChart(paramData, '🔢 PARAMETERS (thousands)', 70);
 
@@ -94,37 +102,71 @@ class BenchmarkVisualizer {
   generateModelRankings() {
     // Rank by different metrics
     const metrics = [
-      { name: 'Accuracy', key: 'architecture.accuracy', higher: true, unit: '%' },
-      { name: 'Inference Speed', key: 'inference.mean', higher: true, unit: ' ops/s' },
-      { name: 'Memory Efficiency', key: 'memory.efficiency', higher: true, unit: '%' },
-      { name: 'Training Speed', key: 'timings.training', higher: false, unit: 'ms' },
-      { name: 'Parameter Efficiency', key: 'architecture.parameters', higher: false, unit: '' },
+      {
+        name: 'Accuracy',
+        key: 'architecture.accuracy',
+        higher: true,
+        unit: '%',
+      },
+      {
+        name: 'Inference Speed',
+        key: 'inference.mean',
+        higher: true,
+        unit: ' ops/s',
+      },
+      {
+        name: 'Memory Efficiency',
+        key: 'memory.efficiency',
+        higher: true,
+        unit: '%',
+      },
+      {
+        name: 'Training Speed',
+        key: 'timings.training',
+        higher: false,
+        unit: 'ms',
+      },
+      {
+        name: 'Parameter Efficiency',
+        key: 'architecture.parameters',
+        higher: false,
+        unit: '',
+      },
     ];
 
     metrics.forEach((metric) => {
       const ranked = Object.entries(this.benchmarkData.results)
         .map(([model, data]) => {
-          const value = metric.key.split('.').reduce((obj, key) => obj[key], data);
+          const value = metric.key
+            .split('.')
+            .reduce((obj, key) => obj[key], data);
           return { model, value };
         })
-        .sort((a, b) => (metric.higher ? b.value - a.value : a.value - b.value));
+        .sort((a, b) =>
+          metric.higher ? b.value - a.value : a.value - b.value,
+        );
 
       ranked.forEach((item, index) => {
-        const _medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
+        const _medal =
+          index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
         const _value =
-          metric.unit === '%' ? parseFloat(item.value).toFixed(1) : Math.floor(item.value);
+          metric.unit === '%'
+            ? Number.parseFloat(item.value).toFixed(1)
+            : Math.floor(item.value);
       });
     });
   }
 
   generateTradeoffAnalysis() {
-    const models = Object.entries(this.benchmarkData.results).map(([name, data]) => ({
-      name: name.toUpperCase(),
-      accuracy: parseFloat(data.architecture.accuracy),
-      speed: data.inference.mean,
-      memory: data.memory.totalMemory,
-      efficiency: data.memory.efficiency,
-    }));
+    const models = Object.entries(this.benchmarkData.results).map(
+      ([name, data]) => ({
+        name: name.toUpperCase(),
+        accuracy: Number.parseFloat(data.architecture.accuracy),
+        speed: data.inference.mean,
+        memory: data.memory.totalMemory,
+        efficiency: data.memory.efficiency,
+      }),
+    );
     models
       .sort((a, b) => b.accuracy * b.speed - a.accuracy * a.speed)
       .forEach((model) => {
@@ -140,7 +182,8 @@ class BenchmarkVisualizer {
       const normAccuracy = model.accuracy / 100;
       const normSpeed = model.speed / 350; // Max speed ~350
       const normMemEff = 1 - model.memory / 6000; // Inverse, lower is better
-      const overallScore = (normAccuracy * 0.4 + normSpeed * 0.3 + normMemEff * 0.3) * 100;
+      const overallScore =
+        (normAccuracy * 0.4 + normSpeed * 0.3 + normMemEff * 0.3) * 100;
 
       model.overallScore = overallScore;
     });

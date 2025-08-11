@@ -196,7 +196,11 @@ export interface Enabler {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'architectural' | 'infrastructure' | 'compliance' | 'exploration';
+  readonly type:
+    | 'architectural'
+    | 'infrastructure'
+    | 'compliance'
+    | 'exploration';
   readonly level: 'portfolio' | 'solution' | 'program' | 'team';
   readonly parentId: string; // ID of parent entity (Feature, Capability, etc.)
   readonly acceptanceCriteria: string[];
@@ -293,8 +297,8 @@ export interface TransformationRule<TSource, TTarget> {
 export interface DependencyMappingRule {
   readonly sourceLevel: 'portfolio' | 'solution' | 'program' | 'team';
   readonly targetLevel: 'portfolio' | 'solution' | 'program' | 'team';
-  readonly mappingFunction: (sourceDep: any) => any;
-  readonly conflictResolver: (conflicts: any[]) => Promise<any[]>;
+  readonly mappingFunction: (sourceDep: unknown) => any;
+  readonly conflictResolver: (conflicts: unknown[]) => Promise<any[]>;
 }
 
 // ============================================================================
@@ -564,7 +568,7 @@ export interface Guardrail {
   readonly name: string;
   readonly description: string;
   readonly type: 'spending' | 'governance' | 'architecture' | 'security';
-  readonly threshold: any;
+  readonly threshold: unknown;
   readonly escalation: string[];
 }
 

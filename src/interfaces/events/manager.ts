@@ -863,7 +863,7 @@ export class EventManager {
     }
 
     // Dynamic import based on manager type
-    let FactoryClass: new (...args: any[]) => IEventManagerFactory;
+    let FactoryClass: new (...args: unknown[]) => IEventManagerFactory;
 
     try {
       switch (type) {

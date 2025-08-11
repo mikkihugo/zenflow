@@ -32,7 +32,10 @@ export class BaseAgent implements Agent {
   state: AgentState;
   connections: string[] = [];
 
-  private messageHandlers: Map<MessageType, (message: Message) => Promise<void>> = new Map();
+  private messageHandlers: Map<
+    MessageType,
+    (message: Message) => Promise<void>
+  > = new Map();
   private wasmAgentId?: number;
 
   // Convenience getter for status
@@ -51,7 +54,8 @@ export class BaseAgent implements Agent {
     this.config = {
       ...config,
       id: this.id,
-      cognitiveProfile: config?.cognitiveProfile || getDefaultCognitiveProfile(config?.type),
+      cognitiveProfile:
+        config?.cognitiveProfile || getDefaultCognitiveProfile(config?.type),
     };
 
     // Initialize metrics
@@ -137,15 +141,29 @@ export class BaseAgent implements Agent {
   }
 
   private setupMessageHandlers(): void {
-    this.messageHandlers.set('task_assignment', this.handleTaskAssignment.bind(this));
-    this.messageHandlers.set('coordination', this.handleCoordination.bind(this));
-    this.messageHandlers.set('knowledge_share', this.handleKnowledgeShare.bind(this));
-    this.messageHandlers.set('status_update', this.handleStatusUpdate.bind(this));
+    this.messageHandlers.set(
+      'task_assignment',
+      this.handleTaskAssignment.bind(this),
+    );
+    this.messageHandlers.set(
+      'coordination',
+      this.handleCoordination.bind(this),
+    );
+    this.messageHandlers.set(
+      'knowledge_share',
+      this.handleKnowledgeShare.bind(this),
+    );
+    this.messageHandlers.set(
+      'status_update',
+      this.handleStatusUpdate.bind(this),
+    );
   }
 
-  protected async executeTaskByType(task: Task): Promise<any> {
+  protected async executeTaskByType(task: Task): Promise<unknown> {
     // Simulate work
-    await new Promise((resolve) => setTimeout(resolve, 100 + Math.random() * 400));
+    await new Promise((resolve) =>
+      setTimeout(resolve, 100 + Math.random() * 400),
+    );
 
     return {
       taskId: task.id,
@@ -168,7 +186,10 @@ export class BaseAgent implements Agent {
     this.state = { ...this.state, ...state };
   }
 
-  private updatePerformanceMetrics(success: boolean, executionTime: number): void {
+  private updatePerformanceMetrics(
+    success: boolean,
+    executionTime: number,
+  ): void {
     // Initialize performance if it doesn't exist
     if (!this.state.performance) {
       this.state.performance = {
@@ -188,10 +209,12 @@ export class BaseAgent implements Agent {
     }
 
     const totalTasks = performance.tasksCompleted + performance.tasksFailed;
-    performance.successRate = totalTasks > 0 ? performance.tasksCompleted / totalTasks : 0;
+    performance.successRate =
+      totalTasks > 0 ? performance.tasksCompleted / totalTasks : 0;
 
     // Update average execution time
-    const totalTime = performance.averageExecutionTime * (totalTasks - 1) + executionTime;
+    const totalTime =
+      performance.averageExecutionTime * (totalTasks - 1) + executionTime;
     performance.averageExecutionTime = totalTime / totalTasks;
   }
 
@@ -229,7 +252,10 @@ export class BaseAgent implements Agent {
   private async handleKnowledgeShare(message: Message): Promise<void> {
     // Store shared knowledge in memory
     if (this.config.memory) {
-      this.config.memory.shortTerm.set(`knowledge_${message.id}`, message.payload);
+      this.config.memory.shortTerm.set(
+        `knowledge_${message.id}`,
+        message.payload,
+      );
     }
   }
 
@@ -324,10 +350,15 @@ export class ResearcherAgent extends BaseAgent {
     super({ ...config, type: 'researcher' });
   }
 
-  protected override async executeTaskByType(task: Task): Promise<any> {
+  protected override async executeTaskByType(task: Task): Promise<unknown> {
     // Simulate research activities
-    const phases = ['collecting_data', 'analyzing', 'synthesizing', 'reporting'];
-    const results: any[] = [];
+    const phases = [
+      'collecting_data',
+      'analyzing',
+      'synthesizing',
+      'reporting',
+    ];
+    const results: unknown[] = [];
 
     for (const phase of phases) {
       await new Promise((resolve) => setTimeout(resolve, 200));
@@ -344,7 +375,10 @@ export class ResearcherAgent extends BaseAgent {
       type: 'research_report',
       phases: results,
       summary: `Research completed on: ${task.description}`,
-      recommendations: ['Further investigation needed', 'Consider alternative approaches'],
+      recommendations: [
+        'Further investigation needed',
+        'Consider alternative approaches',
+      ],
     };
   }
 }
@@ -359,10 +393,10 @@ export class CoderAgent extends BaseAgent {
     super({ ...config, type: 'coder' });
   }
 
-  protected override async executeTaskByType(task: Task): Promise<any> {
+  protected override async executeTaskByType(task: Task): Promise<unknown> {
     // Simulate coding activities
     const steps = ['design', 'implement', 'test', 'refactor'];
-    const codeArtifacts: any[] = [];
+    const codeArtifacts: unknown[] = [];
 
     for (const step of steps) {
       await new Promise((resolve) => setTimeout(resolve, 300));
@@ -397,7 +431,7 @@ export class AnalystAgent extends BaseAgent {
     super({ ...config, type: 'analyst' });
   }
 
-  protected override async executeTaskByType(task: Task): Promise<any> {
+  protected override async executeTaskByType(task: Task): Promise<unknown> {
     // Simulate analysis activities
     await new Promise((resolve) => setTimeout(resolve, 400));
 

@@ -100,9 +100,11 @@ export async function createIntegratedSystem() {
   container.register(DATABASE_TOKENS?.['ProviderFactory'], {
     type: 'singleton',
     create: () => ({
-      createProvider: async (type: string, config: any) => {
+      createProvider: async (type: string, config: Record<string, unknown>) => {
         // This would be properly implemented in production
-        throw new Error('Provider factory not fully implemented for this example');
+        throw new Error(
+          'Provider factory not fully implemented for this example',
+        );
       },
     }),
   });
@@ -114,7 +116,7 @@ export async function createIntegratedSystem() {
       new DALFactory(
         c.resolve(CORE_TOKENS.Logger),
         c.resolve(CORE_TOKENS.Config),
-        c.resolve(DATABASE_TOKENS?.['ProviderFactory']) as any
+        c.resolve(DATABASE_TOKENS?.['ProviderFactory']) as any,
       ),
   });
 
@@ -124,19 +126,19 @@ export async function createIntegratedSystem() {
   // For the multi-engine system, we'll create individual DAOs
   // Note: The createAdvancedDatabaseSystem method doesn't exist in the new API
   // Instead, we create individual DAOs/repositories as needed
-  const vectorDao = await (dalFactory).createDao({
+  const vectorDao = await dalFactory.createDao({
     databaseType: 'lancedb',
     entityType: 'VectorDocument',
     databaseConfig: { dbPath: '/tmp/vector.db', dimensions: 768 },
   });
 
-  const graphDao = await (dalFactory).createDao({
+  const graphDao = await dalFactory.createDao({
     databaseType: 'kuzu',
     entityType: 'GraphNode',
     databaseConfig: { dbPath: '/tmp/graph.db' },
   });
 
-  const documentDao = await (dalFactory).createDao({
+  const documentDao = await dalFactory.createDao({
     databaseType: 'sqlite',
     entityType: 'Document',
     databaseConfig: { dbPath: '/tmp/documents.db' },
@@ -187,7 +189,7 @@ export async function createIntegratedSystem() {
     database: databaseSystem,
 
     // Integrated operations
-    async storeWithCoordination(sessionId: string, key: string, data: any) {
+    async storeWithCoordination(sessionId: string, key: string, data: unknown) {
       // Store in memory system with distributed coordination
       await memorySystem.coordinator?.coordinate({
         type: 'write',
@@ -286,9 +288,11 @@ export async function createIntegratedSystem() {
         database: databaseHealth,
         overall: {
           status:
-            memoryHealth.overall === 'healthy' && databaseHealth?.overall === 'healthy'
+            memoryHealth.overall === 'healthy' &&
+            databaseHealth?.overall === 'healthy'
               ? 'healthy'
-              : memoryHealth.overall === 'critical' || databaseHealth?.overall === 'critical'
+              : memoryHealth.overall === 'critical' ||
+                  databaseHealth?.overall === 'critical'
                 ? 'critical'
                 : 'warning',
           score: Math.round((memoryHealth.score + databaseHealth?.score) / 2),
@@ -490,7 +494,9 @@ export async function demonstrateOptimization() {
 
   // Optimize database system
   // TODO: TypeScript error TS2339 - Property 'optimizer' does not exist on database system (AI unsure of safe fix - human review needed)
-  const databaseRecommendations = (system.database as any).optimizer?.getRecommendations();
+  const databaseRecommendations = (
+    system.database as any
+  ).optimizer?.getRecommendations();
   if (databaseRecommendations && databaseRecommendations.length > 0) {
     databaseRecommendations?.forEach((rec, i) => {});
   }

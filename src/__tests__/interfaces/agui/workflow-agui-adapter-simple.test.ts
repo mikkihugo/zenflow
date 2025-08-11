@@ -84,7 +84,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
         {
           businessImpact: 'medium',
           priority: 'high',
-        }
+        },
       );
 
       expect(approvalGate.id).toBeDefined();
@@ -92,7 +92,10 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
       expect(approvalGate.workflowContext.workflowId).toBe('test-workflow-001');
       expect(approvalGate.workflowContext.stepName).toBe('user-registration');
       expect(approvalGate.workflowContext.businessImpact).toBe('medium');
-      expect(approvalGate.workflowContext.stakeholders).toEqual(['product-manager', 'tech-lead']);
+      expect(approvalGate.workflowContext.stakeholders).toEqual([
+        'product-manager',
+        'tech-lead',
+      ]);
       expect(approvalGate.priority).toBe('high');
     });
 
@@ -109,22 +112,30 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
         {
           autoApprovalThreshold: 0.9,
           businessImpact: 'low',
-        }
+        },
       );
 
       expect(checkpointGate.id).toBeDefined();
       expect(checkpointGate.gateType).toBe('checkpoint');
-      expect(checkpointGate.workflowContext.workflowId).toBe('test-workflow-002');
-      expect(checkpointGate.workflowContext.stepName).toBe('pre-deployment-check');
+      expect(checkpointGate.workflowContext.workflowId).toBe(
+        'test-workflow-002',
+      );
+      expect(checkpointGate.workflowContext.stepName).toBe(
+        'pre-deployment-check',
+      );
       expect(checkpointGate.workflowContext.businessImpact).toBe('low');
       expect(checkpointGate.context).toEqual(checkpointData);
-      expect(checkpointGate.conditionalLogic?.autoApprovalConditions).toBeDefined();
+      expect(
+        checkpointGate.conditionalLogic?.autoApprovalConditions,
+      ).toBeDefined();
     });
   });
 
   describe('Workflow Context Validation', () => {
     test('should identify workflow gate requests correctly', () => {
-      const workflowGate = createApprovalGate('test-wf', 'test-step', 'Test?', ['user']);
+      const workflowGate = createApprovalGate('test-wf', 'test-step', 'Test?', [
+        'user',
+      ]);
       const standardQuestion = {
         id: 'std-1',
         type: 'relevance' as const,
@@ -141,16 +152,18 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
     });
 
     test('should validate required workflow context fields', () => {
-      const validGate = createApprovalGate('valid-wf', 'valid-step', 'Valid?', ['user']);
+      const validGate = createApprovalGate('valid-wf', 'valid-step', 'Valid?', [
+        'user',
+      ]);
 
       expect(validGate.workflowContext.workflowId).toBe('valid-wf');
       expect(validGate.workflowContext.stepName).toBe('valid-step');
       expect(validGate.workflowContext.stakeholders).toEqual(['user']);
       expect(['low', 'medium', 'high', 'critical']).toContain(
-        validGate.workflowContext.businessImpact
+        validGate.workflowContext.businessImpact,
       );
       expect(['task', 'feature', 'epic', 'prd', 'portfolio']).toContain(
-        validGate.workflowContext.decisionScope
+        validGate.workflowContext.decisionScope,
       );
     });
   });
@@ -165,7 +178,8 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
       expect(Array.isArray(allAudits)).toBe(true);
       expect(allAudits.length).toBe(0);
 
-      const workflowHistory = adapter.getWorkflowDecisionHistory('non-existent');
+      const workflowHistory =
+        adapter.getWorkflowDecisionHistory('non-existent');
       expect(Array.isArray(workflowHistory)).toBe(true);
       expect(workflowHistory.length).toBe(0);
     });

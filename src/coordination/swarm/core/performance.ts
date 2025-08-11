@@ -23,7 +23,7 @@ interface PerformanceSuggestion {
 }
 
 class PerformanceCLI {
-  public ruvSwarm: any;
+  public ruvSwarm: unknown;
 
   constructor() {
     this.ruvSwarm = null;
@@ -65,7 +65,9 @@ class PerformanceCLI {
         memory: {
           used: memUsage.heapUsed,
           total: memUsage.heapTotal,
-          utilization: ((memUsage.heapUsed / memUsage.heapTotal) * 100).toFixed(1),
+          utilization: ((memUsage.heapUsed / memUsage.heapTotal) * 100).toFixed(
+            1,
+          ),
         },
         cpu: {
           user: cpuUsage.user,
@@ -160,7 +162,10 @@ class PerformanceCLI {
         });
       }
 
-      if (rs.features['neural_networks'] && analysis.performance.neural?.accuracy < 90) {
+      if (
+        rs.features['neural_networks'] &&
+        analysis.performance.neural?.accuracy < 90
+      ) {
         analysis.recommendations.push({
           category: 'neural_optimization',
           priority: 'medium',
@@ -179,9 +184,12 @@ class PerformanceCLI {
 
       // 7. Performance Score
       let score = 100;
-      score -= analysis.bottlenecks.filter((b) => b.severity === 'high').length * 20;
-      score -= analysis.bottlenecks.filter((b) => b.severity === 'medium').length * 10;
-      score -= analysis.bottlenecks.filter((b) => b.severity === 'low').length * 5;
+      score -=
+        analysis.bottlenecks.filter((b) => b.severity === 'high').length * 20;
+      score -=
+        analysis.bottlenecks.filter((b) => b.severity === 'medium').length * 10;
+      score -=
+        analysis.bottlenecks.filter((b) => b.severity === 'low').length * 5;
       score = Math.max(0, score);
 
       analysis.overallScore = score;
@@ -205,8 +213,10 @@ class PerformanceCLI {
     const rs = await this.initialize();
 
     // Verify swarm is properly initialized for optimization
-    if (!rs || !rs.isInitialized) {
-      logger.warn('⚠️ Warning: Swarm not fully initialized, optimization may be limited');
+    if (!(rs && rs.isInitialized)) {
+      logger.warn(
+        '⚠️ Warning: Swarm not fully initialized, optimization may be limited',
+      );
     }
 
     const target = args[0] || this.getArg(args, '--target') || 'balanced';
@@ -257,10 +267,10 @@ class PerformanceCLI {
       for (let i = 0; i < selectedOpt?.changes.length; i++) {
         const _change = selectedOpt?.changes?.[i];
 
-        if (!dryRun) {
+        if (dryRun) {
+        } else {
           // Simulate applying optimization
           await new Promise((resolve) => setTimeout(resolve, 500));
-        } else {
         }
       }
 
@@ -358,7 +368,9 @@ class PerformanceCLI {
       const groupedSuggestions: Record<string, PerformanceSuggestion[]> = {};
 
       priorityOrder.forEach((priority) => {
-        groupedSuggestions[priority] = suggestions.filter((s) => s.priority === priority);
+        groupedSuggestions[priority] = suggestions.filter(
+          (s) => s.priority === priority,
+        );
       });
       let totalShown = 0;
       for (const [_priority, items] of Object.entries(groupedSuggestions)) {

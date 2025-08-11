@@ -113,7 +113,8 @@ module.exports = {
     },
     {
       name: 'neural-wasm-isolation',
-      comment: 'Neural WASM modules should only be accessed through neural bridge',
+      comment:
+        'Neural WASM modules should only be accessed through neural bridge',
       severity: 'warn',
       from: {
         pathNot: '^src/neural/',

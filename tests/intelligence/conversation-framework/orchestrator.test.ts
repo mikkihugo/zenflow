@@ -6,14 +6,14 @@
  */
 
 import { vi } from 'vitest';
-import { ConversationOrchestratorImpl } from '../../../src/intelligence/conversation-framework/orchestrator';
+import { ConversationOrchestratorImpl } from '../../../src/intelligence/conversation-framework/orchestrator.js';
 import type {
   ConversationConfig,
   ConversationMemory,
   ConversationMessage,
   ConversationSession,
-} from '../../../src/intelligence/conversation-framework/types';
-import type { AgentId } from '../../../src/types/agent-types';
+} from '../../../src/intelligence/conversation-framework/types.js';
+import type { AgentId } from '../../../src/types/agent-types.js';
 
 describe('ConversationOrchestratorImpl - London TDD', () => {
   let orchestrator: ConversationOrchestratorImpl;
@@ -70,11 +70,11 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         expect.objectContaining({
           title: config.title,
           status: 'active', // Changed from 'initializing' since workflow starts immediately
-        })
+        }),
       );
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         session.id,
-        expect.objectContaining({ status: 'active' })
+        expect.objectContaining({ status: 'active' }),
       );
     });
 
@@ -95,7 +95,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
 
       // Act & Assert
       await expect(orchestrator.createConversation(config)).rejects.toThrow(
-        'Unknown conversation pattern: unknown-pattern'
+        'Unknown conversation pattern: unknown-pattern',
       );
       expect(mockMemory.storeConversation).not.toHaveBeenCalled();
     });
@@ -105,7 +105,12 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
     it('should add agent to conversation and update memory', async () => {
       // Arrange
       const conversationId = 'conv-123';
-      const newAgent: AgentId = { id: 'agent-3', swarmId: 'swarm-1', type: 'tester', instance: 0 };
+      const newAgent: AgentId = {
+        id: 'agent-3',
+        swarmId: 'swarm-1',
+        type: 'tester',
+        instance: 0,
+      };
 
       const existingSession: ConversationSession = {
         id: conversationId,
@@ -114,7 +119,13 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         initiator: sampleAgents[0],
         startTime: new Date(),
         status: 'active',
-        context: { goal: 'Test', domain: 'test', constraints: [], resources: [], expertise: [] },
+        context: {
+          goal: 'Test',
+          domain: 'test',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
         messages: [],
         outcomes: [],
         metrics: {
@@ -135,24 +146,32 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
 
       // Assert
       expect(existingSession.participants).toContain(newAgent);
-      expect(existingSession.metrics.participationByAgent).toHaveProperty('agent-3', 0);
+      expect(existingSession.metrics.participationByAgent).toHaveProperty(
+        'agent-3',
+        0,
+      );
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         conversationId,
         expect.objectContaining({
           participants: expect.arrayContaining([newAgent]),
-        })
+        }),
       );
     });
 
     it('should reject joining non-existent conversation', async () => {
       // Arrange
       const conversationId = 'non-existent';
-      const newAgent: AgentId = { id: 'agent-3', swarmId: 'swarm-1', type: 'tester', instance: 0 };
+      const newAgent: AgentId = {
+        id: 'agent-3',
+        swarmId: 'swarm-1',
+        type: 'tester',
+        instance: 0,
+      };
 
       // Act & Assert
-      await expect(orchestrator.joinConversation(conversationId, newAgent)).rejects.toThrow(
-        'Conversation non-existent not found'
-      );
+      await expect(
+        orchestrator.joinConversation(conversationId, newAgent),
+      ).rejects.toThrow('Conversation non-existent not found');
       expect(mockMemory.updateConversation).not.toHaveBeenCalled();
     });
   });
@@ -168,7 +187,13 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         initiator: sampleAgents[0],
         startTime: new Date(),
         status: 'active',
-        context: { goal: 'Test', domain: 'test', constraints: [], resources: [], expertise: [] },
+        context: {
+          goal: 'Test',
+          domain: 'test',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
         messages: [],
         outcomes: [],
         metrics: {
@@ -212,7 +237,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
             expect.objectContaining({ content: { text: 'Hello, world!' } }),
           ]),
           metrics: expect.objectContaining({ messageCount: 1 }),
-        })
+        }),
       );
     });
 
@@ -233,7 +258,13 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         initiator: sampleAgents[0],
         startTime: new Date(),
         status: 'active',
-        context: { goal: 'Test', domain: 'test', constraints: [], resources: [], expertise: [] },
+        context: {
+          goal: 'Test',
+          domain: 'test',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
         messages: [],
         outcomes: [],
         metrics: {
@@ -264,7 +295,7 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
 
       // Act & Assert
       await expect(orchestrator.sendMessage(message)).rejects.toThrow(
-        'Agent outsider is not a participant in this conversation'
+        'Agent outsider is not a participant in this conversation',
       );
       expect(mockMemory.updateConversation).not.toHaveBeenCalled();
     });
@@ -296,7 +327,12 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
             timestamp: new Date(),
             content: { text: 'Code looks good' },
             messageType: 'decision',
-            metadata: { priority: 'medium', requiresResponse: false, context: {} as any, tags: [] },
+            metadata: {
+              priority: 'medium',
+              requiresResponse: false,
+              context: {} as any,
+              tags: [],
+            },
           },
         ],
         outcomes: [],
@@ -313,7 +349,10 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
       mockMemory.updateConversation.mockResolvedValue();
 
       // Act
-      const outcomes = await orchestrator.terminateConversation(conversationId, 'Review complete');
+      const outcomes = await orchestrator.terminateConversation(
+        conversationId,
+        'Review complete',
+      );
 
       // Assert
       expect(outcomes).toHaveLength(1);
@@ -328,8 +367,10 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         expect.objectContaining({
           status: 'completed',
           endTime: expect.any(Date),
-          outcomes: expect.arrayContaining([expect.objectContaining({ type: 'decision' })]),
-        })
+          outcomes: expect.arrayContaining([
+            expect.objectContaining({ type: 'decision' }),
+          ]),
+        }),
       );
     });
   });
@@ -346,7 +387,12 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
           timestamp: new Date(),
           content: { text: 'First message' },
           messageType: 'question',
-          metadata: { priority: 'medium', requiresResponse: true, context: {} as any, tags: [] },
+          metadata: {
+            priority: 'medium',
+            requiresResponse: true,
+            context: {} as any,
+            tags: [],
+          },
         },
       ];
 
@@ -357,7 +403,13 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         initiator: sampleAgents[0],
         startTime: new Date(),
         status: 'active',
-        context: { goal: 'Test', domain: 'test', constraints: [], resources: [], expertise: [] },
+        context: {
+          goal: 'Test',
+          domain: 'test',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
         messages,
         outcomes: [],
         metrics: {
@@ -390,7 +442,12 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
           timestamp: new Date(),
           content: { text: 'Archived message' },
           messageType: 'summary',
-          metadata: { priority: 'low', requiresResponse: false, context: {} as any, tags: [] },
+          metadata: {
+            priority: 'low',
+            requiresResponse: false,
+            context: {} as any,
+            tags: [],
+          },
         },
       ];
 
@@ -402,7 +459,13 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         startTime: new Date(),
         endTime: new Date(),
         status: 'completed',
-        context: { goal: 'Test', domain: 'test', constraints: [], resources: [], expertise: [] },
+        context: {
+          goal: 'Test',
+          domain: 'test',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
         messages,
         outcomes: [],
         metrics: {
@@ -452,11 +515,11 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         expect.objectContaining({
           title: config.title,
           status: 'active', // Changed from 'initializing' since workflow starts immediately
-        })
+        }),
       );
       expect(mockMemory.updateConversation).toHaveBeenCalledWith(
         session.id,
-        expect.objectContaining({ status: 'active' })
+        expect.objectContaining({ status: 'active' }),
       );
 
       // Verify orchestrator state

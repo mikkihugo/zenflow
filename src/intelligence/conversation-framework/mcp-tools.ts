@@ -42,10 +42,18 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
           type: 'object',
           properties: {
             title: { type: 'string', description: 'Conversation title' },
-            description: { type: 'string', description: 'Optional conversation description' },
+            description: {
+              type: 'string',
+              description: 'Optional conversation description',
+            },
             pattern: {
               type: 'string',
-              enum: ['code-review', 'problem-solving', 'brainstorming', 'planning'],
+              enum: [
+                'code-review',
+                'problem-solving',
+                'brainstorming',
+                'planning',
+              ],
               description: 'Conversation pattern to use',
             },
             goal: { type: 'string', description: 'Conversation goal' },
@@ -72,7 +80,10 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
               items: { type: 'string' },
               description: 'Conversation constraints',
             },
-            timeout: { type: 'number', description: 'Optional timeout in milliseconds' },
+            timeout: {
+              type: 'number',
+              description: 'Optional timeout in milliseconds',
+            },
           },
           required: ['title', 'pattern', 'goal', 'domain', 'participants'],
         },
@@ -177,8 +188,14 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
               description: 'Maximum number of messages to return',
               default: 50,
             },
-            messageType: { type: 'string', description: 'Filter by message type' },
-            fromAgent: { type: 'string', description: 'Filter by sender agent ID' },
+            messageType: {
+              type: 'string',
+              description: 'Filter by message type',
+            },
+            fromAgent: {
+              type: 'string',
+              description: 'Filter by sender agent ID',
+            },
           },
           required: ['conversationId'],
         },
@@ -190,7 +207,10 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
           type: 'object',
           properties: {
             conversationId: { type: 'string', description: 'Conversation ID' },
-            reason: { type: 'string', description: 'Optional termination reason' },
+            reason: {
+              type: 'string',
+              description: 'Optional termination reason',
+            },
           },
           required: ['conversationId'],
         },
@@ -201,12 +221,25 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
         inputSchema: {
           type: 'object',
           properties: {
-            agentId: { type: 'string', description: 'Filter by participant agent ID' },
-            pattern: { type: 'string', description: 'Filter by conversation pattern' },
+            agentId: {
+              type: 'string',
+              description: 'Filter by participant agent ID',
+            },
+            pattern: {
+              type: 'string',
+              description: 'Filter by conversation pattern',
+            },
             domain: { type: 'string', description: 'Filter by domain' },
             status: {
               type: 'string',
-              enum: ['initializing', 'active', 'paused', 'completed', 'terminated', 'error'],
+              enum: [
+                'initializing',
+                'active',
+                'paused',
+                'completed',
+                'terminated',
+                'error',
+              ],
               description: 'Filter by conversation status',
             },
             outcome: { type: 'string', description: 'Filter by outcome type' },
@@ -220,8 +253,16 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
               format: 'date-time',
               description: 'End date for date range filter',
             },
-            limit: { type: 'number', default: 20, description: 'Maximum results to return' },
-            offset: { type: 'number', default: 0, description: 'Results offset for pagination' },
+            limit: {
+              type: 'number',
+              default: 20,
+              description: 'Maximum results to return',
+            },
+            offset: {
+              type: 'number',
+              default: 0,
+              description: 'Results offset for pagination',
+            },
           },
         },
       },
@@ -235,7 +276,8 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
       },
       {
         name: 'conversation_moderate',
-        description: 'Moderate a conversation (pause, resume, remove participant)',
+        description:
+          'Moderate a conversation (pause, resume, remove participant)',
         inputSchema: {
           type: 'object',
           properties: {
@@ -255,7 +297,10 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
               },
               description: 'Target agent for action (if applicable)',
             },
-            reason: { type: 'string', description: 'Reason for moderation action' },
+            reason: {
+              type: 'string',
+              description: 'Reason for moderation action',
+            },
             duration: {
               type: 'number',
               description: 'Duration in milliseconds (for temporary actions)',
@@ -356,8 +401,14 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
       messageType: args.messageType as MessageType,
       metadata: {
         priority: args.priority || 'medium',
-        requiresResponse: args.requiresResponse || false,
-        context: { goal: '', domain: '', constraints: [], resources: [], expertise: [] },
+        requiresResponse: args.requiresResponse,
+        context: {
+          goal: '',
+          domain: '',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
         tags: args.tags || [],
       },
     };
@@ -373,16 +424,22 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
   }
 
   private async getHistory(args: any): Promise<any> {
-    const messages = await this.orchestrator.getConversationHistory(args.conversationId);
+    const messages = await this.orchestrator.getConversationHistory(
+      args.conversationId,
+    );
 
     let filteredMessages = messages;
 
     if (args.messageType) {
-      filteredMessages = filteredMessages.filter((m) => m.messageType === args.messageType);
+      filteredMessages = filteredMessages.filter(
+        (m) => m.messageType === args.messageType,
+      );
     }
 
     if (args.fromAgent) {
-      filteredMessages = filteredMessages.filter((m) => m.fromAgent.id === args.fromAgent);
+      filteredMessages = filteredMessages.filter(
+        (m) => m.fromAgent.id === args.fromAgent,
+      );
     }
 
     const limit = args.limit || 50;
@@ -409,7 +466,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
   private async terminateConversation(args: any): Promise<any> {
     const outcomes = await this.orchestrator.terminateConversation(
       args.conversationId,
-      args.reason
+      args.reason,
     );
 
     return {

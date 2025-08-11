@@ -1,0 +1,9 @@
+# Conservative stable rustfmt configuration
+# Only the most basic stable features
+
+max_width = 80
+tab_spaces = 2
+edition = "2024"
+reorder_imports = true
+reorder_modules = true
+fn_params_layout = "Tall"

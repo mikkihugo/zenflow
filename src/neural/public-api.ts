@@ -13,7 +13,11 @@ export interface NeuralWASM {
 
   // Neural network operations
   createNetwork(layers: number[]): Promise<string>;
-  train(networkId: string, data: number[][], labels: number[][]): Promise<WASMPerformanceMetrics>;
+  train(
+    networkId: string,
+    data: number[][],
+    labels: number[][],
+  ): Promise<WASMPerformanceMetrics>;
   predict(networkId: string, input: number[]): Promise<number[]>;
 
   // Memory management
@@ -28,7 +32,9 @@ export interface NeuralWASM {
  */
 export async function createNeuralWASM(): Promise<NeuralWASM> {
   // Dynamically import to avoid architecture violations
-  const { WASMNeuralAccelerator } = await import('./wasm/wasm-neural-accelerator.ts');
+  const { WASMNeuralAccelerator } = await import(
+    './wasm/wasm-neural-accelerator.ts'
+  );
 
   const accelerator = new WASMNeuralAccelerator({
     wasmPath: '/path/to/neural.wasm',

@@ -116,7 +116,9 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         batchEnforcer.trackOperation('file_operation');
       }
 
-      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('BATCHING VIOLATION'));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('BATCHING VIOLATION'),
+      );
 
       const violations = batchEnforcer.violationWarnings;
       expect(violations.has('file_operation')).toBe(true);
@@ -133,13 +135,13 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
 
       const report = batchEnforcer.getBatchingReport();
       expect(report.recommendations).toContain(
-        '🔧 CRITICAL: Use BatchTool for all parallel operations'
+        '🔧 CRITICAL: Use BatchTool for all parallel operations',
       );
       expect(report.recommendations).toContain(
-        '📁 File Operations: Use MultiEdit for multiple edits to same file'
+        '📁 File Operations: Use MultiEdit for multiple edits to same file',
       );
       expect(report.recommendations).toContain(
-        '🤖 MCP Tools: Combine swarm operations in parallel'
+        '🤖 MCP Tools: Combine swarm operations in parallel',
       );
     });
 
@@ -175,7 +177,10 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       batchEnforcer.trackOperation('recent_operation', now - 1000);
       batchEnforcer.trackOperation('recent_operation', now - 500);
 
-      const recentOps = batchEnforcer.getRecentOperations('recent_operation', 5000);
+      const recentOps = batchEnforcer.getRecentOperations(
+        'recent_operation',
+        5000,
+      );
       expect(recentOps).toHaveLength(2);
 
       const oldOps = batchEnforcer.getRecentOperations('old_operation', 5000);
@@ -213,11 +218,13 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
     });
 
     it('should handle initialization failures gracefully', async () => {
-      mockZenSwarm.initialize.mockRejectedValueOnce(new Error('WASM load failed'));
+      mockZenSwarm.initialize.mockRejectedValueOnce(
+        new Error('WASM load failed'),
+      );
 
       await expect(claudeFlow.initialize()).rejects.toThrow(ClaudeFlowError);
       await expect(claudeFlow.initialize()).rejects.toThrow(
-        'Initialization failed: WASM load failed'
+        'Initialization failed: WASM load failed',
       );
     });
 
@@ -227,14 +234,16 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       await claudeFlow.initialize({ enforceBatching: true });
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('BatchTool enforcement enabled')
+        expect.stringContaining('BatchTool enforcement enabled'),
       );
 
       consoleSpy.mockRestore();
     });
 
     it('should handle MCP tools initialization failure', async () => {
-      mockMcpTools.initialize.mockRejectedValueOnce(new Error('MCP init failed'));
+      mockMcpTools.initialize.mockRejectedValueOnce(
+        new Error('MCP init failed'),
+      );
 
       await expect(claudeFlow.initialize()).rejects.toThrow(ClaudeFlowError);
     });
@@ -299,7 +308,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       await claudeFlow.createOptimizedWorkflow(workflowConfig);
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('low parallelization potential')
+        expect.stringContaining('low parallelization potential'),
       );
 
       consoleSpy.mockRestore();
@@ -368,9 +377,24 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         id: 'test-execution',
         name: 'Test Execution Workflow',
         steps: [
-          { id: 'step1', type: 'mcp_tool_call', parallelizable: true, dependencies: [] },
-          { id: 'step2', type: 'file_operation', parallelizable: true, dependencies: [] },
-          { id: 'step3', type: 'neural_inference', parallelizable: true, dependencies: ['step1'] },
+          {
+            id: 'step1',
+            type: 'mcp_tool_call',
+            parallelizable: true,
+            dependencies: [],
+          },
+          {
+            id: 'step2',
+            type: 'file_operation',
+            parallelizable: true,
+            dependencies: [],
+          },
+          {
+            id: 'step3',
+            type: 'neural_inference',
+            parallelizable: true,
+            dependencies: ['step1'],
+          },
         ],
       });
     });
@@ -387,9 +411,11 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
     });
 
     it('should handle non-existent workflow', async () => {
-      await expect(claudeFlow.executeWorkflow('non-existent')).rejects.toThrow(ClaudeFlowError);
       await expect(claudeFlow.executeWorkflow('non-existent')).rejects.toThrow(
-        'Workflow not found'
+        ClaudeFlowError,
+      );
+      await expect(claudeFlow.executeWorkflow('non-existent')).rejects.toThrow(
+        'Workflow not found',
       );
     });
 
@@ -417,25 +443,35 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         { id: 'c', dependencies: ['a'] },
       ];
 
-      expect(() => claudeFlow.createExecutionBatches(stepsWithCircularDeps)).toThrow(
-        ClaudeFlowError
-      );
-      expect(() => claudeFlow.createExecutionBatches(stepsWithCircularDeps)).toThrow(
-        'Circular dependency detected'
-      );
+      expect(() =>
+        claudeFlow.createExecutionBatches(stepsWithCircularDeps),
+      ).toThrow(ClaudeFlowError);
+      expect(() =>
+        claudeFlow.createExecutionBatches(stepsWithCircularDeps),
+      ).toThrow('Circular dependency detected');
     });
 
     it('should handle step execution failures gracefully', async () => {
       // Mock a failing MCP tool call
-      mockMcpTools.task_orchestrate.mockRejectedValueOnce(new Error('Task failed'));
+      mockMcpTools.task_orchestrate.mockRejectedValueOnce(
+        new Error('Task failed'),
+      );
 
       const _failWorkflow = await claudeFlow.createOptimizedWorkflow({
         id: 'fail-test',
         name: 'Failure Test',
-        steps: [{ id: 'fail-step', type: 'mcp_tool_call', toolName: 'task_orchestrate' }],
+        steps: [
+          {
+            id: 'fail-step',
+            type: 'mcp_tool_call',
+            toolName: 'task_orchestrate',
+          },
+        ],
       });
 
-      await expect(claudeFlow.executeWorkflow('fail-test')).rejects.toThrow(ClaudeFlowError);
+      await expect(claudeFlow.executeWorkflow('fail-test')).rejects.toThrow(
+        ClaudeFlowError,
+      );
     });
 
     it('should execute parallel steps in batches', async () => {
@@ -473,8 +509,12 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       const result = await claudeFlow.executeWorkflow('mixed-test');
 
       expect(result.results).toHaveLength(2);
-      const successCount = result.results.filter((r) => r.status === 'completed').length;
-      const failureCount = result.results.filter((r) => r.status === 'failed').length;
+      const successCount = result.results.filter(
+        (r) => r.status === 'completed',
+      ).length;
+      const failureCount = result.results.filter(
+        (r) => r.status === 'failed',
+      ).length;
 
       expect(successCount).toBeGreaterThan(0);
       expect(failureCount).toBeGreaterThan(0);
@@ -496,7 +536,9 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       const result = await claudeFlow.executeStep(step, {}, null);
 
       expect(result.executionTime).toBeGreaterThan(0);
-      expect(mockMcpTools.swarm_init).toHaveBeenCalledWith({ topology: 'mesh' });
+      expect(mockMcpTools.swarm_init).toHaveBeenCalledWith({
+        topology: 'mesh',
+      });
     });
 
     it('should handle unknown MCP tool gracefully', async () => {
@@ -506,8 +548,12 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         parameters: {},
       };
 
-      await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(ClaudeFlowError);
-      await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow('Unknown MCP tool');
+      await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(
+        ClaudeFlowError,
+      );
+      await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(
+        'Unknown MCP tool',
+      );
     });
 
     it('should execute file operation steps', async () => {
@@ -548,9 +594,11 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         modelConfig: { type: 'transformer' },
       };
 
-      await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(ClaudeFlowError);
       await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(
-        'Neural networks not available'
+        ClaudeFlowError,
+      );
+      await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(
+        'Neural networks not available',
       );
     });
 
@@ -616,7 +664,10 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         endTime: Date.now(),
       };
 
-      const metrics = claudeFlow.calculateExecutionMetrics(workflow, coordination);
+      const metrics = claudeFlow.calculateExecutionMetrics(
+        workflow,
+        coordination,
+      );
 
       expect(metrics.totalSteps).toBe(3);
       expect(metrics.parallelSteps).toBe(2);
@@ -677,7 +728,8 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         ],
       };
 
-      const validation = claudeFlow.validateWorkflowOptimization(optimizedWorkflow);
+      const validation =
+        claudeFlow.validateWorkflowOptimization(optimizedWorkflow);
 
       expect(validation.isOptimized).toBe(true);
       expect(validation.issues).toHaveLength(0);
@@ -694,7 +746,8 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         ],
       };
 
-      const validation = claudeFlow.validateWorkflowOptimization(unoptimizedWorkflow);
+      const validation =
+        claudeFlow.validateWorkflowOptimization(unoptimizedWorkflow);
 
       expect(validation.isOptimized).toBe(false);
       expect(validation.issues.length).toBeGreaterThan(0);
@@ -836,7 +889,9 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         steps: [{ id: 'step1', dependencies: ['non-existent'] }],
       });
 
-      await expect(claudeFlow.executeWorkflow('missing-deps')).rejects.toThrow(ClaudeFlowError);
+      await expect(claudeFlow.executeWorkflow('missing-deps')).rejects.toThrow(
+        ClaudeFlowError,
+      );
     });
   });
 
@@ -997,10 +1052,30 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
         id: 'error-recovery',
         name: 'Error Recovery Test',
         steps: [
-          { id: 'task1', type: 'mcp_tool_call', toolName: 'agent_spawn', requiresAgent: true },
-          { id: 'task2', type: 'mcp_tool_call', toolName: 'agent_spawn', requiresAgent: true },
-          { id: 'task3', type: 'mcp_tool_call', toolName: 'agent_spawn', requiresAgent: true },
-          { id: 'task4', type: 'mcp_tool_call', toolName: 'agent_spawn', requiresAgent: true },
+          {
+            id: 'task1',
+            type: 'mcp_tool_call',
+            toolName: 'agent_spawn',
+            requiresAgent: true,
+          },
+          {
+            id: 'task2',
+            type: 'mcp_tool_call',
+            toolName: 'agent_spawn',
+            requiresAgent: true,
+          },
+          {
+            id: 'task3',
+            type: 'mcp_tool_call',
+            toolName: 'agent_spawn',
+            requiresAgent: true,
+          },
+          {
+            id: 'task4',
+            type: 'mcp_tool_call',
+            toolName: 'agent_spawn',
+            requiresAgent: true,
+          },
         ],
       });
 
@@ -1008,7 +1083,9 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
 
       expect(execution.results).toHaveLength(4);
 
-      const successful = execution.results.filter((r) => r.status === 'completed');
+      const successful = execution.results.filter(
+        (r) => r.status === 'completed',
+      );
       const failed = execution.results.filter((r) => r.status === 'failed');
 
       expect(successful).toHaveLength(2);

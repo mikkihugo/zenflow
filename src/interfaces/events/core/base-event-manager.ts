@@ -1,84 +1,84 @@
 /**
  * @fileoverview Base Event Manager Implementation
- * 
+ *
  * Base class for all event managers providing common functionality including
  * event emission, subscription management, filtering, health checking, and
  * performance monitoring. All specialized event managers extend this base.
- * 
+ *
  * ## Features
- * 
+ *
  * - **Event Emission**: Reliable event publishing with retry mechanisms
  * - **Subscription Management**: Dynamic listener registration and cleanup
  * - **Event Filtering**: Advanced filtering with custom criteria support
  * - **Performance Monitoring**: Built-in metrics collection and health checks
  * - **Error Handling**: Comprehensive error recovery and logging
- * 
+ *
  * ## Design Patterns
- * 
+ *
  * - **Observer Pattern**: Event subscription and notification system
  * - **Strategy Pattern**: Pluggable processing strategies (immediate, queued, batched)
  * - **Template Method**: Extensible event processing pipeline
  * - **Circuit Breaker**: Automatic failure recovery and degradation
- * 
- * @author Claude Code Zen Team  
+ *
+ * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
  * @since 1.0.0
  */
 
 import type { ILogger } from '../../../core/interfaces/base-interfaces.ts';
-import type { 
-  EventManagerConfig, 
-  EventManagerStatus,
+import type {
+  EventFilter,
+  EventManagerConfig,
   EventManagerMetrics,
+  EventManagerStatus,
+  EventPriority,
+  EventProcessingStrategy,
   IEventManager,
   SystemEvent,
-  EventFilter,
-  EventPriority,
-  EventProcessingStrategy
 } from './interfaces.ts';
 
 /**
  * Base Event Manager providing core event management functionality.
- * 
+ *
  * Abstract base class that implements common event management patterns
  * including subscription management, event emission, filtering, and
  * performance monitoring. Designed for extension by specialized managers.
- * 
+ *
  * ## Core Capabilities
- * 
+ *
  * - **Subscription Management**: Add, remove, and manage event listeners
  * - **Event Processing**: Multiple processing strategies with batching support
  * - **Error Recovery**: Automatic retry and circuit breaker patterns
  * - **Performance Tracking**: Built-in metrics and health monitoring
  * - **Lifecycle Management**: Start, stop, and destroy functionality
- * 
+ *
  * ## Processing Strategies
- * 
+ *
  * - **Immediate**: Process events synchronously as they arrive
  * - **Queued**: Queue events for asynchronous processing
  * - **Batched**: Collect events into batches for efficient processing
  * - **Throttled**: Rate-limit event processing to prevent overload
- * 
+ *
  * @example
  * ```typescript
  * class CustomEventManager extends BaseEventManager {
  *   constructor(config: EventManagerConfig, logger: ILogger) {
  *     super(config, logger);
  *   }
- *   
+ *
  *   async handleCustomEvent(event: SystemEvent): Promise<void> {
  *     // Custom event handling logic
  *     await this.emit(event);
  *   }
  * }
- * 
+ *
  * const manager = new CustomEventManager(config, logger);
  * await manager.start();
- * 
+ *
  * const subscriptionId = manager.subscribe(['custom:event'], (event) => {
  *   console.log('Event received:', event);
  * });
- * 
+ *
  * await manager.emit({
  *   id: 'custom-001',
  *   type: 'custom:event',
@@ -91,13 +91,16 @@ export abstract class BaseEventManager implements IEventManager {
   public readonly name: string;
   public readonly type: string;
 
-  protected subscribers = new Map<string, {
-    eventTypes: string[];
-    listener: (event: SystemEvent) => void | Promise<void>;
-    filter?: EventFilter;
-    subscriptionTime: Date;
-    eventCount: number;
-  }>();
+  protected subscribers = new Map<
+    string,
+    {
+      eventTypes: string[];
+      listener: (event: SystemEvent) => void | Promise<void>;
+      filter?: EventFilter;
+      subscriptionTime: Date;
+      eventCount: number;
+    }
+  >();
 
   protected eventQueue: SystemEvent[] = [];
   protected processingBatch: SystemEvent[] = [];
@@ -115,7 +118,7 @@ export abstract class BaseEventManager implements IEventManager {
     lastEmissionTime: new Date(),
     startTime: new Date(),
     errorCount: 0,
-    retryCount: 0
+    retryCount: 0,
   };
 
   protected config: EventManagerConfig;
@@ -130,7 +133,9 @@ export abstract class BaseEventManager implements IEventManager {
     this.type = config.type;
     this.processingStrategy = config.processing?.strategy || 'immediate';
 
-    this.logger.debug(`BaseEventManager initialized: ${this.name} (${this.type})`);
+    this.logger.debug(
+      `BaseEventManager initialized: ${this.name} (${this.type})`,
+    );
   }
 
   /**
@@ -146,7 +151,10 @@ export abstract class BaseEventManager implements IEventManager {
     this.metrics.startTime = new Date();
 
     // Start processing based on strategy
-    if (this.processingStrategy === 'queued' || this.processingStrategy === 'batched') {
+    if (
+      this.processingStrategy === 'queued' ||
+      this.processingStrategy === 'batched'
+    ) {
       this.startQueueProcessing();
     }
 
@@ -205,12 +213,12 @@ export abstract class BaseEventManager implements IEventManager {
    * Emit an event to all matching subscribers.
    */
   async emit(
-    event: SystemEvent, 
-    options?: { 
-      priority?: EventPriority; 
-      timeout?: number; 
-      retries?: number; 
-    }
+    event: SystemEvent,
+    options?: {
+      priority?: EventPriority;
+      timeout?: number;
+      retries?: number;
+    },
   ): Promise<void> {
     if (!this.isRunning) {
       this.logger.warn(`Event manager not running, queuing event: ${event.id}`);
@@ -230,8 +238,8 @@ export abstract class BaseEventManager implements IEventManager {
         metadata: {
           ...event.metadata,
           emittedAt: new Date(),
-          managerId: this.name
-        }
+          managerId: this.name,
+        },
       } as SystemEvent;
 
       // Process based on strategy
@@ -244,7 +252,10 @@ export abstract class BaseEventManager implements IEventManager {
           break;
         case 'batched':
           this.processingBatch.push(enrichedEvent);
-          if (this.processingBatch.length >= (this.config.processing?.batchSize || 10)) {
+          if (
+            this.processingBatch.length >=
+            (this.config.processing?.batchSize || 10)
+          ) {
             await this.processBatch();
           }
           break;
@@ -258,7 +269,8 @@ export abstract class BaseEventManager implements IEventManager {
       // Update metrics
       const processingTime = Date.now() - startTime;
       this.metrics.totalProcessingTime += processingTime;
-      this.metrics.averageLatency = this.metrics.totalProcessingTime / this.metrics.eventsEmitted;
+      this.metrics.averageLatency =
+        this.metrics.totalProcessingTime / this.metrics.eventsEmitted;
       this.metrics.eventsProcessed++;
 
       this.logger.debug(`Event emitted: ${event.type} (${processingTime}ms)`);
@@ -281,27 +293,31 @@ export abstract class BaseEventManager implements IEventManager {
    * Subscribe to events with optional filtering.
    */
   subscribe(
-    eventTypes: string | string[], 
+    eventTypes: string | string[],
     listener: (event: SystemEvent) => void | Promise<void>,
-    options?: { 
-      filter?: EventFilter; 
-      once?: boolean; 
-    }
+    options?: {
+      filter?: EventFilter;
+      once?: boolean;
+    },
   ): string {
     const subscriptionId = this.generateSubscriptionId();
     const types = Array.isArray(eventTypes) ? eventTypes : [eventTypes];
 
     this.subscribers.set(subscriptionId, {
       eventTypes: types,
-      listener: options?.once ? this.wrapOnceListener(listener, subscriptionId) : listener,
+      listener: options?.once
+        ? this.wrapOnceListener(listener, subscriptionId)
+        : listener,
       filter: options?.filter,
       subscriptionTime: new Date(),
-      eventCount: 0
+      eventCount: 0,
     });
 
     this.metrics.subscriptionCount++;
 
-    this.logger.debug(`Subscription created: ${subscriptionId} for types ${types.join(', ')}`);
+    this.logger.debug(
+      `Subscription created: ${subscriptionId} for types ${types.join(', ')}`,
+    );
     return subscriptionId;
   }
 
@@ -322,7 +338,7 @@ export abstract class BaseEventManager implements IEventManager {
    */
   async getMetrics(): Promise<EventManagerMetrics> {
     const uptime = Date.now() - this.metrics.startTime.getTime();
-    
+
     return {
       name: this.name,
       type: this.type,
@@ -332,12 +348,13 @@ export abstract class BaseEventManager implements IEventManager {
       averageLatency: this.metrics.averageLatency,
       uptime,
       queueSize: this.eventQueue.length,
-      errorRate: this.metrics.eventsEmitted > 0 
-        ? this.metrics.eventsFailed / this.metrics.eventsEmitted 
-        : 0,
+      errorRate:
+        this.metrics.eventsEmitted > 0
+          ? this.metrics.eventsFailed / this.metrics.eventsEmitted
+          : 0,
       lastActivity: this.metrics.lastEmissionTime,
       isRunning: this.isRunning,
-      customMetrics: {}
+      customMetrics: {},
     };
   }
 
@@ -346,12 +363,13 @@ export abstract class BaseEventManager implements IEventManager {
    */
   async healthCheck(): Promise<EventManagerStatus> {
     const metrics = await this.getMetrics();
-    const queueBacklog = this.eventQueue.length > (this.config.processing?.queueSize || 1000);
+    const queueBacklog =
+      this.eventQueue.length > (this.config.processing?.queueSize || 1000);
     const highErrorRate = metrics.errorRate > 0.1; // 10% error threshold
     const notResponsive = !this.isRunning;
 
-    const isHealthy = !queueBacklog && !highErrorRate && !notResponsive;
-    
+    const isHealthy = !(queueBacklog || highErrorRate || notResponsive);
+
     return {
       name: this.name,
       type: this.type,
@@ -366,20 +384,25 @@ export abstract class BaseEventManager implements IEventManager {
         processingStrategy: this.processingStrategy,
         queueBacklog,
         highErrorRate,
-        lastActivity: this.metrics.lastEmissionTime
-      }
+        lastActivity: this.metrics.lastEmissionTime,
+      },
     };
   }
 
   /**
    * Get list of active subscriptions (for debugging).
    */
-  getSubscriptions(): Array<{ id: string; eventTypes: string[]; eventCount: number; subscriptionTime: Date }> {
+  getSubscriptions(): Array<{
+    id: string;
+    eventTypes: string[];
+    eventCount: number;
+    subscriptionTime: Date;
+  }> {
     return Array.from(this.subscribers.entries()).map(([id, subscription]) => ({
       id,
       eventTypes: subscription.eventTypes,
       eventCount: subscription.eventCount,
-      subscriptionTime: subscription.subscriptionTime
+      subscriptionTime: subscription.subscriptionTime,
     }));
   }
 
@@ -420,7 +443,7 @@ export abstract class BaseEventManager implements IEventManager {
     try {
       // Process batch in parallel
       await Promise.allSettled(
-        batch.map(event => this.notifySubscribers(event))
+        batch.map((event) => this.notifySubscribers(event)),
       );
     } catch (error) {
       this.logger.error('Batch processing failed:', error);
@@ -452,7 +475,7 @@ export abstract class BaseEventManager implements IEventManager {
 
   protected async notifySubscribers(event: SystemEvent): Promise<void> {
     const matchingSubscribers = this.findMatchingSubscribers(event);
-    
+
     if (matchingSubscribers.length === 0) {
       return;
     }
@@ -482,12 +505,19 @@ export abstract class BaseEventManager implements IEventManager {
 
     for (const subscription of this.subscribers.values()) {
       // Check event type match
-      if (!subscription.eventTypes.some(type => this.eventTypeMatches(event.type, type))) {
+      if (
+        !subscription.eventTypes.some((type) =>
+          this.eventTypeMatches(event.type, type),
+        )
+      ) {
         continue;
       }
 
       // Apply filter if provided
-      if (subscription.filter && !this.eventMatchesFilter(event, subscription.filter)) {
+      if (
+        subscription.filter &&
+        !this.eventMatchesFilter(event, subscription.filter)
+      ) {
         continue;
       }
 
@@ -497,7 +527,10 @@ export abstract class BaseEventManager implements IEventManager {
     return matching;
   }
 
-  protected eventTypeMatches(eventType: string, subscriptionType: string): boolean {
+  protected eventTypeMatches(
+    eventType: string,
+    subscriptionType: string,
+  ): boolean {
     // Support wildcard matching
     if (subscriptionType.includes('*')) {
       const pattern = subscriptionType.replace(/\*/g, '.*');
@@ -507,7 +540,10 @@ export abstract class BaseEventManager implements IEventManager {
     return eventType === subscriptionType;
   }
 
-  protected eventMatchesFilter(event: SystemEvent, filter: EventFilter): boolean {
+  protected eventMatchesFilter(
+    event: SystemEvent,
+    filter: EventFilter,
+  ): boolean {
     // Type filtering
     if (filter.types && !filter.types.includes(event.type)) {
       return false;
@@ -519,7 +555,11 @@ export abstract class BaseEventManager implements IEventManager {
     }
 
     // Priority filtering
-    if (filter.priorities && event.priority && !filter.priorities.includes(event.priority)) {
+    if (
+      filter.priorities &&
+      event.priority &&
+      !filter.priorities.includes(event.priority)
+    ) {
       return false;
     }
 
@@ -545,8 +585,8 @@ export abstract class BaseEventManager implements IEventManager {
   }
 
   protected wrapOnceListener(
-    listener: (event: SystemEvent) => void | Promise<void>, 
-    subscriptionId: string
+    listener: (event: SystemEvent) => void | Promise<void>,
+    subscriptionId: string,
   ): (event: SystemEvent) => void | Promise<void> {
     return async (event: SystemEvent) => {
       try {
@@ -563,7 +603,10 @@ export abstract class BaseEventManager implements IEventManager {
       if (this.eventQueue.length > 0) {
         await this.processEventQueue();
       }
-      if (this.processingBatch.length > 0 && this.processingStrategy === 'batched') {
+      if (
+        this.processingBatch.length > 0 &&
+        this.processingStrategy === 'batched'
+      ) {
         await this.processBatch();
       }
     }, interval);
@@ -575,10 +618,16 @@ export abstract class BaseEventManager implements IEventManager {
       try {
         const status = await this.healthCheck();
         if (status.status !== 'healthy') {
-          this.logger.warn(`Event manager health check failed: ${this.name}`, status);
+          this.logger.warn(
+            `Event manager health check failed: ${this.name}`,
+            status,
+          );
         }
       } catch (error) {
-        this.logger.error(`Health check error for manager ${this.name}:`, error);
+        this.logger.error(
+          `Health check error for manager ${this.name}:`,
+          error,
+        );
       }
     }, interval);
   }

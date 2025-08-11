@@ -45,7 +45,10 @@ export abstract class BaseDSPyAgentProgram {
    * Initialize the DSPy program.
    */
   async initialize(): Promise<void> {
-    this.program = await this.dspyWrapper.createProgram(this.getSignature(), this.getDescription());
+    this.program = await this.dspyWrapper.createProgram(
+      this.getSignature(),
+      this.getDescription(),
+    );
     logger.info(`Initialized DSPy agent program: ${this.constructor.name}`);
   }
 
@@ -70,12 +73,12 @@ export abstract class BaseDSPyAgentProgram {
           (this.performance.averageResponseTime + responseTime) / 2;
 
         this.performance.accuracy =
-          this.performance.successfulExecutions / this.performance.totalExecutions;
+          this.performance.successfulExecutions /
+          this.performance.totalExecutions;
 
         return result?.result;
-      } else {
-        throw new Error(result?.error?.message || 'Execution failed');
       }
+      throw new Error(result?.error?.message || 'Execution failed');
     } catch (error) {
       logger.error(`Program execution failed: ${this.constructor.name}`, error);
       throw error;
@@ -85,7 +88,9 @@ export abstract class BaseDSPyAgentProgram {
   /**
    * Add learning examples.
    */
-  async addExamples(examples: Array<{ input: any; output: any }>): Promise<void> {
+  async addExamples(
+    examples: Array<{ input: any; output: any }>,
+  ): Promise<void> {
     if (!this.program) return;
 
     const dspyExamples: DSPyExample[] = examples.map((ex) => ({
@@ -165,7 +170,7 @@ export class CodeGeneratorProgram extends BaseDSPyAgentProgram {
   async generateCode(
     requirements: string,
     context: string = '',
-    styleGuide: string = 'typescript-strict'
+    styleGuide: string = 'typescript-strict',
   ) {
     return await this.execute({
       requirements,
@@ -200,7 +205,11 @@ export class CodeAnalyzerProgram extends BaseDSPyAgentProgram {
   /**
    * Analyze code quality and provide suggestions.
    */
-  async analyzeCode(code: string, filePath: string, projectContext: string = '') {
+  async analyzeCode(
+    code: string,
+    filePath: string,
+    projectContext: string = '',
+  ) {
     return await this.execute({
       code,
       file_path: filePath,
@@ -239,7 +248,7 @@ export class ArchitectureDesignerProgram extends BaseDSPyAgentProgram {
     requirements: string,
     constraints: string[] = [],
     domain: string = 'general',
-    scale: string = 'medium'
+    scale: string = 'medium',
   ) {
     return await this.execute({
       requirements,
@@ -275,7 +284,11 @@ export class TestEngineerProgram extends BaseDSPyAgentProgram {
   /**
    * Generate comprehensive test suite.
    */
-  async generateTests(code: string, requirements: string, testStrategy: string = 'comprehensive') {
+  async generateTests(
+    code: string,
+    requirements: string,
+    testStrategy: string = 'comprehensive',
+  ) {
     return await this.execute({
       code,
       requirements,
@@ -313,7 +326,7 @@ export class ResearchSpecialistProgram extends BaseDSPyAgentProgram {
     query: string,
     domain: string = 'technology',
     depth: string = 'moderate',
-    sources: string[] = []
+    sources: string[] = [],
   ) {
     return await this.execute({
       query,
@@ -353,7 +366,7 @@ export class TaskCoordinatorProgram extends BaseDSPyAgentProgram {
     tasks: any[],
     agents: any[],
     dependencies: any[] = [],
-    constraints: any = {}
+    constraints: any = {},
   ) {
     return await this.execute({
       tasks,
@@ -393,7 +406,7 @@ export class ErrorDiagnosisProgram extends BaseDSPyAgentProgram {
     errorMessage: string,
     stackTrace: string = '',
     codeContext: string = '',
-    environment: string = 'development'
+    environment: string = 'development',
   ) {
     return await this.execute({
       error_message: errorMessage,
@@ -433,7 +446,7 @@ export class PerformanceOptimizerProgram extends BaseDSPyAgentProgram {
     code: string,
     metrics: any = {},
     constraints: any[] = [],
-    targets: any = {}
+    targets: any = {},
   ) {
     return await this.execute({
       code,

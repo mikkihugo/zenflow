@@ -24,12 +24,16 @@ export class TaskAgentMatcher {
   public async findCandidates(
     task: Task,
     availableAgents: Agent[],
-    capacityManager: CapacityManager
+    capacityManager: CapacityManager,
   ): Promise<Agent[]> {
     const matchingScores: MatchingScore[] = [];
 
     for (const agent of availableAgents) {
-      const score = await this.calculateMatchingScore(task, agent, capacityManager);
+      const score = await this.calculateMatchingScore(
+        task,
+        agent,
+        capacityManager,
+      );
       if (score.score > 0.3) {
         // Minimum threshold
         matchingScores.push(score);
@@ -48,7 +52,7 @@ export class TaskAgentMatcher {
   private async calculateMatchingScore(
     task: Task,
     agent: Agent,
-    capacityManager: CapacityManager
+    capacityManager: CapacityManager,
   ): Promise<MatchingScore> {
     // Calculate capability match
     const capabilityMatch = this.calculateCapabilityMatch(task, agent);
@@ -58,10 +62,12 @@ export class TaskAgentMatcher {
 
     // Calculate availability match
     const capacity = await capacityManager.getCapacity(agent.id);
-    const availabilityMatch = capacity.availableCapacity / capacity.maxConcurrentTasks;
+    const availabilityMatch =
+      capacity.availableCapacity / capacity.maxConcurrentTasks;
 
     // Combine scores with weights
-    const score = capabilityMatch * 0.4 + performanceMatch * 0.3 + availabilityMatch * 0.3;
+    const score =
+      capabilityMatch * 0.4 + performanceMatch * 0.3 + availabilityMatch * 0.3;
 
     return {
       agent,
@@ -76,8 +82,8 @@ export class TaskAgentMatcher {
   private calculateCapabilityMatch(task: Task, agent: Agent): number {
     if (task.requiredCapabilities.length === 0) return 1.0;
 
-    const matchingCapabilities = task.requiredCapabilities.filter((capability) =>
-      agent.capabilities.includes(capability)
+    const matchingCapabilities = task.requiredCapabilities.filter(
+      (capability) => agent.capabilities.includes(capability),
     );
 
     return matchingCapabilities.length / task.requiredCapabilities.length;

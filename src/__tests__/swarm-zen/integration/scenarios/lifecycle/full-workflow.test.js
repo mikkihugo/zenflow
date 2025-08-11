@@ -4,7 +4,9 @@ const ZenSwarm = require('../../../../src/core/ruv-swarm');
 const _Agent = require('../../../../src/agent');
 const AgentCommunicator = require('../../../../src/agent-communicator');
 const NeuralAgentManager = require('../../../../src/neural-agent');
-const { taskOrchestrationSimulator } = require('../../../../src/task-orchestrator');
+const {
+  taskOrchestrationSimulator,
+} = require('../../../../src/task-orchestrator');
 
 describe('Complete Agent Workflow Integration', () => {
   let sandbox;
@@ -78,7 +80,10 @@ describe('Complete Agent Workflow Integration', () => {
 
       while (Date.now() - startTime < timeout) {
         taskStatus = await swarm.getTaskStatus(taskResult.id);
-        if (taskStatus.status === 'completed' || taskStatus.status === 'failed') {
+        if (
+          taskStatus.status === 'completed' ||
+          taskStatus.status === 'failed'
+        ) {
           break;
         }
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -141,8 +146,12 @@ describe('Complete Agent Workflow Integration', () => {
       // Verify communication patterns
       expect(messages.length).to.be.greaterThan(0);
 
-      const coordinatorMessages = messages.filter((m) => m.from === coordinator.id);
-      const workerMessages = messages.filter((m) => workers.some((w) => w.id === m.from));
+      const coordinatorMessages = messages.filter(
+        (m) => m.from === coordinator.id,
+      );
+      const workerMessages = messages.filter((m) =>
+        workers.some((w) => w.id === m.from),
+      );
 
       expect(coordinatorMessages.length).to.be.greaterThan(0);
       expect(workerMessages.length).to.be.greaterThan(0);
@@ -268,7 +277,9 @@ describe('Complete Agent Workflow Integration', () => {
       });
 
       // Get initial performance
-      const initialMetrics = await neuralManager.getAgentMetrics(neuralAgent.id);
+      const initialMetrics = await neuralManager.getAgentMetrics(
+        neuralAgent.id,
+      );
       const initialAccuracy = initialMetrics.accuracy || 0.5;
 
       // Execute multiple training tasks
@@ -279,7 +290,7 @@ describe('Complete Agent Workflow Integration', () => {
             task: `Training task ${i}: Pattern recognition`,
             agentId: neuralAgent.id,
             training: true,
-          })
+          }),
         );
       }
 

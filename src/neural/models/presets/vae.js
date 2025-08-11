@@ -19,7 +19,7 @@ class VAEModel extends NeuralModel {
       outputActivation: config.outputActivation || 'sigmoid',
       dropoutRate: config.dropoutRate || 0.1,
       betaKL: config.betaKL || 1.0, // KL divergence weight
-      useConvolutional: config.useConvolutional || false,
+      useConvolutional: config.useConvolutional,
       ...config,
     };
 
@@ -118,11 +118,15 @@ class VAEModel extends NeuralModel {
     }
 
     // Compute mean and log variance
-    const mu = this.linearTransform(h, this.encoder.muLayer.weight, this.encoder.muLayer.bias);
+    const mu = this.linearTransform(
+      h,
+      this.encoder.muLayer.weight,
+      this.encoder.muLayer.bias,
+    );
     const logVar = this.linearTransform(
       h,
       this.encoder.logVarLayer.weight,
-      this.encoder.logVarLayer.bias
+      this.encoder.logVarLayer.bias,
     );
 
     // Reparameterization trick
@@ -270,8 +274,12 @@ class VAEModel extends NeuralModel {
       // Binary cross-entropy
       const epsilon = 1e-6;
       for (let i = 0; i < reconstruction.length; i++) {
-        const pred = Math.max(epsilon, Math.min(1 - epsilon, reconstruction[i]));
-        reconLoss -= target[i] * Math.log(pred) + (1 - target[i]) * Math.log(1 - pred);
+        const pred = Math.max(
+          epsilon,
+          Math.min(1 - epsilon, reconstruction[i]),
+        );
+        reconLoss -=
+          target[i] * Math.log(pred) + (1 - target[i]) * Math.log(1 - pred);
       }
     } else {
       // MSE
@@ -329,14 +337,18 @@ class VAEModel extends NeuralModel {
 
       // Process batches
       for (let i = 0; i < shuffled.length; i += batchSize) {
-        const batch = shuffled.slice(i, Math.min(i + batchSize, shuffled.length));
+        const batch = shuffled.slice(
+          i,
+          Math.min(i + batchSize, shuffled.length),
+        );
 
         // Forward pass
         const output = await this.forward(batch.inputs, true);
 
         // Calculate loss
         const losses = this.calculateLoss(output, batch.inputs); // Reconstruction target is input
-        const totalLoss = losses.reconstruction + klWeight * this.config.betaKL * losses.kl;
+        const totalLoss =
+          losses.reconstruction + klWeight * this.config.betaKL * losses.kl;
 
         epochReconLoss += losses.reconstruction;
         epochKLLoss += losses.kl;
@@ -357,7 +369,8 @@ class VAEModel extends NeuralModel {
         epoch: epoch + 1,
         trainReconLoss: avgReconLoss,
         trainKLLoss: avgKLLoss,
-        trainTotalLoss: avgReconLoss + klWeight * this.config.betaKL * avgKLLoss,
+        trainTotalLoss:
+          avgReconLoss + klWeight * this.config.betaKL * avgKLLoss,
         valReconLoss: valLosses.reconstruction,
         valKLLoss: valLosses.kl,
         valTotalLoss: valLosses.total,
@@ -473,8 +486,11 @@ class VAEModel extends NeuralModel {
     for (const layer of this.encoder.layers) {
       count += layer.weight.length + layer.bias.length;
     }
-    count += this.encoder.muLayer.weight.length + this.encoder.muLayer.bias.length;
-    count += this.encoder.logVarLayer.weight.length + this.encoder.logVarLayer.bias.length;
+    count +=
+      this.encoder.muLayer.weight.length + this.encoder.muLayer.bias.length;
+    count +=
+      this.encoder.logVarLayer.weight.length +
+      this.encoder.logVarLayer.bias.length;
 
     // Decoder parameters
     for (const layer of this.decoder.layers) {

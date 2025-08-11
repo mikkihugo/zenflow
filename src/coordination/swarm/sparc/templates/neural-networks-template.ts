@@ -22,7 +22,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
   id: 'neural-networks-template',
   name: 'Neural Networks System',
   domain: 'neural-networks',
-  description: 'Comprehensive template for neural network systems with WASM acceleration',
+  description:
+    'Comprehensive template for neural network systems with WASM acceleration',
   version: '1.0.0',
   metadata: {
     author: 'SPARC Neural Networks Template Generator',
@@ -40,7 +41,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'Network Architecture Management',
-        description: 'Define, create, and manage various neural network architectures',
+        description:
+          'Define, create, and manage various neural network architectures',
         type: 'core',
         priority: 'HIGH',
         dependencies: ['Model Registry', 'Configuration Manager'],
@@ -53,7 +55,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'WASM-Accelerated Inference',
-        description: 'Perform high-speed neural network inference using WASM acceleration',
+        description:
+          'Perform high-speed neural network inference using WASM acceleration',
         type: 'performance',
         priority: 'HIGH',
         dependencies: ['WASM Runtime', 'Model Loader'],
@@ -66,7 +69,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'Distributed Training System',
-        description: 'Coordinate distributed training across multiple nodes and GPUs',
+        description:
+          'Coordinate distributed training across multiple nodes and GPUs',
         type: 'distributed',
         priority: 'HIGH',
         dependencies: ['Communication Layer', 'Gradient Synchronization'],
@@ -92,7 +96,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'Real-time Performance Monitoring',
-        description: 'Monitor neural network performance, accuracy, and resource usage',
+        description:
+          'Monitor neural network performance, accuracy, and resource usage',
         type: 'monitoring',
         priority: 'MEDIUM',
         dependencies: ['Metrics Collector', 'Alerting System'],
@@ -139,13 +144,15 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         type: 'performance',
-        description: 'WASM must be used for all performance-critical operations',
+        description:
+          'WASM must be used for all performance-critical operations',
         impact: 'high',
       },
       {
         id: nanoid(),
         type: 'technical',
-        description: 'Support for multiple hardware accelerators (CPU, GPU, TPU)',
+        description:
+          'Support for multiple hardware accelerators (CPU, GPU, TPU)',
         impact: 'medium',
       },
       {
@@ -231,7 +238,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       mitigationStrategies: [
         {
           riskId: 'wasm-performance',
-          strategy: 'Implement hybrid WASM/JavaScript execution with performance monitoring',
+          strategy:
+            'Implement hybrid WASM/JavaScript execution with performance monitoring',
           priority: 'HIGH',
           effort: 'medium',
         },
@@ -283,13 +291,32 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         name: 'WASMMatrixMultiplication',
-        purpose: 'WASM-accelerated matrix multiplication for neural network operations',
+        purpose:
+          'WASM-accelerated matrix multiplication for neural network operations',
         inputs: [
-          { name: 'matrixA', type: 'Matrix', description: 'First input matrix [m][k]' },
-          { name: 'matrixB', type: 'Matrix', description: 'Second input matrix [k][n]' },
-          { name: 'wasmModule', type: 'WASMModule', description: 'WASM module for computations' },
+          {
+            name: 'matrixA',
+            type: 'Matrix',
+            description: 'First input matrix [m][k]',
+          },
+          {
+            name: 'matrixB',
+            type: 'Matrix',
+            description: 'Second input matrix [k][n]',
+          },
+          {
+            name: 'wasmModule',
+            type: 'WASMModule',
+            description: 'WASM module for computations',
+          },
         ],
-        outputs: [{ name: 'resultMatrix', type: 'Matrix', description: 'Result matrix [m][n]' }],
+        outputs: [
+          {
+            name: 'resultMatrix',
+            type: 'Matrix',
+            description: 'Result matrix [m][n]',
+          },
+        ],
         steps: [
           {
             stepNumber: 1,
@@ -312,7 +339,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 4,
             description: 'Copy result back to JavaScript',
-            pseudocode: 'resultMatrix ← COPY_FROM_WASM(wasmMemory.result_ptr, m * n)',
+            pseudocode:
+              'resultMatrix ← COPY_FROM_WASM(wasmMemory.result_ptr, m * n)',
           },
           {
             stepNumber: 5,
@@ -323,7 +351,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         complexity: {
           timeComplexity: 'O(n^3)',
           spaceComplexity: 'O(n^2)',
-          scalability: 'Cubic time for matrix multiplication, quadratic space for matrices',
+          scalability:
+            'Cubic time for matrix multiplication, quadratic space for matrices',
           worstCase: 'O(n^3)',
         },
         optimizations: [
@@ -340,13 +369,33 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         name: 'DistributedBackpropagation',
         purpose: 'Distributed backpropagation with gradient synchronization',
         inputs: [
-          { name: 'network', type: 'NeuralNetwork', description: 'Neural network instance' },
-          { name: 'trainingBatch', type: 'TrainingBatch', description: 'Batch of training data' },
-          { name: 'nodeId', type: 'string', description: 'Current node identifier' },
-          { name: 'clusterNodes', type: 'string[]', description: 'List of cluster node IDs' },
+          {
+            name: 'network',
+            type: 'NeuralNetwork',
+            description: 'Neural network instance',
+          },
+          {
+            name: 'trainingBatch',
+            type: 'TrainingBatch',
+            description: 'Batch of training data',
+          },
+          {
+            name: 'nodeId',
+            type: 'string',
+            description: 'Current node identifier',
+          },
+          {
+            name: 'clusterNodes',
+            type: 'string[]',
+            description: 'List of cluster node IDs',
+          },
         ],
         outputs: [
-          { name: 'updatedWeights', type: 'WeightMatrix', description: 'Updated network weights' },
+          {
+            name: 'updatedWeights',
+            type: 'WeightMatrix',
+            description: 'Updated network weights',
+          },
           {
             name: 'synchronizedGradients',
             type: 'GradientVector',
@@ -362,12 +411,14 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 2,
             description: 'Backward pass to compute gradients',
-            pseudocode: 'localGradients ← BACKWARD_PASS(network, activations, loss)',
+            pseudocode:
+              'localGradients ← BACKWARD_PASS(network, activations, loss)',
           },
           {
             stepNumber: 3,
             description: 'Synchronize gradients across cluster',
-            pseudocode: 'synchronizedGradients ← ALL_REDUCE(localGradients, clusterNodes)',
+            pseudocode:
+              'synchronizedGradients ← ALL_REDUCE(localGradients, clusterNodes)',
           },
           {
             stepNumber: 4,
@@ -394,7 +445,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         name: 'AdaptiveModelSharding',
-        purpose: 'Dynamically shard large models across available memory and compute resources',
+        purpose:
+          'Dynamically shard large models across available memory and compute resources',
         inputs: [
           {
             name: 'model',
@@ -406,8 +458,16 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
             type: 'number',
             description: 'Available memory per node in bytes',
           },
-          { name: 'computeNodes', type: 'ComputeNode[]', description: 'Available compute nodes' },
-          { name: 'targetLatency', type: 'number', description: 'Target inference latency in ms' },
+          {
+            name: 'computeNodes',
+            type: 'ComputeNode[]',
+            description: 'Available compute nodes',
+          },
+          {
+            name: 'targetLatency',
+            type: 'number',
+            description: 'Target inference latency in ms',
+          },
         ],
         outputs: [
           {
@@ -435,7 +495,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 3,
             description: 'Generate sharding plan',
-            pseudocode: 'shardingPlan ← GREEDY_SHARDING(layers, availableMemory)',
+            pseudocode:
+              'shardingPlan ← GREEDY_SHARDING(layers, availableMemory)',
           },
           {
             stepNumber: 4,
@@ -487,21 +548,37 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         methods: [
           {
             name: 'multiply',
-            parameters: [{ name: 'other', type: 'NeuralTensor', description: 'Other tensor' }],
+            parameters: [
+              {
+                name: 'other',
+                type: 'NeuralTensor',
+                description: 'Other tensor',
+              },
+            ],
             returnType: 'NeuralTensor',
             visibility: 'public',
             description: 'Matrix multiplication',
           },
           {
             name: 'add',
-            parameters: [{ name: 'other', type: 'NeuralTensor', description: 'Other tensor' }],
+            parameters: [
+              {
+                name: 'other',
+                type: 'NeuralTensor',
+                description: 'Other tensor',
+              },
+            ],
             returnType: 'NeuralTensor',
             visibility: 'public',
             description: 'Element-wise addition',
           },
         ],
         relationships: [
-          { type: 'uses', target: 'WASMModule', description: 'Uses WASM for acceleration' },
+          {
+            type: 'uses',
+            target: 'WASMModule',
+            description: 'Uses WASM for acceleration',
+          },
         ],
       },
       {
@@ -525,7 +602,11 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           {
             name: 'registerLayer',
             parameters: [
-              { name: 'layer', type: 'LayerDefinition', description: 'Layer to register' },
+              {
+                name: 'layer',
+                type: 'LayerDefinition',
+                description: 'Layer to register',
+              },
             ],
             returnType: 'void',
             visibility: 'public',
@@ -533,7 +614,9 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           },
           {
             name: 'getLayer',
-            parameters: [{ name: 'id', type: 'string', description: 'Layer ID' }],
+            parameters: [
+              { name: 'id', type: 'string', description: 'Layer ID' },
+            ],
             returnType: 'LayerDefinition',
             visibility: 'public',
             description: 'Get layer by ID',
@@ -574,7 +657,11 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           {
             name: 'append',
             parameters: [
-              { name: 'gradient', type: 'GradientVector', description: 'Gradient to append' },
+              {
+                name: 'gradient',
+                type: 'GradientVector',
+                description: 'Gradient to append',
+              },
             ],
             returnType: 'void',
             visibility: 'public',
@@ -589,7 +676,11 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           },
         ],
         relationships: [
-          { type: 'uses', target: 'GradientVector', description: 'Stores gradient vectors' },
+          {
+            type: 'uses',
+            target: 'GradientVector',
+            description: 'Stores gradient vectors',
+          },
         ],
       },
     ],
@@ -667,7 +758,10 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         ],
         interfaces: ['ITrainingCoordinator'],
         dependencies: ['ClusterManager', 'GradientSynchronizer'],
-        qualityAttributes: { scalability: 'high', 'fault-tolerance': 'critical' },
+        qualityAttributes: {
+          scalability: 'high',
+          'fault-tolerance': 'critical',
+        },
         performance: {
           expectedLatency: '<100ms',
           optimizations: ['1000 training steps/second', '1GB memory usage'],
@@ -705,7 +799,10 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         ],
         interfaces: ['ITensorStorage'],
         dependencies: ['MemoryPool', 'CompressionEngine'],
-        qualityAttributes: { 'memory-efficiency': 'high', throughput: 'critical' },
+        qualityAttributes: {
+          'memory-efficiency': 'high',
+          throughput: 'critical',
+        },
         performance: {
           expectedLatency: '<10ms',
           optimizations: ['1GB/second data transfer', '2GB memory usage'],
@@ -746,7 +843,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         source: 'distributed-training-coordinator',
         target: 'wasm-neural-engine',
         type: 'orchestrates',
-        description: 'Training coordinator orchestrates neural engine instances',
+        description:
+          'Training coordinator orchestrates neural engine instances',
         strength: 'medium',
         protocol: 'asynchronous',
       },
@@ -763,7 +861,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
     patterns: [
       {
         name: 'WASM Acceleration Pattern',
-        description: 'Use WASM for performance-critical mathematical operations',
+        description:
+          'Use WASM for performance-critical mathematical operations',
         benefits: [
           'Near-native performance',
           'Cross-platform compatibility',
@@ -779,7 +878,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       },
       {
         name: 'Parameter Server Pattern',
-        description: 'Centralized parameter management for distributed training',
+        description:
+          'Centralized parameter management for distributed training',
         benefits: [
           'Simplified synchronization',
           'Fault tolerance',
@@ -842,7 +942,8 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           methods: [
             {
               name: 'startTraining',
-              signature: 'startTraining(training_config: TrainingConfig): Promise<TrainingJob>',
+              signature:
+                'startTraining(training_config: TrainingConfig): Promise<TrainingJob>',
               description: 'Start distributed training job',
             },
             {
@@ -956,7 +1057,9 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
    *
    * @param projectSpec
    */
-  customizeSpecification(projectSpec: ProjectSpecification): DetailedSpecification {
+  customizeSpecification(
+    projectSpec: ProjectSpecification,
+  ): DetailedSpecification {
     const customized = { ...this.specification };
 
     // Update basic information
@@ -1083,7 +1186,12 @@ END
       // Enhanced: Default hybrid approach for neural networks
       customized.deploymentStrategy = {
         type: 'hybrid',
-        infrastructure: ['Docker', 'GPU Support', 'WASM Runtime', 'Load Balancer'],
+        infrastructure: [
+          'Docker',
+          'GPU Support',
+          'WASM Runtime',
+          'Load Balancer',
+        ],
         scalingApproach: 'auto',
         containerization: true,
         orchestration: 'docker-swarm',
@@ -1114,18 +1222,27 @@ END
     }
 
     // Check complexity compatibility
-    if (projectSpec.complexity === 'simple' && this.metadata.complexity === 'high') {
+    if (
+      projectSpec.complexity === 'simple' &&
+      this.metadata.complexity === 'high'
+    ) {
       warnings.push('Template complexity may be higher than needed');
-      recommendations.push('Consider simplifying the architecture for your use case');
+      recommendations.push(
+        'Consider simplifying the architecture for your use case',
+      );
     }
 
     // Check for required dependencies
     const requiredTech = ['WASM', 'GPU'];
     for (const tech of requiredTech) {
       if (
-        !projectSpec.requirements?.some((req) => req.toLowerCase().includes(tech.toLowerCase()))
+        !projectSpec.requirements?.some((req) =>
+          req.toLowerCase().includes(tech.toLowerCase()),
+        )
       ) {
-        warnings.push(`Template requires ${tech} but not mentioned in requirements`);
+        warnings.push(
+          `Template requires ${tech} but not mentioned in requirements`,
+        );
         recommendations.push(`Ensure ${tech} is available in your environment`);
       }
     }

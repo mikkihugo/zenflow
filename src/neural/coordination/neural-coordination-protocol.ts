@@ -508,11 +508,9 @@ export class NeuralCoordinationProtocol {
         ) {
           score += 0.2;
         }
-      } else {
-        if (strategy.characteristics.decisionFlow === 'top_down') {
+      } else if (strategy.characteristics.decisionFlow === 'top_down') {
           score += 0.15;
         }
-      }
 
       // Prefer consensus-based strategies for heterogeneous agents
       if (this.isHeterogeneousSession(session) && strategy.characteristics.consensusRequired) {
@@ -633,9 +631,9 @@ export class NeuralCoordinationProtocol {
     // Select based on trust level and agent count
     if (trustLevel < 0.5 || agentCount > 20) {
       return this.consensusProtocols.get('pbft')!;
-    } else if (trustLevel > 0.8 && agentCount <= 10) {
+    }if (trustLevel > 0.8 && agentCount <= 10) {
       return this.consensusProtocols.get('raft')!;
-    } else if (agentCount > 10) {
+    }if (agentCount > 10) {
       return this.consensusProtocols.get('gossip')!;
     }
     return this.consensusProtocols.get('proof_of_stake')!;

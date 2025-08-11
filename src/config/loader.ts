@@ -11,7 +11,11 @@ const logger = getLogger('ConfigLoader');
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { DEFAULT_CONFIG, ENV_MAPPINGS } from './defaults.ts';
-import type { ConfigurationSource, ConfigValidationResult, SystemConfiguration } from './types.ts';
+import type {
+  ConfigurationSource,
+  ConfigValidationResult,
+  SystemConfiguration,
+} from './types.ts';
 import { ConfigValidator } from './validator.ts';
 
 /**
@@ -91,7 +95,9 @@ export class ConfigurationLoader {
    */
   private async loadFromFile(filePath: string): Promise<void> {
     try {
-      const resolvedPath = path.resolve(filePath.replace('~', process.env['HOME'] || '~'));
+      const resolvedPath = path.resolve(
+        filePath.replace('~', process.env['HOME'] || '~'),
+      );
 
       if (!fs.existsSync(resolvedPath)) {
         return;
@@ -238,7 +244,11 @@ export class ConfigurationLoader {
     const result = { ...target };
 
     for (const key in source) {
-      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      if (
+        source[key] &&
+        typeof source[key] === 'object' &&
+        !Array.isArray(source[key])
+      ) {
         result[key] = this.deepMerge(result?.[key] || {}, source[key]);
       } else {
         result[key] = source[key];

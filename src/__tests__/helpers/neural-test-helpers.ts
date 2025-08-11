@@ -30,8 +30,15 @@ export class NeuralTestDataGenerator {
    * @param min
    * @param max
    */
-  generateRandomVector(size: number, min: number = -1, max: number = 1): number[] {
-    return Array.from({ length: size }, () => Math.random() * (max - min) + min);
+  generateRandomVector(
+    size: number,
+    min: number = -1,
+    max: number = 1,
+  ): number[] {
+    return Array.from(
+      { length: size },
+      () => Math.random() * (max - min) + min,
+    );
   }
 
   /**
@@ -46,10 +53,10 @@ export class NeuralTestDataGenerator {
     batchSize: number,
     featureSize: number,
     min: number = -1,
-    max: number = 1
+    max: number = 1,
   ): number[][] {
     return Array.from({ length: batchSize }, () =>
-      this.generateRandomVector(featureSize, min, max)
+      this.generateRandomVector(featureSize, min, max),
     );
   }
 
@@ -86,7 +93,10 @@ export class NeuralTestDataGenerator {
    * @param samples
    * @param noise
    */
-  static generateLinearData(samples: number, noise: number = 0.1): NeuralTestData[] {
+  static generateLinearData(
+    samples: number,
+    noise: number = 0.1,
+  ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
     for (let i = 0; i < samples; i++) {
       const x = Math.random() * 10;
@@ -110,10 +120,13 @@ export class NeuralTestDataGenerator {
   static generatePolynomialData(
     samples: number,
     degree: number = 2,
-    noise: number = 0.1
+    noise: number = 0.1,
   ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
-    const coefficients = Array.from({ length: degree + 1 }, () => Math.random() * 2 - 1);
+    const coefficients = Array.from(
+      { length: degree + 1 },
+      () => Math.random() * 2 - 1,
+    );
 
     for (let i = 0; i < samples; i++) {
       const x = Math.random() * 4 - 2; // Range [-2, 2]
@@ -138,14 +151,18 @@ export class NeuralTestDataGenerator {
    * @param samplesPerClass
    * @param classes
    */
-  static generateSpiralData(samplesPerClass: number = 50, classes: number = 2): NeuralTestData[] {
+  static generateSpiralData(
+    samplesPerClass: number = 50,
+    classes: number = 2,
+  ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
 
     for (let classIndex = 0; classIndex < classes; classIndex++) {
       for (let i = 0; i < samplesPerClass; i++) {
         const t = i / samplesPerClass;
         const r = t * 3 + Math.random() * 0.1;
-        const angle = classIndex * Math.PI + t * Math.PI * 2 + Math.random() * 0.2;
+        const angle =
+          classIndex * Math.PI + t * Math.PI * 2 + Math.random() * 0.2;
 
         const x = r * Math.cos(angle);
         const y = r * Math.sin(angle);
@@ -156,7 +173,10 @@ export class NeuralTestDataGenerator {
         data?.push({
           input: [x, y],
           output,
-          metadata: { label: `spiral_class_${classIndex}_${i}`, category: `class_${classIndex}` },
+          metadata: {
+            label: `spiral_class_${classIndex}_${i}`,
+            category: `class_${classIndex}`,
+          },
         });
       }
     }
@@ -174,15 +194,17 @@ export class NeuralTestDataGenerator {
   static generateTimeSeriesData(
     length: number,
     frequency: number = 1,
-    noise: number = 0.1
+    noise: number = 0.1,
   ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
 
     for (let i = 0; i < length; i++) {
       const t = i / length;
-      const value = Math.sin(2 * Math.PI * frequency * t) + (Math.random() - 0.5) * noise;
+      const value =
+        Math.sin(2 * Math.PI * frequency * t) + (Math.random() - 0.5) * noise;
       const nextValue =
-        Math.sin(2 * Math.PI * frequency * (t + 1 / length)) + (Math.random() - 0.5) * noise;
+        Math.sin(2 * Math.PI * frequency * (t + 1 / length)) +
+        (Math.random() - 0.5) * noise;
 
       data?.push({
         input: [value],
@@ -226,7 +248,7 @@ export class NeuralNetworkValidator {
    */
   static validateConvergence(
     errors: number[],
-    config: TrainingTestConfig
+    config: TrainingTestConfig,
   ): { converged: boolean; finalError: number; epochs: number } {
     const finalError = errors[errors.length - 1];
     const converged = finalError < config?.convergenceThreshold;
@@ -256,7 +278,7 @@ export class NeuralNetworkValidator {
   static validatePredictionAccuracy(
     predictions: number[][],
     expected: number[][],
-    tolerance: number = 1e-6
+    tolerance: number = 1e-6,
   ): { accuracy: number; errors: number[] } {
     expect(predictions).toHaveLength(expected.length);
 
@@ -266,7 +288,10 @@ export class NeuralNetworkValidator {
     for (let i = 0; i < predictions.length; i++) {
       expect(predictions[i]).toHaveLength(expected[i].length);
 
-      const error = NeuralNetworkValidator.calculateMSE(predictions[i], expected[i]);
+      const error = NeuralNetworkValidator.calculateMSE(
+        predictions[i],
+        expected[i],
+      );
       errors.push(error);
 
       if (error < tolerance) {
@@ -287,11 +312,14 @@ export class NeuralNetworkValidator {
    */
   static validateWeightInitialization(
     weights: number[][],
-    method: 'xavier' | 'he' | 'random'
+    method: 'xavier' | 'he' | 'random',
   ): void {
     const flatWeights = weights.flat();
-    const mean = flatWeights.reduce((sum, w) => sum + w, 0) / flatWeights.length;
-    const variance = flatWeights.reduce((sum, w) => sum + (w - mean) ** 2, 0) / flatWeights.length;
+    const mean =
+      flatWeights.reduce((sum, w) => sum + w, 0) / flatWeights.length;
+    const variance =
+      flatWeights.reduce((sum, w) => sum + (w - mean) ** 2, 0) /
+      flatWeights.length;
 
     // Weights should be finite
     flatWeights.forEach((weight) => {
@@ -331,7 +359,8 @@ export class NeuralNetworkValidator {
 
     // Check for vanishing gradients
     const avgGradientMagnitude =
-      flatGradients.reduce((sum, g) => sum + Math.abs(g), 0) / flatGradients.length;
+      flatGradients.reduce((sum, g) => sum + Math.abs(g), 0) /
+      flatGradients.length;
     expect(avgGradientMagnitude).toBeGreaterThan(1e-10);
 
     // Check for exploding gradients
@@ -356,7 +385,7 @@ export class NeuralPerformanceTester {
    */
   static async benchmarkTraining(
     trainingFunction: () => Promise<void>,
-    expectedMaxTime: number
+    expectedMaxTime: number,
   ): Promise<{ duration: number; withinExpected: boolean }> {
     const start = Date.now();
     await trainingFunction();
@@ -378,7 +407,7 @@ export class NeuralPerformanceTester {
   static benchmarkPrediction(
     predictionFunction: () => number[],
     iterations: number,
-    expectedMaxTimePerPrediction: number
+    expectedMaxTimePerPrediction: number,
   ): { avgTime: number; totalTime: number; withinExpected: boolean } {
     const times: number[] = [];
 
@@ -406,7 +435,7 @@ export class NeuralPerformanceTester {
    */
   static validateMemoryUsage(
     networkFunction: () => void,
-    maxMemoryIncreaseMB: number
+    maxMemoryIncreaseMB: number,
   ): { memoryIncrease: number; withinLimit: boolean } {
     if (!global.gc) {
       console.warn('Garbage collection not available, skipping memory test');
@@ -441,7 +470,7 @@ export class NeuralMathHelpers {
   static generateMatrix(
     rows: number,
     cols: number,
-    fillType: 'random' | 'zeros' | 'ones' | 'identity' = 'random'
+    fillType: 'random' | 'zeros' | 'ones' | 'identity' = 'random',
   ): number[][] {
     const matrix: number[][] = [];
 
@@ -521,7 +550,11 @@ export class NeuralMathHelpers {
    * @param x
    * @param h
    */
-  static numericalGradient(f: (x: number) => number, x: number, h: number = 1e-5): number {
+  static numericalGradient(
+    f: (x: number) => number,
+    x: number,
+    h: number = 1e-5,
+  ): number {
     return (f(x + h) - f(x - h)) / (2 * h);
   }
 
@@ -532,7 +565,11 @@ export class NeuralMathHelpers {
    * @param b
    * @param tolerance
    */
-  static compareMatrices(a: number[][], b: number[][], tolerance: number = 1e-10): boolean {
+  static compareMatrices(
+    a: number[][],
+    b: number[][],
+    tolerance: number = 1e-10,
+  ): boolean {
     if (a.length !== b.length) return false;
 
     for (let i = 0; i < a.length; i++) {

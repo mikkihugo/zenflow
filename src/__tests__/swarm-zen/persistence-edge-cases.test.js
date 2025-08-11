@@ -114,9 +114,9 @@ describe('PersistenceManager Edge Cases', () => {
       const circularData = { name: 'test' };
       circularData.self = circularData;
 
-      await expect(persistence.storeMemory('circular', circularData)).rejects.toThrow(
-        'Converting circular structure'
-      );
+      await expect(
+        persistence.storeMemory('circular', circularData),
+      ).rejects.toThrow('Converting circular structure');
     });
 
     it('should handle special characters in keys', async () => {
@@ -193,7 +193,9 @@ describe('PersistenceManager Edge Cases', () => {
         throw new Error('Disk I/O error');
       });
 
-      await expect(persistence.retrieveMemory('key')).rejects.toThrow('Disk I/O error');
+      await expect(persistence.retrieveMemory('key')).rejects.toThrow(
+        'Disk I/O error',
+      );
     });
   });
 
@@ -251,10 +253,12 @@ describe('PersistenceManager Edge Cases', () => {
     });
 
     it('should handle invalid model data', async () => {
-      await expect(persistence.saveNeuralModel('agent1', 'model1', null)).rejects.toThrow();
+      await expect(
+        persistence.saveNeuralModel('agent1', 'model1', null),
+      ).rejects.toThrow();
 
       await expect(
-        persistence.saveNeuralModel('agent1', 'model1', 'not-an-object')
+        persistence.saveNeuralModel('agent1', 'model1', 'not-an-object'),
       ).rejects.toThrow();
     });
 
@@ -284,7 +288,11 @@ describe('PersistenceManager Edge Cases', () => {
 
       mockStmt.run.mockReturnValue({ changes: 1 });
 
-      const result = await persistence.saveNeuralModel('agent1', 'large', largeModel);
+      const result = await persistence.saveNeuralModel(
+        'agent1',
+        'large',
+        largeModel,
+      );
       expect(result).toBe(true);
     });
   });
@@ -295,7 +303,9 @@ describe('PersistenceManager Edge Cases', () => {
     });
 
     it('should handle empty training data', async () => {
-      await expect(persistence.saveTrainingData('session1', [])).rejects.toThrow();
+      await expect(
+        persistence.saveTrainingData('session1', []),
+      ).rejects.toThrow();
     });
 
     it('should handle malformed training data', async () => {
@@ -309,20 +319,26 @@ describe('PersistenceManager Edge Cases', () => {
       mockStmt.run.mockReturnValue({ changes: 1 });
 
       // Should filter out invalid entries
-      const result = await persistence.saveTrainingData('session1', malformedData);
+      const result = await persistence.saveTrainingData(
+        'session1',
+        malformedData,
+      );
       expect(result).toBe(true);
     });
 
     it('should handle training data with NaN or Infinity', async () => {
       const problematicData = [
-        { input: [1, NaN, 3], output: [1] },
-        { input: [1, 2, 3], output: [Infinity] },
-        { input: [-Infinity, 2, 3], output: [1] },
+        { input: [1, Number.NaN, 3], output: [1] },
+        { input: [1, 2, 3], output: [Number.POSITIVE_INFINITY] },
+        { input: [Number.NEGATIVE_INFINITY, 2, 3], output: [1] },
       ];
 
       mockStmt.run.mockReturnValue({ changes: 1 });
 
-      const result = await persistence.saveTrainingData('session1', problematicData);
+      const result = await persistence.saveTrainingData(
+        'session1',
+        problematicData,
+      );
       expect(result).toBe(true);
     });
   });
@@ -355,9 +371,11 @@ describe('PersistenceManager Edge Cases', () => {
         pendingOps.push(
           new Promise((resolve) => {
             setTimeout(() => {
-              persistence.storeMemory(`pending-${i}`, { data: i }).then(resolve);
+              persistence
+                .storeMemory(`pending-${i}`, { data: i })
+                .then(resolve);
             }, 100);
-          })
+          }),
         );
       }
 
@@ -399,9 +417,9 @@ describe('PersistenceManager Edge Cases', () => {
         throw new Error('constraint violation');
       });
 
-      await expect(persistence.storeMemory('key', { data: 'test' })).rejects.toThrow(
-        'constraint violation'
-      );
+      await expect(
+        persistence.storeMemory('key', { data: 'test' }),
+      ).rejects.toThrow('constraint violation');
 
       expect(rollbackFn).toHaveBeenCalled();
     });
@@ -466,7 +484,7 @@ describe('PersistenceManager Edge Cases', () => {
       for (let i = 0; i < hugeBatch.length; i += 100) {
         const chunk = hugeBatch.slice(i, i + 100);
         const chunkResults = await Promise.all(
-          chunk.map((item) => persistence.storeMemory(item.key, item.value))
+          chunk.map((item) => persistence.storeMemory(item.key, item.value)),
         );
         results.push(...chunkResults);
       }

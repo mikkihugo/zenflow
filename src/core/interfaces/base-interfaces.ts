@@ -8,7 +8,12 @@
  */
 
 // Re-export core token interfaces for consistency
-export { IConfig, IDatabase, IEventBus, ILogger } from '../../di/tokens/core-tokens.ts';
+export {
+  IConfig,
+  IDatabase,
+  IEventBus,
+  ILogger,
+} from '../../di/tokens/core-tokens.ts';
 
 /**
  * Base database adapter interface that all database implementations must follow.
@@ -21,9 +26,9 @@ export interface DatabaseAdapter {
   /** Close database connection */
   disconnect(): Promise<void>;
   /** Execute a SELECT query */
-  query(sql: string, params?: any[]): Promise<QueryResult>;
+  query(sql: string, params?: unknown[]): Promise<QueryResult>;
   /** Execute an INSERT/UPDATE/DELETE command */
-  execute(sql: string, params?: any[]): Promise<ExecuteResult>;
+  execute(sql: string, params?: unknown[]): Promise<ExecuteResult>;
   /** Execute multiple commands in a transaction */
   transaction<T>(fn: (tx: TransactionContext) => Promise<T>): Promise<T>;
   /** Check database health status */
@@ -41,7 +46,7 @@ export interface DatabaseAdapter {
  */
 export interface QueryResult {
   /** Result rows */
-  rows: any[];
+  rows: Record<string, unknown>[];
   /** Number of rows returned */
   rowCount: number;
   /** Column metadata */
@@ -63,7 +68,7 @@ export interface ExecuteResult {
   /** Number of affected rows */
   affectedRows: number;
   /** Last inserted ID (if applicable) */
-  insertId?: any;
+  insertId?: string | number;
   /** Execution time in milliseconds */
   executionTime: number;
 }
@@ -75,9 +80,9 @@ export interface ExecuteResult {
  */
 export interface TransactionContext {
   /** Execute a query within the transaction */
-  query(sql: string, params?: any[]): Promise<QueryResult>;
+  query(sql: string, params?: unknown[]): Promise<QueryResult>;
   /** Execute a command within the transaction */
-  execute(sql: string, params?: any[]): Promise<ExecuteResult>;
+  execute(sql: string, params?: unknown[]): Promise<ExecuteResult>;
   /** Commit the transaction */
   commit(): Promise<void>;
   /** Rollback the transaction */
@@ -97,7 +102,7 @@ export interface SchemaInfo {
       name: string;
       type: string;
       nullable: boolean;
-      defaultValue?: any;
+      defaultValue?: unknown;
       isPrimaryKey: boolean;
       isForeignKey: boolean;
     }>;
@@ -143,9 +148,9 @@ export interface IMemoryStore {
   /** Initialize the memory store */
   initialize(): Promise<void>;
   /** Store data with optional TTL */
-  store(key: string, data: any, options?: StoreOptions): Promise<void>;
+  store(key: string, data: unknown, options?: StoreOptions): Promise<void>;
   /** Retrieve data by key */
-  retrieve(key: string): Promise<any>;
+  retrieve(key: string): Promise<unknown>;
   /** Delete data by key */
   delete(key: string): Promise<boolean>;
   /** Clear all data (optional) */
@@ -279,7 +284,7 @@ export interface ModelState {
   /** Configuration */
   config: NeuralConfig;
   /** Metadata */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -305,7 +310,7 @@ export interface NetworkMetrics {
  */
 export interface WasmNeuralBinding {
   /** Load WASM module */
-  loadWasm(): Promise<any>;
+  loadWasm(): Promise<WebAssembly.Module>;
   /** Check WASM availability */
   isWasmAvailable(): boolean;
   /** Get WASM capabilities */

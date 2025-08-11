@@ -93,7 +93,9 @@ describe('Utils', () => {
 
     it('should return errors for invalid connectionDensity', () => {
       const errors = validateSwarmOptions({ connectionDensity: 2 });
-      expect(errors).toContain('connectionDensity must be a number between 0 and 1');
+      expect(errors).toContain(
+        'connectionDensity must be a number between 0 and 1',
+      );
     });
 
     it('should return errors for invalid topology', () => {

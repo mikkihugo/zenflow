@@ -17,9 +17,21 @@ async function testNeuralPresetsIntegration() {
   const testPresets = [
     { modelType: 'transformer', preset: 'bert_base', agentId: 'bert-agent' },
     { modelType: 'cnn', preset: 'efficientnet_b0', agentId: 'vision-agent' },
-    { modelType: 'lstm', preset: 'bilstm_sentiment', agentId: 'sentiment-agent' },
-    { modelType: 'diffusion', preset: 'ddpm_mnist', agentId: 'diffusion-agent' },
-    { modelType: 'neural_ode', preset: 'node_dynamics', agentId: 'dynamics-agent' },
+    {
+      modelType: 'lstm',
+      preset: 'bilstm_sentiment',
+      agentId: 'sentiment-agent',
+    },
+    {
+      modelType: 'diffusion',
+      preset: 'ddpm_mnist',
+      agentId: 'diffusion-agent',
+    },
+    {
+      modelType: 'neural_ode',
+      preset: 'node_dynamics',
+      agentId: 'dynamics-agent',
+    },
   ];
 
   for (const test of testPresets) {
@@ -32,7 +44,7 @@ async function testNeuralPresetsIntegration() {
           requiresPrecision: test.modelType === 'cnn',
           requiresCreativity: test.modelType === 'diffusion',
           complexity: 'high',
-        }
+        },
       );
 
       const presetInfo = neuralManager.getAgentPresetInfo(test.agentId);
@@ -46,18 +58,30 @@ async function testNeuralPresetsIntegration() {
         console.warn(`⚠️  No preset info found for agent ${test.agentId}`);
       }
     } catch (error) {
-      console.error(`❌ Failed to create agent for ${test.preset}:`, error.message);
+      console.error(
+        `❌ Failed to create agent for ${test.preset}:`,
+        error.message,
+      );
     }
   }
 
   const useCases = [
-    { useCase: 'chatbot', requirements: { maxInferenceTime: 20, minAccuracy: 90 } },
-    { useCase: 'object detection', requirements: { maxInferenceTime: 10, maxMemoryUsage: 50 } },
+    {
+      useCase: 'chatbot',
+      requirements: { maxInferenceTime: 20, minAccuracy: 90 },
+    },
+    {
+      useCase: 'object detection',
+      requirements: { maxInferenceTime: 10, maxMemoryUsage: 50 },
+    },
     { useCase: 'time series prediction', requirements: { minAccuracy: 85 } },
   ];
 
   for (const { useCase, requirements } of useCases) {
-    const recommendations = neuralManager.getPresetRecommendations(useCase, requirements);
+    const recommendations = neuralManager.getPresetRecommendations(
+      useCase,
+      requirements,
+    );
 
     recommendations.slice(0, 3).forEach((_rec, _idx) => {});
   }
@@ -79,11 +103,12 @@ async function testNeuralPresetsIntegration() {
 
   for (const scenario of testScenarios) {
     // Test with transformer model
-    const patterns = neuralManager.cognitivePatternSelector.selectPatternsForPreset(
-      'transformer',
-      'bert_base',
-      scenario.config
-    );
+    const patterns =
+      neuralManager.cognitivePatternSelector.selectPatternsForPreset(
+        'transformer',
+        'bert_base',
+        scenario.config,
+      );
     patterns.forEach((_pattern, _index) => {});
   }
 
@@ -109,9 +134,14 @@ async function testNeuralPresetsIntegration() {
 
     try {
       // Create agent with adaptation enabled
-      await neuralManager.createAgentFromPreset(agentId, 'transformer', 'gpt_small', {
-        enableMetaLearning: true,
-      });
+      await neuralManager.createAgentFromPreset(
+        agentId,
+        'transformer',
+        'gpt_small',
+        {
+          enableMetaLearning: true,
+        },
+      );
 
       // Simulate training results
       const _trainingResult = {
@@ -128,11 +158,12 @@ async function testNeuralPresetsIntegration() {
           epochs: 5,
           enableCognitiveEvolution: true,
           enableMetaLearning: true,
-        }
+        },
       );
 
       // Get adaptation recommendations
-      const recommendations = await neuralManager.getAdaptationRecommendations(agentId);
+      const recommendations =
+        await neuralManager.getAdaptationRecommendations(agentId);
       if (recommendations) {
       }
 

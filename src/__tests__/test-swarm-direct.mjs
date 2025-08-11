@@ -20,9 +20,17 @@ async function testDirectSwarmIntegration() {
     const agents = [];
 
     const agentTypes = [
-      { type: 'researcher', name: 'Research Agent', specialization: 'data_analysis' },
+      {
+        type: 'researcher',
+        name: 'Research Agent',
+        specialization: 'data_analysis',
+      },
       { type: 'coder', name: 'Code Agent', specialization: 'implementation' },
-      { type: 'analyst', name: 'Analysis Agent', specialization: 'quality_assurance' },
+      {
+        type: 'analyst',
+        name: 'Analysis Agent',
+        specialization: 'quality_assurance',
+      },
     ];
 
     for (const agentConfig of agentTypes) {
@@ -35,9 +43,21 @@ async function testDirectSwarmIntegration() {
     const tasks = [];
 
     const taskConfigs = [
-      { description: 'Analyze system architecture', strategy: 'sequential', priority: 'high' },
-      { description: 'Implement new features', strategy: 'parallel', priority: 'medium' },
-      { description: 'Validate implementation', strategy: 'sequential', priority: 'low' },
+      {
+        description: 'Analyze system architecture',
+        strategy: 'sequential',
+        priority: 'high',
+      },
+      {
+        description: 'Implement new features',
+        strategy: 'parallel',
+        priority: 'medium',
+      },
+      {
+        description: 'Validate implementation',
+        strategy: 'sequential',
+        priority: 'low',
+      },
     ];
 
     for (const taskConfig of taskConfigs) {

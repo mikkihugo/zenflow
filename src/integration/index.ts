@@ -34,7 +34,8 @@ export const IntegrationUtils = {
 
     return compatiblePairs.some(
       (pair) =>
-        (pair[0] === systemA && pair[1] === systemB) || (pair[1] === systemA && pair[0] === systemB)
+        (pair[0] === systemA && pair[1] === systemB) ||
+        (pair[1] === systemA && pair[0] === systemB),
     );
   },
 
@@ -104,18 +105,25 @@ export class IntegrationFactory {
    * @param systems
    * @param instanceKey
    */
-  static async getCoordinator(systems: string[], instanceKey = 'default'): Promise<any> {
+  static async getCoordinator(
+    systems: string[],
+    instanceKey = 'default',
+  ): Promise<unknown> {
     const key = `${systems.sort().join('-')}:${instanceKey}`;
 
     if (!IntegrationFactory.coordinators.has(key)) {
-      const { MultiSystemCoordinator } = await import('./multi-system-coordinator.ts');
+      const { MultiSystemCoordinator } = await import(
+        './multi-system-coordinator.ts'
+      );
 
       // Create a simple logger for the coordinator
       const logger = {
-        debug: (_msg: string, _meta?: any) => {},
-        info: (_msg: string, _meta?: any) => {},
-        warn: (msg: string, meta?: any) => logger.warn(`[MultiSystemCoordinator] ${msg}`, meta),
-        error: (msg: string, meta?: any) => logger.error(`[MultiSystemCoordinator] ${msg}`, meta),
+        debug: (_msg: string, _meta?: unknown) => {},
+        info: (_msg: string, _meta?: unknown) => {},
+        warn: (msg: string, meta?: unknown) =>
+          logger.warn(`[MultiSystemCoordinator] ${msg}`, meta),
+        error: (msg: string, meta?: unknown) =>
+          logger.error(`[MultiSystemCoordinator] ${msg}`, meta),
       };
 
       // Create coordinator with logger and systems config

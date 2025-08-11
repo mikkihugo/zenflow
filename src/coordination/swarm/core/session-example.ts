@@ -14,7 +14,10 @@ const logger = getLogger('coordination-swarm-core-session-example');
  */
 
 // import { DALFactory } from '../../database'; // TODO: Implement proper DI integration
-import { SessionEnabledSwarm, SessionRecoveryService } from './session-integration.ts';
+import {
+  SessionEnabledSwarm,
+  SessionRecoveryService,
+} from './session-integration.ts';
 import { SessionManager } from './session-manager.ts';
 import { SessionStats, SessionValidator } from './session-utils.ts';
 
@@ -36,7 +39,7 @@ async function basicSessionExample() {
       autoCheckpoint: true,
       checkpointInterval: 60000, // 1 minute
       maxCheckpoints: 10,
-    }
+    },
   );
 
   try {
@@ -112,7 +115,9 @@ async function basicSessionExample() {
     });
 
     // Create a manual checkpoint
-    const _checkpointId = await swarm.createCheckpoint('Initial pipeline setup');
+    const _checkpointId = await swarm.createCheckpoint(
+      'Initial pipeline setup',
+    );
 
     // Get session statistics
     const _stats = await swarm.getSessionStats();
@@ -208,10 +213,13 @@ async function sessionLifecycleExample() {
     await sessionManager.initialize();
 
     // Create a session
-    const sessionId = await sessionManager.createSession('Long Running Analysis', {
-      topology: 'distributed',
-      maxAgents: 15,
-    });
+    const sessionId = await sessionManager.createSession(
+      'Long Running Analysis',
+      {
+        topology: 'distributed',
+        maxAgents: 15,
+      },
+    );
 
     // Simulate some work
     await sessionManager.saveSession(sessionId, {
@@ -219,7 +227,9 @@ async function sessionLifecycleExample() {
         ['analyst-1', { id: 'analyst-1', type: 'analyst' } as any],
         ['researcher-1', { id: 'researcher-1', type: 'researcher' } as any],
       ]),
-      tasks: new Map([['task-1', { id: 'task-1', description: 'Analyze data' } as any]]),
+      tasks: new Map([
+        ['task-1', { id: 'task-1', description: 'Analyze data' } as any],
+      ]),
       topology: 'distributed',
       connections: [],
       metrics: {
@@ -233,7 +243,10 @@ async function sessionLifecycleExample() {
     });
 
     // Create checkpoints
-    const _checkpoint1 = await sessionManager.createCheckpoint(sessionId, 'Work started');
+    const _checkpoint1 = await sessionManager.createCheckpoint(
+      sessionId,
+      'Work started',
+    );
 
     // Pause the session
     await sessionManager.pauseSession(sessionId);
@@ -283,7 +296,9 @@ async function sessionHealthExample() {
 
   try {
     // Create some test sessions
-    const session1 = await sessionManager.createSession('Healthy Session', { topology: 'mesh' });
+    const session1 = await sessionManager.createSession('Healthy Session', {
+      topology: 'mesh',
+    });
     const session2 = await sessionManager.createSession('Test Session', {
       topology: 'hierarchical',
     });
@@ -302,7 +317,10 @@ async function sessionHealthExample() {
 
     // Schedule automatic recovery if needed
     // Fix: Use bracket notation to access index signature property
-    if (healthReport['needsRecovery'] && healthReport['needsRecovery'].length > 0) {
+    if (
+      healthReport['needsRecovery'] &&
+      healthReport['needsRecovery'].length > 0
+    ) {
       await recoveryService.scheduleAutoRecovery();
     }
   } finally {
@@ -328,7 +346,7 @@ async function advancedSessionExample() {
       checkpointInterval: 45000,
       maxCheckpoints: 8,
       compressionEnabled: true,
-    }
+    },
   );
 
   try {
@@ -562,16 +580,17 @@ declare module './session-integration.js' {
 
 // Add the export method to the prototype (for demonstration)
 if (typeof module !== 'undefined' && module.exports) {
-  const { SessionEnabledSwarm } = require('./session-integration');
-  const { SessionSerializer } = require('./session-utils');
+  const { SessionEnabledSwarm } = require('./session-integration.js');
+  const { SessionSerializer } = require('./session-utils.js');
 
-  SessionEnabledSwarm.prototype.exportSession = async function (): Promise<string> {
-    const session = await this.getCurrentSession();
-    if (!session) {
-      throw new Error('No active session to export');
-    }
-    return SessionSerializer.exportSession(session);
-  };
+  SessionEnabledSwarm.prototype.exportSession =
+    async function (): Promise<string> {
+      const session = await this.getCurrentSession();
+      if (!session) {
+        throw new Error('No active session to export');
+      }
+      return SessionSerializer.exportSession(session);
+    };
 }
 
 // Run examples if this file is executed directly

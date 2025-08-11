@@ -71,7 +71,9 @@ function cleanupTestState() {
 }
 
 function collectPerformanceMetrics() {
-  const startMem = (globalThis as any).testStartMemory as NodeJS.MemoryUsage | undefined;
+  const startMem = (globalThis as any).testStartMemory as
+    | NodeJS.MemoryUsage
+    | undefined;
   if (typeof globalThis.gc === 'function' && startMem) {
     try {
       globalThis.gc?.();
@@ -102,16 +104,27 @@ interface ExtendedGlobal extends NodeJS.Global {
   generateTestMatrix(
     rows: number,
     cols: number,
-    fillFn?: (i: number, j: number) => number
+    fillFn?: (i: number, j: number) => number,
   ): number[][];
   generateTestVector(size: number, fillFn?: (i: number) => number): number[];
   generateXORData(): Array<{ input: number[]; output: number[] }>;
-  generateLinearData(samples: number, noise?: number): Array<{ input: number[]; output: number[] }>;
+  generateLinearData(
+    samples: number,
+    noise?: number,
+  ): Array<{ input: number[]; output: number[] }>;
   expectPerformance(fn: () => void, maxTimeMs: number): number;
   expectMemoryUsage(fn: () => void, maxMemoryMB: number): number | undefined;
   expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
-  expectArrayNearlyEqual(actual: number[], expected: number[], tolerance?: number): void;
-  expectMatrixNearlyEqual(actual: number[][], expected: number[][], tolerance?: number): void;
+  expectArrayNearlyEqual(
+    actual: number[],
+    expected: number[],
+    tolerance?: number,
+  ): void;
+  expectMatrixNearlyEqual(
+    actual: number[][],
+    expected: number[][],
+    tolerance?: number,
+  ): void;
   gc?: () => void;
 }
 
@@ -119,7 +132,7 @@ interface ExtendedGlobal extends NodeJS.Global {
 (globalThis as any as ExtendedGlobal).generateTestMatrix = (
   rows: number,
   cols: number,
-  fillFn?: (i: number, j: number) => number
+  fillFn?: (i: number, j: number) => number,
 ) => {
   const matrix: number[][] = new Array(rows);
   for (let i = 0; i < rows; i++) {
@@ -134,7 +147,7 @@ interface ExtendedGlobal extends NodeJS.Global {
 
 (globalThis as any as ExtendedGlobal).generateTestVector = (
   size: number,
-  fillFn?: (i: number) => number
+  fillFn?: (i: number) => number,
 ) => {
   const vector: number[] = [];
   for (let i = 0; i < size; i++) {
@@ -153,7 +166,7 @@ interface ExtendedGlobal extends NodeJS.Global {
 
 (globalThis as any as ExtendedGlobal).generateLinearData = (
   samples: number,
-  noise: number = 0.1
+  noise: number = 0.1,
 ) => {
   const data = [];
   for (let i = 0; i < samples; i++) {
@@ -165,7 +178,10 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Performance assertion helpers
-(globalThis as any as ExtendedGlobal).expectPerformance = (fn: () => void, maxTimeMs: number) => {
+(globalThis as any as ExtendedGlobal).expectPerformance = (
+  fn: () => void,
+  maxTimeMs: number,
+) => {
   const start = Date.now();
   fn();
   const duration = Date.now() - start;
@@ -173,7 +189,10 @@ interface ExtendedGlobal extends NodeJS.Global {
   return duration;
 };
 
-(globalThis as any as ExtendedGlobal).expectMemoryUsage = (fn: () => void, maxMemoryMB: number) => {
+(globalThis as any as ExtendedGlobal).expectMemoryUsage = (
+  fn: () => void,
+  maxMemoryMB: number,
+) => {
   const g = (globalThis as any as ExtendedGlobal).gc;
   if (typeof g !== 'function') return; // Skip if garbage collection not available
 
@@ -200,7 +219,7 @@ interface ExtendedGlobal extends NodeJS.Global {
 (globalThis as any as ExtendedGlobal).expectNearlyEqual = (
   actual: number,
   expected: number,
-  tolerance: number = 1e-10
+  tolerance: number = 1e-10,
 ) => {
   expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
 };
@@ -208,25 +227,29 @@ interface ExtendedGlobal extends NodeJS.Global {
 (globalThis as any as ExtendedGlobal).expectArrayNearlyEqual = (
   actual: number[],
   expected: number[],
-  tolerance: number = 1e-10
+  tolerance: number = 1e-10,
 ) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    (globalThis as any as ExtendedGlobal).expectNearlyEqual(actual[i]!, expected[i]!, tolerance);
+    (globalThis as any as ExtendedGlobal).expectNearlyEqual(
+      actual[i]!,
+      expected[i]!,
+      tolerance,
+    );
   }
 };
 
 (globalThis as any as ExtendedGlobal).expectMatrixNearlyEqual = (
   actual: number[][],
   expected: number[][],
-  tolerance: number = 1e-10
+  tolerance: number = 1e-10,
 ) => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
     (globalThis as any as ExtendedGlobal).expectArrayNearlyEqual(
       actual[i]!,
       expected[i]!,
-      tolerance
+      tolerance,
     );
   }
 };
@@ -247,19 +270,37 @@ declare global {
       generateTestMatrix(
         rows: number,
         cols: number,
-        fillFn?: (i: number, j: number) => number
+        fillFn?: (i: number, j: number) => number,
       ): number[][];
-      generateTestVector(size: number, fillFn?: (i: number) => number): number[];
+      generateTestVector(
+        size: number,
+        fillFn?: (i: number) => number,
+      ): number[];
       generateXORData(): Array<{ input: number[]; output: number[] }>;
       generateLinearData(
         samples: number,
-        noise?: number
+        noise?: number,
       ): Array<{ input: number[]; output: number[] }>;
       expectPerformance(fn: () => void, maxTimeMs: number): number;
-      expectMemoryUsage(fn: () => void, maxMemoryMB: number): number | undefined;
-      expectNearlyEqual(actual: number, expected: number, tolerance?: number): void;
-      expectArrayNearlyEqual(actual: number[], expected: number[], tolerance?: number): void;
-      expectMatrixNearlyEqual(actual: number[][], expected: number[][], tolerance?: number): void;
+      expectMemoryUsage(
+        fn: () => void,
+        maxMemoryMB: number,
+      ): number | undefined;
+      expectNearlyEqual(
+        actual: number,
+        expected: number,
+        tolerance?: number,
+      ): void;
+      expectArrayNearlyEqual(
+        actual: number[],
+        expected: number[],
+        tolerance?: number,
+      ): void;
+      expectMatrixNearlyEqual(
+        actual: number[][],
+        expected: number[][],
+        tolerance?: number,
+      ): void;
     }
   }
 }

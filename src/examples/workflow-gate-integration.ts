@@ -15,8 +15,14 @@ import {
   WorkflowGateRequestProcessor,
 } from '../coordination/workflows/workflow-gate-request.ts';
 import { Domain } from '../core/domain-boundary-validator.ts';
-import { createEvent, TypeSafeEventBus } from '../core/type-safe-event-system.ts';
-import { type WorkflowDefinition, WorkflowEngine } from '../workflows/workflow-engine.ts';
+import {
+  createEvent,
+  TypeSafeEventBus,
+} from '../core/type-safe-event-system.ts';
+import {
+  type WorkflowDefinition,
+  WorkflowEngine,
+} from '../workflows/workflow-engine.ts';
 
 const logger = getLogger('workflow-gate-examples');
 
@@ -43,7 +49,7 @@ export async function basicWorkflowWithGates() {
     },
     undefined,
     undefined,
-    gatesManager
+    gatesManager,
   );
 
   await gatesManager.initialize();
@@ -120,7 +126,9 @@ export async function basicWorkflowWithGates() {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const status = workflowEngine.getWorkflowStatus(result.workflowId!);
-      const gateStatus = workflowEngine.getWorkflowGateStatus(result.workflowId!);
+      const gateStatus = workflowEngine.getWorkflowGateStatus(
+        result.workflowId!,
+      );
 
       logger.info('Workflow status check', {
         status: status?.status,
@@ -143,7 +151,7 @@ export async function basicWorkflowWithGates() {
         const approvalResult = await workflowEngine.resumeWorkflowAfterGate(
           result.workflowId!,
           gateStatus.pausedForGate.gateId,
-          true // Approve the gate
+          true, // Approve the gate
         );
 
         if (!approvalResult.success) {
@@ -169,13 +177,16 @@ export async function basicWorkflowWithGates() {
 
     // Get final results
     const finalStatus = workflowEngine.getWorkflowStatus(result.workflowId!);
-    const finalGateStatus = workflowEngine.getWorkflowGateStatus(result.workflowId!);
+    const finalGateStatus = workflowEngine.getWorkflowGateStatus(
+      result.workflowId!,
+    );
 
     logger.info('Basic workflow with gates completed', {
       finalStatus: finalStatus?.status,
       gateResults: finalGateStatus.gateResults.length,
       totalProcessingTime: finalStatus?.endTime
-        ? new Date(finalStatus.endTime).getTime() - new Date(finalStatus.startTime).getTime()
+        ? new Date(finalStatus.endTime).getTime() -
+          new Date(finalStatus.startTime).getTime()
         : 0,
     });
   } finally {
@@ -207,7 +218,7 @@ export async function multiStageProductApprovalWorkflow() {
     },
     undefined,
     undefined,
-    gatesManager
+    gatesManager,
   );
 
   await gatesManager.initialize();
@@ -331,7 +342,9 @@ export async function multiStageProductApprovalWorkflow() {
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       const status = workflowEngine.getWorkflowStatus(result.workflowId!);
-      const gateStatus = workflowEngine.getWorkflowGateStatus(result.workflowId!);
+      const gateStatus = workflowEngine.getWorkflowGateStatus(
+        result.workflowId!,
+      );
 
       if (status?.status === 'paused' && gateStatus.pausedForGate) {
         completedStages++;
@@ -358,7 +371,9 @@ export async function multiStageProductApprovalWorkflow() {
             if (Math.random() > 0.8) {
               // 20% chance of initial rejection
               approved = false;
-              logger.info('Budget approval initially rejected, requesting revision');
+              logger.info(
+                'Budget approval initially rejected, requesting revision',
+              );
             }
             break;
           case 4: // Compliance - thorough review
@@ -374,7 +389,7 @@ export async function multiStageProductApprovalWorkflow() {
         const approvalResult = await workflowEngine.resumeWorkflowAfterGate(
           result.workflowId!,
           gateStatus.pausedForGate.gateId,
-          approved
+          approved,
         );
 
         if (!approvalResult.success) {
@@ -391,7 +406,9 @@ export async function multiStageProductApprovalWorkflow() {
         logger.info('Multi-stage approval workflow completed successfully');
         break;
       } else if (status?.status === 'failed') {
-        logger.warn(`Workflow failed at stage ${completedStages}: ${status.error}`);
+        logger.warn(
+          `Workflow failed at stage ${completedStages}: ${status.error}`,
+        );
         break;
       }
 
@@ -400,10 +417,14 @@ export async function multiStageProductApprovalWorkflow() {
 
     // Final results analysis
     const finalStatus = workflowEngine.getWorkflowStatus(result.workflowId!);
-    const finalGateStatus = workflowEngine.getWorkflowGateStatus(result.workflowId!);
+    const finalGateStatus = workflowEngine.getWorkflowGateStatus(
+      result.workflowId!,
+    );
 
     const approvedGates = finalGateStatus.gateResults.filter((g) => g.approved);
-    const rejectedGates = finalGateStatus.gateResults.filter((g) => !g.approved);
+    const rejectedGates = finalGateStatus.gateResults.filter(
+      (g) => !g.approved,
+    );
 
     logger.info('Multi-stage workflow analysis', {
       finalStatus: finalStatus?.status,
@@ -413,7 +434,8 @@ export async function multiStageProductApprovalWorkflow() {
       rejectedGates: rejectedGates.length,
       completedStages,
       totalTime: finalStatus?.endTime
-        ? new Date(finalStatus.endTime).getTime() - new Date(finalStatus.startTime).getTime()
+        ? new Date(finalStatus.endTime).getTime() -
+          new Date(finalStatus.startTime).getTime()
         : 0,
     });
   } finally {
@@ -446,7 +468,7 @@ export async function gateErrorHandlingAndRecovery() {
     },
     undefined,
     undefined,
-    gatesManager
+    gatesManager,
   );
 
   await gatesManager.initialize();
@@ -524,7 +546,9 @@ export async function gateErrorHandlingAndRecovery() {
       await new Promise((resolve) => setTimeout(resolve, 200));
 
       const status = workflowEngine.getWorkflowStatus(result.workflowId!);
-      const gateStatus = workflowEngine.getWorkflowGateStatus(result.workflowId!);
+      const gateStatus = workflowEngine.getWorkflowGateStatus(
+        result.workflowId!,
+      );
 
       logger.info('Status check', {
         status: status?.status,
@@ -534,7 +558,8 @@ export async function gateErrorHandlingAndRecovery() {
       });
 
       if (status?.status === 'paused' && gateStatus.pausedForGate) {
-        const stepName = definition.steps[gateStatus.pausedForGate.stepIndex].name;
+        const stepName =
+          definition.steps[gateStatus.pausedForGate.stepIndex].name;
 
         logger.info('Processing gate with potential errors', {
           stepName,
@@ -551,7 +576,7 @@ export async function gateErrorHandlingAndRecovery() {
             const approvalResult = await workflowEngine.resumeWorkflowAfterGate(
               result.workflowId!,
               gateStatus.pausedForGate.gateId,
-              true
+              true,
             );
 
             if (approvalResult.success) {
@@ -573,7 +598,7 @@ export async function gateErrorHandlingAndRecovery() {
           const approvalResult = await workflowEngine.resumeWorkflowAfterGate(
             result.workflowId!,
             gateStatus.pausedForGate.gateId,
-            false
+            false,
           );
 
           if (approvalResult.success) {
@@ -589,7 +614,7 @@ export async function gateErrorHandlingAndRecovery() {
           const approvalResult = await workflowEngine.resumeWorkflowAfterGate(
             result.workflowId!,
             gateStatus.pausedForGate.gateId,
-            true
+            true,
           );
 
           if (approvalResult.success) {
@@ -615,14 +640,17 @@ export async function gateErrorHandlingAndRecovery() {
 
     // Analysis of error handling
     const finalStatus = workflowEngine.getWorkflowStatus(result.workflowId!);
-    const finalGateStatus = workflowEngine.getWorkflowGateStatus(result.workflowId!);
+    const finalGateStatus = workflowEngine.getWorkflowGateStatus(
+      result.workflowId!,
+    );
 
     logger.info('Error handling and recovery analysis', {
       finalStatus: finalStatus?.status,
       errorCount,
       recoveryCount,
       totalGateResults: finalGateStatus.gateResults.length,
-      successfulRecoveryRate: (recoveryCount / (errorCount + recoveryCount)) * 100,
+      successfulRecoveryRate:
+        (recoveryCount / (errorCount + recoveryCount)) * 100,
     });
   } catch (error) {
     logger.error('Error handling example encountered unexpected error', {
@@ -659,7 +687,7 @@ export async function performanceOptimizedGateWorkflow() {
     },
     undefined,
     undefined,
-    gatesManager
+    gatesManager,
   );
 
   await gatesManager.initialize();
@@ -748,14 +776,16 @@ export async function performanceOptimizedGateWorkflow() {
         const status = workflowEngine.getWorkflowStatus(result.workflowId!);
 
         if (status?.status === 'paused') {
-          const gateStatus = workflowEngine.getWorkflowGateStatus(result.workflowId!);
+          const gateStatus = workflowEngine.getWorkflowGateStatus(
+            result.workflowId!,
+          );
 
           if (gateStatus.pausedForGate) {
             // Fast approval for performance testing
             await workflowEngine.resumeWorkflowAfterGate(
               result.workflowId!,
               gateStatus.pausedForGate.gateId,
-              true
+              true,
             );
           }
         } else if (status?.status === 'completed') {
@@ -811,7 +841,8 @@ export async function performanceOptimizedGateWorkflow() {
         throughput: actualThroughput,
       },
       meetsTargets: {
-        completionRate: actualCompletionRate >= performanceTargets.completionRate,
+        completionRate:
+          actualCompletionRate >= performanceTargets.completionRate,
         avgTime: avgCompletionTime <= performanceTargets.maxAvgTime,
         throughput: actualThroughput >= performanceTargets.minThroughput,
       },
@@ -846,7 +877,9 @@ export async function runAllExamples() {
 
     await performanceOptimizedGateWorkflow();
 
-    logger.info('All workflow gate integration examples completed successfully');
+    logger.info(
+      'All workflow gate integration examples completed successfully',
+    );
   } catch (error) {
     logger.error('Error running workflow gate examples', { error });
     throw error;

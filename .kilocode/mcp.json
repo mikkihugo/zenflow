@@ -2,7 +2,11 @@
   "mcpServers": {
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/mhugo/code/claude-code-zen"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/mhugo/code/claude-code-zen"
+      ],
       "alwaysAllow": [
         "read_file",
         "read_text_file",
@@ -51,7 +55,13 @@
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest", "--browser=", "--headless=", "--viewport-size="],
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--browser=",
+        "--headless=",
+        "--viewport-size="
+      ],
       "disabled": true,
       "alwaysAllow": []
     }

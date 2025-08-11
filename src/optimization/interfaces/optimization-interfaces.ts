@@ -11,21 +11,27 @@
 export interface NeuralOptimizer {
   optimizeTrainingSpeed(network: NeuralNetwork): Promise<OptimizationResult>;
   implementBatchProcessing(trainer: NetworkTrainer): Promise<BatchConfig>;
-  enableGPUAcceleration(computeUnits: ComputeUnit[]): Promise<AccelerationResult>;
+  enableGPUAcceleration(
+    computeUnits: ComputeUnit[],
+  ): Promise<AccelerationResult>;
   optimizeMemoryUsage(networks: NeuralNetwork[]): Promise<MemoryOptimization>;
 }
 
 // Swarm Coordination Optimization Interface
 export interface SwarmOptimizer {
   optimizeMessageRouting(topology: SwarmTopology): Promise<RoutingOptimization>;
-  implementCaching(coordinationLayer: CoordinationLayer): Promise<CacheStrategy>;
+  implementCaching(
+    coordinationLayer: CoordinationLayer,
+  ): Promise<CacheStrategy>;
   reduceLatency(communicationProtocols: Protocol[]): Promise<LatencyReduction>;
   scaleHorizontally(swarmSize: number): Promise<ScalingStrategy>;
 }
 
 // Database & Memory Optimization Interface
 export interface DataOptimizer {
-  optimizeQueryPerformance(queries: DatabaseQuery[]): Promise<QueryOptimization>;
+  optimizeQueryPerformance(
+    queries: DatabaseQuery[],
+  ): Promise<QueryOptimization>;
   implementConnectionPooling(connections: Connection[]): Promise<PoolConfig>;
   addIntelligentCaching(cacheLayer: CacheLayer): Promise<CacheOptimization>;
   compressDataStorage(storage: StorageLayer): Promise<CompressionResult>;
@@ -33,8 +39,12 @@ export interface DataOptimizer {
 
 // WASM Integration Optimization Interface
 export interface WasmOptimizer {
-  optimizeWasmModuleLoading(modules: WasmModule[]): Promise<LoadingOptimization>;
-  implementStreamingCompilation(wasmFiles: WasmFile[]): Promise<StreamingResult>;
+  optimizeWasmModuleLoading(
+    modules: WasmModule[],
+  ): Promise<LoadingOptimization>;
+  implementStreamingCompilation(
+    wasmFiles: WasmFile[],
+  ): Promise<StreamingResult>;
   optimizeMemorySharing(jsWasmBridge: Bridge): Promise<MemoryOptimization>;
   enableSIMDAcceleration(computeKernels: Kernel[]): Promise<SIMDResult>;
 }

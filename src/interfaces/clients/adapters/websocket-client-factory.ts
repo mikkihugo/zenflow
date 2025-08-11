@@ -4,7 +4,9 @@
 
 import { getLogger } from '../../../config/logging-config.ts';
 
-const logger = getLogger('interfaces-clients-adapters-websocket-client-factory');
+const logger = getLogger(
+  'interfaces-clients-adapters-websocket-client-factory',
+);
 
 /**
  * WebSocket Client Factory for UACL.
@@ -21,7 +23,10 @@ import type {
   IClientFactory,
 } from '../core/interfaces.ts';
 import { EnhancedWebSocketClient } from './enhanced-websocket-client.ts';
-import { createWebSocketClient, WebSocketClientAdapter } from './websocket-client-adapter.ts';
+import {
+  createWebSocketClient,
+  WebSocketClientAdapter,
+} from './websocket-client-adapter.ts';
 
 import type {
   WebSocketClientConfig,
@@ -34,7 +39,9 @@ import type {
  *
  * @example
  */
-export class WebSocketClientFactory implements IClientFactory<WebSocketClientConfig> {
+export class WebSocketClientFactory
+  implements IClientFactory<WebSocketClientConfig>
+{
   private clients = new Map<string, IClient>();
   private clientConfigs = new Map<string, WebSocketClientConfig>();
   private connectionPool = new Map<string, WebSocketConnectionInfo>();
@@ -59,7 +66,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     } else {
       // Use pure UACL adapter
       client = new WebSocketClientAdapter(
-        config as import('./websocket-client-adapter.ts').WebSocketClientConfig
+        config as import('./websocket-client-adapter.ts').WebSocketClientConfig,
       );
     }
 
@@ -144,24 +151,26 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
   async healthCheckAll(): Promise<Map<string, ClientStatus>> {
     const results = new Map<string, ClientStatus>();
 
-    const healthCheckPromises = Array.from(this.clients.entries()).map(async ([name, client]) => {
-      try {
-        const status = await client.healthCheck();
-        results?.set(name, status);
-      } catch (error) {
-        results?.set(name, {
-          name,
-          status: 'unhealthy',
-          lastCheck: new Date(),
-          responseTime: -1,
-          errorRate: 1,
-          uptime: 0,
-          metadata: {
-            error: error instanceof Error ? error.message : 'Unknown error',
-          },
-        });
-      }
-    });
+    const healthCheckPromises = Array.from(this.clients.entries()).map(
+      async ([name, client]) => {
+        try {
+          const status = await client.healthCheck();
+          results?.set(name, status);
+        } catch (error) {
+          results?.set(name, {
+            name,
+            status: 'unhealthy',
+            lastCheck: new Date(),
+            responseTime: -1,
+            errorRate: 1,
+            uptime: 0,
+            metadata: {
+              error: error instanceof Error ? error.message : 'Unknown error',
+            },
+          });
+        }
+      },
+    );
 
     await Promise.allSettled(healthCheckPromises);
     return results;
@@ -173,24 +182,26 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
   async getMetricsAll(): Promise<Map<string, ClientMetrics>> {
     const results = new Map<string, ClientMetrics>();
 
-    const metricsPromises = Array.from(this.clients.entries()).map(async ([name, client]) => {
-      try {
-        const metrics = await client.getMetrics();
-        results?.set(name, metrics);
-      } catch (error) {
-        results?.set(name, {
-          name,
-          requestCount: 0,
-          successCount: 0,
-          errorCount: 1,
-          averageLatency: -1,
-          p95Latency: -1,
-          p99Latency: -1,
-          throughput: 0,
-          timestamp: new Date(),
-        });
-      }
-    });
+    const metricsPromises = Array.from(this.clients.entries()).map(
+      async ([name, client]) => {
+        try {
+          const metrics = await client.getMetrics();
+          results?.set(name, metrics);
+        } catch (error) {
+          results?.set(name, {
+            name,
+            requestCount: 0,
+            successCount: 0,
+            errorCount: 1,
+            averageLatency: -1,
+            p95Latency: -1,
+            p99Latency: -1,
+            throughput: 0,
+            timestamp: new Date(),
+          });
+        }
+      },
+    );
 
     await Promise.allSettled(metricsPromises);
     return results;
@@ -203,7 +214,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     const shutdownPromises = Array.from(this.clients.values()).map((client) =>
       client.destroy().catch((error) => {
         logger.error('Error shutting down WebSocket client:', error);
-      })
+      }),
     );
 
     await Promise.allSettled(shutdownPromises);
@@ -246,7 +257,10 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
     }
 
     // Validate optional configurations
-    if (config?.timeout && (typeof config?.timeout !== 'number' || config?.timeout < 0)) {
+    if (
+      config?.timeout &&
+      (typeof config?.timeout !== 'number' || config?.timeout < 0)
+    ) {
       return false;
     }
 
@@ -284,7 +298,10 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
    * @param config
    * @param poolSize
    */
-  async createPooled(config: WebSocketClientConfig, poolSize: number = 5): Promise<IClient[]> {
+  async createPooled(
+    config: WebSocketClientConfig,
+    poolSize: number = 5,
+  ): Promise<IClient[]> {
     const clients: IClient[] = [];
 
     for (let i = 0; i < poolSize; i++) {
@@ -308,7 +325,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
    */
   async createLoadBalanced(
     configs: WebSocketClientConfig[],
-    strategy: 'round-robin' | 'random' | 'least-connections' = 'round-robin'
+    strategy: 'round-robin' | 'random' | 'least-connections' = 'round-robin',
   ): Promise<LoadBalancedWebSocketClient> {
     const clients = await this.createMultiple(configs);
     return new LoadBalancedWebSocketClient(clients, strategy);
@@ -322,7 +339,7 @@ export class WebSocketClientFactory implements IClientFactory<WebSocketClientCon
    */
   async createFailover(
     primaryConfig: WebSocketClientConfig,
-    fallbackConfigs: WebSocketClientConfig[]
+    fallbackConfigs: WebSocketClientConfig[],
   ): Promise<FailoverWebSocketClient> {
     const primaryClient = await this.create(primaryConfig);
     const fallbackClients = await this.createMultiple(fallbackConfigs);
@@ -432,7 +449,7 @@ export class LoadBalancedWebSocketClient implements IClient {
 
   constructor(
     private clients: IClient[],
-    private strategy: 'round-robin' | 'random' | 'least-connections'
+    private strategy: 'round-robin' | 'random' | 'least-connections',
   ) {
     if (clients.length === 0) {
       throw new Error('At least one client is required for load balancing');
@@ -461,11 +478,12 @@ export class LoadBalancedWebSocketClient implements IClient {
 
   async healthCheck(): Promise<ClientStatus> {
     const healthChecks = await Promise.allSettled(
-      this.clients.map((client) => client.healthCheck())
+      this.clients.map((client) => client.healthCheck()),
     );
 
     const healthy = healthChecks.some(
-      (check) => check.status === 'fulfilled' && check.value.status === 'healthy'
+      (check) =>
+        check.status === 'fulfilled' && check.value.status === 'healthy',
     );
 
     return {
@@ -478,7 +496,8 @@ export class LoadBalancedWebSocketClient implements IClient {
       metadata: {
         clientCount: this.clients.length,
         healthyClients: healthChecks.filter(
-          (check) => check.status === 'fulfilled' && check.value.status === 'healthy'
+          (check) =>
+            check.status === 'fulfilled' && check.value.status === 'healthy',
         ).length,
       },
     };
@@ -486,12 +505,13 @@ export class LoadBalancedWebSocketClient implements IClient {
 
   async getMetrics(): Promise<ClientMetrics> {
     const metricsResults = await Promise.allSettled(
-      this.clients.map((client) => client.getMetrics())
+      this.clients.map((client) => client.getMetrics()),
     );
 
     const successfulMetrics = metricsResults
       ?.filter(
-        (result): result is PromiseFulfilledResult<ClientMetrics> => result?.status === 'fulfilled'
+        (result): result is PromiseFulfilledResult<ClientMetrics> =>
+          result?.status === 'fulfilled',
       )
       .map((result) => result?.value);
 
@@ -510,12 +530,25 @@ export class LoadBalancedWebSocketClient implements IClient {
     }
 
     // Aggregate metrics
-    const totalRequests = successfulMetrics.reduce((sum, m) => sum + m.requestCount, 0);
-    const totalSuccess = successfulMetrics.reduce((sum, m) => sum + m.successCount, 0);
-    const totalErrors = successfulMetrics.reduce((sum, m) => sum + m.errorCount, 0);
+    const totalRequests = successfulMetrics.reduce(
+      (sum, m) => sum + m.requestCount,
+      0,
+    );
+    const totalSuccess = successfulMetrics.reduce(
+      (sum, m) => sum + m.successCount,
+      0,
+    );
+    const totalErrors = successfulMetrics.reduce(
+      (sum, m) => sum + m.errorCount,
+      0,
+    );
     const avgLatency =
-      successfulMetrics.reduce((sum, m) => sum + m.averageLatency, 0) / successfulMetrics.length;
-    const totalThroughput = successfulMetrics.reduce((sum, m) => sum + m.throughput, 0);
+      successfulMetrics.reduce((sum, m) => sum + m.averageLatency, 0) /
+      successfulMetrics.length;
+    const totalThroughput = successfulMetrics.reduce(
+      (sum, m) => sum + m.throughput,
+      0,
+    );
 
     return {
       name: this.name,
@@ -535,12 +568,20 @@ export class LoadBalancedWebSocketClient implements IClient {
     return client.get<T>(endpoint, options);
   }
 
-  async post<T = any>(endpoint: string, data?: any, options?: any): Promise<any> {
+  async post<T = any>(
+    endpoint: string,
+    data?: any,
+    options?: any,
+  ): Promise<any> {
     const client = this.selectClient();
     return client.post<T>(endpoint, data, options);
   }
 
-  async put<T = any>(endpoint: string, data?: any, options?: any): Promise<any> {
+  async put<T = any>(
+    endpoint: string,
+    data?: any,
+    options?: any,
+  ): Promise<any> {
     const client = this.selectClient();
     return client.put<T>(endpoint, data, options);
   }
@@ -554,7 +595,10 @@ export class LoadBalancedWebSocketClient implements IClient {
     this.clients.forEach((client) => client.updateConfig(config));
   }
 
-  on(event: 'connect' | 'disconnect' | 'error' | 'retry', handler: (...args: any[]) => void): void {
+  on(
+    event: 'connect' | 'disconnect' | 'error' | 'retry',
+    handler: (...args: any[]) => void,
+  ): void {
     this.clients.forEach((client) => client.on(event, handler));
   }
 
@@ -600,7 +644,7 @@ export class FailoverWebSocketClient implements IClient {
 
   constructor(
     private primaryClient: IClient,
-    private fallbackClients: IClient[]
+    private fallbackClients: IClient[],
   ) {
     this.currentClient = primaryClient;
 
@@ -642,11 +686,19 @@ export class FailoverWebSocketClient implements IClient {
     return this.currentClient.get<T>(endpoint, options);
   }
 
-  async post<T = any>(endpoint: string, data?: any, options?: any): Promise<any> {
+  async post<T = any>(
+    endpoint: string,
+    data?: any,
+    options?: any,
+  ): Promise<any> {
     return this.currentClient.post<T>(endpoint, data, options);
   }
 
-  async put<T = any>(endpoint: string, data?: any, options?: any): Promise<any> {
+  async put<T = any>(
+    endpoint: string,
+    data?: any,
+    options?: any,
+  ): Promise<any> {
     return this.currentClient.put<T>(endpoint, data, options);
   }
 
@@ -658,7 +710,10 @@ export class FailoverWebSocketClient implements IClient {
     this.currentClient.updateConfig(config);
   }
 
-  on(event: 'connect' | 'disconnect' | 'error' | 'retry', handler: (...args: any[]) => void): void {
+  on(
+    event: 'connect' | 'disconnect' | 'error' | 'retry',
+    handler: (...args: any[]) => void,
+  ): void {
     this.currentClient.on(event, handler);
   }
 
@@ -695,7 +750,7 @@ export async function createWebSocketClientFactory(): Promise<WebSocketClientFac
 }
 
 export async function createWebSocketClientWithConfig(
-  config: WebSocketClientConfig
+  config: WebSocketClientConfig,
 ): Promise<IClient> {
   const factory = new WebSocketClientFactory();
   return factory.create(config);

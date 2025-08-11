@@ -7,7 +7,10 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { EventManagerTypes, type SystemLifecycleEvent } from '../../core/interfaces.ts';
+import {
+  EventManagerTypes,
+  type SystemLifecycleEvent,
+} from '../../core/interfaces.ts';
 import {
   createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter,
@@ -166,7 +169,7 @@ describe('SystemEventAdapter', () => {
       // Mock a slow emission
       const _originalEmit = adapter.processEventEmission;
       adapter.processEventEmission = vi.fn(
-        () => new Promise((resolve) => setTimeout(resolve, 100))
+        () => new Promise((resolve) => setTimeout(resolve, 100)),
       );
 
       await expect(adapter.emit(slowEvent, { timeout: 50 })).rejects.toThrow();
@@ -180,7 +183,10 @@ describe('SystemEventAdapter', () => {
 
     it('should create subscription and return subscription ID', () => {
       const mockListener = vi.fn();
-      const subscriptionId = adapter.subscribe(['system:startup'], mockListener);
+      const subscriptionId = adapter.subscribe(
+        ['system:startup'],
+        mockListener,
+      );
 
       expect(subscriptionId).toBeDefined();
       expect(typeof subscriptionId).toBe('string');
@@ -191,7 +197,7 @@ describe('SystemEventAdapter', () => {
       const mockListener = vi.fn();
       const subscriptionId = adapter.subscribe(
         ['system:startup', 'system:shutdown', 'system:health'],
-        mockListener
+        mockListener,
       );
 
       expect(subscriptionId).toBeDefined();
@@ -202,13 +208,18 @@ describe('SystemEventAdapter', () => {
 
     it('should unsubscribe successfully', () => {
       const mockListener = vi.fn();
-      const subscriptionId = adapter.subscribe(['system:startup'], mockListener);
+      const subscriptionId = adapter.subscribe(
+        ['system:startup'],
+        mockListener,
+      );
 
       const result = adapter.unsubscribe(subscriptionId);
       expect(result).toBe(true);
 
       const subscriptions = adapter.getSubscriptions();
-      expect(subscriptions.find((s) => s.id === subscriptionId)).toBeUndefined();
+      expect(
+        subscriptions.find((s) => s.id === subscriptionId),
+      ).toBeUndefined();
     });
 
     it('should return false when unsubscribing non-existent subscription', () => {
@@ -228,8 +239,12 @@ describe('SystemEventAdapter', () => {
       expect(removedCount).toBe(2);
 
       const subscriptions = adapter.getSubscriptions();
-      expect(subscriptions.filter((s) => s.eventTypes.includes('system:startup'))).toHaveLength(0);
-      expect(subscriptions.filter((s) => s.eventTypes.includes('system:health'))).toHaveLength(1);
+      expect(
+        subscriptions.filter((s) => s.eventTypes.includes('system:startup')),
+      ).toHaveLength(0);
+      expect(
+        subscriptions.filter((s) => s.eventTypes.includes('system:health')),
+      ).toHaveLength(1);
     });
 
     it('should unsubscribe all listeners when no event type specified', () => {
@@ -264,7 +279,7 @@ describe('SystemEventAdapter', () => {
 
     it('should add and remove event transforms', () => {
       const transform = {
-        mapper: (event: any) => ({ ...event, transformed: true }),
+        mapper: (event: unknown) => ({ ...event, transformed: true }),
       };
 
       const transformId = adapter.addTransform(transform);
@@ -315,7 +330,7 @@ describe('SystemEventAdapter', () => {
     it('should apply transforms during subscription', async () => {
       const mockListener = vi.fn();
       const transform = {
-        mapper: (event: any) => ({ ...event, transformed: true }),
+        mapper: (event: unknown) => ({ ...event, transformed: true }),
       };
 
       adapter.subscribe(['system:startup'], mockListener, { transform });
@@ -336,7 +351,7 @@ describe('SystemEventAdapter', () => {
         expect.objectContaining({
           ...originalEvent,
           transformed: true,
-        })
+        }),
       );
     });
   });
@@ -393,7 +408,9 @@ describe('SystemEventAdapter', () => {
         },
       };
 
-      const adapterWithError = createSystemEventAdapter(configWithErrorRecovery);
+      const adapterWithError = createSystemEventAdapter(
+        configWithErrorRecovery,
+      );
       await adapterWithError.start();
 
       // Verify error recovery integration is initialized
@@ -414,7 +431,10 @@ describe('SystemEventAdapter', () => {
         strategy: 'component',
         correlationTTL: 300000,
         maxCorrelationDepth: 10,
-        correlationPatterns: ['system:startup->system:health', 'system:error->system:recovery'],
+        correlationPatterns: [
+          'system:startup->system:health',
+          'system:error->system:recovery',
+        ],
       };
       adapter = createSystemEventAdapter(config);
       await adapter.start();
@@ -710,7 +730,9 @@ describe('SystemEventAdapter', () => {
 
   describe('System Event Helpers (Mixed)', () => {
     it('should create startup event with correct properties', () => {
-      const event = SystemEventHelpers.createStartupEvent('test-component', { version: '1.0.0' });
+      const event = SystemEventHelpers.createStartupEvent('test-component', {
+        version: '1.0.0',
+      });
 
       expect(event['source']).toBe('test-component');
       expect(event.type).toBe('system:startup');
@@ -734,21 +756,34 @@ describe('SystemEventAdapter', () => {
     });
 
     it('should create health event with correct status based on score', () => {
-      const healthyEvent = SystemEventHelpers.createHealthEvent('test-component', 0.9);
+      const healthyEvent = SystemEventHelpers.createHealthEvent(
+        'test-component',
+        0.9,
+      );
       expect(healthyEvent.status).toBe('success');
 
-      const warningEvent = SystemEventHelpers.createHealthEvent('test-component', 0.6);
+      const warningEvent = SystemEventHelpers.createHealthEvent(
+        'test-component',
+        0.6,
+      );
       expect(warningEvent.status).toBe('warning');
 
-      const errorEvent = SystemEventHelpers.createHealthEvent('test-component', 0.3);
+      const errorEvent = SystemEventHelpers.createHealthEvent(
+        'test-component',
+        0.3,
+      );
       expect(errorEvent.status).toBe('error');
     });
 
     it('should create error event with error details', () => {
       const error = new Error('Test error message');
-      const event = SystemEventHelpers.createErrorEvent('test-component', error, {
-        context: 'test',
-      });
+      const event = SystemEventHelpers.createErrorEvent(
+        'test-component',
+        error,
+        {
+          context: 'test',
+        },
+      );
 
       expect(event['source']).toBe('test-component');
       expect(event.type).toBe('system:error');

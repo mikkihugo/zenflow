@@ -190,7 +190,9 @@ describe('DI System Integration Tests', () => {
       const resolvedLogger = container.resolve(CORE_TOKENS.Logger);
 
       expect(resolvedLogger).toBe(replacementLogger);
-      expect(warnSpy).toHaveBeenCalledWith("Provider for token 'Logger' is being overwritten");
+      expect(warnSpy).toHaveBeenCalledWith(
+        "Provider for token 'Logger' is being overwritten",
+      );
 
       warnSpy.mockRestore();
     });
@@ -246,7 +248,9 @@ describe('DI System Integration Tests', () => {
 
       // Create multiple concurrent resolution promises
       const promises = Array.from({ length: 100 }, () =>
-        Promise.resolve().then(() => container.resolve(SWARM_TOKENS.SwarmCoordinator))
+        Promise.resolve().then(() =>
+          container.resolve(SWARM_TOKENS.SwarmCoordinator),
+        ),
       );
 
       const coordinators = await Promise.all(promises);
@@ -272,8 +276,14 @@ describe('DI System Integration Tests', () => {
         await demonstrateSwarmDI();
 
         // Verify key log messages were output
-        expect(logs.some((log) => log.includes('SwarmCoordinator DI Integration Demo'))).toBe(true);
-        expect(logs.some((log) => log.includes('Demo completed successfully'))).toBe(true);
+        expect(
+          logs.some((log) =>
+            log.includes('SwarmCoordinator DI Integration Demo'),
+          ),
+        ).toBe(true);
+        expect(
+          logs.some((log) => log.includes('Demo completed successfully')),
+        ).toBe(true);
         expect(logs.some((log) => log.includes('Swarm metrics:'))).toBe(true);
       } finally {
         console.log = originalLog;

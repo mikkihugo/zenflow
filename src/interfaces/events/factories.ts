@@ -74,7 +74,7 @@ export interface EventManagerFactoryConfig {
 
   /** Custom event manager implementation class to use */
   customImplementation?: new (
-    ...args: any[]
+    ...args: unknown[]
   ) => IEventManager;
 
   /** Preset configuration to apply (REAL_TIME, BATCH_PROCESSING, etc.) */
@@ -116,7 +116,7 @@ export interface EventManagerRegistry {
     created: Date;
     lastUsed: Date;
     status: 'running' | 'stopped' | 'error';
-    metadata: Record<string, any>;
+    metadata: Record<string, unknown>;
   };
 }
 
@@ -130,8 +130,8 @@ export interface EventManagerTransaction {
   operations: Array<{
     manager: string;
     operation: 'emit' | 'subscribe' | 'unsubscribe';
-    data: any;
-    result?: any;
+    data: unknown;
+  result?: unknown;
     error?: Error;
   }>;
   status: 'pending' | 'executing' | 'completed' | 'failed';
@@ -635,7 +635,7 @@ export class UELFactory {
     operations: Array<{
       manager: string;
       operation: 'emit' | 'subscribe' | 'unsubscribe';
-      data: any;
+      data: unknown;
     }>
   ): Promise<EventManagerTransaction> {
     const transactionId = this.generateTransactionId();
@@ -772,7 +772,7 @@ export class UELFactory {
     }
 
     // Dynamic import based on manager type
-    let FactoryClass: new (...args: any[]) => IEventManagerFactory;
+    let FactoryClass: new (...args: unknown[]) => IEventManagerFactory;
 
     switch (managerType) {
       case EventManagerTypes.SYSTEM: {

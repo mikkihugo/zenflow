@@ -23,7 +23,7 @@ export interface MockAgent {
   status: 'idle' | 'working' | 'error' | 'offline';
   capabilities: string[];
   connections: string[];
-  messageQueue: any[];
+  messageQueue: unknown[];
   performance: {
     tasksCompleted: number;
     avgResponseTime: number;
@@ -34,8 +34,8 @@ export interface MockAgent {
 export class CoordinationTestBuilder {
   private config: SwarmTestConfig;
   private agents: Map<string, MockAgent> = new Map();
-  private messages: any[] = [];
-  private interactions: any[] = [];
+  private messages: unknown[] = [];
+  private interactions: unknown[] = [];
 
   constructor(config?: Partial<SwarmTestConfig>) {
     this.config = {
@@ -59,7 +59,7 @@ export class CoordinationTestBuilder {
     agents: Map<string, MockAgent>;
     coordinator: jest.Mock;
     messageRouter: jest.Mock;
-    topology: any;
+    topology?: unknown;
   } {
     // Create agents
     for (let i = 0; i < this.config.agentCount; i++) {
@@ -160,7 +160,7 @@ export class CoordinationTestBuilder {
   }
 
   private createCoordinatorBehavior() {
-    return (action: string, data: any) => {
+    return (action: string, data: unknown) => {
       const interaction = {
         timestamp: Date.now(),
         action,
@@ -172,7 +172,11 @@ export class CoordinationTestBuilder {
 
       switch (action) {
         case 'initialize':
-          return { success: true, swarmId: 'test-swarm', agents: Array.from(this.agents.keys()) };
+          return {
+            success: true,
+            swarmId: 'test-swarm',
+            agents: Array.from(this.agents.keys()),
+          };
         case 'broadcast':
           return this.simulateBroadcast(data);
         case 'assign_task':
@@ -213,7 +217,7 @@ export class CoordinationTestBuilder {
     };
   }
 
-  private simulateBroadcast(data: any) {
+  private simulateBroadcast(data: unknown) {
     const agentIds = Array.from(this.agents.keys());
     const delivered = agentIds.map((agentId) => {
       const agent = this.agents.get(agentId)!;
@@ -229,7 +233,7 @@ export class CoordinationTestBuilder {
     return { success: true, delivered, count: delivered.length };
   }
 
-  private simulateTaskAssignment(data: any) {
+  private simulateTaskAssignment(data: unknown) {
     const { taskId, agentId } = data;
     const agent = this.agents.get(agentId);
 
@@ -300,7 +304,7 @@ export class CoordinationTestBuilder {
     const totalPossibleConnections = this.agents.size * (this.agents.size - 1);
     const actualConnections = Array.from(this.agents.values()).reduce(
       (sum, agent) => sum + agent.connections.length,
-      0
+      0,
     );
 
     return actualConnections / totalPossibleConnections;
@@ -309,14 +313,14 @@ export class CoordinationTestBuilder {
   /**
    * Get recorded interactions for verification
    */
-  getInteractions(): any[] {
+  getInteractions(): unknown[] {
     return [...this.interactions];
   }
 
   /**
    * Get message history for verification
    */
-  getMessages(): any[] {
+  getMessages(): unknown[] {
     return [...this.messages];
   }
 
@@ -345,7 +349,7 @@ export class CoordinationProtocolValidator {
    *
    * @param messages
    */
-  static validateMCPProtocol(messages: any[]): void {
+  static validateMCPProtocol(messages: unknown[]): void {
     messages.forEach((message) => {
       if (message['message']?.['jsonrpc']) {
         expect(message['message']?.['jsonrpc']).toBe('2.0');
@@ -364,7 +368,7 @@ export class CoordinationProtocolValidator {
    *
    * @param messages
    */
-  static validateWebSocketProtocol(messages: any[]): void {
+  static validateWebSocketProtocol(messages: unknown[]): void {
     messages.forEach((message) => {
       expect(message['message']).toHaveProperty('type');
       expect(message['message']).toHaveProperty('data');
@@ -379,8 +383,12 @@ export class CoordinationProtocolValidator {
    * @param expectedPattern
    */
   static validateCoordinationPattern(
-    interactions: any[],
-    expectedPattern: 'broadcast' | 'point-to-point' | 'hierarchical' | 'consensus'
+    interactions: unknown[],
+    expectedPattern:
+      | 'broadcast'
+      | 'point-to-point'
+      | 'hierarchical'
+      | 'consensus',
   ): void {
     switch (expectedPattern) {
       case 'broadcast': {
@@ -390,7 +398,9 @@ export class CoordinationProtocolValidator {
       }
 
       case 'point-to-point': {
-        const p2pMessages = interactions.filter((i) => i.type === 'message_routing');
+        const p2pMessages = interactions.filter(
+          (i) => i.type === 'message_routing',
+        );
         expect(p2pMessages.length).toBeGreaterThan(0);
         p2pMessages.forEach((msg) => {
           expect(msg.from).toBeDefined();
@@ -402,7 +412,9 @@ export class CoordinationProtocolValidator {
 
       case 'hierarchical': {
         const hierarchicalInteractions = interactions.filter(
-          (i) => i.type === 'coordination' && (i.action === 'assign_task' || i.action === 'status')
+          (i) =>
+            i.type === 'coordination' &&
+            (i.action === 'assign_task' || i.action === 'status'),
         );
         expect(hierarchicalInteractions.length).toBeGreaterThan(0);
         break;
@@ -411,7 +423,10 @@ export class CoordinationProtocolValidator {
       case 'consensus': {
         // Look for consensus-related interactions
         const consensusInteractions = interactions.filter(
-          (i) => i.data?.type === 'consensus' || i.action === 'vote' || i.action === 'agreement'
+          (i) =>
+            i.data?.type === 'consensus' ||
+            i.action === 'vote' ||
+            i.action === 'agreement',
         );
         expect(consensusInteractions.length).toBeGreaterThan(0);
         break;
@@ -426,25 +441,31 @@ export class CoordinationProtocolValidator {
    * @param thresholds
    */
   static validatePerformance(
-    interactions: any[],
-    thresholds: SwarmTestConfig['performanceThresholds']
+    interactions: unknown[],
+    thresholds: SwarmTestConfig['performanceThresholds'],
   ): void {
     // Check coordination latency
-    const coordinationInteractions = interactions.filter((i) => i.type === 'coordination');
+    const coordinationInteractions = interactions.filter(
+      (i) => i.type === 'coordination',
+    );
     if (coordinationInteractions.length > 1) {
       const latencies = [];
       for (let i = 1; i < coordinationInteractions.length; i++) {
         const latency =
-          coordinationInteractions[i]?.timestamp - coordinationInteractions[i - 1]?.timestamp;
+          coordinationInteractions[i]?.timestamp -
+          coordinationInteractions[i - 1]?.timestamp;
         latencies.push(latency);
       }
 
-      const avgLatency = latencies.reduce((sum, l) => sum + l, 0) / latencies.length;
+      const avgLatency =
+        latencies.reduce((sum, l) => sum + l, 0) / latencies.length;
       expect(avgLatency).toBeLessThanOrEqual(thresholds.coordinationLatency);
     }
 
     // Check message processing times
-    const messageInteractions = interactions.filter((i) => i.type === 'message_routing');
+    const messageInteractions = interactions.filter(
+      (i) => i.type === 'message_routing',
+    );
     expect(messageInteractions.length).toBeGreaterThanOrEqual(0);
   }
 }
@@ -488,7 +509,7 @@ export class SwarmBehaviorSimulator {
    * @param swarm
    * @param taskCount
    */
-  static simulateHighLoad(swarm: any, taskCount: number): any[] {
+  static simulateHighLoad(swarm: any, taskCount: number): unknown[] {
     const tasks = [];
     const agentIds = Array.from(swarm.agents.keys());
 

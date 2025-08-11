@@ -28,7 +28,10 @@ export class MockBuilder {
    * @param type
    * @param config
    */
-  create<T>(type: new (...args: any[]) => T, config: MockConfiguration = this.globalConfig): T {
+  create<T>(
+    type: new (...args: unknown[]) => T,
+    config: MockConfiguration = this.globalConfig,
+  ): T {
     const mockObj: MockObject = {};
     const prototype = type.prototype;
 
@@ -53,7 +56,10 @@ export class MockBuilder {
    * @param overrides
    * @param config
    */
-  createPartial<T>(overrides: Partial<T>, config: MockConfiguration = this.globalConfig): T {
+  createPartial<T>(
+    overrides: Partial<T>,
+    config: MockConfiguration = this.globalConfig,
+  ): T {
     const mockObj: MockObject = {};
 
     Object.keys(overrides).forEach((key) => {
@@ -80,7 +86,8 @@ export class MockBuilder {
    */
   createSpy<T extends object>(obj: T, methods?: (keyof T)[]): T {
     const spy = { ...obj };
-    const methodsToSpy = methods || Object.getOwnPropertyNames(Object.getPrototypeOf(obj));
+    const methodsToSpy =
+      methods || Object.getOwnPropertyNames(Object.getPrototypeOf(obj));
 
     methodsToSpy.forEach((method) => {
       if (typeof obj[method] === 'function') {
@@ -105,7 +112,7 @@ export class MockBuilder {
           delete() {}
           query() {}
           close() {}
-        }
+        },
       ),
 
       // Neural Engine mock
@@ -116,7 +123,7 @@ export class MockBuilder {
           trainModel() {}
           predict() {}
           optimize() {}
-        }
+        },
       ),
 
       // Swarm Orchestrator mock
@@ -128,7 +135,7 @@ export class MockBuilder {
           getAgentStatus() {}
           terminateAgent() {}
           getSwarmStatus() {}
-        }
+        },
       ),
 
       // MCP Server mock
@@ -138,7 +145,7 @@ export class MockBuilder {
           handleMessage() {}
           registerTool() {}
           shutdown() {}
-        }
+        },
       ),
 
       // Database mock
@@ -148,7 +155,7 @@ export class MockBuilder {
           disconnect() {}
           query() {}
           transaction() {}
-        }
+        },
       ),
 
       // File System mock
@@ -159,7 +166,7 @@ export class MockBuilder {
           mkdir() {}
           exists() {}
           stat() {}
-        }
+        },
       ),
     };
   }
@@ -172,7 +179,7 @@ export class MockBuilder {
   createExpectations<T>(mock: T) {
     const expectations = {
       // Verify method was called with specific arguments
-      toHaveBeenCalledWith: (method: keyof T, ...args: any[]) => {
+      toHaveBeenCalledWith: (method: keyof T, ...args: unknown[]) => {
         const mockMethod = (mock as any)[method];
         expect(mockMethod).toHaveBeenCalledWith(...args);
         return expectations;
@@ -194,7 +201,10 @@ export class MockBuilder {
       // Verify interaction patterns
       toHaveInteractionPattern: (pattern: string) => {
         const interactions = (mock as any).__interactions || [];
-        const patternFound = this.matchInteractionPattern(interactions, pattern);
+        const patternFound = this.matchInteractionPattern(
+          interactions,
+          pattern,
+        );
         expect(patternFound).toBe(true);
         return expectations;
       },
@@ -203,7 +213,9 @@ export class MockBuilder {
       toHaveNoUnexpectedInteractions: () => {
         const interactions = (mock as any).__interactions || [];
         const expected = (mock as any).__expectedInteractions || [];
-        const unexpected = interactions.filter((i: any) => !expected.includes(i.method));
+        const unexpected = interactions.filter(
+          (i: unknown) => !expected.includes(i.method),
+        );
         expect(unexpected).toHaveLength(0);
         return expectations;
       },
@@ -217,7 +229,7 @@ export class MockBuilder {
    *
    * @param mocks
    */
-  resetAllMocks(mocks: Record<string, any>) {
+  resetAllMocks(mocks: Record<string, unknown>) {
     Object.values(mocks).forEach((mock) => {
       if (mock && typeof mock === 'object') {
         Object.values(mock).forEach((method) => {
@@ -234,7 +246,7 @@ export class MockBuilder {
     });
   }
 
-  private extractMethods(prototype: any): string[] {
+  private extractMethods(prototype: unknown): string[] {
     const methods: string[] = [];
     let current = prototype;
 
@@ -252,7 +264,10 @@ export class MockBuilder {
     return methods;
   }
 
-  private createMethodMock(methodName: string, config: MockConfiguration): vi.Mock {
+  private createMethodMock(
+    methodName: string,
+    config: MockConfiguration,
+  ): vi.Mock {
     const mock = vi.fn();
 
     if (config?.autoGenerate) {
@@ -261,7 +276,10 @@ export class MockBuilder {
         mock.mockResolvedValue({});
       } else if (methodName.startsWith('is') || methodName.startsWith('has')) {
         mock.mockReturnValue(true);
-      } else if (methodName.startsWith('create') || methodName.startsWith('save')) {
+      } else if (
+        methodName.startsWith('create') ||
+        methodName.startsWith('save')
+      ) {
         mock.mockResolvedValue({ id: 'generated-id' });
       }
     }
@@ -270,14 +288,14 @@ export class MockBuilder {
   }
 
   private addInteractionTracking(mockObj: MockObject) {
-    const interactions: any[] = [];
+    const interactions: unknown[] = [];
     mockObj.__interactions = interactions;
 
     // Wrap all mock functions to track interactions
     Object.keys(mockObj).forEach((key) => {
       const originalMock = mockObj[key];
       if (vi.isMockFunction(originalMock)) {
-        mockObj[key] = vi.fn((...args: any[]) => {
+        mockObj[key] = vi.fn((...args: unknown[]) => {
           interactions.push({
             method: key,
             args,
@@ -289,7 +307,10 @@ export class MockBuilder {
     });
   }
 
-  private matchInteractionPattern(interactions: any[], pattern: string): boolean {
+  private matchInteractionPattern(
+    interactions: unknown[],
+    pattern: string,
+  ): boolean {
     // Simple pattern matching for interaction sequences
     // Pattern format: "method1 -> method2 -> method3"
     const expectedSequence = pattern.split(' -> ').map((s) => s.trim());

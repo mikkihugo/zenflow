@@ -2,32 +2,32 @@
 
 pub mod backend_trait;
 pub mod native_gpu;
+pub mod wasm_runtime;
 pub mod webgpu;
 pub mod webgpu_optimized;
-pub mod wasm_runtime;
 
-pub use backend_trait::{BackendTrait, BackendCapabilities};
+pub use backend_trait::{BackendCapabilities, BackendTrait};
 
 // Re-export BackendTrait as Backend for backward compatibility
 pub use backend_trait::BackendTrait as Backend;
 
 /// Get the current backend implementation
 pub fn get_backend() -> Box<dyn Backend> {
-    #[cfg(target_arch = "wasm32")]
+  #[cfg(target_arch = "wasm32")]
+  {
+    Box::new(webgpu::WebGPUBackend::new())
+  }
+
+  #[cfg(not(target_arch = "wasm32"))]
+  {
+    #[cfg(feature = "cuda-backend")]
     {
-        Box::new(webgpu::WebGPUBackend::new())
+      if native_gpu::is_cuda_available() {
+        return Box::new(native_gpu::NativeGPUBackend::new());
+      }
     }
-    
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        #[cfg(feature = "cuda-backend")]
-        {
-            if native_gpu::is_cuda_available() {
-                return Box::new(native_gpu::NativeGPUBackend::new());
-            }
-        }
-        
-        // Fallback to CPU backend
-        Box::new(wasm_runtime::WasmRuntime::new())
-    }
+
+    // Fallback to CPU backend
+    Box::new(wasm_runtime::WasmRuntime::new())
+  }
 }

@@ -172,7 +172,7 @@ export class MemoryController {
             type: this._config.type,
             maxSize: this._config.maxSize || -1,
             ttl: this._config.ttl || 0,
-            compression: this._config.compression || false,
+            compression: this._config.compression,
           },
         },
         metadata: {
@@ -236,7 +236,7 @@ export class MemoryController {
         data: {
           key: request.key,
           stored: true,
-          compressed: request.options?.compress || false,
+          compressed: request.options?.compress,
           ttl: request.options?.ttl || 0,
         },
         metadata: {
@@ -634,7 +634,7 @@ export class MemoryController {
       metadata: {
         storedAt: Date.now(),
         ttl: options?.ttl || 0,
-        compressed: options?.compress || false,
+        compressed: options?.compress,
         originalSize: 0, // Will be set below if compression is enabled
         ...options?.metadata,
       },

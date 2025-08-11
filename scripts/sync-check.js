@@ -41,33 +41,37 @@ class UpstreamSyncChecker {
       this.execCommand(`git fetch ${this.upstreamRemote}`, { silent: true });
 
       // Get commit information
-      const ourCommit = this.execCommand('git rev-parse HEAD', { silent: true }).trim();
-      const upstreamCommit = this.execCommand(`git rev-parse ${this.upstreamRemote}/main`, {
+      const ourCommit = this.execCommand('git rev-parse HEAD', {
         silent: true,
       }).trim();
+      const upstreamCommit = this.execCommand(
+        `git rev-parse ${this.upstreamRemote}/main`,
+        {
+          silent: true,
+        },
+      ).trim();
 
       if (ourCommit === upstreamCommit) {
         return true;
-      } else {
-        // Check how many commits behind
-        try {
-          const behindCount = this.execCommand(
-            `git rev-list --count ${ourCommit}..${upstreamCommit}`,
-            { silent: true }
+      }
+      // Check how many commits behind
+      try {
+        const behindCount = this.execCommand(
+          `git rev-list --count ${ourCommit}..${upstreamCommit}`,
+          { silent: true },
+        ).trim();
+
+        if (Number.parseInt(behindCount) > 0) {
+          const recentCommits = this.execCommand(
+            `git log --oneline -5 ${this.upstreamRemote}/main`,
+            { silent: true },
           ).trim();
 
-          if (parseInt(behindCount) > 0) {
-            const recentCommits = this.execCommand(
-              `git log --oneline -5 ${this.upstreamRemote}/main`,
-              { silent: true }
-            ).trim();
+          recentCommits.split('\n').forEach((_commit) => {});
+        }
+      } catch (_error) {}
 
-            recentCommits.split('\n').forEach((_commit) => {});
-          }
-        } catch (_error) {}
-
-        return false;
-      }
+      return false;
     } catch (error) {
       // console.error('❌ Error checking upstream status:', error.message);
       return false;

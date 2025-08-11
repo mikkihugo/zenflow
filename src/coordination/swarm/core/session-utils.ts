@@ -14,7 +14,11 @@ const logger = getLogger('coordination-swarm-core-session-utils');
  */
 
 import crypto from 'node:crypto';
-import type { SessionCheckpoint, SessionState, SessionStatus } from './session-manager.ts';
+import type {
+  SessionCheckpoint,
+  SessionState,
+  SessionStatus,
+} from './session-manager.ts';
 import type { SwarmOptions, SwarmState } from './types.ts';
 
 /**
@@ -28,7 +32,10 @@ export class SessionValidator {
    *
    * @param state
    */
-  static validateSessionState(state: SessionState): { valid: boolean; errors: string[] } {
+  static validateSessionState(state: SessionState): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     // Basic structure validation
@@ -40,11 +47,11 @@ export class SessionValidator {
       errors.push('Invalid session name');
     }
 
-    if (!state.createdAt || !(state.createdAt instanceof Date)) {
+    if (!(state.createdAt && state.createdAt instanceof Date)) {
       errors.push('Invalid created date');
     }
 
-    if (!state.lastAccessedAt || !(state.lastAccessedAt instanceof Date)) {
+    if (!(state.lastAccessedAt && state.lastAccessedAt instanceof Date)) {
       errors.push('Invalid last accessed date');
     }
 
@@ -61,19 +68,21 @@ export class SessionValidator {
     }
 
     // Swarm state validation
-    if (!state.swarmState) {
-      errors.push('Missing swarm state');
-    } else {
+    if (state.swarmState) {
       const swarmErrors = SessionValidator.validateSwarmState(state.swarmState);
       errors.push(...swarmErrors);
+    } else {
+      errors.push('Missing swarm state');
     }
 
     // Swarm options validation
-    if (!state.swarmOptions) {
-      errors.push('Missing swarm options');
-    } else {
-      const optionsErrors = SessionValidator.validateSwarmOptions(state.swarmOptions);
+    if (state.swarmOptions) {
+      const optionsErrors = SessionValidator.validateSwarmOptions(
+        state.swarmOptions,
+      );
       errors.push(...optionsErrors);
+    } else {
+      errors.push('Missing swarm options');
     }
 
     return {
@@ -90,11 +99,11 @@ export class SessionValidator {
   static validateSwarmState(state: SwarmState): string[] {
     const errors: string[] = [];
 
-    if (!state.agents || !(state.agents instanceof Map)) {
+    if (!(state.agents && state.agents instanceof Map)) {
       errors.push('Invalid agents map');
     }
 
-    if (!state.tasks || !(state.tasks instanceof Map)) {
+    if (!(state.tasks && state.tasks instanceof Map)) {
       errors.push('Invalid tasks map');
     }
 
@@ -152,7 +161,10 @@ export class SessionValidator {
    *
    * @param checkpoint
    */
-  static validateCheckpoint(checkpoint: SessionCheckpoint): { valid: boolean; errors: string[] } {
+  static validateCheckpoint(checkpoint: SessionCheckpoint): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     if (!checkpoint.id || typeof checkpoint.id !== 'string') {
@@ -163,7 +175,7 @@ export class SessionValidator {
       errors.push('Invalid session ID');
     }
 
-    if (!checkpoint.timestamp || !(checkpoint.timestamp instanceof Date)) {
+    if (!(checkpoint.timestamp && checkpoint.timestamp instanceof Date)) {
       errors.push('Invalid timestamp');
     }
 
@@ -202,7 +214,9 @@ export class SessionSerializer {
       connections: state.connections,
       metrics: {
         ...state.metrics,
-        agentUtilization: Object.fromEntries(state.metrics.agentUtilization.entries()),
+        agentUtilization: Object.fromEntries(
+          state.metrics.agentUtilization.entries(),
+        ),
       },
     };
 
@@ -224,7 +238,9 @@ export class SessionSerializer {
       connections: data?.connections,
       metrics: {
         ...data?.metrics,
-        agentUtilization: new Map(Object.entries(data?.metrics?.agentUtilization)),
+        agentUtilization: new Map(
+          Object.entries(data?.metrics?.agentUtilization),
+        ),
       },
     };
   }
@@ -317,7 +333,11 @@ export class SessionMigrator {
    * @param fromVersion
    * @param toVersion
    */
-  static migrateSession(session: any, fromVersion: string, toVersion: string): SessionState {
+  static migrateSession(
+    session: any,
+    fromVersion: string,
+    toVersion: string,
+  ): SessionState {
     const migrations = SessionMigrator.getMigrationPath(fromVersion, toVersion);
 
     let currentSession = session;
@@ -336,7 +356,7 @@ export class SessionMigrator {
    */
   private static getMigrationPath(
     fromVersion: string,
-    toVersion: string
+    toVersion: string,
   ): Array<(session: any) => any> {
     const migrations: Array<(session: any) => any> = [];
 
@@ -402,7 +422,7 @@ export class SessionRecovery {
    */
   static async recoverSession(
     corruptedSession: any,
-    checkpoints: SessionCheckpoint[]
+    checkpoints: SessionCheckpoint[],
   ): Promise<SessionState | null> {
     // Try to recover from the most recent valid checkpoint
     const sortedCheckpoints = checkpoints
@@ -426,7 +446,9 @@ export class SessionRecovery {
         lastCheckpointAt: latestCheckpoint.timestamp,
         status: 'active',
         swarmState: latestCheckpoint.state,
-        swarmOptions: corruptedSession.swarmOptions || SessionRecovery.getDefaultSwarmOptions(),
+        swarmOptions:
+          corruptedSession.swarmOptions ||
+          SessionRecovery.getDefaultSwarmOptions(),
         metadata: {
           ...corruptedSession.metadata,
           recovered: true,
@@ -449,17 +471,22 @@ export class SessionRecovery {
    *
    * @param checkpoint
    */
-  private static validateCheckpointIntegrity(checkpoint: SessionCheckpoint): boolean {
+  private static validateCheckpointIntegrity(
+    checkpoint: SessionCheckpoint,
+  ): boolean {
     try {
       // Check basic structure
-      if (!checkpoint.id || !checkpoint.sessionId || !checkpoint.state) {
+      if (!(checkpoint.id && checkpoint.sessionId && checkpoint.state)) {
         return false;
       }
 
       // Validate checksum if available
       if (checkpoint.checksum) {
         const stateData = JSON.stringify(checkpoint.state);
-        const calculatedChecksum = crypto.createHash('sha256').update(stateData).digest('hex');
+        const calculatedChecksum = crypto
+          .createHash('sha256')
+          .update(stateData)
+          .digest('hex');
         return calculatedChecksum === checkpoint.checksum;
       }
 
@@ -556,12 +583,14 @@ export class SessionStats {
     if (session.checkpoints.length === 0) score -= 20;
 
     // Age factor (older sessions might be less healthy)
-    const ageInDays = (Date.now() - session.createdAt.getTime()) / (1000 * 60 * 60 * 24);
+    const ageInDays =
+      (Date.now() - session.createdAt.getTime()) / (1000 * 60 * 60 * 24);
     if (ageInDays > 30) score -= 10;
     if (ageInDays > 90) score -= 20;
 
     // Access pattern (unused sessions might be less healthy)
-    const daysSinceAccess = (Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24);
+    const daysSinceAccess =
+      (Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24);
     if (daysSinceAccess > 7) score -= 10;
     if (daysSinceAccess > 30) score -= 20;
 
@@ -593,9 +622,11 @@ export class SessionStats {
       createdAt: session.createdAt,
       lastAccessedAt: session.lastAccessedAt,
       lastCheckpointAt: session.lastCheckpointAt,
-      ageInDays: Math.floor((Date.now() - session.createdAt.getTime()) / (1000 * 60 * 60 * 24)),
+      ageInDays: Math.floor(
+        (Date.now() - session.createdAt.getTime()) / (1000 * 60 * 60 * 24),
+      ),
       daysSinceAccess: Math.floor(
-        (Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24)
+        (Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24),
       ),
       agents: {
         total: session.swarmState.agents.size,
@@ -605,7 +636,10 @@ export class SessionStats {
         total: metrics.totalTasks,
         completed: metrics.completedTasks,
         failed: metrics.failedTasks,
-        successRate: metrics.totalTasks > 0 ? metrics.completedTasks / metrics.totalTasks : 0,
+        successRate:
+          metrics.totalTasks > 0
+            ? metrics.completedTasks / metrics.totalTasks
+            : 0,
         averageCompletionTime: metrics.averageCompletionTime,
       },
       checkpoints: {
@@ -619,7 +653,7 @@ export class SessionStats {
             acc[id] = util;
             return acc;
           },
-          {} as Record<string, number>
+          {} as Record<string, number>,
         ),
       },
       version: session.version,

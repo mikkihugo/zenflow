@@ -107,8 +107,14 @@ describe('DI Container - Core Functionality', () => {
         constructor(public serviceA: ServiceA) {}
       }
 
-      container.register(tokenA, new SingletonProvider((c) => new ServiceA(c.resolve(tokenB))));
-      container.register(tokenB, new SingletonProvider((c) => new ServiceB(c.resolve(tokenA))));
+      container.register(
+        tokenA,
+        new SingletonProvider((c) => new ServiceA(c.resolve(tokenB))),
+      );
+      container.register(
+        tokenB,
+        new SingletonProvider((c) => new ServiceB(c.resolve(tokenA))),
+      );
 
       expect(() => container.resolve(tokenA)).toThrow(CircularDependencyError);
     });
@@ -128,8 +134,14 @@ describe('DI Container - Core Functionality', () => {
 
       class ServiceC {}
 
-      container.register(tokenA, new SingletonProvider((c) => new ServiceA(c.resolve(tokenB))));
-      container.register(tokenB, new SingletonProvider((c) => new ServiceB(c.resolve(tokenC))));
+      container.register(
+        tokenA,
+        new SingletonProvider((c) => new ServiceA(c.resolve(tokenB))),
+      );
+      container.register(
+        tokenB,
+        new SingletonProvider((c) => new ServiceB(c.resolve(tokenC))),
+      );
       container.register(tokenC, new SingletonProvider(() => new ServiceC()));
 
       const serviceA = container.resolve(tokenA);
@@ -144,7 +156,10 @@ describe('DI Container - Core Functionality', () => {
     it('should create and manage scopes', () => {
       const token = createToken<{ scopeId: string }>('ScopedService');
 
-      container.register(token, new ScopedProvider(() => ({ scopeId: Math.random().toString() })));
+      container.register(
+        token,
+        new ScopedProvider(() => ({ scopeId: Math.random().toString() })),
+      );
 
       const scope1 = container.createScope();
       const scope2 = container.createScope();
@@ -166,7 +181,10 @@ describe('DI Container - Core Functionality', () => {
         instance.disposed = true;
       });
 
-      container.register(token, new ScopedProvider(() => new MockDisposableService(), disposeFn));
+      container.register(
+        token,
+        new ScopedProvider(() => new MockDisposableService(), disposeFn),
+      );
 
       const scope = container.createScope();
       const service = scope.resolve(token);
@@ -192,7 +210,7 @@ describe('DI Container - Core Functionality', () => {
 
       container.register(
         token,
-        new SingletonProvider(() => new MockDisposableService(), disposeFn)
+        new SingletonProvider(() => new MockDisposableService(), disposeFn),
       );
 
       const service = container.resolve(token);
@@ -272,8 +290,14 @@ describe('DI Container - Integration with Core Tokens', () => {
       }
     }
 
-    container.register(CORE_TOKENS.Logger, new SingletonProvider(() => new MockLogger()));
-    container.register(CORE_TOKENS.Config, new SingletonProvider(() => new MockConfig()));
+    container.register(
+      CORE_TOKENS.Logger,
+      new SingletonProvider(() => new MockLogger()),
+    );
+    container.register(
+      CORE_TOKENS.Config,
+      new SingletonProvider(() => new MockConfig()),
+    );
 
     const logger = container.resolve(CORE_TOKENS.Logger);
     const config = container.resolve(CORE_TOKENS.Config);
@@ -307,7 +331,7 @@ describe('DI Container - Integration with Core Tokens', () => {
 
     container.register(
       SWARM_TOKENS.SwarmCoordinator,
-      new SingletonProvider(() => new MockSwarmCoordinator())
+      new SingletonProvider(() => new MockSwarmCoordinator()),
     );
 
     const coordinator = container.resolve(SWARM_TOKENS.SwarmCoordinator);

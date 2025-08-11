@@ -83,23 +83,31 @@ export class NeuralDeceptionDetector {
    * @param analysis
    * @param aiResponse
    */
-  private extractFeatures(analysis: LogAnalysisResult, aiResponse: string): DeceptionFeatures {
+  private extractFeatures(
+    analysis: LogAnalysisResult,
+    aiResponse: string,
+  ): DeceptionFeatures {
     const words = aiResponse.split(/\s+/);
     const verificationWords = this.countVerificationWords(aiResponse);
     const implementationWords = this.countImplementationWords(aiResponse);
 
     return {
-      claimToActionRatio: analysis.aiClaims.length / Math.max(analysis.toolCallsFound.length, 1),
+      claimToActionRatio:
+        analysis.aiClaims.length / Math.max(analysis.toolCallsFound.length, 1),
       verificationWordCount: verificationWords,
       implementationWordCount: implementationWords,
-      toolCallFrequency: analysis.toolCallsFound.length / Math.max(words.length / 100, 1),
+      toolCallFrequency:
+        analysis.toolCallsFound.length / Math.max(words.length / 100, 1),
       timeGapBetweenClaimAndAction: this.calculateTimeGap(analysis),
       complexityOfClaims: this.calculateClaimComplexity(analysis.aiClaims),
       specificityOfClaims: this.calculateClaimSpecificity(analysis.aiClaims),
       toolDiversityScore: this.calculateToolDiversity(analysis.toolCallsFound),
       fileModificationRatio:
-        analysis.fileOperations.length / Math.max(analysis.toolCallsFound.length, 1),
-      bashCommandComplexity: this.calculateBashComplexity(analysis.bashCommands),
+        analysis.fileOperations.length /
+        Math.max(analysis.toolCallsFound.length, 1),
+      bashCommandComplexity: this.calculateBashComplexity(
+        analysis.bashCommands,
+      ),
     };
   }
 
@@ -149,7 +157,9 @@ export class NeuralDeceptionDetector {
   private calculateTimeGap(analysis: LogAnalysisResult): number {
     // In a real implementation, this would analyze timestamps
     // For now, return a heuristic based on claim/action ratio
-    return analysis.aiClaims.length > 0 && analysis.toolCallsFound.length === 0 ? 1.0 : 0.0;
+    return analysis.aiClaims.length > 0 && analysis.toolCallsFound.length === 0
+      ? 1.0
+      : 0.0;
   }
 
   /**
@@ -161,10 +171,11 @@ export class NeuralDeceptionDetector {
     if (claims.length === 0) return 0;
 
     const avgLength =
-      claims.reduce((sum, claim) => sum + claim.split(' ').length, 0) / claims.length;
+      claims.reduce((sum, claim) => sum + claim.split(' ').length, 0) /
+      claims.length;
     const technicalTerms = claims.reduce((sum, claim) => {
       const techWords = claim.match(
-        /\b(?:architecture|framework|system|implementation|integration|optimization|neural|algorithm)\b/gi
+        /\b(?:architecture|framework|system|implementation|integration|optimization|neural|algorithm)\b/gi,
       );
       return sum + (techWords ? techWords.length : 0);
     }, 0);
@@ -182,10 +193,12 @@ export class NeuralDeceptionDetector {
 
     const specificityScore = claims.reduce((sum, claim) => {
       // Specific indicators: file names, line numbers, exact errors
-      const specific = claim.match(/\b(?:\w+\.\w+|line \d+|error \d+|\d+\.\d+\.\d+)\b/gi);
+      const specific = claim.match(
+        /\b(?:\w+\.\w+|line \d+|error \d+|\d+\.\d+\.\d+)\b/gi,
+      );
       // Vague indicators: "comprehensive", "advanced", "existing"
       const vague = claim.match(
-        /\b(?:comprehensive|advanced|existing|sophisticated|complex|optimal)\b/gi
+        /\b(?:comprehensive|advanced|existing|sophisticated|complex|optimal)\b/gi,
       );
 
       const specificCount = specific ? specific.length : 0;
@@ -255,11 +268,11 @@ export class NeuralDeceptionDetector {
       if (Math.abs(contribution) > 0.3) {
         if (contribution > 0) {
           explanations.push(
-            `High ${featureName.replace(/([A-Z])/g, ' $1').toLowerCase()} indicates deception`
+            `High ${featureName.replace(/([A-Z])/g, ' $1').toLowerCase()} indicates deception`,
           );
         } else {
           explanations.push(
-            `Low ${featureName.replace(/([A-Z])/g, ' $1').toLowerCase()} suggests legitimate behavior`
+            `Low ${featureName.replace(/([A-Z])/g, ' $1').toLowerCase()} suggests legitimate behavior`,
           );
         }
       }
@@ -301,7 +314,7 @@ export class NeuralDeceptionDetector {
     analysis: LogAnalysisResult,
     aiResponse: string,
     actualDeception: boolean,
-    deceptionType?: string
+    deceptionType?: string,
   ): void {
     const features = this.extractFeatures(analysis, aiResponse);
     const prediction = this.predict(features);
@@ -367,7 +380,8 @@ export class NeuralDeceptionDetector {
     };
   }> {
     // Get base log analysis
-    const logAnalysis = await this.baseDetector.analyzeRecentActivity(aiResponse);
+    const logAnalysis =
+      await this.baseDetector.analyzeRecentActivity(aiResponse);
 
     // Extract neural features and predict
     const features = this.extractFeatures(logAnalysis, aiResponse);
@@ -379,9 +393,14 @@ export class NeuralDeceptionDetector {
 
     const finalVerdict = {
       isDeceptive: ruleBasedDeception || mlDeception,
-      confidence: Math.max(ruleBasedDeception ? 0.9 : 0, neuralPrediction.confidence),
+      confidence: Math.max(
+        ruleBasedDeception ? 0.9 : 0,
+        neuralPrediction.confidence,
+      ),
       reasoning: [
-        ...logAnalysis.deceptionPatterns.map((p) => `Rule-based: ${p.type} detected`),
+        ...logAnalysis.deceptionPatterns.map(
+          (p) => `Rule-based: ${p.type} detected`,
+        ),
         ...neuralPrediction.explanation,
         `Neural network deception probability: ${(neuralPrediction.deceptionProbability * 100).toFixed(1)}%`,
       ],
@@ -404,7 +423,10 @@ export class NeuralDeceptionDetector {
   /**
    * Export model state for persistence.
    */
-  exportModel(): { weights: Record<string, number>; trainingData: TrainingExample[] } {
+  exportModel(): {
+    weights: Record<string, number>;
+    trainingData: TrainingExample[];
+  } {
     return {
       weights: Object.fromEntries(this.modelWeights),
       trainingData: this.trainingData,

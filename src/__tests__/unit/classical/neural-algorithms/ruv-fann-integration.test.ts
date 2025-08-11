@@ -65,7 +65,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };
@@ -148,7 +150,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         randomSeed: 12345, // Fixed seed for consistency
@@ -176,7 +180,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };
@@ -240,7 +246,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };
@@ -276,7 +284,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };
@@ -307,7 +317,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };
@@ -344,7 +356,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
       for (let i = 0; i < 10; i++) {
         const config: NetworkConfig = {
           inputSize: 5,
-          hiddenLayers: [{ size: 10, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+          hiddenLayers: [
+            { size: 10, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+          ],
           outputSize: 3,
           outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
         };
@@ -404,7 +418,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 3,
-        hiddenLayers: [{ size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 4, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };
@@ -430,7 +446,9 @@ describe('ruv-FANN Integration - Classical TDD', () => {
 
       const config: NetworkConfig = {
         inputSize: 2,
-        hiddenLayers: [{ size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] }],
+        hiddenLayers: [
+          { size: 3, activation: ACTIVATION_FUNCTIONS['SIGMOID'] },
+        ],
         outputSize: 1,
         outputActivation: ACTIVATION_FUNCTIONS['SIGMOID'],
       };

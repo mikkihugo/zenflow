@@ -43,7 +43,9 @@ export interface BackendStats {
  * @param memoryStats
  * @example
  */
-export function memoryStatsToBackendStats(memoryStats: MemoryStats): BackendStats {
+export function memoryStatsToBackendStats(
+  memoryStats: MemoryStats,
+): BackendStats {
   return {
     entries: memoryStats.totalEntries,
     size: memoryStats.totalSize,
@@ -59,7 +61,9 @@ export function memoryStatsToBackendStats(memoryStats: MemoryStats): BackendStat
  * @param backendStats
  * @example
  */
-export function backendStatsToMemoryStats(backendStats: BackendStats): MemoryStats {
+export function backendStatsToMemoryStats(
+  backendStats: BackendStats,
+): MemoryStats {
   return {
     totalEntries: backendStats.entries,
     totalSize: backendStats.size,
@@ -97,7 +101,10 @@ export interface BackendInterface {
   delete(key: string): Promise<boolean>;
 
   /** Search for values matching a pattern */
-  search(pattern: string, namespace?: string): Promise<Record<string, JSONValue>>;
+  search(
+    pattern: string,
+    namespace?: string,
+  ): Promise<Record<string, JSONValue>>;
 
   /** List available namespaces */
   listNamespaces(): Promise<string[]>;

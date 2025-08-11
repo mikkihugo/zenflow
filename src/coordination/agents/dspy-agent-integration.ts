@@ -22,7 +22,10 @@ import type {
   DSPyOptimizationConfig,
   DSPyOptimizationResult,
 } from '../../neural/types/dspy-types.ts';
-import type { SwarmAgent, SwarmCoordinator } from '../swarm/core/swarm-coordinator.ts';
+import type {
+  SwarmAgent,
+  SwarmCoordinator,
+} from '../swarm/core/swarm-coordinator.ts';
 import type { AgentType } from '../types.ts';
 
 const logger = getLogger('DSPyAgentIntegration');
@@ -210,7 +213,10 @@ export class DSPyAgentIntegration {
   private dspyWrapper: DSPyWrapper | null = null;
   private dspyAgents: Map<string, SwarmAgent> = new Map();
 
-  constructor(swarmCoordinator: SwarmCoordinator, _memoryStore: SessionMemoryStore) {
+  constructor(
+    swarmCoordinator: SwarmCoordinator,
+    _memoryStore: SessionMemoryStore,
+  ) {
     this.swarmCoordinator = swarmCoordinator;
     // this.memoryStore = memoryStore; // Removed: unused variable
 
@@ -229,7 +235,7 @@ export class DSPyAgentIntegration {
           model: 'claude-3-5-sonnet-20241022',
           temperature: 0.1,
           maxTokens: 2000,
-        }
+        },
       );
 
       logger.info('DSPy wrapper initialized successfully');
@@ -258,7 +264,9 @@ export class DSPyAgentIntegration {
       await this.swarmCoordinator.addAgent(agent);
       this.dspyAgents.set(agent.id, agent);
 
-      logger.debug(`Registered DSPy agent: ${agentType}`, { agentId: agent.id });
+      logger.debug(`Registered DSPy agent: ${agentType}`, {
+        agentId: agent.id,
+      });
     }
 
     logger.info(`Successfully registered ${dspyAgentTypes.length} DSPy agents`);
@@ -358,7 +366,7 @@ export class DSPyAgentIntegration {
     options: {
       agentTypes?: DSPyAgentType[];
       coordinationStrategy?: 'parallel' | 'sequential' | 'collaborative';
-    } = {}
+    } = {},
   ): Promise<{ program: any; result: any }> {
     logger.info(`Starting DSPy optimization: ${programName}`, {
       signature,
@@ -368,17 +376,19 @@ export class DSPyAgentIntegration {
 
     // Use existing swarm coordination for DSPy agents
     const availableAgents = Array.from(this.dspyAgents.values()).filter(
-      (agent) => agent.status === 'idle'
+      (agent) => agent.status === 'idle',
     );
 
     if (options?.agentTypes) {
       // Filter agents by requested types
       const filteredAgents = availableAgents.filter((agent) =>
-        options?.agentTypes?.includes(agent.type as DSPyAgentType)
+        options?.agentTypes?.includes(agent.type as DSPyAgentType),
       );
 
       if (filteredAgents.length === 0) {
-        throw new Error(`No available DSPy agents for types: ${options?.agentTypes?.join(', ')}`);
+        throw new Error(
+          `No available DSPy agents for types: ${options?.agentTypes?.join(', ')}`,
+        );
       }
     }
 
@@ -428,7 +438,7 @@ export class DSPyAgentIntegration {
 
     // Check if neural-enhancer agent is available
     const neuralEnhancer = Array.from(this.dspyAgents.values()).find(
-      (agent) => agent.type === 'neural-enhancer'
+      (agent) => agent.type === 'neural-enhancer',
     );
 
     if (!neuralEnhancer) {
@@ -458,7 +468,10 @@ export class DSPyAgentIntegration {
       'input: string -> enhanced_output: string',
       'Demonstrate automatic neural workflow enhancement',
       [{ input: 'sample text', output: 'enhanced sample text' }],
-      { agentTypes: ['neural-enhancer'], coordinationStrategy: 'collaborative' }
+      {
+        agentTypes: ['neural-enhancer'],
+        coordinationStrategy: 'collaborative',
+      },
     );
 
     return {
@@ -499,13 +512,22 @@ export class DSPyAgentIntegration {
    * @param description
    * @private
    */
-  private async createDSPyProgram(signature: string, description: string): Promise<DSPyProgram> {
+  private async createDSPyProgram(
+    signature: string,
+    description: string,
+  ): Promise<DSPyProgram> {
     if (!this.dspyWrapper) {
       throw new Error('DSPy wrapper not initialized. Call initialize() first.');
     }
 
-    const program = await this.dspyWrapper.createProgram(signature, description);
-    logger.debug('Created DSPy program using wrapper', { signature, description });
+    const program = await this.dspyWrapper.createProgram(
+      signature,
+      description,
+    );
+    logger.debug('Created DSPy program using wrapper', {
+      signature,
+      description,
+    });
     return program;
   }
 
@@ -518,7 +540,7 @@ export class DSPyAgentIntegration {
    */
   private async optimizeProgram(
     program: DSPyProgram,
-    examples: Array<{ input: any; output: any }>
+    examples: Array<{ input: any; output: any }>,
   ): Promise<{ performance: any; optimizedProgram?: DSPyProgram }> {
     if (!this.dspyWrapper) {
       throw new Error('DSPy wrapper not initialized. Call initialize() first.');
@@ -526,7 +548,9 @@ export class DSPyAgentIntegration {
 
     if (examples.length === 0) {
       logger.debug('No examples provided, returning unoptimized program');
-      return { performance: { accuracy: 1.0, message: 'No optimization performed' } };
+      return {
+        performance: { accuracy: 1.0, message: 'No optimization performed' },
+      };
     }
 
     try {
@@ -553,10 +577,8 @@ export class DSPyAgentIntegration {
         // timeout: 60000, // 1 minute - timeout not part of DSPyOptimizationConfig
       };
 
-      const optimizationResult: DSPyOptimizationResult = await this.dspyWrapper.optimize(
-        program,
-        optimizationConfig
-      );
+      const optimizationResult: DSPyOptimizationResult =
+        await this.dspyWrapper.optimize(program, optimizationConfig);
 
       logger.info('DSPy program optimization completed', {
         examplesUsed: examples.length,

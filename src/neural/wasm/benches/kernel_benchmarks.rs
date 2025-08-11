@@ -1,60 +1,63 @@
 //! Benchmarks for kernel execution performance
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId, Throughput};
+use criterion::{
+  black_box, criterion_group, criterion_main, BenchmarkId, Criterion,
+  Throughput,
+};
 use cuda_rust_wasm::{
-    transpiler::{CudaTranspiler, TranspilerOptions, OptimizationLevel},
-    runtime::{WasmRuntime, RuntimeOptions},
-    kernel::{KernelLauncher, LaunchConfig},
-    memory::{DeviceMemory, MemoryPool, AllocationStrategy},
+  kernel::{KernelLauncher, LaunchConfig},
+  memory::{AllocationStrategy, DeviceMemory, MemoryPool},
+  runtime::{RuntimeOptions, WasmRuntime},
+  transpiler::{CudaTranspiler, OptimizationLevel, TranspilerOptions},
 };
 use std::time::Duration;
 
 fn benchmark_kernel_launch_overhead(c: &mut Criterion) {
-    let mut group = c.benchmark_group("kernel_launch_overhead");
-    
-    // Simple kernel that does minimal work
-    let cuda_code = r#"
+  let mut group = c.benchmark_group("kernel_launch_overhead");
+
+  // Simple kernel that does minimal work
+  let cuda_code = r#"
         __global__ void empty_kernel() {
         }
     "#;
-    
-    let transpiler = CudaTranspiler::new(TranspilerOptions::default());
-    let wasm_bytes = transpiler.transpile(cuda_code).unwrap();
-    let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
-    let module = runtime.load_module(&wasm_bytes).unwrap();
-    let launcher = KernelLauncher::new(module);
-    
-    let grid_sizes = vec![1, 10, 100, 1000];
-    
-    for &grid_size in &grid_sizes {
-        group.bench_with_input(
-            BenchmarkId::new("grid_size", grid_size),
-            &grid_size,
-            |b, &grid_size| {
-                let config = LaunchConfig {
-                    grid_size: (grid_size, 1, 1),
-                    block_size: (256, 1, 1),
-                    shared_mem_bytes: 0,
-                };
-                
-                b.iter(|| {
-                    launcher.launch("empty_kernel", config, &[]).unwrap();
-                    runtime.synchronize().unwrap();
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+  let transpiler = CudaTranspiler::new(TranspilerOptions::default());
+  let wasm_bytes = transpiler.transpile(cuda_code).unwrap();
+  let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
+  let module = runtime.load_module(&wasm_bytes).unwrap();
+  let launcher = KernelLauncher::new(module);
+
+  let grid_sizes = vec![1, 10, 100, 1000];
+
+  for &grid_size in &grid_sizes {
+    group.bench_with_input(
+      BenchmarkId::new("grid_size", grid_size),
+      &grid_size,
+      |b, &grid_size| {
+        let config = LaunchConfig {
+          grid_size: (grid_size, 1, 1),
+          block_size: (256, 1, 1),
+          shared_mem_bytes: 0,
+        };
+
+        b.iter(|| {
+          launcher.launch("empty_kernel", config, &[]).unwrap();
+          runtime.synchronize().unwrap();
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 fn benchmark_vector_operations(c: &mut Criterion) {
-    let mut group = c.benchmark_group("vector_operations");
-    
-    let sizes = vec![1024, 16384, 262144, 1048576]; // 1K to 1M elements
-    
-    // Vector addition kernel
-    let vector_add_code = r#"
+  let mut group = c.benchmark_group("vector_operations");
+
+  let sizes = vec![1024, 16384, 262144, 1048576]; // 1K to 1M elements
+
+  // Vector addition kernel
+  let vector_add_code = r#"
         __global__ void vector_add(float* a, float* b, float* c, int n) {
             int idx = blockIdx.x * blockDim.x + threadIdx.x;
             if (idx < n) {
@@ -62,47 +65,51 @@ fn benchmark_vector_operations(c: &mut Criterion) {
             }
         }
     "#;
-    
-    for &size in &sizes {
-        group.throughput(Throughput::Elements(size as u64));
-        
-        group.bench_with_input(
-            BenchmarkId::new("vector_add", size),
-            &size,
-            |b, &size| {
-                let transpiler = CudaTranspiler::new(TranspilerOptions::default());
-                let wasm_bytes = transpiler.transpile(vector_add_code).unwrap();
-                let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
-                let module = runtime.load_module(&wasm_bytes).unwrap();
-                let launcher = KernelLauncher::new(module);
-                
-                let pool = MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024).unwrap();
-                let data: Vec<f32> = (0..size).map(|i| i as f32).collect();
-                
-                let d_a = pool.allocate_and_copy(&data).unwrap();
-                let d_b = pool.allocate_and_copy(&data).unwrap();
-                let d_c: DeviceMemory<f32> = pool.allocate(size).unwrap();
-                
-                let config = LaunchConfig {
-                    grid_size: ((size + 255) / 256, 1, 1),
-                    block_size: (256, 1, 1),
-                    shared_mem_bytes: 0,
-                };
-                
-                b.iter(|| {
-                    launcher.launch(
-                        "vector_add",
-                        config,
-                        &[d_a.as_arg(), d_b.as_arg(), d_c.as_arg(), size.as_arg()],
-                    ).unwrap();
-                    runtime.synchronize().unwrap();
-                });
-            },
-        );
-    }
-    
-    // Elementwise operations
-    let elementwise_code = r#"
+
+  for &size in &sizes {
+    group.throughput(Throughput::Elements(size as u64));
+
+    group.bench_with_input(
+      BenchmarkId::new("vector_add", size),
+      &size,
+      |b, &size| {
+        let transpiler = CudaTranspiler::new(TranspilerOptions::default());
+        let wasm_bytes = transpiler.transpile(vector_add_code).unwrap();
+        let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
+        let module = runtime.load_module(&wasm_bytes).unwrap();
+        let launcher = KernelLauncher::new(module);
+
+        let pool =
+          MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024)
+            .unwrap();
+        let data: Vec<f32> = (0..size).map(|i| i as f32).collect();
+
+        let d_a = pool.allocate_and_copy(&data).unwrap();
+        let d_b = pool.allocate_and_copy(&data).unwrap();
+        let d_c: DeviceMemory<f32> = pool.allocate(size).unwrap();
+
+        let config = LaunchConfig {
+          grid_size: ((size + 255) / 256, 1, 1),
+          block_size: (256, 1, 1),
+          shared_mem_bytes: 0,
+        };
+
+        b.iter(|| {
+          launcher
+            .launch(
+              "vector_add",
+              config,
+              &[d_a.as_arg(), d_b.as_arg(), d_c.as_arg(), size.as_arg()],
+            )
+            .unwrap();
+          runtime.synchronize().unwrap();
+        });
+      },
+    );
+  }
+
+  // Elementwise operations
+  let elementwise_code = r#"
         __global__ void elementwise_ops(float* data, int n) {
             int idx = blockIdx.x * blockDim.x + threadIdx.x;
             if (idx < n) {
@@ -114,50 +121,54 @@ fn benchmark_vector_operations(c: &mut Criterion) {
             }
         }
     "#;
-    
-    for &size in &sizes {
-        group.throughput(Throughput::Elements(size as u64));
-        
-        group.bench_with_input(
-            BenchmarkId::new("elementwise_ops", size),
-            &size,
-            |b, &size| {
-                let transpiler = CudaTranspiler::new(TranspilerOptions::default());
-                let wasm_bytes = transpiler.transpile(elementwise_code).unwrap();
-                let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
-                let module = runtime.load_module(&wasm_bytes).unwrap();
-                let launcher = KernelLauncher::new(module);
-                
-                let pool = MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024).unwrap();
-                let data: Vec<f32> = (0..size).map(|i| (i as f32) / 1000.0).collect();
-                let d_data = pool.allocate_and_copy(&data).unwrap();
-                
-                let config = LaunchConfig {
-                    grid_size: ((size + 255) / 256, 1, 1),
-                    block_size: (256, 1, 1),
-                    shared_mem_bytes: 0,
-                };
-                
-                b.iter(|| {
-                    launcher.launch(
-                        "elementwise_ops",
-                        config,
-                        &[d_data.as_arg(), size.as_arg()],
-                    ).unwrap();
-                    runtime.synchronize().unwrap();
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+  for &size in &sizes {
+    group.throughput(Throughput::Elements(size as u64));
+
+    group.bench_with_input(
+      BenchmarkId::new("elementwise_ops", size),
+      &size,
+      |b, &size| {
+        let transpiler = CudaTranspiler::new(TranspilerOptions::default());
+        let wasm_bytes = transpiler.transpile(elementwise_code).unwrap();
+        let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
+        let module = runtime.load_module(&wasm_bytes).unwrap();
+        let launcher = KernelLauncher::new(module);
+
+        let pool =
+          MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024)
+            .unwrap();
+        let data: Vec<f32> = (0..size).map(|i| (i as f32) / 1000.0).collect();
+        let d_data = pool.allocate_and_copy(&data).unwrap();
+
+        let config = LaunchConfig {
+          grid_size: ((size + 255) / 256, 1, 1),
+          block_size: (256, 1, 1),
+          shared_mem_bytes: 0,
+        };
+
+        b.iter(|| {
+          launcher
+            .launch(
+              "elementwise_ops",
+              config,
+              &[d_data.as_arg(), size.as_arg()],
+            )
+            .unwrap();
+          runtime.synchronize().unwrap();
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 fn benchmark_matrix_multiply(c: &mut Criterion) {
-    let mut group = c.benchmark_group("matrix_multiply");
-    group.measurement_time(Duration::from_secs(10));
-    
-    let matrix_multiply_code = r#"
+  let mut group = c.benchmark_group("matrix_multiply");
+  group.measurement_time(Duration::from_secs(10));
+
+  let matrix_multiply_code = r#"
         #define TILE_SIZE 16
         
         __global__ void matrix_multiply(float* a, float* b, float* c, int m, int n, int k) {
@@ -196,57 +207,67 @@ fn benchmark_matrix_multiply(c: &mut Criterion) {
             }
         }
     "#;
-    
-    let matrix_sizes = vec![64, 128, 256, 512];
-    
-    for &size in &matrix_sizes {
-        group.throughput(Throughput::Elements((size * size) as u64));
-        
-        group.bench_with_input(
-            BenchmarkId::new("tiled", size),
-            &size,
-            |b, &size| {
-                let transpiler = CudaTranspiler::new(TranspilerOptions::default());
-                let wasm_bytes = transpiler.transpile(matrix_multiply_code).unwrap();
-                let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
-                let module = runtime.load_module(&wasm_bytes).unwrap();
-                let launcher = KernelLauncher::new(module);
-                
-                let pool = MemoryPool::new(AllocationStrategy::BestFit, 500 * 1024 * 1024).unwrap();
-                
-                let a: Vec<f32> = (0..size*size).map(|i| (i % 10) as f32).collect();
-                let b: Vec<f32> = (0..size*size).map(|i| (i % 10) as f32).collect();
-                
-                let d_a = pool.allocate_and_copy(&a).unwrap();
-                let d_b = pool.allocate_and_copy(&b).unwrap();
-                let d_c: DeviceMemory<f32> = pool.allocate(size * size).unwrap();
-                
-                let config = LaunchConfig {
-                    grid_size: ((size + 15) / 16, (size + 15) / 16, 1),
-                    block_size: (16, 16, 1),
-                    shared_mem_bytes: 2 * 16 * 16 * std::mem::size_of::<f32>(),
-                };
-                
-                b.iter(|| {
-                    launcher.launch(
-                        "matrix_multiply",
-                        config,
-                        &[d_a.as_arg(), d_b.as_arg(), d_c.as_arg(), 
-                          size.as_arg(), size.as_arg(), size.as_arg()],
-                    ).unwrap();
-                    runtime.synchronize().unwrap();
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+  let matrix_sizes = vec![64, 128, 256, 512];
+
+  for &size in &matrix_sizes {
+    group.throughput(Throughput::Elements((size * size) as u64));
+
+    group.bench_with_input(
+      BenchmarkId::new("tiled", size),
+      &size,
+      |b, &size| {
+        let transpiler = CudaTranspiler::new(TranspilerOptions::default());
+        let wasm_bytes = transpiler.transpile(matrix_multiply_code).unwrap();
+        let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
+        let module = runtime.load_module(&wasm_bytes).unwrap();
+        let launcher = KernelLauncher::new(module);
+
+        let pool =
+          MemoryPool::new(AllocationStrategy::BestFit, 500 * 1024 * 1024)
+            .unwrap();
+
+        let a: Vec<f32> = (0..size * size).map(|i| (i % 10) as f32).collect();
+        let b: Vec<f32> = (0..size * size).map(|i| (i % 10) as f32).collect();
+
+        let d_a = pool.allocate_and_copy(&a).unwrap();
+        let d_b = pool.allocate_and_copy(&b).unwrap();
+        let d_c: DeviceMemory<f32> = pool.allocate(size * size).unwrap();
+
+        let config = LaunchConfig {
+          grid_size: ((size + 15) / 16, (size + 15) / 16, 1),
+          block_size: (16, 16, 1),
+          shared_mem_bytes: 2 * 16 * 16 * std::mem::size_of::<f32>(),
+        };
+
+        b.iter(|| {
+          launcher
+            .launch(
+              "matrix_multiply",
+              config,
+              &[
+                d_a.as_arg(),
+                d_b.as_arg(),
+                d_c.as_arg(),
+                size.as_arg(),
+                size.as_arg(),
+                size.as_arg(),
+              ],
+            )
+            .unwrap();
+          runtime.synchronize().unwrap();
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 fn benchmark_reduction(c: &mut Criterion) {
-    let mut group = c.benchmark_group("reduction");
-    
-    let reduction_code = r#"
+  let mut group = c.benchmark_group("reduction");
+
+  let reduction_code = r#"
         __global__ void reduction_sum(float* input, float* output, int n) {
             extern __shared__ float sdata[];
             
@@ -289,56 +310,56 @@ fn benchmark_reduction(c: &mut Criterion) {
             if (tid == 0) output[blockIdx.x] = sdata[0];
         }
     "#;
-    
-    let sizes = vec![1024, 16384, 262144, 1048576];
-    
-    for &size in &sizes {
-        group.throughput(Throughput::Elements(size as u64));
-        
-        group.bench_with_input(
-            BenchmarkId::new("sum", size),
-            &size,
-            |b, &size| {
-                let transpiler = CudaTranspiler::new(TranspilerOptions::default());
-                let wasm_bytes = transpiler.transpile(reduction_code).unwrap();
-                let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
-                let module = runtime.load_module(&wasm_bytes).unwrap();
-                let launcher = KernelLauncher::new(module);
-                
-                let pool = MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024).unwrap();
-                let data: Vec<f32> = (0..size).map(|_| 1.0).collect();
-                
-                let block_size = 256;
-                let grid_size = (size + block_size * 2 - 1) / (block_size * 2);
-                
-                let d_input = pool.allocate_and_copy(&data).unwrap();
-                let d_output: DeviceMemory<f32> = pool.allocate(grid_size).unwrap();
-                
-                let config = LaunchConfig {
-                    grid_size: (grid_size as u32, 1, 1),
-                    block_size: (block_size as u32, 1, 1),
-                    shared_mem_bytes: block_size * std::mem::size_of::<f32>(),
-                };
-                
-                b.iter(|| {
-                    launcher.launch(
-                        "reduction_sum",
-                        config,
-                        &[d_input.as_arg(), d_output.as_arg(), size.as_arg()],
-                    ).unwrap();
-                    runtime.synchronize().unwrap();
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+  let sizes = vec![1024, 16384, 262144, 1048576];
+
+  for &size in &sizes {
+    group.throughput(Throughput::Elements(size as u64));
+
+    group.bench_with_input(BenchmarkId::new("sum", size), &size, |b, &size| {
+      let transpiler = CudaTranspiler::new(TranspilerOptions::default());
+      let wasm_bytes = transpiler.transpile(reduction_code).unwrap();
+      let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
+      let module = runtime.load_module(&wasm_bytes).unwrap();
+      let launcher = KernelLauncher::new(module);
+
+      let pool =
+        MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024)
+          .unwrap();
+      let data: Vec<f32> = (0..size).map(|_| 1.0).collect();
+
+      let block_size = 256;
+      let grid_size = (size + block_size * 2 - 1) / (block_size * 2);
+
+      let d_input = pool.allocate_and_copy(&data).unwrap();
+      let d_output: DeviceMemory<f32> = pool.allocate(grid_size).unwrap();
+
+      let config = LaunchConfig {
+        grid_size: (grid_size as u32, 1, 1),
+        block_size: (block_size as u32, 1, 1),
+        shared_mem_bytes: block_size * std::mem::size_of::<f32>(),
+      };
+
+      b.iter(|| {
+        launcher
+          .launch(
+            "reduction_sum",
+            config,
+            &[d_input.as_arg(), d_output.as_arg(), size.as_arg()],
+          )
+          .unwrap();
+        runtime.synchronize().unwrap();
+      });
+    });
+  }
+
+  group.finish();
 }
 
 fn benchmark_optimization_levels(c: &mut Criterion) {
-    let mut group = c.benchmark_group("optimization_levels");
-    
-    let compute_intensive_code = r#"
+  let mut group = c.benchmark_group("optimization_levels");
+
+  let compute_intensive_code = r#"
         __global__ void compute_intensive(float* data, int n) {
             int idx = blockIdx.x * blockDim.x + threadIdx.x;
             if (idx < n) {
@@ -357,60 +378,64 @@ fn benchmark_optimization_levels(c: &mut Criterion) {
             }
         }
     "#;
-    
-    let optimization_levels = vec![
-        ("None", OptimizationLevel::None),
-        ("Basic", OptimizationLevel::Basic),
-        ("Aggressive", OptimizationLevel::Aggressive),
-    ];
-    
-    let size = 100000;
-    
-    for (name, level) in optimization_levels {
-        group.bench_with_input(
-            BenchmarkId::new("level", name),
-            &level,
-            |b, &level| {
-                let options = TranspilerOptions {
-                    optimization_level: level,
-                    ..Default::default()
-                };
-                
-                let transpiler = CudaTranspiler::new(options);
-                let wasm_bytes = transpiler.transpile(compute_intensive_code).unwrap();
-                let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
-                let module = runtime.load_module(&wasm_bytes).unwrap();
-                let launcher = KernelLauncher::new(module);
-                
-                let pool = MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024).unwrap();
-                let data: Vec<f32> = (0..size).map(|i| (i as f32) / 1000.0).collect();
-                let d_data = pool.allocate_and_copy(&data).unwrap();
-                
-                let config = LaunchConfig {
-                    grid_size: ((size + 255) / 256, 1, 1),
-                    block_size: (256, 1, 1),
-                    shared_mem_bytes: 0,
-                };
-                
-                b.iter(|| {
-                    launcher.launch(
-                        "compute_intensive",
-                        config,
-                        &[d_data.as_arg(), size.as_arg()],
-                    ).unwrap();
-                    runtime.synchronize().unwrap();
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+  let optimization_levels = vec![
+    ("None", OptimizationLevel::None),
+    ("Basic", OptimizationLevel::Basic),
+    ("Aggressive", OptimizationLevel::Aggressive),
+  ];
+
+  let size = 100000;
+
+  for (name, level) in optimization_levels {
+    group.bench_with_input(
+      BenchmarkId::new("level", name),
+      &level,
+      |b, &level| {
+        let options = TranspilerOptions {
+          optimization_level: level,
+          ..Default::default()
+        };
+
+        let transpiler = CudaTranspiler::new(options);
+        let wasm_bytes = transpiler.transpile(compute_intensive_code).unwrap();
+        let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
+        let module = runtime.load_module(&wasm_bytes).unwrap();
+        let launcher = KernelLauncher::new(module);
+
+        let pool =
+          MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024)
+            .unwrap();
+        let data: Vec<f32> = (0..size).map(|i| (i as f32) / 1000.0).collect();
+        let d_data = pool.allocate_and_copy(&data).unwrap();
+
+        let config = LaunchConfig {
+          grid_size: ((size + 255) / 256, 1, 1),
+          block_size: (256, 1, 1),
+          shared_mem_bytes: 0,
+        };
+
+        b.iter(|| {
+          launcher
+            .launch(
+              "compute_intensive",
+              config,
+              &[d_data.as_arg(), size.as_arg()],
+            )
+            .unwrap();
+          runtime.synchronize().unwrap();
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 fn benchmark_atomic_operations(c: &mut Criterion) {
-    let mut group = c.benchmark_group("atomic_operations");
-    
-    let atomic_histogram_code = r#"
+  let mut group = c.benchmark_group("atomic_operations");
+
+  let atomic_histogram_code = r#"
         __global__ void atomic_histogram(int* data, int* hist, int n, int nbins) {
             int idx = blockIdx.x * blockDim.x + threadIdx.x;
             if (idx < n) {
@@ -419,67 +444,76 @@ fn benchmark_atomic_operations(c: &mut Criterion) {
             }
         }
     "#;
-    
-    let sizes = vec![10000, 100000, 1000000];
-    let nbins = 256;
-    
-    for &size in &sizes {
-        group.throughput(Throughput::Elements(size as u64));
-        
-        group.bench_with_input(
-            BenchmarkId::new("histogram", size),
-            &size,
-            |b, &size| {
-                let options = TranspilerOptions {
-                    enable_atomics: true,
-                    ..Default::default()
-                };
-                
-                let transpiler = CudaTranspiler::new(options);
-                let wasm_bytes = transpiler.transpile(atomic_histogram_code).unwrap();
-                let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
-                let module = runtime.load_module(&wasm_bytes).unwrap();
-                let launcher = KernelLauncher::new(module);
-                
-                let pool = MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024).unwrap();
-                
-                let data: Vec<i32> = (0..size).map(|i| i as i32).collect();
-                let hist = vec![0i32; nbins];
-                
-                let d_data = pool.allocate_and_copy(&data).unwrap();
-                let d_hist = pool.allocate_and_copy(&hist).unwrap();
-                
-                let config = LaunchConfig {
-                    grid_size: ((size + 255) / 256, 1, 1),
-                    block_size: (256, 1, 1),
-                    shared_mem_bytes: 0,
-                };
-                
-                b.iter(|| {
-                    // Clear histogram
-                    d_hist.set(0).unwrap();
-                    
-                    launcher.launch(
-                        "atomic_histogram",
-                        config,
-                        &[d_data.as_arg(), d_hist.as_arg(), size.as_arg(), nbins.as_arg()],
-                    ).unwrap();
-                    runtime.synchronize().unwrap();
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+  let sizes = vec![10000, 100000, 1000000];
+  let nbins = 256;
+
+  for &size in &sizes {
+    group.throughput(Throughput::Elements(size as u64));
+
+    group.bench_with_input(
+      BenchmarkId::new("histogram", size),
+      &size,
+      |b, &size| {
+        let options = TranspilerOptions {
+          enable_atomics: true,
+          ..Default::default()
+        };
+
+        let transpiler = CudaTranspiler::new(options);
+        let wasm_bytes = transpiler.transpile(atomic_histogram_code).unwrap();
+        let runtime = WasmRuntime::new(RuntimeOptions::default()).unwrap();
+        let module = runtime.load_module(&wasm_bytes).unwrap();
+        let launcher = KernelLauncher::new(module);
+
+        let pool =
+          MemoryPool::new(AllocationStrategy::BestFit, 100 * 1024 * 1024)
+            .unwrap();
+
+        let data: Vec<i32> = (0..size).map(|i| i as i32).collect();
+        let hist = vec![0i32; nbins];
+
+        let d_data = pool.allocate_and_copy(&data).unwrap();
+        let d_hist = pool.allocate_and_copy(&hist).unwrap();
+
+        let config = LaunchConfig {
+          grid_size: ((size + 255) / 256, 1, 1),
+          block_size: (256, 1, 1),
+          shared_mem_bytes: 0,
+        };
+
+        b.iter(|| {
+          // Clear histogram
+          d_hist.set(0).unwrap();
+
+          launcher
+            .launch(
+              "atomic_histogram",
+              config,
+              &[
+                d_data.as_arg(),
+                d_hist.as_arg(),
+                size.as_arg(),
+                nbins.as_arg(),
+              ],
+            )
+            .unwrap();
+          runtime.synchronize().unwrap();
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 criterion_group!(
-    benches,
-    benchmark_kernel_launch_overhead,
-    benchmark_vector_operations,
-    benchmark_matrix_multiply,
-    benchmark_reduction,
-    benchmark_optimization_levels,
-    benchmark_atomic_operations
+  benches,
+  benchmark_kernel_launch_overhead,
+  benchmark_vector_operations,
+  benchmark_matrix_multiply,
+  benchmark_reduction,
+  benchmark_optimization_levels,
+  benchmark_atomic_operations
 );
 criterion_main!(benches);

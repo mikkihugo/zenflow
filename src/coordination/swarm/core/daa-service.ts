@@ -160,7 +160,10 @@ export class DaaService {
    * @param agentId Target agent identifier.
    * @param adaptation Adaptation payload (strategy-dependent).
    */
-  async adaptAgent(agentId: string, adaptation: Record<string, unknown>): Promise<DaaAgent> {
+  async adaptAgent(
+    agentId: string,
+    adaptation: Record<string, unknown>,
+  ): Promise<DaaAgent> {
     // TODO(daa): perform adaptation diff & persist
     return { id: agentId, adapted: true, adaptation, status: 'active' };
   }
@@ -169,7 +172,9 @@ export class DaaService {
    * Create a workflow definition.
    * @param workflow Draft workflow definition.
    */
-  async createWorkflow(workflow: DaaWorkflowDefinition): Promise<DaaWorkflowInstance> {
+  async createWorkflow(
+    workflow: DaaWorkflowDefinition,
+  ): Promise<DaaWorkflowInstance> {
     // TODO(daa): validate & persist workflow
     return { id: `workflow_${Date.now()}`, ...workflow, status: 'created' };
   }
@@ -179,7 +184,10 @@ export class DaaService {
    * @param workflowId Existing workflow id.
    * @param params Execution parameters / input context.
    */
-  async executeWorkflow(workflowId: string, params: unknown): Promise<DaaWorkflowExecution> {
+  async executeWorkflow(
+    workflowId: string,
+    params: unknown,
+  ): Promise<DaaWorkflowExecution> {
     // TODO(daa): orchestration engine invocation
     return {
       workflowId,
@@ -196,7 +204,9 @@ export class DaaService {
   }
 
   /** Obtain learning status for a specific agent. */
-  async getAgentLearningStatus(agentId: string): Promise<DaaAgentLearningStatus> {
+  async getAgentLearningStatus(
+    agentId: string,
+  ): Promise<DaaAgentLearningStatus> {
     // TODO(daa): compute real status from telemetry
     return { agentId, learningCycles: 10, proficiency: 0.85 };
   }
@@ -204,31 +214,50 @@ export class DaaService {
   /** Obtain aggregate system learning status. */
   async getSystemLearningStatus(): Promise<DaaSystemLearningStatus> {
     // TODO(daa): aggregate metrics across agents
-    return { totalLearningCycles: 100, averageProficiency: 0.82, activeAgents: 5 };
+    return {
+      totalLearningCycles: 100,
+      averageProficiency: 0.82,
+      activeAgents: 5,
+    };
   }
 
   /** Analyze cognitive patterns optionally scoped to an agent. */
-  async analyzeCognitivePatterns(_agentId?: string): Promise<DaaCognitivePatternsAnalysis> {
+  async analyzeCognitivePatterns(
+    _agentId?: string,
+  ): Promise<DaaCognitivePatternsAnalysis> {
     // TODO(daa): mine cognitive patterns from behavior traces
-    return { patterns: ['problem-solving', 'pattern-recognition'], effectiveness: 0.88 };
+    return {
+      patterns: ['problem-solving', 'pattern-recognition'],
+      effectiveness: 0.88,
+    };
   }
 
   /** Set / apply a cognitive pattern to an agent. */
-  async setCognitivePattern(agentId: string, pattern: unknown): Promise<DaaCognitivePatternSetResult> {
+  async setCognitivePattern(
+    agentId: string,
+    pattern: unknown,
+  ): Promise<DaaCognitivePatternSetResult> {
     // TODO(daa): persist pattern mapping & propagate
     return { agentId, pattern, applied: true };
   }
 
   /** Perform meta-learning cycle over supplied parameters. */
-  async performMetaLearning(params: DaaMetaLearningParams): Promise<DaaMetaLearningResult> {
+  async performMetaLearning(
+    params: DaaMetaLearningParams,
+  ): Promise<DaaMetaLearningResult> {
     // TODO(daa): run meta-learning algorithms
     return { ...params, learningRate: 0.92, adaptations: 3 };
   }
 
   /** Retrieve performance metrics optionally scoped to an agent. */
-  async getPerformanceMetrics(agentId?: string): Promise<DaaPerformanceMetrics> {
+  async getPerformanceMetrics(
+    agentId?: string,
+  ): Promise<DaaPerformanceMetrics> {
     // TODO(daa): query metrics subsystem
-    return { agentId, metrics: { throughput: 1000, latency: 50, accuracy: 0.95 } };
+    return {
+      agentId,
+      metrics: { throughput: 1000, latency: 50, accuracy: 0.95 },
+    };
   }
 }
 

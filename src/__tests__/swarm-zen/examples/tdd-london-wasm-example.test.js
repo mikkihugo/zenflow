@@ -25,7 +25,9 @@ describe('TDD London Style WASM Testing Examples', () => {
       const version = mockWasmModule.getVersion();
 
       // Assert - Behavior verification
-      expect(mockWasmModule.createSwarm).toHaveBeenCalledWith('mesh', { maxAgents: 10 });
+      expect(mockWasmModule.createSwarm).toHaveBeenCalledWith('mesh', {
+        maxAgents: 10,
+      });
       expect(swarmId).toBe(42);
       expect(version).toBe('2.0.0');
     });
@@ -72,7 +74,7 @@ describe('TDD London Style WASM Testing Examples', () => {
           'assignTask',
           'getState',
           'destroy',
-        ])
+        ]),
       ).toBe(true);
 
       // Verify no unexpected interactions
@@ -84,7 +86,7 @@ describe('TDD London Style WASM Testing Examples', () => {
           'assignTask',
           'getState',
           'destroy',
-        ])
+        ]),
       ).toBe(true);
 
       // Check specific interactions
@@ -167,7 +169,9 @@ describe('TDD London Style WASM Testing Examples', () => {
 
       // Assert - Behavior verification
       expect(mockWasm.init).toHaveBeenCalled();
-      expect(mockWasm.createSwarm).toHaveBeenCalledWith('mesh', { maxAgents: 3 });
+      expect(mockWasm.createSwarm).toHaveBeenCalledWith('mesh', {
+        maxAgents: 3,
+      });
       expect(mockWasm.addAgent).toHaveBeenCalledWith(123, 'analyst');
       expect(info).toMatchObject({
         topology: 'mesh',

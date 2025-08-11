@@ -35,7 +35,9 @@ async function main(): Promise<void> {
   const command = args[0] || 'help';
 
   // Initialize diagnostics logger
-  const logger = cliLoggingConfig?.getLogger('cli-diagnostics', { level: 'INFO' });
+  const logger = cliLoggingConfig?.getLogger('cli-diagnostics', {
+    level: 'INFO',
+  });
 
   try {
     switch (command) {
@@ -91,9 +93,15 @@ async function runDiagnosticTests(logger: LoggerInterface): Promise<void> {
   }
 }
 
-async function generateReport(args: string[], logger: LoggerInterface): Promise<void> {
-  const outputPath = args.find((arg) => arg.startsWith('--output='))?.split('=')[1];
-  const format = args.find((arg) => arg.startsWith('--format='))?.split('=')[1] || 'json';
+async function generateReport(
+  args: string[],
+  logger: LoggerInterface,
+): Promise<void> {
+  const outputPath = args
+    .find((arg) => arg.startsWith('--output='))
+    ?.split('=')[1];
+  const format =
+    args.find((arg) => arg.startsWith('--format='))?.split('=')[1] || 'json';
 
   logger.info('Generating diagnostic report...');
 
@@ -120,14 +128,17 @@ async function generateReport(args: string[], logger: LoggerInterface): Promise<
   diagnostics.disableAll();
 }
 
-async function startMonitoring(args: string[], logger: LoggerInterface): Promise<void> {
-  const duration = parseInt(
+async function startMonitoring(
+  args: string[],
+  logger: LoggerInterface,
+): Promise<void> {
+  const duration = Number.parseInt(
     args.find((arg) => arg.startsWith('--duration='))?.split('=')[1] || '60',
-    10
+    10,
   );
-  const interval = parseInt(
+  const interval = Number.parseInt(
     args.find((arg) => arg.startsWith('--interval='))?.split('=')[1] || '1000',
-    10
+    10,
   );
 
   logger.info('Starting system monitoring...', { duration, interval });
@@ -164,9 +175,14 @@ async function startMonitoring(args: string[], logger: LoggerInterface): Promise
   });
 }
 
-async function analyzeLogs(args: string[], logger: LoggerInterface): Promise<void> {
-  const logDir = args.find((arg) => arg.startsWith('--dir='))?.split('=')[1] || './logs';
-  const pattern = args.find((arg) => arg.startsWith('--pattern='))?.split('=')[1] || 'error';
+async function analyzeLogs(
+  args: string[],
+  logger: LoggerInterface,
+): Promise<void> {
+  const logDir =
+    args.find((arg) => arg.startsWith('--dir='))?.split('=')[1] || './logs';
+  const pattern =
+    args.find((arg) => arg.startsWith('--pattern='))?.split('=')[1] || 'error';
 
   logger.info('Analyzing logs...', { logDir, pattern });
 

@@ -50,7 +50,10 @@ export class HookPerformanceTracker implements MetricsTracker {
     };
   }
 
-  async trackOperation(operation: Operation, result: OperationResult): Promise<void> {
+  async trackOperation(
+    operation: Operation,
+    result: OperationResult,
+  ): Promise<void> {
     const metrics: OperationMetrics = {
       operationId: operation.id,
       type: operation.type,
@@ -60,7 +63,9 @@ export class HookPerformanceTracker implements MetricsTracker {
       success: result?.success,
       resourceUsage: result?.resourceUsage,
       ...(result?.error?.type ? { errorType: result.error.type } : {}),
-      ...(result?.agentMetrics ? { agentPerformance: result.agentMetrics } : {}),
+      ...(result?.agentMetrics
+        ? { agentPerformance: result.agentMetrics }
+        : {}),
       qualityScore: await this.calculateQualityScore(operation, result),
       userSatisfaction: await this.estimateUserSatisfaction(operation, result),
     };
@@ -86,7 +91,9 @@ export class HookPerformanceTracker implements MetricsTracker {
     }
   }
 
-  async generatePerformanceReport(timeframe: TimeFrame): Promise<PerformanceReport> {
+  async generatePerformanceReport(
+    timeframe: TimeFrame,
+  ): Promise<PerformanceReport> {
     const relevantMetrics = this.getMetricsInTimeframe(timeframe);
 
     if (relevantMetrics.length === 0) {
@@ -102,7 +109,8 @@ export class HookPerformanceTracker implements MetricsTracker {
     const bottlenecks = await this.identifyBottlenecks(relevantMetrics);
     const trends = await this.analyzeTrends(relevantMetrics, timeframe);
     const recommendations = await this.generateRecommendations(relevantMetrics);
-    const agentPerformance = await this.analyzeAgentPerformance(relevantMetrics);
+    const agentPerformance =
+      await this.analyzeAgentPerformance(relevantMetrics);
 
     return {
       timeframe,
@@ -124,7 +132,9 @@ export class HookPerformanceTracker implements MetricsTracker {
     }
 
     if (filter.agentType && filter.agentType) {
-      metrics = metrics.filter((m) => m.agentPerformance?.agentId.includes(filter.agentType!));
+      metrics = metrics.filter((m) =>
+        m.agentPerformance?.agentId.includes(filter.agentType!),
+      );
     }
 
     if (filter.timeframe && filter.timeframe.start && filter.timeframe.end) {
@@ -158,7 +168,7 @@ export class HookPerformanceTracker implements MetricsTracker {
 
   private async calculateQualityScore(
     operation: Operation,
-    result: OperationResult
+    result: OperationResult,
   ): Promise<number> {
     let score = 0.5; // Base score
 
@@ -167,13 +177,20 @@ export class HookPerformanceTracker implements MetricsTracker {
 
     // Performance factor
     const expectedDuration = await this.getExpectedDuration(operation.type);
-    const actualDuration = result?.endTime?.getTime() - result?.startTime?.getTime();
+    const actualDuration =
+      result?.endTime?.getTime() - result?.startTime?.getTime();
     if (actualDuration <= expectedDuration) score += 0.2;
 
     // Resource efficiency factor
-    if (result?.resourceUsage?.memoryMB < this.performanceThresholds.maxMemoryUsage * 0.5)
+    if (
+      result?.resourceUsage?.memoryMB <
+      this.performanceThresholds.maxMemoryUsage * 0.5
+    )
       score += 0.1;
-    if (result?.resourceUsage?.cpuPercent < this.performanceThresholds.maxCpuUsage * 0.5)
+    if (
+      result?.resourceUsage?.cpuPercent <
+      this.performanceThresholds.maxCpuUsage * 0.5
+    )
       score += 0.1;
 
     return Math.min(score, 1.0);
@@ -181,18 +198,21 @@ export class HookPerformanceTracker implements MetricsTracker {
 
   private async estimateUserSatisfaction(
     _operation: Operation,
-    result: OperationResult
+    result: OperationResult,
   ): Promise<number> {
     // Mock implementation - would integrate with user feedback systems
     let satisfaction = 0.8; // Base satisfaction
 
     if (!result?.success) satisfaction -= 0.4;
-    if (result?.endTime?.getTime() - result?.startTime?.getTime() > 60000) satisfaction -= 0.2; // > 1 minute
+    if (result?.endTime?.getTime() - result?.startTime?.getTime() > 60000)
+      satisfaction -= 0.2; // > 1 minute
 
     return Math.max(satisfaction, 0.1);
   }
 
-  private async detectPerformanceIssues(metrics: OperationMetrics): Promise<PerformanceIssue[]> {
+  private async detectPerformanceIssues(
+    metrics: OperationMetrics,
+  ): Promise<PerformanceIssue[]> {
     const issues: PerformanceIssue[] = [];
 
     if (metrics.duration > this.performanceThresholds.maxExecutionTime) {
@@ -204,7 +224,9 @@ export class HookPerformanceTracker implements MetricsTracker {
       });
     }
 
-    if (metrics.resourceUsage.memoryMB > this.performanceThresholds.maxMemoryUsage) {
+    if (
+      metrics.resourceUsage.memoryMB > this.performanceThresholds.maxMemoryUsage
+    ) {
       issues.push({
         type: 'HIGH_MEMORY_USAGE',
         severity: 'MEDIUM',
@@ -213,7 +235,9 @@ export class HookPerformanceTracker implements MetricsTracker {
       });
     }
 
-    if (metrics.resourceUsage.cpuPercent > this.performanceThresholds.maxCpuUsage) {
+    if (
+      metrics.resourceUsage.cpuPercent > this.performanceThresholds.maxCpuUsage
+    ) {
       issues.push({
         type: 'HIGH_CPU_USAGE',
         severity: 'MEDIUM',
@@ -227,32 +251,46 @@ export class HookPerformanceTracker implements MetricsTracker {
 
   private async handlePerformanceIssues(
     operationId: string,
-    issues: PerformanceIssue[]
+    issues: PerformanceIssue[],
   ): Promise<void> {
     // Log performance issues
-    logger.warn(`Performance issues detected for operation ${operationId}:`, issues);
+    logger.warn(
+      `Performance issues detected for operation ${operationId}:`,
+      issues,
+    );
 
     // Would integrate with alerting system in real implementation
   }
 
-  private async updateAgentProfile(_agentId: string, _metrics: OperationMetrics): Promise<void> {}
+  private async updateAgentProfile(
+    _agentId: string,
+    _metrics: OperationMetrics,
+  ): Promise<void> {}
 
   private shouldOptimizeInRealTime(metrics: OperationMetrics): boolean {
     return (
       metrics.duration > this.performanceThresholds.maxExecutionTime ||
-      metrics.resourceUsage.memoryMB > this.performanceThresholds.maxMemoryUsage * 0.8
+      metrics.resourceUsage.memoryMB >
+        this.performanceThresholds.maxMemoryUsage * 0.8
     );
   }
 
-  private async generateOptimizations(metrics: OperationMetrics): Promise<string[]> {
+  private async generateOptimizations(
+    metrics: OperationMetrics,
+  ): Promise<string[]> {
     const optimizations: string[] = [];
 
     if (metrics.duration > this.performanceThresholds.maxExecutionTime) {
-      optimizations.push('Consider breaking down large operations into smaller chunks');
+      optimizations.push(
+        'Consider breaking down large operations into smaller chunks',
+      );
       optimizations.push('Implement caching for repeated operations');
     }
 
-    if (metrics.resourceUsage.memoryMB > this.performanceThresholds.maxMemoryUsage * 0.8) {
+    if (
+      metrics.resourceUsage.memoryMB >
+      this.performanceThresholds.maxMemoryUsage * 0.8
+    ) {
       optimizations.push('Implement memory-efficient algorithms');
       optimizations.push('Add memory cleanup between operations');
     }
@@ -260,11 +298,16 @@ export class HookPerformanceTracker implements MetricsTracker {
     return optimizations;
   }
 
-  private async notifyOptimizations(_operationId: string, _suggestions: string[]): Promise<void> {}
+  private async notifyOptimizations(
+    _operationId: string,
+    _suggestions: string[],
+  ): Promise<void> {}
 
   private getMetricsInTimeframe(timeframe: TimeFrame): OperationMetrics[] {
     return Array.from(this.metricsStore.values()).filter(
-      (metrics) => metrics.startTime >= timeframe.start && metrics.endTime <= timeframe.end
+      (metrics) =>
+        metrics.startTime >= timeframe.start &&
+        metrics.endTime <= timeframe.end,
     );
   }
 
@@ -281,14 +324,17 @@ export class HookPerformanceTracker implements MetricsTracker {
     };
   }
 
-  private async identifyBottlenecks(metrics: OperationMetrics[]): Promise<Bottleneck[]> {
+  private async identifyBottlenecks(
+    metrics: OperationMetrics[],
+  ): Promise<Bottleneck[]> {
     const bottlenecks: Bottleneck[] = [];
 
     // Analyze operation types
     const operationTypeMetrics = this.groupByOperationType(metrics);
 
     for (const [operationType, opMetrics] of operationTypeMetrics.entries()) {
-      const avgDuration = opMetrics.reduce((sum, m) => sum + m.duration, 0) / opMetrics.length;
+      const avgDuration =
+        opMetrics.reduce((sum, m) => sum + m.duration, 0) / opMetrics.length;
 
       if (avgDuration > this.performanceThresholds.maxExecutionTime) {
         bottlenecks.push({
@@ -306,7 +352,7 @@ export class HookPerformanceTracker implements MetricsTracker {
 
   private async analyzeTrends(
     metrics: OperationMetrics[],
-    _timeframe: TimeFrame
+    _timeframe: TimeFrame,
   ): Promise<TrendData[]> {
     const trends: TrendData[] = [];
 
@@ -325,29 +371,34 @@ export class HookPerformanceTracker implements MetricsTracker {
     return trends;
   }
 
-  private async generateRecommendations(metrics: OperationMetrics[]): Promise<string[]> {
+  private async generateRecommendations(
+    metrics: OperationMetrics[],
+  ): Promise<string[]> {
     const recommendations: string[] = [];
 
-    const avgDuration = metrics.reduce((sum, m) => sum + m.duration, 0) / metrics.length;
-    const successRate = metrics.filter((m) => m.success).length / metrics.length;
+    const avgDuration =
+      metrics.reduce((sum, m) => sum + m.duration, 0) / metrics.length;
+    const successRate =
+      metrics.filter((m) => m.success).length / metrics.length;
 
     if (successRate < this.performanceThresholds.minSuccessRate) {
       recommendations.push(
-        `Success rate is ${(successRate * 100).toFixed(1)}%, consider improving error handling`
+        `Success rate is ${(successRate * 100).toFixed(1)}%, consider improving error handling`,
       );
     }
 
     if (avgDuration > this.performanceThresholds.maxExecutionTime) {
       recommendations.push(
-        `Average duration ${avgDuration}ms exceeds threshold, consider performance optimization`
+        `Average duration ${avgDuration}ms exceeds threshold, consider performance optimization`,
       );
     }
 
     const memoryUsage =
-      metrics.reduce((sum, m) => sum + m.resourceUsage.memoryMB, 0) / metrics.length;
+      metrics.reduce((sum, m) => sum + m.resourceUsage.memoryMB, 0) /
+      metrics.length;
     if (memoryUsage > this.performanceThresholds.maxMemoryUsage * 0.8) {
       recommendations.push(
-        `High memory usage detected (${memoryUsage}MB), consider memory optimization`
+        `High memory usage detected (${memoryUsage}MB), consider memory optimization`,
       );
     }
 
@@ -355,7 +406,7 @@ export class HookPerformanceTracker implements MetricsTracker {
   }
 
   private async analyzeAgentPerformance(
-    metrics: OperationMetrics[]
+    metrics: OperationMetrics[],
   ): Promise<AgentPerformanceSummary[]> {
     const agentMetrics = new Map<string, OperationMetrics[]>();
 
@@ -373,12 +424,16 @@ export class HookPerformanceTracker implements MetricsTracker {
     const summaries: AgentPerformanceSummary[] = [];
 
     for (const [agentId, agentOps] of agentMetrics.entries()) {
-      const successRate = agentOps.filter((op) => op.success).length / agentOps.length;
-      const avgDuration = agentOps.reduce((sum, op) => sum + op.duration, 0) / agentOps.length;
+      const successRate =
+        agentOps.filter((op) => op.success).length / agentOps.length;
+      const avgDuration =
+        agentOps.reduce((sum, op) => sum + op.duration, 0) / agentOps.length;
       const avgQuality =
-        agentOps.reduce((sum, op) => sum + (op.qualityScore || 0), 0) / agentOps.length;
+        agentOps.reduce((sum, op) => sum + (op.qualityScore || 0), 0) /
+        agentOps.length;
       const avgSatisfaction =
-        agentOps.reduce((sum, op) => sum + (op.userSatisfaction || 0), 0) / agentOps.length;
+        agentOps.reduce((sum, op) => sum + (op.userSatisfaction || 0), 0) /
+        agentOps.length;
 
       summaries.push({
         agentId,
@@ -406,8 +461,10 @@ export class HookPerformanceTracker implements MetricsTracker {
   private generateAgentImprovements(agentOps: OperationMetrics[]): string[] {
     const improvements: string[] = [];
 
-    const avgDuration = agentOps.reduce((sum, op) => sum + op.duration, 0) / agentOps.length;
-    const successRate = agentOps.filter((op) => op.success).length / agentOps.length;
+    const avgDuration =
+      agentOps.reduce((sum, op) => sum + op.duration, 0) / agentOps.length;
+    const successRate =
+      agentOps.filter((op) => op.success).length / agentOps.length;
 
     if (successRate < 0.9) {
       improvements.push('Improve error handling and operation reliability');
@@ -420,7 +477,9 @@ export class HookPerformanceTracker implements MetricsTracker {
     return improvements;
   }
 
-  private groupByOperationType(metrics: OperationMetrics[]): Map<string, OperationMetrics[]> {
+  private groupByOperationType(
+    metrics: OperationMetrics[],
+  ): Map<string, OperationMetrics[]> {
     const grouped = new Map<string, OperationMetrics[]>();
 
     metrics.forEach((metric) => {
@@ -434,27 +493,34 @@ export class HookPerformanceTracker implements MetricsTracker {
   }
 
   private calculateSuccessRateTrend(metrics: OperationMetrics[]): TrendData {
-    const sortedMetrics = metrics.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    const sortedMetrics = metrics.sort(
+      (a, b) => a.startTime.getTime() - b.startTime.getTime(),
+    );
     const midpoint = Math.floor(sortedMetrics.length / 2);
 
     const firstHalf = sortedMetrics.slice(0, midpoint);
     const secondHalf = sortedMetrics.slice(midpoint);
 
-    const firstHalfSuccessRate = firstHalf.filter((m) => m.success).length / firstHalf.length;
-    const secondHalfSuccessRate = secondHalf.filter((m) => m.success).length / secondHalf.length;
+    const firstHalfSuccessRate =
+      firstHalf.filter((m) => m.success).length / firstHalf.length;
+    const secondHalfSuccessRate =
+      secondHalf.filter((m) => m.success).length / secondHalf.length;
 
     const change = secondHalfSuccessRate - firstHalfSuccessRate;
 
     return {
       metric: 'Success Rate',
-      direction: change > 0.05 ? 'improving' : change < -0.05 ? 'degrading' : 'stable',
+      direction:
+        change > 0.05 ? 'improving' : change < -0.05 ? 'degrading' : 'stable',
       change,
       confidence: Math.min(sortedMetrics.length / 100, 1), // Higher confidence with more data
     };
   }
 
   private calculateDurationTrend(metrics: OperationMetrics[]): TrendData {
-    const sortedMetrics = metrics.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    const sortedMetrics = metrics.sort(
+      (a, b) => a.startTime.getTime() - b.startTime.getTime(),
+    );
     const midpoint = Math.floor(sortedMetrics.length / 2);
 
     const firstHalf = sortedMetrics.slice(0, midpoint);
@@ -465,33 +531,41 @@ export class HookPerformanceTracker implements MetricsTracker {
     const secondHalfAvgDuration =
       secondHalf.reduce((sum, m) => sum + m.duration, 0) / secondHalf.length;
 
-    const change = (secondHalfAvgDuration - firstHalfAvgDuration) / firstHalfAvgDuration;
+    const change =
+      (secondHalfAvgDuration - firstHalfAvgDuration) / firstHalfAvgDuration;
 
     return {
       metric: 'Average Duration',
-      direction: change < -0.1 ? 'improving' : change > 0.1 ? 'degrading' : 'stable',
+      direction:
+        change < -0.1 ? 'improving' : change > 0.1 ? 'degrading' : 'stable',
       change,
       confidence: Math.min(sortedMetrics.length / 100, 1),
     };
   }
 
   private calculateMemoryTrend(metrics: OperationMetrics[]): TrendData {
-    const sortedMetrics = metrics.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    const sortedMetrics = metrics.sort(
+      (a, b) => a.startTime.getTime() - b.startTime.getTime(),
+    );
     const midpoint = Math.floor(sortedMetrics.length / 2);
 
     const firstHalf = sortedMetrics.slice(0, midpoint);
     const secondHalf = sortedMetrics.slice(midpoint);
 
     const firstHalfAvgMemory =
-      firstHalf.reduce((sum, m) => sum + m.resourceUsage.memoryMB, 0) / firstHalf.length;
+      firstHalf.reduce((sum, m) => sum + m.resourceUsage.memoryMB, 0) /
+      firstHalf.length;
     const secondHalfAvgMemory =
-      secondHalf.reduce((sum, m) => sum + m.resourceUsage.memoryMB, 0) / secondHalf.length;
+      secondHalf.reduce((sum, m) => sum + m.resourceUsage.memoryMB, 0) /
+      secondHalf.length;
 
-    const change = (secondHalfAvgMemory - firstHalfAvgMemory) / firstHalfAvgMemory;
+    const change =
+      (secondHalfAvgMemory - firstHalfAvgMemory) / firstHalfAvgMemory;
 
     return {
       metric: 'Memory Usage',
-      direction: change < -0.1 ? 'improving' : change > 0.1 ? 'degrading' : 'stable',
+      direction:
+        change < -0.1 ? 'improving' : change > 0.1 ? 'degrading' : 'stable',
       change,
       confidence: Math.min(sortedMetrics.length / 100, 1),
     };
@@ -499,7 +573,7 @@ export class HookPerformanceTracker implements MetricsTracker {
 
   private async calculateTrends(
     metrics: OperationMetrics[],
-    _timeframe: TimeFrame
+    _timeframe: TimeFrame,
   ): Promise<TrendData[]> {
     return [
       this.calculateSuccessRateTrend(metrics),
@@ -510,7 +584,7 @@ export class HookPerformanceTracker implements MetricsTracker {
 
   private async generatePredictions(
     trends: TrendData[],
-    timeframe: TimeFrame
+    timeframe: TimeFrame,
   ): Promise<Prediction[]> {
     const predictions: Prediction[] = [];
 
@@ -533,7 +607,7 @@ export class HookPerformanceTracker implements MetricsTracker {
 
   private async generateInsights(
     trends: TrendData[],
-    metrics: OperationMetrics[]
+    metrics: OperationMetrics[],
   ): Promise<string[]> {
     const insights: string[] = [];
 
@@ -546,7 +620,8 @@ export class HookPerformanceTracker implements MetricsTracker {
       insights.push('Performance degradation detected across multiple metrics');
     }
 
-    const successRate = metrics.filter((m) => m.success).length / metrics.length;
+    const successRate =
+      metrics.filter((m) => m.success).length / metrics.length;
     if (successRate > 0.95) {
       insights.push('Excellent success rate indicates stable operations');
     } else if (successRate < 0.8) {
@@ -557,7 +632,8 @@ export class HookPerformanceTracker implements MetricsTracker {
   }
 
   private calculateFutureTimeframe(currentTimeframe: TimeFrame): string {
-    const duration = currentTimeframe?.end?.getTime() - currentTimeframe?.start?.getTime();
+    const duration =
+      currentTimeframe?.end?.getTime() - currentTimeframe?.start?.getTime();
     const futureEnd = new Date(currentTimeframe?.end?.getTime() + duration);
 
     return `${currentTimeframe?.end?.toISOString()} to ${futureEnd.toISOString()}`;
@@ -573,21 +649,35 @@ export class HookPerformanceTracker implements MetricsTracker {
       default: 10000,
     };
 
-    return expectedDurations[operationType] ?? expectedDurations['default'] ?? 10000;
+    return (
+      expectedDurations[operationType] ?? expectedDurations['default'] ?? 10000
+    );
   }
 }
 
 export class OperationPerformanceOptimizer implements PerformanceOptimizer {
   async optimizeOperation(operation: Operation): Promise<OptimizedOperation> {
-    const optimizations = await this.analyzeOptimizationOpportunities(operation);
-    const optimizedParameters = await this.applyOptimizations(operation.parameters, optimizations);
-    const estimatedSavings = await this.calculateSavings(operation, optimizations);
+    const optimizations =
+      await this.analyzeOptimizationOpportunities(operation);
+    const optimizedParameters = await this.applyOptimizations(
+      operation.parameters,
+      optimizations,
+    );
+    const estimatedSavings = await this.calculateSavings(
+      operation,
+      optimizations,
+    );
 
     return {
       originalOperation: operation,
       optimizedParameters,
-      expectedImprovement: optimizations.reduce((sum, opt) => sum + opt.impact, 0),
-      optimizationStrategy: optimizations.map((opt) => opt.description).join('; '),
+      expectedImprovement: optimizations.reduce(
+        (sum, opt) => sum + opt.impact,
+        0,
+      ),
+      optimizationStrategy: optimizations
+        .map((opt) => opt.description)
+        .join('; '),
       estimatedSavings,
     };
   }
@@ -652,7 +742,9 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
     return improvements.sort((a, b) => b.priority - a.priority);
   }
 
-  async analyzeBottlenecks(context: OperationContext): Promise<BottleneckAnalysis> {
+  async analyzeBottlenecks(
+    context: OperationContext,
+  ): Promise<BottleneckAnalysis> {
     const bottlenecks: Bottleneck[] = [];
     let projectedImprovement = 0;
 
@@ -675,12 +767,15 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
         location: 'Operation complexity',
         severity: 0.4,
         description: 'Expert-level operation may require significant resources',
-        solution: 'Assign to experienced agents or break down into smaller tasks',
+        solution:
+          'Assign to experienced agents or break down into smaller tasks',
       });
       projectedImprovement += 0.3;
     }
 
-    const recommendations = bottlenecks.map((b) => b.solution || 'No specific solution identified');
+    const recommendations = bottlenecks.map(
+      (b) => b.solution || 'No specific solution identified',
+    );
 
     return {
       bottlenecks,
@@ -690,7 +785,7 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
   }
 
   private async analyzeOptimizationOpportunities(
-    operation: Operation
+    operation: Operation,
   ): Promise<OptimizationOpportunity[]> {
     const opportunities: OptimizationOpportunity[] = [];
 
@@ -704,7 +799,10 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
     }
 
     // Analyze caching opportunities
-    if (operation.type.includes('analysis') || operation.type.includes('processing')) {
+    if (
+      operation.type.includes('analysis') ||
+      operation.type.includes('processing')
+    ) {
       opportunities.push({
         type: 'CACHING',
         description: 'Implement result caching',
@@ -717,7 +815,7 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
 
   private async applyOptimizations(
     parameters: Record<string, any>,
-    optimizations: OptimizationOpportunity[]
+    optimizations: OptimizationOpportunity[],
   ): Promise<Record<string, any>> {
     let optimizedParams = { ...parameters };
 
@@ -740,7 +838,7 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
 
   private async calculateSavings(
     _operation: Operation,
-    optimizations: OptimizationOpportunity[]
+    optimizations: OptimizationOpportunity[],
   ): Promise<ResourceSavings> {
     const totalImpact = optimizations.reduce((sum, opt) => sum + opt.impact, 0);
 
@@ -752,7 +850,9 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
     };
   }
 
-  private async getBasePerformanceEstimate(_operation: Operation): Promise<PerformanceEstimate> {
+  private async getBasePerformanceEstimate(
+    _operation: Operation,
+  ): Promise<PerformanceEstimate> {
     // Mock base estimates
     return {
       executionTime: 10000, // 10 seconds
@@ -763,7 +863,9 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
     };
   }
 
-  private async analyzePerformanceFactors(operation: Operation): Promise<PerformanceFactor[]> {
+  private async analyzePerformanceFactors(
+    operation: Operation,
+  ): Promise<PerformanceFactor[]> {
     const factors: PerformanceFactor[] = [];
 
     if (operation.description.length > 500) {
@@ -785,7 +887,9 @@ export class OperationPerformanceOptimizer implements PerformanceOptimizer {
     return factors;
   }
 
-  private reduceParameters(parameters: Record<string, any>): Record<string, any> {
+  private reduceParameters(
+    parameters: Record<string, any>,
+  ): Record<string, any> {
     // Simple implementation - remove null/undefined values
     const reduced: Record<string, any> = {};
 

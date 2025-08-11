@@ -81,9 +81,12 @@ export class InterfaceManager extends EventEmitter {
     this.config = {
       defaultMode: userConfig?.defaultMode || 'auto',
       webPort: userConfig?.webPort || centralConfig?.interfaces?.web?.port,
-      theme: userConfig?.theme || (centralConfig?.interfaces?.shared?.theme as 'dark' | 'light'),
+      theme:
+        userConfig?.theme ||
+        (centralConfig?.interfaces?.shared?.theme as 'dark' | 'light'),
       enableRealTime:
-        userConfig?.enableRealTime ?? centralConfig?.interfaces?.shared?.realTimeUpdates,
+        userConfig?.enableRealTime ??
+        centralConfig?.interfaces?.shared?.realTimeUpdates,
       coreSystem: userConfig?.coreSystem,
     };
   }
@@ -183,7 +186,9 @@ export class InterfaceManager extends EventEmitter {
   }
 
   private async launchWeb(): Promise<void> {
-    logger.info(`Web interface would be launched on port ${this.config.webPort}`);
+    logger.info(
+      `Web interface would be launched on port ${this.config.webPort}`,
+    );
     // In a real implementation, this would start the web server
   }
 

@@ -1,24 +1,21 @@
 // Test GitHub Models with maximum context size
-import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-import { AzureKeyCredential } from "@azure/core-auth";
+import ModelClient, { isUnexpected } from '@azure-rest/ai-inference';
+import { AzureKeyCredential } from '@azure/core-auth';
 
-const token = process.env["GITHUB_TOKEN"];
-const endpoint = "https://models.github.ai/inference";
-const model = "openai/gpt-5-nano";
+const token = process.env['GITHUB_TOKEN'];
+const endpoint = 'https://models.github.ai/inference';
+const model = 'openai/gpt-5-nano';
 
 async function testMaxContext() {
   if (!token) {
-    console.log("❌ GITHUB_TOKEN not set");
+    console.log('❌ GITHUB_TOKEN not set');
     return;
   }
 
   try {
     console.log('🚀 Testing GitHub Models with Maximum Context Size...');
-    
-    const client = ModelClient(
-      endpoint,
-      new AzureKeyCredential(token)
-    );
+
+    const client = ModelClient(endpoint, new AzureKeyCredential(token));
 
     // Create a large context prompt to test maximum capabilities
     const largeContext = `
@@ -71,57 +68,75 @@ Please provide a comprehensive analysis with:
     console.log('  - Model:', model);
     console.log('  - Max completion tokens: 32000');
 
-    const response = await client.path("/chat/completions").post({
+    const response = await client.path('/chat/completions').post({
       body: {
         messages: [
-          { 
-            role: "system", 
-            content: "You are an expert software architect specializing in graph neural networks, database systems, and distributed architectures. Provide detailed, structured analysis with specific recommendations." 
+          {
+            role: 'system',
+            content:
+              'You are an expert software architect specializing in graph neural networks, database systems, and distributed architectures. Provide detailed, structured analysis with specific recommendations.',
           },
-          { 
-            role: "user", 
-            content: largeContext
-          }
+          {
+            role: 'user',
+            content: largeContext,
+          },
         ],
         model: model,
         // GPT-5-nano only supports default temperature (1)
-        max_completion_tokens: 32000 // Maximum context size
-      }
+        max_completion_tokens: 32000, // Maximum context size
+      },
     });
 
     if (isUnexpected(response)) {
-      throw new Error(`API Error: ${JSON.stringify(response.body?.error || response.body)}`);
+      throw new Error(
+        `API Error: ${JSON.stringify(response.body?.error || response.body)}`,
+      );
     }
 
-    console.log("✅ Maximum Context Test Success!");
+    console.log('✅ Maximum Context Test Success!');
     const content = response.body.choices[0].message.content;
-    
+
     console.log('\n📊 Response Analysis:');
     console.log('  - Response length:', content.length, 'characters');
-    console.log('  - Estimated tokens:', Math.round(content.length / 4), 'tokens');
+    console.log(
+      '  - Estimated tokens:',
+      Math.round(content.length / 4),
+      'tokens',
+    );
     console.log('  - Model used:', response.body.model);
-    
+
     // Show first and last parts of response to verify completeness
     console.log('\n📝 Response Preview:');
     console.log('  - First 300 chars:', content.substring(0, 300) + '...');
-    console.log('  - Last 300 chars:', '...' + content.substring(content.length - 300));
-    
+    console.log(
+      '  - Last 300 chars:',
+      '...' + content.substring(content.length - 300),
+    );
+
     // Check if response was truncated
     const responseComplete = !content.endsWith('...');
-    console.log('  - Response appears complete:', responseComplete ? '✅' : '⚠️');
+    console.log(
+      '  - Response appears complete:',
+      responseComplete ? '✅' : '⚠️',
+    );
 
     // Rate limit information
     console.log('\n📊 Rate Limit Info:');
     const headers = response.headers;
     if (headers['x-ratelimit-remaining-requests']) {
-      console.log('  - Remaining requests:', headers['x-ratelimit-remaining-requests']);
+      console.log(
+        '  - Remaining requests:',
+        headers['x-ratelimit-remaining-requests'],
+      );
       console.log('  - Request limit:', headers['x-ratelimit-limit-requests']);
-      console.log('  - Remaining tokens:', headers['x-ratelimit-remaining-tokens']);
+      console.log(
+        '  - Remaining tokens:',
+        headers['x-ratelimit-remaining-tokens'],
+      );
       console.log('  - Token limit:', headers['x-ratelimit-limit-tokens']);
     }
-
   } catch (error) {
-    console.error("❌ Maximum context test failed:", error.message);
+    console.error('❌ Maximum context test failed:', error.message);
   }
 }
 

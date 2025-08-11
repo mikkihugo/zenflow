@@ -36,7 +36,11 @@ describe('Enhanced Hook System - London TDD', () => {
     describe('User Story: Register Enhanced Hooks', () => {
       it('should register hooks with proper validation', async () => {
         // Arrange
-        const mockHook = createMockHook('test-hook', 'validation', 'PreToolUse');
+        const mockHook = createMockHook(
+          'test-hook',
+          'validation',
+          'PreToolUse',
+        );
 
         // Act
         await hookManager.registerHook(mockHook);
@@ -59,7 +63,11 @@ describe('Enhanced Hook System - London TDD', () => {
     describe('User Story: Manage Hook Lifecycle', () => {
       it('should enable and disable hooks correctly', async () => {
         // Arrange
-        const mockHook = createMockHook('lifecycle-hook', 'validation', 'PreToolUse');
+        const mockHook = createMockHook(
+          'lifecycle-hook',
+          'validation',
+          'PreToolUse',
+        );
         await hookManager.registerHook(mockHook);
 
         // Act
@@ -74,7 +82,11 @@ describe('Enhanced Hook System - London TDD', () => {
 
       it('should unregister hooks successfully', async () => {
         // Arrange
-        const mockHook = createMockHook('temp-hook', 'validation', 'PreToolUse');
+        const mockHook = createMockHook(
+          'temp-hook',
+          'validation',
+          'PreToolUse',
+        );
         await hookManager.registerHook(mockHook);
 
         // Act
@@ -110,7 +122,10 @@ describe('Enhanced Hook System - London TDD', () => {
         });
 
         // Act
-        const results = await hookManager.executeHooks('PreToolUse', dangerousContext);
+        const results = await hookManager.executeHooks(
+          'PreToolUse',
+          dangerousContext,
+        );
 
         // Assert
         const safetyResult = results?.find((r) => !r.allowed);
@@ -141,7 +156,10 @@ describe('Enhanced Hook System - London TDD', () => {
         });
 
         // Act
-        const results = await hookManager.executeHooks('PreToolUse', riskyContext);
+        const results = await hookManager.executeHooks(
+          'PreToolUse',
+          riskyContext,
+        );
 
         // Assert
         const safetyResult = results?.[0];
@@ -159,7 +177,10 @@ describe('Enhanced Hook System - London TDD', () => {
         });
 
         // Act
-        const results = await hookManager.executeHooks('PreToolUse', fileContext);
+        const results = await hookManager.executeHooks(
+          'PreToolUse',
+          fileContext,
+        );
 
         // Assert
         expect(results.length).toBeGreaterThan(0);
@@ -209,26 +230,33 @@ describe('Enhanced Hook System - London TDD', () => {
         });
 
         // Act
-        const results = await hookManager.executeHooks('PreToolUse', typescriptContext);
+        const results = await hookManager.executeHooks(
+          'PreToolUse',
+          typescriptContext,
+        );
 
         // Assert
         const assignmentResult = results?.find((r) => r.data?.agentAssignment);
         expect(assignmentResult).toBeDefined();
-        expect(assignmentResult?.data.agentAssignment.agent.type).toBe('frontend-dev');
+        expect(assignmentResult?.data.agentAssignment.agent.type).toBe(
+          'frontend-dev',
+        );
         expect(assignmentResult?.suggestions[0].type).toBe('AGENT_ASSIGNMENT');
       });
 
       it('should handle agent assignment failure gracefully', async () => {
         // Arrange
         const context = createHookContext({ type: 'unknown' });
-        mockAgentAssignor.assignOptimalAgent.mockRejectedValue(new Error('No suitable agents'));
+        mockAgentAssignor.assignOptimalAgent.mockRejectedValue(
+          new Error('No suitable agents'),
+        );
 
         // Act
         const results = await hookManager.executeHooks('PreToolUse', context);
 
         // Assert
         const assignmentResult = results?.find((r) =>
-          r.warnings.some((w) => w.type === 'ASSIGNMENT_WARNING')
+          r.warnings.some((w) => w.type === 'ASSIGNMENT_WARNING'),
         );
         expect(assignmentResult).toBeDefined();
         expect(assignmentResult?.success).toBe(false);
@@ -248,7 +276,7 @@ describe('Enhanced Hook System - London TDD', () => {
 
         // Assert
         const trackingResult = results?.find((r) =>
-          r.suggestions.some((s) => s.type === 'PERFORMANCE_TRACKING')
+          r.suggestions.some((s) => s.type === 'PERFORMANCE_TRACKING'),
         );
         expect(trackingResult).toBeDefined();
         expect(trackingResult?.success).toBe(true);
@@ -310,11 +338,14 @@ describe('Enhanced Hook System - London TDD', () => {
         });
 
         // Act
-        const results = await hookManager.executeHooks('PostToolUse', tsContext);
+        const results = await hookManager.executeHooks(
+          'PostToolUse',
+          tsContext,
+        );
 
         // Assert
         const formatResult = results?.find((r) =>
-          r.suggestions.some((s) => s.type === 'AUTO_FORMAT')
+          r.suggestions.some((s) => s.type === 'AUTO_FORMAT'),
         );
         expect(formatResult).toBeDefined();
         expect(formatResult?.suggestions[0].message).toContain('prettier');
@@ -328,11 +359,14 @@ describe('Enhanced Hook System - London TDD', () => {
         });
 
         // Act
-        const results = await hookManager.executeHooks('PostToolUse', pyContext);
+        const results = await hookManager.executeHooks(
+          'PostToolUse',
+          pyContext,
+        );
 
         // Assert
         const formatResult = results?.find((r) =>
-          r.suggestions.some((s) => s.type === 'AUTO_FORMAT')
+          r.suggestions.some((s) => s.type === 'AUTO_FORMAT'),
         );
         expect(formatResult).toBeDefined();
         expect(formatResult?.suggestions[0].message).toContain('black');
@@ -360,7 +394,10 @@ describe('Enhanced Hook System - London TDD', () => {
       const preResults = await hookManager.executeHooks('PreToolUse', context);
 
       // Act - Execute PostToolUse hooks
-      const postResults = await hookManager.executeHooks('PostToolUse', context);
+      const postResults = await hookManager.executeHooks(
+        'PostToolUse',
+        context,
+      );
 
       // Assert
       expect(preResults.length).toBeGreaterThan(0);

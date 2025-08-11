@@ -55,7 +55,7 @@ interface ErrorMetrics {
 
 type ErrorHandlerFunction = (
   error: Error,
-  context?: ErrorContext
+  context?: ErrorContext,
 ) => Promise<ErrorResult> | ErrorResult;
 
 interface RecoveryStrategy {
@@ -104,7 +104,8 @@ class MockErrorHandler implements ErrorHandler {
     // Update metrics
     this.metrics.totalErrors++;
     const errorType = error.constructor.name;
-    this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] || 0) + 1;
+    this.metrics.errorsByType[errorType] =
+      (this.metrics.errorsByType[errorType] || 0) + 1;
 
     // Call mock function for testing
     const result = await this.handleFunction(error, context);
@@ -112,7 +113,8 @@ class MockErrorHandler implements ErrorHandler {
     // Update timing metrics
     const handlingTime = Date.now() - startTime;
     this.metrics.averageHandlingTime =
-      (this.metrics.averageHandlingTime * (this.metrics.totalErrors - 1) + handlingTime) /
+      (this.metrics.averageHandlingTime * (this.metrics.totalErrors - 1) +
+        handlingTime) /
       this.metrics.totalErrors;
 
     if (result?.recovered) {
@@ -134,7 +136,9 @@ class MockErrorHandler implements ErrorHandler {
 
   addRecoveryStrategy(strategy: RecoveryStrategy): void {
     // Insert strategy in priority order
-    const index = this.recoveryStrategies.findIndex((s) => s.priority < strategy.priority);
+    const index = this.recoveryStrategies.findIndex(
+      (s) => s.priority < strategy.priority,
+    );
     if (index === -1) {
       this.recoveryStrategies.push(strategy);
     } else {
@@ -168,7 +172,7 @@ class MockErrorHandler implements ErrorHandler {
 class ValidationError extends Error {
   constructor(
     message: string,
-    public field?: string
+    public field?: string,
   ) {
     super(message);
     this.name = 'ValidationError';
@@ -178,7 +182,7 @@ class ValidationError extends Error {
 class NetworkError extends Error {
   constructor(
     message: string,
-    public statusCode?: number
+    public statusCode?: number,
   ) {
     super(message);
     this.name = 'NetworkError';
@@ -316,7 +320,9 @@ describe('ErrorHandler - TDD London', () => {
       errorHandler.register('ValidationError', validationHandler);
 
       // Assert - verify handler registration
-      expect(errorHandler.getHandler('ValidationError')).toBe(validationHandler);
+      expect(errorHandler.getHandler('ValidationError')).toBe(
+        validationHandler,
+      );
     });
 
     it('should allow multiple handlers for different error types', () => {
@@ -331,7 +337,9 @@ describe('ErrorHandler - TDD London', () => {
       errorHandler.register('Error', genericHandler);
 
       // Assert - verify multiple handler registration
-      expect(errorHandler.getHandler('ValidationError')).toBe(validationHandler);
+      expect(errorHandler.getHandler('ValidationError')).toBe(
+        validationHandler,
+      );
       expect(errorHandler.getHandler('NetworkError')).toBe(networkHandler);
       expect(errorHandler.getHandler('Error')).toBe(genericHandler);
     });
@@ -441,7 +449,10 @@ describe('ErrorHandler - TDD London', () => {
   describe('specific error type handling behavior', () => {
     it('should handle validation errors with specific behavior', async () => {
       // Arrange
-      const validationError = new ValidationError('Required field missing', 'email');
+      const validationError = new ValidationError(
+        'Required field missing',
+        'email',
+      );
       const context: ErrorContext = {
         command: 'create-user',
         args: ['john'],
@@ -578,7 +589,10 @@ describe('ErrorHandler - TDD London', () => {
 
       // Act
       const lowResult = await errorHandler.handle(lowSeverityError, lowContext);
-      const highResult = await errorHandler.handle(highSeverityError, highContext);
+      const highResult = await errorHandler.handle(
+        highSeverityError,
+        highContext,
+      );
 
       // Assert - verify severity-based logging behavior
       expect(lowResult?.logged).toBe(false);
@@ -620,8 +634,14 @@ describe('ErrorHandler - TDD London', () => {
     it('should handle errors differently based on user permissions', async () => {
       // Arrange
       const permissionError = new Error('Access denied');
-      const adminContext: ErrorContext = { user: 'admin', command: 'system-config' };
-      const userContext: ErrorContext = { user: 'user', command: 'system-config' };
+      const adminContext: ErrorContext = {
+        user: 'admin',
+        command: 'system-config',
+      };
+      const userContext: ErrorContext = {
+        user: 'user',
+        command: 'system-config',
+      };
 
       mockHandleFunction
         .mockResolvedValueOnce({
@@ -649,8 +669,14 @@ describe('ErrorHandler - TDD London', () => {
 
       // Assert - verify user-aware handling
       expect(mockHandleFunction).toHaveBeenCalledTimes(2);
-      expect(mockHandleFunction).toHaveBeenCalledWith(permissionError, adminContext);
-      expect(mockHandleFunction).toHaveBeenCalledWith(permissionError, userContext);
+      expect(mockHandleFunction).toHaveBeenCalledWith(
+        permissionError,
+        adminContext,
+      );
+      expect(mockHandleFunction).toHaveBeenCalledWith(
+        permissionError,
+        userContext,
+      );
     });
   });
 

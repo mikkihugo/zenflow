@@ -24,7 +24,8 @@ const COGNITIVE_PATTERNS = {
   ABSTRACT: 'abstract', // Conceptual thinking, generalization
 } as const;
 
-type CognitivePattern = (typeof COGNITIVE_PATTERNS)[keyof typeof COGNITIVE_PATTERNS];
+type CognitivePattern =
+  (typeof COGNITIVE_PATTERNS)[keyof typeof COGNITIVE_PATTERNS];
 
 interface CognitiveProfile {
   primary: CognitivePattern;
@@ -196,12 +197,12 @@ class NeuralNetwork {
         const weightAlloc = this.memoryOptimizer.allocateFromPool(
           'weights',
           weightSize,
-          this.config.cognitivePattern || 'default'
+          this.config.cognitivePattern || 'default',
         );
         const biasAlloc = this.memoryOptimizer.allocateFromPool(
           'weights',
           biasSize,
-          this.config.cognitivePattern || 'default'
+          this.config.cognitivePattern || 'default',
         );
 
         if (weightAlloc && biasAlloc) {
@@ -210,13 +211,28 @@ class NeuralNetwork {
       }
 
       // Create matrices (in optimized implementation, these would use pooled memory)
-      this.weights[i] = this._createMatrix(outputSize, inputSize, -limit, limit);
+      this.weights[i] = this._createMatrix(
+        outputSize,
+        inputSize,
+        -limit,
+        limit,
+      );
       this.biases[i] = this._createVector(outputSize, -0.1, 0.1);
-      this.previousWeightDeltas[i] = this._createMatrix(outputSize, inputSize, 0, 0);
+      this.previousWeightDeltas[i] = this._createMatrix(
+        outputSize,
+        inputSize,
+        0,
+        0,
+      );
     }
   }
 
-  private _createMatrix(rows: number, cols: number, min: number, max: number): number[][] {
+  private _createMatrix(
+    rows: number,
+    cols: number,
+    min: number,
+    max: number,
+  ): number[][] {
     const matrix: number[][] = [];
     for (let i = 0; i < rows; i++) {
       matrix[i] = [];
@@ -272,7 +288,7 @@ class NeuralNetwork {
       const biases = this.biases[i];
       const output: number[] = [];
 
-      if (!weights || !biases) {
+      if (!(weights && biases)) {
         continue;
       }
 
@@ -314,7 +330,8 @@ class NeuralNetwork {
     for (let i = 0; i < output.length; i++) {
       const targetValue = target?.[i] || 0;
       const outputValue = output[i] || 0;
-      outputError[i] = (targetValue - outputValue) * this._activation(outputValue, true);
+      outputError[i] =
+        (targetValue - outputValue) * this._activation(outputValue, true);
     }
     errors.unshift(outputError);
 
@@ -324,7 +341,7 @@ class NeuralNetwork {
       const weights = this.weights[i];
       const prevError = errors[0];
 
-      if (!weights || !prevError || !this.weights[i - 1]) {
+      if (!(weights && prevError && this.weights[i - 1])) {
         continue;
       }
 
@@ -350,7 +367,7 @@ class NeuralNetwork {
       const layerError = errors[i + 1];
       const layerInput = activations[i];
 
-      if (!weights || !biases || !layerError || !layerInput) {
+      if (!(weights && biases && layerError && layerInput)) {
         continue;
       }
 
@@ -383,7 +400,11 @@ class NeuralNetwork {
     return output || [];
   }
 
-  save(): { config: NeuralNetworkConfig; weights: number[][][]; biases: number[][] } {
+  save(): {
+    config: NeuralNetworkConfig;
+    weights: number[][][];
+    biases: number[][];
+  } {
     return {
       config: this.config,
       weights: this.weights,
@@ -427,7 +448,8 @@ class NeuralAgent extends EventEmitter {
       activationFunction: 'sigmoid' as const,
     };
     this.memoryOptimizer =
-      memoryOptimizer || (MemoryOptimizer ? new (MemoryOptimizer as any)() : null);
+      memoryOptimizer ||
+      (MemoryOptimizer ? new (MemoryOptimizer as any)() : null);
 
     // Add cognitive pattern to neural network config for memory optimization
     const networkConfig: NeuralNetworkConfig = {
@@ -548,11 +570,16 @@ class NeuralAgent extends EventEmitter {
       description.length / 1000, // Length normalized
       (description.match(/\b\w+\b/g) || []).length / 100, // Word count
       (description.match(/[A-Z]/g) || []).length / description.length, // Capitalization ratio
-      (description.match(/[0-9]/g) || []).length / description.length // Numeric ratio
+      (description.match(/[0-9]/g) || []).length / description.length, // Numeric ratio
     );
 
     // Task metadata
-    const priorityMap: Record<string, number> = { low: 0.2, medium: 0.5, high: 0.8, critical: 1.0 };
+    const priorityMap: Record<string, number> = {
+      low: 0.2,
+      medium: 0.5,
+      high: 0.8,
+      critical: 1.0,
+    };
     vector.push(priorityMap[task.priority || 'medium'] || 0.5);
 
     // Dependencies
@@ -562,7 +589,8 @@ class NeuralAgent extends EventEmitter {
     const similarTasks = this._findSimilarTasks(task);
     if (similarTasks.length > 0) {
       const avgPerformance =
-        similarTasks.reduce((sum, t) => sum + t.performance.overall, 0) / similarTasks.length;
+        similarTasks.reduce((sum, t) => sum + t.performance.overall, 0) /
+        similarTasks.length;
       vector.push(avgPerformance);
     } else {
       vector.push(0.5); // Neutral if no history
@@ -573,7 +601,7 @@ class NeuralAgent extends EventEmitter {
       this.cognitiveState.attention,
       this.cognitiveState.fatigue,
       this.cognitiveState.confidence,
-      this.cognitiveState.exploration
+      this.cognitiveState.exploration,
     );
 
     // Pad or truncate to expected input size
@@ -638,22 +666,28 @@ class NeuralAgent extends EventEmitter {
     // Fatigue increases with complexity
     this.cognitiveState.fatigue = Math.min(
       this.cognitiveState.fatigue + analysis.complexity * 0.1,
-      1.0
+      1.0,
     );
 
     // Attention decreases with fatigue
-    this.cognitiveState.attention = Math.max(1.0 - this.cognitiveState.fatigue * 0.5, 0.3);
+    this.cognitiveState.attention = Math.max(
+      1.0 - this.cognitiveState.fatigue * 0.5,
+      0.3,
+    );
 
     // Confidence adjusts based on recent performance
     if (this.learningHistory.length > 0) {
       const recentPerformance =
-        this.learningHistory.slice(-5).reduce((sum, h) => sum + h.performance, 0) /
+        this.learningHistory
+          .slice(-5)
+          .reduce((sum, h) => sum + h.performance, 0) /
         Math.min(this.learningHistory.length, 5);
       this.cognitiveState.confidence = 0.3 + recentPerformance * 0.7;
     }
 
     // Exploration vs exploitation balance
-    this.cognitiveState.exploration = 0.2 + (1.0 - this.cognitiveState.confidence) * 0.6;
+    this.cognitiveState.exploration =
+      0.2 + (1.0 - this.cognitiveState.confidence) * 0.6;
   }
 
   /**
@@ -663,7 +697,11 @@ class NeuralAgent extends EventEmitter {
    * @param result
    * @param executionTime
    */
-  private _calculatePerformance(_task: Task, result: TaskResult, executionTime: number): any {
+  private _calculatePerformance(
+    _task: Task,
+    result: TaskResult,
+    executionTime: number,
+  ): any {
     const performance = {
       speed: Math.max(0, 1 - executionTime / 60000), // Normalize to 1 minute
       accuracy: result?.success ? 0.8 : 0.2,
@@ -675,7 +713,10 @@ class NeuralAgent extends EventEmitter {
     // Adjust based on result quality indicators
     if (result?.metrics) {
       if (result?.metrics?.linesOfCode) {
-        performance.efficiency = Math.min(1.0, 100 / result?.metrics?.linesOfCode);
+        performance.efficiency = Math.min(
+          1.0,
+          100 / result?.metrics?.linesOfCode,
+        );
       }
       if (result?.metrics?.testsPass) {
         performance.accuracy = result?.metrics?.testsPass;
@@ -702,7 +743,7 @@ class NeuralAgent extends EventEmitter {
   private async _learnFromExecution(
     task: Task,
     result: TaskResult,
-    performance: any
+    performance: any,
   ): Promise<void> {
     // Prepare training data
     const input = this._taskToVector(task);
@@ -752,16 +793,20 @@ class NeuralAgent extends EventEmitter {
     const alpha = 0.1; // Learning rate for exponential moving average
 
     this.performanceMetrics.accuracy =
-      (1 - alpha) * this.performanceMetrics.accuracy + alpha * performance.accuracy;
+      (1 - alpha) * this.performanceMetrics.accuracy +
+      alpha * performance.accuracy;
     this.performanceMetrics.speed =
       (1 - alpha) * this.performanceMetrics.speed + alpha * performance.speed;
     this.performanceMetrics.creativity =
-      (1 - alpha) * this.performanceMetrics.creativity + alpha * performance.creativity;
+      (1 - alpha) * this.performanceMetrics.creativity +
+      alpha * performance.creativity;
     this.performanceMetrics.efficiency =
-      (1 - alpha) * this.performanceMetrics.efficiency + alpha * performance.efficiency;
+      (1 - alpha) * this.performanceMetrics.efficiency +
+      alpha * performance.efficiency;
 
     // Calculate memory efficiency based on task completion vs memory usage
-    const memoryRatio = this.memoryUsage.baseline / this.getCurrentMemoryUsage();
+    const memoryRatio =
+      this.memoryUsage.baseline / this.getCurrentMemoryUsage();
     const taskEfficiency = performance.overall;
     this.performanceMetrics.memoryEfficiency =
       (1 - alpha) * this.performanceMetrics.memoryEfficiency +
@@ -789,11 +834,15 @@ class NeuralAgent extends EventEmitter {
       }
 
       // Description similarity (simple word overlap)
-      const currentWords = new Set((task.description || '').toLowerCase().split(/\s+/));
-      const historicalWords = new Set(
-        (historicalTask.task.description || '').toLowerCase().split(/\s+/)
+      const currentWords = new Set(
+        (task.description || '').toLowerCase().split(/\s+/),
       );
-      const intersection = new Set([...currentWords].filter((x) => historicalWords.has(x)));
+      const historicalWords = new Set(
+        (historicalTask.task.description || '').toLowerCase().split(/\s+/),
+      );
+      const intersection = new Set(
+        [...currentWords].filter((x) => historicalWords.has(x)),
+      );
       const union = new Set([...currentWords, ...historicalWords]);
       if (union.size > 0) {
         similarity += 0.7 * (intersection.size / union.size);
@@ -819,7 +868,10 @@ class NeuralAgent extends EventEmitter {
    * @param analysis
    * @param pattern
    */
-  private _applySecondaryPattern(analysis: any, pattern: CognitivePattern): void {
+  private _applySecondaryPattern(
+    analysis: any,
+    pattern: CognitivePattern,
+  ): void {
     const influence = 0.5; // Secondary patterns have less influence
 
     switch (pattern) {
@@ -858,17 +910,26 @@ class NeuralAgent extends EventEmitter {
   rest(duration: number = 1000): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(async () => {
-        this.cognitiveState.fatigue = Math.max(0, this.cognitiveState.fatigue - 0.3);
-        this.cognitiveState.attention = Math.min(1.0, this.cognitiveState.attention + 0.2);
+        this.cognitiveState.fatigue = Math.max(
+          0,
+          this.cognitiveState.fatigue - 0.3,
+        );
+        this.cognitiveState.attention = Math.min(
+          1.0,
+          this.cognitiveState.attention + 0.2,
+        );
 
         // Perform garbage collection on memory pools during rest
         if (this.memoryOptimizer?.isPoolInitialized()) {
           const collected = await this.memoryOptimizer.garbageCollect();
           if (collected > 0) {
             // Recalculate memory usage after GC
-            const patternConfig = PATTERN_MEMORY_CONFIG?.[this.cognitiveProfile.primary] as any;
+            const patternConfig = PATTERN_MEMORY_CONFIG?.[
+              this.cognitiveProfile.primary
+            ] as any;
             this.memoryUsage.current =
-              (patternConfig?.baseMemory || 100) * (1 - (patternConfig?.poolSharing || 0.5) * 0.5);
+              (patternConfig?.baseMemory || 100) *
+              (1 - (patternConfig?.poolSharing || 0.5) * 0.5);
           }
         }
 
@@ -881,7 +942,9 @@ class NeuralAgent extends EventEmitter {
    * Initialize memory tracking for the agent.
    */
   private _initializeMemoryTracking(): void {
-    const patternConfig = (PATTERN_MEMORY_CONFIG?.[this.cognitiveProfile.primary] as any) || {
+    const patternConfig = (PATTERN_MEMORY_CONFIG?.[
+      this.cognitiveProfile.primary
+    ] as any) || {
       baseMemory: 100,
       poolSharing: 0.5,
     };
@@ -893,7 +956,8 @@ class NeuralAgent extends EventEmitter {
       this.memoryOptimizer.initializePools().then(() => {
         // Recalculate memory usage with pooling
         this.memoryUsage.current =
-          (patternConfig.baseMemory || 100) * (1 - (patternConfig.poolSharing || 0.5) * 0.5);
+          (patternConfig.baseMemory || 100) *
+          (1 - (patternConfig.poolSharing || 0.5) * 0.5);
       });
     }
   }
@@ -991,7 +1055,9 @@ class NeuralAgentFactory {
 
   static async initializeFactory(): Promise<void> {
     if (!NeuralAgentFactory.memoryOptimizer) {
-      NeuralAgentFactory.memoryOptimizer = MemoryOptimizer ? new (MemoryOptimizer as any)() : null;
+      NeuralAgentFactory.memoryOptimizer = MemoryOptimizer
+        ? new (MemoryOptimizer as any)()
+        : null;
       if (NeuralAgentFactory.memoryOptimizer) {
         await NeuralAgentFactory.memoryOptimizer.initializePools();
       }
@@ -1004,7 +1070,11 @@ class NeuralAgentFactory {
     }
 
     // Use shared memory optimizer for all agents
-    return new NeuralAgent(baseAgent, agentType, NeuralAgentFactory.memoryOptimizer);
+    return new NeuralAgent(
+      baseAgent,
+      agentType,
+      NeuralAgentFactory.memoryOptimizer,
+    );
   }
 
   static getCognitiveProfiles(): Record<string, CognitiveProfile> {
@@ -1024,7 +1094,8 @@ setImmediate(() => {
     .then((neural) => {
       if (neural) {
         MemoryOptimizer = (neural as any).MemoryOptimizer || MemoryOptimizer;
-        PATTERN_MEMORY_CONFIG = (neural as any).PATTERN_MEMORY_CONFIG || PATTERN_MEMORY_CONFIG;
+        PATTERN_MEMORY_CONFIG =
+          (neural as any).PATTERN_MEMORY_CONFIG || PATTERN_MEMORY_CONFIG;
       }
     })
     .catch(() => {
@@ -1057,7 +1128,9 @@ setImmediate(() => {
           return Promise.resolve(0);
         }
       } as any;
-      PATTERN_MEMORY_CONFIG = { convergent: { baseMemory: 100, poolSharing: 0.5 } };
+      PATTERN_MEMORY_CONFIG = {
+        convergent: { baseMemory: 100, poolSharing: 0.5 },
+      };
     });
 });
 

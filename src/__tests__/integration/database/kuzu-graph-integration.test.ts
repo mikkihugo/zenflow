@@ -53,7 +53,11 @@ describe('Kuzu Graph Database Integration', () => {
     mockFactory.createGraphAdapter = vi.fn().mockReturnValue(mockKuzuAdapter);
 
     // Create database controller
-    databaseController = new DatabaseController(mockFactory, kuzuConfig, mockLogger);
+    databaseController = new DatabaseController(
+      mockFactory,
+      kuzuConfig,
+      mockLogger,
+    );
   });
 
   describe('Graph Query Operations', () => {
@@ -122,8 +126,12 @@ describe('Kuzu Graph Database Integration', () => {
       expect(response?.data).toBeDefined();
       expect(response?.data?.schema).toBeDefined();
       expect(response?.data?.graphStatistics).toBeDefined();
-      expect(response?.data?.graphStatistics?.totalNodes).toBeGreaterThanOrEqual(0);
-      expect(response?.data?.graphStatistics?.totalRelationships).toBeGreaterThanOrEqual(0);
+      expect(
+        response?.data?.graphStatistics?.totalNodes,
+      ).toBeGreaterThanOrEqual(0);
+      expect(
+        response?.data?.graphStatistics?.totalRelationships,
+      ).toBeGreaterThanOrEqual(0);
       expect(response?.data?.graphStatistics?.nodeTypes).toBeDefined();
       expect(response?.data?.graphStatistics?.relationshipTypes).toBeDefined();
     });
@@ -132,7 +140,11 @@ describe('Kuzu Graph Database Integration', () => {
       // Create non-graph configuration
       const sqliteConfig = { ...kuzuConfig, type: 'sqlite' as const };
 
-      const sqliteController = new DatabaseController(mockFactory, sqliteConfig, mockLogger);
+      const sqliteController = new DatabaseController(
+        mockFactory,
+        sqliteConfig,
+        mockLogger,
+      );
 
       const response = await sqliteController.getGraphSchema();
 
@@ -168,11 +180,16 @@ describe('Kuzu Graph Database Integration', () => {
 
       // Verify metric calculations
       if (stats.totalNodes > 0) {
-        expect(stats.averageConnections).toBe((stats.totalRelationships * 2) / stats.totalNodes);
+        expect(stats.averageConnections).toBe(
+          (stats.totalRelationships * 2) / stats.totalNodes,
+        );
 
         if (stats.totalNodes > 1) {
-          const maxPossibleEdges = (stats.totalNodes * (stats.totalNodes - 1)) / 2;
-          expect(stats.graphDensity).toBe(stats.totalRelationships / maxPossibleEdges);
+          const maxPossibleEdges =
+            (stats.totalNodes * (stats.totalNodes - 1)) / 2;
+          expect(stats.graphDensity).toBe(
+            stats.totalRelationships / maxPossibleEdges,
+          );
         }
       }
     });

@@ -69,7 +69,12 @@ export interface CodeReference {
 export interface CrossReference {
   sourceDocument: string;
   targetDocument: string;
-  linkType: 'references' | 'implements' | 'extends' | 'validates' | 'supersedes';
+  linkType:
+    | 'references'
+    | 'implements'
+    | 'extends'
+    | 'validates'
+    | 'supersedes';
   confidence: number;
   context: string;
 }
@@ -164,7 +169,11 @@ export class DocumentationLinker extends EventEmitter {
         const fullPath = join(directoryPath, entry.name);
 
         // Skip excluded patterns
-        if (this.config.excludePatterns.some((pattern) => fullPath.includes(pattern))) {
+        if (
+          this.config.excludePatterns.some((pattern) =>
+            fullPath.includes(pattern),
+          )
+        ) {
           continue;
         }
 
@@ -227,7 +236,11 @@ export class DocumentationLinker extends EventEmitter {
         const fullPath = join(directoryPath, entry.name);
 
         // Skip excluded patterns
-        if (this.config.excludePatterns.some((pattern) => fullPath.includes(pattern))) {
+        if (
+          this.config.excludePatterns.some((pattern) =>
+            fullPath.includes(pattern),
+          )
+        ) {
           continue;
         }
 
@@ -253,7 +266,9 @@ export class DocumentationLinker extends EventEmitter {
 
         // Find TODO comments
         if (line) {
-          const todoMatch = line.match(/\/\/\s*TODO:?\s*(.+)/i) || line.match(/#\s*TODO:?\s*(.+)/i);
+          const todoMatch =
+            line.match(/\/\/\s*TODO:?\s*(.+)/i) ||
+            line.match(/#\s*TODO:?\s*(.+)/i);
           if (todoMatch && todoMatch?.[1]) {
             await this.addCodeReference({
               file: filePath,
@@ -267,8 +282,13 @@ export class DocumentationLinker extends EventEmitter {
 
         // Find documentation comments
         if (line) {
-          const docCommentMatch = line.match(/\/\*\*\s*(.+?)\s*\*\//s) || line.match(/\*\s*(.+)/);
-          if (docCommentMatch && docCommentMatch?.[1] && !line.includes('TODO')) {
+          const docCommentMatch =
+            line.match(/\/\*\*\s*(.+?)\s*\*\//s) || line.match(/\*\s*(.+)/);
+          if (
+            docCommentMatch &&
+            docCommentMatch?.[1] &&
+            !line.includes('TODO')
+          ) {
             await this.addCodeReference({
               file: filePath,
               line: lineNumber,
@@ -281,9 +301,12 @@ export class DocumentationLinker extends EventEmitter {
 
         // Find function/class definitions that might need documentation
         if (line) {
-          const functionMatch = line.match(/(?:function|class|interface|type)\s+(\w+)/);
+          const functionMatch = line.match(
+            /(?:function|class|interface|type)\s+(\w+)/,
+          );
           if (functionMatch) {
-            const precedingComment = i > 0 && lines[i - 1] ? lines[i - 1]?.trim() : '';
+            const precedingComment =
+              i > 0 && lines[i - 1] ? lines[i - 1]?.trim() : '';
             if (
               precedingComment &&
               !precedingComment.startsWith('//') &&
@@ -292,7 +315,9 @@ export class DocumentationLinker extends EventEmitter {
               await this.addCodeReference({
                 file: filePath,
                 line: lineNumber,
-                type: functionMatch?.[0]?.includes('class') ? 'class' : 'function',
+                type: functionMatch?.[0]?.includes('class')
+                  ? 'class'
+                  : 'function',
                 text: `${functionMatch?.[0]} needs documentation`,
                 context: this.getContextLines(lines, i, 3),
               });
@@ -306,12 +331,18 @@ export class DocumentationLinker extends EventEmitter {
   }
 
   private async addCodeReference(
-    reference: Omit<CodeReference, 'suggestedLinks' | 'confidence'>
+    reference: Omit<CodeReference, 'suggestedLinks' | 'confidence'>,
   ): Promise<void> {
     const suggestedLinks = this.findRelatedDocumentation(reference.text);
-    const confidence = this.calculateLinkConfidence(reference.text, suggestedLinks);
+    const confidence = this.calculateLinkConfidence(
+      reference.text,
+      suggestedLinks,
+    );
 
-    if (confidence >= this.config.confidenceThreshold || suggestedLinks.length > 0) {
+    if (
+      confidence >= this.config.confidenceThreshold ||
+      suggestedLinks.length > 0
+    ) {
       this.codeReferences.push({
         ...reference,
         suggestedLinks,
@@ -337,7 +368,8 @@ export class DocumentationLinker extends EventEmitter {
         const doc1 = documents[i];
         const doc2 = documents[j];
 
-        const relationship = doc1 && doc2 ? this.analyzeDocumentRelationship(doc1, doc2) : null;
+        const relationship =
+          doc1 && doc2 ? this.analyzeDocumentRelationship(doc1, doc2) : null;
         if (relationship) {
           this.crossReferences.push(relationship);
         }
@@ -369,7 +401,7 @@ export class DocumentationLinker extends EventEmitter {
     // Enhancement suggestions for existing documentation
     for (const [docId, doc] of this.documentationIndex) {
       const relatedCode = this.codeReferences.filter((ref) =>
-        ref.suggestedLinks.some((link) => link.documentId === docId)
+        ref.suggestedLinks.some((link) => link.documentId === docId),
       );
 
       if (relatedCode.length > 0) {
@@ -433,7 +465,9 @@ export class DocumentationLinker extends EventEmitter {
     report.push('');
 
     // High-confidence code references
-    const highConfidenceRefs = this.codeReferences.filter((ref) => ref.confidence > 0.8);
+    const highConfidenceRefs = this.codeReferences.filter(
+      (ref) => ref.confidence > 0.8,
+    );
     if (highConfidenceRefs.length > 0) {
       report.push('## High-Confidence Code References');
       for (const ref of highConfidenceRefs.slice(0, 10)) {
@@ -444,7 +478,9 @@ export class DocumentationLinker extends EventEmitter {
         if (ref.suggestedLinks.length > 0) {
           report.push('**Suggested Links**:');
           for (const link of ref.suggestedLinks.slice(0, 3)) {
-            report.push(`- ${link.title} (${Math.round(link.relevance * 100)}%)`);
+            report.push(
+              `- ${link.title} (${Math.round(link.relevance * 100)}%)`,
+            );
           }
         }
         report.push('');
@@ -465,7 +501,9 @@ export class DocumentationLinker extends EventEmitter {
         if (sourceDoc && targetDoc) {
           report.push(`### ${sourceDoc.title} → ${targetDoc?.title}`);
           report.push(`**Relationship**: ${crossRef.linkType}`);
-          report.push(`**Confidence**: ${Math.round(crossRef.confidence * 100)}%`);
+          report.push(
+            `**Confidence**: ${Math.round(crossRef.confidence * 100)}%`,
+          );
           report.push(`**Context**: ${crossRef.context}`);
           report.push('');
         }
@@ -482,7 +520,9 @@ export class DocumentationLinker extends EventEmitter {
         if (suggestion.target) report.push(`**Target**: ${suggestion.target}`);
         report.push(`**Description**: ${suggestion.description}`);
         report.push(`**Priority**: ${suggestion.priority}`);
-        report.push(`**Auto-fixable**: ${suggestion.autoFixable ? 'Yes' : 'No'}`);
+        report.push(
+          `**Auto-fixable**: ${suggestion.autoFixable ? 'Yes' : 'No'}`,
+        );
         report.push('');
       }
     }
@@ -526,7 +566,11 @@ export class DocumentationLinker extends EventEmitter {
       // Check title similarity
       const titleWords = doc.title.toLowerCase().split(/\s+/);
       for (const word of words) {
-        if (titleWords.some((titleWord) => titleWord.includes(word) || word.includes(titleWord))) {
+        if (
+          titleWords.some(
+            (titleWord) => titleWord.includes(word) || word.includes(titleWord),
+          )
+        ) {
           score += 2;
           reasons.push(`title similarity: ${word}`);
         }
@@ -557,11 +601,16 @@ export class DocumentationLinker extends EventEmitter {
     return related.sort((a, b) => b.relevance - a.relevance).slice(0, 5);
   }
 
-  private calculateLinkConfidence(text: string, suggestedLinks: unknown[]): number {
+  private calculateLinkConfidence(
+    text: string,
+    suggestedLinks: unknown[],
+  ): number {
     if (suggestedLinks.length === 0) return 0;
 
     const maxRelevance = Math.max(
-      ...suggestedLinks.map((link) => (link as { relevance: number }).relevance)
+      ...suggestedLinks.map(
+        (link) => (link as { relevance: number }).relevance,
+      ),
     );
     const textSpecificity = Math.min(text.length / 100, 1); // Longer text is more specific
     const linkCount = Math.min(suggestedLinks.length / 3, 1); // More links indicate higher relevance
@@ -571,21 +620,28 @@ export class DocumentationLinker extends EventEmitter {
 
   private analyzeDocumentRelationship(
     doc1: DocumentationIndex,
-    doc2: DocumentationIndex
+    doc2: DocumentationIndex,
   ): CrossReference | null {
     // Simple relationship analysis
-    const commonKeywords = doc1.keywords.filter((k) => doc2.keywords.includes(k));
+    const commonKeywords = doc1.keywords.filter((k) =>
+      doc2.keywords.includes(k),
+    );
 
     if (commonKeywords.length > 0) {
       let linkType: CrossReference['linkType'] = 'references';
       const confidence =
-        commonKeywords.length / Math.max(doc1.keywords.length, doc2.keywords.length);
+        commonKeywords.length /
+        Math.max(doc1.keywords.length, doc2.keywords.length);
 
       // Determine relationship type based on document types
-      if (doc1.type === 'vision' && doc2.type === 'prd') linkType = 'implements';
-      else if (doc1.type === 'prd' && doc2.type === 'epic') linkType = 'extends';
-      else if (doc1.type === 'epic' && doc2.type === 'feature') linkType = 'extends';
-      else if (doc1.type === 'feature' && doc2.type === 'task') linkType = 'extends';
+      if (doc1.type === 'vision' && doc2.type === 'prd')
+        linkType = 'implements';
+      else if (doc1.type === 'prd' && doc2.type === 'epic')
+        linkType = 'extends';
+      else if (doc1.type === 'epic' && doc2.type === 'feature')
+        linkType = 'extends';
+      else if (doc1.type === 'feature' && doc2.type === 'task')
+        linkType = 'extends';
 
       if (confidence > 0.3) {
         return {
@@ -623,7 +679,10 @@ export class DocumentationLinker extends EventEmitter {
   }
 
   private generateDocumentId(filePath: string): string {
-    return Buffer.from(filePath).toString('base64').replace(/[+/=]/g, '').substring(0, 16);
+    return Buffer.from(filePath)
+      .toString('base64')
+      .replace(/[+/=]/g, '')
+      .substring(0, 16);
   }
 
   private extractTitle(content: string, filePath: string): string {
@@ -632,11 +691,17 @@ export class DocumentationLinker extends EventEmitter {
     if (headingMatch && headingMatch?.[1]) return headingMatch?.[1]?.trim();
 
     // Try to extract from filename
-    const filename = relative(process.cwd(), filePath).replace(extname(filePath), '');
+    const filename = relative(process.cwd(), filePath).replace(
+      extname(filePath),
+      '',
+    );
     return filename.split('/').pop()?.replace(/[-_]/g, ' ') || 'Untitled';
   }
 
-  private determineDocumentType(filePath: string, content: string): DocumentationIndex['type'] {
+  private determineDocumentType(
+    filePath: string,
+    content: string,
+  ): DocumentationIndex['type'] {
     const path = filePath.toLowerCase();
 
     if (path.includes('/vision/')) return 'vision';
@@ -678,9 +743,10 @@ export class DocumentationLinker extends EventEmitter {
   }
 
   private extractSections(
-    content: string
+    content: string,
   ): Array<{ title: string; level: number; content: string }> {
-    const sections: Array<{ title: string; level: number; content: string }> = [];
+    const sections: Array<{ title: string; level: number; content: string }> =
+      [];
     const lines = content.split('\n');
 
     let currentSection: {
@@ -747,7 +813,11 @@ export class DocumentationLinker extends EventEmitter {
     return links;
   }
 
-  private getContextLines(lines: string[], lineIndex: number, contextSize: number): string {
+  private getContextLines(
+    lines: string[],
+    lineIndex: number,
+    contextSize: number,
+  ): string {
     const start = Math.max(0, lineIndex - contextSize);
     const end = Math.min(lines.length, lineIndex + contextSize + 1);
     return lines.slice(start, end).join('\n');

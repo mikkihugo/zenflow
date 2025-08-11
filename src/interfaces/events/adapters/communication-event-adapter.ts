@@ -13,8 +13,20 @@
 
 import { getLogger } from '../../../config/logging-config.ts';
 
-const logger = getLogger('interfaces-events-adapters-communication-event-adapter');
+const logger = getLogger(
+  'interfaces-events-adapters-communication-event-adapter',
+);
 
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+// Production MCP SDK imports
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+// Production logger integration
+import { getLogger } from '../../../config/logging-config.ts';
+import type { ILogger } from '../../../core/interfaces/base-interfaces.ts';
 // Import communication system classes to wrap their EventEmitter usage
 import type { WebSocketClientAdapter } from '../../clients/adapters/websocket-client-adapter.ts';
 import type { HTTPMCPServer } from '../../mcp/http-mcp-server.ts';
@@ -37,18 +49,6 @@ import type {
 import { EventManagerTypes } from '../core/interfaces.ts';
 import type { CommunicationEvent } from '../types.ts';
 import { EventPriorityMap } from '../types.ts';
-
-// Production MCP SDK imports
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
-import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
-
-// Production logger integration
-import { getLogger } from '../../../config/logging-config.ts';
-import type { ILogger } from '../../../core/interfaces/base-interfaces.ts';
 
 // Production MCP client and server management
 interface MCPServerConfig {
@@ -218,7 +218,12 @@ interface CommunicationCorrelation {
  */
 interface CommunicationHealthEntry {
   component: string;
-  componentType: 'websocket' | 'mcp-server' | 'mcp-client' | 'http' | 'protocol';
+  componentType:
+    | 'websocket'
+    | 'mcp-server'
+    | 'mcp-client'
+    | 'http'
+    | 'protocol';
   status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   lastCheck: Date;
   consecutiveFailures: number;
@@ -242,7 +247,12 @@ interface CommunicationHealthEntry {
  */
 interface WrappedCommunicationComponent {
   component: any;
-  componentType: 'websocket' | 'mcp-server' | 'mcp-client' | 'http' | 'protocol';
+  componentType:
+    | 'websocket'
+    | 'mcp-server'
+    | 'mcp-client'
+    | 'http'
+    | 'protocol';
   wrapper: EventEmitter;
   originalMethods: Map<string, Function>;
   eventMappings: Map<string, string>;
@@ -298,7 +308,10 @@ export class CommunicationEventAdapter implements IEventManager {
   private mcpClients = new Map<string, any>();
 
   // Event correlation and tracking
-  private communicationCorrelations = new Map<string, CommunicationCorrelation>();
+  private communicationCorrelations = new Map<
+    string,
+    CommunicationCorrelation
+  >();
   private communicationHealth = new Map<string, CommunicationHealthEntry>();
   private metrics: CommunicationEventMetrics[] = [];
   private subscriptions = new Map<string, EventSubscription>();
@@ -431,7 +444,9 @@ export class CommunicationEventAdapter implements IEventManager {
    */
   async start(): Promise<void> {
     if (this.running) {
-      this.logger.warn(`Communication event adapter ${this.name} is already running`);
+      this.logger.warn(
+        `Communication event adapter ${this.name} is already running`,
+      );
       return;
     }
 
@@ -463,9 +478,14 @@ export class CommunicationEventAdapter implements IEventManager {
       this.startTime = new Date();
       this.emitInternal('start');
 
-      this.logger.info(`Communication event adapter started successfully: ${this.name}`);
+      this.logger.info(
+        `Communication event adapter started successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to start communication event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to start communication event adapter ${this.name}:`,
+        error,
+      );
       this.emitInternal('error', error);
       throw error;
     }
@@ -476,7 +496,9 @@ export class CommunicationEventAdapter implements IEventManager {
    */
   async stop(): Promise<void> {
     if (!this.running) {
-      this.logger.warn(`Communication event adapter ${this.name} is not running`);
+      this.logger.warn(
+        `Communication event adapter ${this.name} is not running`,
+      );
       return;
     }
 
@@ -495,9 +517,14 @@ export class CommunicationEventAdapter implements IEventManager {
       this.running = false;
       this.emitInternal('stop');
 
-      this.logger.info(`Communication event adapter stopped successfully: ${this.name}`);
+      this.logger.info(
+        `Communication event adapter stopped successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to stop communication event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to stop communication event adapter ${this.name}:`,
+        error,
+      );
       this.emitInternal('error', error);
       throw error;
     }
@@ -525,24 +552,34 @@ export class CommunicationEventAdapter implements IEventManager {
    * @param event
    * @param options
    */
-  async emit<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void> {
+  async emit<T extends SystemEvent>(
+    event: T,
+    options?: EventEmissionOptions,
+  ): Promise<void> {
     const startTime = Date.now();
     const _eventId = event.id || this.generateEventId();
 
     try {
       // Validate event (assume valid for SystemEvent - would check CommunicationEvent fields in real implementation)
-      if (!event.id || !event.timestamp || !event.source || !event.type) {
+      if (!(event.id && event.timestamp && event.source && event.type)) {
         throw new Error('Invalid communication event format');
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.performance?.connectionTimeout || 30000;
+      const timeout =
+        options?.timeout || this.config.performance?.connectionTimeout || 30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error(`Event timeout after ${timeout}ms`)), timeout);
+        setTimeout(
+          () => reject(new Error(`Event timeout after ${timeout}ms`)),
+          timeout,
+        );
       });
 
       // Process event emission with timeout
-      const emissionPromise = this.processCommunicationEventEmission(event, options);
+      const emissionPromise = this.processCommunicationEventEmission(
+        event,
+        options,
+      );
       await Promise.race([emissionPromise, timeoutPromise]);
 
       const duration = Date.now() - startTime;
@@ -555,9 +592,15 @@ export class CommunicationEventAdapter implements IEventManager {
         executionTime: duration,
         success: true,
         correlationId: event.correlationId,
-        connectionId: this.extractConnectionId(event as unknown as CommunicationEvent),
-        messageId: this.extractMessageId(event as unknown as CommunicationEvent),
-        protocolType: this.extractProtocolType(event as unknown as CommunicationEvent),
+        connectionId: this.extractConnectionId(
+          event as unknown as CommunicationEvent,
+        ),
+        messageId: this.extractMessageId(
+          event as unknown as CommunicationEvent,
+        ),
+        protocolType: this.extractProtocolType(
+          event as unknown as CommunicationEvent,
+        ),
         communicationLatency: duration,
         timestamp: new Date(),
       });
@@ -578,11 +621,18 @@ export class CommunicationEventAdapter implements IEventManager {
         executionTime: duration,
         success: false,
         correlationId: event.correlationId,
-        connectionId: this.extractConnectionId(event as unknown as CommunicationEvent),
-        messageId: this.extractMessageId(event as unknown as CommunicationEvent),
-        protocolType: this.extractProtocolType(event as unknown as CommunicationEvent),
+        connectionId: this.extractConnectionId(
+          event as unknown as CommunicationEvent,
+        ),
+        messageId: this.extractMessageId(
+          event as unknown as CommunicationEvent,
+        ),
+        protocolType: this.extractProtocolType(
+          event as unknown as CommunicationEvent,
+        ),
         communicationLatency: duration,
-        errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
+        errorType:
+          error instanceof Error ? error.constructor.name : 'UnknownError',
         timestamp: new Date(),
       });
 
@@ -590,10 +640,18 @@ export class CommunicationEventAdapter implements IEventManager {
       this.errorCount++;
       this.totalLatency += duration;
 
-      this.eventEmitter.emit('emission', { event, success: false, duration, error });
+      this.eventEmitter.emit('emission', {
+        event,
+        success: false,
+        duration,
+        error,
+      });
       this.eventEmitter.emit('error', error);
 
-      this.logger.error(`Communication event emission failed for ${event.type}:`, error);
+      this.logger.error(
+        `Communication event emission failed for ${event.type}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -606,13 +664,13 @@ export class CommunicationEventAdapter implements IEventManager {
    */
   async emitBatch<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const startTime = Date.now();
 
     try {
       this.logger.debug(
-        `Emitting communication event batch: ${batch.id} (${batch.events.length} events)`
+        `Emitting communication event batch: ${batch.id} (${batch.events.length} events)`,
       );
 
       // Process events based on strategy
@@ -621,40 +679,43 @@ export class CommunicationEventAdapter implements IEventManager {
         case 'immediate':
           await this.processCommunicationBatchImmediate(
             batch as EventBatch<CommunicationEvent>,
-            options
+            options,
           );
           break;
         case 'queued':
           await this.processCommunicationBatchQueued(
             batch as EventBatch<CommunicationEvent>,
-            options
+            options,
           );
           break;
         case 'batched':
           await this.processCommunicationBatchBatched(
             batch as EventBatch<CommunicationEvent>,
-            options
+            options,
           );
           break;
         case 'throttled':
           await this.processCommunicationBatchThrottled(
             batch as EventBatch<CommunicationEvent>,
-            options
+            options,
           );
           break;
         default:
           await this.processCommunicationBatchQueued(
             batch as EventBatch<CommunicationEvent>,
-            options
+            options,
           );
       }
 
       const duration = Date.now() - startTime;
       this.logger.debug(
-        `Communication event batch processed successfully: ${batch.id} in ${duration}ms`
+        `Communication event batch processed successfully: ${batch.id} in ${duration}ms`,
       );
     } catch (error) {
-      this.logger.error(`Communication event batch processing failed for ${batch.id}:`, error);
+      this.logger.error(
+        `Communication event batch processing failed for ${batch.id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -678,7 +739,7 @@ export class CommunicationEventAdapter implements IEventManager {
   subscribe<T extends SystemEvent>(
     eventTypes: string | string[],
     listener: EventListener<T>,
-    options?: Partial<EventSubscription<T>>
+    options?: Partial<EventSubscription<T>>,
   ): string {
     const subscriptionId = this.generateSubscriptionId();
     const types = Array.isArray(eventTypes) ? eventTypes : [eventTypes];
@@ -698,7 +759,7 @@ export class CommunicationEventAdapter implements IEventManager {
     this.subscriptions.set(subscriptionId, subscription as EventSubscription);
 
     this.logger.debug(
-      `Created communication subscription ${subscriptionId} for events: ${types.join(', ')}`
+      `Created communication subscription ${subscriptionId} for events: ${types.join(', ')}`,
     );
     this.eventEmitter.emit('subscription', { subscriptionId, subscription });
 
@@ -747,7 +808,7 @@ export class CommunicationEventAdapter implements IEventManager {
     }
 
     this.logger.debug(
-      `Removed ${removedCount} communication subscriptions${eventType ? ` for ${eventType}` : ''}`
+      `Removed ${removedCount} communication subscriptions${eventType ? ` for ${eventType}` : ''}`,
     );
     return removedCount;
   }
@@ -797,7 +858,9 @@ export class CommunicationEventAdapter implements IEventManager {
   removeTransform(transformId: string): boolean {
     const result = this.transforms.delete(transformId);
     if (result) {
-      this.logger.debug(`Removed communication event transform: ${transformId}`);
+      this.logger.debug(
+        `Removed communication event transform: ${transformId}`,
+      );
     }
     return result;
   }
@@ -813,15 +876,21 @@ export class CommunicationEventAdapter implements IEventManager {
     // Apply filters
     if (options?.filter) {
       events = events.filter((event) =>
-        this.applyFilter(event as CommunicationEvent, options?.filter!)
+        this.applyFilter(event as CommunicationEvent, options?.filter!),
       );
     }
 
     // Apply sorting
     if (options?.sortBy) {
       events.sort((a, b) => {
-        const aVal = this.getEventSortValue(a as CommunicationEvent, options?.sortBy!);
-        const bVal = this.getEventSortValue(b as CommunicationEvent, options?.sortBy!);
+        const aVal = this.getEventSortValue(
+          a as CommunicationEvent,
+          options?.sortBy!,
+        );
+        const bVal = this.getEventSortValue(
+          b as CommunicationEvent,
+          options?.sortBy!,
+        );
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return options.sortOrder === 'desc' ? -comparison : comparison;
       });
@@ -841,8 +910,13 @@ export class CommunicationEventAdapter implements IEventManager {
    * @param eventType
    * @param limit
    */
-  async getEventHistory(eventType: string, limit?: number): Promise<CommunicationEvent[]> {
-    const events = this.eventHistory.filter((event) => event.type === eventType);
+  async getEventHistory(
+    eventType: string,
+    limit?: number,
+  ): Promise<CommunicationEvent[]> {
+    const events = this.eventHistory.filter(
+      (event) => event.type === eventType,
+    );
     return limit ? events.slice(-limit) : events;
   }
 
@@ -851,8 +925,11 @@ export class CommunicationEventAdapter implements IEventManager {
    */
   async healthCheck(): Promise<EventManagerStatus> {
     const now = new Date();
-    const uptime = this.startTime ? now.getTime() - this.startTime.getTime() : 0;
-    const errorRate = this.eventCount > 0 ? (this.errorCount / this.eventCount) * 100 : 0;
+    const uptime = this.startTime
+      ? now.getTime() - this.startTime.getTime()
+      : 0;
+    const errorRate =
+      this.eventCount > 0 ? (this.errorCount / this.eventCount) * 100 : 0;
 
     // Check communication component health
     const componentHealth = await this.checkCommunicationComponentHealth();
@@ -887,7 +964,8 @@ export class CommunicationEventAdapter implements IEventManager {
         mcpServers: this.mcpServers.size,
         mcpClients: this.mcpClients.size,
         componentHealth,
-        avgCommunicationLatency: this.eventCount > 0 ? this.totalLatency / this.eventCount : 0,
+        avgCommunicationLatency:
+          this.eventCount > 0 ? this.totalLatency / this.eventCount : 0,
       },
     };
   }
@@ -898,14 +976,18 @@ export class CommunicationEventAdapter implements IEventManager {
   async getMetrics(): Promise<EventManagerMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
-    const avgLatency = this.eventCount > 0 ? this.totalLatency / this.eventCount : 0;
-    const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // events per second
+    const avgLatency =
+      this.eventCount > 0 ? this.totalLatency / this.eventCount : 0;
+    const throughput =
+      recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // events per second
 
     // Calculate percentile latencies
-    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics
+      .map((m) => m.executionTime)
+      .sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
@@ -939,7 +1021,9 @@ export class CommunicationEventAdapter implements IEventManager {
    * @param config
    */
   updateConfig(config: Partial<CommunicationEventAdapterConfig>): void {
-    this.logger.info(`Updating configuration for communication event adapter: ${this.name}`);
+    this.logger.info(
+      `Updating configuration for communication event adapter: ${this.name}`,
+    );
     Object.assign(this.config, config);
     this.logger.info(`Configuration updated successfully for: ${this.name}`);
   }
@@ -953,7 +1037,7 @@ export class CommunicationEventAdapter implements IEventManager {
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
-    handler: (...args: any[]) => void
+    handler: (...args: any[]) => void,
   ): void {
     this.eventEmitter.on(event, handler);
   }
@@ -1003,9 +1087,14 @@ export class CommunicationEventAdapter implements IEventManager {
       // Remove all event listeners
       this.eventEmitter.removeAllListeners();
 
-      this.logger.info(`Communication event adapter destroyed successfully: ${this.name}`);
+      this.logger.info(
+        `Communication event adapter destroyed successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to destroy communication event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to destroy communication event adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -1020,7 +1109,7 @@ export class CommunicationEventAdapter implements IEventManager {
    * @param event
    */
   async emitWebSocketCommunicationEvent(
-    event: Omit<CommunicationEvent, 'id' | 'timestamp'>
+    event: Omit<CommunicationEvent, 'id' | 'timestamp'>,
   ): Promise<void> {
     const communicationEvent: CommunicationEvent = {
       ...event,
@@ -1043,7 +1132,9 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param event
    */
-  async emitMCPProtocolEvent(event: Omit<CommunicationEvent, 'id' | 'timestamp'>): Promise<void> {
+  async emitMCPProtocolEvent(
+    event: Omit<CommunicationEvent, 'id' | 'timestamp'>,
+  ): Promise<void> {
     const communicationEvent: CommunicationEvent = {
       ...event,
       id: this.generateEventId(),
@@ -1065,7 +1156,9 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeWebSocketCommunicationEvents(listener: EventListener<CommunicationEvent>): string {
+  subscribeWebSocketCommunicationEvents(
+    listener: EventListener<CommunicationEvent>,
+  ): string {
     return this.subscribe(['communication:websocket'], listener);
   }
 
@@ -1074,7 +1167,9 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeMCPProtocolEvents(listener: EventListener<CommunicationEvent>): string {
+  subscribeMCPProtocolEvents(
+    listener: EventListener<CommunicationEvent>,
+  ): string {
     return this.subscribe(['communication:mcp'], listener);
   }
 
@@ -1083,7 +1178,9 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeHTTPCommunicationEvents(listener: EventListener<CommunicationEvent>): string {
+  subscribeHTTPCommunicationEvents(
+    listener: EventListener<CommunicationEvent>,
+  ): string {
     return this.subscribe(['communication:http'], listener);
   }
 
@@ -1092,14 +1189,18 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeProtocolCommunicationEvents(listener: EventListener<CommunicationEvent>): string {
+  subscribeProtocolCommunicationEvents(
+    listener: EventListener<CommunicationEvent>,
+  ): string {
     return this.subscribe(['communication:protocol'], listener);
   }
 
   /**
    * Get communication health status for all components.
    */
-  async getCommunicationHealthStatus(): Promise<Record<string, CommunicationHealthEntry>> {
+  async getCommunicationHealthStatus(): Promise<
+    Record<string, CommunicationHealthEntry>
+  > {
     const healthStatus: Record<string, CommunicationHealthEntry> = {};
 
     for (const [component, health] of this.communicationHealth.entries()) {
@@ -1114,7 +1215,9 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param correlationId
    */
-  getCommunicationCorrelatedEvents(correlationId: string): CommunicationCorrelation | null {
+  getCommunicationCorrelatedEvents(
+    correlationId: string,
+  ): CommunicationCorrelation | null {
     return this.communicationCorrelations.get(correlationId) || null;
   }
 
@@ -1122,7 +1225,9 @@ export class CommunicationEventAdapter implements IEventManager {
    * Get active communication correlations.
    */
   getActiveCommunicationCorrelations(): CommunicationCorrelation[] {
-    return Array.from(this.communicationCorrelations.values()).filter((c) => c.status === 'active');
+    return Array.from(this.communicationCorrelations.values()).filter(
+      (c) => c.status === 'active',
+    );
   }
 
   /**
@@ -1164,7 +1269,9 @@ export class CommunicationEventAdapter implements IEventManager {
   /**
    * Force health check on all wrapped communication components.
    */
-  async performCommunicationHealthCheck(): Promise<Record<string, CommunicationHealthEntry>> {
+  async performCommunicationHealthCheck(): Promise<
+    Record<string, CommunicationHealthEntry>
+  > {
     const healthResults: Record<string, CommunicationHealthEntry> = {};
 
     for (const [componentName, wrapped] of this.wrappedComponents.entries()) {
@@ -1178,23 +1285,33 @@ export class CommunicationEventAdapter implements IEventManager {
         let reliability = 1.0;
 
         // Get component-specific health data if available
-        if (wrapped.component && typeof wrapped.component.healthCheck === 'function') {
+        if (
+          wrapped.component &&
+          typeof wrapped.component.healthCheck === 'function'
+        ) {
           const health = await wrapped.component.healthCheck();
           communicationLatency = health.responseTime || 0;
           reliability = 1 - (health.errorRate || 0);
-        } else if (wrapped.component && typeof wrapped.component.getMetrics === 'function') {
+        } else if (
+          wrapped.component &&
+          typeof wrapped.component.getMetrics === 'function'
+        ) {
           const metrics = await wrapped.component.getMetrics();
           communicationLatency = metrics.averageLatency || 0;
           throughput = metrics.throughput || 0;
-          reliability = 1 - metrics.errorCount / Math.max(metrics.requestCount, 1);
+          reliability =
+            1 - metrics.errorCount / Math.max(metrics.requestCount, 1);
         }
 
         const responseTime = Date.now() - startTime;
         const threshold =
-          this.config.connectionHealthMonitoring?.connectionHealthThresholds?.[componentName] ||
-          0.8;
+          this.config.connectionHealthMonitoring?.connectionHealthThresholds?.[
+            componentName
+          ] || 0.8;
         const healthScore =
-          reliability * (communicationLatency < 100 ? 1 : 0.5) * (throughput > 10 ? 1 : 0.5);
+          reliability *
+          (communicationLatency < 100 ? 1 : 0.5) *
+          (throughput > 10 ? 1 : 0.5);
 
         const healthEntry: CommunicationHealthEntry = {
           component: componentName,
@@ -1208,7 +1325,8 @@ export class CommunicationEventAdapter implements IEventManager {
           lastCheck: new Date(),
           consecutiveFailures: isHealthy
             ? 0
-            : (this.communicationHealth.get(componentName)?.consecutiveFailures || 0) + 1,
+            : (this.communicationHealth.get(componentName)
+                ?.consecutiveFailures || 0) + 1,
           communicationLatency,
           throughput,
           reliability,
@@ -1227,9 +1345,11 @@ export class CommunicationEventAdapter implements IEventManager {
 
         // Update component-specific metrics
         if (wrapped.componentType === 'websocket') {
-          healthEntry.connectionCount = this.getActiveConnectionCount(componentName);
+          healthEntry.connectionCount =
+            this.getActiveConnectionCount(componentName);
         } else if (wrapped.componentType === 'mcp-server') {
-          healthEntry.activeMessageCount = this.getActiveMessageCount(componentName);
+          healthEntry.activeMessageCount =
+            this.getActiveMessageCount(componentName);
         }
 
         this.communicationHealth.set(componentName, healthEntry);
@@ -1241,7 +1361,8 @@ export class CommunicationEventAdapter implements IEventManager {
           status: 'unhealthy',
           lastCheck: new Date(),
           consecutiveFailures:
-            (this.communicationHealth.get(componentName)?.consecutiveFailures || 0) + 1,
+            (this.communicationHealth.get(componentName)?.consecutiveFailures ||
+              0) + 1,
           communicationLatency: 0,
           throughput: 0,
           reliability: 0,
@@ -1290,7 +1411,9 @@ export class CommunicationEventAdapter implements IEventManager {
       await this.wrapProtocolCommunication();
     }
 
-    this.logger.debug(`Wrapped ${this.wrappedComponents.size} communication components`);
+    this.logger.debug(
+      `Wrapped ${this.wrappedComponents.size} communication components`,
+    );
   }
 
   /**
@@ -1348,11 +1471,17 @@ export class CommunicationEventAdapter implements IEventManager {
           };
 
           this.eventEmitter.emit(uelEvent, communicationEvent);
-          this.updateComponentHealthMetrics(clientName, !originalEvent.includes('error'));
+          this.updateComponentHealthMetrics(
+            clientName,
+            !originalEvent.includes('error'),
+          );
         });
       });
 
-      this.wrappedComponents.set(`websocket-client-${clientName}`, wrappedComponent);
+      this.wrappedComponents.set(
+        `websocket-client-${clientName}`,
+        wrappedComponent,
+      );
       this.logger.debug(`Wrapped WebSocket client events: ${clientName}`);
     }
   }
@@ -1415,7 +1544,7 @@ export class CommunicationEventAdapter implements IEventManager {
           this.eventEmitter.emit(uelEvent, communicationEvent);
           this.updateComponentHealthMetrics(
             `mcp-server-${serverName}`,
-            !originalEvent.includes('error')
+            !originalEvent.includes('error'),
           );
         });
       });
@@ -1480,7 +1609,7 @@ export class CommunicationEventAdapter implements IEventManager {
           this.eventEmitter.emit(uelEvent, communicationEvent);
           this.updateComponentHealthMetrics(
             `mcp-client-${clientName}`,
-            !originalEvent.includes('error')
+            !originalEvent.includes('error'),
           );
         });
       });
@@ -1539,7 +1668,10 @@ export class CommunicationEventAdapter implements IEventManager {
         };
 
         this.eventEmitter.emit(uelEvent, communicationEvent);
-        this.updateComponentHealthMetrics('http-communication', !originalEvent.includes('error'));
+        this.updateComponentHealthMetrics(
+          'http-communication',
+          !originalEvent.includes('error'),
+        );
       });
     });
 
@@ -1607,7 +1739,7 @@ export class CommunicationEventAdapter implements IEventManager {
           this.eventEmitter.emit(uelEvent, communicationEvent);
           this.updateComponentHealthMetrics(
             `${protocolType}-protocol`,
-            !originalEvent.includes('error')
+            !originalEvent.includes('error'),
           );
         });
       });
@@ -1634,9 +1766,14 @@ export class CommunicationEventAdapter implements IEventManager {
         wrapped.wrapper.removeAllListeners();
         wrapped.isActive = false;
 
-        this.logger.debug(`Unwrapped communication component: ${componentName}`);
+        this.logger.debug(
+          `Unwrapped communication component: ${componentName}`,
+        );
       } catch (error) {
-        this.logger.warn(`Failed to unwrap communication component ${componentName}:`, error);
+        this.logger.warn(
+          `Failed to unwrap communication component ${componentName}:`,
+          error,
+        );
       }
     }
 
@@ -1652,7 +1789,7 @@ export class CommunicationEventAdapter implements IEventManager {
    */
   private async processCommunicationEventEmission<T extends SystemEvent>(
     event: T,
-    _options?: EventEmissionOptions
+    _options?: EventEmissionOptions,
   ): Promise<void> {
     // Add to event history
     this.eventHistory.push(event as CommunicationEvent);
@@ -1683,13 +1820,18 @@ export class CommunicationEventAdapter implements IEventManager {
     for (const transform of this.transforms.values()) {
       transformedEvent = (await this.applyTransform(
         transformedEvent as unknown as CommunicationEvent,
-        transform
+        transform,
       )) as unknown as T;
     }
 
     // Process subscriptions manually to handle filtering and transformation per subscription
     for (const subscription of this.subscriptions.values()) {
-      if (!subscription.active || !subscription.eventTypes.includes(transformedEvent.type)) {
+      if (
+        !(
+          subscription.active &&
+          subscription.eventTypes.includes(transformedEvent.type)
+        )
+      ) {
         continue;
       }
 
@@ -1697,7 +1839,10 @@ export class CommunicationEventAdapter implements IEventManager {
         // Apply subscription-specific filters
         if (
           subscription.filter &&
-          !this.applyFilter(transformedEvent as unknown as CommunicationEvent, subscription.filter)
+          !this.applyFilter(
+            transformedEvent as unknown as CommunicationEvent,
+            subscription.filter,
+          )
         ) {
           continue;
         }
@@ -1707,7 +1852,7 @@ export class CommunicationEventAdapter implements IEventManager {
         if (subscription.transform) {
           subscriptionEvent = (await this.applyTransform(
             transformedEvent as unknown as CommunicationEvent,
-            subscription.transform
+            subscription.transform,
           )) as unknown as T;
         }
 
@@ -1716,9 +1861,12 @@ export class CommunicationEventAdapter implements IEventManager {
       } catch (error) {
         this.logger.error(
           `Communication subscription listener error for ${subscription.id}:`,
-          error
+          error,
         );
-        this.eventEmitter.emit('subscription-error', { subscriptionId: subscription.id, error });
+        this.eventEmitter.emit('subscription-error', {
+          subscriptionId: subscription.id,
+          error,
+        });
       }
     }
 
@@ -1759,7 +1907,8 @@ export class CommunicationEventAdapter implements IEventManager {
    * Start health monitoring for communication components.
    */
   private startCommunicationHealthMonitoring(): void {
-    const interval = this.config.connectionHealthMonitoring?.healthCheckInterval || 30000;
+    const interval =
+      this.config.connectionHealthMonitoring?.healthCheckInterval || 30000;
 
     setInterval(async () => {
       try {
@@ -1799,7 +1948,10 @@ export class CommunicationEventAdapter implements IEventManager {
       const now = Date.now();
       const expiredCorrelations: string[] = [];
 
-      for (const [correlationId, correlation] of this.communicationCorrelations.entries()) {
+      for (const [
+        correlationId,
+        correlation,
+      ] of this.communicationCorrelations.entries()) {
         if (now - correlation.lastUpdate.getTime() > correlationTTL) {
           expiredCorrelations.push(correlationId);
         }
@@ -1815,7 +1967,7 @@ export class CommunicationEventAdapter implements IEventManager {
 
       if (expiredCorrelations.length > 0) {
         this.logger.debug(
-          `Cleaned up ${expiredCorrelations.length} expired communication correlations`
+          `Cleaned up ${expiredCorrelations.length} expired communication correlations`,
         );
       }
     }, cleanupInterval);
@@ -1825,18 +1977,23 @@ export class CommunicationEventAdapter implements IEventManager {
    * Start communication optimization if enabled.
    */
   private startCommunicationOptimization(): void {
-    const interval = this.config.communicationOptimization?.optimizationInterval || 60000;
+    const interval =
+      this.config.communicationOptimization?.optimizationInterval || 60000;
 
     setInterval(async () => {
       if (!this.config.communicationOptimization?.enabled) return;
 
       try {
         // Analyze communication performance
-        const communicationHealth = await this.performCommunicationHealthCheck();
+        const communicationHealth =
+          await this.performCommunicationHealthCheck();
 
         // Check if optimization is needed
-        for (const [componentName, health] of Object.entries(communicationHealth)) {
-          const thresholds = this.config.communicationOptimization.performanceThresholds;
+        for (const [componentName, health] of Object.entries(
+          communicationHealth,
+        )) {
+          const thresholds =
+            this.config.communicationOptimization.performanceThresholds;
 
           if (
             health.communicationLatency > thresholds.latency ||
@@ -1859,7 +2016,8 @@ export class CommunicationEventAdapter implements IEventManager {
               details: {
                 requestId: `optimization-${Date.now()}`,
                 responseTime: health.communicationLatency,
-                statusCode: health.throughput > thresholds.throughput ? 200 : 500,
+                statusCode:
+                  health.throughput > thresholds.throughput ? 200 : 500,
               },
             });
           }
@@ -1878,7 +2036,9 @@ export class CommunicationEventAdapter implements IEventManager {
   private startCommunicationEventCorrelation(event: CommunicationEvent): void {
     const correlationId = event.correlationId || this.generateCorrelationId();
 
-    if (!this.communicationCorrelations.has(correlationId)) {
+    if (this.communicationCorrelations.has(correlationId)) {
+      this.updateCommunicationEventCorrelation(event);
+    } else {
       const correlation: CommunicationCorrelation = {
         correlationId,
         events: [event],
@@ -1898,8 +2058,6 @@ export class CommunicationEventAdapter implements IEventManager {
       };
 
       this.communicationCorrelations.set(correlationId, correlation);
-    } else {
-      this.updateCommunicationEventCorrelation(event);
     }
   }
 
@@ -1930,7 +2088,8 @@ export class CommunicationEventAdapter implements IEventManager {
       }
 
       // Update performance metrics
-      const totalTime = correlation.lastUpdate.getTime() - correlation.startTime.getTime();
+      const totalTime =
+        correlation.lastUpdate.getTime() - correlation.startTime.getTime();
       correlation.performance.totalLatency = totalTime;
       correlation.performance.communicationEfficiency =
         this.calculateCommunicationEfficiency(correlation);
@@ -1947,7 +2106,9 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param correlation
    */
-  private isCommunicationCorrelationComplete(correlation: CommunicationCorrelation): boolean {
+  private isCommunicationCorrelationComplete(
+    correlation: CommunicationCorrelation,
+  ): boolean {
     const patterns = this.config.communication?.correlationPatterns || [];
 
     for (const pattern of patterns) {
@@ -1968,15 +2129,22 @@ export class CommunicationEventAdapter implements IEventManager {
    *
    * @param correlation
    */
-  private calculateCommunicationEfficiency(correlation: CommunicationCorrelation): number {
+  private calculateCommunicationEfficiency(
+    correlation: CommunicationCorrelation,
+  ): number {
     const events = correlation.events;
     if (events.length < 2) return 1.0;
 
     // Calculate efficiency based on event timing and success rate
     const successfulEvents = events.filter((e) =>
-      e.details?.statusCode !== undefined ? e.details.statusCode < 400 : e.operation !== 'error'
+      e.details?.statusCode !== undefined
+        ? e.details.statusCode < 400
+        : e.operation !== 'error',
     ).length;
-    const timeEfficiency = Math.max(0, 1 - correlation.performance.totalLatency / 60000); // Penalize long correlations
+    const timeEfficiency = Math.max(
+      0,
+      1 - correlation.performance.totalLatency / 60000,
+    ); // Penalize long correlations
     const successRate = successfulEvents / events.length;
 
     return (timeEfficiency + successRate) / 2;
@@ -2017,23 +2185,22 @@ export class CommunicationEventAdapter implements IEventManager {
    * @param batch
    * @param options
    */
-  private async processCommunicationBatchImmediate<T extends CommunicationEvent>(
-    batch: EventBatch<T>,
-    options?: EventEmissionOptions
-  ): Promise<void> {
+  private async processCommunicationBatchImmediate<
+    T extends CommunicationEvent,
+  >(batch: EventBatch<T>, options?: EventEmissionOptions): Promise<void> {
     await Promise.all(batch.events.map((event) => this.emit(event, options)));
   }
 
   private async processCommunicationBatchQueued<T extends CommunicationEvent>(
     batch: EventBatch<T>,
-    _options?: EventEmissionOptions
+    _options?: EventEmissionOptions,
   ): Promise<void> {
     this.eventQueue.push(...(batch.events as CommunicationEvent[]));
   }
 
   private async processCommunicationBatchBatched<T extends CommunicationEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const batchSize = this.config.processing?.batchSize || 50;
 
@@ -2043,10 +2210,9 @@ export class CommunicationEventAdapter implements IEventManager {
     }
   }
 
-  private async processCommunicationBatchThrottled<T extends CommunicationEvent>(
-    batch: EventBatch<T>,
-    options?: EventEmissionOptions
-  ): Promise<void> {
+  private async processCommunicationBatchThrottled<
+    T extends CommunicationEvent,
+  >(batch: EventBatch<T>, options?: EventEmissionOptions): Promise<void> {
     const throttleMs = this.config.processing?.throttleMs || 100;
 
     for (const event of batch.events) {
@@ -2067,7 +2233,11 @@ export class CommunicationEventAdapter implements IEventManager {
     }
 
     // Priority filter
-    if (filter.priorities && event.priority && !filter.priorities.includes(event.priority)) {
+    if (
+      filter.priorities &&
+      event.priority &&
+      !filter.priorities.includes(event.priority)
+    ) {
       return false;
     }
 
@@ -2090,7 +2260,7 @@ export class CommunicationEventAdapter implements IEventManager {
 
   private async applyTransform<T extends CommunicationEvent>(
     event: T,
-    transform: EventTransform
+    transform: EventTransform,
   ): Promise<T> {
     let transformedEvent = event;
 
@@ -2106,7 +2276,9 @@ export class CommunicationEventAdapter implements IEventManager {
 
     // Apply validator
     if (transform.validator && !transform.validator(transformedEvent)) {
-      throw new Error(`Communication event transformation validation failed for ${event.id}`);
+      throw new Error(
+        `Communication event transformation validation failed for ${event.id}`,
+      );
     }
 
     return transformedEvent;
@@ -2129,20 +2301,28 @@ export class CommunicationEventAdapter implements IEventManager {
     }
   }
 
-  private extractCommunicationOperation(eventType: string): CommunicationEvent['operation'] {
+  private extractCommunicationOperation(
+    eventType: string,
+  ): CommunicationEvent['operation'] {
     if (eventType.includes('connect')) return 'connect';
     if (eventType.includes('disconnect')) return 'disconnect';
-    if (eventType.includes('send') || eventType.includes('request')) return 'send';
-    if (eventType.includes('receive') || eventType.includes('response')) return 'receive';
+    if (eventType.includes('send') || eventType.includes('request'))
+      return 'send';
+    if (eventType.includes('receive') || eventType.includes('response'))
+      return 'receive';
     if (eventType.includes('error')) return 'error';
     if (eventType.includes('timeout')) return 'timeout';
     if (eventType.includes('retry')) return 'retry';
     return 'send';
   }
 
-  private extractProtocol(eventType: string, data: any): CommunicationEvent['protocol'] {
+  private extractProtocol(
+    eventType: string,
+    data: any,
+  ): CommunicationEvent['protocol'] {
     if (data?.protocol) return data?.protocol;
-    if (eventType.includes('websocket') || eventType.includes('ws')) return 'ws';
+    if (eventType.includes('websocket') || eventType.includes('ws'))
+      return 'ws';
     if (eventType.includes('http')) return 'http';
     if (eventType.includes('mcp')) return 'stdio';
     return 'custom';
@@ -2165,7 +2345,9 @@ export class CommunicationEventAdapter implements IEventManager {
     return messageId ? [messageId] : [];
   }
 
-  private determineCommunicationEventPriority(eventType: string): EventPriority {
+  private determineCommunicationEventPriority(
+    eventType: string,
+  ): EventPriority {
     if (
       eventType.includes('error') ||
       eventType.includes('timeout') ||
@@ -2178,11 +2360,15 @@ export class CommunicationEventAdapter implements IEventManager {
       eventType.includes('stopped')
     )
       return 'high';
-    if (eventType.includes('completed') || eventType.includes('response')) return 'medium';
+    if (eventType.includes('completed') || eventType.includes('response'))
+      return 'medium';
     return 'medium';
   }
 
-  private updateComponentHealthMetrics(componentName: string, success: boolean): void {
+  private updateComponentHealthMetrics(
+    componentName: string,
+    success: boolean,
+  ): void {
     const wrapped = this.wrappedComponents.get(componentName);
     if (wrapped) {
       wrapped.healthMetrics.lastSeen = new Date();
@@ -2208,7 +2394,11 @@ export class CommunicationEventAdapter implements IEventManager {
 
     // Update message metrics
     const messageId = this.extractMessageId(event);
-    if (messageId && (event.type === 'communication:mcp' || event.type === 'communication:http')) {
+    if (
+      messageId &&
+      (event.type === 'communication:mcp' ||
+        event.type === 'communication:http')
+    ) {
       const metrics = this.messageMetrics.get(messageId) || {
         eventCount: 0,
         lastUpdate: new Date(),
@@ -2241,7 +2431,9 @@ export class CommunicationEventAdapter implements IEventManager {
     return this.messageMetrics.size;
   }
 
-  private recordCommunicationEventMetrics(metrics: CommunicationEventMetrics): void {
+  private recordCommunicationEventMetrics(
+    metrics: CommunicationEventMetrics,
+  ): void {
     if (!this.config.performance?.enablePerformanceTracking) {
       return;
     }
@@ -2319,7 +2511,7 @@ export class CommunicationEventAdapter implements IEventManager {
  * @example
  */
 export function createCommunicationEventAdapter(
-  config: CommunicationEventAdapterConfig
+  config: CommunicationEventAdapterConfig,
 ): CommunicationEventAdapter {
   return new CommunicationEventAdapter(config);
 }
@@ -2333,7 +2525,7 @@ export function createCommunicationEventAdapter(
  */
 export function createDefaultCommunicationEventAdapterConfig(
   name: string,
-  overrides?: Partial<CommunicationEventAdapterConfig>
+  overrides?: Partial<CommunicationEventAdapterConfig>,
 ): CommunicationEventAdapterConfig {
   return {
     name,
@@ -2464,7 +2656,7 @@ export const CommunicationEventHelpers = {
   createWebSocketConnectionEvent(
     connectionId: string,
     url: string,
-    details?: any
+    details?: any,
   ): Omit<CommunicationEvent, 'id' | 'timestamp'> {
     return {
       source: 'websocket-client',
@@ -2490,7 +2682,7 @@ export const CommunicationEventHelpers = {
   createMCPToolExecutionEvent(
     toolName: string,
     requestId: string,
-    details?: any
+    details?: any,
   ): Omit<CommunicationEvent, 'id' | 'timestamp'> {
     return {
       source: 'mcp-server',
@@ -2517,7 +2709,7 @@ export const CommunicationEventHelpers = {
   createHTTPRequestEvent(
     method: string,
     url: string,
-    details?: any
+    details?: any,
   ): Omit<CommunicationEvent, 'id' | 'timestamp'> {
     return {
       source: 'http-client',
@@ -2543,7 +2735,7 @@ export const CommunicationEventHelpers = {
   createProtocolSwitchingEvent(
     fromProtocol: string,
     toProtocol: string,
-    details?: any
+    details?: any,
   ): Omit<CommunicationEvent, 'id' | 'timestamp'> {
     return {
       source: 'protocol-manager',
@@ -2572,7 +2764,7 @@ export const CommunicationEventHelpers = {
     component: string,
     protocol: string,
     error: Error,
-    details?: any
+    details?: any,
   ): Omit<CommunicationEvent, 'id' | 'timestamp'> {
     return {
       source: component,

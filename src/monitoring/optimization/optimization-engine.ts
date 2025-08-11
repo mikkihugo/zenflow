@@ -16,7 +16,12 @@ import type { CompositeMetrics } from '../core/metrics-collector.ts';
 
 export interface OptimizationAction {
   id: string;
-  type: 'cache' | 'scaling' | 'tuning' | 'load_balancing' | 'resource_allocation';
+  type:
+    | 'cache'
+    | 'scaling'
+    | 'tuning'
+    | 'load_balancing'
+    | 'resource_allocation';
   target: string;
   action: string;
   parameters: Record<string, any>;
@@ -141,7 +146,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   public async optimizeFromInsights(
     insights: PerformanceInsights,
-    metrics: CompositeMetrics
+    metrics: CompositeMetrics,
   ): Promise<OptimizationAction[]> {
     if (!this.isOptimizing) {
       return [];
@@ -157,19 +162,28 @@ export class OptimizationEngine extends EventEmitter {
 
     // Process bottlenecks
     for (const bottleneck of insights.bottlenecks) {
-      const bottleneckActions = await this.handleBottleneck(bottleneck, metrics);
+      const bottleneckActions = await this.handleBottleneck(
+        bottleneck,
+        metrics,
+      );
       actions.push(...bottleneckActions);
     }
 
     // Proactive optimizations based on predictions
     if (insights.predictions.resourceExhaustion.length > 0) {
-      const proactiveActions = await this.handleResourceExhaustion(insights.predictions, metrics);
+      const proactiveActions = await this.handleResourceExhaustion(
+        insights.predictions,
+        metrics,
+      );
       actions.push(...proactiveActions);
     }
 
     // Health-based optimizations
     if (insights.healthScore < 70) {
-      const healthActions = await this.handleLowHealth(insights.healthScore, metrics);
+      const healthActions = await this.handleLowHealth(
+        insights.healthScore,
+        metrics,
+      );
       actions.push(...healthActions);
     }
 
@@ -191,7 +205,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleAnomaly(
     anomaly: AnomalyDetection,
-    _metrics: CompositeMetrics
+    _metrics: CompositeMetrics,
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -283,7 +297,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleBottleneck(
     bottleneck: BottleneckAnalysis,
-    metrics: CompositeMetrics
+    metrics: CompositeMetrics,
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -310,7 +324,10 @@ export class OptimizationEngine extends EventEmitter {
             type: 'cache',
             target: 'fact',
             action: 'expand_cache_size',
-            parameters: { currentSize: metrics.fact.storage.storageSize, expansionFactor: 1.5 },
+            parameters: {
+              currentSize: metrics.fact.storage.storageSize,
+              expansionFactor: 1.5,
+            },
             priority: 'medium',
             estimatedImpact: 0.6,
             executionTime: 1000,
@@ -358,7 +375,9 @@ export class OptimizationEngine extends EventEmitter {
             type: 'tuning',
             target: 'mcp',
             action: 'optimize_retry_policy',
-            parameters: { currentSuccessRate: metrics.mcp.performance.overallSuccessRate },
+            parameters: {
+              currentSuccessRate: metrics.mcp.performance.overallSuccessRate,
+            },
             priority: 'high',
             estimatedImpact: 0.7,
             executionTime: 1000,
@@ -385,7 +404,7 @@ export class OptimizationEngine extends EventEmitter {
       timeToCapacity: number;
       resourceExhaustion: string[];
     },
-    _metrics: CompositeMetrics
+    _metrics: CompositeMetrics,
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -436,7 +455,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleLowHealth(
     healthScore: number,
-    _metrics: CompositeMetrics
+    _metrics: CompositeMetrics,
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -481,20 +500,25 @@ export class OptimizationEngine extends EventEmitter {
     for (const action of actions) {
       // Check strategy enablement
       const strategy = this.strategies.get(action.type);
-      if (!strategy || !strategy.enabled) continue;
+      if (!(strategy && strategy.enabled)) continue;
 
       // Check cooldown period
       const lastSimilarAction = this.actionHistory
         .filter((result) => result?.actionId.includes(action.type))
         .sort((a, b) => b.executionTime - a.executionTime)[0];
 
-      if (lastSimilarAction && now - lastSimilarAction.executionTime < strategy.cooldownPeriod) {
+      if (
+        lastSimilarAction &&
+        now - lastSimilarAction.executionTime < strategy.cooldownPeriod
+      ) {
         continue;
       }
 
       // Check rate limiting
       const recentActions = this.actionHistory.filter(
-        (result) => result?.actionId.includes(action.type) && now - result?.executionTime < 60000
+        (result) =>
+          result?.actionId.includes(action.type) &&
+          now - result?.executionTime < 60000,
       );
 
       if (recentActions.length >= strategy.maxActionsPerMinute) {
@@ -534,8 +558,13 @@ export class OptimizationEngine extends EventEmitter {
 
     switch (action.action) {
       case 'expand_cache_size': {
-        const newCacheSize = action.parameters.currentSize * action.parameters.expansionFactor;
-        return newCacheSize > (this.resourceLimits.get('max_cache_size') || Infinity);
+        const newCacheSize =
+          action.parameters.currentSize * action.parameters.expansionFactor;
+        return (
+          newCacheSize >
+          (this.resourceLimits.get('max_cache_size') ||
+            Number.POSITIVE_INFINITY)
+        );
       }
 
       case 'scale_cpu_resources':
@@ -551,8 +580,12 @@ export class OptimizationEngine extends EventEmitter {
    * Execute pending optimization actions.
    */
   private async executePendingActions(): Promise<void> {
-    const criticalActions = this.pendingActions.filter((a) => a.priority === 'critical');
-    const highActions = this.pendingActions.filter((a) => a.priority === 'high');
+    const criticalActions = this.pendingActions.filter(
+      (a) => a.priority === 'critical',
+    );
+    const highActions = this.pendingActions.filter(
+      (a) => a.priority === 'high',
+    );
 
     // Execute critical actions immediately
     for (const action of criticalActions) {
@@ -572,7 +605,7 @@ export class OptimizationEngine extends EventEmitter {
 
     // Remove executed actions from pending
     this.pendingActions = this.pendingActions.filter(
-      (a) => a.priority !== 'critical' && a.priority !== 'high'
+      (a) => a.priority !== 'critical' && a.priority !== 'high',
     );
   }
 
@@ -581,7 +614,9 @@ export class OptimizationEngine extends EventEmitter {
    *
    * @param action
    */
-  private async executeAction(action: OptimizationAction): Promise<OptimizationResult> {
+  private async executeAction(
+    action: OptimizationAction,
+  ): Promise<OptimizationResult> {
     this.executingActions.add(action.id);
     const startTime = Date.now();
 
@@ -631,10 +666,12 @@ export class OptimizationEngine extends EventEmitter {
    * @param action
    */
   private async simulateActionExecution(
-    action: OptimizationAction
+    action: OptimizationAction,
   ): Promise<Partial<OptimizationResult>> {
     // Simulate execution time.
-    await new Promise((resolve) => setTimeout(resolve, Math.min(action.executionTime, 1000)));
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.min(action.executionTime, 1000)),
+    );
 
     // Simulate success/failure
     const success = Math.random() > 0.1; // 90% success rate
@@ -644,7 +681,8 @@ export class OptimizationEngine extends EventEmitter {
     }
 
     // Calculate simulated impact
-    const performanceImprovement = action.estimatedImpact * (0.8 + Math.random() * 0.4);
+    const performanceImprovement =
+      action.estimatedImpact * (0.8 + Math.random() * 0.4);
     const efficiencyImprovement = performanceImprovement * 0.8;
     const cost = action.priority === 'critical' ? 0.3 : 0.1;
 
@@ -683,7 +721,8 @@ export class OptimizationEngine extends EventEmitter {
   } {
     const totalActions = this.actionHistory.length;
     const successfulActions = this.actionHistory.filter((r) => r.success);
-    const successRate = totalActions > 0 ? successfulActions.length / totalActions : 0;
+    const successRate =
+      totalActions > 0 ? successfulActions.length / totalActions : 0;
 
     const averageImpact =
       successfulActions.length > 0
@@ -714,7 +753,10 @@ export class OptimizationEngine extends EventEmitter {
    * @param strategyName
    * @param updates
    */
-  public updateStrategy(strategyName: string, updates: Partial<OptimizationStrategy>): void {
+  public updateStrategy(
+    strategyName: string,
+    updates: Partial<OptimizationStrategy>,
+  ): void {
     const strategy = this.strategies.get(strategyName);
     if (strategy) {
       Object.assign(strategy, updates);

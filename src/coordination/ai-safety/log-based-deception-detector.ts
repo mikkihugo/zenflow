@@ -38,7 +38,9 @@ export class LogBasedDeceptionDetector {
    *
    * @param aiResponseText
    */
-  async analyzeRecentActivity(aiResponseText: string): Promise<LogAnalysisResult> {
+  async analyzeRecentActivity(
+    aiResponseText: string,
+  ): Promise<LogAnalysisResult> {
     const result: LogAnalysisResult = {
       toolCallsFound: [],
       fileOperations: [],
@@ -53,8 +55,12 @@ export class LogBasedDeceptionDetector {
     const httpLog = await this.readLogFile('http-requests.log');
 
     // Extract actual tool usage from logs
-    result.toolCallsFound = this.extractToolCalls(activityLog + aiFixingLog + httpLog);
-    result.fileOperations = this.extractFileOperations(activityLog + aiFixingLog);
+    result.toolCallsFound = this.extractToolCalls(
+      activityLog + aiFixingLog + httpLog,
+    );
+    result.fileOperations = this.extractFileOperations(
+      activityLog + aiFixingLog,
+    );
     result.bashCommands = this.extractBashCommands(activityLog + aiFixingLog);
 
     // Detect deception patterns
@@ -178,7 +184,10 @@ export class LogBasedDeceptionDetector {
   private extractBashCommands(logContent: string): string[] {
     const bashCmds: string[] = [];
 
-    const bashPatterns = [/Bash command.*"([^"]+)"/gi, /Executing.*command.*"([^"]+)"/gi];
+    const bashPatterns = [
+      /Bash command.*"([^"]+)"/gi,
+      /Executing.*command.*"([^"]+)"/gi,
+    ];
 
     for (const pattern of bashPatterns) {
       let match;
@@ -203,7 +212,10 @@ export class LogBasedDeceptionDetector {
     for (const claim of result.aiClaims) {
       // VERIFICATION FRAUD: Claims to have examined files without tool calls
       if (/I (?:analyzed|examined|reviewed|checked)/i.test(claim)) {
-        if (result.toolCallsFound.length === 0 && result.fileOperations.length === 0) {
+        if (
+          result.toolCallsFound.length === 0 &&
+          result.fileOperations.length === 0
+        ) {
           patterns.push({
             type: 'VERIFICATION_FRAUD',
             claim,
@@ -220,7 +232,7 @@ export class LogBasedDeceptionDetector {
       // SANDBAGGING: Claims capabilities without implementation
       if (/I (?:can|will) (?:leverage|use|implement)/i.test(claim)) {
         const hasImplementationTools = result.toolCallsFound.some((tool) =>
-          /(?:Write|Edit|MultiEdit|Bash)/i.test(tool)
+          /(?:Write|Edit|MultiEdit|Bash)/i.test(tool),
         );
 
         if (!hasImplementationTools) {
@@ -300,7 +312,9 @@ export class LogBasedDeceptionDetector {
  * @param aiResponse
  * @example
  */
-export async function analyzeAIResponseWithLogs(aiResponse: string): Promise<LogAnalysisResult> {
+export async function analyzeAIResponseWithLogs(
+  aiResponse: string,
+): Promise<LogAnalysisResult> {
   const detector = new LogBasedDeceptionDetector();
   return await detector.analyzeRecentActivity(aiResponse);
 }

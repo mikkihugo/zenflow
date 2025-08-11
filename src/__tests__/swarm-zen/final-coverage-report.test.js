@@ -86,7 +86,9 @@ class FinalCoverageReport {
     const testDir = path.join(__dirname);
     const testFiles = fs
       .readdirSync(testDir)
-      .filter((file) => file.endsWith('.test.js') && file.includes('comprehensive'));
+      .filter(
+        (file) => file.endsWith('.test.js') && file.includes('comprehensive'),
+      );
 
     this.achievements.testSuitesCreated = testFiles.length;
 
@@ -100,7 +102,8 @@ class FinalCoverageReport {
 
     // Calculate coverage improvement
     this.achievements.coverageImprovement = (
-      ((this.metrics.afterCoverage - this.metrics.beforeCoverage) / this.metrics.targetCoverage) *
+      ((this.metrics.afterCoverage - this.metrics.beforeCoverage) /
+        this.metrics.targetCoverage) *
       100
     ).toFixed(2);
   }
@@ -108,7 +111,9 @@ class FinalCoverageReport {
   generateHTML() {
     const passRate =
       this.metrics.actualTests > 0
-        ? ((this.metrics.passedTests / this.metrics.actualTests) * 100).toFixed(1)
+        ? ((this.metrics.passedTests / this.metrics.actualTests) * 100).toFixed(
+            1,
+          )
         : '0.0';
 
     const coverageProgress = (
@@ -423,25 +428,29 @@ class FinalCoverageReport {
           name: 'MCP Tools Comprehensive Tests',
           file: 'mcp-tools-comprehensive.test.js',
           testsCount: 37,
-          description: 'Tests all 25 MCP tools with valid/invalid inputs and edge cases',
+          description:
+            'Tests all 25 MCP tools with valid/invalid inputs and edge cases',
         },
         {
           name: 'DAA Functionality Tests',
           file: 'daa-functionality-comprehensive.test.js',
           testsCount: 29,
-          description: 'Tests DAA initialization, agent management, workflows, and learning',
+          description:
+            'Tests DAA initialization, agent management, workflows, and learning',
         },
         {
           name: 'Error Handling Tests',
           file: 'error-handling-comprehensive.test.js',
           testsCount: 32,
-          description: 'Tests input validation, sanitization, error types, and recovery',
+          description:
+            'Tests input validation, sanitization, error types, and recovery',
         },
         {
           name: 'MCP Protocol Integration Tests',
           file: 'mcp-protocol-integration.test.js',
           testsCount: 22,
-          description: 'Tests MCP protocol compliance, serialization, and security',
+          description:
+            'Tests MCP protocol compliance, serialization, and security',
         },
         {
           name: 'Edge Case Coverage Tests',
@@ -453,7 +462,8 @@ class FinalCoverageReport {
           name: 'Master Test Coverage Runner',
           file: 'master-test-coverage-runner.test.js',
           testsCount: 0,
-          description: 'Orchestrates all test suites and generates coverage reports',
+          description:
+            'Orchestrates all test suites and generates coverage reports',
         },
       ],
       recommendations: [

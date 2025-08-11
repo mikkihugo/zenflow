@@ -18,12 +18,15 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates.ts';
 import { WorkflowHumanGateType } from '../orchestration/workflow-gates.ts';
 import type { ArchitectureRunwayManager } from './architecture-runway-manager.ts';
-import type { SystemSolutionArchitectureManager } from './system-solution-architecture-manager.ts';
 import type { ProgramIncrementManager } from './program-increment-manager.ts';
+import type { SystemSolutionArchitectureManager } from './system-solution-architecture-manager.ts';
 import type { ValueStreamMapper } from './value-stream-mapper.ts';
 
 // ============================================================================
@@ -286,7 +289,11 @@ export interface StandardLifecycle {
  * Migration plan
  */
 export interface MigrationPlan {
-  readonly strategy: 'big_bang' | 'phased' | 'parallel_run' | 'gradual_replacement';
+  readonly strategy:
+    | 'big_bang'
+    | 'phased'
+    | 'parallel_run'
+    | 'gradual_replacement';
   readonly timeline: string;
   readonly phases: MigrationPhase[];
   readonly risks: string[];
@@ -491,7 +498,12 @@ export interface GovernanceProcess {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'decision_making' | 'review' | 'approval' | 'monitoring' | 'escalation';
+  readonly type:
+    | 'decision_making'
+    | 'review'
+    | 'approval'
+    | 'monitoring'
+    | 'escalation';
   readonly steps: ProcessStep[];
   readonly inputs: ProcessInput[];
   readonly outputs: ProcessOutput[];
@@ -579,7 +591,12 @@ export interface GovernancePolicy {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly category: 'architecture' | 'technology' | 'security' | 'compliance' | 'operations';
+  readonly category:
+    | 'architecture'
+    | 'technology'
+    | 'security'
+    | 'compliance'
+    | 'operations';
   readonly scope: string;
   readonly rules: PolicyRule[];
   readonly enforcement: PolicyEnforcement;
@@ -734,7 +751,12 @@ export interface DelegationRule {
 export interface GovernanceMetric {
   readonly name: string;
   readonly description: string;
-  readonly category: 'effectiveness' | 'efficiency' | 'compliance' | 'maturity' | 'value';
+  readonly category:
+    | 'effectiveness'
+    | 'efficiency'
+    | 'compliance'
+    | 'maturity'
+    | 'value';
   readonly calculation: string;
   readonly target: number;
   readonly threshold: number;
@@ -1090,8 +1112,18 @@ export interface GovernanceDecision {
   readonly id: string;
   readonly title: string;
   readonly description: string;
-  readonly type: 'principle' | 'standard' | 'exception' | 'policy' | 'strategic';
-  readonly status: 'proposed' | 'under_review' | 'approved' | 'rejected' | 'implemented';
+  readonly type:
+    | 'principle'
+    | 'standard'
+    | 'exception'
+    | 'policy'
+    | 'strategic';
+  readonly status:
+    | 'proposed'
+    | 'under_review'
+    | 'approved'
+    | 'rejected'
+    | 'implemented';
   readonly requester: string;
   readonly decision_maker: string;
   readonly stakeholders: string[];
@@ -1161,7 +1193,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
     systemSolutionManager: SystemSolutionArchitectureManager,
     piManager: ProgramIncrementManager,
     valueStreamMapper: ValueStreamMapper,
-    config: Partial<EnterpriseArchConfig> = {}
+    config: Partial<EnterpriseArchConfig> = {},
   ) {
     super();
 
@@ -1233,10 +1265,15 @@ export class EnterpriseArchitectureManager extends EventEmitter {
       // Register event handlers
       this.registerEventHandlers();
 
-      this.logger.info('Enterprise Architecture Manager initialized successfully');
+      this.logger.info(
+        'Enterprise Architecture Manager initialized successfully',
+      );
       this.emit('initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize Enterprise Architecture Manager', { error });
+      this.logger.error(
+        'Failed to initialize Enterprise Architecture Manager',
+        { error },
+      );
       throw error;
     }
   }
@@ -1267,7 +1304,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
    * Add enterprise architecture principle
    */
   async addArchitecturePrinciple(
-    principleData: Partial<ArchitecturePrinciple>
+    principleData: Partial<ArchitecturePrinciple>,
   ): Promise<ArchitecturePrinciple> {
     this.logger.info('Adding architecture principle', {
       name: principleData.name,
@@ -1330,23 +1367,32 @@ export class EnterpriseArchitectureManager extends EventEmitter {
   async validateArchitecturePrinciples(): Promise<PrincipleValidationReport> {
     this.logger.info('Validating architecture principles');
 
-    const allPrinciples = Array.from(this.state.architecturePrinciples.values());
-    const activePrinciples = allPrinciples.filter((p) => p.status === PrincipleStatus.ACTIVE);
+    const allPrinciples = Array.from(
+      this.state.architecturePrinciples.values(),
+    );
+    const activePrinciples = allPrinciples.filter(
+      (p) => p.status === PrincipleStatus.ACTIVE,
+    );
 
     // Check principle compliance across systems
-    const complianceResults = await this.checkPrincipleCompliance(activePrinciples);
+    const complianceResults =
+      await this.checkPrincipleCompliance(activePrinciples);
 
     // Identify violations
-    const violations = await this.identifyPrincipleViolations(activePrinciples, complianceResults);
+    const violations = await this.identifyPrincipleViolations(
+      activePrinciples,
+      complianceResults,
+    );
 
     // Assess principle effectiveness
-    const effectiveness = await this.assessPrincipleEffectiveness(activePrinciples);
+    const effectiveness =
+      await this.assessPrincipleEffectiveness(activePrinciples);
 
     // Generate recommendations
     const recommendations = await this.generatePrincipleRecommendations(
       activePrinciples,
       violations,
-      effectiveness
+      effectiveness,
     );
 
     const validationReport: PrincipleValidationReport = {
@@ -1358,7 +1404,9 @@ export class EnterpriseArchitectureManager extends EventEmitter {
       violations,
       effectiveness,
       recommendations,
-      nextValidation: new Date(Date.now() + this.config.principlesReviewInterval),
+      nextValidation: new Date(
+        Date.now() + this.config.principlesReviewInterval,
+      ),
     };
 
     // Store violations in state
@@ -1367,9 +1415,14 @@ export class EnterpriseArchitectureManager extends EventEmitter {
     });
 
     // Create alerts for critical violations
-    const criticalViolations = violations.filter((v) => v.severity === 'critical');
+    const criticalViolations = violations.filter(
+      (v) => v.severity === 'critical',
+    );
     if (criticalViolations.length > 0) {
-      await this.createPrincipleViolationAlert(validationReport, criticalViolations);
+      await this.createPrincipleViolationAlert(
+        validationReport,
+        criticalViolations,
+      );
     }
 
     this.logger.info('Architecture principle validation completed', {
@@ -1390,7 +1443,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
    * Add technology standard
    */
   async addTechnologyStandard(
-    standardData: Partial<TechnologyStandard>
+    standardData: Partial<TechnologyStandard>,
   ): Promise<TechnologyStandard> {
     this.logger.info('Adding technology standard', {
       name: standardData.name,
@@ -1462,26 +1515,31 @@ export class EnterpriseArchitectureManager extends EventEmitter {
 
     const allStandards = Array.from(this.state.technologyStandards.values());
     const activeStandards = allStandards.filter(
-      (s) => s.lifecycle.phase === 'active' || s.lifecycle.phase === 'mature'
+      (s) => s.lifecycle.phase === 'active' || s.lifecycle.phase === 'mature',
     );
 
     // Check compliance for each standard
-    const complianceResults = await this.checkStandardCompliance(activeStandards);
+    const complianceResults =
+      await this.checkStandardCompliance(activeStandards);
 
     // Identify violations
-    const violations = await this.identifyStandardViolations(activeStandards, complianceResults);
+    const violations = await this.identifyStandardViolations(
+      activeStandards,
+      complianceResults,
+    );
 
     // Assess adoption rates
     const adoptionMetrics = await this.assessStandardAdoption(activeStandards);
 
     // Calculate compliance scores
-    const complianceScore = this.calculateStandardComplianceScore(complianceResults);
+    const complianceScore =
+      this.calculateStandardComplianceScore(complianceResults);
 
     // Generate recommendations
     const recommendations = await this.generateStandardRecommendations(
       activeStandards,
       violations,
-      adoptionMetrics
+      adoptionMetrics,
     );
 
     const complianceReport: StandardComplianceReport = {
@@ -1489,7 +1547,8 @@ export class EnterpriseArchitectureManager extends EventEmitter {
       reportDate: new Date(),
       standardCount: activeStandards.length,
       overallCompliance: complianceScore,
-      complianceByCategory: this.groupStandardComplianceByCategory(complianceResults),
+      complianceByCategory:
+        this.groupStandardComplianceByCategory(complianceResults),
       complianceByType: this.groupStandardComplianceByType(complianceResults),
       violations,
       adoptionMetrics,
@@ -1504,9 +1563,14 @@ export class EnterpriseArchitectureManager extends EventEmitter {
     });
 
     // Create alerts for critical violations
-    const criticalViolations = violations.filter((v) => v.severity === 'critical');
+    const criticalViolations = violations.filter(
+      (v) => v.severity === 'critical',
+    );
     if (criticalViolations.length > 0) {
-      await this.createStandardViolationAlert(complianceReport, criticalViolations);
+      await this.createStandardViolationAlert(
+        complianceReport,
+        criticalViolations,
+      );
     }
 
     this.logger.info('Technology standard compliance monitoring completed', {
@@ -1527,8 +1591,13 @@ export class EnterpriseArchitectureManager extends EventEmitter {
    * Create architecture governance workflow
    */
   async createArchitectureGovernanceWorkflow(
-    decisionType: 'principle' | 'standard' | 'exception' | 'policy' | 'strategic',
-    requestData: any
+    decisionType:
+      | 'principle'
+      | 'standard'
+      | 'exception'
+      | 'policy'
+      | 'strategic',
+    requestData: unknown,
   ): Promise<GovernanceDecision> {
     this.logger.info('Creating architecture governance workflow', {
       decisionType,
@@ -1577,13 +1646,17 @@ export class EnterpriseArchitectureManager extends EventEmitter {
   /**
    * Execute architecture governance workflow
    */
-  async executeArchitectureGovernanceWorkflow(decisionId: string): Promise<GovernanceDecision> {
+  async executeArchitectureGovernanceWorkflow(
+    decisionId: string,
+  ): Promise<GovernanceDecision> {
     const decision = this.state.governanceDecisions.get(decisionId);
     if (!decision) {
       throw new Error(`Governance decision not found: ${decisionId}`);
     }
 
-    this.logger.info('Executing architecture governance workflow', { decisionId });
+    this.logger.info('Executing architecture governance workflow', {
+      decisionId,
+    });
 
     try {
       // Update status to under review
@@ -1591,10 +1664,14 @@ export class EnterpriseArchitectureManager extends EventEmitter {
       this.state.governanceDecisions.set(decisionId, reviewDecision);
 
       // Execute governance process
-      const governanceResult = await this.executeGovernanceProcess(reviewDecision);
+      const governanceResult =
+        await this.executeGovernanceProcess(reviewDecision);
 
       // Make decision based on governance outcome
-      const finalDecision = await this.makeGovernanceDecision(decisionId, governanceResult);
+      const finalDecision = await this.makeGovernanceDecision(
+        decisionId,
+        governanceResult,
+      );
 
       // Update decision status
       finalDecision.decision_date = new Date();
@@ -1618,7 +1695,10 @@ export class EnterpriseArchitectureManager extends EventEmitter {
       this.emit('governance-workflow-completed', finalDecision);
       return finalDecision;
     } catch (error) {
-      this.logger.error('Architecture governance workflow failed', { decisionId, error });
+      this.logger.error('Architecture governance workflow failed', {
+        decisionId,
+        error,
+      });
 
       const failedDecision = {
         ...decision,
@@ -1657,10 +1737,16 @@ export class EnterpriseArchitectureManager extends EventEmitter {
     const trends = await this.calculateHealthTrends();
 
     // Identify risks
-    const risks = await this.identifyArchitectureHealthRisks(categories, trends);
+    const risks = await this.identifyArchitectureHealthRisks(
+      categories,
+      trends,
+    );
 
     // Generate recommendations
-    const recommendations = await this.generateHealthRecommendations(categories, risks);
+    const recommendations = await this.generateHealthRecommendations(
+      categories,
+      risks,
+    );
 
     // Get benchmark data
     const benchmarks = await this.getArchitectureHealthBenchmarks();
@@ -1718,18 +1804,30 @@ export class EnterpriseArchitectureManager extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('enterprise-arch:state');
+      const persistedState = await this.memory.retrieve(
+        'enterprise-arch:state',
+      );
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
-          architecturePrinciples: new Map(persistedState.architecturePrinciples || []),
-          technologyStandards: new Map(persistedState.technologyStandards || []),
-          governanceFrameworks: new Map(persistedState.governanceFrameworks || []),
+          architecturePrinciples: new Map(
+            persistedState.architecturePrinciples || [],
+          ),
+          technologyStandards: new Map(
+            persistedState.technologyStandards || [],
+          ),
+          governanceFrameworks: new Map(
+            persistedState.governanceFrameworks || [],
+          ),
           healthMetrics: new Map(persistedState.healthMetrics || []),
-          principleViolations: new Map(persistedState.principleViolations || []),
+          principleViolations: new Map(
+            persistedState.principleViolations || [],
+          ),
           standardViolations: new Map(persistedState.standardViolations || []),
-          governanceDecisions: new Map(persistedState.governanceDecisions || []),
+          governanceDecisions: new Map(
+            persistedState.governanceDecisions || [],
+          ),
         };
         this.logger.info('Enterprise Architecture Manager state loaded');
       }
@@ -1742,13 +1840,23 @@ export class EnterpriseArchitectureManager extends EventEmitter {
     try {
       const stateToSerialize = {
         ...this.state,
-        architecturePrinciples: Array.from(this.state.architecturePrinciples.entries()),
-        technologyStandards: Array.from(this.state.technologyStandards.entries()),
-        governanceFrameworks: Array.from(this.state.governanceFrameworks.entries()),
+        architecturePrinciples: Array.from(
+          this.state.architecturePrinciples.entries(),
+        ),
+        technologyStandards: Array.from(
+          this.state.technologyStandards.entries(),
+        ),
+        governanceFrameworks: Array.from(
+          this.state.governanceFrameworks.entries(),
+        ),
         healthMetrics: Array.from(this.state.healthMetrics.entries()),
-        principleViolations: Array.from(this.state.principleViolations.entries()),
+        principleViolations: Array.from(
+          this.state.principleViolations.entries(),
+        ),
         standardViolations: Array.from(this.state.standardViolations.entries()),
-        governanceDecisions: Array.from(this.state.governanceDecisions.entries()),
+        governanceDecisions: Array.from(
+          this.state.governanceDecisions.entries(),
+        ),
       };
 
       await this.memory.store('enterprise-arch:state', stateToSerialize);
@@ -1815,77 +1923,104 @@ export class EnterpriseArchitectureManager extends EventEmitter {
   }
 
   private registerEventHandlers(): void {
-    this.eventBus.registerHandler('architecture-principle-violated', async (event) => {
-      await this.handlePrincipleViolation(event.payload);
-    });
+    this.eventBus.registerHandler(
+      'architecture-principle-violated',
+      async (event) => {
+        await this.handlePrincipleViolation(event.payload);
+      },
+    );
 
-    this.eventBus.registerHandler('technology-standard-violated', async (event) => {
-      await this.handleStandardViolation(event.payload);
-    });
+    this.eventBus.registerHandler(
+      'technology-standard-violated',
+      async (event) => {
+        await this.handleStandardViolation(event.payload);
+      },
+    );
 
-    this.eventBus.registerHandler('governance-decision-required', async (event) => {
-      await this.handleGovernanceDecisionRequest(event.payload);
-    });
+    this.eventBus.registerHandler(
+      'governance-decision-required',
+      async (event) => {
+        await this.handleGovernanceDecisionRequest(event.payload);
+      },
+    );
   }
 
   // Many placeholder implementations would follow...
 
-  private async createPrincipleApprovalGate(principle: ArchitecturePrinciple): Promise<void> {}
-  private async checkPrincipleCompliance(principles: ArchitecturePrinciple[]): Promise<any[]> {
+  private async createPrincipleApprovalGate(
+    principle: ArchitecturePrinciple,
+  ): Promise<void> {}
+  private async checkPrincipleCompliance(
+    principles: ArchitecturePrinciple[],
+  ): Promise<any[]> {
     return [];
   }
   private async identifyPrincipleViolations(
     principles: ArchitecturePrinciple[],
-    compliance: any[]
+    compliance: unknown[],
   ): Promise<PrincipleViolation[]> {
     return [];
   }
-  private async assessPrincipleEffectiveness(principles: ArchitecturePrinciple[]): Promise<any> {
+  private async assessPrincipleEffectiveness(
+    principles: ArchitecturePrinciple[],
+  ): Promise<unknown> {
     return {};
   }
   private async generatePrincipleRecommendations(
     principles: ArchitecturePrinciple[],
     violations: PrincipleViolation[],
-    effectiveness: any
+    effectiveness: unknown,
   ): Promise<string[]> {
     return [];
   }
-  private calculateOverallCompliance(results: any[]): number {
+  private calculateOverallCompliance(results: unknown[]): number {
     return 100;
   }
-  private groupComplianceByCategory(results: any[]): Record<string, number> {
+  private groupComplianceByCategory(
+    results: unknown[],
+  ): Record<string, number> {
     return {};
   }
   private async createPrincipleViolationAlert(
-    report: any,
-    violations: PrincipleViolation[]
+    report: unknown,
+    violations: PrincipleViolation[],
   ): Promise<void> {}
-  private async createStandardApprovalGate(standard: TechnologyStandard): Promise<void> {}
-  private async checkStandardCompliance(standards: TechnologyStandard[]): Promise<any[]> {
+  private async createStandardApprovalGate(
+    standard: TechnologyStandard,
+  ): Promise<void> {}
+  private async checkStandardCompliance(
+    standards: TechnologyStandard[],
+  ): Promise<any[]> {
     return [];
   }
   private async identifyStandardViolations(
     standards: TechnologyStandard[],
-    compliance: any[]
+    compliance: unknown[],
   ): Promise<StandardViolation[]> {
     return [];
   }
-  private async assessStandardAdoption(standards: TechnologyStandard[]): Promise<any> {
+  private async assessStandardAdoption(
+    standards: TechnologyStandard[],
+  ): Promise<unknown> {
     return {};
   }
-  private calculateStandardComplianceScore(results: any[]): number {
+  private calculateStandardComplianceScore(results: unknown[]): number {
     return 100;
   }
-  private groupStandardComplianceByCategory(results: any[]): Record<string, number> {
+  private groupStandardComplianceByCategory(
+    results: unknown[],
+  ): Record<string, number> {
     return {};
   }
-  private groupStandardComplianceByType(results: any[]): Record<string, number> {
+  private groupStandardComplianceByType(
+    results: unknown[],
+  ): Record<string, number> {
     return {};
   }
   private async generateStandardRecommendations(
     standards: TechnologyStandard[],
     violations: StandardViolation[],
-    adoption: any
+    adoption: unknown,
   ): Promise<string[]> {
     return [];
   }
@@ -1893,24 +2028,30 @@ export class EnterpriseArchitectureManager extends EventEmitter {
     return [];
   }
   private async createStandardViolationAlert(
-    report: any,
-    violations: StandardViolation[]
+    report: unknown,
+    violations: StandardViolation[],
   ): Promise<void> {}
   private async getDecisionMaker(decisionType: string): Promise<string> {
     return 'chief-architect';
   }
-  private async createGovernanceReviewGate(decision: GovernanceDecision): Promise<void> {}
-  private async executeGovernanceProcess(decision: GovernanceDecision): Promise<any> {
+  private async createGovernanceReviewGate(
+    decision: GovernanceDecision,
+  ): Promise<void> {}
+  private async executeGovernanceProcess(
+    decision: GovernanceDecision,
+  ): Promise<unknown> {
     return {};
   }
   private async makeGovernanceDecision(
     decisionId: string,
-    result: any
+    result: unknown,
   ): Promise<GovernanceDecision> {
     const decision = this.state.governanceDecisions.get(decisionId);
     return { ...decision!, status: 'approved' };
   }
-  private async scheduleDecisionImplementation(decision: GovernanceDecision): Promise<void> {}
+  private async scheduleDecisionImplementation(
+    decision: GovernanceDecision,
+  ): Promise<void> {}
   private async assessPrincipleHealthCategory(): Promise<HealthCategory> {
     return {
       name: 'principles',
@@ -1979,13 +2120,13 @@ export class EnterpriseArchitectureManager extends EventEmitter {
   }
   private async identifyArchitectureHealthRisks(
     categories: HealthCategory[],
-    trends: HealthTrend[]
+    trends: HealthTrend[],
   ): Promise<HealthRisk[]> {
     return [];
   }
   private async generateHealthRecommendations(
     categories: HealthCategory[],
-    risks: HealthRisk[]
+    risks: HealthRisk[],
   ): Promise<HealthRecommendation[]> {
     return [];
   }
@@ -1994,15 +2135,17 @@ export class EnterpriseArchitectureManager extends EventEmitter {
   }
   private async createArchitectureHealthAlert(
     metrics: ArchitectureHealthMetrics,
-    risks: HealthRisk[]
+    risks: HealthRisk[],
   ): Promise<void> {}
   private async createDefaultArchitecturePrinciples(): Promise<void> {}
   private async createDefaultTechnologyStandards(): Promise<void> {}
   private async createDefaultGovernanceFramework(): Promise<void> {}
   private async performGovernanceReview(): Promise<void> {}
-  private async handlePrincipleViolation(payload: any): Promise<void> {}
-  private async handleStandardViolation(payload: any): Promise<void> {}
-  private async handleGovernanceDecisionRequest(payload: any): Promise<void> {}
+  private async handlePrincipleViolation(payload: unknown): Promise<void> {}
+  private async handleStandardViolation(payload: unknown): Promise<void> {}
+  private async handleGovernanceDecisionRequest(
+    payload: unknown,
+  ): Promise<void> {}
 }
 
 // ============================================================================
@@ -2016,7 +2159,7 @@ export interface PrincipleValidationReport {
   readonly overallCompliance: number;
   readonly complianceByCategory: Record<string, number>;
   readonly violations: PrincipleViolation[];
-  readonly effectiveness: any;
+  readonly effectiveness: unknown;
   readonly recommendations: string[];
   readonly nextValidation: Date;
 }
@@ -2029,9 +2172,9 @@ export interface StandardComplianceReport {
   readonly complianceByCategory: Record<string, number>;
   readonly complianceByType: Record<string, number>;
   readonly violations: StandardViolation[];
-  readonly adoptionMetrics: any;
+  readonly adoptionMetrics: unknown;
   readonly recommendations: string[];
-  readonly trends: any[];
+  readonly trends: unknown[];
   readonly nextReport: Date;
 }
 

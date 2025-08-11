@@ -13,7 +13,11 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { DEFAULT_CONFIG } from './defaults.ts';
 import { ConfigurationLoader } from './loader.ts';
-import type { ConfigChangeEvent, ConfigValidationResult, SystemConfiguration } from './types.ts';
+import type {
+  ConfigChangeEvent,
+  ConfigValidationResult,
+  SystemConfiguration,
+} from './types.ts';
 import { ConfigValidator } from './validator.ts';
 
 /**
@@ -71,22 +75,28 @@ export class ConfigurationManager extends EventEmitter {
     try {
       const result = await this.loader.loadConfiguration(configPaths);
 
-      if (!result?.validation?.valid) {
-        logger.error('❌ Configuration validation failed:');
-        result?.validation?.errors?.forEach((error) => logger.error(`  - ${error}`));
-
-        if (result?.validation?.warnings.length > 0) {
-          logger.warn('⚠️ Configuration warnings:');
-          result?.validation?.warnings?.forEach((warning) => logger.warn(`  - ${warning}`));
-        }
-        this.config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
-      } else {
+      if (result?.validation?.valid) {
         this.config = result?.config;
 
         if (result?.validation?.warnings.length > 0) {
           logger.warn('⚠️ Configuration warnings:');
-          result?.validation?.warnings?.forEach((warning) => logger.warn(`  - ${warning}`));
+          result?.validation?.warnings?.forEach((warning) =>
+            logger.warn(`  - ${warning}`),
+          );
         }
+      } else {
+        logger.error('❌ Configuration validation failed:');
+        result?.validation?.errors?.forEach((error) =>
+          logger.error(`  - ${error}`),
+        );
+
+        if (result?.validation?.warnings.length > 0) {
+          logger.warn('⚠️ Configuration warnings:');
+          result?.validation?.warnings?.forEach((warning) =>
+            logger.warn(`  - ${warning}`),
+          );
+        }
+        this.config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
       }
 
       // Store config paths for watching
@@ -121,7 +131,9 @@ export class ConfigurationManager extends EventEmitter {
    *
    * @param section
    */
-  getSection<K extends keyof SystemConfiguration>(section: K): SystemConfiguration[K] {
+  getSection<K extends keyof SystemConfiguration>(
+    section: K,
+  ): SystemConfiguration[K] {
     return JSON.parse(JSON.stringify(this.config[section]));
   }
 
@@ -131,7 +143,9 @@ export class ConfigurationManager extends EventEmitter {
    * @param path
    */
   get<T = any>(path: string): T | undefined {
-    return path.split('.').reduce((current: any, key) => current?.[key], this.config);
+    return path
+      .split('.')
+      .reduce((current: any, key) => current?.[key], this.config);
   }
 
   /**
@@ -206,7 +220,8 @@ export class ConfigurationManager extends EventEmitter {
       return false;
     }
 
-    const targetConfig = this.configHistory[this.configHistory.length - steps - 1];
+    const targetConfig =
+      this.configHistory[this.configHistory.length - steps - 1];
     const validation = targetConfig
       ? this.validator.validate(targetConfig)
       : { valid: false, errors: ['Invalid target config'] };
@@ -230,10 +245,9 @@ export class ConfigurationManager extends EventEmitter {
   export(format: 'json' | 'yaml' = 'json'): string {
     if (format === 'json') {
       return JSON.stringify(this.config, null, 2);
-    } else {
-      // Basic YAML export (would need yaml library for full support)
-      return this.toSimpleYaml(this.config);
     }
+    // Basic YAML export (would need yaml library for full support)
+    return this.toSimpleYaml(this.config);
   }
 
   /**
@@ -365,7 +379,11 @@ export class ConfigurationManager extends EventEmitter {
     let yaml = '';
 
     for (const [key, value] of Object.entries(obj)) {
-      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        !Array.isArray(value)
+      ) {
         yaml += `${spaces}${key}:\n${this.toSimpleYaml(value, indent + 1)}`;
       } else if (Array.isArray(value)) {
         yaml += `${spaces}${key}:\n`;

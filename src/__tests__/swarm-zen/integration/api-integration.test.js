@@ -148,7 +148,10 @@ describe('API Integration Tests', () => {
       assert(agent.capabilities);
 
       // Create neural agent wrapper
-      const neuralAgent = NeuralAgentFactory.createNeuralAgent(agent, 'researcher');
+      const neuralAgent = NeuralAgentFactory.createNeuralAgent(
+        agent,
+        'researcher',
+      );
       assert(neuralAgent);
 
       // Test neural analysis
@@ -182,19 +185,33 @@ describe('API Integration Tests', () => {
         context: { domain: 'testing', version: 1 },
       };
 
-      ruvSwarm.persistence.storeAgentMemory(agent.id, 'analysis_memory', memoryData);
+      ruvSwarm.persistence.storeAgentMemory(
+        agent.id,
+        'analysis_memory',
+        memoryData,
+      );
 
       // Retrieve memory
-      const retrieved = ruvSwarm.persistence.getAgentMemory(agent.id, 'analysis_memory');
+      const retrieved = ruvSwarm.persistence.getAgentMemory(
+        agent.id,
+        'analysis_memory',
+      );
 
       assert(retrieved);
       assert.deepStrictEqual(retrieved.value, memoryData);
 
       // Update memory
       memoryData.performance_history.push(0.9);
-      ruvSwarm.persistence.storeAgentMemory(agent.id, 'analysis_memory', memoryData);
+      ruvSwarm.persistence.storeAgentMemory(
+        agent.id,
+        'analysis_memory',
+        memoryData,
+      );
 
-      const updated = ruvSwarm.persistence.getAgentMemory(agent.id, 'analysis_memory');
+      const updated = ruvSwarm.persistence.getAgentMemory(
+        agent.id,
+        'analysis_memory',
+      );
 
       assert.strictEqual(updated.value.performance_history.length, 4);
     });
@@ -228,8 +245,8 @@ describe('API Integration Tests', () => {
           swarm.orchestrate({
             description: `Task for ${swarm.id}`,
             priority: 'medium',
-          })
-        )
+          }),
+        ),
       );
 
       assert.strictEqual(tasks.length, 3);
@@ -257,7 +274,10 @@ describe('API Integration Tests', () => {
         { type: 'swarm_initialized', data: { topology: 'mesh' } },
         { type: 'agent_spawned', data: { agentType: 'researcher' } },
         { type: 'task_started', data: { taskId: 'task-123' } },
-        { type: 'task_completed', data: { taskId: 'task-123', duration: 1000 } },
+        {
+          type: 'task_completed',
+          data: { taskId: 'task-123', duration: 1000 },
+        },
       ];
 
       for (const event of events) {
@@ -294,7 +314,12 @@ describe('API Integration Tests', () => {
       ];
 
       for (const metric of metricsToRecord) {
-        ruvSwarm.persistence.recordMetric('agent', agent.id, metric.name, metric.value);
+        ruvSwarm.persistence.recordMetric(
+          'agent',
+          agent.id,
+          metric.name,
+          metric.value,
+        );
       }
 
       // Retrieve all metrics
@@ -302,7 +327,11 @@ describe('API Integration Tests', () => {
       assert.strictEqual(allMetrics.length, 4);
 
       // Retrieve specific metric
-      const memoryMetrics = ruvSwarm.persistence.getMetrics('agent', agent.id, 'memory_usage');
+      const memoryMetrics = ruvSwarm.persistence.getMetrics(
+        'agent',
+        agent.id,
+        'memory_usage',
+      );
       assert.strictEqual(memoryMetrics.length, 1);
       assert.strictEqual(memoryMetrics[0].metric_value, 45.5);
     });
@@ -442,7 +471,9 @@ describe('API Integration Tests', () => {
       const agent = await swarm.spawn({ type: 'researcher' });
 
       // Store some data
-      ruvSwarm.persistence.storeAgentMemory(agent.id, 'test-key', { data: 'test' });
+      ruvSwarm.persistence.storeAgentMemory(agent.id, 'test-key', {
+        data: 'test',
+      });
       ruvSwarm.persistence.logEvent(swarm.id, 'test_event', { test: true });
 
       // Terminate swarm

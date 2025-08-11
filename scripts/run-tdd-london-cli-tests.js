@@ -44,7 +44,11 @@ async function runCLITests() {
       ],
     },
     setupFilesAfterEnv: [join(rootDir, 'jest.setup.ts')],
-    collectCoverageFrom: ['src/cli/**/*.ts', '!src/cli/**/*.test.ts', '!src/cli/**/*.d.ts'],
+    collectCoverageFrom: [
+      'src/cli/**/*.ts',
+      '!src/cli/**/*.test.ts',
+      '!src/cli/**/*.d.ts',
+    ],
     coverageDirectory: 'coverage/london-cli',
     coverageReporters: ['text', 'lcov', 'html'],
     verbose: true,

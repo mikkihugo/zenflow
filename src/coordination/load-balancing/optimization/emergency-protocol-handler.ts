@@ -4,7 +4,9 @@
 
 import { getLogger } from '../config/logging-config';
 
-const logger = getLogger('coordination-load-balancing-optimization-emergency-protocol-handler');
+const logger = getLogger(
+  'coordination-load-balancing-optimization-emergency-protocol-handler',
+);
 
 /**
  * Emergency Protocol Handler.
@@ -23,11 +25,14 @@ interface EmergencyProtocol {
 
 interface EmergencyAction {
   type: 'load_shed' | 'scale_up' | 'failover' | 'throttle' | 'alert';
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   timeout: number;
 }
 
-export class EmergencyProtocolHandler extends EventEmitter implements EmergencyHandler {
+export class EmergencyProtocolHandler
+  extends EventEmitter
+  implements EmergencyHandler
+{
   private activeProtocols: Map<string, EmergencyProtocol> = new Map();
   private emergencyHistory: Array<{
     timestamp: Date;
@@ -43,7 +48,7 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
 
   public async handleEmergency(
     type: string,
-    severity: 'low' | 'medium' | 'high' | 'critical'
+    severity: 'low' | 'medium' | 'high' | 'critical',
   ): Promise<void> {
     const protocol = this.activeProtocols.get(type);
     if (protocol) {
@@ -83,7 +88,10 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
     this.recordEmergency('throttle', 'medium', `throttle_${rate}rps`);
   }
 
-  public async sendAlert(_message: string, recipients: string[]): Promise<void> {
+  public async sendAlert(
+    _message: string,
+    recipients: string[],
+  ): Promise<void> {
     // In practice, this would:
     // 1. Send notifications via multiple channels
     // 2. Escalate based on severity
@@ -175,8 +183,11 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
   private async executeProtocol(protocol: EmergencyProtocol): Promise<void> {
     const actionPromises = protocol.actions.map((action) =>
       this.executeAction(action).catch((error) => {
-        logger.error(`Failed to execute emergency action ${action.type}:`, error);
-      })
+        logger.error(
+          `Failed to execute emergency action ${action.type}:`,
+          error,
+        );
+      }),
     );
 
     await Promise.allSettled(actionPromises);
@@ -196,7 +207,10 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
         await this.throttleRequests(action.parameters.rate);
         break;
       case 'alert':
-        await this.sendAlert(action.parameters.message, action.parameters.recipients);
+        await this.sendAlert(
+          action.parameters.message,
+          action.parameters.recipients,
+        );
         break;
       default:
         logger.warn(`Unknown emergency action type: ${action.type}`);
@@ -205,13 +219,16 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
 
   private async executeDefaultEmergencyResponse(
     type: string,
-    severity: 'low' | 'medium' | 'high' | 'critical'
+    severity: 'low' | 'medium' | 'high' | 'critical',
   ): Promise<void> {
     switch (severity) {
       case 'critical':
         await this.shedLoad(30);
         await this.activateFailover();
-        await this.sendAlert(`Critical emergency: ${type}`, ['ops-team', 'on-call']);
+        await this.sendAlert(`Critical emergency: ${type}`, [
+          'ops-team',
+          'on-call',
+        ]);
         break;
       case 'high':
         await this.throttleRequests(50);
@@ -225,7 +242,11 @@ export class EmergencyProtocolHandler extends EventEmitter implements EmergencyH
     }
   }
 
-  private recordEmergency(type: string, severity: string, action: string): void {
+  private recordEmergency(
+    type: string,
+    severity: string,
+    action: string,
+  ): void {
     this.emergencyHistory.push({
       timestamp: new Date(),
       type,

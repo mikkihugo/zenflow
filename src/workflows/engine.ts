@@ -66,7 +66,13 @@ export interface WorkflowData {
 export interface WorkflowState {
   id: string;
   definition: WorkflowDefinition;
-  status: 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
+  status:
+    | 'pending'
+    | 'running'
+    | 'paused'
+    | 'completed'
+    | 'failed'
+    | 'cancelled';
   context: WorkflowContext;
   currentStep: number;
   steps: WorkflowStep[];
@@ -98,7 +104,10 @@ export class WorkflowEngine extends EventEmitter {
   private activeWorkflows = new Map<string, WorkflowState>();
   private workflowMetrics = new Map<string, any>();
   private workflowDefinitions = new Map<string, WorkflowDefinition>();
-  private stepHandlers = new Map<string, (context: WorkflowContext, params: any) => Promise<any>>();
+  private stepHandlers = new Map<
+    string,
+    (context: WorkflowContext, params: any) => Promise<any>
+  >();
   private isInitialized = false;
 
   // Enhanced capabilities to match core WorkflowEngine
@@ -109,20 +118,30 @@ export class WorkflowEngine extends EventEmitter {
   constructor(
     config: WorkflowEngineConfig = {},
     documentManager?: DocumentManager,
-    memoryFactory?: MemorySystemFactory
+    memoryFactory?: MemorySystemFactory,
   ) {
     super();
 
     this.config = {
       maxConcurrentWorkflows:
-        config.maxConcurrentWorkflows === undefined ? 10 : config?.maxConcurrentWorkflows,
-      persistWorkflows: config.persistWorkflows === undefined ? false : config?.persistWorkflows,
+        config.maxConcurrentWorkflows === undefined
+          ? 10
+          : config?.maxConcurrentWorkflows,
+      persistWorkflows:
+        config.persistWorkflows === undefined
+          ? false
+          : config?.persistWorkflows,
       persistencePath:
-        config.persistencePath === undefined ? './workflows' : config?.persistencePath,
-      stepTimeout: config.stepTimeout === undefined ? 30000 : config?.stepTimeout,
+        config.persistencePath === undefined
+          ? './workflows'
+          : config?.persistencePath,
+      stepTimeout:
+        config.stepTimeout === undefined ? 30000 : config?.stepTimeout,
       retryDelay: config.retryDelay === undefined ? 1000 : config?.retryDelay,
       enableVisualization:
-        config.enableVisualization === undefined ? false : config?.enableVisualization,
+        config.enableVisualization === undefined
+          ? false
+          : config?.enableVisualization,
     };
 
     // Enhanced capabilities
@@ -152,61 +171,85 @@ export class WorkflowEngine extends EventEmitter {
 
   private registerBuiltInHandlers(): void {
     // Delay step
-    this.registerStepHandler('delay', async (_context: WorkflowContext, params: any) => {
-      const duration = params?.duration || 1000;
-      await new Promise((resolve) => setTimeout(resolve, duration));
-      return { delayed: duration };
-    });
+    this.registerStepHandler(
+      'delay',
+      async (_context: WorkflowContext, params: any) => {
+        const duration = params?.duration || 1000;
+        await new Promise((resolve) => setTimeout(resolve, duration));
+        return { delayed: duration };
+      },
+    );
 
     // Transform data step
-    this.registerStepHandler('transform', async (context: WorkflowContext, params: any) => {
-      const data = this.getContextValue(context, params?.input);
-      const transformed = await this.applyTransformation(data, params?.transformation);
-      return { output: transformed };
-    });
+    this.registerStepHandler(
+      'transform',
+      async (context: WorkflowContext, params: any) => {
+        const data = this.getContextValue(context, params?.input);
+        const transformed = await this.applyTransformation(
+          data,
+          params?.transformation,
+        );
+        return { output: transformed };
+      },
+    );
 
     // Parallel execution step
-    this.registerStepHandler('parallel', async (context: WorkflowContext, params: any) => {
-      const results = await Promise.all(
-        params?.tasks?.map((task: WorkflowStep) => this.executeStep(task, context))
-      );
-      return { results };
-    });
+    this.registerStepHandler(
+      'parallel',
+      async (context: WorkflowContext, params: any) => {
+        const results = await Promise.all(
+          params?.tasks?.map((task: WorkflowStep) =>
+            this.executeStep(task, context),
+          ),
+        );
+        return { results };
+      },
+    );
 
     // Loop step
-    this.registerStepHandler('loop', async (context: WorkflowContext, params: any) => {
-      const items = this.getContextValue(context, params?.items);
-      const results: any[] = [];
+    this.registerStepHandler(
+      'loop',
+      async (context: WorkflowContext, params: any) => {
+        const items = this.getContextValue(context, params?.items);
+        const results: any[] = [];
 
-      for (const item of items) {
-        const loopContext = { ...context, loopItem: item };
-        const result = await this.executeStep(params?.step, loopContext);
-        results.push(result);
-      }
+        for (const item of items) {
+          const loopContext = { ...context, loopItem: item };
+          const result = await this.executeStep(params?.step, loopContext);
+          results.push(result);
+        }
 
-      return { results };
-    });
+        return { results };
+      },
+    );
 
     // Conditional step
-    this.registerStepHandler('condition', async (context: WorkflowContext, params: any) => {
-      const condition = this.evaluateCondition(context, params?.condition);
-      if (condition) {
-        return await this.executeStep(params?.thenStep, context);
-      } else if (params?.elseStep) {
-        return await this.executeStep(params?.elseStep, context);
-      }
-      return { skipped: true };
-    });
+    this.registerStepHandler(
+      'condition',
+      async (context: WorkflowContext, params: any) => {
+        const condition = this.evaluateCondition(context, params?.condition);
+        if (condition) {
+          return await this.executeStep(params?.thenStep, context);
+        }
+        if (params?.elseStep) {
+          return await this.executeStep(params?.elseStep, context);
+        }
+        return { skipped: true };
+      },
+    );
   }
 
   registerStepHandler(
     type: string,
-    handler: (context: WorkflowContext, params: any) => Promise<any>
+    handler: (context: WorkflowContext, params: any) => Promise<any>,
   ): void {
     this.stepHandlers.set(type, handler);
   }
 
-  async executeStep(step: WorkflowStep, context: WorkflowContext): Promise<any> {
+  async executeStep(
+    step: WorkflowStep,
+    context: WorkflowContext,
+  ): Promise<any> {
     const handler = this.stepHandlers.get(step.type);
     if (!handler) {
       throw new Error(`No handler registered for step type: ${step.type}`);
@@ -215,18 +258,24 @@ export class WorkflowEngine extends EventEmitter {
     return await handler(context, step.params || {});
   }
 
-  private evaluateCondition(context: WorkflowContext, expression: string): boolean {
+  private evaluateCondition(
+    context: WorkflowContext,
+    expression: string,
+  ): boolean {
     try {
       // Use a safer evaluation approach with limited context access
       const safeContext = { ...context };
       // eslint-disable-next-line @typescript-eslint/no-implied-eval
       const func = new Function(
         'context',
-        `"use strict"; return (${expression});`
+        `"use strict"; return (${expression});`,
       ) as (context: WorkflowContext) => boolean;
       return func(safeContext);
     } catch (error) {
-      logger.error(`[WorkflowEngine] Failed to evaluate condition: ${expression}`, error);
+      logger.error(
+        `[WorkflowEngine] Failed to evaluate condition: ${expression}`,
+        error,
+      );
       return false;
     }
   }
@@ -242,7 +291,10 @@ export class WorkflowEngine extends EventEmitter {
     return value;
   }
 
-  private async applyTransformation(data: any, transformation: any): Promise<any> {
+  private async applyTransformation(
+    data: any,
+    transformation: any,
+  ): Promise<any> {
     if (typeof transformation === 'function') {
       return transformation(data);
     }
@@ -277,7 +329,10 @@ export class WorkflowEngine extends EventEmitter {
         }
       }
     } catch (error) {
-      logger.error('[WorkflowEngine] Failed to load persisted workflows:', error);
+      logger.error(
+        '[WorkflowEngine] Failed to load persisted workflows:',
+        error,
+      );
     }
   }
 
@@ -285,29 +340,42 @@ export class WorkflowEngine extends EventEmitter {
     if (!this.config.persistWorkflows) return;
 
     try {
-      const filePath = path.join(this.config.persistencePath, `${workflow.id}.workflow.json`);
+      const filePath = path.join(
+        this.config.persistencePath,
+        `${workflow.id}.workflow.json`,
+      );
       await writeFile(filePath, JSON.stringify(workflow, null, 2));
     } catch (error) {
-      logger.error(`[WorkflowEngine] Failed to save workflow ${workflow.id}:`, error);
+      logger.error(
+        `[WorkflowEngine] Failed to save workflow ${workflow.id}:`,
+        error,
+      );
     }
   }
 
-  async registerWorkflowDefinition(name: string, definition: WorkflowDefinition): Promise<void> {
+  async registerWorkflowDefinition(
+    name: string,
+    definition: WorkflowDefinition,
+  ): Promise<void> {
     this.workflowDefinitions.set(name, definition);
   }
 
   async startWorkflow(
     workflowDefinitionOrName: string | WorkflowDefinition,
-    context: WorkflowContext = {}
+    context: WorkflowContext = {},
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     await this.initialize();
 
     let definition: WorkflowDefinition;
 
     if (typeof workflowDefinitionOrName === 'string') {
-      const foundDefinition = this.workflowDefinitions.get(workflowDefinitionOrName);
+      const foundDefinition = this.workflowDefinitions.get(
+        workflowDefinitionOrName,
+      );
       if (!foundDefinition) {
-        throw new Error(`Workflow definition '${workflowDefinitionOrName}' not found`);
+        throw new Error(
+          `Workflow definition '${workflowDefinitionOrName}' not found`,
+        );
       }
       definition = foundDefinition;
     } else {
@@ -316,12 +384,12 @@ export class WorkflowEngine extends EventEmitter {
 
     // Check concurrent workflow limit
     const activeCount = Array.from(this.activeWorkflows.values()).filter(
-      (w) => w.status === 'running'
+      (w) => w.status === 'running',
     ).length;
 
     if (activeCount >= this.config.maxConcurrentWorkflows) {
       throw new Error(
-        `Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`
+        `Maximum concurrent workflows (${this.config.maxConcurrentWorkflows}) reached`,
       );
     }
 
@@ -384,7 +452,7 @@ export class WorkflowEngine extends EventEmitter {
   private async executeWorkflowStep(
     workflow: WorkflowState,
     step: WorkflowStep,
-    stepIndex: number
+    stepIndex: number,
   ): Promise<void> {
     const stepId = `step-${stepIndex}`;
     let retries = 0;
@@ -426,7 +494,7 @@ export class WorkflowEngine extends EventEmitter {
         retries++;
 
         logger.warn(
-          `[WorkflowEngine] Step ${step.name} failed (attempt ${retries}/${maxRetries + 1}): ${(error as Error).message}`
+          `[WorkflowEngine] Step ${step.name} failed (attempt ${retries}/${maxRetries + 1}): ${(error as Error).message}`,
         );
 
         if (retries > maxRetries) {
@@ -435,16 +503,17 @@ export class WorkflowEngine extends EventEmitter {
           if (step.onError === 'continue') {
             workflow.stepResults[stepId] = { error: (error as Error).message };
             break;
-          } else if (step.onError === 'skip') {
+          }
+          if (step.onError === 'skip') {
             workflow.stepResults[stepId] = { skipped: true };
             break;
-          } else {
-            throw error;
           }
-        } else {
-          // Wait before retry
-          await new Promise((resolve) => setTimeout(resolve, this.config.retryDelay * retries));
+          throw error;
         }
+        // Wait before retry
+        await new Promise((resolve) =>
+          setTimeout(resolve, this.config.retryDelay * retries),
+        );
       }
     }
   }
@@ -456,7 +525,8 @@ export class WorkflowEngine extends EventEmitter {
     }
 
     const duration = workflow.endTime
-      ? new Date(workflow.endTime).getTime() - new Date(workflow.startTime).getTime()
+      ? new Date(workflow.endTime).getTime() -
+        new Date(workflow.startTime).getTime()
       : Date.now() - new Date(workflow.startTime).getTime();
 
     return {
@@ -465,7 +535,9 @@ export class WorkflowEngine extends EventEmitter {
       currentStep: workflow.currentStep,
       totalSteps: workflow.steps.length,
       progress:
-        workflow.steps.length > 0 ? (workflow.currentStep / workflow.steps.length) * 100 : 0,
+        workflow.steps.length > 0
+          ? (workflow.currentStep / workflow.steps.length) * 100
+          : 0,
       startTime: workflow.startTime,
       endTime: workflow.endTime,
       duration,
@@ -473,7 +545,9 @@ export class WorkflowEngine extends EventEmitter {
     };
   }
 
-  async pauseWorkflow(workflowId: string): Promise<{ success: boolean; error?: string }> {
+  async pauseWorkflow(
+    workflowId: string,
+  ): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'running') {
       workflow.status = 'paused';
@@ -485,7 +559,9 @@ export class WorkflowEngine extends EventEmitter {
     return { success: false, error: 'Workflow not found or not running' };
   }
 
-  async resumeWorkflow(workflowId: string): Promise<{ success: boolean; error?: string }> {
+  async resumeWorkflow(
+    workflowId: string,
+  ): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'paused') {
       workflow.status = 'running';
@@ -493,7 +569,10 @@ export class WorkflowEngine extends EventEmitter {
 
       // Resume execution
       this.executeWorkflow(workflow).catch((error) => {
-        logger.error(`[WorkflowEngine] Workflow ${workflowId} failed after resume:`, error);
+        logger.error(
+          `[WorkflowEngine] Workflow ${workflowId} failed after resume:`,
+          error,
+        );
       });
 
       this.emit('workflow-resumed', workflowId);
@@ -502,7 +581,9 @@ export class WorkflowEngine extends EventEmitter {
     return { success: false, error: 'Workflow not found or not paused' };
   }
 
-  async cancelWorkflow(workflowId: string): Promise<{ success: boolean; error?: string }> {
+  async cancelWorkflow(
+    workflowId: string,
+  ): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && ['running', 'paused'].includes(workflow.status)) {
       workflow.status = 'cancelled';
@@ -523,7 +604,8 @@ export class WorkflowEngine extends EventEmitter {
         status: w.status,
         currentStep: w.currentStep,
         totalSteps: w.steps.length,
-        progress: w.steps.length > 0 ? (w.currentStep / w.steps.length) * 100 : 0,
+        progress:
+          w.steps.length > 0 ? (w.currentStep / w.steps.length) * 100 : 0,
         startTime: w.startTime,
         pausedAt: w.pausedAt,
       }));
@@ -549,7 +631,8 @@ export class WorkflowEngine extends EventEmitter {
       }
 
       return history.sort(
-        (a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+        (a, b) =>
+          new Date(b.startTime).getTime() - new Date(a.startTime).getTime(),
       );
     } catch (error) {
       logger.error('[WorkflowEngine] Failed to get workflow history:', error);
@@ -575,7 +658,10 @@ export class WorkflowEngine extends EventEmitter {
     const completed = workflows.filter((w) => w.status === 'completed');
     if (completed.length > 0) {
       const totalDuration = completed.reduce((sum, w) => {
-        return sum + (new Date(w.endTime!).getTime() - new Date(w.startTime).getTime());
+        return (
+          sum +
+          (new Date(w.endTime!).getTime() - new Date(w.startTime).getTime())
+        );
       }, 0);
       metrics.averageDuration = totalDuration / completed.length;
     }
@@ -639,7 +725,8 @@ export class WorkflowEngine extends EventEmitter {
     const documentWorkflows = [
       {
         name: 'vision-to-prds',
-        description: 'Process vision document and generate product requirements documents',
+        description:
+          'Process vision document and generate product requirements documents',
         version: '1.0.0',
         steps: [
           {
@@ -658,7 +745,10 @@ export class WorkflowEngine extends EventEmitter {
 
     // Register all document workflows
     for (const workflow of documentWorkflows) {
-      await this.registerWorkflowDefinition(workflow.name, workflow as WorkflowDefinition);
+      await this.registerWorkflowDefinition(
+        workflow.name,
+        workflow as WorkflowDefinition,
+      );
       this.documentWorkflows.set(workflow.name, workflow as WorkflowDefinition);
     }
 
@@ -668,7 +758,10 @@ export class WorkflowEngine extends EventEmitter {
   /**
    * Process document event to trigger appropriate workflows.
    */
-  async processDocumentEvent(eventType: string, documentData: any): Promise<void> {
+  async processDocumentEvent(
+    eventType: string,
+    documentData: any,
+  ): Promise<void> {
     logger.info(`Processing document event: ${eventType}`);
 
     // Auto-trigger workflows based on document type
@@ -683,7 +776,9 @@ export class WorkflowEngine extends EventEmitter {
         triggerWorkflows.push('prds-to-epics');
         break;
       default:
-        logger.debug(`No automatic workflow for document type: ${documentType}`);
+        logger.debug(
+          `No automatic workflow for document type: ${documentType}`,
+        );
         return;
     }
 
@@ -695,7 +790,9 @@ export class WorkflowEngine extends EventEmitter {
           eventType,
           triggeredAt: new Date().toISOString(),
         });
-        logger.info(`Triggered workflow ${workflowName}: ${result.success ? 'SUCCESS' : 'FAILED'}`);
+        logger.info(
+          `Triggered workflow ${workflowName}: ${result.success ? 'SUCCESS' : 'FAILED'}`,
+        );
       } catch (error) {
         logger.error(`Failed to trigger workflow ${workflowName}:`, error);
       }
@@ -727,7 +824,7 @@ export class WorkflowEngine extends EventEmitter {
   async executeWorkflowStep(
     step: WorkflowStep,
     context: WorkflowContext,
-    workflowId: string
+    workflowId: string,
   ): Promise<StepExecutionResult> {
     const startTime = Date.now();
 
@@ -786,7 +883,7 @@ export class WorkflowEngine extends EventEmitter {
     };
 
     const result = await this.startWorkflow(definition, data.data || {});
-    if (!result.success || !result.workflowId) {
+    if (!(result.success && result.workflowId)) {
       throw new Error(`Failed to create workflow: ${result.error}`);
     }
 
@@ -796,7 +893,10 @@ export class WorkflowEngine extends EventEmitter {
   /**
    * Update workflow data.
    */
-  async updateWorkflowData(workflowId: string, updates: Partial<WorkflowData>): Promise<void> {
+  async updateWorkflowData(
+    workflowId: string,
+    updates: Partial<WorkflowData>,
+  ): Promise<void> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
       throw new Error(`Workflow ${workflowId} not found`);

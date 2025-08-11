@@ -28,7 +28,12 @@ export interface WASMExports {
   // Core neural operations
   create_network: (layers: number[], activations: number[]) => number;
   destroy_network: (networkId: number) => void;
-  train_network: (networkId: number, inputs: number, outputs: number, epochs: number) => number;
+  train_network: (
+    networkId: number,
+    inputs: number,
+    outputs: number,
+    epochs: number,
+  ) => number;
   predict: (networkId: number, inputs: number, inputCount: number) => number;
 
   // Memory management
@@ -64,11 +69,19 @@ export interface WASMNeuralAccelerator {
   trainModel(
     modelId: string,
     trainingData: WASMTrainingData,
-    options?: WASMOptimizationOptions
+    options?: WASMOptimizationOptions,
   ): Promise<WASMPerformanceMetrics>;
-  predict(modelId: string, input: WASMPredictionInput): Promise<WASMPredictionOutput>;
-  optimizeModel(modelId: string, options: WASMOptimizationOptions): Promise<WASMModelDefinition>;
-  benchmark(operations?: Array<'create' | 'train' | 'predict'>): Promise<WASMBenchmarkResult>;
+  predict(
+    modelId: string,
+    input: WASMPredictionInput,
+  ): Promise<WASMPredictionOutput>;
+  optimizeModel(
+    modelId: string,
+    options: WASMOptimizationOptions,
+  ): Promise<WASMModelDefinition>;
+  benchmark(
+    operations?: Array<'create' | 'train' | 'predict'>,
+  ): Promise<WASMBenchmarkResult>;
   getMetrics(): WASMPerformanceMetrics;
   shutdown(): Promise<void>;
 }

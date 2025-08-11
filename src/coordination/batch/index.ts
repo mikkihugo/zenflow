@@ -15,7 +15,11 @@ export type {
   BatchResult,
   ExtendedBatchExecutionSummary,
 } from './batch-engine.ts';
-export { BatchEngine, createBatchOperation, createToolBatch } from './batch-engine.ts';
+export {
+  BatchEngine,
+  createBatchOperation,
+  createToolBatch,
+} from './batch-engine.ts';
 export type { FileOperation, FileOperationResult } from './file-batch.ts';
 export { FileBatchOperator } from './file-batch.ts';
 export type {
@@ -24,7 +28,11 @@ export type {
   PerformanceTrend,
 } from './performance-monitor.ts';
 export { BatchPerformanceMonitor } from './performance-monitor.ts';
-export type { SwarmBatchConfig, SwarmOperation, SwarmOperationResult } from './swarm-batch.ts';
+export type {
+  SwarmBatchConfig,
+  SwarmOperation,
+  SwarmOperationResult,
+} from './swarm-batch.ts';
 export { SwarmBatchCoordinator } from './swarm-batch.ts';
 
 /**
@@ -43,8 +51,12 @@ export function createBatchSystem(options?: {
 }) {
   const batchEngine = new BatchEngine(options?.['batchConfig']);
   const performanceMonitor = new BatchPerformanceMonitor();
-  const fileBatchOperator = new FileBatchOperator(options?.['maxConcurrentFiles']);
-  const swarmBatchCoordinator = new SwarmBatchCoordinator(options?.['swarmConfig']);
+  const fileBatchOperator = new FileBatchOperator(
+    options?.['maxConcurrentFiles'],
+  );
+  const swarmBatchCoordinator = new SwarmBatchCoordinator(
+    options?.['swarmConfig'],
+  );
 
   return {
     batchEngine,
@@ -57,21 +69,27 @@ export function createBatchSystem(options?: {
      *
      * @param operations
      */
-    async executeBatchWorkflow(operations: import('./batch-engine.ts').BatchOperation[]) {
+    async executeBatchWorkflow(
+      operations: import('./batch-engine.ts').BatchOperation[],
+    ) {
       // Execute batch operations
       const summary = await batchEngine.executeBatch(operations);
 
       // Record performance metrics
-      const sequentialTime = summary.totalExecutionTime * summary.speedImprovement;
+      const sequentialTime =
+        summary.totalExecutionTime * summary.speedImprovement;
       const batchMetrics = performanceMonitor.recordBatchExecution(summary);
       const sequentialMetrics = performanceMonitor.recordSequentialExecution(
         summary.totalOperations,
         sequentialTime,
-        summary.successfulOperations
+        summary.successfulOperations,
       );
 
       // Compare performance
-      const comparison = performanceMonitor.comparePerformance(batchMetrics, sequentialMetrics);
+      const comparison = performanceMonitor.comparePerformance(
+        batchMetrics,
+        sequentialMetrics,
+      );
 
       return {
         summary,

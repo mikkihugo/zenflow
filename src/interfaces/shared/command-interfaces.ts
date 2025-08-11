@@ -36,7 +36,13 @@ export interface CommandDefinition {
 /**
  * Mode detection interface - shared between CLI and Terminal.
  */
-export type TerminalMode = 'interactive' | 'command' | 'help' | 'daemon' | 'dev' | 'test';
+export type TerminalMode =
+  | 'interactive'
+  | 'command'
+  | 'help'
+  | 'daemon'
+  | 'dev'
+  | 'test';
 
 export interface ModeDetectionResult {
   mode: TerminalMode;
@@ -66,7 +72,11 @@ export interface CommandRenderer {
  */
 export interface TerminalApplication {
   initialize(config?: Record<string, unknown>): Promise<void>;
-  execute(command: string, args: string[], flags: Record<string, any>): Promise<CommandResult>;
+  execute(
+    command: string,
+    args: string[],
+    flags: Record<string, any>,
+  ): Promise<CommandResult>;
   shutdown(): Promise<void>;
 }
 

@@ -8,7 +8,10 @@
  */
 
 // Legacy Test Helpers (backward compatibility)
-export { AssertionHelpers, AssertionHelpers as assertionHelpers } from './assertion-helpers.ts';
+export {
+  AssertionHelpers,
+  AssertionHelpers as assertionHelpers,
+} from './assertion-helpers.ts';
 export * from './coordination-test-helpers.ts';
 // Enhanced Hybrid TDD Helpers
 export * from './hybrid-test-utilities.ts';
@@ -23,7 +26,10 @@ export {
   PerformanceMeasurement as performanceMeasurement,
 } from './performance-measurement.ts';
 export * from './performance-test-suite.ts';
-export { TestDataFactory, TestDataFactory as testDataFactory } from './test-data-factory.ts';
+export {
+  TestDataFactory,
+  TestDataFactory as testDataFactory,
+} from './test-data-factory.ts';
 
 // Factory functions
 export function createLondonMocks(config?: any) {

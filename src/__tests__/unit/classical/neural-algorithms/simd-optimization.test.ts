@@ -33,7 +33,14 @@ class SimdMatrixOps {
   }
 
   // Matrix multiplication: C = A * B
-  matmul(a: Float32Array, b: Float32Array, c: Float32Array, m: number, n: number, k: number): void {
+  matmul(
+    a: Float32Array,
+    b: Float32Array,
+    c: Float32Array,
+    m: number,
+    n: number,
+    k: number,
+  ): void {
     // Initialize output to zero
     c.fill(0);
 
@@ -45,7 +52,13 @@ class SimdMatrixOps {
   }
 
   // Matrix-vector multiplication: y = A * x
-  matvec(a: Float32Array, x: Float32Array, y: Float32Array, m: number, n: number): void {
+  matvec(
+    a: Float32Array,
+    x: Float32Array,
+    y: Float32Array,
+    m: number,
+    n: number,
+  ): void {
     if (this.config.useAvx2 && this.isAvx2Available()) {
       this.matvecSimd(a, x, y, m, n);
     } else {
@@ -54,7 +67,12 @@ class SimdMatrixOps {
   }
 
   // Add bias vector to matrix rows
-  addBias(matrix: Float32Array, bias: Float32Array, rows: number, cols: number): void {
+  addBias(
+    matrix: Float32Array,
+    bias: Float32Array,
+    rows: number,
+    cols: number,
+  ): void {
     if (this.config.useAvx2 && this.isAvx2Available()) {
       this.addBiasSimd(matrix, bias, rows, cols);
     } else {
@@ -64,7 +82,11 @@ class SimdMatrixOps {
 
   // Apply activation function element-wise
   applyActivation(data: Float32Array, activation: ActivationFunction): void {
-    if (this.config.useAvx2 && this.isAvx2Available() && activation === ActivationFunction.Relu) {
+    if (
+      this.config.useAvx2 &&
+      this.isAvx2Available() &&
+      activation === ActivationFunction.Relu
+    ) {
       this.applyActivationSimd(data, activation);
     } else {
       this.applyActivationScalar(data, activation);
@@ -83,7 +105,7 @@ class SimdMatrixOps {
     c: Float32Array,
     m: number,
     n: number,
-    k: number
+    k: number,
   ): void {
     const blockSize = this.config.blockSize;
 
@@ -114,7 +136,7 @@ class SimdMatrixOps {
     c: Float32Array,
     m: number,
     n: number,
-    k: number
+    k: number,
   ): void {
     // Simulate SIMD performance with optimized scalar implementation
     // In practice, this would use actual SIMD intrinsics
@@ -152,7 +174,7 @@ class SimdMatrixOps {
     x: Float32Array,
     y: Float32Array,
     m: number,
-    n: number
+    n: number,
   ): void {
     for (let i = 0; i < m; i++) {
       let sum = 0;
@@ -168,7 +190,7 @@ class SimdMatrixOps {
     x: Float32Array,
     y: Float32Array,
     m: number,
-    n: number
+    n: number,
   ): void {
     const SIMD_WIDTH = 8;
 
@@ -197,7 +219,7 @@ class SimdMatrixOps {
     matrix: Float32Array,
     bias: Float32Array,
     rows: number,
-    cols: number
+    cols: number,
   ): void {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
@@ -206,7 +228,12 @@ class SimdMatrixOps {
     }
   }
 
-  private addBiasSimd(matrix: Float32Array, bias: Float32Array, rows: number, cols: number): void {
+  private addBiasSimd(
+    matrix: Float32Array,
+    bias: Float32Array,
+    rows: number,
+    cols: number,
+  ): void {
     const SIMD_WIDTH = 8;
 
     for (let i = 0; i < rows; i++) {
@@ -228,7 +255,10 @@ class SimdMatrixOps {
     }
   }
 
-  private applyActivationScalar(data: Float32Array, activation: ActivationFunction): void {
+  private applyActivationScalar(
+    data: Float32Array,
+    activation: ActivationFunction,
+  ): void {
     switch (activation) {
       case ActivationFunction.Sigmoid:
         for (let i = 0; i < data.length; i++) {
@@ -256,7 +286,8 @@ class SimdMatrixOps {
         for (let i = 0; i < data.length; i++) {
           const x = data?.[i];
           const sqrt2OverPi = Math.sqrt(2 / Math.PI);
-          data[i] = x * 0.5 * (1 + Math.tanh(sqrt2OverPi * (x + 0.044715 * x * x * x)));
+          data[i] =
+            x * 0.5 * (1 + Math.tanh(sqrt2OverPi * (x + 0.044715 * x * x * x)));
         }
         break;
       case ActivationFunction.Swish:
@@ -267,7 +298,10 @@ class SimdMatrixOps {
     }
   }
 
-  private applyActivationSimd(data: Float32Array, activation: ActivationFunction): void {
+  private applyActivationSimd(
+    data: Float32Array,
+    activation: ActivationFunction,
+  ): void {
     const SIMD_WIDTH = 8;
     let i = 0;
 
@@ -317,8 +351,12 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
       const m = 4,
         n = 4,
         k = 4;
-      const a = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
-      const b = new Float32Array([1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1]);
+      const a = new Float32Array([
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+      ]);
+      const b = new Float32Array([
+        1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1,
+      ]);
 
       const cSimd = new Float32Array(16);
       const cScalar = new Float32Array(16);
@@ -364,7 +402,9 @@ describe('SIMD Optimization Verification - Classical TDD', () => {
     it('should produce identical results for bias addition', () => {
       const rows = 3,
         cols = 4;
-      const matrixSimd = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+      const matrixSimd = new Float32Array([
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+      ]);
       const matrixScalar = new Float32Array(matrixSimd);
       const bias = new Float32Array([0.1, 0.2, 0.3, 0.4]);
 

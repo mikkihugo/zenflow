@@ -103,7 +103,11 @@ import {
   RetryExhaustedError,
   TimeoutError,
 } from '../core/interfaces.ts';
-import type { HTTPClientCapabilities, HTTPClientConfig, OAuthCredentials } from './http-types.ts';
+import type {
+  HTTPClientCapabilities,
+  HTTPClientConfig,
+  OAuthCredentials,
+} from './http-types.ts';
 
 /**
  * HTTP Client Adapter implementing UACL IClient interface.
@@ -300,7 +304,9 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
         Accept: 'application/json',
         ...this.config.headers,
       },
-      validateStatus: this.config.validateStatus || ((status) => status >= 200 && status < 300),
+      validateStatus:
+        this.config.validateStatus ||
+        ((status) => status >= 200 && status < 300),
       maxRedirects: this.config.maxRedirects || 5,
       // Add more HTTP-specific options
       decompress: this.config.compression !== false,
@@ -347,7 +353,9 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
 
       case 'basic':
         if (auth.username && auth.password) {
-          const credentials = Buffer.from(`${auth.username}:${auth.password}`).toString('base64');
+          const credentials = Buffer.from(
+            `${auth.username}:${auth.password}`,
+          ).toString('base64');
           client.defaults.headers.common.Authorization = `Basic ${credentials}`;
         }
         break;
@@ -390,9 +398,15 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   /**
    * Get valid OAuth token (refresh if needed).
    */
-  private async getValidOAuthToken(credentials: OAuthCredentials): Promise<string | null> {
+  private async getValidOAuthToken(
+    credentials: OAuthCredentials,
+  ): Promise<string | null> {
     // Check if current token is still valid.
-    if (credentials.accessToken && credentials.expiresAt && credentials.expiresAt > new Date()) {
+    if (
+      credentials.accessToken &&
+      credentials.expiresAt &&
+      credentials.expiresAt > new Date()
+    ) {
       return credentials.accessToken;
     }
 
@@ -407,8 +421,11 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
         });
 
         credentials.accessToken = response?.data?.access_token;
-        credentials.refreshToken = response?.data?.refresh_token || credentials.refreshToken;
-        credentials.expiresAt = new Date(Date.now() + response?.data?.expires_in * 1000);
+        credentials.refreshToken =
+          response?.data?.refresh_token || credentials.refreshToken;
+        credentials.expiresAt = new Date(
+          Date.now() + response?.data?.expires_in * 1000,
+        );
 
         return credentials.accessToken;
       } catch (error) {
@@ -433,7 +450,10 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
         const config = error.config as any;
 
         if (!config || config?.__retryCount >= retryConfig?.attempts) {
-          this.emit('error', new RetryExhaustedError(this.name, retryConfig?.attempts, error));
+          this.emit(
+            'error',
+            new RetryExhaustedError(this.name, retryConfig?.attempts, error),
+          );
           return Promise.reject(error);
         }
 
@@ -441,7 +461,10 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
 
         // Check retry conditions
         if (this.shouldRetry(error, retryConfig)) {
-          const delay = this.calculateRetryDelay(config?.__retryCount, retryConfig);
+          const delay = this.calculateRetryDelay(
+            config?.__retryCount,
+            retryConfig,
+          );
           await new Promise((resolve) => setTimeout(resolve, delay));
 
           this.emit('retry', {
@@ -454,7 +477,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -474,7 +497,9 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
     }
 
     const status = error.response.status;
-    const retryStatusCodes = retryConfig?.retryStatusCodes || [408, 429, 500, 502, 503, 504];
+    const retryStatusCodes = retryConfig?.retryStatusCodes || [
+      408, 429, 500, 502, 503, 504,
+    ];
 
     return retryStatusCodes.includes(status);
   }
@@ -520,10 +545,16 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
           clientError = new AuthenticationError(this.name, error);
         } else if (error.code === 'ECONNABORTED') {
           // Timeout error
-          clientError = new TimeoutError(this.name, this.config.timeout || 30000, error);
+          clientError = new TimeoutError(
+            this.name,
+            this.config.timeout || 30000,
+            error,
+          );
         } else {
           // Generic client error with HTTP details
-          clientError = new Error(`HTTP ${error.response.status}: ${error.response.statusText}`);
+          clientError = new Error(
+            `HTTP ${error.response.status}: ${error.response.statusText}`,
+          );
           (clientError as any).status = error.response.status;
           (clientError as any).statusText = error.response.statusText;
           (clientError as any).headers = error.response.headers;
@@ -532,7 +563,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
 
         this.emit('error', clientError);
         throw clientError;
-      }
+      },
     );
   }
 
@@ -573,14 +604,14 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       (error) => {
         this.recordError(error.config);
         throw error;
-      }
+      },
     );
   }
 
   /**
    * Record successful request metrics.
    */
-  private recordSuccess(config: any): void {
+  private recordSuccess(config: unknown): void {
     this.successCount++;
     this.recordLatency(config);
   }
@@ -588,7 +619,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   /**
    * Record failed request metrics.
    */
-  private recordError(config: any): void {
+  private recordError(config: unknown): void {
     this.errorCount++;
     this.recordLatency(config);
   }
@@ -596,7 +627,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   /**
    * Record request latency.
    */
-  private recordLatency(config: any): void {
+  private recordLatency(config: unknown): void {
     if (config?.__startTime) {
       const latency = Date.now() - config?.__startTime;
       this.latencySum += latency;
@@ -665,7 +696,8 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       requestCount: this.requestCount,
       successCount: this.successCount,
       errorCount: this.errorCount,
-      averageLatency: this.requestCount > 0 ? this.latencySum / this.requestCount : 0,
+      averageLatency:
+        this.requestCount > 0 ? this.latencySum / this.requestCount : 0,
       p95Latency: this.calculatePercentile(0.95),
       p99Latency: this.calculatePercentile(0.99),
       throughput: elapsed > 0 ? this.requestCount / elapsed : 0,
@@ -689,7 +721,9 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   async connect(): Promise<void> {
     try {
       // Test connection with health check or simple request
-      await this.http.get(this.config.health?.endpoint || '/health', { timeout: 5000 });
+      await this.http.get(this.config.health?.endpoint || '/health', {
+        timeout: 5000,
+      });
       this.connected = true;
       this.emit('connect');
     } catch (error) {
@@ -730,7 +764,8 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       await this.http.get(endpoint, { timeout });
 
       const responseTime = Date.now() - startTime;
-      const errorRate = this.requestCount > 0 ? this.errorCount / this.requestCount : 0;
+      const errorRate =
+        this.requestCount > 0 ? this.errorCount / this.requestCount : 0;
       const uptime = (Date.now() - this.startTime) / 1000;
 
       return {
@@ -765,7 +800,10 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
     return { ...this.metrics };
   }
 
-  async get<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
+  async get<T = any>(
+    endpoint: string,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>> {
     const config = this.buildAxiosConfig('GET', endpoint, undefined, options);
     const response = await this.http.get<T>(endpoint, config);
     return this.transformResponse(response);
@@ -774,7 +812,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   async post<T = any>(
     endpoint: string,
     data?: any,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ClientResponse<T>> {
     const config = this.buildAxiosConfig('POST', endpoint, data, options);
     const response = await this.http.post<T>(endpoint, data, config);
@@ -784,15 +822,23 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   async put<T = any>(
     endpoint: string,
     data?: any,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ClientResponse<T>> {
     const config = this.buildAxiosConfig('PUT', endpoint, data, options);
     const response = await this.http.put<T>(endpoint, data, config);
     return this.transformResponse(response);
   }
 
-  async delete<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
-    const config = this.buildAxiosConfig('DELETE', endpoint, undefined, options);
+  async delete<T = any>(
+    endpoint: string,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>> {
+    const config = this.buildAxiosConfig(
+      'DELETE',
+      endpoint,
+      undefined,
+      options,
+    );
     const response = await this.http.delete<T>(endpoint, config);
     return this.transformResponse(response);
   }
@@ -816,7 +862,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
     method: string,
     endpoint: string,
     data?: any,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): AxiosRequestConfig {
     return {
       method: method as any,
@@ -849,10 +895,18 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
    */
   getCapabilities(): HTTPClientCapabilities {
     return {
-      supportedMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+      supportedMethods: [
+        'GET',
+        'POST',
+        'PUT',
+        'DELETE',
+        'PATCH',
+        'HEAD',
+        'OPTIONS',
+      ],
       supportsStreaming: true,
       supportsCompression: this.config.compression !== false,
-      supportsHttp2: this.config.http2 || false,
+      supportsHttp2: this.config.http2,
       supportsWebSockets: false,
       maxConcurrentRequests: 100, // Axios default
       supportedAuthMethods: ['bearer', 'apikey', 'basic', 'oauth', 'custom'],

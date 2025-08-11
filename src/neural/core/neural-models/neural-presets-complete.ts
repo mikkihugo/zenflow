@@ -115,7 +115,10 @@ export class CognitivePatternSelector {
     this.patterns.set(pattern.id, pattern);
   }
 
-  private getCandidatePatterns(_taskType: string, requirements: Record<string, any>) {
+  private getCandidatePatterns(
+    _taskType: string,
+    requirements: Record<string, any>,
+  ) {
     const presets = Object.values(COMPLETE_NEURAL_PRESETS);
     const custom = Array.from(this.patterns.values());
 
@@ -130,7 +133,7 @@ export class CognitivePatternSelector {
 
   private scoreAndSelect(
     candidates: Array<Record<string, any>>,
-    requirements: Record<string, any>
+    requirements: Record<string, any>,
   ) {
     if (candidates.length === 0) return null;
 
@@ -143,7 +146,10 @@ export class CognitivePatternSelector {
     return scored.sort((a, b) => b.score - a.score)[0]?.pattern;
   }
 
-  private calculateScore(pattern: Record<string, any>, requirements: Record<string, any>) {
+  private calculateScore(
+    pattern: Record<string, any>,
+    requirements: Record<string, any>,
+  ) {
     let score = 0.5; // Base score
 
     // Architecture match
@@ -158,9 +164,17 @@ export class CognitivePatternSelector {
         ? Array(pattern['layers']).fill(0)
         : undefined;
 
-    if (requirements['complexity'] === 'high' && patternLayers && patternLayers.length > 4) {
+    if (
+      requirements['complexity'] === 'high' &&
+      patternLayers &&
+      patternLayers.length > 4
+    ) {
       score += 0.2;
-    } else if (requirements['complexity'] === 'low' && patternLayers && patternLayers.length <= 3) {
+    } else if (
+      requirements['complexity'] === 'low' &&
+      patternLayers &&
+      patternLayers.length <= 3
+    ) {
       score += 0.2;
     }
 
@@ -175,7 +189,11 @@ export class CognitivePatternSelector {
    * @param _presetName
    * @param taskContext
    */
-  selectPatternsForPreset(modelType: string, _presetName: string, taskContext: any = {}) {
+  selectPatternsForPreset(
+    modelType: string,
+    _presetName: string,
+    taskContext: any = {},
+  ) {
     // Return appropriate cognitive patterns based on model type and context
     const patterns: string[] = [];
 
@@ -216,7 +234,10 @@ export class CognitivePatternSelector {
     }> = [];
 
     // Basic matching logic
-    if (useCase.toLowerCase().includes('text') || useCase.toLowerCase().includes('nlp')) {
+    if (
+      useCase.toLowerCase().includes('text') ||
+      useCase.toLowerCase().includes('nlp')
+    ) {
       recommendations.push({
         preset: 'transformer',
         score: 0.9,
@@ -296,7 +317,7 @@ export class NeuralAdaptationEngine {
    */
   adapt(
     networkConfig: any,
-    performanceData: { accuracy?: number; loss?: number; [k: string]: any }
+    performanceData: { accuracy?: number; loss?: number; [k: string]: any },
   ) {
     const adaptation = this.generateAdaptation(networkConfig, performanceData);
 
@@ -327,8 +348,10 @@ export class NeuralAdaptationEngine {
     }
 
     const avgPerformance =
-      recentPerformance.reduce((sum, p) => sum + (p.performance.accuracy || 0), 0) /
-        recentPerformance.length || 0;
+      recentPerformance.reduce(
+        (sum, p) => sum + (p.performance.accuracy || 0),
+        0,
+      ) / recentPerformance.length || 0;
 
     if (avgPerformance < 0.7) {
       return {
@@ -336,7 +359,8 @@ export class NeuralAdaptationEngine {
         reason: 'Low performance detected',
         suggestion: 'Add more layers or increase learning rate',
       };
-    } else if (avgPerformance > 0.95) {
+    }
+    if (avgPerformance > 0.95) {
       return {
         action: 'reduce_complexity',
         reason: 'Possible overfitting',
@@ -349,7 +373,7 @@ export class NeuralAdaptationEngine {
 
   private generateAdaptation(
     _config: any,
-    performance: { accuracy?: number; loss?: number; [k: string]: any }
+    performance: { accuracy?: number; loss?: number; [k: string]: any },
   ) {
     const adaptations: Array<{
       parameter: string;
@@ -392,7 +416,12 @@ export class NeuralAdaptationEngine {
   }
 
   private estimateImprovement(
-    adaptations: Array<{ parameter: string; change: string; factor?: number; reason: string }>
+    adaptations: Array<{
+      parameter: string;
+      change: string;
+      factor?: number;
+      reason: string;
+    }>,
   ) {
     // Simple heuristic for improvement estimation
     return adaptations.length * 0.05; // 5% improvement per adaptation
@@ -405,7 +434,11 @@ export class NeuralAdaptationEngine {
    * @param modelType
    * @param template
    */
-  async initializeAdaptation(agentId: string, modelType: string, template: string) {
+  async initializeAdaptation(
+    agentId: string,
+    modelType: string,
+    template: string,
+  ) {
     const initialization = {
       agentId,
       modelType,
@@ -451,7 +484,9 @@ export class NeuralAdaptationEngine {
    * @param agentId
    */
   async getAdaptationRecommendations(agentId: string) {
-    const agentAdaptations = this.adaptations.filter((a) => (a as any)['agentId'] === agentId);
+    const agentAdaptations = this.adaptations.filter(
+      (a) => (a as any)['agentId'] === agentId,
+    );
 
     if (agentAdaptations.length === 0) {
       return {
@@ -526,7 +561,7 @@ export class NeuralAdaptationEngine {
 
       insights.commonPatterns = Object.entries(adaptationTypes)
         .map(([type, count]) => ({ type, count }))
-        .sort((a, b) => (b.count) - (a.count));
+        .sort((a, b) => b.count - a.count);
     }
 
     return insights;

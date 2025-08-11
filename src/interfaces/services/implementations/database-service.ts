@@ -9,7 +9,10 @@
  */
 
 import type { IService } from '../core/interfaces.ts';
-import type { DatabaseServiceConfig, ServiceOperationOptions } from '../types.ts';
+import type {
+  DatabaseServiceConfig,
+  ServiceOperationOptions,
+} from '../types.ts';
 import { BaseService } from './base-service.ts';
 
 /**
@@ -103,7 +106,7 @@ export class DatabaseService extends BaseService implements IService {
 
       // Check database connection
       const connection = this.connections.get('default');
-      if (!connection || !connection.connected) {
+      if (!(connection && connection.connected)) {
         this.logger.warn('Database connection is not available');
         return false;
       }
@@ -118,7 +121,10 @@ export class DatabaseService extends BaseService implements IService {
 
       return true;
     } catch (error) {
-      this.logger.error(`Health check failed for database service ${this.name}:`, error);
+      this.logger.error(
+        `Health check failed for database service ${this.name}:`,
+        error,
+      );
       return false;
     }
   }
@@ -126,7 +132,7 @@ export class DatabaseService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     this.logger.debug(`Executing database operation: ${operation}`);
 
@@ -210,7 +216,7 @@ export class DatabaseService extends BaseService implements IService {
   }
 
   private async executeTransaction(
-    queries: Array<{ sql: string; parameters?: any[] }>
+    queries: Array<{ sql: string; parameters?: any[] }>,
   ): Promise<any> {
     if (!queries || queries.length === 0) {
       throw new Error('Transaction queries are required');
@@ -234,7 +240,10 @@ export class DatabaseService extends BaseService implements IService {
       return {
         success: true,
         results,
-        affectedRows: results.reduce((sum, r) => sum + (r.affectedRows || 0), 0),
+        affectedRows: results.reduce(
+          (sum, r) => sum + (r.affectedRows || 0),
+          0,
+        ),
       };
     } catch (error) {
       this.logger.error('Transaction failed:', error);
@@ -399,7 +408,8 @@ export class DatabaseService extends BaseService implements IService {
         errorCount: this.errorCount,
         averageResponseTime:
           this.latencyMetrics.length > 0
-            ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) / this.latencyMetrics.length
+            ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) /
+              this.latencyMetrics.length
             : 0,
       },
     };
@@ -445,7 +455,8 @@ export class DatabaseService extends BaseService implements IService {
     const connection = this.getConnection('default');
     if (connection) {
       connection.stats.queriesExecuted++;
-      connection.stats.averageQueryTime = (connection.stats.averageQueryTime + queryTime) / 2;
+      connection.stats.averageQueryTime =
+        (connection.stats.averageQueryTime + queryTime) / 2;
     }
 
     const lowerSql = sql.toLowerCase().trim();
@@ -458,33 +469,35 @@ export class DatabaseService extends BaseService implements IService {
         fields: ['id', 'name', 'created_at'],
         queryTime,
       };
-    } else if (lowerSql.startsWith('insert')) {
+    }
+    if (lowerSql.startsWith('insert')) {
       // Simulate INSERT query results
       return {
         insertId: Math.floor(Math.random() * 10000) + 1,
         affectedRows: 1,
         queryTime,
       };
-    } else if (lowerSql.startsWith('update')) {
+    }
+    if (lowerSql.startsWith('update')) {
       // Simulate UPDATE query results
       return {
         affectedRows: Math.floor(Math.random() * 5) + 1,
         changedRows: Math.floor(Math.random() * 5) + 1,
         queryTime,
       };
-    } else if (lowerSql.startsWith('delete')) {
+    }
+    if (lowerSql.startsWith('delete')) {
       // Simulate DELETE query results
       return {
         affectedRows: Math.floor(Math.random() * 3) + 1,
         queryTime,
       };
-    } else {
-      // Generic result for other queries (DDL, etc.)
-      return {
-        success: true,
-        queryTime,
-      };
     }
+    // Generic result for other queries (DDL, etc.)
+    return {
+      success: true,
+      queryTime,
+    };
   }
 
   private generateMockRows(count: number): any[] {
@@ -494,7 +507,9 @@ export class DatabaseService extends BaseService implements IService {
       rows.push({
         id: i,
         name: `Item ${i}`,
-        created_at: new Date(Date.now() - Math.random() * 86400000 * 30).toISOString(), // Random date within 30 days
+        created_at: new Date(
+          Date.now() - Math.random() * 86400000 * 30,
+        ).toISOString(), // Random date within 30 days
       });
     }
 

@@ -14,7 +14,11 @@ const memoryNeuralTools: MCPTool[] = [
       examples: [
         {
           name: 'Store memory',
-          params: { action: 'store', key: 'project-context', value: { status: 'active' } },
+          params: {
+            action: 'store',
+            key: 'project-context',
+            value: { status: 'active' },
+          },
         },
       ],
     },
@@ -25,7 +29,10 @@ const memoryNeuralTools: MCPTool[] = [
     inputSchema: {
       type: 'object',
       properties: {
-        action: { type: 'string', enum: ['store', 'retrieve', 'list', 'clear'] },
+        action: {
+          type: 'string',
+          enum: ['store', 'retrieve', 'list', 'clear'],
+        },
         key: { type: 'string' },
         value: { type: 'object' },
         namespace: { type: 'string', default: 'default' },
@@ -161,7 +168,10 @@ const memoryNeuralTools: MCPTool[] = [
     inputSchema: {
       type: 'object',
       properties: {
-        operation: { type: 'string', enum: ['file-edit', 'task-completion', 'error-handling'] },
+        operation: {
+          type: 'string',
+          enum: ['file-edit', 'task-completion', 'error-handling'],
+        },
         data: { type: 'object' },
         async: { type: 'boolean', default: true },
       },

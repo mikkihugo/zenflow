@@ -18,7 +18,9 @@ describe('MonitoringEventAdapter', () => {
   let config: MonitoringEventAdapterConfig;
 
   beforeEach(() => {
-    config = createDefaultMonitoringEventAdapterConfig('test-monitoring-adapter');
+    config = createDefaultMonitoringEventAdapterConfig(
+      'test-monitoring-adapter',
+    );
     adapter = createMonitoringEventAdapter(config);
   });
 
@@ -41,7 +43,9 @@ describe('MonitoringEventAdapter', () => {
         stop: vi.fn(),
         record: vi.fn(),
         getMetrics: vi.fn().mockResolvedValue({ averageLatency: 50 }),
-        healthCheck: vi.fn().mockResolvedValue({ responseTime: 10, errorRate: 0 }),
+        healthCheck: vi
+          .fn()
+          .mockResolvedValue({ responseTime: 10, errorRate: 0 }),
       };
 
       // Mock event emission
@@ -71,11 +75,16 @@ describe('MonitoringEventAdapter', () => {
 
     it('should wrap health components and correlate health events', async () => {
       const mockHealthComponent = {
-        checkHealth: vi.fn().mockResolvedValue({ status: 'healthy', score: 0.95 }),
+        checkHealth: vi
+          .fn()
+          .mockResolvedValue({ status: 'healthy', score: 0.95 }),
         getStatus: vi.fn().mockReturnValue('healthy'),
       };
 
-      const correlationSpy = vi.spyOn(adapter as any, 'startMonitoringEventCorrelation');
+      const correlationSpy = vi.spyOn(
+        adapter as any,
+        'startMonitoringEventCorrelation',
+      );
 
       await adapter.start();
 
@@ -101,7 +110,9 @@ describe('MonitoringEventAdapter', () => {
       };
 
       const subscriptionSpy = vi.fn();
-      adapter.subscribeAnalyticsInsightEvents = vi.fn().mockReturnValue('sub-123');
+      adapter.subscribeAnalyticsInsightEvents = vi
+        .fn()
+        .mockReturnValue('sub-123');
 
       await adapter.start();
 
@@ -222,7 +233,10 @@ describe('MonitoringEventAdapter', () => {
       await adapter.start();
 
       // Mock some component activity
-      const healthCheckSpy = vi.spyOn(adapter as any, 'performMonitoringHealthCheck');
+      const healthCheckSpy = vi.spyOn(
+        adapter as any,
+        'performMonitoringHealthCheck',
+      );
 
       // Trigger health check
       const healthStatus = await adapter.performMonitoringHealthCheck();
@@ -237,7 +251,10 @@ describe('MonitoringEventAdapter', () => {
 
       // Simulate successful monitoring operations
       const componentName = 'performance-monitor-test';
-      const updateSpy = vi.spyOn(adapter as any, 'updateComponentHealthMetrics');
+      const updateSpy = vi.spyOn(
+        adapter as any,
+        'updateComponentHealthMetrics',
+      );
 
       // Trigger health metric updates
       (adapter as any).updateComponentHealthMetrics(componentName, true);
@@ -260,7 +277,8 @@ describe('MonitoringEventAdapter', () => {
       const alertListener = vi.fn();
 
       // Create multiple subscriptions
-      const perfSub = adapter.subscribePerformanceMonitoringEvents(performanceListener);
+      const perfSub =
+        adapter.subscribePerformanceMonitoringEvents(performanceListener);
       const healthSub = adapter.subscribeHealthMonitoringEvents(healthListener);
       const metricsSub = adapter.subscribeMetricsEvents(metricsListener);
       const alertSub = adapter.subscribeAlertEvents(alertListener);
@@ -393,7 +411,9 @@ describe('MonitoringEventAdapter', () => {
       };
 
       // Calculate efficiency (should be high due to mostly successful events)
-      const efficiency = (adapter as any).calculateMonitoringEfficiency(correlation);
+      const efficiency = (adapter as any).calculateMonitoringEfficiency(
+        correlation,
+      );
 
       expect(efficiency).toBeGreaterThan(0.6); // 3/4 successful events with good timing
       expect(efficiency).toBeLessThanOrEqual(1.0);
@@ -483,7 +503,7 @@ describe('MonitoringEventAdapter', () => {
       // Events should be in chronological order
       for (let i = 1; i < history.length; i++) {
         expect(history[i]?.timestamp?.getTime()).toBeGreaterThanOrEqual(
-          history[i - 1]?.timestamp?.getTime()
+          history[i - 1]?.timestamp?.getTime(),
         );
       }
     });
@@ -565,7 +585,10 @@ describe('MonitoringEventAdapter', () => {
           type: 'monitoring:health',
           operation: score < 0.8 ? 'alert' : 'recover',
           component,
-          details: { healthScore: score, severity: score < 0.8 ? 'warning' : 'info' },
+          details: {
+            healthScore: score,
+            severity: score < 0.8 ? 'warning' : 'info',
+          },
         });
       }
 
@@ -576,7 +599,9 @@ describe('MonitoringEventAdapter', () => {
 
       expect(healthData).toBeDefined();
       expect(healthData?.eventCount).toBe(healthScores.length);
-      expect(healthData?.latestScore).toBe(healthScores[healthScores.length - 1]);
+      expect(healthData?.latestScore).toBe(
+        healthScores[healthScores.length - 1],
+      );
     });
 
     it('should track alert patterns and frequencies', async () => {
@@ -647,14 +672,14 @@ describe('MonitoringEventAdapter', () => {
     it('should handle complete monitoring workflow from metrics to alerts', async () => {
       await adapter.start();
 
-      const workflowEvents: any[] = [];
+      const workflowEvents: unknown[] = [];
 
       // Subscribe to all monitoring events
       adapter.subscribe(
         ['monitoring:metrics', 'monitoring:health', 'monitoring:alert'],
         (event) => {
           workflowEvents.push(event);
-        }
+        },
       );
 
       const correlationId = 'workflow-test';
@@ -666,7 +691,11 @@ describe('MonitoringEventAdapter', () => {
         operation: 'collect',
         component: 'web-server',
         correlationId,
-        details: { metricName: 'response_time', metricValue: 2000, severity: 'warning' },
+        details: {
+          metricName: 'response_time',
+          metricValue: 2000,
+          severity: 'warning',
+        },
       });
 
       // Step 2: Health check shows degradation
@@ -707,7 +736,7 @@ describe('MonitoringEventAdapter', () => {
         'high-throughput-test',
         {
           processing: { strategy: 'batched', batchSize: 50, queueSize: 1000 },
-        }
+        },
       );
 
       const htAdapter = createMonitoringEventAdapter(highThroughputConfig);
@@ -716,7 +745,7 @@ describe('MonitoringEventAdapter', () => {
         await htAdapter.start();
 
         const eventCount = 200;
-        const receivedEvents: any[] = [];
+        const receivedEvents: unknown[] = [];
 
         htAdapter.subscribe(['monitoring:metrics'], (event) => {
           receivedEvents.push(event);
@@ -731,8 +760,11 @@ describe('MonitoringEventAdapter', () => {
               type: 'monitoring:metrics',
               operation: 'collect',
               component: `component-${i % 5}`,
-              details: { metricName: `metric_${i}`, metricValue: Math.random() * 100 },
-            })
+              details: {
+                metricName: `metric_${i}`,
+                metricValue: Math.random() * 100,
+              },
+            }),
           );
         }
 
@@ -766,7 +798,7 @@ describe('MonitoringEventAdapter', () => {
         'cpu_usage',
         85.5,
         'web-server',
-        { threshold: 80 }
+        { threshold: 80 },
       );
 
       expect(event['source']).toBe('performance-monitor');
@@ -780,9 +812,14 @@ describe('MonitoringEventAdapter', () => {
     });
 
     it('should create health status events correctly', () => {
-      const event = MonitoringEventHelpers.createHealthStatusEvent('database', 0.45, 'unhealthy', {
-        lastCheck: new Date(),
-      });
+      const event = MonitoringEventHelpers.createHealthStatusEvent(
+        'database',
+        0.45,
+        'unhealthy',
+        {
+          lastCheck: new Date(),
+        },
+      );
 
       expect(event['source']).toBe('health-monitor');
       expect(event.type).toBe('monitoring:health');
@@ -798,7 +835,7 @@ describe('MonitoringEventAdapter', () => {
         'alert-123',
         'critical',
         'payment-service',
-        { threshold: 1000, currentValue: 2500 }
+        { threshold: 1000, currentValue: 2500 },
       );
 
       expect(event['source']).toBe('alert-manager');
@@ -817,7 +854,10 @@ describe('MonitoringEventAdapter', () => {
         predictions: { nextValue: 95, timeframe: 300000 },
       };
 
-      const event = MonitoringEventHelpers.createAnalyticsInsightEvent('trend-analyzer', insights);
+      const event = MonitoringEventHelpers.createAnalyticsInsightEvent(
+        'trend-analyzer',
+        insights,
+      );
 
       expect(event['source']).toBe('analytics-engine');
       expect(event.type).toBe('monitoring:metrics');
@@ -833,7 +873,7 @@ describe('MonitoringEventAdapter', () => {
       const event = MonitoringEventHelpers.createMonitoringErrorEvent(
         'metrics-collector',
         error,
-        'collect'
+        'collect',
       );
 
       expect(event['source']).toBe('metrics-collector');

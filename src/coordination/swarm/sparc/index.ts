@@ -20,7 +20,10 @@ import { SPARCEngineCore } from './core/sparc-engine.ts';
 import type { PhaseResult, SPARCProject } from './types/sparc-types.ts';
 
 // MCP Integration
-export { SPARCMCPTools, sparcMCPTools } from './integrations/mcp-sparc-tools.ts';
+export {
+  SPARCMCPTools,
+  sparcMCPTools,
+} from './integrations/mcp-sparc-tools.ts';
 // Project Management Integration
 export { ProjectManagementIntegration } from './integrations/project-management-integration.ts';
 export { SPARCRoadmapManager } from './integrations/roadmap-integration.ts';
@@ -64,7 +67,12 @@ export class SPARC {
       | 'interfaces'
       | 'general',
     requirements: string[],
-    complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise' = 'moderate'
+    complexity:
+      | 'simple'
+      | 'moderate'
+      | 'high'
+      | 'complex'
+      | 'enterprise' = 'moderate',
   ) {
     const engine = SPARC.getEngine();
     return engine.initializeProject({
@@ -97,7 +105,10 @@ export class SPARC {
         const result = await engine.executePhase(project, phase);
         results.push(result);
       } catch (error) {
-        logger.error(`Failed to execute phase ${phase} for project ${projectId}:`, error);
+        logger.error(
+          `Failed to execute phase ${phase} for project ${projectId}:`,
+          error,
+        );
       }
     }
 

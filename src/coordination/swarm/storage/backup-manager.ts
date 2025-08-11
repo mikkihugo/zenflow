@@ -69,7 +69,9 @@ export class SwarmBackupManager extends EventEmitter {
   async initialize(): Promise<void> {
     await fs.mkdir(this.backupsPath, { recursive: true });
     await fs.mkdir(path.join(this.backupsPath, 'daily'), { recursive: true });
-    await fs.mkdir(path.join(this.backupsPath, 'metadata'), { recursive: true });
+    await fs.mkdir(path.join(this.backupsPath, 'metadata'), {
+      recursive: true,
+    });
 
     this.startBackupSchedule();
     this.emit('initialized');
@@ -81,7 +83,11 @@ export class SwarmBackupManager extends EventEmitter {
   async createDailyBackup(): Promise<string> {
     const timestamp = new Date();
     const backupId = `daily-${timestamp.toISOString().split('T')[0]}`;
-    const backupPath = path.join(this.backupsPath, 'daily', `${backupId}.tar.gz`);
+    const backupPath = path.join(
+      this.backupsPath,
+      'daily',
+      `${backupId}.tar.gz`,
+    );
 
     this.emit('backup:started', { type: 'daily', id: backupId });
 
@@ -119,7 +125,11 @@ export class SwarmBackupManager extends EventEmitter {
       await this.syncToRemote(backupPath);
     }
 
-    this.emit('backup:completed', { type: 'daily', id: backupId, sizeBytes: stats.size });
+    this.emit('backup:completed', {
+      type: 'daily',
+      id: backupId,
+      sizeBytes: stats.size,
+    });
     return backupId;
   }
 
@@ -163,12 +173,17 @@ export class SwarmBackupManager extends EventEmitter {
 
     for (const file of files) {
       if (file.endsWith('.json')) {
-        const content = await fs.readFile(path.join(metadataPath, file), 'utf8');
+        const content = await fs.readFile(
+          path.join(metadataPath, file),
+          'utf8',
+        );
         backups.push(JSON.parse(content));
       }
     }
 
-    return backups.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return backups.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
+    );
   }
 
   /**
@@ -205,12 +220,18 @@ export class SwarmBackupManager extends EventEmitter {
     return {
       totalBackups: backups.length,
       totalSizeBytes,
-      oldestBackup: backups.length > 0 ? backups[backups.length - 1]?.timestamp || null : null,
+      oldestBackup:
+        backups.length > 0
+          ? backups[backups.length - 1]?.timestamp || null
+          : null,
       newestBackup: backups.length > 0 ? backups[0]?.timestamp || null : null,
     };
   }
 
-  private async createCompressedArchive(sourcePath: string, outputPath: string): Promise<void> {
+  private async createCompressedArchive(
+    sourcePath: string,
+    outputPath: string,
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       const tar = spawn('tar', [
         '-czf',
@@ -221,7 +242,9 @@ export class SwarmBackupManager extends EventEmitter {
       ]);
 
       tar.on('close', (code) => {
-        code === 0 ? resolve() : reject(new Error(`tar failed with code ${code}`));
+        code === 0
+          ? resolve()
+          : reject(new Error(`tar failed with code ${code}`));
       });
     });
   }
@@ -238,7 +261,11 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   private async saveMetadata(metadata: BackupMetadata): Promise<void> {
-    const metadataPath = path.join(this.backupsPath, 'metadata', `${metadata?.id}.json`);
+    const metadataPath = path.join(
+      this.backupsPath,
+      'metadata',
+      `${metadata?.id}.json`,
+    );
     await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
   }
 
@@ -247,9 +274,15 @@ export class SwarmBackupManager extends EventEmitter {
     return backups.length > 0 ? backups[0] || null : null;
   }
 
-  private async getBackupMetadata(backupId: string): Promise<BackupMetadata | null> {
+  private async getBackupMetadata(
+    backupId: string,
+  ): Promise<BackupMetadata | null> {
     try {
-      const metadataPath = path.join(this.backupsPath, 'metadata', `${backupId}.json`);
+      const metadataPath = path.join(
+        this.backupsPath,
+        'metadata',
+        `${backupId}.json`,
+      );
       const content = await fs.readFile(metadataPath, 'utf8');
       return JSON.parse(content);
     } catch {
@@ -257,8 +290,15 @@ export class SwarmBackupManager extends EventEmitter {
     }
   }
 
-  private async restoreFromDailyBackup(swarmId: string, backup: BackupMetadata): Promise<void> {
-    const backupPath = path.join(this.backupsPath, 'daily', `${backup.id}.tar.gz`);
+  private async restoreFromDailyBackup(
+    swarmId: string,
+    backup: BackupMetadata,
+  ): Promise<void> {
+    const backupPath = path.join(
+      this.backupsPath,
+      'daily',
+      `${backup.id}.tar.gz`,
+    );
     const swarmsPath = path.join(this.claudeZenPath, 'swarms', 'active');
 
     // Extract specific swarm
@@ -266,7 +306,9 @@ export class SwarmBackupManager extends EventEmitter {
       const tar = spawn('tar', ['-xzf', backupPath, '-C', swarmsPath, swarmId]);
 
       tar.on('close', (code) => {
-        code === 0 ? resolve() : reject(new Error(`restore failed with code ${code}`));
+        code === 0
+          ? resolve()
+          : reject(new Error(`restore failed with code ${code}`));
       });
     });
   }
@@ -276,7 +318,11 @@ export class SwarmBackupManager extends EventEmitter {
     if (!metadata) return;
 
     // Delete backup file
-    const backupPath = path.join(this.backupsPath, 'daily', `${backupId}.tar.gz`);
+    const backupPath = path.join(
+      this.backupsPath,
+      'daily',
+      `${backupId}.tar.gz`,
+    );
     try {
       await fs.unlink(backupPath);
     } catch {
@@ -284,7 +330,11 @@ export class SwarmBackupManager extends EventEmitter {
     }
 
     // Delete metadata
-    const metadataPath = path.join(this.backupsPath, 'metadata', `${backupId}.json`);
+    const metadataPath = path.join(
+      this.backupsPath,
+      'metadata',
+      `${backupId}.json`,
+    );
     try {
       await fs.unlink(metadataPath);
     } catch {
@@ -327,7 +377,7 @@ export class SwarmBackupManager extends EventEmitter {
             this.emit('backup:error', { type: 'daily', error });
           });
         },
-        24 * 60 * 60 * 1000
+        24 * 60 * 60 * 1000,
       ); // 24 hours
     }, timeUntilBackup);
   }

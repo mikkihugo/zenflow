@@ -442,7 +442,10 @@ export interface PerformanceHistory {
 export interface HookManager {
   registerHook(hook: Hook): Promise<void>;
   unregisterHook(hookId: string): Promise<void>;
-  executeHooks(trigger: HookTrigger, context: HookContext): Promise<HookResult[]>;
+  executeHooks(
+    trigger: HookTrigger,
+    context: HookContext,
+  ): Promise<HookResult[]>;
   getHooks(trigger?: HookTrigger): Promise<Hook[]>;
   enableHook(hookId: string): Promise<void>;
   disableHook(hookId: string): Promise<void>;

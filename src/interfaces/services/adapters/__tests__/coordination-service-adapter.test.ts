@@ -25,14 +25,24 @@ const createMockDaaService = () => ({
   isInitialized: vi.fn().mockReturnValue(true),
   createAgent: vi.fn().mockResolvedValue({ id: 'agent-1', status: 'created' }),
   adaptAgent: vi.fn().mockResolvedValue({ id: 'agent-1', adapted: true }),
-  getAgentLearningStatus: vi.fn().mockResolvedValue({ agentId: 'agent-1', proficiency: 0.85 }),
-  createWorkflow: vi.fn().mockResolvedValue({ id: 'workflow-1', status: 'created' }),
-  executeWorkflow: vi.fn().mockResolvedValue({ workflowId: 'workflow-1', status: 'completed' }),
+  getAgentLearningStatus: vi
+    .fn()
+    .mockResolvedValue({ agentId: 'agent-1', proficiency: 0.85 }),
+  createWorkflow: vi
+    .fn()
+    .mockResolvedValue({ id: 'workflow-1', status: 'created' }),
+  executeWorkflow: vi
+    .fn()
+    .mockResolvedValue({ workflowId: 'workflow-1', status: 'completed' }),
   shareKnowledge: vi.fn().mockResolvedValue({ shared: true }),
-  analyzeCognitivePatterns: vi.fn().mockResolvedValue({ patterns: ['problem-solving'] }),
+  analyzeCognitivePatterns: vi
+    .fn()
+    .mockResolvedValue({ patterns: ['problem-solving'] }),
   setCognitivePattern: vi.fn().mockResolvedValue({ applied: true }),
   performMetaLearning: vi.fn().mockResolvedValue({ learningRate: 0.92 }),
-  getPerformanceMetrics: vi.fn().mockResolvedValue({ metrics: { throughput: 1000 } }),
+  getPerformanceMetrics: vi
+    .fn()
+    .mockResolvedValue({ metrics: { throughput: 1000 } }),
 });
 
 const createMockSwarmCoordinator = () => ({
@@ -60,8 +70,18 @@ const createMockSwarmCoordinator = () => ({
     uptime: 300000,
   }),
   getAgents: vi.fn().mockReturnValue([
-    { id: 'agent-1', type: 'researcher', status: 'idle', capabilities: ['search'] },
-    { id: 'agent-2', type: 'coder', status: 'busy', capabilities: ['programming'] },
+    {
+      id: 'agent-1',
+      type: 'researcher',
+      status: 'idle',
+      capabilities: ['search'],
+    },
+    {
+      id: 'agent-2',
+      type: 'coder',
+      status: 'busy',
+      capabilities: ['programming'],
+    },
   ]),
 });
 
@@ -76,7 +96,9 @@ const createMockSessionEnabledSwarm = () => ({
   restoreFromCheckpoint: vi.fn().mockResolvedValue(undefined),
   listSessions: jest
     .fn()
-    .mockResolvedValue([{ id: 'session-1', name: 'Test Session', status: 'active' }]),
+    .mockResolvedValue([
+      { id: 'session-1', name: 'Test Session', status: 'active' },
+    ]),
   getSessionStats: vi.fn().mockResolvedValue({
     uptime: 60000,
     operationsCount: 5,
@@ -92,11 +114,15 @@ jest.mock('../../../coordination/swarm/core/daa-service', () => ({
 }));
 
 jest.mock('../../../coordination/swarm/core/swarm-coordinator', () => ({
-  SwarmCoordinator: vi.fn().mockImplementation(() => createMockSwarmCoordinator()),
+  SwarmCoordinator: vi
+    .fn()
+    .mockImplementation(() => createMockSwarmCoordinator()),
 }));
 
 jest.mock('../../../coordination/swarm/core/session-integration', () => ({
-  SessionEnabledSwarm: vi.fn().mockImplementation(() => createMockSessionEnabledSwarm()),
+  SessionEnabledSwarm: vi
+    .fn()
+    .mockImplementation(() => createMockSessionEnabledSwarm()),
 }));
 
 jest.mock('../../../utils/logger', () => ({
@@ -108,12 +134,15 @@ describe('CoordinationServiceAdapter', () => {
   let config: any;
 
   beforeEach(() => {
-    config = createDefaultCoordinationServiceAdapterConfig('test-coordination', {
-      type: ServiceType.COORDINATION,
-      daaService: { enabled: true },
-      sessionService: { enabled: true },
-      swarmCoordinator: { enabled: true },
-    });
+    config = createDefaultCoordinationServiceAdapterConfig(
+      'test-coordination',
+      {
+        type: ServiceType.COORDINATION,
+        daaService: { enabled: true },
+        sessionService: { enabled: true },
+        swarmCoordinator: { enabled: true },
+      },
+    );
 
     adapter = new CoordinationServiceAdapter(config);
 
@@ -187,7 +216,8 @@ describe('CoordinationServiceAdapter', () => {
   describe('Configuration Management (London TDD)', () => {
     it('should validate valid configuration', async () => {
       // Arrange
-      const validConfig = createDefaultCoordinationServiceAdapterConfig('valid-test');
+      const validConfig =
+        createDefaultCoordinationServiceAdapterConfig('valid-test');
 
       // Act
       const isValid = await adapter.validateConfig(validConfig as any);
@@ -231,7 +261,9 @@ describe('CoordinationServiceAdapter', () => {
       const agentConfig = { type: 'researcher', capabilities: ['search'] };
 
       // Act
-      const result = await adapter.execute('agent-create', { config: agentConfig });
+      const result = await adapter.execute('agent-create', {
+        config: agentConfig,
+      });
 
       // Assert
       expect(result?.success).toBe(true);
@@ -244,7 +276,9 @@ describe('CoordinationServiceAdapter', () => {
       const sessionName = 'test-session';
 
       // Act
-      const createResult = await adapter.execute('session-create', { name: sessionName });
+      const createResult = await adapter.execute('session-create', {
+        name: sessionName,
+      });
       const listResult = await adapter.execute('session-list');
 
       // Assert
@@ -256,11 +290,19 @@ describe('CoordinationServiceAdapter', () => {
     it('should execute swarm coordination operations', async () => {
       // Arrange
       const agents = [
-        { id: 'agent-1', type: 'researcher', status: 'idle', capabilities: ['search'] },
+        {
+          id: 'agent-1',
+          type: 'researcher',
+          status: 'idle',
+          capabilities: ['search'],
+        },
       ];
 
       // Act
-      const result = await adapter.execute('swarm-coordinate', { agents, topology: 'mesh' });
+      const result = await adapter.execute('swarm-coordinate', {
+        agents,
+        topology: 'mesh',
+      });
 
       // Assert
       expect(result?.success).toBe(true);
@@ -289,7 +331,7 @@ describe('CoordinationServiceAdapter', () => {
       const result = await adapter.execute(
         'agent-create',
         { config: {} },
-        { timeout: shortTimeout }
+        { timeout: shortTimeout },
       );
 
       // Assert - Should timeout quickly
@@ -312,7 +354,7 @@ describe('CoordinationServiceAdapter', () => {
         expect.objectContaining({
           type: 'initialized',
           serviceName: 'test-coordination',
-        })
+        }),
       );
     });
 
@@ -333,7 +375,7 @@ describe('CoordinationServiceAdapter', () => {
           operation: expect.any(String),
           success: true,
           duration: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -403,8 +445,12 @@ describe('CoordinationServiceAdapter', () => {
       (adapter.config as any).cache!.enabled = true;
 
       // Act - Execute same operation twice
-      const result1 = await adapter.execute('agent-learning-status', { agentId: 'agent-1' });
-      const result2 = await adapter.execute('agent-learning-status', { agentId: 'agent-1' });
+      const result1 = await adapter.execute('agent-learning-status', {
+        agentId: 'agent-1',
+      });
+      const result2 = await adapter.execute('agent-learning-status', {
+        agentId: 'agent-1',
+      });
 
       // Assert - Both should succeed, second should be faster (cached)
       expect(result1?.success).toBe(true);
@@ -418,12 +464,16 @@ describe('CoordinationServiceAdapter', () => {
       (adapter.config as any).cache!.defaultTTL = 100; // 100ms TTL
 
       // Act
-      const result1 = await adapter.execute('agent-learning-status', { agentId: 'agent-1' });
+      const result1 = await adapter.execute('agent-learning-status', {
+        agentId: 'agent-1',
+      });
 
       // Wait for cache to expire
       await new Promise((resolve) => setTimeout(resolve, 150));
 
-      const result2 = await adapter.execute('agent-learning-status', { agentId: 'agent-1' });
+      const result2 = await adapter.execute('agent-learning-status', {
+        agentId: 'agent-1',
+      });
 
       // Assert - Results should be consistent even after cache expiry
       expect(result1?.success).toBe(true);
@@ -457,7 +507,10 @@ describe('CoordinationServiceAdapter', () => {
 
       // Act
       for (const operation of operations) {
-        await adapter.execute(operation, { config: { type: 'researcher' }, name: 'test' });
+        await adapter.execute(operation, {
+          config: { type: 'researcher' },
+          name: 'test',
+        });
       }
 
       const metrics = await adapter.getMetrics();
@@ -572,7 +625,9 @@ describe('CoordinationServiceAdapter', () => {
       const operations = Array(10)
         .fill(0)
         .map((_, i) =>
-          adapter.execute('agent-create', { config: { type: 'researcher', id: `agent-${i}` } })
+          adapter.execute('agent-create', {
+            config: { type: 'researcher', id: `agent-${i}` },
+          }),
         );
 
       await Promise.all(operations);
@@ -612,7 +667,8 @@ describe('CoordinationServiceAdapter', () => {
   describe('Factory Functions', () => {
     it('should create adapter with factory function', () => {
       // Arrange
-      const factoryConfig = createDefaultCoordinationServiceAdapterConfig('factory-test');
+      const factoryConfig =
+        createDefaultCoordinationServiceAdapterConfig('factory-test');
 
       // Act
       const factoryAdapter = createCoordinationServiceAdapter(factoryConfig);
@@ -632,7 +688,10 @@ describe('CoordinationServiceAdapter', () => {
       };
 
       // Act
-      const config = createDefaultCoordinationServiceAdapterConfig('override-test', overrides);
+      const config = createDefaultCoordinationServiceAdapterConfig(
+        'override-test',
+        overrides,
+      );
 
       // Assert
       expect(config?.name).toBe('override-test');
@@ -688,8 +747,12 @@ describe('CoordinationServiceAdapter', () => {
       await adapter.start();
 
       // Act - Simulate service failure by providing invalid parameters
-      const invalidAgentResult = await adapter.execute('agent-create', { config: null });
-      const invalidSessionResult = await adapter.execute('session-create', { name: null });
+      const invalidAgentResult = await adapter.execute('agent-create', {
+        config: null,
+      });
+      const invalidSessionResult = await adapter.execute('session-create', {
+        name: null,
+      });
 
       // Assert - Should handle errors gracefully
       expect(invalidAgentResult?.success).toBe(false);

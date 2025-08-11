@@ -1,0 +1,130 @@
+# This is a minimal GitHub GraphQL schema subset for our queries
+# In a real implementation, you'd download the full schema from GitHub
+# For now, we'll use the types we need
+
+scalar DateTime
+scalar GitObjectID
+scalar HTML
+scalar URI
+
+type Repository {
+  name: String!
+  description: String
+  stargazers: StargazerConnection!
+  primaryLanguage: Language
+  releases(first: Int, orderBy: ReleaseOrder): ReleaseConnection!
+  ref(qualifiedName: String!): Ref
+  object(expression: String!): GitObject
+  licenseInfo: License
+  repositoryTopics(first: Int): RepositoryTopicConnection!
+}
+
+type StargazerConnection {
+  totalCount: Int!
+}
+
+type Language {
+  name: String!
+}
+
+type ReleaseConnection {
+  nodes: [Release]
+}
+
+type Release {
+  tagName: String!
+  name: String
+  description: String
+  publishedAt: DateTime
+  createdAt: DateTime!
+  isPrerelease: Boolean!
+  isDraft: Boolean!
+}
+
+type Ref {
+  name: String!
+  target: GitObject!
+}
+
+union GitObject = Tree | Blob | Commit | Tag
+
+type Tree {
+  entries: [TreeEntry!]!
+}
+
+type TreeEntry {
+  name: String!
+  type: String!
+  mode: Int!
+  object: GitObject
+}
+
+type Blob {
+  text: String
+  byteSize: Int!
+  isBinary: Boolean!
+  oid: GitObjectID!
+}
+
+type Commit {
+  oid: GitObjectID!
+  committedDate: DateTime!
+  message: String!
+  author: GitActor
+}
+
+type GitActor {
+  name: String
+  email: String
+  date: DateTime
+}
+
+type Tag {
+  name: String!
+  target: GitObject!
+}
+
+type License {
+  name: String
+  key: String!
+  spdxId: String
+}
+
+type RepositoryTopicConnection {
+  nodes: [RepositoryTopic]
+}
+
+type RepositoryTopic {
+  topic: Topic!
+}
+
+type Topic {
+  name: String!
+}
+
+input ReleaseOrder {
+  field: ReleaseOrderField!
+  direction: OrderDirection!
+}
+
+enum ReleaseOrderField {
+  CREATED_AT
+  NAME
+}
+
+enum OrderDirection {
+  ASC
+  DESC
+}
+
+type RateLimit {
+  limit: Int!
+  cost: Int!
+  remaining: Int!
+  resetAt: DateTime!
+}
+
+type Query {
+  repository(owner: String!, name: String!): Repository
+  rateLimit: RateLimit
+}

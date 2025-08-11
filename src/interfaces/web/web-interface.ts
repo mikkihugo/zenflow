@@ -12,6 +12,8 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getLogger } from '../../config/logging-config.ts';
+import { ProcessLifecycleManager } from '../../core/process-lifecycle.js';
+import type { DIContainer } from '../../di/index.js';
 import { WebApiRoutes } from './web-api-routes.ts';
 // Import modular components
 import { createWebConfig, type WebConfig } from './web-config.ts';
@@ -36,6 +38,8 @@ const _dirname = dirname(_filename);
 export class WebInterface {
   private logger = getLogger('WebInterface');
   private config: WebConfig;
+  private container?: DIContainer;
+  private lifecycleManager?: ProcessLifecycleManager;
 
   // Component instances
   private server: WebDashboardServer;
@@ -52,6 +56,9 @@ export class WebInterface {
       staticDir: join(__dirname, '../../../web/dist'),
       ...config,
     });
+
+    // Store DI container if provided
+    this.container = config.container;
 
     // Initialize all components
     this.initializeComponents();
@@ -71,13 +78,17 @@ export class WebInterface {
     this.sessionManager = new WebSessionManager(this.config);
 
     // API route handling
-    this.apiRoutes = new WebApiRoutes(this.config, this.sessionManager, this.dataService);
+    this.apiRoutes = new WebApiRoutes(
+      this.config,
+      this.sessionManager,
+      this.dataService,
+    );
 
     // WebSocket real-time communication
     this.webSocketManager = new WebSocketManager(
       this.server.getSocketIO(),
       this.config,
-      this.dataService
+      this.dataService,
     );
 
     // HTML generation for fallback UI
@@ -94,13 +105,31 @@ export class WebInterface {
    */
   async run(): Promise<void> {
     try {
-      this.logger.info('Starting Claude Code Flow web interface');
+      this.logger.info(
+        'Starting Claude Code Flow web interface with enhanced lifecycle management',
+      );
+
+      // Setup process lifecycle management if container is available
+      if (this.container) {
+        this.lifecycleManager = new ProcessLifecycleManager({
+          onShutdown: async () => {
+            this.logger.info('🧹 Graceful shutdown initiated...');
+            await this.stop();
+          },
+          onError: async (error: Error) => {
+            this.logger.error('💥 Application error in web interface:', error);
+          },
+        });
+        this.logger.info('✅ Process lifecycle management enabled');
+      }
 
       // Check for existing instances if in daemon mode
       if (this.config.daemon) {
         const existing = await this.processManager.isInstanceRunning();
         if (existing) {
-          throw new Error(`Web interface already running with PID ${existing.pid}`);
+          throw new Error(
+            `Web interface already running with PID ${existing.pid}`,
+          );
         }
       }
 
@@ -134,6 +163,9 @@ export class WebInterface {
     // Add session management middleware
     app.use(this.sessionManager.middleware());
 
+    // Auto-convert MCP tools to API endpoints on startup
+    await this.autoConvertMCPTools(app);
+
     // Setup API routes
     this.apiRoutes.setupRoutes(app);
 
@@ -144,6 +176,30 @@ export class WebInterface {
     this.setupFallbackRoutes(app);
 
     this.logger.debug('All components configured and integrated');
+  }
+
+  /**
+   * Auto-setup shared services and API routes
+   */
+  private async autoConvertMCPTools(app: any): Promise<void> {
+    try {
+      this.logger.info('🔄 Setting up shared services API routes...');
+
+      // Add swarm API routes
+      const { swarmRouter } = await import('./api/swarm-routes.js');
+      app.use('/api/v1/swarm', swarmRouter);
+
+      this.logger.info('✅ Swarm API routes registered at /api/v1/swarm/*');
+      this.logger.info('   Same business logic as stdio MCP server');
+      this.logger.info('   Available for web dashboard and HTTP MCP server');
+
+      // Additional service routes can be added here as needed
+    } catch (error) {
+      this.logger.warn(
+        'Shared services setup failed, continuing without:',
+        error instanceof Error ? error.message : String(error),
+      );
+    }
   }
 
   /**
@@ -187,6 +243,11 @@ export class WebInterface {
       // Perform graceful shutdown if in daemon mode
       if (this.config.daemon) {
         await this.processManager.gracefulShutdown();
+      }
+
+      // Cleanup lifecycle manager
+      if (this.lifecycleManager) {
+        this.lifecycleManager.dispose();
       }
 
       this.logger.info('Web interface stopped successfully');

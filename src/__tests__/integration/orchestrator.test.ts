@@ -3,17 +3,21 @@
  * This test adapts the London School TDD approach from the original test suite.
  */
 
-import { describe, expect, it } from 'vitest';
 import { Orchestrator } from 'coordination/orchestrator';
 import { ZenSwarmStrategy } from 'coordination/strategies/ruv-swarm.strategy';
+import { describe, expect, it } from 'vitest';
 import { SwarmDatabase } from '../../src/database/swarm-database';
 
 // Mock dependencies
 vi.mock('../../src/database/swarm-database');
 vi.mock('coordination/strategies/ruv-swarm.strategy');
 
-const MockedSwarmDatabase = SwarmDatabase as vi.MockedClass<typeof SwarmDatabase>;
-const MockedZenSwarmStrategy = ZenSwarmStrategy as vi.MockedClass<typeof ZenSwarmStrategy>;
+const MockedSwarmDatabase = SwarmDatabase as vi.MockedClass<
+  typeof SwarmDatabase
+>;
+const MockedZenSwarmStrategy = ZenSwarmStrategy as vi.MockedClass<
+  typeof ZenSwarmStrategy
+>;
 
 describe('Orchestrator Integration Test', () => {
   let orchestrator: Orchestrator;
@@ -25,7 +29,12 @@ describe('Orchestrator Integration Test', () => {
     // Instantiate the mocks
     mockStrategy = new MockedZenSwarmStrategy() as vi.Mocked<ZenSwarmStrategy>;
     mockDb = new MockedSwarmDatabase() as vi.Mocked<SwarmDatabase>;
-    mockLogger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
+    mockLogger = {
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    };
 
     // Mock the database constructor to return our mock instance
     (SwarmDatabase as vi.Mock).mockImplementation(() => mockDb);
@@ -65,12 +74,17 @@ describe('Orchestrator Integration Test', () => {
 
       // Assert
       expect(mockDb.initialize).toHaveBeenCalled();
-      expect(mockDb.createTask).toHaveBeenCalledWith(expect.objectContaining({ id: 'task-123' }));
+      expect(mockDb.createTask).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'task-123' }),
+      );
       expect(mockStrategy.getAgents).toHaveBeenCalled();
-      expect(mockStrategy.assignTaskToAgent).toHaveBeenCalledWith('agent-456', expect.any(Object));
+      expect(mockStrategy.assignTaskToAgent).toHaveBeenCalledWith(
+        'agent-456',
+        expect.any(Object),
+      );
       expect(mockDb.updateTask).toHaveBeenCalledWith(
         'task-123',
-        expect.objectContaining({ status: 'completed' })
+        expect.objectContaining({ status: 'completed' }),
       );
     });
   });

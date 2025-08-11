@@ -2,7 +2,9 @@ export default {
   apps: [
     {
       name: 'claude-zen-server',
-      script: 'src/interfaces/server.js',
+      script: 'src/main.ts',
+      args: 'integrated --port 3000',
+      interpreter: 'bun',
       cwd: '/home/mhugo/code/claude-code-zen',
       instances: 1,
       autorestart: true,
@@ -14,7 +16,7 @@ export default {
         LOG_LEVEL: 'info',
       },
       env_development: {
-        NODE_ENV: 'development',
+        NODE_ENV: 'development', 
         PORT: 3000,
         LOG_LEVEL: 'debug',
       },

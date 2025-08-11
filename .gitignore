@@ -26,6 +26,7 @@ bazel-*/
 /target
 target 
 dist/
+build/
 bin/claude-zen-node-pkg
 *.exe
 *.bin

@@ -5,8 +5,15 @@
  * Contains factory functions and entity type definitions.
  */
 
-import type { DatabaseAdapter, ILogger } from '../../core/interfaces/base-interfaces.ts';
-import type { DatabaseTypes, EntityTypes as EntityTypesEnum, IDao } from '../interfaces.ts';
+import type {
+  DatabaseAdapter,
+  ILogger,
+} from '../../core/interfaces/base-interfaces.ts';
+import type {
+  DatabaseTypes,
+  EntityTypes as EntityTypesEnum,
+  IDao,
+} from '../interfaces.ts';
 
 /**
  * Multi-database DAO interface for cross-database operations.
@@ -123,8 +130,10 @@ export async function createDao<T>(
     primaryKey?: string;
     enableCaching?: boolean;
     connectionPoolSize?: number;
-    logger?: Console | { debug: Function; info: Function; warn: Function; error: Function };
-  } = {}
+    logger?:
+      | Console
+      | { debug: Function; info: Function; warn: Function; error: Function };
+  } = {},
 ): Promise<IDao<T>> {
   // Set defaults based on entity type
   const tableName = options?.tableName || getDefaultTableName(entityType);
@@ -227,13 +236,18 @@ class ConcreteDao<T> extends BaseDao<T> {
 export async function createMultiDatabaseSetup<T>(
   entityType: EntityType,
   primaryDatabase: { databaseType: DatabaseTypes; config: DatabaseConfig },
-  fallbackDatabases: Array<{ databaseType: DatabaseTypes; config: DatabaseConfig }> = [],
+  fallbackDatabases: Array<{
+    databaseType: DatabaseTypes;
+    config: DatabaseConfig;
+  }> = [],
   options: {
     readPreference?: 'primary' | 'fallback' | 'balanced';
     writePolicy?: 'primary-only' | 'replicated';
     failoverTimeout?: number;
-    logger?: Console | { debug: Function; info: Function; warn: Function; error: Function };
-  } = {}
+    logger?:
+      | Console
+      | { debug: Function; info: Function; warn: Function; error: Function };
+  } = {},
 ): Promise<IMultiDatabaseDao<T>> {
   const primaryDao = await createDao<T>(
     entityType,
@@ -241,15 +255,15 @@ export async function createMultiDatabaseSetup<T>(
     primaryDatabase.config,
     {
       logger: options?.logger,
-    }
+    },
   );
 
   const fallbackDaos = await Promise.all(
     fallbackDatabases.map((db) =>
       createDao<T>(entityType, db.databaseType, db.config, {
         logger: options?.logger,
-      })
-    )
+      }),
+    ),
   );
 
   // Return a multi-database DAO wrapper
@@ -421,7 +435,11 @@ function getDefaultTableName(entityType: EntityType): string {
  * @param tableName
  * @example
  */
-function createMemoryDao<T>(adapter: DatabaseAdapter, logger: ILogger, tableName: string): IDao<T> {
+function createMemoryDao<T>(
+  adapter: DatabaseAdapter,
+  logger: ILogger,
+  tableName: string,
+): IDao<T> {
   // Create a specialized memory DAO implementation
   class MemoryDaoImpl extends MemoryDao<T> {
     constructor(adapter: DatabaseAdapter, logger: ILogger, tableName: string) {
@@ -434,7 +452,7 @@ function createMemoryDao<T>(adapter: DatabaseAdapter, logger: ILogger, tableName
 function createCoordinationDao<T>(
   adapter: DatabaseAdapter,
   logger: ILogger,
-  tableName: string
+  tableName: string,
 ): IDao<T> {
   // Create a specialized coordination DAO implementation
   class CoordinationDaoImpl extends CoordinationDao<T> {
@@ -445,7 +463,11 @@ function createCoordinationDao<T>(
   return new CoordinationDaoImpl(adapter, logger, tableName) as IDao<T>;
 }
 
-function createGraphDao<T>(adapter: DatabaseAdapter, logger: ILogger, tableName: string): IDao<T> {
+function createGraphDao<T>(
+  adapter: DatabaseAdapter,
+  logger: ILogger,
+  tableName: string,
+): IDao<T> {
   // Create a specialized graph DAO implementation
   class GraphDaoImpl extends GraphDao<T> {
     constructor(adapter: DatabaseAdapter, logger: ILogger, tableName: string) {

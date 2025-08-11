@@ -7,7 +7,14 @@ import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  jest,
+  test,
+} from '@jest/globals';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -148,7 +155,10 @@ describe('Hooks System - Complete Coverage', () => {
                 break;
 
               default:
-                result = { continue: true, reason: `Unknown hook type: ${hookType}` };
+                result = {
+                  continue: true,
+                  reason: `Unknown hook type: ${hookType}`,
+                };
             }
 
             // Track performance
@@ -156,8 +166,10 @@ describe('Hooks System - Complete Coverage', () => {
             this.sessionData.performance.hookExecutionTimes.push(executionTime);
             this.sessionData.performance.totalHooksExecuted++;
             this.sessionData.performance.averageHookTime =
-              this.sessionData.performance.hookExecutionTimes.reduce((a, b) => a + b, 0) /
-              this.sessionData.performance.hookExecutionTimes.length;
+              this.sessionData.performance.hookExecutionTimes.reduce(
+                (a, b) => a + b,
+                0,
+              ) / this.sessionData.performance.hookExecutionTimes.length;
 
             return result;
           } catch (error) {
@@ -208,7 +220,9 @@ describe('Hooks System - Complete Coverage', () => {
 
           // Validate command safety
           const dangerousCommands = ['rm -rf', 'dd if=', 'mkfs', 'fdisk'];
-          const isDangerous = dangerousCommands.some((cmd) => command.includes(cmd));
+          const isDangerous = dangerousCommands.some((cmd) =>
+            command.includes(cmd),
+          );
 
           if (isDangerous) {
             return {
@@ -356,7 +370,11 @@ describe('Hooks System - Complete Coverage', () => {
           const { command, output, exitCode } = args;
 
           // Analyze command performance
-          const performance = this.analyzeCommandPerformance(command, output, exitCode);
+          const performance = this.analyzeCommandPerformance(
+            command,
+            output,
+            exitCode,
+          );
 
           // Learn from command execution
           if (this.config.enableLearning) {
@@ -487,7 +505,11 @@ describe('Hooks System - Complete Coverage', () => {
           const { task, strategy, maxAgents } = args;
 
           // Analyze task for orchestration
-          const orchestrationPlan = this.createOrchestrationPlan(task, strategy, maxAgents);
+          const orchestrationPlan = this.createOrchestrationPlan(
+            task,
+            strategy,
+            maxAgents,
+          );
 
           return {
             continue: true,
@@ -616,15 +638,30 @@ describe('Hooks System - Complete Coverage', () => {
         // Helper methods
         autoAssignAgent(fileType) {
           const assignments = {
-            '.js': { agent: 'javascript-expert', capabilities: ['javascript', 'node', 'testing'] },
+            '.js': {
+              agent: 'javascript-expert',
+              capabilities: ['javascript', 'node', 'testing'],
+            },
             '.ts': {
               agent: 'typescript-expert',
               capabilities: ['typescript', 'types', 'advanced'],
             },
-            '.py': { agent: 'python-expert', capabilities: ['python', 'data', 'ml'] },
-            '.md': { agent: 'documentation-expert', capabilities: ['markdown', 'docs', 'writing'] },
-            '.json': { agent: 'config-expert', capabilities: ['json', 'config', 'data'] },
-            '.css': { agent: 'style-expert', capabilities: ['css', 'design', 'responsive'] },
+            '.py': {
+              agent: 'python-expert',
+              capabilities: ['python', 'data', 'ml'],
+            },
+            '.md': {
+              agent: 'documentation-expert',
+              capabilities: ['markdown', 'docs', 'writing'],
+            },
+            '.json': {
+              agent: 'config-expert',
+              capabilities: ['json', 'config', 'data'],
+            },
+            '.css': {
+              agent: 'style-expert',
+              capabilities: ['css', 'design', 'responsive'],
+            },
           };
 
           return (
@@ -645,7 +682,9 @@ describe('Hooks System - Complete Coverage', () => {
             return command.replace('npm install', 'npm install --parallel');
           }
           if (command.includes('jest')) {
-            return command.includes('--maxWorkers') ? command : `${command} --maxWorkers=4`;
+            return command.includes('--maxWorkers')
+              ? command
+              : `${command} --maxWorkers=4`;
           }
           return command;
         }
@@ -660,7 +699,9 @@ describe('Hooks System - Complete Coverage', () => {
 
           const words = description.toLowerCase().split(' ');
 
-          for (const [level, indicators] of Object.entries(complexityIndicators)) {
+          for (const [level, indicators] of Object.entries(
+            complexityIndicators,
+          )) {
             if (indicators.some((indicator) => words.includes(indicator))) {
               return {
                 level,
@@ -709,7 +750,14 @@ describe('Hooks System - Complete Coverage', () => {
         }
 
         selectAgentType(description, index) {
-          const types = ['researcher', 'coder', 'analyst', 'tester', 'coordinator', 'optimizer'];
+          const types = [
+            'researcher',
+            'coder',
+            'analyst',
+            'tester',
+            'coordinator',
+            'optimizer',
+          ];
           const words = description.toLowerCase();
 
           if (words.includes('test')) {
@@ -760,7 +808,9 @@ describe('Hooks System - Complete Coverage', () => {
             }),
           };
 
-          return optimizations[tool] ? optimizations[tool](parameters) : parameters;
+          return optimizations[tool]
+            ? optimizations[tool](parameters)
+            : parameters;
         }
 
         async autoFormatFile(file) {
@@ -772,7 +822,9 @@ describe('Hooks System - Complete Coverage', () => {
             '.css': 'prettier',
           };
 
-          return formatters[ext] ? { formatted: true, formatter: formatters[ext] } : null;
+          return formatters[ext]
+            ? { formatted: true, formatter: formatters[ext] }
+            : null;
         }
 
         async trainNeuralPatterns(_file, _args) {
@@ -864,7 +916,8 @@ describe('Hooks System - Complete Coverage', () => {
         generateSessionSummary(summary) {
           return {
             summary: `Session completed in ${summary.duration}ms with ${summary.operations} operations`,
-            efficiency: summary.performance.averageHookTime < 100 ? 'high' : 'medium',
+            efficiency:
+              summary.performance.averageHookTime < 100 ? 'high' : 'medium',
             recommendations: ['optimize-hooks', 'increase-parallelism'],
           };
         }
@@ -901,7 +954,13 @@ describe('Hooks System - Complete Coverage', () => {
 
     test('should handle all pre-operation hooks', async () => {
       const hooks = new ZenSwarmHooks();
-      const preHooks = ['pre-edit', 'pre-bash', 'pre-task', 'pre-search', 'pre-mcp'];
+      const preHooks = [
+        'pre-edit',
+        'pre-bash',
+        'pre-task',
+        'pre-search',
+        'pre-mcp',
+      ];
 
       for (const hookType of preHooks) {
         const result = await hooks.handleHook(hookType, { test: 'data' });
@@ -943,7 +1002,12 @@ describe('Hooks System - Complete Coverage', () => {
 
     test('should handle all system hooks', async () => {
       const hooks = new ZenSwarmHooks();
-      const systemHooks = ['notification', 'session-end', 'session-restore', 'agent-complete'];
+      const systemHooks = [
+        'notification',
+        'session-end',
+        'session-restore',
+        'agent-complete',
+      ];
 
       for (const hookType of systemHooks) {
         const result = await hooks.handleHook(hookType, { test: 'data' });
@@ -1323,10 +1387,18 @@ describe('Hooks System - Complete Coverage', () => {
     test('should prepare resources based on complexity', async () => {
       const hooks = new ZenSwarmHooks();
 
-      const simpleResources = await hooks.prepareResources({ level: 'simple', score: 0.25 });
-      const complexResources = await hooks.prepareResources({ level: 'complex', score: 0.75 });
+      const simpleResources = await hooks.prepareResources({
+        level: 'simple',
+        score: 0.25,
+      });
+      const complexResources = await hooks.prepareResources({
+        level: 'complex',
+        score: 0.75,
+      });
 
-      expect(simpleResources.memoryAllocated).toBeLessThan(complexResources.memoryAllocated);
+      expect(simpleResources.memoryAllocated).toBeLessThan(
+        complexResources.memoryAllocated,
+      );
       expect(simpleResources.cpuCores).toBeLessThan(complexResources.cpuCores);
     });
 

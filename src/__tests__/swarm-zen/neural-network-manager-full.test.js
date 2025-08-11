@@ -80,11 +80,15 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       const validActivations = ['sigmoid', 'tanh', 'relu', 'leaky_relu'];
 
       for (const activation of validActivations) {
-        const network = manager.createNetwork(`test-${activation}`, { activation });
+        const network = manager.createNetwork(`test-${activation}`, {
+          activation,
+        });
         expect(network.config.activation).toBe(activation);
       }
 
-      expect(() => manager.createNetwork('invalid', { activation: 'unknown' })).toThrow();
+      expect(() =>
+        manager.createNetwork('invalid', { activation: 'unknown' }),
+      ).toThrow();
     });
   });
 
@@ -97,7 +101,8 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
         if (layer.weights) {
           const weights = layer.weights.flat();
           const mean = weights.reduce((a, b) => a + b) / weights.length;
-          const variance = weights.reduce((a, b) => a + (b - mean) ** 2, 0) / weights.length;
+          const variance =
+            weights.reduce((a, b) => a + (b - mean) ** 2, 0) / weights.length;
 
           expect(Math.abs(mean)).toBeLessThan(0.1);
           expect(variance).toBeGreaterThan(0);
@@ -164,7 +169,9 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       }
 
       // Outputs should vary due to dropout
-      const allSame = outputs.every((o) => JSON.stringify(o) === JSON.stringify(outputs[0]));
+      const allSame = outputs.every(
+        (o) => JSON.stringify(o) === JSON.stringify(outputs[0]),
+      );
       expect(allSame).toBe(false);
     });
 
@@ -186,7 +193,9 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       }
 
       // Outputs should be deterministic
-      const allSame = outputs.every((o) => JSON.stringify(o) === JSON.stringify(outputs[0]));
+      const allSame = outputs.every(
+        (o) => JSON.stringify(o) === JSON.stringify(outputs[0]),
+      );
       expect(allSame).toBe(true);
     });
 
@@ -269,7 +278,10 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
 
       const initialError = manager.calculateError('train-test', trainingData);
 
-      await manager.train('train-test', trainingData, { epochs: 100, verbose: false });
+      await manager.train('train-test', trainingData, {
+        epochs: 100,
+        verbose: false,
+      });
 
       const finalError = manager.calculateError('train-test', trainingData);
       expect(finalError).toBeLessThan(initialError);
@@ -313,7 +325,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
 
       // Velocities should be non-zero
       const hasNonZeroVelocity = network.velocities.some((v) =>
-        v?.weights?.some((row) => row.some((w) => w !== 0))
+        v?.weights?.some((row) => row.some((w) => w !== 0)),
       );
       expect(hasNonZeroVelocity).toBe(true);
     });
@@ -362,7 +374,9 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
 
       // Network should remain stable despite high learning rate
       const output = manager.forward('clip-test', [1, 1]);
-      expect(output.every((v) => !Number.isNaN(v) && Number.isFinite(v))).toBe(true);
+      expect(output.every((v) => !Number.isNaN(v) && Number.isFinite(v))).toBe(
+        true,
+      );
     });
   });
 
@@ -410,7 +424,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
           layers: expect.any(Array),
           config: expect.any(Object),
           stats: expect.any(Object),
-        })
+        }),
       );
     });
 
@@ -515,7 +529,8 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       }
 
       // Calculate ensemble average
-      const ensemblePrediction = predictions.reduce((a, b) => a + b) / predictions.length;
+      const ensemblePrediction =
+        predictions.reduce((a, b) => a + b) / predictions.length;
 
       expect(ensemblePrediction).toBeGreaterThan(0);
       expect(ensemblePrediction).toBeLessThan(1);
@@ -526,7 +541,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
     it('should handle NaN values in forward propagation', () => {
       manager.createNetwork('nan-test');
 
-      const input = [NaN, 1, 2];
+      const input = [Number.NaN, 1, 2];
       expect(() => manager.forward('nan-test', input)).toThrow();
     });
 
@@ -535,7 +550,9 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
         layers: [2, 2],
       });
 
-      const trainingData = [{ input: [Infinity, 1], output: [0, 1] }];
+      const trainingData = [
+        { input: [Number.POSITIVE_INFINITY, 1], output: [0, 1] },
+      ];
 
       await expect(manager.train('inf-test', trainingData)).rejects.toThrow();
     });

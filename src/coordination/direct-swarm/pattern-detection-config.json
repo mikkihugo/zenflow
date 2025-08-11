@@ -115,7 +115,10 @@
         "count": 10,
         "regex": "/('}' expected|Missing catch or finally clause)/",
         "description": "Missing braces, catch clauses, or other structural elements",
-        "examples": ["src/swarm/executor.ts:11:0", "tests/test-simd-detection.mjs:36:1"],
+        "examples": [
+          "src/swarm/executor.ts:11:0",
+          "tests/test-simd-detection.mjs:36:1"
+        ],
         "autoFixStrategy": "add_missing_structure",
         "estimatedFixTime": "3-5 minutes per file"
       },
@@ -153,7 +156,11 @@
       },
       "phase2_manual": {
         "name": "Manual Review Required",
-        "patterns": ["unexpected-token", "declaration-expected", "expression-expected"],
+        "patterns": [
+          "unexpected-token",
+          "declaration-expected",
+          "expression-expected"
+        ],
         "totalIssues": 110,
         "estimatedTime": "4-6 hours",
         "successRate": "75%",

@@ -44,7 +44,9 @@ class TestDataFactory {
         ['agent-1', { id: 'agent-1', type: 'worker', status: 'active' }],
         ['agent-2', { id: 'agent-2', type: 'coordinator', status: 'active' }],
       ]),
-      tasks: new Map([['task-1', { id: 'task-1', type: 'analysis', status: 'running' }]]),
+      tasks: new Map([
+        ['task-1', { id: 'task-1', type: 'analysis', status: 'running' }],
+      ]),
       topology: 'mesh',
       connections: ['agent-1:agent-2'],
       metrics: {
@@ -142,7 +144,7 @@ class TestUtils {
     return join(
       __dirname,
       'temp',
-      `test-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
+      `test-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
     );
   }
 
@@ -241,7 +243,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'test-session',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
       expect(sessionId).toMatch(/^session-/);
@@ -253,7 +255,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       const sessionId = await sessionManager.createSession(
         'test-session',
-        TestDataFactory.createSwarmOptions()
+        TestDataFactory.createSwarmOptions(),
       );
 
       const updatedState = TestDataFactory.createSwarmState();
@@ -265,7 +267,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
           agents: expect.any(Map),
           tasks: expect.any(Map),
           topology: 'mesh',
-        })
+        }),
       );
     });
 
@@ -275,10 +277,13 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'test-session',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
-      const checkpointId = await sessionManager.createCheckpoint(sessionId, 'Test checkpoint');
+      const checkpointId = await sessionManager.createCheckpoint(
+        sessionId,
+        'Test checkpoint',
+      );
 
       expect(checkpointId).toMatch(/^checkpoint-/);
 
@@ -300,7 +305,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       const sessionId = await sessionManager.createSession(
         'lifecycle-test',
-        TestDataFactory.createSwarmOptions()
+        TestDataFactory.createSwarmOptions(),
       );
 
       // Test pause
@@ -324,8 +329,14 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
     test('should list sessions with filtering', async () => {
       await sessionManager.initialize();
 
-      await sessionManager.createSession('session-1', TestDataFactory.createSwarmOptions());
-      await sessionManager.createSession('session-2', TestDataFactory.createSwarmOptions());
+      await sessionManager.createSession(
+        'session-1',
+        TestDataFactory.createSwarmOptions(),
+      );
+      await sessionManager.createSession(
+        'session-2',
+        TestDataFactory.createSwarmOptions(),
+      );
 
       const allSessions = await sessionManager.listSessions();
       expect(allSessions).toHaveLength(2);
@@ -343,7 +354,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'stats-test',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
       const stats = await sessionManager.getSessionStats(sessionId);
@@ -365,16 +376,16 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       // Test loading non-existent session
       await expect(sessionManager.loadSession('non-existent')).rejects.toThrow(
-        'Session non-existent not found'
+        'Session non-existent not found',
       );
 
       // Test checkpoint restore with invalid checkpoint
       const sessionId = await sessionManager.createSession(
         'error-test',
-        TestDataFactory.createSwarmOptions()
+        TestDataFactory.createSwarmOptions(),
       );
       await expect(
-        sessionManager.restoreFromCheckpoint(sessionId, 'invalid-checkpoint')
+        sessionManager.restoreFromCheckpoint(sessionId, 'invalid-checkpoint'),
       ).rejects.toThrow('Checkpoint invalid-checkpoint not found');
     });
 
@@ -383,14 +394,14 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       const sessionId = await sessionManager.createSession(
         'concurrent-test',
-        TestDataFactory.createSwarmOptions()
+        TestDataFactory.createSwarmOptions(),
       );
 
       // Simulate concurrent saves
       const savePromises = Array.from({ length: 10 }, (_, i) =>
         sessionManager.saveSession(sessionId, {
           metadata: { operation: i, timestamp: Date.now() },
-        })
+        }),
       );
 
       await expect(Promise.all(savePromises)).resolves.not.toThrow();
@@ -415,7 +426,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const checkId = healthMonitor.registerHealthCheck(
         'custom.test',
         async () => ({ status: 'ok' }),
-        { priority: 'high', category: 'test' }
+        { priority: 'high', category: 'test' },
       );
 
       expect(checkId).toMatch(/^health-check-/);
@@ -423,7 +434,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
     });
 
     test('should run health checks successfully', async () => {
-      healthMonitor.registerHealthCheck('test.success', async () => ({ result: 'success' }));
+      healthMonitor.registerHealthCheck('test.success', async () => ({
+        result: 'success',
+      }));
 
       const result = await healthMonitor.runHealthCheck('test.success');
 
@@ -455,7 +468,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       healthMonitor.registerHealthCheck(
         'test.timeout',
         async () => new Promise((resolve) => setTimeout(resolve, 2000)),
-        { timeout: 100 }
+        { timeout: 100 },
       );
 
       const result = await healthMonitor.runHealthCheck('test.timeout');
@@ -467,7 +480,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
     test('should run all health checks in parallel', async () => {
       // Register multiple test checks
       for (let i = 0; i < 5; i++) {
-        healthMonitor.registerHealthCheck(`test.parallel.${i}`, async () => ({ index: i }));
+        healthMonitor.registerHealthCheck(`test.parallel.${i}`, async () => ({
+          index: i,
+        }));
       }
 
       performanceTracker.start('all-health-checks');
@@ -502,9 +517,13 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
     });
 
     test('should start and stop monitoring', async () => {
-      healthMonitor.registerHealthCheck('test.monitoring', async () => ({ monitored: true }), {
-        interval: 100,
-      });
+      healthMonitor.registerHealthCheck(
+        'test.monitoring',
+        async () => ({ monitored: true }),
+        {
+          interval: 100,
+        },
+      );
 
       await healthMonitor.startMonitoring();
       expect(healthMonitor.isRunning).toBe(true);
@@ -526,11 +545,15 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       healthMonitor.registerSwarm('test-swarm', mockSwarm);
 
       expect(healthMonitor.swarmInstances.has('test-swarm')).toBe(true);
-      expect(healthMonitor.healthChecks.has('swarm.test-swarm.status')).toBe(true);
+      expect(healthMonitor.healthChecks.has('swarm.test-swarm.status')).toBe(
+        true,
+      );
     });
 
     test('should export health data for dashboard integration', () => {
-      healthMonitor.registerHealthCheck('test.export', async () => ({ exported: true }));
+      healthMonitor.registerHealthCheck('test.export', async () => ({
+        exported: true,
+      }));
 
       const healthData = healthMonitor.exportHealthData();
 
@@ -561,7 +584,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
     test('should register custom workflows', () => {
       const workflowId = recoveryWorkflows.registerWorkflow(
         'test.workflow',
-        TestDataFactory.createRecoveryWorkflow()
+        TestDataFactory.createRecoveryWorkflow(),
       );
 
       expect(workflowId).toMatch(/^workflow-/);
@@ -572,7 +595,10 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const workflow = TestDataFactory.createRecoveryWorkflow();
       recoveryWorkflows.registerWorkflow('test.matching', workflow);
 
-      const matches = recoveryWorkflows.findMatchingWorkflows('test.failure', {});
+      const matches = recoveryWorkflows.findMatchingWorkflows(
+        'test.failure',
+        {},
+      );
 
       expect(matches).toHaveLength(1);
       expect(matches[0].name).toBe('test.matching');
@@ -597,9 +623,12 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       recoveryWorkflows.registerWorkflow('test.execution', workflow);
 
-      const execution = await recoveryWorkflows.triggerRecovery('test.execution', {
-        testData: true,
-      });
+      const execution = await recoveryWorkflows.triggerRecovery(
+        'test.execution',
+        {
+          testData: true,
+        },
+      );
 
       expect(execution.status).toBe('completed');
       expect(execution.steps).toHaveLength(2);
@@ -630,7 +659,8 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       recoveryWorkflows.registerWorkflow('test.step.failure', workflow);
 
-      const execution = await recoveryWorkflows.triggerRecovery('test.step.failure');
+      const execution =
+        await recoveryWorkflows.triggerRecovery('test.step.failure');
 
       expect(execution.status).toBe('failed');
       expect(execution.rollbackSteps).toHaveLength(1);
@@ -644,7 +674,8 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
         steps: [
           {
             name: 'timeout_step',
-            action: async () => new Promise((resolve) => setTimeout(resolve, 2000)),
+            action: async () =>
+              new Promise((resolve) => setTimeout(resolve, 2000)),
             timeout: 100,
           },
         ],
@@ -662,19 +693,30 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
     test('should execute built-in recovery actions', async () => {
       // Test wait action
-      const waitResult = await recoveryWorkflows.runBuiltInAction('wait', { duration: 100 });
+      const waitResult = await recoveryWorkflows.runBuiltInAction('wait', {
+        duration: 100,
+      });
       expect(waitResult).toMatchObject({ action: 'wait', duration: 100 });
 
       // Test log action
-      const logResult = await recoveryWorkflows.runBuiltInAction('log_message', {
+      const logResult = await recoveryWorkflows.runBuiltInAction(
+        'log_message',
+        {
+          message: 'Test log',
+        },
+      );
+      expect(logResult).toMatchObject({
+        action: 'log_message',
         message: 'Test log',
       });
-      expect(logResult).toMatchObject({ action: 'log_message', message: 'Test log' });
 
       // Test cleanup action
-      const cleanupResult = await recoveryWorkflows.runBuiltInAction('cleanup_resources', {
-        resourceType: 'memory',
-      });
+      const cleanupResult = await recoveryWorkflows.runBuiltInAction(
+        'cleanup_resources',
+        {
+          resourceType: 'memory',
+        },
+      );
       expect(cleanupResult).toHaveProperty('cleanedResources');
     });
 
@@ -715,7 +757,8 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
         steps: [
           {
             name: 'long_step',
-            action: async () => new Promise((resolve) => setTimeout(resolve, 1000)),
+            action: async () =>
+              new Promise((resolve) => setTimeout(resolve, 1000)),
           },
         ],
         priority: 'normal',
@@ -723,14 +766,18 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       recoveryWorkflows.registerWorkflow('test.cancellation', workflow);
 
-      const executionPromise = recoveryWorkflows.triggerRecovery('test.cancellation');
+      const executionPromise =
+        recoveryWorkflows.triggerRecovery('test.cancellation');
 
       // Wait a bit then cancel
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       const activeRecoveries = recoveryWorkflows.getRecoveryStatus();
       if (activeRecoveries.length > 0) {
-        await recoveryWorkflows.cancelRecovery(activeRecoveries[0].id, 'Test cancellation');
+        await recoveryWorkflows.cancelRecovery(
+          activeRecoveries[0].id,
+          'Test cancellation',
+        );
       }
 
       const execution = await executionPromise;
@@ -776,7 +823,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       // Create session and register with health monitor
       const sessionId = await sessionManager.createSession(
         'integration-test',
-        TestDataFactory.createSwarmOptions()
+        TestDataFactory.createSwarmOptions(),
       );
 
       // Mock swarm instance for health monitoring
@@ -811,7 +858,10 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
         steps: [
           {
             name: 'acknowledge_alert',
-            action: async (context) => ({ acknowledged: true, alert: context.alert }),
+            action: async (context) => ({
+              acknowledged: true,
+              alert: context.alert,
+            }),
           },
         ],
         priority: 'high',
@@ -835,7 +885,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       // Wait for recovery to complete
       const recoveryEvent = await Promise.race([
         recoveryPromise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000)),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Timeout')), 5000),
+        ),
       ]);
 
       expect(recoveryEvent).toBeDefined();
@@ -855,7 +907,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'full-integration',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
       // Register session with health monitor
@@ -877,7 +929,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
             action: async () => {
               const checkpointId = await sessionManager.createCheckpoint(
                 sessionId,
-                'Recovery checkpoint'
+                'Recovery checkpoint',
               );
               return { checkpointId };
             },
@@ -891,7 +943,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       });
 
       // Simulate health check and verify system response
-      const healthStatus = await healthMonitor.runHealthCheck(`swarm.${sessionId}.status`);
+      const healthStatus = await healthMonitor.runHealthCheck(
+        `swarm.${sessionId}.status`,
+      );
       expect(healthStatus.status).toBe('healthy');
 
       // Verify session statistics
@@ -924,16 +978,19 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const failingSessionManager = new SessionManager(failingPersistence);
 
       await expect(failingSessionManager.initialize()).rejects.toThrow(
-        'Failed to initialize SessionManager'
+        'Failed to initialize SessionManager',
       );
     });
 
     test('should handle memory pressure scenarios', async () => {
       if (recoveryWorkflows.options.enableChaosEngineering) {
-        const chaosResult = await recoveryWorkflows.injectChaosFailure('memory_pressure', {
-          size: 1000000, // 1MB allocation
-          duration: 1000, // 1 second
-        });
+        const chaosResult = await recoveryWorkflows.injectChaosFailure(
+          'memory_pressure',
+          {
+            size: 1000000, // 1MB allocation
+            duration: 1000, // 1 second
+          },
+        );
 
         expect(chaosResult).toMatchObject({
           chaosType: 'memory_pressure',
@@ -950,14 +1007,17 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const _sessionId = await sessionManager.createSession(
         'agent-failure-test',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
       // Simulate agent failure and recovery
       if (recoveryWorkflows.options.enableChaosEngineering) {
-        const chaosResult = await recoveryWorkflows.injectChaosFailure('agent_failure', {
-          agentId: 'agent-1',
-        });
+        const chaosResult = await recoveryWorkflows.injectChaosFailure(
+          'agent_failure',
+          {
+            agentId: 'agent-1',
+          },
+        );
 
         expect(chaosResult).toMatchObject({
           chaosType: 'agent_failure',
@@ -1011,25 +1071,28 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'corruption-test',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
-      const checkpointId = await sessionManager.createCheckpoint(sessionId, 'Before corruption');
+      const checkpointId = await sessionManager.createCheckpoint(
+        sessionId,
+        'Before corruption',
+      );
 
       // Simulate data corruption by modifying checksum validation
       const originalCalculateChecksum = sessionManager.calculateChecksum;
       sessionManager.calculateChecksum = () => 'corrupted-checksum';
 
       // Attempt to restore from potentially corrupted checkpoint
-      await expect(sessionManager.restoreFromCheckpoint(sessionId, checkpointId)).rejects.toThrow(
-        'integrity check failed'
-      );
+      await expect(
+        sessionManager.restoreFromCheckpoint(sessionId, checkpointId),
+      ).rejects.toThrow('integrity check failed');
 
       // Test corruption recovery with ignoreCorruption option
       await expect(
         sessionManager.restoreFromCheckpoint(sessionId, checkpointId, {
           ignoreCorruption: true,
-        })
+        }),
       ).resolves.not.toThrow();
 
       // Restore original method
@@ -1046,7 +1109,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
         try {
           const sessionId = await sessionManager.createSession(
             `resource-test-${i}`,
-            TestDataFactory.createSwarmOptions()
+            TestDataFactory.createSwarmOptions(),
           );
           sessions.push(sessionId);
         } catch (_error) {
@@ -1058,9 +1121,12 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       expect(sessions.length).toBeGreaterThan(0);
 
       // Test cleanup recovery
-      const cleanupResult = await recoveryWorkflows.runBuiltInAction('cleanup_resources', {
-        resourceType: 'all',
-      });
+      const cleanupResult = await recoveryWorkflows.runBuiltInAction(
+        'cleanup_resources',
+        {
+          resourceType: 'all',
+        },
+      );
 
       expect(cleanupResult.cleanedResources.length).toBeGreaterThan(0);
     });
@@ -1077,7 +1143,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const operationCount = 1000;
       const sessionId = await sessionManager.createSession(
         'performance-test',
-        TestDataFactory.createSwarmOptions()
+        TestDataFactory.createSwarmOptions(),
       );
 
       performanceTracker.start('high-frequency-operations');
@@ -1086,7 +1152,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const savePromises = Array.from({ length: operationCount }, (_, i) =>
         sessionManager.saveSession(sessionId, {
           metadata: { operation: i, timestamp: Date.now() },
-        })
+        }),
       );
 
       await Promise.all(savePromises);
@@ -1135,7 +1201,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'large-state-test',
         TestDataFactory.createSwarmOptions(),
-        largeState
+        largeState,
       );
 
       performanceTracker.start('large-state-serialization');
@@ -1144,7 +1210,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       performanceTracker.start('large-state-deserialization');
       const loadedSession = await sessionManager.loadSession(sessionId);
-      const loadDuration = performanceTracker.end('large-state-deserialization');
+      const loadDuration = performanceTracker.end(
+        'large-state-deserialization',
+      );
 
       // Validate performance requirements
       expect(saveDuration).toBeLessThan(5000); // Should save within 5 seconds
@@ -1161,7 +1229,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const checkCount = 100;
       for (let i = 0; i < checkCount; i++) {
         healthMonitor.registerHealthCheck(`perf.check.${i}`, async () => {
-          await new Promise((resolve) => setTimeout(resolve, Math.random() * 10));
+          await new Promise((resolve) =>
+            setTimeout(resolve, Math.random() * 10),
+          );
           return { index: i, timestamp: Date.now() };
         });
       }
@@ -1213,7 +1283,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       // Execute all workflows concurrently
       const executions = await Promise.all(
-        workflows.map((_, i) => recoveryWorkflows.triggerRecovery(`perf.trigger.${i}`))
+        workflows.map((_, i) =>
+          recoveryWorkflows.triggerRecovery(`perf.trigger.${i}`),
+        ),
       );
 
       const duration = performanceTracker.end('concurrent-recovery-workflows');
@@ -1241,16 +1313,21 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
           (async () => {
             const sessionId = await sessionManager.createSession(
               `stress-${Date.now()}-${Math.random()}`,
-              TestDataFactory.createSwarmOptions()
+              TestDataFactory.createSwarmOptions(),
             );
-            await sessionManager.saveSession(sessionId, TestDataFactory.createSwarmState());
+            await sessionManager.saveSession(
+              sessionId,
+              TestDataFactory.createSwarmState(),
+            );
             await sessionManager.terminateSession(sessionId, true);
           })(),
 
           // Health check operations
           (async () => {
             const checkName = `stress.check.${Date.now()}`;
-            healthMonitor.registerHealthCheck(checkName, async () => ({ stress: true }));
+            healthMonitor.registerHealthCheck(checkName, async () => ({
+              stress: true,
+            }));
             await healthMonitor.runHealthCheck(checkName);
           })(),
 
@@ -1261,11 +1338,13 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
             recoveryWorkflows.registerWorkflow(workflowName, {
               description: 'Stress test workflow',
               triggers: [triggerName],
-              steps: [{ name: 'stress_step', action: async () => ({ stress: true }) }],
+              steps: [
+                { name: 'stress_step', action: async () => ({ stress: true }) },
+              ],
               priority: 'low',
             });
             await recoveryWorkflows.triggerRecovery(triggerName);
-          })()
+          })(),
         );
 
         // Limit concurrent operations to prevent overwhelming the system
@@ -1302,7 +1381,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'user-workflow-test',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
       // Register session for health monitoring
@@ -1324,7 +1403,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       // System creates automatic checkpoint
       const _checkpointId = await sessionManager.createCheckpoint(
         sessionId,
-        'User workflow checkpoint'
+        'User workflow checkpoint',
       );
 
       // Health monitoring detects and reports system health
@@ -1362,11 +1441,14 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'failure-recovery-test',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
       // Create initial checkpoint
-      const checkpointId = await sessionManager.createCheckpoint(sessionId, 'Before failure test');
+      const checkpointId = await sessionManager.createCheckpoint(
+        sessionId,
+        'Before failure test',
+      );
 
       // Simulate failure during work
       const failingHealthCheck = 'user.workflow.failure';
@@ -1391,7 +1473,10 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
           {
             name: 'restore_from_checkpoint',
             action: async () => {
-              await sessionManager.restoreFromCheckpoint(sessionId, checkpointId);
+              await sessionManager.restoreFromCheckpoint(
+                sessionId,
+                checkpointId,
+              );
               return { checkpointRestored: true };
             },
           },
@@ -1412,7 +1497,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       // Wait for recovery to complete
       const recoveryEvent = await Promise.race([
         recoveryPromise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Recovery timeout')), 10000)),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Recovery timeout')), 10000),
+        ),
       ]);
 
       expect(recoveryEvent.execution.status).toBe('completed');
@@ -1429,7 +1516,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sourceSessionId = await sessionManager.createSession(
         'migration-source',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
       // Simulate work and create checkpoint
@@ -1439,13 +1526,13 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       const _migrationCheckpoint = await sessionManager.createCheckpoint(
         sourceSessionId,
-        'Migration checkpoint'
+        'Migration checkpoint',
       );
 
       // Create new session for migration target
       const targetSessionId = await sessionManager.createSession(
         'migration-target',
-        TestDataFactory.createSwarmOptions()
+        TestDataFactory.createSwarmOptions(),
       );
 
       // Load source session state
@@ -1463,7 +1550,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       // Verify migration
       const targetSession = await sessionManager.loadSession(targetSessionId);
-      expect(targetSession.swarmState.agents.size).toBe(sourceSession.swarmState.agents.size);
+      expect(targetSession.swarmState.agents.size).toBe(
+        sourceSession.swarmState.agents.size,
+      );
       expect(targetSession.metadata.migratedFrom).toBe(sourceSessionId);
 
       // Cleanup source session
@@ -1490,8 +1579,8 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
         sessionManager.createSession(
           `user-${i}-session`,
           TestDataFactory.createSwarmOptions(),
-          TestDataFactory.createSwarmState()
-        )
+          TestDataFactory.createSwarmState(),
+        ),
       );
 
       userSessions.push(...(await Promise.all(sessionPromises)));
@@ -1521,13 +1610,16 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
           });
 
           if (j % 3 === 0) {
-            await sessionManager.createCheckpoint(sessionId, `User ${i} checkpoint ${j}`);
+            await sessionManager.createCheckpoint(
+              sessionId,
+              `User ${i} checkpoint ${j}`,
+            );
           }
         }
 
         // Check health status
         const healthStatus = await healthMonitor.runHealthCheck(
-          `swarm.user-${i}-${sessionId}.status`
+          `swarm.user-${i}-${sessionId}.status`,
         );
         expect(healthStatus.status).toBe('healthy');
 
@@ -1547,7 +1639,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       // Cleanup all user sessions
       await Promise.all(
-        userSessions.map((sessionId) => sessionManager.terminateSession(sessionId, true))
+        userSessions.map((sessionId) =>
+          sessionManager.terminateSession(sessionId, true),
+        ),
       );
     });
   });
@@ -1571,24 +1665,30 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'chaos-test',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
       const _baselineCheckpoint = await sessionManager.createCheckpoint(
         sessionId,
-        'Baseline before chaos'
+        'Baseline before chaos',
       );
 
       // Inject random failures
       const chaosFailures = [
         { type: 'memory_pressure', params: { size: 5000000, duration: 2000 } },
         { type: 'agent_failure', params: { agentId: 'agent-1' } },
-        { type: 'connection_failure', params: { connectionId: 'test-connection' } },
+        {
+          type: 'connection_failure',
+          params: { connectionId: 'test-connection' },
+        },
       ];
 
       for (const failure of chaosFailures) {
         try {
-          await recoveryWorkflows.injectChaosFailure(failure.type, failure.params);
+          await recoveryWorkflows.injectChaosFailure(
+            failure.type,
+            failure.params,
+          );
           // Wait for recovery to complete
           await new Promise((resolve) => setTimeout(resolve, 1000));
         } catch (_error) {}
@@ -1644,9 +1744,15 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
 
       // Inject multiple simultaneous failures
       const simultaneousFailures = [
-        recoveryWorkflows.injectChaosFailure('memory_pressure', { duration: 3000 }),
-        recoveryWorkflows.injectChaosFailure('agent_failure', { agentId: 'agent-1' }),
-        recoveryWorkflows.injectChaosFailure('agent_failure', { agentId: 'agent-2' }),
+        recoveryWorkflows.injectChaosFailure('memory_pressure', {
+          duration: 3000,
+        }),
+        recoveryWorkflows.injectChaosFailure('agent_failure', {
+          agentId: 'agent-1',
+        }),
+        recoveryWorkflows.injectChaosFailure('agent_failure', {
+          agentId: 'agent-2',
+        }),
       ];
 
       await Promise.allSettled(simultaneousFailures);
@@ -1663,7 +1769,7 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const sessionId = await sessionManager.createSession(
         'chaos-integrity-test',
         TestDataFactory.createSwarmOptions(),
-        TestDataFactory.createSwarmState()
+        TestDataFactory.createSwarmState(),
       );
 
       // Create multiple checkpoints with known data
@@ -1681,21 +1787,26 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
         await sessionManager.saveSession(sessionId, stateSnapshot);
         const checkpointId = await sessionManager.createCheckpoint(
           sessionId,
-          `Integrity checkpoint ${i}`
+          `Integrity checkpoint ${i}`,
         );
 
         checkpointData.push({ checkpointId, stateSnapshot });
       }
 
       // Inject chaos while data operations are ongoing
-      const chaosPromise = recoveryWorkflows.injectChaosFailure('memory_pressure', {
-        size: 10000000,
-        duration: 5000,
-      });
+      const chaosPromise = recoveryWorkflows.injectChaosFailure(
+        'memory_pressure',
+        {
+          size: 10000000,
+          duration: 5000,
+        },
+      );
 
       // Continue data operations during chaos
       const dataOperationPromises = Array.from({ length: 20 }, async (_, i) => {
-        await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.random() * 100),
+        );
         await sessionManager.saveSession(sessionId, {
           metadata: { chaosOperation: i, timestamp: Date.now() },
         });
@@ -1709,7 +1820,9 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
         const restoredSession = await sessionManager.loadSession(sessionId);
 
         expect(restoredSession.metadata.integrityTest).toBe(true);
-        expect(restoredSession.metadata.checksum).toBe(stateSnapshot.metadata.checksum);
+        expect(restoredSession.metadata.checksum).toBe(
+          stateSnapshot.metadata.checksum,
+        );
       }
     });
   });
@@ -1725,7 +1838,11 @@ describe('Session Persistence and Recovery - Comprehensive Test Suite', () => {
       const coverageReport = {
         timestamp: new Date(),
         testSuiteVersion: '1.0.0',
-        componentsUnderTest: ['SessionManager', 'HealthMonitor', 'RecoveryWorkflows'],
+        componentsUnderTest: [
+          'SessionManager',
+          'HealthMonitor',
+          'RecoveryWorkflows',
+        ],
         testCategories: {
           unitTests: {
             sessionManager: 9, // tests count

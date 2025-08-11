@@ -40,7 +40,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    *
    * @param config
    */
-  async createConversation(config: ConversationConfig): Promise<ConversationSession> {
+  async createConversation(
+    config: ConversationConfig,
+  ): Promise<ConversationSession> {
     const pattern = this.patterns.get(config?.pattern);
     if (!pattern) {
       throw new Error(`Unknown conversation pattern: ${config?.pattern}`);
@@ -92,7 +94,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param conversationId
    * @param agent
    */
-  async joinConversation(conversationId: string, agent: AgentId): Promise<void> {
+  async joinConversation(
+    conversationId: string,
+    agent: AgentId,
+  ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
@@ -105,11 +110,16 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     if (!session.participants.find((p) => p.id === agent.id)) {
       session.participants.push(agent);
       session.metrics.participationByAgent[agent.id] = 0;
-      await this.memory.updateConversation(conversationId, { participants: session.participants });
+      await this.memory.updateConversation(conversationId, {
+        participants: session.participants,
+      });
     }
 
     // Send join notification
-    await this.sendSystemMessage(session, `Agent ${agent.id} joined the conversation`);
+    await this.sendSystemMessage(
+      session,
+      `Agent ${agent.id} joined the conversation`,
+    );
   }
 
   /**
@@ -118,17 +128,27 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param conversationId
    * @param agent
    */
-  async leaveConversation(conversationId: string, agent: AgentId): Promise<void> {
+  async leaveConversation(
+    conversationId: string,
+    agent: AgentId,
+  ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
     }
 
-    session.participants = session.participants.filter((p) => p.id !== agent.id);
-    await this.memory.updateConversation(conversationId, { participants: session.participants });
+    session.participants = session.participants.filter(
+      (p) => p.id !== agent.id,
+    );
+    await this.memory.updateConversation(conversationId, {
+      participants: session.participants,
+    });
 
     // Send leave notification
-    await this.sendSystemMessage(session, `Agent ${agent.id} left the conversation`);
+    await this.sendSystemMessage(
+      session,
+      `Agent ${agent.id} left the conversation`,
+    );
   }
 
   /**
@@ -143,12 +163,16 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     }
 
     if (session.status !== 'active') {
-      throw new Error(`Cannot send message to conversation in status: ${session.status}`);
+      throw new Error(
+        `Cannot send message to conversation in status: ${session.status}`,
+      );
     }
 
     // Validate sender is participant
     if (!session.participants.find((p) => p.id === message.fromAgent.id)) {
-      throw new Error(`Agent ${message.fromAgent.id} is not a participant in this conversation`);
+      throw new Error(
+        `Agent ${message.fromAgent.id} is not a participant in this conversation`,
+      );
     }
 
     // Add timestamp and ID if not set
@@ -184,7 +208,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param conversationId
    * @param action
    */
-  async moderateConversation(conversationId: string, action: ModerationAction): Promise<void> {
+  async moderateConversation(
+    conversationId: string,
+    action: ModerationAction,
+  ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
       throw new Error(`Conversation ${conversationId} not found`);
@@ -206,8 +233,13 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       // Additional moderation actions can be implemented
     }
 
-    await this.memory.updateConversation(conversationId, { status: session.status });
-    await this.sendSystemMessage(session, `Moderation action: ${action.type} - ${action.reason}`);
+    await this.memory.updateConversation(conversationId, {
+      status: session.status,
+    });
+    await this.sendSystemMessage(
+      session,
+      `Moderation action: ${action.type} - ${action.reason}`,
+    );
   }
 
   /**
@@ -215,7 +247,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    *
    * @param conversationId
    */
-  async getConversationHistory(conversationId: string): Promise<ConversationMessage[]> {
+  async getConversationHistory(
+    conversationId: string,
+  ): Promise<ConversationMessage[]> {
     const session =
       this.activeSessions.get(conversationId) ||
       (await this.memory.getConversation(conversationId));
@@ -235,7 +269,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   async terminateConversation(
     conversationId: string,
-    reason?: string
+    reason?: string,
   ): Promise<ConversationOutcome[]> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -264,7 +298,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     this.activeSessions.delete(conversationId);
 
     if (reason) {
-      await this.sendSystemMessage(session, `Conversation terminated: ${reason}`);
+      await this.sendSystemMessage(
+        session,
+        `Conversation terminated: ${reason}`,
+      );
     }
 
     return outcomes;
@@ -282,14 +319,22 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
         {
           name: 'author',
           agentTypes: ['coder', 'developer', 'frontend-dev', 'api-dev'],
-          responsibilities: ['Present code', 'Answer questions', 'Address feedback'],
+          responsibilities: [
+            'Present code',
+            'Answer questions',
+            'Address feedback',
+          ],
           permissions: [{ action: 'write', scope: 'own' }],
           required: true,
         },
         {
           name: 'reviewer',
           agentTypes: ['reviewer', 'architect'],
-          responsibilities: ['Review code', 'Provide feedback', 'Approve/reject'],
+          responsibilities: [
+            'Review code',
+            'Provide feedback',
+            'Approve/reject',
+          ],
           permissions: [{ action: 'write', scope: 'group' }],
           required: true,
         },
@@ -308,7 +353,11 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           description: 'Author presents code for review',
           trigger: { type: 'manual', condition: null },
           actions: [
-            { type: 'send_message', params: { messageType: 'task_request' }, agent: 'author' },
+            {
+              type: 'send_message',
+              params: { messageType: 'task_request' },
+              agent: 'author',
+            },
           ],
           participants: ['author'],
         },
@@ -316,9 +365,16 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           id: 'review-code',
           name: 'Review Code',
           description: 'Reviewers analyze and provide feedback',
-          trigger: { type: 'message', condition: { messageType: 'task_request' } },
+          trigger: {
+            type: 'message',
+            condition: { messageType: 'task_request' },
+          },
           actions: [
-            { type: 'send_message', params: { messageType: 'critique' }, agent: 'reviewer' },
+            {
+              type: 'send_message',
+              params: { messageType: 'critique' },
+              agent: 'reviewer',
+            },
           ],
           participants: ['reviewer'],
           timeout: 300000, // 5 minutes
@@ -329,7 +385,11 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           description: 'Author responds to feedback',
           trigger: { type: 'message', condition: { messageType: 'critique' } },
           actions: [
-            { type: 'send_message', params: { messageType: 'task_response' }, agent: 'author' },
+            {
+              type: 'send_message',
+              params: { messageType: 'task_response' },
+              agent: 'author',
+            },
           ],
           participants: ['author'],
         },
@@ -383,7 +443,11 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           description: 'Understand and define the problem',
           trigger: { type: 'manual', condition: null },
           actions: [
-            { type: 'send_message', params: { messageType: 'question' }, agent: 'analyst' },
+            {
+              type: 'send_message',
+              params: { messageType: 'question' },
+              agent: 'analyst',
+            },
           ],
           participants: ['analyst'],
         },
@@ -393,7 +457,11 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           description: 'Generate potential solutions',
           trigger: { type: 'message', condition: { messageType: 'question' } },
           actions: [
-            { type: 'send_message', params: { messageType: 'suggestion' }, agent: 'solver' },
+            {
+              type: 'send_message',
+              params: { messageType: 'suggestion' },
+              agent: 'solver',
+            },
           ],
           participants: ['solver'],
         },
@@ -401,9 +469,16 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           id: 'validate-solutions',
           name: 'Validate Solutions',
           description: 'Test and validate proposed solutions',
-          trigger: { type: 'message', condition: { messageType: 'suggestion' } },
+          trigger: {
+            type: 'message',
+            condition: { messageType: 'suggestion' },
+          },
           actions: [
-            { type: 'send_message', params: { messageType: 'answer' }, agent: 'validator' },
+            {
+              type: 'send_message',
+              params: { messageType: 'answer' },
+              agent: 'validator',
+            },
           ],
           participants: ['validator'],
         },
@@ -431,15 +506,17 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private async startPatternWorkflow(
     session: ConversationSession,
-    pattern: ConversationPattern
+    pattern: ConversationPattern,
   ): Promise<void> {
     session.status = 'active';
-    await this.memory.updateConversation(session.id, { status: session.status });
+    await this.memory.updateConversation(session.id, {
+      status: session.status,
+    });
 
     // Send welcome message
     await this.sendSystemMessage(
       session,
-      `Starting ${pattern.name} conversation: ${session.title}`
+      `Starting ${pattern.name} conversation: ${session.title}`,
     );
 
     // Trigger first workflow step
@@ -457,7 +534,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private async processMessageForWorkflow(
     session: ConversationSession,
-    message: ConversationMessage
+    message: ConversationMessage,
   ): Promise<void> {
     const pattern = this.patterns.get(session.context.domain);
     if (!pattern) return;
@@ -480,7 +557,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private shouldTriggerStep(
     step: any,
     message: ConversationMessage,
-    session: ConversationSession
+    session: ConversationSession,
   ): boolean {
     if (step.trigger.type === 'message') {
       return step.trigger.condition.messageType === message.messageType;
@@ -501,11 +578,14 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private async executeWorkflowStep(
     session: ConversationSession,
     _pattern: ConversationPattern,
-    step: any
+    step: any,
   ): Promise<void> {
     // Implementation would depend on step actions
     // For now, just send a system message
-    await this.sendSystemMessage(session, `Executing workflow step: ${step.name}`);
+    await this.sendSystemMessage(
+      session,
+      `Executing workflow step: ${step.name}`,
+    );
   }
 
   /**
@@ -514,9 +594,14 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param session
    * @param threshold
    */
-  private checkConsensus(session: ConversationSession, threshold: number): boolean {
+  private checkConsensus(
+    session: ConversationSession,
+    threshold: number,
+  ): boolean {
     // Simple consensus check based on agreement messages
-    const agreementMessages = session.messages.filter((m) => m.messageType === 'agreement');
+    const agreementMessages = session.messages.filter(
+      (m) => m.messageType === 'agreement',
+    );
     const participantCount = session.participants.length;
 
     return agreementMessages.length / participantCount >= threshold;
@@ -528,11 +613,19 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param session
    * @param text
    */
-  private async sendSystemMessage(session: ConversationSession, text: string): Promise<void> {
+  private async sendSystemMessage(
+    session: ConversationSession,
+    text: string,
+  ): Promise<void> {
     const systemMessage: ConversationMessage = {
       id: nanoid(),
       conversationId: session.id,
-      fromAgent: { id: 'system', swarmId: 'system', type: 'coordinator', instance: 0 },
+      fromAgent: {
+        id: 'system',
+        swarmId: 'system',
+        type: 'coordinator',
+        instance: 0,
+      },
       timestamp: new Date(),
       content: { text },
       messageType: 'system_notification',
@@ -545,7 +638,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     };
 
     session.messages.push(systemMessage);
-    await this.memory.updateConversation(session.id, { messages: session.messages });
+    await this.memory.updateConversation(session.id, {
+      messages: session.messages,
+    });
   }
 
   /**
@@ -554,13 +649,17 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param session
    */
   private async generateConversationOutcomes(
-    session: ConversationSession
+    session: ConversationSession,
   ): Promise<ConversationOutcome[]> {
     const outcomes: ConversationOutcome[] = [];
 
     // Analyze messages for decisions and solutions
-    const decisionMessages = session.messages.filter((m) => m.messageType === 'decision');
-    const solutionMessages = session.messages.filter((m) => m.messageType === 'answer');
+    const decisionMessages = session.messages.filter(
+      (m) => m.messageType === 'decision',
+    );
+    const solutionMessages = session.messages.filter(
+      (m) => m.messageType === 'answer',
+    );
 
     decisionMessages.forEach((msg) => {
       outcomes.push({
@@ -590,8 +689,12 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    *
    * @param session
    */
-  private async updateFinalMetrics(session: ConversationSession): Promise<void> {
-    const duration = session.endTime ? session.endTime.getTime() - session.startTime.getTime() : 0;
+  private async updateFinalMetrics(
+    session: ConversationSession,
+  ): Promise<void> {
+    const duration = session.endTime
+      ? session.endTime.getTime() - session.startTime.getTime()
+      : 0;
     session.metrics.resolutionTime = duration;
 
     // Calculate consensus score
@@ -601,7 +704,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     session.metrics.qualityRating = this.calculateQualityRating(session);
 
     // Calculate average response time
-    session.metrics.averageResponseTime = this.calculateAverageResponseTime(session);
+    session.metrics.averageResponseTime =
+      this.calculateAverageResponseTime(session);
   }
 
   /**
@@ -610,8 +714,12 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param session
    */
   private calculateConsensusScore(session: ConversationSession): number {
-    const agreements = session.messages.filter((m) => m.messageType === 'agreement').length;
-    const disagreements = session.messages.filter((m) => m.messageType === 'disagreement').length;
+    const agreements = session.messages.filter(
+      (m) => m.messageType === 'agreement',
+    ).length;
+    const disagreements = session.messages.filter(
+      (m) => m.messageType === 'disagreement',
+    ).length;
     const total = agreements + disagreements;
 
     return total > 0 ? agreements / total : 0.5;
@@ -636,12 +744,17 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param session
    */
   private calculateParticipationBalance(session: ConversationSession): number {
-    const participationCounts = Object.values(session.metrics.participationByAgent);
+    const participationCounts = Object.values(
+      session.metrics.participationByAgent,
+    );
     const avgParticipation =
-      participationCounts.reduce((a, b) => a + b, 0) / participationCounts.length;
-    const variance =
-      participationCounts.reduce((acc, val) => acc + (val - avgParticipation) ** 2, 0) /
+      participationCounts.reduce((a, b) => a + b, 0) /
       participationCounts.length;
+    const variance =
+      participationCounts.reduce(
+        (acc, val) => acc + (val - avgParticipation) ** 2,
+        0,
+      ) / participationCounts.length;
 
     return Math.max(0, 1 - variance / (avgParticipation + 1));
   }
@@ -652,7 +765,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param session
    */
   private calculateAverageResponseTime(session: ConversationSession): number {
-    const messages = session.messages.filter((m) => m.messageType !== 'system_notification');
+    const messages = session.messages.filter(
+      (m) => m.messageType !== 'system_notification',
+    );
     if (messages.length < 2) return 0;
 
     let totalTime = 0;
@@ -660,7 +775,8 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       const currentMsg = messages[i];
       const prevMsg = messages[i - 1];
       if (currentMsg && prevMsg) {
-        totalTime += currentMsg?.timestamp?.getTime() - prevMsg.timestamp.getTime();
+        totalTime +=
+          currentMsg?.timestamp?.getTime() - prevMsg.timestamp.getTime();
       }
     }
 

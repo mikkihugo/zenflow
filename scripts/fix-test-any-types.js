@@ -257,7 +257,10 @@ class TestAnyTypeFixer {
     });
 
     // Add type imports if needed and changes were made
-    if (changeCount > 0 && !updatedContent.includes('/// <reference types="./global-types"')) {
+    if (
+      changeCount > 0 &&
+      !updatedContent.includes('/// <reference types="./global-types"')
+    ) {
       // Add reference to global types at the top
       const lines = updatedContent.split('\n');
       let insertIndex = 0;

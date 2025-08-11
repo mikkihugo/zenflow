@@ -38,7 +38,15 @@ const mcpToolsToTest = [
   {
     name: 'neural_train',
     command: 'neural',
-    args: ['train', '--iterations', '3', '--learning-rate', '0.01', '--model-type', 'feedforward'],
+    args: [
+      'train',
+      '--iterations',
+      '3',
+      '--learning-rate',
+      '0.01',
+      '--model-type',
+      'feedforward',
+    ],
     expectedOutput: 'Training Complete',
   },
   {
@@ -74,7 +82,13 @@ const daaToolsToTest = [
 /**
  * Run a single test with timeout and error handling
  */
-async function runTest(_testName, command, args, expectedOutput, timeout = 30000) {
+async function runTest(
+  _testName,
+  command,
+  args,
+  expectedOutput,
+  timeout = 30000,
+) {
   return new Promise((resolve) => {
     const child = spawn('npx', ['ruv-swarm', command, ...args], {
       cwd: join(__dirname, '..'),
@@ -120,7 +134,9 @@ async function runTest(_testName, command, args, expectedOutput, timeout = 30000
 
         resolve({
           success,
-          error: success ? null : `Expected "${expectedOutput}" in output, got exit code ${code}`,
+          error: success
+            ? null
+            : `Expected "${expectedOutput}" in output, got exit code ${code}`,
           stdout,
           stderr,
           exitCode: code,
@@ -151,7 +167,12 @@ async function runCoverageValidation() {
     testResults.totalTests++;
     testResults.mcpTools.tested++;
 
-    const result = await runTest(test.name, test.command, test.args, test.expectedOutput);
+    const result = await runTest(
+      test.name,
+      test.command,
+      test.args,
+      test.expectedOutput,
+    );
 
     if (result.success) {
       testResults.passed++;
@@ -171,7 +192,12 @@ async function runCoverageValidation() {
     testResults.totalTests++;
     testResults.daaTools.tested++;
 
-    const result = await runTest(test.name, test.command, test.args, test.expectedOutput);
+    const result = await runTest(
+      test.name,
+      test.command,
+      test.args,
+      test.expectedOutput,
+    );
 
     if (result.success) {
       testResults.passed++;
@@ -199,9 +225,12 @@ function generateFinalReport() {
   const endTime = Date.now();
   const duration = (endTime - testResults.startTime) / 1000;
 
-  const mcpSuccessRate = (testResults.mcpTools.passed / testResults.mcpTools.tested) * 100;
-  const daaSuccessRate = (testResults.daaTools.passed / testResults.daaTools.tested) * 100;
-  const overallSuccessRate = (testResults.passed / testResults.totalTests) * 100;
+  const mcpSuccessRate =
+    (testResults.mcpTools.passed / testResults.mcpTools.tested) * 100;
+  const daaSuccessRate =
+    (testResults.daaTools.passed / testResults.daaTools.tested) * 100;
+  const overallSuccessRate =
+    (testResults.passed / testResults.totalTests) * 100;
 
   if (testResults.mcpTools.failed.length > 0) {
     testResults.mcpTools.failed.forEach((_fail) => {});
@@ -219,7 +248,7 @@ function generateFinalReport() {
     __dirname,
     '..',
     'test-reports',
-    `mcp-coverage-validation-${Date.now()}.json`
+    `mcp-coverage-validation-${Date.now()}.json`,
   );
   writeFileSync(
     reportPath,
@@ -241,8 +270,8 @@ function generateFinalReport() {
         ],
       },
       null,
-      2
-    )
+      2,
+    ),
   );
 
   if (missionSuccess) {

@@ -1,8 +1,8 @@
 /**
- * @file Shared Types for Coordination Layer.
+ * @file Shared Types for THE COLLECTIVE Coordination Layer.
  *
  * Shared interfaces to prevent circular dependencies between coordination modules.
- * Extracted from hive-fact-integration and hive-swarm-sync to break circular imports.
+ * Extracted from collective-fact-integration and collective-cube-sync to break circular imports.
  */
 
 import type { EventEmitter } from 'node:events';
@@ -12,29 +12,33 @@ import type {
   FACTStorageStats,
 } from '../knowledge/types/fact-types.ts';
 import type {
+  CollectiveHealthMetrics,
+  Task as CollectiveTask,
+  CubeInfo,
+  CubePerformanceMetrics,
   GlobalAgentInfo,
   GlobalResourceMetrics,
-  HiveHealthMetrics,
-  Task as HiveTask,
-  SwarmInfo,
-  SwarmPerformanceMetrics,
   UniversalFact,
-} from './hive-types.ts';
+} from './collective-types.ts';
 
 /**
- * Hive FACT System Interface
- * Shared interface to break circular dependency between hive modules.
+ * THE COLLECTIVE FACT System Interface
+ * Shared interface to break circular dependency between collective modules.
  *
  * @example
  */
-export interface HiveFACTSystemInterface extends EventEmitter {
+export interface CollectiveFACTSystemInterface extends EventEmitter {
   initialize(): Promise<void>;
   shutdown(): Promise<void>;
 
   // FACT Operations
   searchFacts(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]>;
   storeFact(fact: UniversalFact): Promise<void>;
-  getFact(type: string, subject: string, swarmId?: string): Promise<UniversalFact | null>;
+  getFact(
+    type: string,
+    subject: string,
+    swarmId?: string,
+  ): Promise<UniversalFact | null>;
   getStats(): Promise<FACTStorageStats>;
 
   // Integration Methods

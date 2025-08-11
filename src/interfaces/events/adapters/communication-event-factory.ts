@@ -58,7 +58,9 @@ export class CommunicationEventFactory
    *
    * @param config
    */
-  async create(config: CommunicationEventAdapterConfig): Promise<CommunicationEventAdapter> {
+  async create(
+    config: CommunicationEventAdapterConfig,
+  ): Promise<CommunicationEventAdapter> {
     try {
       this.logger.info(`Creating communication event adapter: ${config?.name}`);
 
@@ -67,7 +69,9 @@ export class CommunicationEventFactory
 
       // Check for duplicate names
       if (this.adapters.has(config?.name)) {
-        throw new Error(`Communication event adapter with name '${config?.name}' already exists`);
+        throw new Error(
+          `Communication event adapter with name '${config?.name}' already exists`,
+        );
       }
 
       // Create adapter instance
@@ -83,13 +87,18 @@ export class CommunicationEventFactory
       this.adapters.set(config?.name, adapter);
       this.totalCreated++;
 
-      this.logger.info(`Communication event adapter created successfully: ${config?.name}`);
+      this.logger.info(
+        `Communication event adapter created successfully: ${config?.name}`,
+      );
       this.emit('adapter-created', { name: config?.name, adapter });
 
       return adapter;
     } catch (error) {
       this.totalErrors++;
-      this.logger.error(`Failed to create communication event adapter '${config?.name}':`, error);
+      this.logger.error(
+        `Failed to create communication event adapter '${config?.name}':`,
+        error,
+      );
       this.emit('adapter-creation-failed', { name: config?.name, error });
       throw error;
     }
@@ -101,7 +110,7 @@ export class CommunicationEventFactory
    * @param configs
    */
   async createMultiple(
-    configs: CommunicationEventAdapterConfig[]
+    configs: CommunicationEventAdapterConfig[],
   ): Promise<CommunicationEventAdapter[]> {
     this.logger.info(`Creating ${configs.length} communication event adapters`);
 
@@ -123,7 +132,10 @@ export class CommunicationEventFactory
     await Promise.all(creationPromises);
 
     if (errors.length > 0) {
-      this.logger.warn(`Failed to create ${errors.length} communication event adapters:`, errors);
+      this.logger.warn(
+        `Failed to create ${errors.length} communication event adapters:`,
+        errors,
+      );
       this.emit('multiple-creation-partial-failure', {
         successes: results.length,
         failures: errors,
@@ -131,7 +143,7 @@ export class CommunicationEventFactory
     }
 
     this.logger.info(
-      `Successfully created ${results.length}/${configs.length} communication event adapters`
+      `Successfully created ${results.length}/${configs.length} communication event adapters`,
     );
     return results;
   }
@@ -184,12 +196,17 @@ export class CommunicationEventFactory
       // Remove from registry
       this.adapters.delete(name);
 
-      this.logger.info(`Communication event adapter removed successfully: ${name}`);
+      this.logger.info(
+        `Communication event adapter removed successfully: ${name}`,
+      );
       this.emit('adapter-removed', { name });
 
       return true;
     } catch (error) {
-      this.logger.error(`Failed to remove communication event adapter '${name}':`, error);
+      this.logger.error(
+        `Failed to remove communication event adapter '${name}':`,
+        error,
+      );
       this.emit('adapter-removal-failed', { name, error });
       throw error;
     }
@@ -199,7 +216,9 @@ export class CommunicationEventFactory
    * Health check all communication event adapters.
    */
   async healthCheckAll(): Promise<Map<string, EventManagerStatus>> {
-    this.logger.debug('Performing health check on all communication event adapters');
+    this.logger.debug(
+      'Performing health check on all communication event adapters',
+    );
 
     const results = new Map<string, EventManagerStatus>();
     const healthPromises: Promise<void>[] = [];
@@ -210,7 +229,10 @@ export class CommunicationEventFactory
           const status = await adapter.healthCheck();
           results?.set(name, status);
         } catch (error) {
-          this.logger.warn(`Health check failed for communication event adapter '${name}':`, error);
+          this.logger.warn(
+            `Health check failed for communication event adapter '${name}':`,
+            error,
+          );
           results?.set(name, {
             name,
             type: adapter.type,
@@ -232,7 +254,9 @@ export class CommunicationEventFactory
 
     await Promise.all(healthPromises);
 
-    this.logger.debug(`Health check completed for ${results.size} communication event adapters`);
+    this.logger.debug(
+      `Health check completed for ${results.size} communication event adapters`,
+    );
     return results;
   }
 
@@ -240,7 +264,9 @@ export class CommunicationEventFactory
    * Get metrics for all communication event adapters.
    */
   async getMetricsAll(): Promise<Map<string, EventManagerMetrics>> {
-    this.logger.debug('Collecting metrics from all communication event adapters');
+    this.logger.debug(
+      'Collecting metrics from all communication event adapters',
+    );
 
     const results = new Map<string, EventManagerMetrics>();
     const metricsPromises: Promise<void>[] = [];
@@ -253,7 +279,7 @@ export class CommunicationEventFactory
         } catch (error) {
           this.logger.warn(
             `Metrics collection failed for communication event adapter '${name}':`,
-            error
+            error,
           );
           // Create default error metrics
           results?.set(name, {
@@ -279,7 +305,9 @@ export class CommunicationEventFactory
 
     await Promise.all(metricsPromises);
 
-    this.logger.debug(`Metrics collected from ${results.size} communication event adapters`);
+    this.logger.debug(
+      `Metrics collected from ${results.size} communication event adapters`,
+    );
     return results;
   }
 
@@ -287,7 +315,9 @@ export class CommunicationEventFactory
    * Start all communication event adapters.
    */
   async startAll(): Promise<void> {
-    this.logger.info(`Starting ${this.adapters.size} communication event adapters`);
+    this.logger.info(
+      `Starting ${this.adapters.size} communication event adapters`,
+    );
 
     const startPromises: Promise<void>[] = [];
     const errors: Array<{ name: string; error: Error }> = [];
@@ -300,7 +330,10 @@ export class CommunicationEventFactory
           }
         } catch (error) {
           errors.push({ name, error: error as Error });
-          this.logger.error(`Failed to start communication event adapter '${name}':`, error);
+          this.logger.error(
+            `Failed to start communication event adapter '${name}':`,
+            error,
+          );
         }
       })();
 
@@ -310,19 +343,28 @@ export class CommunicationEventFactory
     await Promise.all(startPromises);
 
     if (errors.length > 0) {
-      this.logger.warn(`Failed to start ${errors.length} communication event adapters:`, errors);
+      this.logger.warn(
+        `Failed to start ${errors.length} communication event adapters:`,
+        errors,
+      );
       this.emit('start-all-partial-failure', { failures: errors });
     }
 
-    const runningCount = this.list().filter((adapter) => adapter.isRunning()).length;
-    this.logger.info(`Started ${runningCount}/${this.adapters.size} communication event adapters`);
+    const runningCount = this.list().filter((adapter) =>
+      adapter.isRunning(),
+    ).length;
+    this.logger.info(
+      `Started ${runningCount}/${this.adapters.size} communication event adapters`,
+    );
   }
 
   /**
    * Stop all communication event adapters.
    */
   async stopAll(): Promise<void> {
-    this.logger.info(`Stopping ${this.adapters.size} communication event adapters`);
+    this.logger.info(
+      `Stopping ${this.adapters.size} communication event adapters`,
+    );
 
     const stopPromises: Promise<void>[] = [];
     const errors: Array<{ name: string; error: Error }> = [];
@@ -335,7 +377,10 @@ export class CommunicationEventFactory
           }
         } catch (error) {
           errors.push({ name, error: error as Error });
-          this.logger.error(`Failed to stop communication event adapter '${name}':`, error);
+          this.logger.error(
+            `Failed to stop communication event adapter '${name}':`,
+            error,
+          );
         }
       })();
 
@@ -345,12 +390,19 @@ export class CommunicationEventFactory
     await Promise.all(stopPromises);
 
     if (errors.length > 0) {
-      this.logger.warn(`Failed to stop ${errors.length} communication event adapters:`, errors);
+      this.logger.warn(
+        `Failed to stop ${errors.length} communication event adapters:`,
+        errors,
+      );
       this.emit('stop-all-partial-failure', { failures: errors });
     }
 
-    const stoppedCount = this.list().filter((adapter) => !adapter.isRunning()).length;
-    this.logger.info(`Stopped ${stoppedCount}/${this.adapters.size} communication event adapters`);
+    const stoppedCount = this.list().filter(
+      (adapter) => !adapter.isRunning(),
+    ).length;
+    this.logger.info(
+      `Stopped ${stoppedCount}/${this.adapters.size} communication event adapters`,
+    );
   }
 
   /**
@@ -364,13 +416,18 @@ export class CommunicationEventFactory
       await this.stopAll();
 
       // Destroy all adapters
-      const destroyPromises = Array.from(this.adapters.entries()).map(async ([name, adapter]) => {
-        try {
-          await adapter.destroy();
-        } catch (error) {
-          this.logger.error(`Failed to destroy communication event adapter '${name}':`, error);
-        }
-      });
+      const destroyPromises = Array.from(this.adapters.entries()).map(
+        async ([name, adapter]) => {
+          try {
+            await adapter.destroy();
+          } catch (error) {
+            this.logger.error(
+              `Failed to destroy communication event adapter '${name}':`,
+              error,
+            );
+          }
+        },
+      );
 
       await Promise.all(destroyPromises);
 
@@ -383,7 +440,10 @@ export class CommunicationEventFactory
       this.logger.info('Communication Event Factory shutdown completed');
       this.emit('factory-shutdown');
     } catch (error) {
-      this.logger.error('Failed to shutdown Communication Event Factory:', error);
+      this.logger.error(
+        'Failed to shutdown Communication Event Factory:',
+        error,
+      );
       this.emit('factory-shutdown-failed', error);
       throw error;
     }
@@ -401,7 +461,9 @@ export class CommunicationEventFactory
    */
   getFactoryMetrics() {
     const uptime = Date.now() - this.startTime.getTime();
-    const runningAdapters = this.list().filter((adapter) => adapter.isRunning()).length;
+    const runningAdapters = this.list().filter((adapter) =>
+      adapter.isRunning(),
+    ).length;
 
     return {
       totalManagers: this.adapters.size,
@@ -423,7 +485,7 @@ export class CommunicationEventFactory
    */
   async createWebSocketAdapter(
     name: string,
-    config?: Partial<CommunicationEventAdapterConfig>
+    config?: Partial<CommunicationEventAdapterConfig>,
   ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       websocketCommunication: {
@@ -451,7 +513,7 @@ export class CommunicationEventFactory
    */
   async createMCPAdapter(
     name: string,
-    config?: Partial<CommunicationEventAdapterConfig>
+    config?: Partial<CommunicationEventAdapterConfig>,
   ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       mcpProtocol: {
@@ -480,7 +542,7 @@ export class CommunicationEventFactory
    */
   async createHTTPAdapter(
     name: string,
-    config?: Partial<CommunicationEventAdapterConfig>
+    config?: Partial<CommunicationEventAdapterConfig>,
   ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       httpCommunication: {
@@ -507,7 +569,7 @@ export class CommunicationEventFactory
    */
   async createProtocolAdapter(
     name: string,
-    config?: Partial<CommunicationEventAdapterConfig>
+    config?: Partial<CommunicationEventAdapterConfig>,
   ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       protocolCommunication: {
@@ -536,7 +598,7 @@ export class CommunicationEventFactory
    */
   async createComprehensiveAdapter(
     name: string,
-    config?: Partial<CommunicationEventAdapterConfig>
+    config?: Partial<CommunicationEventAdapterConfig>,
   ): Promise<CommunicationEventAdapter> {
     const adapterConfig = createDefaultCommunicationEventAdapterConfig(name, {
       websocketCommunication: { enabled: true },
@@ -646,7 +708,8 @@ export class CommunicationEventFactory
       };
     }
 
-    const avgLatency = metricsResults.size > 0 ? totalLatency / metricsResults.size : 0;
+    const avgLatency =
+      metricsResults.size > 0 ? totalLatency / metricsResults.size : 0;
 
     return {
       totalEvents,
@@ -664,7 +727,9 @@ export class CommunicationEventFactory
    *
    * @param configUpdates
    */
-  async reconfigureAll(configUpdates: Partial<CommunicationEventAdapterConfig>): Promise<void> {
+  async reconfigureAll(
+    configUpdates: Partial<CommunicationEventAdapterConfig>,
+  ): Promise<void> {
     this.logger.info('Reconfiguring all communication event adapters');
 
     const errors: Array<{ name: string; error: Error }> = [];
@@ -674,20 +739,23 @@ export class CommunicationEventFactory
         adapter.updateConfig(configUpdates);
       } catch (error) {
         errors.push({ name, error: error as Error });
-        this.logger.error(`Failed to reconfigure communication event adapter '${name}':`, error);
+        this.logger.error(
+          `Failed to reconfigure communication event adapter '${name}':`,
+          error,
+        );
       }
     }
 
     if (errors.length > 0) {
       this.logger.warn(
         `Failed to reconfigure ${errors.length} communication event adapters:`,
-        errors
+        errors,
       );
       this.emit('reconfigure-all-partial-failure', { failures: errors });
     }
 
     this.logger.info(
-      `Reconfigured ${this.adapters.size - errors.length}/${this.adapters.size} communication event adapters`
+      `Reconfigured ${this.adapters.size - errors.length}/${this.adapters.size} communication event adapters`,
     );
   }
 
@@ -702,11 +770,15 @@ export class CommunicationEventFactory
    */
   private validateConfig(config: CommunicationEventAdapterConfig): void {
     if (!config?.name || typeof config?.name !== 'string') {
-      throw new Error('Communication event adapter configuration must have a valid name');
+      throw new Error(
+        'Communication event adapter configuration must have a valid name',
+      );
     }
 
     if (!config?.type || config?.type !== 'communication') {
-      throw new Error('Communication event adapter configuration must have type "communication"');
+      throw new Error(
+        'Communication event adapter configuration must have type "communication"',
+      );
     }
 
     // Validate at least one communication type is enabled
@@ -725,7 +797,9 @@ export class CommunicationEventFactory
     if (config?.processing?.strategy) {
       const validStrategies = ['immediate', 'queued', 'batched', 'throttled'];
       if (!validStrategies.includes(config?.processing?.strategy)) {
-        throw new Error(`Invalid processing strategy: ${config?.processing?.strategy}`);
+        throw new Error(
+          `Invalid processing strategy: ${config?.processing?.strategy}`,
+        );
       }
     }
 
@@ -741,7 +815,10 @@ export class CommunicationEventFactory
 
     // Validate health configuration
     if (config?.health) {
-      if (config?.health?.checkInterval && config?.health?.checkInterval < 1000) {
+      if (
+        config?.health?.checkInterval &&
+        config?.health?.checkInterval < 1000
+      ) {
         throw new Error('Health check interval must be at least 1000ms');
       }
       if (config?.health?.timeout && config?.health?.timeout < 100) {
@@ -791,44 +868,47 @@ export const communicationEventFactory = new CommunicationEventFactory();
  * @example
  */
 export async function createCommunicationEventAdapter(
-  config: CommunicationEventAdapterConfig
+  config: CommunicationEventAdapterConfig,
 ): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.create(config);
 }
 
 export async function createWebSocketCommunicationAdapter(
   name: string,
-  config?: Partial<CommunicationEventAdapterConfig>
+  config?: Partial<CommunicationEventAdapterConfig>,
 ): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.createWebSocketAdapter(name, config);
 }
 
 export async function createMCPCommunicationAdapter(
   name: string,
-  config?: Partial<CommunicationEventAdapterConfig>
+  config?: Partial<CommunicationEventAdapterConfig>,
 ): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.createMCPAdapter(name, config);
 }
 
 export async function createHTTPCommunicationAdapter(
   name: string,
-  config?: Partial<CommunicationEventAdapterConfig>
+  config?: Partial<CommunicationEventAdapterConfig>,
 ): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.createHTTPAdapter(name, config);
 }
 
 export async function createProtocolCommunicationAdapter(
   name: string,
-  config?: Partial<CommunicationEventAdapterConfig>
+  config?: Partial<CommunicationEventAdapterConfig>,
 ): Promise<CommunicationEventAdapter> {
   return await communicationEventFactory.createProtocolAdapter(name, config);
 }
 
 export async function createComprehensiveCommunicationAdapter(
   name: string,
-  config?: Partial<CommunicationEventAdapterConfig>
+  config?: Partial<CommunicationEventAdapterConfig>,
 ): Promise<CommunicationEventAdapter> {
-  return await communicationEventFactory.createComprehensiveAdapter(name, config);
+  return await communicationEventFactory.createComprehensiveAdapter(
+    name,
+    config,
+  );
 }
 
 export default CommunicationEventFactory;

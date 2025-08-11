@@ -7,7 +7,7 @@ import { getLogger } from '../config/logging-config.ts';
 
 const logger = getLogger('src-utils-logger');
 
-import { config } from '../config';
+import { config } from '../config/index.js';
 
 // Local Logger interface - matches ILogger from core/logger for compatibility
 export interface ILogger {
@@ -22,7 +22,8 @@ function sanitizeLogMeta(meta: any): any {
   if (typeof meta === 'string') {
     // Remove newlines and carriage returns
     return meta.replace(/[\n\r]/g, '');
-  } else if (typeof meta === 'object' && meta !== null) {
+  }
+  if (typeof meta === 'object' && meta !== null) {
     // Recursively sanitize all string properties
     const sanitized: any = Array.isArray(meta) ? [] : {};
     for (const key in meta) {
@@ -57,9 +58,13 @@ const getLogLevel = (): LogLevel => {
     const configLevel = centralConfig?.core?.logger?.level.toUpperCase();
     // Fallback for development environment
     const level =
-      centralConfig?.environment?.isDevelopment && configLevel === 'INFO' ? 'DEBUG' : configLevel;
+      centralConfig?.environment?.isDevelopment && configLevel === 'INFO'
+        ? 'DEBUG'
+        : configLevel;
     return (
-      (Object.values(LogLevel).find((l) => l.toUpperCase() === level) as LogLevel) || LogLevel.INFO
+      (Object.values(LogLevel).find(
+        (l) => l.toUpperCase() === level,
+      ) as LogLevel) || LogLevel.INFO
     );
   } catch (error) {
     // Fallback to INFO if config is not available
@@ -67,7 +72,10 @@ const getLogLevel = (): LogLevel => {
   }
 };
 
-const shouldLog = (messageLevel: LogLevel, configuredLevel: LogLevel = getLogLevel()): boolean => {
+const shouldLog = (
+  messageLevel: LogLevel,
+  configuredLevel: LogLevel = getLogLevel(),
+): boolean => {
   const levels = {
     [LogLevel.DEBUG]: 0,
     [LogLevel.INFO]: 1,
@@ -88,7 +96,9 @@ class Logger implements ILogger {
     const timestamp = new Date().toISOString();
     const cleanMeta = sanitizeLogMeta(meta);
     const metaStr =
-      cleanMeta && Object.keys(cleanMeta).length > 0 ? ` ${JSON.stringify(cleanMeta)}` : '';
+      cleanMeta && Object.keys(cleanMeta).length > 0
+        ? ` ${JSON.stringify(cleanMeta)}`
+        : '';
     return `[${timestamp}] ${level.toUpperCase()} [${this.prefix || 'claude-zen'}]: ${message}${metaStr}`;
   }
 

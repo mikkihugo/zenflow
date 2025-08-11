@@ -73,8 +73,10 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       try {
         const dspyModule = await import('dspy.ts');
         // Handle different export patterns - use type assertion for external package
-        DSPy = (dspyModule as any).default || (dspyModule as any).DSPy || dspyModule;
-        configureLM = (dspyModule as any).configureLM || (dspyModule as any).configure;
+        DSPy =
+          (dspyModule as any).default || (dspyModule as any).DSPy || dspyModule;
+        configureLM =
+          (dspyModule as any).configureLM || (dspyModule as any).configure;
       } catch (error) {
         throw new DSPyAPIError('Failed to import dspy.ts package', {
           error: error instanceof Error ? error.message : String(error),
@@ -96,10 +98,13 @@ export class DSPyWrapperImpl implements DSPyWrapper {
             ...finalConfig?.modelParams,
           });
         } catch (error) {
-          throw new DSPyConfigurationError('Failed to configure language model', {
-            error: error instanceof Error ? error.message : String(error),
-            config: finalConfig,
-          });
+          throw new DSPyConfigurationError(
+            'Failed to configure language model',
+            {
+              error: error instanceof Error ? error.message : String(error),
+              config: finalConfig,
+            },
+          );
         }
       }
 
@@ -129,12 +134,18 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       });
     } catch (error) {
       this.isInitialized = false;
-      if (error instanceof DSPyConfigurationError || error instanceof DSPyAPIError) {
+      if (
+        error instanceof DSPyConfigurationError ||
+        error instanceof DSPyAPIError
+      ) {
         throw error;
       }
-      throw new DSPyConfigurationError('Unexpected error during configuration', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+      throw new DSPyConfigurationError(
+        'Unexpected error during configuration',
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
     }
   }
 
@@ -144,7 +155,10 @@ export class DSPyWrapperImpl implements DSPyWrapper {
    * @param signature
    * @param description
    */
-  async createProgram(signature: string, description: string): Promise<DSPyProgram> {
+  async createProgram(
+    signature: string,
+    description: string,
+  ): Promise<DSPyProgram> {
     this.ensureInitialized();
 
     if (!signature || typeof signature !== 'string') {
@@ -157,7 +171,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
     if (this.programs.size >= DSPY_LIMITS.MAX_PROGRAMS_PER_WRAPPER) {
       throw new DSPyAPIError(
-        `Maximum programs limit reached: ${DSPY_LIMITS.MAX_PROGRAMS_PER_WRAPPER}`
+        `Maximum programs limit reached: ${DSPY_LIMITS.MAX_PROGRAMS_PER_WRAPPER}`,
       );
     }
 
@@ -166,22 +180,34 @@ export class DSPyWrapperImpl implements DSPyWrapper {
 
       // Try different API patterns to create program
       if (this.dspyInstance.createProgram) {
-        rawProgram = await this.dspyInstance.createProgram(signature, description);
+        rawProgram = await this.dspyInstance.createProgram(
+          signature,
+          description,
+        );
       } else if (this.dspyInstance.Program) {
         rawProgram = new this.dspyInstance.Program(signature, description);
       } else {
         // Fallback: create a mock program structure
-        logger.warn('Creating mock program structure - dspy.ts API not fully compatible');
+        logger.warn(
+          'Creating mock program structure - dspy.ts API not fully compatible',
+        );
         rawProgram = {
           signature,
           description,
           forward: async (_input: any) => {
-            throw new DSPyAPIError('Program forward method not implemented by dspy.ts');
+            throw new DSPyAPIError(
+              'Program forward method not implemented by dspy.ts',
+            );
           },
         };
       }
 
-      const program = new DSPyProgramWrapper(rawProgram, signature, description, this);
+      const program = new DSPyProgramWrapper(
+        rawProgram,
+        signature,
+        description,
+        this,
+      );
       this.programs.set(program.id, program);
 
       logger.debug('DSPy program created successfully', {
@@ -206,7 +232,10 @@ export class DSPyWrapperImpl implements DSPyWrapper {
    * @param program
    * @param input
    */
-  async execute(program: DSPyProgram, input: Record<string, any>): Promise<DSPyExecutionResult> {
+  async execute(
+    program: DSPyProgram,
+    input: Record<string, any>,
+  ): Promise<DSPyExecutionResult> {
     this.ensureInitialized();
 
     if (!isDSPyProgram(program)) {
@@ -286,7 +315,10 @@ export class DSPyWrapperImpl implements DSPyWrapper {
    * @param program
    * @param examples
    */
-  async addExamples(program: DSPyProgram, examples: DSPyExample[]): Promise<void> {
+  async addExamples(
+    program: DSPyProgram,
+    examples: DSPyExample[],
+  ): Promise<void> {
     this.ensureInitialized();
 
     if (!isDSPyProgram(program)) {
@@ -298,16 +330,18 @@ export class DSPyWrapperImpl implements DSPyWrapper {
     }
 
     if (examples.length > DSPY_LIMITS.MAX_EXAMPLES) {
-      throw new DSPyAPIError(`Too many examples provided. Maximum: ${DSPY_LIMITS.MAX_EXAMPLES}`, {
-        provided: examples.length,
-      });
+      throw new DSPyAPIError(
+        `Too many examples provided. Maximum: ${DSPY_LIMITS.MAX_EXAMPLES}`,
+        {
+          provided: examples.length,
+        },
+      );
     }
 
     // Validate examples structure
     for (const example of examples) {
       if (
-        !example.input ||
-        !example.output ||
+        !(example.input && example.output) ||
         typeof example.input !== 'object' ||
         typeof example.output !== 'object'
       ) {
@@ -324,7 +358,9 @@ export class DSPyWrapperImpl implements DSPyWrapper {
       } else if (rawProgram.addExamples) {
         await rawProgram.addExamples(examples);
       } else {
-        logger.warn('addExamples method not found - examples stored locally only');
+        logger.warn(
+          'addExamples method not found - examples stored locally only',
+        );
         // Store examples in our wrapper for later use
         if (program instanceof DSPyProgramWrapper) {
           program.addExamples(examples);
@@ -352,7 +388,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
    */
   async optimize(
     program: DSPyProgram,
-    config?: DSPyOptimizationConfig
+    config?: DSPyOptimizationConfig,
   ): Promise<DSPyOptimizationResult> {
     this.ensureInitialized();
 
@@ -392,7 +428,7 @@ export class DSPyWrapperImpl implements DSPyWrapper {
               optimizationResult?.program,
               program.signature,
               program.description,
-              this
+              this,
             )
           : program,
         metrics: {
@@ -443,14 +479,14 @@ export class DSPyWrapperImpl implements DSPyWrapper {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      if (!this.isInitialized || !this.currentConfig) {
+      if (!(this.isInitialized && this.currentConfig)) {
         return false;
       }
 
       // Try a simple operation to verify the system is working
       const testProgram = await this.createProgram(
         'test: string -> result: string',
-        'Simple health check program'
+        'Simple health check program',
       );
 
       const result = await this.execute(testProgram, { test: 'health_check' });
@@ -498,8 +534,10 @@ export class DSPyWrapperImpl implements DSPyWrapper {
   }
 
   private ensureInitialized(): void {
-    if (!this.isInitialized || !this.dspyInstance) {
-      throw new DSPyAPIError('DSPy wrapper not initialized. Call configure() first.');
+    if (!(this.isInitialized && this.dspyInstance)) {
+      throw new DSPyAPIError(
+        'DSPy wrapper not initialized. Call configure() first.',
+      );
     }
   }
 }
@@ -517,7 +555,12 @@ class DSPyProgramWrapper implements DSPyProgram {
   private metadata: DSPyProgramMetadata;
   private examples: DSPyExample[] = [];
 
-  constructor(rawProgram: any, signature: string, description: string, wrapper: DSPyWrapperImpl) {
+  constructor(
+    rawProgram: any,
+    signature: string,
+    description: string,
+    wrapper: DSPyWrapperImpl,
+  ) {
     this.id = `dspy-program-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     this.signature = signature;
     this.description = description;
@@ -537,14 +580,14 @@ class DSPyProgramWrapper implements DSPyProgram {
   async forward(input: Record<string, any>): Promise<Record<string, any>> {
     if (this.rawProgram.forward) {
       return await this.rawProgram.forward(input);
-    } else if (typeof this.rawProgram === 'function') {
-      return await this.rawProgram(input);
-    } else {
-      throw new DSPyExecutionError('Program forward method not available', {
-        programId: this.id,
-        rawProgramType: typeof this.rawProgram,
-      });
     }
+    if (typeof this.rawProgram === 'function') {
+      return await this.rawProgram(input);
+    }
+    throw new DSPyExecutionError('Program forward method not available', {
+      programId: this.id,
+      rawProgramType: typeof this.rawProgram,
+    });
   }
 
   getMetadata(): DSPyProgramMetadata {
@@ -560,7 +603,9 @@ class DSPyProgramWrapper implements DSPyProgram {
       this.metadata.averageExecutionTime = executionTime;
     } else {
       this.metadata.averageExecutionTime =
-        (this.metadata.averageExecutionTime * (this.metadata.executionCount - 1) + executionTime) /
+        (this.metadata.averageExecutionTime *
+          (this.metadata.executionCount - 1) +
+          executionTime) /
         this.metadata.executionCount;
     }
   }
@@ -577,39 +622,39 @@ class DSPyProgramWrapper implements DSPyProgram {
 
 /**
  * Factory function to create and configure a DSPy wrapper instance with comprehensive error handling.
- * 
+ *
  * This is the primary entry point for creating DSPy wrapper instances in Claude Code Zen.
  * It provides a clean, async interface for DSPy initialization while handling the complex
  * setup process internally.
- * 
+ *
  * ## Usage in Claude Code Zen
- * 
+ *
  * This factory is used throughout the system:
  * - **MCP Tools**: `dspy-swarm-mcp-tools.ts` creates wrappers for each tool execution
  * - **Swarm Coordinator**: `DSPySwarmCoordinator` uses this for agent program creation
  * - **Integration Manager**: Central coordination point for all DSPy systems
  * - **Enhanced Operations**: Core DSPy-powered development operations
- * 
+ *
  * ## Integration with stdio MCP
- * 
+ *
  * When you run `claude-zen swarm`, this factory creates wrappers that power:
  * - `dspy_swarm_init` - Initialize intelligent swarm coordination
  * - `dspy_swarm_execute_task` - Execute tasks using DSPy neural programs
  * - `dspy_swarm_generate_code` - AI-powered code generation
  * - And 5 other production MCP tools
- * 
+ *
  * @param config - DSPy configuration object
  * @param config.model - Language model to use (default: 'claude-3-5-sonnet-20241022')
  * @param config.temperature - Sampling temperature (default: 0.1)
  * @param config.maxTokens - Maximum tokens per request (default: 2000)
  * @param config.apiKey - API key for model access (optional)
  * @param config.baseURL - Custom API endpoint (optional)
- * 
+ *
  * @returns Promise resolving to fully configured DSPy wrapper instance
- * 
+ *
  * @throws {DSPyConfigurationError} When configuration is invalid
  * @throws {DSPyAPIError} When dspy.ts package setup fails
- * 
+ *
  * @example
  * ```typescript
  * // Used by MCP tools
@@ -617,7 +662,7 @@ class DSPyProgramWrapper implements DSPyProgram {
  *   model: 'claude-3-5-sonnet-20241022',
  *   temperature: 0.1
  * });
- * 
+ *
  * // Create and execute programs
  * const program = await wrapper.createProgram(
  *   'code_request -> optimized_code',
@@ -625,11 +670,13 @@ class DSPyProgramWrapper implements DSPyProgram {
  * );
  * const result = await wrapper.execute(program, { code_request: 'React form' });
  * ```
- * 
+ *
  * @since 1.0.0
  * @version 2.0.0
  */
-export async function createDSPyWrapper(config: DSPyConfig): Promise<DSPyWrapper> {
+export async function createDSPyWrapper(
+  config: DSPyConfig,
+): Promise<DSPyWrapper> {
   const wrapper = new DSPyWrapperImpl();
   await wrapper.configure(config);
   return wrapper;
@@ -637,35 +684,35 @@ export async function createDSPyWrapper(config: DSPyConfig): Promise<DSPyWrapper
 
 /**
  * Creates a DSPy wrapper instance using optimal default configuration for Claude Code Zen.
- * 
+ *
  * This convenience function provides a quick way to create DSPy wrappers without
  * specifying configuration details. It uses production-tested defaults that work
  * well across all Claude Code Zen DSPy integrations.
- * 
+ *
  * ## Default Configuration
- * 
+ *
  * Uses `DEFAULT_DSPY_CONFIG` which provides:
  * - **Model**: 'claude-3-5-sonnet-20241022' for optimal performance
  * - **Temperature**: 0.1 for consistent, deterministic outputs
  * - **Max Tokens**: 2000 for comprehensive responses
  * - **Timeout**: 30000ms for reliable execution
  * - **Retry Count**: 3 attempts for fault tolerance
- * 
+ *
  * @returns Promise resolving to DSPy wrapper with default configuration
- * 
+ *
  * @throws {DSPyConfigurationError} When default configuration fails validation
  * @throws {DSPyAPIError} When dspy.ts package setup fails
- * 
+ *
  * @example
  * ```typescript
  * // Quick setup for internal components
  * const wrapper = await createDefaultDSPyWrapper();
- * 
+ *
  * // Use immediately
  * const program = await wrapper.createProgram('input -> output', 'Process data');
  * const result = await wrapper.execute(program, { input: 'test' });
  * ```
- * 
+ *
  * @since 1.0.0
  */
 export async function createDefaultDSPyWrapper(): Promise<DSPyWrapper> {
@@ -674,43 +721,45 @@ export async function createDefaultDSPyWrapper(): Promise<DSPyWrapper> {
 
 /**
  * Retrieves or creates a singleton DSPy wrapper instance for system-wide shared access.
- * 
+ *
  * This function implements the singleton pattern for DSPy wrapper access, ensuring
  * that only one wrapper instance exists per process. This is crucial for:
  * - **Memory efficiency**: Prevent multiple wrapper instantiation in MCP servers
  * - **Consistent state**: All components share the same DSPy configuration
  * - **Resource management**: Single cleanup point for DSPy resources
  * - **Performance**: Reuse existing wrapper and its internal state
- * 
+ *
  * ## Usage in stdio MCP Server
- * 
+ *
  * When `claude-zen swarm` starts, components use this singleton pattern:
  * - All 8 MCP tools share the same wrapper instance
  * - Configuration is consistent across tool executions
  * - Memory usage remains stable during long-running sessions
- * 
+ *
  * @param config - Optional configuration for first-time initialization (ignored on subsequent calls)
  * @returns Promise resolving to singleton DSPy wrapper instance
- * 
+ *
  * @throws {DSPyConfigurationError} When initial configuration fails
  * @throws {DSPyAPIError} When dspy.ts setup fails during first initialization
- * 
+ *
  * @example
  * ```typescript
  * // MCP server initialization
  * const wrapper = await getSingletonDSPyWrapper({
  *   model: 'claude-3-5-sonnet-20241022'
  * });
- * 
+ *
  * // Later tool executions reuse same instance
  * const sameWrapper = await getSingletonDSPyWrapper(); // Returns existing instance
  * ```
- * 
+ *
  * @since 1.0.0
  * @warning Configuration only applies on first call
  */
 let singletonWrapper: DSPyWrapper | null = null;
-export async function getSingletonDSPyWrapper(config?: DSPyConfig): Promise<DSPyWrapper> {
+export async function getSingletonDSPyWrapper(
+  config?: DSPyConfig,
+): Promise<DSPyWrapper> {
   if (!singletonWrapper) {
     singletonWrapper = await createDSPyWrapper(config || DEFAULT_DSPY_CONFIG);
   }

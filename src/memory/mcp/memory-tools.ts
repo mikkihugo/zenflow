@@ -5,7 +5,10 @@
 
 import type { BaseMemoryBackend } from '../backends/base-backend.ts';
 import { MemoryBackendFactory } from '../backends/factory.ts';
-import { type MemoryCoordinationConfig, MemoryCoordinator } from '../core/memory-coordinator.ts';
+import {
+  type MemoryCoordinationConfig,
+  MemoryCoordinator,
+} from '../core/memory-coordinator.ts';
 import {
   type OptimizationConfig,
   PerformanceOptimizer,
@@ -38,7 +41,8 @@ export interface MCPToolResult {
 // Memory System Initialization Tool
 export const memoryInitTool: MCPTool = {
   name: 'memory_init',
-  description: 'Initialize advanced memory coordination system with distributed protocols',
+  description:
+    'Initialize advanced memory coordination system with distributed protocols',
   inputSchema: {
     type: 'object',
     properties: {
@@ -49,7 +53,12 @@ export const memoryInitTool: MCPTool = {
           consensus: {
             type: 'object',
             properties: {
-              quorum: { type: 'number', minimum: 0.5, maximum: 1.0, default: 0.67 },
+              quorum: {
+                type: 'number',
+                minimum: 0.5,
+                maximum: 1.0,
+                default: 0.67,
+              },
               timeout: { type: 'number', minimum: 1000, default: 5000 },
               strategy: {
                 type: 'string',
@@ -61,7 +70,12 @@ export const memoryInitTool: MCPTool = {
           distributed: {
             type: 'object',
             properties: {
-              replication: { type: 'number', minimum: 1, maximum: 5, default: 2 },
+              replication: {
+                type: 'number',
+                minimum: 1,
+                maximum: 5,
+                default: 2,
+              },
               consistency: {
                 type: 'string',
                 enum: ['eventual', 'strong', 'weak'],
@@ -94,8 +108,17 @@ export const memoryInitTool: MCPTool = {
             type: 'object',
             properties: {
               enabled: { type: 'boolean', default: true },
-              learningRate: { type: 'number', minimum: 0.01, maximum: 1.0, default: 0.1 },
-              adaptationInterval: { type: 'number', minimum: 10000, default: 60000 },
+              learningRate: {
+                type: 'number',
+                minimum: 0.01,
+                maximum: 1.0,
+                default: 0.1,
+              },
+              adaptationInterval: {
+                type: 'number',
+                minimum: 10000,
+                default: 60000,
+              },
             },
           },
         },
@@ -159,7 +182,8 @@ export const memoryInitTool: MCPTool = {
         adaptation: {
           enabled: optimization.adaptation?.enabled ?? true,
           learningRate: optimization.adaptation?.learningRate ?? 0.1,
-          adaptationInterval: optimization.adaptation?.adaptationInterval ?? 60000,
+          adaptationInterval:
+            optimization.adaptation?.adaptationInterval ?? 60000,
         },
       };
 
@@ -171,7 +195,7 @@ export const memoryInitTool: MCPTool = {
         try {
           const backend = await MemoryBackendFactory.createBackend(
             backendConfig?.type as 'sqlite' | 'json' | 'lancedb' | 'memory',
-            backendConfig?.config
+            backendConfig?.config,
           );
           await backend.initialize();
 
@@ -251,7 +275,9 @@ export const memoryOptimizeTool: MCPTool = {
   handler: async (params): Promise<MCPToolResult> => {
     try {
       if (!performanceOptimizer) {
-        throw new Error('Performance optimizer not initialized. Run memory_init first.');
+        throw new Error(
+          'Performance optimizer not initialized. Run memory_init first.',
+        );
       }
 
       const { target = 'all', strategy = 'adaptive', force = false } = params;
@@ -266,7 +292,10 @@ export const memoryOptimizeTool: MCPTool = {
         if (force || stats.metrics.averageLatency > 50) {
           // Suggest cache adjustment for latency
           performanceOptimizer.emit('suggest', 'latency');
-          results.push({ type: 'latency', action: 'cache_adjustment_suggested' });
+          results.push({
+            type: 'latency',
+            action: 'cache_adjustment_suggested',
+          });
         }
       }
 
@@ -282,7 +311,10 @@ export const memoryOptimizeTool: MCPTool = {
         if (force || stats.metrics.cacheHitRate < 0.8) {
           // Suggest prefetch adjustment for cache
           performanceOptimizer.emit('suggest', 'cache');
-          results.push({ type: 'cache', action: 'prefetch_adjustment_suggested' });
+          results.push({
+            type: 'cache',
+            action: 'prefetch_adjustment_suggested',
+          });
         }
       }
 
@@ -328,7 +360,14 @@ export const memoryMonitorTool: MCPTool = {
         type: 'array',
         items: {
           type: 'string',
-          enum: ['latency', 'throughput', 'memory', 'cache', 'errors', 'coordination'],
+          enum: [
+            'latency',
+            'throughput',
+            'memory',
+            'cache',
+            'errors',
+            'coordination',
+          ],
         },
         default: ['latency', 'throughput', 'memory', 'cache'],
         description: 'Metrics to monitor',
@@ -447,9 +486,17 @@ export const memoryMonitorTool: MCPTool = {
           } else {
             throw new Error('Backend lacks required methods');
           }
-          backendStatus.push({ id, status: 'healthy', type: backend.constructor.name });
+          backendStatus.push({
+            id,
+            status: 'healthy',
+            type: backend.constructor.name,
+          });
         } catch {
-          backendStatus.push({ id, status: 'degraded', type: backend.constructor.name });
+          backendStatus.push({
+            id,
+            status: 'degraded',
+            type: backend.constructor.name,
+          });
         }
       }
 
@@ -476,7 +523,8 @@ export const memoryMonitorTool: MCPTool = {
 // Memory Distributed Coordination Tool
 export const memoryDistributeTool: MCPTool = {
   name: 'memory_distribute',
-  description: 'Coordinate distributed memory operations with consensus protocols',
+  description:
+    'Coordinate distributed memory operations with consensus protocols',
   inputSchema: {
     type: 'object',
     properties: {
@@ -507,10 +555,19 @@ export const memoryDistributeTool: MCPTool = {
   handler: async (params): Promise<MCPToolResult> => {
     try {
       if (!memoryCoordinator) {
-        throw new Error('Memory coordinator not initialized. Run memory_init first.');
+        throw new Error(
+          'Memory coordinator not initialized. Run memory_init first.',
+        );
       }
 
-      const { operation, sessionId, key, value, consistency = 'eventual', timeout = 5000 } = params;
+      const {
+        operation,
+        sessionId,
+        key,
+        value,
+        consistency = 'eventual',
+        timeout = 5000,
+      } = params;
 
       const coordinationParams = {
         type: operation as any,
@@ -536,7 +593,11 @@ export const memoryDistributeTool: MCPTool = {
           consistency,
           result:
             operation === 'read'
-              ? await memoryCoordinator.coordinate({ type: 'read', sessionId, target: key })
+              ? await memoryCoordinator.coordinate({
+                  type: 'read',
+                  sessionId,
+                  target: key,
+                })
               : undefined,
         },
         metadata: {
@@ -606,10 +667,14 @@ export const memoryHealthCheckTool: MCPTool = {
 
           if (coordinatorHealth.status !== 'healthy') {
             healthReport.overall = 'degraded';
-            healthReport.issues.push(`Coordinator is ${coordinatorHealth.status}`);
+            healthReport.issues.push(
+              `Coordinator is ${coordinatorHealth.status}`,
+            );
           }
         } else {
-          (healthReport.components as any).coordinator = { status: 'not_initialized' };
+          (healthReport.components as any).coordinator = {
+            status: 'not_initialized',
+          };
           healthReport.issues.push('Memory coordinator not initialized');
         }
       }
@@ -628,7 +693,9 @@ export const memoryHealthCheckTool: MCPTool = {
 
           healthReport.recommendations.push(...recommendations);
         } else {
-          (healthReport.components as any).optimizer = { status: 'not_initialized' };
+          (healthReport.components as any).optimizer = {
+            status: 'not_initialized',
+          };
           healthReport.issues.push('Performance optimizer not initialized');
         }
       }
@@ -641,14 +708,20 @@ export const memoryHealthCheckTool: MCPTool = {
         for (const [id, backend] of registeredBackends) {
           try {
             // Check if backend is responsive with method compatibility
-            if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+            if (
+              'retrieve' in backend &&
+              typeof backend.retrieve === 'function'
+            ) {
               await backend.retrieve('__health_check__');
             } else if ('get' in backend && typeof backend.get === 'function') {
               await backend.get('__health_check__');
             } else {
               throw new Error('Backend lacks required methods');
             }
-            backendHealth[id] = { status: 'healthy', type: backend.constructor.name };
+            backendHealth[id] = {
+              status: 'healthy',
+              type: backend.constructor.name,
+            };
             healthyBackends++;
           } catch (error) {
             backendHealth[id] = {
@@ -656,7 +729,9 @@ export const memoryHealthCheckTool: MCPTool = {
               type: backend.constructor.name,
               error: (error as Error).message,
             };
-            healthReport.issues.push(`Backend ${id} is unhealthy: ${(error as Error).message}`);
+            healthReport.issues.push(
+              `Backend ${id} is unhealthy: ${(error as Error).message}`,
+            );
           }
         }
 
@@ -674,7 +749,8 @@ export const memoryHealthCheckTool: MCPTool = {
       // Set overall status based on issues
       if (healthReport.issues.length > 0) {
         healthReport.overall = healthReport.issues.some(
-          (issue) => issue.includes('not_initialized') || issue.includes('unhealthy')
+          (issue) =>
+            issue.includes('not_initialized') || issue.includes('unhealthy'),
         )
           ? 'critical'
           : 'degraded';

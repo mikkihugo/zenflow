@@ -82,19 +82,22 @@ export const NEURAL_PRESETS: NeuralPresetMap = {
  * @param presetName
  * @example
  */
-export function getPreset(category: string, presetName?: string): NeuralPreset | undefined {
+export function getPreset(
+  category: string,
+  presetName?: string,
+): NeuralPreset | undefined {
   if (presetName) {
     // Two-argument version - look by category and preset name
     const presets = Object.values(NEURAL_PRESETS);
     return presets.find(
       (preset) =>
         preset.type === category &&
-        (preset.id === presetName || preset.name.toLowerCase().includes(presetName.toLowerCase()))
+        (preset.id === presetName ||
+          preset.name.toLowerCase().includes(presetName.toLowerCase())),
     );
-  } else {
-    // Single-argument version (legacy) - category is actually presetId
-    return NEURAL_PRESETS[category.toUpperCase()];
   }
+  // Single-argument version (legacy) - category is actually presetId
+  return NEURAL_PRESETS[category.toUpperCase()];
 }
 
 /**
@@ -140,10 +143,14 @@ export function getCategoryPresets(category: string): NeuralPreset[] {
  */
 export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
   const required: Array<keyof NeuralPreset> = ['id', 'architecture', 'layers'];
-  const missing = required.filter((field) => !(field in config) || (config as any)[field] == null);
+  const missing = required.filter(
+    (field) => !(field in config) || (config as any)[field] == null,
+  );
 
   if (missing.length > 0) {
-    throw new Error(`Invalid preset configuration. Missing: ${missing.join(', ')}`);
+    throw new Error(
+      `Invalid preset configuration. Missing: ${missing.join(', ')}`,
+    );
   }
 
   if (!Array.isArray(config?.layers) || config?.layers.length === 0) {

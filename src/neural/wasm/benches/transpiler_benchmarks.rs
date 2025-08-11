@@ -1,25 +1,38 @@
 //! Benchmarks for CUDA to WASM transpilation performance
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId, Throughput};
-use cuda_rust_wasm::transpiler::{CudaTranspiler, TranspilerOptions, OptimizationLevel};
+use criterion::{
+  black_box, criterion_group, criterion_main, BenchmarkId, Criterion,
+  Throughput,
+};
+use cuda_rust_wasm::transpiler::{
+  CudaTranspiler, OptimizationLevel, TranspilerOptions,
+};
 
 fn benchmark_transpile_simple_kernels(c: &mut Criterion) {
-    let mut group = c.benchmark_group("transpile_simple");
-    
-    let kernels = vec![
-        ("empty", r#"
+  let mut group = c.benchmark_group("transpile_simple");
+
+  let kernels = vec![
+    (
+      "empty",
+      r#"
             __global__ void empty_kernel() {
             }
-        "#),
-        ("simple_compute", r#"
+        "#,
+    ),
+    (
+      "simple_compute",
+      r#"
             __global__ void simple_compute(float* data, int n) {
                 int idx = blockIdx.x * blockDim.x + threadIdx.x;
                 if (idx < n) {
                     data[idx] = data[idx] * 2.0f + 1.0f;
                 }
             }
-        "#),
-        ("with_shared_memory", r#"
+        "#,
+    ),
+    (
+      "with_shared_memory",
+      r#"
             __global__ void with_shared_memory(float* data, int n) {
                 extern __shared__ float sdata[];
                 int tid = threadIdx.x;
@@ -31,39 +44,45 @@ fn benchmark_transpile_simple_kernels(c: &mut Criterion) {
                     data[idx] = sdata[tid] * 2.0f;
                 }
             }
-        "#),
-        ("with_atomics", r#"
+        "#,
+    ),
+    (
+      "with_atomics",
+      r#"
             __global__ void with_atomics(int* counter, int n) {
                 int idx = blockIdx.x * blockDim.x + threadIdx.x;
                 if (idx < n) {
                     atomicAdd(counter, 1);
                 }
             }
-        "#),
-    ];
-    
-    for (name, code) in kernels {
-        group.bench_with_input(
-            BenchmarkId::new("kernel", name),
-            code,
-            |b, code| {
-                let transpiler = CudaTranspiler::new(TranspilerOptions::default());
-                b.iter(|| {
-                    let result = transpiler.transpile(black_box(code));
-                    black_box(result.unwrap());
-                });
-            },
-        );
-    }
-    
-    group.finish();
+        "#,
+    ),
+  ];
+
+  for (name, code) in kernels {
+    group.bench_with_input(
+      BenchmarkId::new("kernel", name),
+      code,
+      |b, code| {
+        let transpiler = CudaTranspiler::new(TranspilerOptions::default());
+        b.iter(|| {
+          let result = transpiler.transpile(black_box(code));
+          black_box(result.unwrap());
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 fn benchmark_transpile_complex_kernels(c: &mut Criterion) {
-    let mut group = c.benchmark_group("transpile_complex");
-    
-    let complex_kernels = vec![
-        ("matrix_multiply", r#"
+  let mut group = c.benchmark_group("transpile_complex");
+
+  let complex_kernels = vec![
+    (
+      "matrix_multiply",
+      r#"
             #define TILE_SIZE 16
             
             __global__ void matrix_multiply(float* a, float* b, float* c, int m, int n, int k) {
@@ -101,8 +120,11 @@ fn benchmark_transpile_complex_kernels(c: &mut Criterion) {
                     c[row * n + col] = sum;
                 }
             }
-        "#),
-        ("convolution", r#"
+        "#,
+    ),
+    (
+      "convolution",
+      r#"
             #define FILTER_SIZE 5
             #define TILE_SIZE 16
             #define APRON_SIZE 2
@@ -163,8 +185,11 @@ fn benchmark_transpile_complex_kernels(c: &mut Criterion) {
                     output[y * width + x] = sum;
                 }
             }
-        "#),
-        ("reduction_optimized", r#"
+        "#,
+    ),
+    (
+      "reduction_optimized",
+      r#"
             template <unsigned int blockSize>
             __global__ void reduction_optimized(float* input, float* output, int n) {
                 extern __shared__ float sdata[];
@@ -214,30 +239,31 @@ fn benchmark_transpile_complex_kernels(c: &mut Criterion) {
                 
                 if (tid == 0) output[blockIdx.x] = sdata[0];
             }
-        "#),
-    ];
-    
-    for (name, code) in complex_kernels {
-        group.bench_with_input(
-            BenchmarkId::new("kernel", name),
-            code,
-            |b, code| {
-                let transpiler = CudaTranspiler::new(TranspilerOptions::default());
-                b.iter(|| {
-                    let result = transpiler.transpile(black_box(code));
-                    black_box(result.unwrap());
-                });
-            },
-        );
-    }
-    
-    group.finish();
+        "#,
+    ),
+  ];
+
+  for (name, code) in complex_kernels {
+    group.bench_with_input(
+      BenchmarkId::new("kernel", name),
+      code,
+      |b, code| {
+        let transpiler = CudaTranspiler::new(TranspilerOptions::default());
+        b.iter(|| {
+          let result = transpiler.transpile(black_box(code));
+          black_box(result.unwrap());
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 fn benchmark_transpile_optimization_impact(c: &mut Criterion) {
-    let mut group = c.benchmark_group("transpile_optimization");
-    
-    let test_kernel = r#"
+  let mut group = c.benchmark_group("transpile_optimization");
+
+  let test_kernel = r#"
         __global__ void compute_intensive(float* data, int n) {
             int idx = blockIdx.x * blockDim.x + threadIdx.x;
             if (idx < n) {
@@ -258,39 +284,39 @@ fn benchmark_transpile_optimization_impact(c: &mut Criterion) {
             }
         }
     "#;
-    
-    let optimization_levels = vec![
-        ("None", OptimizationLevel::None),
-        ("Basic", OptimizationLevel::Basic),
-        ("Aggressive", OptimizationLevel::Aggressive),
-    ];
-    
-    for (name, level) in optimization_levels {
-        group.bench_with_input(
-            BenchmarkId::new("level", name),
-            &level,
-            |b, &level| {
-                let options = TranspilerOptions {
-                    optimization_level: level,
-                    ..Default::default()
-                };
-                
-                let transpiler = CudaTranspiler::new(options);
-                b.iter(|| {
-                    let result = transpiler.transpile(black_box(test_kernel));
-                    black_box(result.unwrap());
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+  let optimization_levels = vec![
+    ("None", OptimizationLevel::None),
+    ("Basic", OptimizationLevel::Basic),
+    ("Aggressive", OptimizationLevel::Aggressive),
+  ];
+
+  for (name, level) in optimization_levels {
+    group.bench_with_input(
+      BenchmarkId::new("level", name),
+      &level,
+      |b, &level| {
+        let options = TranspilerOptions {
+          optimization_level: level,
+          ..Default::default()
+        };
+
+        let transpiler = CudaTranspiler::new(options);
+        b.iter(|| {
+          let result = transpiler.transpile(black_box(test_kernel));
+          black_box(result.unwrap());
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 fn benchmark_transpile_feature_combinations(c: &mut Criterion) {
-    let mut group = c.benchmark_group("transpile_features");
-    
-    let feature_kernel = r#"
+  let mut group = c.benchmark_group("transpile_features");
+
+  let feature_kernel = r#"
         __constant__ float constants[256];
         texture<float, 2> tex2D;
         
@@ -325,152 +351,167 @@ fn benchmark_transpile_feature_combinations(c: &mut Criterion) {
             }
         }
     "#;
-    
-    let feature_combinations = vec![
-        ("default", TranspilerOptions::default()),
-        ("all_features", TranspilerOptions {
-            enable_atomics: true,
-            enable_texture_memory: true,
-            enable_warp_primitives: true,
-            include_debug_info: false,
-            optimization_level: OptimizationLevel::Basic,
-            enable_validation: false,
-        }),
-        ("with_validation", TranspilerOptions {
-            enable_atomics: true,
-            enable_texture_memory: true,
-            enable_warp_primitives: true,
-            include_debug_info: false,
-            optimization_level: OptimizationLevel::Basic,
-            enable_validation: true,
-        }),
-        ("with_debug", TranspilerOptions {
-            enable_atomics: true,
-            enable_texture_memory: true,
-            enable_warp_primitives: true,
-            include_debug_info: true,
-            optimization_level: OptimizationLevel::Basic,
-            enable_validation: false,
-        }),
-    ];
-    
-    for (name, options) in feature_combinations {
-        group.bench_with_input(
-            BenchmarkId::new("features", name),
-            &options,
-            |b, options| {
-                let transpiler = CudaTranspiler::new(options.clone());
-                b.iter(|| {
-                    let result = transpiler.transpile(black_box(feature_kernel));
-                    black_box(result);
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+  let feature_combinations = vec![
+    ("default", TranspilerOptions::default()),
+    (
+      "all_features",
+      TranspilerOptions {
+        enable_atomics: true,
+        enable_texture_memory: true,
+        enable_warp_primitives: true,
+        include_debug_info: false,
+        optimization_level: OptimizationLevel::Basic,
+        enable_validation: false,
+      },
+    ),
+    (
+      "with_validation",
+      TranspilerOptions {
+        enable_atomics: true,
+        enable_texture_memory: true,
+        enable_warp_primitives: true,
+        include_debug_info: false,
+        optimization_level: OptimizationLevel::Basic,
+        enable_validation: true,
+      },
+    ),
+    (
+      "with_debug",
+      TranspilerOptions {
+        enable_atomics: true,
+        enable_texture_memory: true,
+        enable_warp_primitives: true,
+        include_debug_info: true,
+        optimization_level: OptimizationLevel::Basic,
+        enable_validation: false,
+      },
+    ),
+  ];
+
+  for (name, options) in feature_combinations {
+    group.bench_with_input(
+      BenchmarkId::new("features", name),
+      &options,
+      |b, options| {
+        let transpiler = CudaTranspiler::new(options.clone());
+        b.iter(|| {
+          let result = transpiler.transpile(black_box(feature_kernel));
+          black_box(result);
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 fn benchmark_transpile_code_size_impact(c: &mut Criterion) {
-    let mut group = c.benchmark_group("transpile_code_size");
-    
-    // Generate kernels of different sizes
-    fn generate_kernel(num_operations: usize) -> String {
-        let mut code = String::from("__global__ void generated_kernel(float* data, int n) {\n");
-        code.push_str("    int idx = blockIdx.x * blockDim.x + threadIdx.x;\n");
-        code.push_str("    if (idx < n) {\n");
-        code.push_str("        float x = data[idx];\n");
-        
-        for i in 0..num_operations {
-            code.push_str(&format!("        x = x * {}.0f + {}.0f;\n", i + 1, i));
-        }
-        
-        code.push_str("        data[idx] = x;\n");
-        code.push_str("    }\n");
-        code.push_str("}\n");
-        
-        code
+  let mut group = c.benchmark_group("transpile_code_size");
+
+  // Generate kernels of different sizes
+  fn generate_kernel(num_operations: usize) -> String {
+    let mut code =
+      String::from("__global__ void generated_kernel(float* data, int n) {\n");
+    code.push_str("    int idx = blockIdx.x * blockDim.x + threadIdx.x;\n");
+    code.push_str("    if (idx < n) {\n");
+    code.push_str("        float x = data[idx];\n");
+
+    for i in 0..num_operations {
+      code.push_str(&format!("        x = x * {}.0f + {}.0f;\n", i + 1, i));
     }
-    
-    let kernel_sizes = vec![10, 50, 100, 500, 1000];
-    
-    for &size in &kernel_sizes {
-        let kernel = generate_kernel(size);
-        let kernel_bytes = kernel.len() as u64;
-        
-        group.throughput(Throughput::Bytes(kernel_bytes));
-        group.bench_with_input(
-            BenchmarkId::new("operations", size),
-            &kernel,
-            |b, kernel| {
-                let transpiler = CudaTranspiler::new(TranspilerOptions::default());
-                b.iter(|| {
-                    let result = transpiler.transpile(black_box(kernel));
-                    black_box(result.unwrap());
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+    code.push_str("        data[idx] = x;\n");
+    code.push_str("    }\n");
+    code.push_str("}\n");
+
+    code
+  }
+
+  let kernel_sizes = vec![10, 50, 100, 500, 1000];
+
+  for &size in &kernel_sizes {
+    let kernel = generate_kernel(size);
+    let kernel_bytes = kernel.len() as u64;
+
+    group.throughput(Throughput::Bytes(kernel_bytes));
+    group.bench_with_input(
+      BenchmarkId::new("operations", size),
+      &kernel,
+      |b, kernel| {
+        let transpiler = CudaTranspiler::new(TranspilerOptions::default());
+        b.iter(|| {
+          let result = transpiler.transpile(black_box(kernel));
+          black_box(result.unwrap());
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 fn benchmark_transpile_multi_kernel(c: &mut Criterion) {
-    let mut group = c.benchmark_group("transpile_multi_kernel");
-    
-    fn generate_multi_kernel_code(num_kernels: usize) -> String {
-        let mut code = String::new();
-        
-        // Add some device functions
-        code.push_str("__device__ float device_add(float a, float b) { return a + b; }\n");
-        code.push_str("__device__ float device_mul(float a, float b) { return a * b; }\n\n");
-        
-        // Generate multiple kernels
-        for i in 0..num_kernels {
-            code.push_str(&format!(
-                "__global__ void kernel{}(float* data, int n) {{\n", i
-            ));
-            code.push_str("    int idx = blockIdx.x * blockDim.x + threadIdx.x;\n");
-            code.push_str("    if (idx < n) {\n");
-            code.push_str("        float x = data[idx];\n");
-            code.push_str("        x = device_add(x, 1.0f);\n");
-            code.push_str("        x = device_mul(x, 2.0f);\n");
-            code.push_str("        data[idx] = x;\n");
-            code.push_str("    }\n");
-            code.push_str("}\n\n");
-        }
-        
-        code
+  let mut group = c.benchmark_group("transpile_multi_kernel");
+
+  fn generate_multi_kernel_code(num_kernels: usize) -> String {
+    let mut code = String::new();
+
+    // Add some device functions
+    code.push_str(
+      "__device__ float device_add(float a, float b) { return a + b; }\n",
+    );
+    code.push_str(
+      "__device__ float device_mul(float a, float b) { return a * b; }\n\n",
+    );
+
+    // Generate multiple kernels
+    for i in 0..num_kernels {
+      code.push_str(&format!(
+        "__global__ void kernel{}(float* data, int n) {{\n",
+        i
+      ));
+      code.push_str("    int idx = blockIdx.x * blockDim.x + threadIdx.x;\n");
+      code.push_str("    if (idx < n) {\n");
+      code.push_str("        float x = data[idx];\n");
+      code.push_str("        x = device_add(x, 1.0f);\n");
+      code.push_str("        x = device_mul(x, 2.0f);\n");
+      code.push_str("        data[idx] = x;\n");
+      code.push_str("    }\n");
+      code.push_str("}\n\n");
     }
-    
-    let kernel_counts = vec![1, 5, 10, 20, 50];
-    
-    for &count in &kernel_counts {
-        let code = generate_multi_kernel_code(count);
-        
-        group.bench_with_input(
-            BenchmarkId::new("kernels", count),
-            &code,
-            |b, code| {
-                let transpiler = CudaTranspiler::new(TranspilerOptions::default());
-                b.iter(|| {
-                    let result = transpiler.transpile(black_box(code));
-                    black_box(result.unwrap());
-                });
-            },
-        );
-    }
-    
-    group.finish();
+
+    code
+  }
+
+  let kernel_counts = vec![1, 5, 10, 20, 50];
+
+  for &count in &kernel_counts {
+    let code = generate_multi_kernel_code(count);
+
+    group.bench_with_input(
+      BenchmarkId::new("kernels", count),
+      &code,
+      |b, code| {
+        let transpiler = CudaTranspiler::new(TranspilerOptions::default());
+        b.iter(|| {
+          let result = transpiler.transpile(black_box(code));
+          black_box(result.unwrap());
+        });
+      },
+    );
+  }
+
+  group.finish();
 }
 
 criterion_group!(
-    benches,
-    benchmark_transpile_simple_kernels,
-    benchmark_transpile_complex_kernels,
-    benchmark_transpile_optimization_impact,
-    benchmark_transpile_feature_combinations,
-    benchmark_transpile_code_size_impact,
-    benchmark_transpile_multi_kernel
+  benches,
+  benchmark_transpile_simple_kernels,
+  benchmark_transpile_complex_kernels,
+  benchmark_transpile_optimization_impact,
+  benchmark_transpile_feature_combinations,
+  benchmark_transpile_code_size_impact,
+  benchmark_transpile_multi_kernel
 );
 criterion_main!(benches);

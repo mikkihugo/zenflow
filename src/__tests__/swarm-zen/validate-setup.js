@@ -40,7 +40,11 @@ testFiles.forEach((file) => {
   check(`  ${file}`, fs.existsSync(filePath), `File not found: ${filePath}`);
 });
 const examplePath = path.join(__dirname, '..', 'examples', 'mcp-workflows.js');
-check('  mcp-workflows.js', fs.existsSync(examplePath), `File not found: ${examplePath}`);
+check(
+  '  mcp-workflows.js',
+  fs.existsSync(examplePath),
+  `File not found: ${examplePath}`,
+);
 try {
   const packageJson = require('../package.json');
   const requiredDeps = ['ws', 'uuid', 'better-sqlite3'];
@@ -49,15 +53,22 @@ try {
     check(
       `  ${dep}`,
       packageJson.dependencies[dep] || packageJson.devDependencies[dep],
-      'Missing dependency in package.json'
+      'Missing dependency in package.json',
     );
   });
 } catch (error) {
   check('  package.json', false, error.message);
 }
 const nodeVersion = process.version;
-const majorVersion = parseInt(nodeVersion.split('.')[0].substring(1), 10);
-check(`  Node.js version (${nodeVersion})`, majorVersion >= 14, 'Node.js 14+ required');
+const majorVersion = Number.parseInt(
+  nodeVersion.split('.')[0].substring(1),
+  10,
+);
+check(
+  `  Node.js version (${nodeVersion})`,
+  majorVersion >= 14,
+  'Node.js 14+ required',
+);
 const modules = ['ws', 'uuid', 'sqlite3'];
 modules.forEach((mod) => {
   try {
@@ -67,8 +78,19 @@ modules.forEach((mod) => {
     check(`  ${mod}`, false, 'Module not installed. Run: npm install');
   }
 });
-const mcpServerPath = path.join(__dirname, '..', '..', 'crates', 'ruv-swarm-mcp', 'Cargo.toml');
-check('  MCP server crate', fs.existsSync(mcpServerPath), 'MCP server crate not found');
+const mcpServerPath = path.join(
+  __dirname,
+  '..',
+  '..',
+  'crates',
+  'ruv-swarm-mcp',
+  'Cargo.toml',
+);
+check(
+  '  MCP server crate',
+  fs.existsSync(mcpServerPath),
+  'MCP server crate not found',
+);
 
 if (failed > 0) {
   process.exit(1);

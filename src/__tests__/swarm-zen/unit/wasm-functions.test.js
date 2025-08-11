@@ -120,7 +120,10 @@ describe('WASM Functions Unit Tests', () => {
 
     it('should add agent to swarm', () => {
       expect(swarmId).toBeDefined();
-      const agentId = wasmModule.exports.createAgent('coder', ['coding', 'testing']);
+      const agentId = wasmModule.exports.createAgent('coder', [
+        'coding',
+        'testing',
+      ]);
       const result = wasmModule.exports.addAgentToSwarm(swarmId, agentId);
       expect(result).toBe(true);
 
@@ -218,7 +221,10 @@ describe('WASM Functions Unit Tests', () => {
         layers: 2,
       });
 
-      const result = wasmModule.exports.setNetworkWeights(newNetworkId, weights);
+      const result = wasmModule.exports.setNetworkWeights(
+        newNetworkId,
+        weights,
+      );
       expect(result).toBe(true);
     });
 
@@ -243,7 +249,10 @@ describe('WASM Functions Unit Tests', () => {
       const ptr = wasmModule.exports.allocateFloat32Array(data.length);
 
       wasmModule.exports.copyFloat32ArrayToWasm(data, ptr);
-      const result = wasmModule.exports.copyFloat32ArrayFromWasm(ptr, data.length);
+      const result = wasmModule.exports.copyFloat32ArrayFromWasm(
+        ptr,
+        data.length,
+      );
 
       expect(result).toEqual(data);
       wasmModule.exports.deallocateFloat32Array(ptr);
@@ -343,7 +352,9 @@ describe('WASM Functions Unit Tests', () => {
         hiddenSize: 0,
         outputSize: 0,
       };
-      expect(() => wasmModule.exports.createNeuralNetwork(invalidConfig)).toThrow();
+      expect(() =>
+        wasmModule.exports.createNeuralNetwork(invalidConfig),
+      ).toThrow();
     });
   });
 
@@ -353,7 +364,9 @@ describe('WASM Functions Unit Tests', () => {
       const start = performance.now();
 
       for (let i = 0; i < iterations; i++) {
-        const agentId = wasmModule.exports.createAgent('researcher', ['research']);
+        const agentId = wasmModule.exports.createAgent('researcher', [
+          'research',
+        ]);
         wasmModule.exports.removeAgent(agentId);
       }
 
@@ -395,7 +408,10 @@ describe('WASM Functions Unit Tests', () => {
       for (let i = 0; i < iterations; i++) {
         const ptr = wasmModule.exports.allocateFloat32Array(data.length);
         wasmModule.exports.copyFloat32ArrayToWasm(data, ptr);
-        const _result = wasmModule.exports.copyFloat32ArrayFromWasm(ptr, data.length);
+        const _result = wasmModule.exports.copyFloat32ArrayFromWasm(
+          ptr,
+          data.length,
+        );
         wasmModule.exports.deallocateFloat32Array(ptr);
       }
       const time = performance.now() - start;

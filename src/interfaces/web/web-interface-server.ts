@@ -11,7 +11,7 @@
 import { existsSync } from 'node:fs';
 import { createServer, type Server as HTTPServer } from 'node:http';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+// fileURLToPath is provided by esbuild banner
 import express, { type Express } from 'express';
 import { Server as SocketIOServer } from 'socket.io';
 import { getLogger } from '../../config/logging-config.ts';
@@ -104,10 +104,14 @@ export class WebInterfaceServer {
       realTime: this.config.realTime,
     });
 
-    this.apiRouteHandler = new ApiRouteHandler(this.app, this.webSocketCoordinator, {
-      prefix: this.config.apiPrefix,
-      enableCors: this.config.cors,
-    });
+    this.apiRouteHandler = new ApiRouteHandler(
+      this.app,
+      this.webSocketCoordinator,
+      {
+        prefix: this.config.apiPrefix,
+        enableCors: this.config.cors,
+      },
+    );
 
     this.daemonManager = new DaemonProcessManager({
       pidFile: join(process.cwd(), '.claude-zen-web.pid'),
@@ -127,10 +131,13 @@ export class WebInterfaceServer {
     if (this.config.cors) {
       this.app.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.header(
+          'Access-Control-Allow-Methods',
+          'GET, POST, PUT, DELETE, OPTIONS',
+        );
         res.header(
           'Access-Control-Allow-Headers',
-          'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Session-Id'
+          'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Session-Id',
         );
 
         if (req.method === 'OPTIONS') {
@@ -236,7 +243,7 @@ export class WebInterfaceServer {
         this.logger.info(`📊 Dashboard: ${address}`);
         this.logger.info(`🔗 API: ${address}${this.config.apiPrefix}`);
         this.logger.info(
-          `⚡ WebSocket: Real-time updates ${this.config.realTime ? 'enabled' : 'disabled'}`
+          `⚡ WebSocket: Real-time updates ${this.config.realTime ? 'enabled' : 'disabled'}`,
         );
 
         resolve();
@@ -253,10 +260,13 @@ export class WebInterfaceServer {
    * Start server in daemon mode.
    */
   private async startDaemon(): Promise<void> {
-    const _processInfo = await this.daemonManager.startDaemon(process.execPath, [
-      process.argv[1]!,
-      ...process.argv.slice(2).filter((arg) => arg !== '--daemon'),
-    ]);
+    const _processInfo = await this.daemonManager.startDaemon(
+      process.execPath,
+      [
+        process.argv[1]!,
+        ...process.argv.slice(2).filter((arg) => arg !== '--daemon'),
+      ],
+    );
   }
 
   /**

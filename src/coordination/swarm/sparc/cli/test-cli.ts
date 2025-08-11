@@ -10,10 +10,10 @@ import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/da
 
 // Simple mock database
 class MockDB {
-  async execute(): Promise<any> {
+  async execute(): Promise<unknown> {
     return { affectedRows: 1 };
   }
-  async query(): Promise<any> {
+  async query(): Promise<unknown> {
     return { rows: [] };
   }
 }
@@ -36,9 +36,20 @@ async function testCLIFunctionality() {
         name: 'TaskProcessor',
         purpose: 'Process tasks in parallel',
         inputs: [
-          { name: 'tasks', type: 'Task[]', description: 'Tasks to process', optional: false },
+          {
+            name: 'tasks',
+            type: 'Task[]',
+            description: 'Tasks to process',
+            optional: false,
+          },
         ],
-        outputs: [{ name: 'results', type: 'Result[]', description: 'Processing results' }],
+        outputs: [
+          {
+            name: 'results',
+            type: 'Result[]',
+            description: 'Processing results',
+          },
+        ],
         steps: [
           {
             stepNumber: 1,
@@ -68,12 +79,19 @@ async function testCLIFunctionality() {
         name: 'TaskQueue',
         type: 'class',
         properties: [
-          { name: 'items', type: 'Task[]', visibility: 'private', description: 'Queue items' },
+          {
+            name: 'items',
+            type: 'Task[]',
+            visibility: 'private',
+            description: 'Queue items',
+          },
         ],
         methods: [
           {
             name: 'enqueue',
-            parameters: [{ name: 'task', type: 'Task', description: 'Task to add' }],
+            parameters: [
+              { name: 'task', type: 'Task', description: 'Task to add' },
+            ],
             returnType: 'void',
             visibility: 'public',
             description: 'Add task',
@@ -91,7 +109,9 @@ async function testCLIFunctionality() {
   if (architecture.components) {
     architecture.components.forEach((comp, i) => {});
   }
-  const validation = await engine.validateArchitecturalConsistency(architecture.systemArchitecture);
+  const validation = await engine.validateArchitecturalConsistency(
+    architecture.systemArchitecture,
+  );
 }
 
 testCLIFunctionality().catch(console.error);

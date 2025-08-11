@@ -108,7 +108,9 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
    *
    * @param modules
    */
-  public async optimizeWasmModuleLoading(modules: WasmModule[]): Promise<LoadingOptimization> {
+  public async optimizeWasmModuleLoading(
+    modules: WasmModule[],
+  ): Promise<LoadingOptimization> {
     const startTime = Date.now();
     const beforeMetrics = await this.measureModuleLoadingPerformance(modules);
 
@@ -135,8 +137,10 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
       const optimizationTime = Date.now() - startTime;
 
       // Calculate performance improvements
-      const loadTimeImprovement = beforeMetrics.averageLoadTime - afterMetrics.averageLoadTime;
-      const improvementPercentage = (loadTimeImprovement / beforeMetrics.averageLoadTime) * 100;
+      const loadTimeImprovement =
+        beforeMetrics.averageLoadTime - afterMetrics.averageLoadTime;
+      const improvementPercentage =
+        (loadTimeImprovement / beforeMetrics.averageLoadTime) * 100;
 
       // Log optimization results
       this.logger.info('WASM module loading optimization completed', {
@@ -151,7 +155,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
       return {
         loadTime: afterMetrics.averageLoadTime,
         cacheUtilization: this.moduleCache.size > 0,
-        streamingEnabled: this.config.enableStreaming && this.capabilities.streamingSupport,
+        streamingEnabled:
+          this.config.enableStreaming && this.capabilities.streamingSupport,
         preloadStrategy: this.config.preloadStrategy,
       };
     } catch (error) {
@@ -164,8 +169,10 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
    *
    * @param wasmFiles
    */
-  public async implementStreamingCompilation(wasmFiles: WasmFile[]): Promise<StreamingResult> {
-    if (!this.config.enableStreaming || !this.capabilities.streamingSupport) {
+  public async implementStreamingCompilation(
+    wasmFiles: WasmFile[],
+  ): Promise<StreamingResult> {
+    if (!(this.config.enableStreaming && this.capabilities.streamingSupport)) {
       return {
         compilationTime: 0,
         streamingEnabled: false,
@@ -185,9 +192,11 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
       }
 
       const averageCompilationTime =
-        compilationMetrics.reduce((a, b) => a + b, 0) / compilationMetrics.length;
+        compilationMetrics.reduce((a, b) => a + b, 0) /
+        compilationMetrics.length;
       const averageInstantiationTime =
-        instantiationMetrics.reduce((a, b) => a + b, 0) / instantiationMetrics.length;
+        instantiationMetrics.reduce((a, b) => a + b, 0) /
+        instantiationMetrics.length;
 
       // Measure memory efficiency improvement
       const memoryEfficiency = await this.measureStreamingMemoryEfficiency();
@@ -208,7 +217,9 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
    *
    * @param jsWasmBridge
    */
-  public async optimizeMemorySharing(jsWasmBridge: Bridge): Promise<MemoryOptimization> {
+  public async optimizeMemorySharing(
+    jsWasmBridge: Bridge,
+  ): Promise<MemoryOptimization> {
     if (!this.config.enableMemorySharing) {
       return {
         memoryReduction: 0,
@@ -255,8 +266,10 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
    *
    * @param computeKernels
    */
-  public async enableSIMDAcceleration(computeKernels: Kernel[]): Promise<SIMDResult> {
-    if (!this.config.enableSIMD || !this.capabilities.simdSupport) {
+  public async enableSIMDAcceleration(
+    computeKernels: Kernel[],
+  ): Promise<SIMDResult> {
+    if (!(this.config.enableSIMD && this.capabilities.simdSupport)) {
       return {
         simdSupport: false,
         performanceGain: 1.0,
@@ -275,12 +288,17 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
           const result = await this.optimizeKernelWithSIMD(kernel);
           optimizations.push(...result?.optimizations);
           totalPerformanceGain += result?.performanceGain;
-          vectorizationLevel = Math.max(vectorizationLevel, result?.vectorizationLevel);
+          vectorizationLevel = Math.max(
+            vectorizationLevel,
+            result?.vectorizationLevel,
+          );
         }
       }
 
       const averagePerformanceGain =
-        computeKernels.length > 0 ? totalPerformanceGain / computeKernels.length : 1.0;
+        computeKernels.length > 0
+          ? totalPerformanceGain / computeKernels.length
+          : 1.0;
 
       return {
         simdSupport: true,
@@ -307,7 +325,8 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
     try {
       // Check for streaming compilation support
-      capabilities.streamingSupport = typeof WebAssembly.compileStreaming === 'function';
+      capabilities.streamingSupport =
+        typeof WebAssembly.compileStreaming === 'function';
 
       // Check for SIMD support
       capabilities.simdSupport = WebAssembly.validate(
@@ -327,7 +346,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
           0x01,
           0x7b,
           0x00, // SIMD type signature
-        ])
+        ]),
       );
 
       // Check for threads support
@@ -351,7 +370,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
           0x00,
           0xfc,
           0x08, // memory.init instruction
-        ])
+        ]),
       );
 
       // Check for reference types
@@ -379,7 +398,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
           0x01,
           0x61,
           0x6f, // Import with externref
-        ])
+        ]),
       );
     } catch (_error) {
       // If detection fails, assume no advanced features
@@ -400,7 +419,10 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
         const compiledModule = await this.compileModule(module);
 
         // Check cache size and evict if necessary
-        if (this.getCacheSize() + module['size'] > this.config.maxModuleCacheSize) {
+        if (
+          this.getCacheSize() + module['size'] >
+          this.config.maxModuleCacheSize
+        ) {
           await this.evictLeastRecentlyUsed();
         }
 
@@ -456,7 +478,9 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
       return { compilationTime, instantiationTime };
     } catch (error) {
-      throw new Error(`Streaming compilation failed for ${wasmFile['path']}: ${error}`);
+      throw new Error(
+        `Streaming compilation failed for ${wasmFile['path']}: ${error}`,
+      );
     }
   }
 
@@ -494,7 +518,12 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
    */
   private isKernelSIMDCapable(kernel: Kernel): boolean {
     // Check if kernel has operations that can benefit from SIMD
-    const simdFriendlyOps = ['add', 'multiply', 'dot_product', 'matrix_multiply'];
+    const simdFriendlyOps = [
+      'add',
+      'multiply',
+      'dot_product',
+      'matrix_multiply',
+    ];
     return kernel.operations.some((op) => simdFriendlyOps.includes(op));
   }
 
@@ -504,7 +533,13 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
    * @param operation
    */
   private canVectorizeOperation(operation: string): boolean {
-    const vectorizableOps = ['add', 'multiply', 'subtract', 'divide', 'dot_product'];
+    const vectorizableOps = [
+      'add',
+      'multiply',
+      'subtract',
+      'divide',
+      'dot_product',
+    ];
     return vectorizableOps.includes(operation);
   }
 
@@ -533,7 +568,9 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
    *
    * @param modules
    */
-  private async measureModuleLoadingPerformance(modules: WasmModule[]): Promise<{
+  private async measureModuleLoadingPerformance(
+    modules: WasmModule[],
+  ): Promise<{
     averageLoadTime: number;
     cacheHitRatio: number;
     memoryUsage: number;
@@ -550,7 +587,9 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
         await new Promise((resolve) => setTimeout(resolve, 1));
       } else {
         // Simulate module loading
-        await new Promise((resolve) => setTimeout(resolve, 50 + Math.random() * 100));
+        await new Promise((resolve) =>
+          setTimeout(resolve, 50 + Math.random() * 100),
+        );
       }
 
       totalLoadTime += performance.now() - startTime;
@@ -568,7 +607,9 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
    *
    * @param _module
    */
-  private async compileModule(_module: WasmModule): Promise<WebAssembly.Module> {
+  private async compileModule(
+    _module: WasmModule,
+  ): Promise<WebAssembly.Module> {
     // Mock compilation - return empty module
     return new WebAssembly.Module(
       new Uint8Array([
@@ -580,7 +621,7 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
         0x00,
         0x00,
         0x00, // Minimal WASM header
-      ])
+      ]),
     );
   }
 
@@ -613,7 +654,9 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
 
   private async streamingFetch(_path: string): Promise<Response> {
     // Mock streaming fetch
-    return new Response(new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]));
+    return new Response(
+      new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00]),
+    );
   }
 
   private async measureMemoryUsage(): Promise<number> {
@@ -626,9 +669,15 @@ export class WasmPerformanceOptimizer implements WasmOptimizer {
   }
 
   private async optimizeModuleBundling(_modules: WasmModule[]): Promise<void> {}
-  private async implementLazyModuleLoading(_modules: WasmModule[]): Promise<void> {}
-  private async enableModuleCompression(_modules: WasmModule[]): Promise<void> {}
-  private async implementModuleVersioning(_modules: WasmModule[]): Promise<void> {}
+  private async implementLazyModuleLoading(
+    _modules: WasmModule[],
+  ): Promise<void> {}
+  private async enableModuleCompression(
+    _modules: WasmModule[],
+  ): Promise<void> {}
+  private async implementModuleVersioning(
+    _modules: WasmModule[],
+  ): Promise<void> {}
   private async implementSharedArrayBuffers(_bridge: Bridge): Promise<void> {}
   private async optimizeMemoryLayout(_bridge: Bridge): Promise<void> {}
   private async implementWasmMemoryPooling(): Promise<void> {}

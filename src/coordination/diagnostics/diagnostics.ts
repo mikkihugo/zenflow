@@ -70,10 +70,14 @@ export class ConnectionDiagnostics {
   private logger: LoggerInterface;
   private connectionHistory: ConnectionEvent[];
   private maxHistorySize: number;
-  private activeConnections: Map<string, { startTime: number; [key: string]: any }>;
+  private activeConnections: Map<
+    string,
+    { startTime: number; [key: string]: any }
+  >;
 
   constructor(logger?: LoggerInterface | null) {
-    this.logger = logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger =
+      logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.connectionHistory = [];
     this.maxHistorySize = 100;
     this.activeConnections = new Map();
@@ -89,7 +93,7 @@ export class ConnectionDiagnostics {
   recordEvent(
     connectionId: string,
     event: string,
-    details: Record<string, any> = {}
+    details: Record<string, any> = {},
   ): ConnectionEvent {
     const timestamp = new Date().toISOString();
     const entry = {
@@ -115,7 +119,8 @@ export class ConnectionDiagnostics {
     } else if (event === 'closed' || event === 'failed') {
       const conn = this.activeConnections.get(connectionId);
       if (conn) {
-        (entry as ConnectionEvent & { duration: number }).duration = Date.now() - conn.startTime;
+        (entry as ConnectionEvent & { duration: number }).duration =
+          Date.now() - conn.startTime;
         this.activeConnections.delete(connectionId);
       }
     }
@@ -128,10 +133,13 @@ export class ConnectionDiagnostics {
    * Get connection summary.
    */
   getConnectionSummary(): ConnectionSummary {
-    const events = this.connectionHistory.reduce((acc: Record<string, number>, event) => {
-      acc[event['event']] = (acc[event['event']] || 0) + 1;
-      return acc;
-    }, {});
+    const events = this.connectionHistory.reduce(
+      (acc: Record<string, number>, event) => {
+        acc[event['event']] = (acc[event['event']] || 0) + 1;
+        return acc;
+      },
+      {},
+    );
 
     const failures = this.connectionHistory.filter((e) => e.event === 'failed');
     const recentFailures = failures.slice(-10);
@@ -152,12 +160,17 @@ export class ConnectionDiagnostics {
     const failures = this.connectionHistory.filter((e) => e.event === 'failed');
 
     // Group failures by error type
-    const errorTypes = failures.reduce((acc: Record<string, number>, failure) => {
-      const errorObj = failure.details?.['error'] as { message?: string } | undefined;
-      const error = errorObj?.message || 'Unknown';
-      acc[error] = (acc[error] || 0) + 1;
-      return acc;
-    }, {});
+    const errorTypes = failures.reduce(
+      (acc: Record<string, number>, failure) => {
+        const errorObj = failure.details?.['error'] as
+          | { message?: string }
+          | undefined;
+        const error = errorObj?.message || 'Unknown';
+        acc[error] = (acc[error] || 0) + 1;
+        return acc;
+      },
+      {},
+    );
 
     // Find time patterns
     const hourlyFailures = new Array(24).fill(0);
@@ -178,7 +191,8 @@ export class ConnectionDiagnostics {
       hourlyFailures,
       memoryAtFailure,
       avgMemoryAtFailure:
-        memoryAtFailure.reduce((sum, m) => sum + m.heapUsed, 0) / memoryAtFailure.length,
+        memoryAtFailure.reduce((sum, m) => sum + m.heapUsed, 0) /
+        memoryAtFailure.length,
     };
   }
 
@@ -218,7 +232,10 @@ export class ConnectionDiagnostics {
    * @param summary
    * @param patterns
    */
-  generateRecommendations(summary: ConnectionSummary, patterns: PatternAnalysis): Recommendation[] {
+  generateRecommendations(
+    summary: ConnectionSummary,
+    patterns: PatternAnalysis,
+  ): Recommendation[] {
     const recommendations: Recommendation[] = [];
 
     // High failure rate
@@ -235,7 +252,8 @@ export class ConnectionDiagnostics {
       recommendations.push({
         severity: 'medium',
         issue: 'High memory usage during failures',
-        suggestion: 'Consider increasing memory limits or optimizing memory usage',
+        suggestion:
+          'Consider increasing memory limits or optimizing memory usage',
       });
     }
 
@@ -280,7 +298,8 @@ export class PerformanceDiagnostics {
   private thresholds: Record<string, number>;
 
   constructor(logger?: LoggerInterface | null) {
-    this.logger = logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger =
+      logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.operations = new Map();
     this.thresholds = {
       swarm_init: 1000, // 1 second
@@ -404,7 +423,8 @@ export class SystemDiagnostics {
   // private startTime?: number; // xxx NEEDS_HUMAN: Decide if startTime should be used for monitoring duration
 
   constructor(logger?: LoggerInterface | null) {
-    this.logger = logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
+    this.logger =
+      logger || loggingConfig?.getLogger('diagnostics', { level: 'DEBUG' });
     this.samples = [];
     this.maxSamples = 60; // 1 minute of samples at 1Hz
     this.monitorInterval = null;
@@ -486,11 +506,15 @@ export class SystemDiagnostics {
 
     const latest = this.samples[this.samples.length - 1];
     if (!latest) {
-      return { status: 'unknown', issues: [{ component: 'system', message: 'No latest sample' }] };
+      return {
+        status: 'unknown',
+        issues: [{ component: 'system', message: 'No latest sample' }],
+      };
     }
 
     const avgMemory =
-      this.samples.reduce((sum, s) => sum + s.memory.heapUsed, 0) / this.samples.length;
+      this.samples.reduce((sum, s) => sum + s.memory.heapUsed, 0) /
+      this.samples.length;
 
     let status: 'healthy' | 'warning' | 'critical' | 'unknown' = 'healthy';
     const issues: SystemHealthIssue[] = [];
@@ -507,7 +531,10 @@ export class SystemDiagnostics {
 
     if (avgMemory > 300 * 1024 * 1024) {
       status = 'warning';
-      issues.push({ component: 'memory', message: 'Sustained high memory usage' });
+      issues.push({
+        component: 'memory',
+        message: 'Sustained high memory usage',
+      });
     }
 
     return {
@@ -594,7 +621,9 @@ export class DiagnosticsManager {
    *
    * @param outputPath
    */
-  async generateFullReport(outputPath: string | null = null): Promise<FullDiagnosticReport> {
+  async generateFullReport(
+    outputPath: string | null = null,
+  ): Promise<FullDiagnosticReport> {
     const report = {
       timestamp: new Date().toISOString(),
       connection: this.connection.generateReport(),
@@ -617,7 +646,10 @@ export class DiagnosticsManager {
   /**
    * Collect recent logs.
    */
-  async collectRecentLogs(): Promise<{ message: string; logsEnabled: boolean }> {
+  async collectRecentLogs(): Promise<{
+    message: string;
+    logsEnabled: boolean;
+  }> {
     // This would read from log files if file logging is enabled
     // For now, return a placeholder
     return {

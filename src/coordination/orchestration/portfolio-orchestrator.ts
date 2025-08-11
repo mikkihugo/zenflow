@@ -17,7 +17,10 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type {
   BusinessCase,
   FlowMetrics,
@@ -170,7 +173,11 @@ export interface Investment {
   readonly id: string;
   readonly portfolioItemId: string;
   readonly amount: number;
-  readonly category: 'development' | 'infrastructure' | 'research' | 'marketing';
+  readonly category:
+    | 'development'
+    | 'infrastructure'
+    | 'research'
+    | 'marketing';
   readonly approvalStatus: 'pending' | 'approved' | 'rejected';
   readonly approvedBy?: string;
   readonly approvalDate?: Date;
@@ -219,7 +226,7 @@ export class PortfolioOrchestrator extends EventEmitter {
     eventBus: TypeSafeEventBus,
     memory: MemorySystem,
     gatesManager: WorkflowGatesManager,
-    config: Partial<PortfolioOrchestratorConfig> = {}
+    config: Partial<PortfolioOrchestratorConfig> = {},
   ) {
     super();
 
@@ -274,7 +281,9 @@ export class PortfolioOrchestrator extends EventEmitter {
       this.logger.info('Portfolio Orchestrator initialized successfully');
       this.emit('initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize portfolio orchestrator', { error });
+      this.logger.error('Failed to initialize portfolio orchestrator', {
+        error,
+      });
       throw error;
     }
   }
@@ -309,16 +318,22 @@ export class PortfolioOrchestrator extends EventEmitter {
     title: string,
     businessCase: BusinessCase,
     resourceRequirements: ResourceRequirements,
-    strategicThemeId?: string
+    strategicThemeId?: string,
   ): Promise<PortfolioItem> {
     const portfolioItem: PortfolioItem = {
       id: `portfolio-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title,
       type: 'prd',
       status: 'proposed' as PortfolioItemStatus,
-      priority: this.calculateStrategicPriority(businessCase, resourceRequirements),
+      priority: this.calculateStrategicPriority(
+        businessCase,
+        resourceRequirements,
+      ),
       businessValue: businessCase.marketOpportunity,
-      strategicAlignment: this.calculateStrategicAlignment(strategicThemeId, businessCase),
+      strategicAlignment: this.calculateStrategicAlignment(
+        strategicThemeId,
+        businessCase,
+      ),
       riskScore: this.calculateRiskScore(businessCase.risks),
       resourceRequirements,
       timeline: this.estimatePortfolioTimeline(resourceRequirements),
@@ -336,7 +351,10 @@ export class PortfolioOrchestrator extends EventEmitter {
     this.state.strategicBacklog.push(portfolioItem);
 
     // Create investment gate if threshold exceeded
-    if (resourceRequirements.budgetRequired >= this.config.investmentApprovalThreshold) {
+    if (
+      resourceRequirements.budgetRequired >=
+      this.config.investmentApprovalThreshold
+    ) {
       await this.createInvestmentDecisionGate(portfolioItem);
     }
 
@@ -361,8 +379,14 @@ export class PortfolioOrchestrator extends EventEmitter {
 
     // Sort by strategic value calculation
     this.state.strategicBacklog.sort((a, b) => {
-      const scoreA = this.calculateStrategicScore(a, backlogConfig.prioritizationCriteria);
-      const scoreB = this.calculateStrategicScore(b, backlogConfig.prioritizationCriteria);
+      const scoreA = this.calculateStrategicScore(
+        a,
+        backlogConfig.prioritizationCriteria,
+      );
+      const scoreB = this.calculateStrategicScore(
+        b,
+        backlogConfig.prioritizationCriteria,
+      );
       return scoreB - scoreA;
     });
 
@@ -389,14 +413,19 @@ export class PortfolioOrchestrator extends EventEmitter {
 
     if (filters) {
       if (filters.status) {
-        backlog = backlog.filter((item) => filters.status!.includes(item.status));
+        backlog = backlog.filter((item) =>
+          filters.status!.includes(item.status),
+        );
       }
       if (filters.priority) {
-        backlog = backlog.filter((item) => filters.priority!.includes(item.priority));
+        backlog = backlog.filter((item) =>
+          filters.priority!.includes(item.priority),
+        );
       }
       if (filters.strategicTheme) {
         backlog = backlog.filter(
-          (item) => this.getItemStrategicTheme(item.id) === filters.strategicTheme
+          (item) =>
+            this.getItemStrategicTheme(item.id) === filters.strategicTheme,
         );
       }
     }
@@ -409,11 +438,17 @@ export class PortfolioOrchestrator extends EventEmitter {
    */
   async updateOKRProgress(
     objective: string,
-    keyResultUpdates: Array<{ description: string; current: number; confidence: number }>
+    keyResultUpdates: Array<{
+      description: string;
+      current: number;
+      confidence: number;
+    }>,
   ): Promise<void> {
     if (!this.config.enableOKRIntegration) return;
 
-    const okr = this.state.okrIntegration.find((o) => o.objective === objective);
+    const okr = this.state.okrIntegration.find(
+      (o) => o.objective === objective,
+    );
     if (!okr) {
       this.logger.warn('OKR not found', { objective });
       return;
@@ -421,7 +456,9 @@ export class PortfolioOrchestrator extends EventEmitter {
 
     // Update key results
     for (const update of keyResultUpdates) {
-      const keyResult = okr.keyResults.find((kr) => kr.description === update.description);
+      const keyResult = okr.keyResults.find(
+        (kr) => kr.description === update.description,
+      );
       if (keyResult) {
         (keyResult as any).current = update.current;
         (keyResult as any).confidence = update.confidence;
@@ -431,11 +468,15 @@ export class PortfolioOrchestrator extends EventEmitter {
 
     // Calculate overall progress
     const progress =
-      okr.keyResults.reduce((sum, kr) => sum + kr.current / kr.target, 0) / okr.keyResults.length;
+      okr.keyResults.reduce((sum, kr) => sum + kr.current / kr.target, 0) /
+      okr.keyResults.length;
     (okr as any).progress = Math.min(progress, 1.0);
     (okr as any).lastUpdated = new Date();
 
-    this.logger.info('OKR progress updated', { objective, progress: okr.progress });
+    this.logger.info('OKR progress updated', {
+      objective,
+      progress: okr.progress,
+    });
     this.emit('okr-updated', okr);
   }
 
@@ -453,7 +494,7 @@ export class PortfolioOrchestrator extends EventEmitter {
       themes: string[];
       objectives: string[];
       constraints: string[];
-    }
+    },
   ): Promise<PortfolioItem[]> {
     this.logger.info('Starting vision to PRD decomposition', {
       visionId,
@@ -464,11 +505,14 @@ export class PortfolioOrchestrator extends EventEmitter {
     const decompositionGate = await this.createVisionDecompositionGate(
       visionId,
       visionDescription,
-      strategicContext
+      strategicContext,
     );
 
     // For now, create placeholder PRDs - in full implementation this would be AI-driven
-    const prdConcepts = await this.generatePRDConcepts(visionDescription, strategicContext);
+    const prdConcepts = await this.generatePRDConcepts(
+      visionDescription,
+      strategicContext,
+    );
 
     const portfolioItems: PortfolioItem[] = [];
 
@@ -481,7 +525,7 @@ export class PortfolioOrchestrator extends EventEmitter {
         concept.title,
         concept.businessCase,
         concept.resourceRequirements,
-        concept.strategicThemeId
+        concept.strategicThemeId,
       );
 
       portfolioItems.push(portfolioItem);
@@ -504,7 +548,9 @@ export class PortfolioOrchestrator extends EventEmitter {
   /**
    * Create portfolio workflow stream
    */
-  async createPortfolioWorkflowStream(portfolioItem: PortfolioItem): Promise<string> {
+  async createPortfolioWorkflowStream(
+    portfolioItem: PortfolioItem,
+  ): Promise<string> {
     const streamId = `portfolio-stream-${portfolioItem.id}`;
 
     const stream: WorkflowStream<PortfolioItem> = {
@@ -568,7 +614,9 @@ export class PortfolioOrchestrator extends EventEmitter {
    */
   async allocatePortfolioResources(): Promise<void> {
     const availableResources = await this.calculateAvailableResources();
-    const prioritizedBacklog = await this.getStrategicBacklog({ status: ['approved'] });
+    const prioritizedBacklog = await this.getStrategicBacklog({
+      status: ['approved'],
+    });
 
     let remainingBudget = availableResources.totalBudget;
     let remainingHours = availableResources.totalHours;
@@ -608,7 +656,8 @@ export class PortfolioOrchestrator extends EventEmitter {
       for (const milestone of item.timeline.milestones) {
         if (!milestone.completed && new Date() >= milestone.date) {
           // Check if milestone criteria are met
-          const criteriaMetrics = await this.evaluateMilestoneCriteria(milestone);
+          const criteriaMetrics =
+            await this.evaluateMilestoneCriteria(milestone);
 
           if (criteriaMetrics.allMet) {
             // Mark as completed
@@ -623,7 +672,11 @@ export class PortfolioOrchestrator extends EventEmitter {
             this.emit('milestone-completed', { itemId, milestone });
           } else {
             // Create milestone review gate
-            await this.createMilestoneReviewGate(item, milestone, criteriaMetrics);
+            await this.createMilestoneReviewGate(
+              item,
+              milestone,
+              criteriaMetrics,
+            );
           }
         }
       }
@@ -682,7 +735,7 @@ export class PortfolioOrchestrator extends EventEmitter {
     decision: 'approved' | 'rejected' | 'deferred',
     rationale: string,
     expectedOutcomes: string[],
-    decisionMaker: string
+    decisionMaker: string,
   ): Promise<void> {
     const decisionRecord = {
       gateId,
@@ -709,7 +762,10 @@ export class PortfolioOrchestrator extends EventEmitter {
   /**
    * Generate portfolio performance report
    */
-  async generatePortfolioReport(timeRange?: { start: Date; end: Date }): Promise<PortfolioReport> {
+  async generatePortfolioReport(timeRange?: {
+    start: Date;
+    end: Date;
+  }): Promise<PortfolioReport> {
     const health = await this.calculatePortfolioHealth();
     const metrics = await this.calculatePortfolioMetrics(timeRange);
     const investmentSummary = this.state.investmentTracking;
@@ -723,7 +779,10 @@ export class PortfolioOrchestrator extends EventEmitter {
       investmentSummary,
       okrProgress,
       keyInsights: await this.generateKeyInsights(health, metrics),
-      recommendations: await this.generateStrategicRecommendations(health, metrics),
+      recommendations: await this.generateStrategicRecommendations(
+        health,
+        metrics,
+      ),
     };
 
     this.logger.info('Portfolio report generated', {
@@ -783,7 +842,9 @@ export class PortfolioOrchestrator extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('portfolio-orchestrator:state');
+      const persistedState = await this.memory.retrieve(
+        'portfolio-orchestrator:state',
+      );
       if (persistedState) {
         // Reconstruct Maps from serialized data
         this.state = {
@@ -846,7 +907,7 @@ export class PortfolioOrchestrator extends EventEmitter {
   // Placeholder implementations for complex calculations
   private calculateStrategicPriority(
     businessCase: BusinessCase,
-    resources: ResourceRequirements
+    resources: ResourceRequirements,
   ): PortfolioPriority {
     const value = businessCase.marketOpportunity;
     const cost = resources.budgetRequired;
@@ -860,20 +921,27 @@ export class PortfolioOrchestrator extends EventEmitter {
 
   private calculateStrategicAlignment(
     strategicThemeId: string | undefined,
-    businessCase: BusinessCase
+    businessCase: BusinessCase,
   ): number {
     // Placeholder - would implement theme alignment calculation
     return strategicThemeId ? 0.8 : 0.5;
   }
 
-  private calculateRiskScore(risks: any[]): number {
+  private calculateRiskScore(risks: unknown[]): number {
     // Placeholder - would implement comprehensive risk scoring
-    return risks.reduce((score, risk) => score + risk.probability * risk.impact, 0) * 100;
+    return (
+      risks.reduce((score, risk) => score + risk.probability * risk.impact, 0) *
+      100
+    );
   }
 
-  private estimatePortfolioTimeline(requirements: ResourceRequirements): PortfolioTimeline {
+  private estimatePortfolioTimeline(
+    requirements: ResourceRequirements,
+  ): PortfolioTimeline {
     const startDate = new Date();
-    const endDate = new Date(startDate.getTime() + requirements.developmentHours * 3600000);
+    const endDate = new Date(
+      startDate.getTime() + requirements.developmentHours * 3600000,
+    );
 
     return {
       startDate,
@@ -906,9 +974,11 @@ export class PortfolioOrchestrator extends EventEmitter {
 
   private calculateStrategicScore(
     item: PortfolioItem,
-    criteria: PrioritizationCriterion[]
+    criteria: PrioritizationCriterion[],
   ): number {
-    return item.businessValue * item.strategicAlignment * (1 - item.riskScore / 100);
+    return (
+      item.businessValue * item.strategicAlignment * (1 - item.riskScore / 100)
+    );
   }
 
   private getItemStrategicTheme(itemId: string): string | undefined {
@@ -920,19 +990,24 @@ export class PortfolioOrchestrator extends EventEmitter {
     // Placeholder - would create default themes
   }
 
-  private async createInvestmentDecisionGate(portfolioItem: PortfolioItem): Promise<void> {
+  private async createInvestmentDecisionGate(
+    portfolioItem: PortfolioItem,
+  ): Promise<void> {
     // Would create investment approval gate
   }
 
   private async createVisionDecompositionGate(
     visionId: string,
     description: string,
-    context: any
+    context: unknown,
   ): Promise<void> {
     // Would create vision decomposition approval gate
   }
 
-  private async generatePRDConcepts(vision: string, context: any): Promise<any[]> {
+  private async generatePRDConcepts(
+    vision: string,
+    context: unknown,
+  ): Promise<any[]> {
     // Placeholder - would use AI to generate PRD concepts
     return [];
   }
@@ -946,14 +1021,14 @@ export class PortfolioOrchestrator extends EventEmitter {
 
   private async allocateResourcesToItem(
     itemId: string,
-    requirements: ResourceRequirements
+    requirements: ResourceRequirements,
   ): Promise<void> {
     // Placeholder implementation
   }
 
   private async updatePortfolioItemStatus(
     itemId: string,
-    status: PortfolioItemStatus
+    status: PortfolioItemStatus,
   ): Promise<void> {
     const item = this.state.portfolioItems.get(itemId);
     if (item) {
@@ -964,7 +1039,7 @@ export class PortfolioOrchestrator extends EventEmitter {
   }
 
   private async evaluateMilestoneCriteria(
-    milestone: Milestone
+    milestone: Milestone,
   ): Promise<{ allMet: boolean; details: any }> {
     return { allMet: true, details: {} }; // Placeholder
   }
@@ -972,7 +1047,7 @@ export class PortfolioOrchestrator extends EventEmitter {
   private async createMilestoneReviewGate(
     item: PortfolioItem,
     milestone: Milestone,
-    metrics: any
+    metrics: unknown,
   ): Promise<void> {
     // Would create milestone review gate
   }
@@ -997,25 +1072,35 @@ export class PortfolioOrchestrator extends EventEmitter {
     return 68; // Placeholder
   }
 
-  private async generateHealthRecommendations(scores: any): Promise<HealthRecommendation[]> {
+  private async generateHealthRecommendations(
+    scores: unknown,
+  ): Promise<HealthRecommendation[]> {
     return []; // Placeholder
   }
 
-  private async calculateDecisionImpact(gateId: string, decision: string): Promise<any> {
+  private async calculateDecisionImpact(
+    gateId: string,
+    decision: string,
+  ): Promise<unknown> {
     return {}; // Placeholder
   }
 
-  private async calculatePortfolioMetrics(timeRange?: any): Promise<any> {
+  private async calculatePortfolioMetrics(
+    timeRange?: unknown,
+  ): Promise<unknown> {
     return {}; // Placeholder
   }
 
-  private async generateKeyInsights(health: PortfolioHealth, metrics: any): Promise<string[]> {
+  private async generateKeyInsights(
+    health: PortfolioHealth,
+    metrics: unknown,
+  ): Promise<string[]> {
     return []; // Placeholder
   }
 
   private async generateStrategicRecommendations(
     health: PortfolioHealth,
-    metrics: any
+    metrics: unknown,
   ): Promise<string[]> {
     return []; // Placeholder
   }
@@ -1040,7 +1125,7 @@ export interface PortfolioReport {
   readonly generatedAt: Date;
   readonly timeRange?: { start: Date; end: Date };
   readonly health: PortfolioHealth;
-  readonly metrics: any;
+  readonly metrics: unknown;
   readonly investmentSummary: InvestmentTracking;
   readonly okrProgress: OKRIntegration[];
   readonly keyInsights: string[];

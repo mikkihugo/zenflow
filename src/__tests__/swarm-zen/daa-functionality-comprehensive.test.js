@@ -21,18 +21,38 @@ let daaService;
 try {
   daaService = await import('../src/daa-service.js');
 } catch (_error) {
-  console.warn('Warning: DAA service module not found, using mock implementation');
+  console.warn(
+    'Warning: DAA service module not found, using mock implementation',
+  );
   daaService = {
     default: {
-      initialize: async () => ({ success: true, message: 'DAA service initialized' }),
-      createAgent: async () => ({ success: true, agentId: 'test-daa-agent-001' }),
+      initialize: async () => ({
+        success: true,
+        message: 'DAA service initialized',
+      }),
+      createAgent: async () => ({
+        success: true,
+        agentId: 'test-daa-agent-001',
+      }),
       adaptAgent: async () => ({ success: true, adaptation: 'completed' }),
-      createWorkflow: async () => ({ success: true, workflowId: 'test-workflow-001' }),
+      createWorkflow: async () => ({
+        success: true,
+        workflowId: 'test-workflow-001',
+      }),
       executeWorkflow: async () => ({ success: true, execution: 'started' }),
       shareKnowledge: async () => ({ success: true, sharing: 'completed' }),
-      getLearningStatus: async () => ({ success: true, learning: { status: 'active' } }),
-      analyzeCognitivePattern: async () => ({ success: true, pattern: 'convergent' }),
-      enableMetaLearning: async () => ({ success: true, metaLearning: 'enabled' }),
+      getLearningStatus: async () => ({
+        success: true,
+        learning: { status: 'active' },
+      }),
+      analyzeCognitivePattern: async () => ({
+        success: true,
+        pattern: 'convergent',
+      }),
+      enableMetaLearning: async () => ({
+        success: true,
+        metaLearning: 'enabled',
+      }),
       getPerformanceMetrics: async () => ({ success: true, metrics: {} }),
     },
   };
@@ -80,29 +100,44 @@ class DAAFunctionalityTestSuite {
         enableCoordination: true,
         persistenceMode: 'memory',
       });
-      assert(result.success === true, 'DAA service should initialize successfully');
+      assert(
+        result.success === true,
+        'DAA service should initialize successfully',
+      );
       this.results.coverage.initialization++;
     });
 
-    await this.runTest('DAA Service - Initialization with persistence', async () => {
-      const result = await this.daa.initialize({
-        enableLearning: true,
-        enableCoordination: true,
-        persistenceMode: 'disk',
-      });
-      assert(result.success === true, 'DAA service should initialize with disk persistence');
-      this.results.coverage.initialization++;
-    });
+    await this.runTest(
+      'DAA Service - Initialization with persistence',
+      async () => {
+        const result = await this.daa.initialize({
+          enableLearning: true,
+          enableCoordination: true,
+          persistenceMode: 'disk',
+        });
+        assert(
+          result.success === true,
+          'DAA service should initialize with disk persistence',
+        );
+        this.results.coverage.initialization++;
+      },
+    );
 
-    await this.runTest('DAA Service - Initialization without learning', async () => {
-      const result = await this.daa.initialize({
-        enableLearning: false,
-        enableCoordination: true,
-        persistenceMode: 'auto',
-      });
-      assert(result.success === true, 'DAA service should initialize without learning');
-      this.results.coverage.initialization++;
-    });
+    await this.runTest(
+      'DAA Service - Initialization without learning',
+      async () => {
+        const result = await this.daa.initialize({
+          enableLearning: false,
+          enableCoordination: true,
+          persistenceMode: 'auto',
+        });
+        assert(
+          result.success === true,
+          'DAA service should initialize without learning',
+        );
+        this.results.coverage.initialization++;
+      },
+    );
   }
 
   // Test DAA Agent Management
@@ -118,19 +153,32 @@ class DAAFunctionalityTestSuite {
       this.results.coverage.agentManagement++;
     });
 
-    await this.runTest('Agent Creation - Different cognitive patterns', async () => {
-      const patterns = ['convergent', 'divergent', 'lateral', 'systems', 'critical', 'adaptive'];
+    await this.runTest(
+      'Agent Creation - Different cognitive patterns',
+      async () => {
+        const patterns = [
+          'convergent',
+          'divergent',
+          'lateral',
+          'systems',
+          'critical',
+          'adaptive',
+        ];
 
-      for (const pattern of patterns) {
-        const result = await this.daa.createAgent({
-          id: `test-agent-${pattern}`,
-          cognitivePattern: pattern,
-          enableMemory: true,
-        });
-        assert(result.success === true, `Should create agent with ${pattern} pattern`);
-      }
-      this.results.coverage.agentManagement++;
-    });
+        for (const pattern of patterns) {
+          const result = await this.daa.createAgent({
+            id: `test-agent-${pattern}`,
+            cognitivePattern: pattern,
+            enableMemory: true,
+          });
+          assert(
+            result.success === true,
+            `Should create agent with ${pattern} pattern`,
+          );
+        }
+        this.results.coverage.agentManagement++;
+      },
+    );
 
     await this.runTest('Agent Adaptation - Performance feedback', async () => {
       const result = await this.daa.adaptAgent({
@@ -143,16 +191,25 @@ class DAAFunctionalityTestSuite {
       this.results.coverage.agentManagement++;
     });
 
-    await this.runTest('Agent Adaptation - Low performance feedback', async () => {
-      const result = await this.daa.adaptAgent({
-        agentId: 'test-agent-001',
-        feedback: 'Needs improvement in error handling',
-        performanceScore: 0.3,
-        suggestions: ['Review error handling strategies', 'Increase learning rate'],
-      });
-      assert(result.success === true, 'Should adapt agent for low performance');
-      this.results.coverage.agentManagement++;
-    });
+    await this.runTest(
+      'Agent Adaptation - Low performance feedback',
+      async () => {
+        const result = await this.daa.adaptAgent({
+          agentId: 'test-agent-001',
+          feedback: 'Needs improvement in error handling',
+          performanceScore: 0.3,
+          suggestions: [
+            'Review error handling strategies',
+            'Increase learning rate',
+          ],
+        });
+        assert(
+          result.success === true,
+          'Should adapt agent for low performance',
+        );
+        this.results.coverage.agentManagement++;
+      },
+    );
   }
 
   // Test DAA Workflow Management
@@ -191,24 +248,36 @@ class DAAFunctionalityTestSuite {
       this.results.coverage.workflow++;
     });
 
-    await this.runTest('Workflow Execution - With specific agents', async () => {
-      const result = await this.daa.executeWorkflow({
-        workflowId: 'test-workflow-001',
-        agentIds: ['test-agent-001', 'test-agent-convergent'],
-        parallelExecution: true,
-      });
-      assert(result.success === true, 'Should execute workflow with specific agents');
-      this.results.coverage.workflow++;
-    });
+    await this.runTest(
+      'Workflow Execution - With specific agents',
+      async () => {
+        const result = await this.daa.executeWorkflow({
+          workflowId: 'test-workflow-001',
+          agentIds: ['test-agent-001', 'test-agent-convergent'],
+          parallelExecution: true,
+        });
+        assert(
+          result.success === true,
+          'Should execute workflow with specific agents',
+        );
+        this.results.coverage.workflow++;
+      },
+    );
 
-    await this.runTest('Workflow Execution - Auto agent assignment', async () => {
-      const result = await this.daa.executeWorkflow({
-        workflowId: 'test-workflow-002',
-        parallelExecution: false,
-      });
-      assert(result.success === true, 'Should execute workflow with auto agent assignment');
-      this.results.coverage.workflow++;
-    });
+    await this.runTest(
+      'Workflow Execution - Auto agent assignment',
+      async () => {
+        const result = await this.daa.executeWorkflow({
+          workflowId: 'test-workflow-002',
+          parallelExecution: false,
+        });
+        assert(
+          result.success === true,
+          'Should execute workflow with auto agent assignment',
+        );
+        this.results.coverage.workflow++;
+      },
+    );
   }
 
   // Test DAA Learning and Knowledge Sharing
@@ -221,28 +290,43 @@ class DAAFunctionalityTestSuite {
         knowledgeContent: {
           patterns: ['error-handling', 'performance-optimization'],
           examples: ['try-catch blocks', 'async/await patterns'],
-          bestPractices: ['Always validate inputs', 'Use meaningful variable names'],
+          bestPractices: [
+            'Always validate inputs',
+            'Use meaningful variable names',
+          ],
         },
       });
       assert(result.success === true, 'Should share knowledge between agents');
       this.results.coverage.learning++;
     });
 
-    await this.runTest('Learning Status - Get comprehensive status', async () => {
-      const result = await this.daa.getLearningStatus({
-        agentId: 'test-agent-001',
-        detailed: true,
-      });
-      assert(result.success === true, 'Should return detailed learning status');
-      assert(result.learning !== undefined, 'Should include learning information');
-      this.results.coverage.learning++;
-    });
+    await this.runTest(
+      'Learning Status - Get comprehensive status',
+      async () => {
+        const result = await this.daa.getLearningStatus({
+          agentId: 'test-agent-001',
+          detailed: true,
+        });
+        assert(
+          result.success === true,
+          'Should return detailed learning status',
+        );
+        assert(
+          result.learning !== undefined,
+          'Should include learning information',
+        );
+        this.results.coverage.learning++;
+      },
+    );
 
     await this.runTest('Learning Status - All agents summary', async () => {
       const result = await this.daa.getLearningStatus({
         detailed: false,
       });
-      assert(result.success === true, 'Should return learning status for all agents');
+      assert(
+        result.success === true,
+        'Should return learning status for all agents',
+      );
       this.results.coverage.learning++;
     });
 
@@ -253,45 +337,67 @@ class DAAFunctionalityTestSuite {
         transferMode: 'adaptive',
         agentIds: ['test-agent-001', 'test-agent-systems'],
       });
-      assert(result.success === true, 'Should enable meta-learning between domains');
+      assert(
+        result.success === true,
+        'Should enable meta-learning between domains',
+      );
       this.results.coverage.learning++;
     });
   }
 
   // Test DAA Cognitive Pattern Analysis
   async testDAACognitivePatterns() {
-    await this.runTest('Cognitive Pattern Analysis - Agent analysis', async () => {
-      const result = await this.daa.analyzeCognitivePattern({
-        agentId: 'test-agent-001',
-        analyze: true,
-      });
-      assert(result.success === true, 'Should analyze cognitive patterns');
-      assert(result.pattern !== undefined, 'Should return pattern information');
-      this.results.coverage.cognition++;
-    });
-
-    await this.runTest('Cognitive Pattern Change - Pattern switching', async () => {
-      const result = await this.daa.analyzeCognitivePattern({
-        agentId: 'test-agent-001',
-        pattern: 'lateral',
-        analyze: false,
-      });
-      assert(result.success === true, 'Should change cognitive pattern');
-      this.results.coverage.cognition++;
-    });
-
-    await this.runTest('Cognitive Pattern Analysis - Multiple patterns', async () => {
-      const patterns = ['convergent', 'divergent', 'lateral', 'systems', 'critical', 'adaptive'];
-
-      for (const pattern of patterns) {
+    await this.runTest(
+      'Cognitive Pattern Analysis - Agent analysis',
+      async () => {
         const result = await this.daa.analyzeCognitivePattern({
-          agentId: `test-agent-${pattern}`,
+          agentId: 'test-agent-001',
           analyze: true,
         });
-        assert(result.success === true, `Should analyze ${pattern} pattern`);
-      }
-      this.results.coverage.cognition++;
-    });
+        assert(result.success === true, 'Should analyze cognitive patterns');
+        assert(
+          result.pattern !== undefined,
+          'Should return pattern information',
+        );
+        this.results.coverage.cognition++;
+      },
+    );
+
+    await this.runTest(
+      'Cognitive Pattern Change - Pattern switching',
+      async () => {
+        const result = await this.daa.analyzeCognitivePattern({
+          agentId: 'test-agent-001',
+          pattern: 'lateral',
+          analyze: false,
+        });
+        assert(result.success === true, 'Should change cognitive pattern');
+        this.results.coverage.cognition++;
+      },
+    );
+
+    await this.runTest(
+      'Cognitive Pattern Analysis - Multiple patterns',
+      async () => {
+        const patterns = [
+          'convergent',
+          'divergent',
+          'lateral',
+          'systems',
+          'critical',
+          'adaptive',
+        ];
+
+        for (const pattern of patterns) {
+          const result = await this.daa.analyzeCognitivePattern({
+            agentId: `test-agent-${pattern}`,
+            analyze: true,
+          });
+          assert(result.success === true, `Should analyze ${pattern} pattern`);
+        }
+        this.results.coverage.cognition++;
+      },
+    );
   }
 
   // Test DAA Performance Metrics
@@ -359,17 +465,20 @@ class DAAFunctionalityTestSuite {
       }
     });
 
-    await this.runTest('Error Handling - Invalid cognitive pattern', async () => {
-      try {
-        await this.daa.createAgent({
-          id: 'test-invalid-pattern',
-          cognitivePattern: 'invalid-pattern',
-        });
-        this.results.coverage.errorHandling++;
-      } catch (_error) {
-        this.results.coverage.errorHandling++;
-      }
-    });
+    await this.runTest(
+      'Error Handling - Invalid cognitive pattern',
+      async () => {
+        try {
+          await this.daa.createAgent({
+            id: 'test-invalid-pattern',
+            cognitivePattern: 'invalid-pattern',
+          });
+          this.results.coverage.errorHandling++;
+        } catch (_error) {
+          this.results.coverage.errorHandling++;
+        }
+      },
+    );
 
     await this.runTest('Error Handling - Empty knowledge sharing', async () => {
       try {
@@ -393,7 +502,10 @@ class DAAFunctionalityTestSuite {
         cognitivePattern: 'convergent',
         enableMemory: true,
       });
-      assert(createResult.success === true, 'Should create agent for persistence test');
+      assert(
+        createResult.success === true,
+        'Should create agent for persistence test',
+      );
 
       // Adapt the agent
       const adaptResult = await this.daa.adaptAgent({
@@ -408,7 +520,10 @@ class DAAFunctionalityTestSuite {
         agentId: 'persistence-test-agent',
         detailed: true,
       });
-      assert(statusResult.success === true, 'Should retrieve persisted agent status');
+      assert(
+        statusResult.success === true,
+        'Should retrieve persisted agent status',
+      );
       this.results.coverage.integration++;
     });
 
@@ -423,14 +538,20 @@ class DAAFunctionalityTestSuite {
           bestPractices: ['use descriptive test names', 'test edge cases'],
         },
       });
-      assert(shareResult.success === true, 'Should share knowledge between agents');
+      assert(
+        shareResult.success === true,
+        'Should share knowledge between agents',
+      );
 
       // Verify knowledge was received
       const statusResult = await this.daa.getLearningStatus({
         agentId: 'persistence-test-agent',
         detailed: true,
       });
-      assert(statusResult.success === true, 'Should show updated learning status');
+      assert(
+        statusResult.success === true,
+        'Should show updated learning status',
+      );
       this.results.coverage.integration++;
     });
 
@@ -467,8 +588,14 @@ class DAAFunctionalityTestSuite {
   }
 
   generateReport() {
-    const passRate = ((this.results.passed / this.results.totalTests) * 100).toFixed(1);
-    const totalCoverage = Object.values(this.results.coverage).reduce((a, b) => a + b, 0);
+    const passRate = (
+      (this.results.passed / this.results.totalTests) *
+      100
+    ).toFixed(1);
+    const totalCoverage = Object.values(this.results.coverage).reduce(
+      (a, b) => a + b,
+      0,
+    );
 
     const report = {
       timestamp: new Date().toISOString(),
@@ -505,7 +632,9 @@ class DAAFunctionalityTestSuite {
     }
 
     if (coverage.initialization < 3) {
-      recommendations.push('Add more initialization tests for different configurations');
+      recommendations.push(
+        'Add more initialization tests for different configurations',
+      );
     }
 
     if (coverage.agentManagement < 4) {
@@ -533,11 +662,15 @@ class DAAFunctionalityTestSuite {
     }
 
     if (coverage.integration < 3) {
-      recommendations.push('Enhance integration testing between DAA components');
+      recommendations.push(
+        'Enhance integration testing between DAA components',
+      );
     }
 
     if (recommendations.length === 0) {
-      recommendations.push('Excellent DAA test coverage! Consider adding stress tests.');
+      recommendations.push(
+        'Excellent DAA test coverage! Consider adding stress tests.',
+      );
     }
 
     return recommendations;
@@ -562,7 +695,10 @@ class DAAFunctionalityTestSuite {
     report.recommendations.forEach((_rec) => {});
 
     // Save report to file
-    const reportPath = path.join(__dirname, '../test-reports/daa-functionality-test-report.json');
+    const reportPath = path.join(
+      __dirname,
+      '../test-reports/daa-functionality-test-report.json',
+    );
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
 

@@ -51,7 +51,8 @@ export class AxDSPyIntegration {
 
       // Configure language model - prefer GitHub Models (free) over OpenAI
       const githubToken = process.env.GITHUB_TOKEN;
-      const openaiKey = process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY;
+      const openaiKey =
+        process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY;
 
       if (githubToken) {
         // Use GitHub Models (free access to various models)
@@ -73,19 +74,21 @@ export class AxDSPyIntegration {
         });
         console.log('   🤖 Using OpenAI with gpt-4o-mini');
       } else {
-        throw new Error('No API key available. Set GITHUB_TOKEN (free) or OPENAI_API_KEY');
+        throw new Error(
+          'No API key available. Set GITHUB_TOKEN (free) or OPENAI_API_KEY',
+        );
       }
 
       // Create error diagnosis DSPy program with correct ax signature
       this.errorDiagnosisProgram = ax(
         'errorMessages:string "TypeScript error messages", fileContent:string "File content to analyze" -> analysis:string "Root cause analysis", strategy:string "Repair strategy", confidence:number "Confidence score 0-1"',
-        this.llm
+        this.llm,
       );
 
       // Create code fixing DSPy program with correct ax signature
       this.codeFixingProgram = ax(
         'codeInput:string "Original TypeScript code", errorAnalysis:string "Error analysis", repairStrategy:string "Repair strategy" -> fixedCode:string "Fixed TypeScript code", explanation:string "Explanation of changes"',
-        this.llm
+        this.llm,
       );
 
       console.log('🧠 Ax DSPy Integration initialized with gpt-4o-mini');
@@ -119,10 +122,18 @@ export class AxDSPyIntegration {
       console.log(`   🔍 Processing ${errors.length} errors`);
 
       // Check pattern cache first
-      const patternKey = this.generatePatternKey(errors, path.extname(filePath));
+      const patternKey = this.generatePatternKey(
+        errors,
+        path.extname(filePath),
+      );
       if (this.patternCache.has(patternKey)) {
         console.log(`   ⚡ PATTERN CACHE: Using learned fix`);
-        return await this.applyLearnedPattern(filePath, patternKey, fileContent, startTime);
+        return await this.applyLearnedPattern(
+          filePath,
+          patternKey,
+          fileContent,
+          startTime,
+        );
       }
 
       // Step 1: Diagnose errors using DSPy
@@ -132,8 +143,12 @@ export class AxDSPyIntegration {
         fileContent: this.truncateFileContext(fileContent),
       });
 
-      console.log(`   🎯 Confidence: ${((diagnosisResult.confidence || 0.7) * 100).toFixed(1)}%`);
-      console.log(`   📝 Strategy: ${(diagnosisResult.strategy || '').substring(0, 60)}...`);
+      console.log(
+        `   🎯 Confidence: ${((diagnosisResult.confidence || 0.7) * 100).toFixed(1)}%`,
+      );
+      console.log(
+        `   📝 Strategy: ${(diagnosisResult.strategy || '').substring(0, 60)}...`,
+      );
 
       // Step 2: Generate fixed code using DSPy
       const fixingResult = await this.codeFixingProgram({
@@ -159,7 +174,9 @@ export class AxDSPyIntegration {
       this.totalCost += cost;
       this.updateAverageTime(duration);
 
-      console.log(`   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(3)})`);
+      console.log(
+        `   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(3)})`,
+      );
 
       // Save patterns periodically
       if (this.successCount % 3 === 0) {
@@ -211,7 +228,11 @@ export class AxDSPyIntegration {
     const patterns = {
       'module-resolution': ['Cannot find module', 'Module not found'],
       'export-members': ['has no exported member', 'not exported'],
-      'missing-properties': ['Property', 'does not exist', 'Property does not exist'],
+      'missing-properties': [
+        'Property',
+        'does not exist',
+        'Property does not exist',
+      ],
       'type-assignment': ['is not assignable to', 'Type mismatch'],
       'duplicate-ids': ['Duplicate identifier', 'already declared'],
       'optional-properties': ['exactOptionalPropertyTypes', 'undefined'],
@@ -275,7 +296,7 @@ export class AxDSPyIntegration {
       this.updateAverageTime(duration);
 
       console.log(
-        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (cost: $${cost.toFixed(3)}) - Used ${pattern.usageCount}x`
+        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (cost: $${cost.toFixed(3)}) - Used ${pattern.usageCount}x`,
       );
 
       return {
@@ -301,8 +322,12 @@ export class AxDSPyIntegration {
 
     // Try to keep imports and the first part of the file
     const lines = content.split('\n');
-    const importLines = lines.filter((line) => line.trim().startsWith('import'));
-    const otherLines = lines.filter((line) => !line.trim().startsWith('import'));
+    const importLines = lines.filter((line) =>
+      line.trim().startsWith('import'),
+    );
+    const otherLines = lines.filter(
+      (line) => !line.trim().startsWith('import'),
+    );
 
     let result = importLines.join('\n') + '\n\n';
     const remaining = maxChars - result.length;
@@ -391,8 +416,10 @@ export class AxDSPyIntegration {
       avgExecutionTime: this.avgExecutionTime,
       cacheHitRate:
         this.successCount > 0
-          ? Array.from(this.patternCache.values()).reduce((sum, p) => sum + p.usageCount, 0) /
-            this.successCount
+          ? Array.from(this.patternCache.values()).reduce(
+              (sum, p) => sum + p.usageCount,
+              0,
+            ) / this.successCount
           : 0,
     };
   }
@@ -407,8 +434,12 @@ export class AxDSPyIntegration {
     console.log(`   🧠 Patterns Learned: ${stats.patternsLearned}`);
     console.log(`   💰 Total Cost: $${stats.totalCost.toFixed(3)}`);
     console.log(`   📈 Avg Cost/Fix: $${stats.avgCost.toFixed(3)}`);
-    console.log(`   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`);
-    console.log(`   🔄 Cache Hit Rate: ${(stats.cacheHitRate * 100).toFixed(1)}%`);
+    console.log(
+      `   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`,
+    );
+    console.log(
+      `   🔄 Cache Hit Rate: ${(stats.cacheHitRate * 100).toFixed(1)}%`,
+    );
   }
 
   /**

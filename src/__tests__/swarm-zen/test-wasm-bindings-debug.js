@@ -13,7 +13,12 @@ const __dirname = path.dirname(__filename);
 async function testWasmDirectly() {
   try {
     // Path to WASM file
-    const wasmPath = path.join(__dirname, '..', 'wasm', 'ruv_swarm_wasm_bg.wasm');
+    const wasmPath = path.join(
+      __dirname,
+      '..',
+      'wasm',
+      'ruv_swarm_wasm_bg.wasm',
+    );
 
     // Check if file exists
     try {
@@ -35,14 +40,20 @@ async function testWasmDirectly() {
     };
 
     try {
-      const { instance, module } = await WebAssembly.instantiate(wasmBuffer, imports);
+      const { instance, module } = await WebAssembly.instantiate(
+        wasmBuffer,
+        imports,
+      );
     } catch (instantiateError) {
-      console.error('❌ WebAssembly.instantiate failed:', instantiateError.message);
+      console.error(
+        '❌ WebAssembly.instantiate failed:',
+        instantiateError.message,
+      );
 
       // Parse the error to find missing imports
       if (instantiateError.message.includes('Import #')) {
         const importMatch = instantiateError.message.match(
-          /Import #(\d+) module="([^"]+)" function="([^"]+)"/
+          /Import #(\d+) module="([^"]+)" function="([^"]+)"/,
         );
         if (importMatch) {
         }
@@ -61,7 +72,9 @@ async function testWasmDirectly() {
         });
       });
 
-      for (const [_moduleName, moduleImports] of Object.entries(importsByModule)) {
+      for (const [_moduleName, moduleImports] of Object.entries(
+        importsByModule,
+      )) {
         moduleImports.slice(0, 10).forEach((_imp) => {});
         if (moduleImports.length > 10) {
         }

@@ -20,10 +20,14 @@ interface VectorSearchResult<T> {
 
 interface VectorRepository {
   cluster(options: any): Promise<any>;
-  similaritySearch<T>(vector: number[], options: any): Promise<VectorSearchResult<T>[]>;
-  addVectors(
-    vectors: VectorDocument<any>[]
-  ): Promise<{ inserted: number; errors: Array<{ id: string | number; error: string }> }>;
+  similaritySearch<T>(
+    vector: number[],
+    options: any,
+  ): Promise<VectorSearchResult<T>[]>;
+  addVectors(vectors: VectorDocument<any>[]): Promise<{
+    inserted: number;
+    errors: Array<{ id: string | number; error: string }>;
+  }>;
   updateVector(id: string | number, vector: number[]): Promise<void>;
   getVectorStats(): Promise<{
     totalVectors: number;
@@ -52,7 +56,11 @@ export class VectorDao<T = any> extends BaseDao<T> {
   }
   private vectorRepository: VectorRepository;
 
-  constructor(repository: any, vectorRepository: VectorRepository, logger: ILogger) {
+  constructor(
+    repository: any,
+    vectorRepository: VectorRepository,
+    logger: ILogger,
+  ) {
     super(repository, logger, 'vectors');
     this.vectorRepository = vectorRepository;
   }
@@ -63,8 +71,13 @@ export class VectorDao<T = any> extends BaseDao<T> {
    * @param analysisType
    * @param parameters
    */
-  async vectorAnalytics(analysisType: string, parameters?: Record<string, any>): Promise<any> {
-    this.logger.debug(`Executing vector analytics: ${analysisType}`, { parameters });
+  async vectorAnalytics(
+    analysisType: string,
+    parameters?: Record<string, any>,
+  ): Promise<any> {
+    this.logger.debug(`Executing vector analytics: ${analysisType}`, {
+      parameters,
+    });
 
     try {
       switch (analysisType) {
@@ -80,7 +93,9 @@ export class VectorDao<T = any> extends BaseDao<T> {
           return await this.detectOutliers(parameters?.['threshold'] || 0.1);
 
         case 'similarity_distribution':
-          return await this.analyzeSimilarityDistribution(parameters?.['sampleSize'] || 1000);
+          return await this.analyzeSimilarityDistribution(
+            parameters?.['sampleSize'] || 1000,
+          );
 
         case 'vector_quality':
           return await this.analyzeVectorQuality();
@@ -94,7 +109,7 @@ export class VectorDao<T = any> extends BaseDao<T> {
     } catch (error) {
       this.logger.error(`Vector analytics failed: ${error}`);
       throw new Error(
-        `Vector analytics failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Vector analytics failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -109,14 +124,14 @@ export class VectorDao<T = any> extends BaseDao<T> {
   async bulkVectorOperations(
     vectors: VectorDocument<T>[],
     operation: 'insert' | 'update' | 'upsert',
-    batchSize: number = 100
+    batchSize: number = 100,
   ): Promise<{
     successful: number;
     failed: number;
     errors: Array<{ id: string | number; error: string }>;
   }> {
     this.logger.debug(
-      `Bulk ${operation} for ${vectors.length} vectors with batch size: ${batchSize}`
+      `Bulk ${operation} for ${vectors.length} vectors with batch size: ${batchSize}`,
     );
 
     const results = {
@@ -138,7 +153,10 @@ export class VectorDao<T = any> extends BaseDao<T> {
           // Handle batch updates
           for (const vector of batch) {
             try {
-              await this.vectorRepository.updateVector(vector.id, vector.vector);
+              await this.vectorRepository.updateVector(
+                vector.id,
+                vector.vector,
+              );
               results.successful++;
             } catch (error) {
               results.failed++;
@@ -154,7 +172,10 @@ export class VectorDao<T = any> extends BaseDao<T> {
             try {
               const exists = await this.exists(vector.id);
               if (exists) {
-                await this.vectorRepository.updateVector(vector.id, vector.vector);
+                await this.vectorRepository.updateVector(
+                  vector.id,
+                  vector.vector,
+                );
               } else {
                 await this.vectorRepository.addVectors([vector]);
               }
@@ -181,7 +202,7 @@ export class VectorDao<T = any> extends BaseDao<T> {
     }
 
     this.logger.debug(
-      `Bulk ${operation} completed: ${results?.successful} successful, ${results?.failed} failed`
+      `Bulk ${operation} completed: ${results?.successful} successful, ${results?.failed} failed`,
     );
     return results;
   }
@@ -203,11 +224,14 @@ export class VectorDao<T = any> extends BaseDao<T> {
       limit?: number;
       diversityFactor?: number;
       minSimilarity?: number;
-    }
+    },
   ): Promise<VectorSearchResult<T>[]> {
-    this.logger.debug(`Generating recommendations from ${baseVectors.length} base vectors`, {
-      options,
-    });
+    this.logger.debug(
+      `Generating recommendations from ${baseVectors.length} base vectors`,
+      {
+        options,
+      },
+    );
 
     try {
       // Calculate centroid or weighted average of base vectors
@@ -222,7 +246,9 @@ export class VectorDao<T = any> extends BaseDao<T> {
       // Filter out excluded IDs
       let filtered = results;
       if (options?.excludeIds && options?.excludeIds.length > 0) {
-        filtered = results?.filter((result) => !options?.excludeIds?.includes(result?.id));
+        filtered = results?.filter(
+          (result) => !options?.excludeIds?.includes(result?.id),
+        );
       }
 
       // Apply diversity if requested
@@ -233,12 +259,14 @@ export class VectorDao<T = any> extends BaseDao<T> {
       // Limit results
       const finalResults = filtered.slice(0, options?.limit || 10);
 
-      this.logger.debug(`Recommendations generated: ${finalResults.length} results`);
+      this.logger.debug(
+        `Recommendations generated: ${finalResults.length} results`,
+      );
       return finalResults;
     } catch (error) {
       this.logger.error(`Recommendation generation failed: ${error}`);
       throw new Error(
-        `Recommendation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Recommendation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -246,7 +274,12 @@ export class VectorDao<T = any> extends BaseDao<T> {
   /**
    * Get database-specific metadata with vector information.
    */
-  protected getDatabaseType(): 'relational' | 'graph' | 'vector' | 'memory' | 'coordination' {
+  protected getDatabaseType():
+    | 'relational'
+    | 'graph'
+    | 'vector'
+    | 'memory'
+    | 'coordination' {
     return 'vector';
   }
 
@@ -321,7 +354,7 @@ export class VectorDao<T = any> extends BaseDao<T> {
     options?: {
       strategy?: string;
       weights?: number[];
-    }
+    },
   ): VectorSearchResult<T>[] {
     const strategy = options?.strategy || 'average';
     const weights = options?.weights || new Array(results.length).fill(1);
@@ -336,7 +369,9 @@ export class VectorDao<T = any> extends BaseDao<T> {
           if (!allResults?.has(result?.id)) {
             allResults?.set(result?.id, []);
           }
-          allResults?.get(result?.id)?.push({ ...result, score: result?.score * weights[i] });
+          allResults
+            ?.get(result?.id)
+            ?.push({ ...result, score: result?.score * weights[i] });
         }
       }
     }
@@ -351,10 +386,14 @@ export class VectorDao<T = any> extends BaseDao<T> {
           combinedScore = Math.max(...resultList?.map((r) => r.score));
           break;
         case 'weighted':
-          combinedScore = resultList?.reduce((sum, r) => sum + r.score, 0) / resultList.length;
+          combinedScore =
+            resultList?.reduce((sum, r) => sum + r.score, 0) /
+            resultList.length;
           break;
         default: // average
-          combinedScore = resultList?.reduce((sum, r) => sum + r.score, 0) / resultList.length;
+          combinedScore =
+            resultList?.reduce((sum, r) => sum + r.score, 0) /
+            resultList.length;
       }
 
       const firstResult = resultList?.[0];
@@ -374,7 +413,9 @@ export class VectorDao<T = any> extends BaseDao<T> {
   private async detectOutliers(threshold: number): Promise<any> {
     // Simplified outlier detection
     const allEntities = await this.findAll({ limit: 1000 });
-    const vectors = allEntities.map((entity) => this.extractVectorFromEntity(entity));
+    const vectors = allEntities.map((entity) =>
+      this.extractVectorFromEntity(entity),
+    );
 
     // Calculate mean vector
     const mean = this.calculateCentroid(vectors);
@@ -399,21 +440,31 @@ export class VectorDao<T = any> extends BaseDao<T> {
     };
   }
 
-  private async analyzeSimilarityDistribution(sampleSize: number): Promise<any> {
+  private async analyzeSimilarityDistribution(
+    sampleSize: number,
+  ): Promise<any> {
     const entities = await this.findAll({ limit: sampleSize });
-    const vectors = entities.map((entity) => this.extractVectorFromEntity(entity));
+    const vectors = entities.map((entity) =>
+      this.extractVectorFromEntity(entity),
+    );
 
     const similarities: number[] = [];
 
     // Sample pairs for similarity calculation
-    const samplePairs = Math.min(1000, (vectors.length * (vectors.length - 1)) / 2);
+    const samplePairs = Math.min(
+      1000,
+      (vectors.length * (vectors.length - 1)) / 2,
+    );
 
     for (let i = 0; i < samplePairs; i++) {
       const idx1 = Math.floor(Math.random() * vectors.length);
       const idx2 = Math.floor(Math.random() * vectors.length);
 
       if (idx1 !== idx2) {
-        const similarity = this.cosineSimilarity(vectors[idx1] || [], vectors[idx2] || []);
+        const similarity = this.cosineSimilarity(
+          vectors[idx1] || [],
+          vectors[idx2] || [],
+        );
         similarities.push(similarity);
       }
     }
@@ -422,7 +473,9 @@ export class VectorDao<T = any> extends BaseDao<T> {
       mean: similarities.reduce((a, b) => a + b, 0) / similarities.length,
       min: Math.min(...similarities),
       max: Math.max(...similarities),
-      median: similarities.sort((a, b) => a - b)[Math.floor(similarities.length / 2)],
+      median: similarities.sort((a, b) => a - b)[
+        Math.floor(similarities.length / 2)
+      ],
       sampleSize: similarities.length,
     };
   }
@@ -470,7 +523,7 @@ export class VectorDao<T = any> extends BaseDao<T> {
 
   private applyDiversity(
     results: VectorSearchResult<T>[],
-    diversityFactor: number
+    diversityFactor: number,
   ): VectorSearchResult<T>[] {
     // Simple diversity algorithm - select results that are different from each other
     const diverse: VectorSearchResult<T>[] = [];
@@ -481,7 +534,10 @@ export class VectorDao<T = any> extends BaseDao<T> {
 
       for (const existing of diverse) {
         if (result?.vector && existing.vector) {
-          const similarity = this.cosineSimilarity(result?.vector, existing.vector);
+          const similarity = this.cosineSimilarity(
+            result?.vector,
+            existing.vector,
+          );
           if (similarity > threshold) {
             isDiverse = false as boolean;
             break;

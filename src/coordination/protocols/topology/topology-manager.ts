@@ -113,8 +113,11 @@ export class TopologyManager extends EventEmitter {
   private nodes = new Map<string, NetworkNode>();
   private currentConfig: TopologyConfig;
   private metrics: TopologyMetrics;
-  private topologyHistory: Array<{ topology: TopologyType; timestamp: Date; performance: number }> =
-    [];
+  private topologyHistory: Array<{
+    topology: TopologyType;
+    timestamp: Date;
+    performance: number;
+  }> = [];
   private adaptationEngine: TopologyAdaptationEngine;
   private networkOptimizer: NetworkOptimizer;
   private faultDetector: FaultDetector;
@@ -125,7 +128,7 @@ export class TopologyManager extends EventEmitter {
   constructor(
     initialConfig: TopologyConfig,
     private logger: ILogger,
-    private eventBus: IEventBus
+    private eventBus: IEventBus,
   ) {
     super();
     this.currentConfig = initialConfig;
@@ -181,7 +184,10 @@ export class TopologyManager extends EventEmitter {
       capabilities: nodeConfig?.capabilities,
       connections: new Map(),
       metrics: this.initializeNodeMetrics(),
-      location: nodeConfig?.location || { x: Math.random() * 100, y: Math.random() * 100 },
+      location: nodeConfig?.location || {
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+      },
       lastSeen: new Date(),
       health: 1.0,
     };
@@ -237,7 +243,7 @@ export class TopologyManager extends EventEmitter {
       this.currentConfig,
       this.nodes,
       this.metrics,
-      this.topologyHistory
+      this.topologyHistory,
     );
   }
 
@@ -247,7 +253,10 @@ export class TopologyManager extends EventEmitter {
    * @param targetTopology
    * @param force
    */
-  async migrateTopology(targetTopology: TopologyType, force = false): Promise<boolean> {
+  async migrateTopology(
+    targetTopology: TopologyType,
+    force = false,
+  ): Promise<boolean> {
     const decision = await this.getTopologyDecision();
 
     if (!force && decision.riskLevel === 'high') {
@@ -262,7 +271,7 @@ export class TopologyManager extends EventEmitter {
     const migrationPlan = await this.migrationController.createMigrationPlan(
       this.currentConfig,
       { ...this.currentConfig, type: targetTopology },
-      this.nodes
+      this.nodes,
     );
 
     return await this.executeMigration(migrationPlan);
@@ -272,8 +281,19 @@ export class TopologyManager extends EventEmitter {
    * Get network topology visualization data.
    */
   getTopologyVisualization(): {
-    nodes: Array<{ id: string; type: string; x: number; y: number; health: number }>;
-    edges: Array<{ source: string; target: string; quality: number; type: string }>;
+    nodes: Array<{
+      id: string;
+      type: string;
+      x: number;
+      y: number;
+      health: number;
+    }>;
+    edges: Array<{
+      source: string;
+      target: string;
+      quality: number;
+      type: string;
+    }>;
     metrics: TopologyMetrics;
   } {
     const nodes = Array.from(this.nodes.values()).map((node) => ({
@@ -284,7 +304,12 @@ export class TopologyManager extends EventEmitter {
       health: node?.health,
     }));
 
-    const edges: Array<{ source: string; target: string; quality: number; type: string }> = [];
+    const edges: Array<{
+      source: string;
+      target: string;
+      quality: number;
+      type: string;
+    }> = [];
     for (const node of this.nodes.values()) {
       for (const [targetId, connection] of node?.connections) {
         edges.push({
@@ -392,7 +417,7 @@ export class TopologyManager extends EventEmitter {
     const n = nodes.length;
     const dist = Array(n)
       .fill(null)
-      .map(() => Array(n).fill(Infinity));
+      .map(() => Array(n).fill(Number.POSITIVE_INFINITY));
     const nodeIds = nodes.map((n) => n.id);
 
     // Initialize distances
@@ -431,7 +456,7 @@ export class TopologyManager extends EventEmitter {
       const distI = dist[i];
       if (!distI) continue;
       for (let j = 0; j < n; j++) {
-        if (distI[j] !== Infinity && distI[j] > maxDist) {
+        if (distI[j] !== Number.POSITIVE_INFINITY && distI[j] > maxDist) {
           maxDist = distI[j];
         }
       }
@@ -445,7 +470,7 @@ export class TopologyManager extends EventEmitter {
     const n = nodes.length;
     const dist = Array(n)
       .fill(null)
-      .map(() => Array(n).fill(Infinity));
+      .map(() => Array(n).fill(Number.POSITIVE_INFINITY));
     const nodeIds = nodes.map((n) => n.id);
 
     for (let i = 0; i < n; i++) {
@@ -465,9 +490,9 @@ export class TopologyManager extends EventEmitter {
     for (let k = 0; k < n; k++) {
       for (let i = 0; i < n; i++) {
         for (let j = 0; j < n; j++) {
-          const distIK = dist[i]?.[k] ?? Infinity;
-          const distKJ = dist[k]?.[j] ?? Infinity;
-          const distIJ = dist[i]?.[j] ?? Infinity;
+          const distIK = dist[i]?.[k] ?? Number.POSITIVE_INFINITY;
+          const distKJ = dist[k]?.[j] ?? Number.POSITIVE_INFINITY;
+          const distIJ = dist[i]?.[j] ?? Number.POSITIVE_INFINITY;
           if (distIK + distKJ < distIJ && dist[i]) {
             dist[i]![j] = distIK + distKJ;
           }
@@ -480,7 +505,7 @@ export class TopologyManager extends EventEmitter {
     for (let i = 0; i < n; i++) {
       for (let j = i + 1; j < n; j++) {
         const distance = dist[i]?.[j];
-        if (distance !== undefined && distance !== Infinity) {
+        if (distance !== undefined && distance !== Number.POSITIVE_INFINITY) {
           totalDistance += distance;
           pathCount++;
         }
@@ -546,7 +571,9 @@ export class TopologyManager extends EventEmitter {
 
     if (avgLoad === 0) return 1;
 
-    const variance = loads.reduce((sum, load) => sum + (load - avgLoad) ** 2, 0) / loads.length;
+    const variance =
+      loads.reduce((sum, load) => sum + (load - avgLoad) ** 2, 0) /
+      loads.length;
     const standardDeviation = Math.sqrt(variance);
 
     // Normalize: lower deviation = better balance
@@ -560,10 +587,14 @@ export class TopologyManager extends EventEmitter {
     for (const node of nodes) {
       for (const connection of node?.connections?.values()) {
         const latencyScore = Math.max(0, 1 - connection.quality.latency / 1000); // Normalize to 1s max
-        const bandwidthScore = Math.min(1, connection.quality.bandwidth / 1000000); // Normalize to 1Mbps max
+        const bandwidthScore = Math.min(
+          1,
+          connection.quality.bandwidth / 1000000,
+        ); // Normalize to 1Mbps max
         const reliabilityScore = connection.quality.reliability;
 
-        const efficiency = (latencyScore + bandwidthScore + reliabilityScore) / 3;
+        const efficiency =
+          (latencyScore + bandwidthScore + reliabilityScore) / 3;
         totalEfficiency += efficiency;
         connectionCount++;
       }
@@ -607,7 +638,11 @@ export class TopologyManager extends EventEmitter {
     return 1 / components;
   }
 
-  private dfsVisit(node: NetworkNode, allNodes: NetworkNode[], visited: Set<string>): void {
+  private dfsVisit(
+    node: NetworkNode,
+    allNodes: NetworkNode[],
+    visited: Set<string>,
+  ): void {
     visited.add(node?.id);
 
     for (const [neighborId] of node?.connections) {
@@ -653,7 +688,8 @@ export class TopologyManager extends EventEmitter {
     if (!this.currentConfig.adaptation.enabled) return;
 
     const now = Date.now();
-    if (now - this.lastMigration < this.currentConfig.adaptation.cooldownPeriod) return;
+    if (now - this.lastMigration < this.currentConfig.adaptation.cooldownPeriod)
+      return;
 
     const decision = await this.getTopologyDecision();
 
@@ -693,7 +729,10 @@ export class TopologyManager extends EventEmitter {
   }
 
   private async handleUnhealthyNode(node: NetworkNode): Promise<void> {
-    this.logger.warn('Unhealthy node detected', { nodeId: node?.id, health: node?.health });
+    this.logger.warn('Unhealthy node detected', {
+      nodeId: node?.id,
+      health: node?.health,
+    });
     this.emit('node:unhealthy', { nodeId: node?.id, health: node?.health });
 
     // Implement recovery strategies
@@ -703,7 +742,10 @@ export class TopologyManager extends EventEmitter {
   private async attemptNodeRecovery(node: NetworkNode): Promise<void> {
     // Try to establish alternative connections
     const strategy = this.getConnectionStrategy(this.currentConfig.type);
-    const newConnections = await strategy.establishConnections(node, this.nodes);
+    const newConnections = await strategy.establishConnections(
+      node,
+      this.nodes,
+    );
 
     for (const connection of newConnections) {
       if (!node?.connections?.has(connection.targetId)) {
@@ -723,12 +765,17 @@ export class TopologyManager extends EventEmitter {
     }, 1000);
   }
 
-  private async executeMigration(migrationPlan: MigrationPlan): Promise<boolean> {
+  private async executeMigration(
+    migrationPlan: MigrationPlan,
+  ): Promise<boolean> {
     try {
       this.lastMigration = Date.now();
       this.logger.info('Starting topology migration', { plan: migrationPlan });
 
-      const success = await this.migrationController.executeMigration(migrationPlan, this.nodes);
+      const success = await this.migrationController.executeMigration(
+        migrationPlan,
+        this.nodes,
+      );
 
       if (success) {
         this.currentConfig.type = migrationPlan.targetTopology;
@@ -793,7 +840,10 @@ export class TopologyManager extends EventEmitter {
         connectivity,
       });
 
-      await this.networkOptimizer.repairFragmentation(this.nodes, this.currentConfig);
+      await this.networkOptimizer.repairFragmentation(
+        this.nodes,
+        this.currentConfig,
+      );
     }
   }
 
@@ -846,14 +896,14 @@ export class TopologyManager extends EventEmitter {
 interface ConnectionStrategy {
   establishConnections(
     node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]>;
 }
 
 class MeshConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     node: NetworkNode,
-    allNodes: Map<string, NetworkNode>
+    allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Full mesh - connect to all other nodes
     const connections: Connection[] = [];
@@ -874,10 +924,13 @@ class MeshConnectionStrategy implements ConnectionStrategy {
     return connections;
   }
 
-  private calculateInitialQuality(source: NetworkNode, target: NetworkNode): ConnectionQuality {
+  private calculateInitialQuality(
+    source: NetworkNode,
+    target: NetworkNode,
+  ): ConnectionQuality {
     const distance = Math.sqrt(
       (source.location.x - target?.location?.x) ** 2 +
-        (source.location.y - target?.location?.y) ** 2
+        (source.location.y - target?.location?.y) ** 2,
     );
 
     return {
@@ -904,7 +957,7 @@ class MeshConnectionStrategy implements ConnectionStrategy {
 class HierarchicalConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Connect based on hierarchical structure
     const connections: Connection[] = [];
@@ -916,7 +969,7 @@ class HierarchicalConnectionStrategy implements ConnectionStrategy {
 class RingConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Connect to immediate neighbors in ring
     const connections: Connection[] = [];
@@ -928,7 +981,7 @@ class RingConnectionStrategy implements ConnectionStrategy {
 class StarConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Connect based on star topology (hub and spokes)
     const connections: Connection[] = [];
@@ -940,7 +993,7 @@ class StarConnectionStrategy implements ConnectionStrategy {
 class HybridConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Adaptive connection strategy
     const connections: Connection[] = [];
@@ -952,7 +1005,7 @@ class HybridConnectionStrategy implements ConnectionStrategy {
 class SmallWorldConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Small-world network (local clusters + long-range connections)
     const connections: Connection[] = [];
@@ -964,7 +1017,7 @@ class SmallWorldConnectionStrategy implements ConnectionStrategy {
 class ScaleFreeConnectionStrategy implements ConnectionStrategy {
   async establishConnections(
     _node: NetworkNode,
-    _allNodes: Map<string, NetworkNode>
+    _allNodes: Map<string, NetworkNode>,
   ): Promise<Connection[]> {
     // Scale-free network (preferential attachment)
     const connections: Connection[] = [];
@@ -978,10 +1031,19 @@ class TopologyAdaptationEngine {
     currentConfig: TopologyConfig,
     nodes: Map<string, NetworkNode>,
     metrics: TopologyMetrics,
-    history: Array<{ topology: TopologyType; timestamp: Date; performance: number }>
+    history: Array<{
+      topology: TopologyType;
+      timestamp: Date;
+      performance: number;
+    }>,
   ): Promise<TopologyDecision> {
     // ML-based topology analysis
-    const analysis = await this.performTopologyAnalysis(currentConfig, nodes, metrics, history);
+    const analysis = await this.performTopologyAnalysis(
+      currentConfig,
+      nodes,
+      metrics,
+      history,
+    );
 
     return {
       currentTopology: currentConfig?.type,
@@ -998,7 +1060,11 @@ class TopologyAdaptationEngine {
     config: TopologyConfig,
     _nodes: Map<string, NetworkNode>,
     _metrics: TopologyMetrics,
-    _history: Array<{ topology: TopologyType; timestamp: Date; performance: number }>
+    _history: Array<{
+      topology: TopologyType;
+      timestamp: Date;
+      performance: number;
+    }>,
   ): Promise<{
     recommendedTopology: TopologyType;
     confidence: number;
@@ -1022,7 +1088,10 @@ class TopologyAdaptationEngine {
 }
 
 class NetworkOptimizer {
-  async optimize(nodes: Map<string, NetworkNode>, _config: TopologyConfig): Promise<void> {
+  async optimize(
+    nodes: Map<string, NetworkNode>,
+    _config: TopologyConfig,
+  ): Promise<void> {
     // Network optimization algorithms
     await this.optimizeConnections(nodes);
     await this.balanceLoad(nodes);
@@ -1031,13 +1100,15 @@ class NetworkOptimizer {
 
   async repairFragmentation(
     _nodes: Map<string, NetworkNode>,
-    _config: TopologyConfig
+    _config: TopologyConfig,
   ): Promise<void> {
     // Repair network fragmentation
     // Implementation would reconnect isolated components
   }
 
-  private async optimizeConnections(_nodes: Map<string, NetworkNode>): Promise<void> {
+  private async optimizeConnections(
+    _nodes: Map<string, NetworkNode>,
+  ): Promise<void> {
     // Connection optimization logic
   }
 
@@ -1045,7 +1116,9 @@ class NetworkOptimizer {
     // Load balancing optimization
   }
 
-  private async minimizeLatency(_nodes: Map<string, NetworkNode>): Promise<void> {
+  private async minimizeLatency(
+    _nodes: Map<string, NetworkNode>,
+  ): Promise<void> {
     // Latency minimization algorithms
   }
 }
@@ -1055,7 +1128,10 @@ class FaultDetector {
     this.setupFaultDetection();
   }
 
-  async handleFault(_fault: any, _nodes: Map<string, NetworkNode>): Promise<void> {
+  async handleFault(
+    _fault: any,
+    _nodes: Map<string, NetworkNode>,
+  ): Promise<void> {
     // Fault handling and recovery
   }
 
@@ -1086,7 +1162,7 @@ class MigrationController {
   async createMigrationPlan(
     currentConfig: TopologyConfig,
     targetConfig: TopologyConfig,
-    _nodes: Map<string, NetworkNode>
+    _nodes: Map<string, NetworkNode>,
   ): Promise<MigrationPlan> {
     // Create step-by-step migration plan
     return {
@@ -1098,7 +1174,10 @@ class MigrationController {
     };
   }
 
-  async executeMigration(plan: MigrationPlan, nodes: Map<string, NetworkNode>): Promise<boolean> {
+  async executeMigration(
+    plan: MigrationPlan,
+    nodes: Map<string, NetworkNode>,
+  ): Promise<boolean> {
     // Execute migration plan with rollback capability
     try {
       for (const step of plan.steps) {
@@ -1106,17 +1185,25 @@ class MigrationController {
       }
       return true;
     } catch (error) {
-      this.logger.error('Migration step failed, initiating rollback', { error });
+      this.logger.error('Migration step failed, initiating rollback', {
+        error,
+      });
       await this.rollback(plan, nodes);
       return false;
     }
   }
 
-  private async executeStep(_step: MigrationStep, _nodes: Map<string, NetworkNode>): Promise<void> {
+  private async executeStep(
+    _step: MigrationStep,
+    _nodes: Map<string, NetworkNode>,
+  ): Promise<void> {
     // Execute individual migration step
   }
 
-  private async rollback(_plan: MigrationPlan, _nodes: Map<string, NetworkNode>): Promise<void> {
+  private async rollback(
+    _plan: MigrationPlan,
+    _nodes: Map<string, NetworkNode>,
+  ): Promise<void> {
     // Execute rollback plan
   }
 }

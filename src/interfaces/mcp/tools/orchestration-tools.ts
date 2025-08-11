@@ -19,7 +19,11 @@ const orchestrationTools: MCPTool[] = [
       type: 'object',
       properties: {
         name: { type: 'string' },
-        type: { type: 'string', enum: ['ci-cd', 'data-pipeline', 'monitoring'], default: 'ci-cd' },
+        type: {
+          type: 'string',
+          enum: ['ci-cd', 'data-pipeline', 'monitoring'],
+          default: 'ci-cd',
+        },
         steps: { type: 'array', items: { type: 'string' } },
         schedule: { type: 'string' },
       },
@@ -66,7 +70,10 @@ const orchestrationTools: MCPTool[] = [
       type: 'object',
       properties: {
         deploymentId: { type: 'string' },
-        environment: { type: 'string', enum: ['development', 'staging', 'production'] },
+        environment: {
+          type: 'string',
+          enum: ['development', 'staging', 'production'],
+        },
         includeHistory: { type: 'boolean', default: false },
       },
     },
@@ -101,7 +108,9 @@ const orchestrationTools: MCPTool[] = [
       }
 
       if (environment) {
-        filteredDeployments = filteredDeployments.filter((d) => d.environment === environment);
+        filteredDeployments = filteredDeployments.filter(
+          (d) => d.environment === environment,
+        );
       }
 
       return {

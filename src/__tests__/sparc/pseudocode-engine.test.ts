@@ -26,7 +26,10 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
             description: 'Register agents in the swarm',
             type: 'algorithmic',
             priority: 'HIGH',
-            testCriteria: ['Agent gets unique ID', 'Agent capabilities recorded'],
+            testCriteria: [
+              'Agent gets unique ID',
+              'Agent capabilities recorded',
+            ],
           },
         ],
         nonFunctionalRequirements: [],
@@ -42,7 +45,8 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
         successMetrics: [],
       };
 
-      const algorithms = await pseudocodeEngine.generateAlgorithmPseudocode(specification);
+      const algorithms =
+        await pseudocodeEngine.generateAlgorithmPseudocode(specification);
 
       expect(algorithms).toBeDefined();
       expect(algorithms.length).toBeGreaterThan(0);
@@ -82,7 +86,8 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
         successMetrics: [],
       };
 
-      const algorithms = await pseudocodeEngine.generateAlgorithmPseudocode(specification);
+      const algorithms =
+        await pseudocodeEngine.generateAlgorithmPseudocode(specification);
 
       // Should include swarm-specific algorithms
       const algorithmNames = algorithms.map((alg) => alg.name);
@@ -117,7 +122,8 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
         successMetrics: [],
       };
 
-      const algorithms = await pseudocodeEngine.generateAlgorithmPseudocode(specification);
+      const algorithms =
+        await pseudocodeEngine.generateAlgorithmPseudocode(specification);
 
       // Should include neural-specific algorithms
       const algorithmNames = algorithms.map((alg) => alg.name);
@@ -138,7 +144,8 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
         },
       ];
 
-      const dataStructures = await pseudocodeEngine.designDataStructures(requirements);
+      const dataStructures =
+        await pseudocodeEngine.designDataStructures(requirements);
 
       expect(dataStructures).toBeDefined();
       expect(dataStructures.length).toBeGreaterThan(0);
@@ -192,8 +199,12 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
         {
           name: 'ValidAlgorithm',
           purpose: 'A well-formed algorithm',
-          inputs: [{ name: 'input', type: 'number', description: 'Input value' }],
-          outputs: [{ name: 'output', type: 'number', description: 'Output value' }],
+          inputs: [
+            { name: 'input', type: 'number', description: 'Input value' },
+          ],
+          outputs: [
+            { name: 'output', type: 'number', description: 'Output value' },
+          ],
           steps: [
             {
               stepNumber: 1,
@@ -212,7 +223,8 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
         },
       ];
 
-      const validation = await pseudocodeEngine.validatePseudocodeLogic(algorithms);
+      const validation =
+        await pseudocodeEngine.validatePseudocodeLogic(algorithms);
 
       expect(validation).toBeDefined();
       expect(Array.isArray(validation)).toBe(true);
@@ -251,7 +263,8 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
         successMetrics: [],
       };
 
-      const pseudocodeStructure = await pseudocodeEngine.generatePseudocode(specification);
+      const pseudocodeStructure =
+        await pseudocodeEngine.generatePseudocode(specification);
 
       expect(pseudocodeStructure).toBeDefined();
       expect(pseudocodeStructure).toHaveProperty('id');

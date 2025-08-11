@@ -2,10 +2,10 @@
  * @file Orchestrator-provider implementation.
  */
 
-import { config } from '../config';
+import { config } from '../config/index.js';
 import { getLogger } from '../config/logging-config.ts';
-import { HTTPMCPServer as MCPServer } from '../interfaces/mcp';
-import { TerminalManager } from '../interfaces/terminal';
+import { HTTPMCPServer as MCPServer } from '../interfaces/mcp/index.js';
+import { TerminalManager } from '../interfaces/terminal/index.js';
 import { MemoryManager } from '../memory/index.ts';
 import type { CoordinationProvider } from '../types/shared-types.ts';
 import { EventBus } from './event-bus.ts';
@@ -32,7 +32,7 @@ export function setCoordinationProvider(provider: CoordinationProvider): void {
  * @example
  */
 export function createOrchestratorInstance(
-  customCoordinationProvider?: CoordinationProvider
+  customCoordinationProvider?: CoordinationProvider,
 ): Orchestrator {
   const logger = getLogger('orchestrator');
   const eventBus = new EventBus();
@@ -47,7 +47,8 @@ export function createOrchestratorInstance(
   const memoryManager = new MemoryManager(memoryConfig);
 
   // Use injected coordination provider or fall back to lazy loading
-  const coordinationManagerProvider = customCoordinationProvider || coordinationProvider;
+  const coordinationManagerProvider =
+    customCoordinationProvider || coordinationProvider;
   const mcpServer = new MCPServer(mcpConfig);
 
   // Create orchestrator with proper coordination configuration
@@ -58,7 +59,7 @@ export function createOrchestratorInstance(
     coordinationManagerProvider as any, // Type assertion for now, will be properly typed later
     mcpServer,
     eventBus,
-    logger
+    logger,
   );
 
   return orchestrator;
@@ -81,7 +82,11 @@ export function getOrchestratorInstance(): Orchestrator {
           const logger = getLogger('coordination');
           const eventBus = new EventBus();
 
-          const coordinationManager = new CoordinationManager(coordinationConfig, logger, eventBus);
+          const coordinationManager = new CoordinationManager(
+            coordinationConfig,
+            logger,
+            eventBus,
+          );
 
           setCoordinationProvider(coordinationManager as any);
         })
@@ -91,7 +96,9 @@ export function getOrchestratorInstance(): Orchestrator {
         });
     }
 
-    orchestratorInstance = createOrchestratorInstance(coordinationProvider || undefined);
+    orchestratorInstance = createOrchestratorInstance(
+      coordinationProvider || undefined,
+    );
   }
   return orchestratorInstance;
 }

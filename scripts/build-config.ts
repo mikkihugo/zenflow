@@ -37,5 +37,10 @@ export const buildConfig = {
     'vscode', // VS Code extension API
   ],
   // External modules that should not be bundled
-  externals: ['@modelcontextprotocol/sdk', 'better-sqlite3', 'node-pty', 'blessed'],
+  externals: [
+    '@modelcontextprotocol/sdk',
+    'better-sqlite3',
+    'node-pty',
+    'blessed',
+  ],
 };

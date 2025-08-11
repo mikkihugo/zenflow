@@ -12,7 +12,10 @@ import {
   WorkflowHumanGateStatus,
 } from '../../../coordination/orchestration/workflow-gates.ts';
 import { TypeSafeEventBus } from '../../../core/type-safe-event-system.ts';
-import { type WorkflowDefinition, WorkflowEngine } from '../../../workflows/workflow-engine.ts';
+import {
+  type WorkflowDefinition,
+  WorkflowEngine,
+} from '../../../workflows/workflow-engine.ts';
 
 const logger = getLogger('gate-pause-resume-tests');
 
@@ -38,7 +41,7 @@ describe('Gate Pause/Resume Functionality', () => {
       },
       undefined,
       undefined,
-      gatesManager
+      gatesManager,
     );
 
     await gatesManager.initialize();
@@ -107,7 +110,11 @@ describe('Gate Pause/Resume Functionality', () => {
         const gateId = gateStatus.pausedForGate!.gateId;
 
         // Resume workflow by approving gate
-        const resumeResult = await workflowEngine.resumeWorkflowAfterGate(workflowId, gateId, true);
+        const resumeResult = await workflowEngine.resumeWorkflowAfterGate(
+          workflowId,
+          gateId,
+          true,
+        );
 
         expect(resumeResult.success).toBe(true);
 
@@ -115,13 +122,18 @@ describe('Gate Pause/Resume Functionality', () => {
         await new Promise((resolve) => setTimeout(resolve, 300));
 
         status = workflowEngine.getWorkflowStatus(workflowId);
-        expect(['completed', 'running'].includes(status?.status || '')).toBe(true);
+        expect(['completed', 'running'].includes(status?.status || '')).toBe(
+          true,
+        );
 
         // Check gate results are recorded
-        const finalGateStatus = workflowEngine.getWorkflowGateStatus(workflowId);
+        const finalGateStatus =
+          workflowEngine.getWorkflowGateStatus(workflowId);
         expect(finalGateStatus.gateResults.length).toBeGreaterThan(0);
 
-        const gateResult = finalGateStatus.gateResults.find((g) => g.gateId === gateId);
+        const gateResult = finalGateStatus.gateResults.find(
+          (g) => g.gateId === gateId,
+        );
         expect(gateResult?.approved).toBe(true);
       }
 
@@ -182,7 +194,7 @@ describe('Gate Pause/Resume Functionality', () => {
         const resumeResult = await workflowEngine.resumeWorkflowAfterGate(
           workflowId,
           gateId,
-          false
+          false,
         );
 
         expect(resumeResult.success).toBe(true);
@@ -195,8 +207,11 @@ describe('Gate Pause/Resume Functionality', () => {
         expect(status?.error).toContain('Gate rejected');
 
         // Check gate result is recorded as rejected
-        const finalGateStatus = workflowEngine.getWorkflowGateStatus(workflowId);
-        const gateResult = finalGateStatus.gateResults.find((g) => g.gateId === gateId);
+        const finalGateStatus =
+          workflowEngine.getWorkflowGateStatus(workflowId);
+        const gateResult = finalGateStatus.gateResults.find(
+          (g) => g.gateId === gateId,
+        );
         expect(gateResult?.approved).toBe(false);
       }
 
@@ -276,7 +291,11 @@ describe('Gate Pause/Resume Functionality', () => {
 
             logger.info(`Approving gate: ${gateId}`);
 
-            await workflowEngine.resumeWorkflowAfterGate(workflowId, gateId, true);
+            await workflowEngine.resumeWorkflowAfterGate(
+              workflowId,
+              gateId,
+              true,
+            );
             approvedGates.push(gateId);
           }
         } else if (['completed', 'failed'].includes(status?.status || '')) {
@@ -376,7 +395,7 @@ describe('Gate Pause/Resume Functionality', () => {
             await workflowEngine.resumeWorkflowAfterGate(
               workflowId,
               gateStatus.pausedForGate.gateId,
-              true
+              true,
             );
           }
         } else if (['completed', 'failed'].includes(status?.status || '')) {
@@ -434,7 +453,9 @@ describe('Gate Pause/Resume Functionality', () => {
       const status = workflowEngine.getWorkflowStatus(workflowId);
 
       // Should handle timeout gracefully
-      expect(['paused', 'failed', 'completed'].includes(status?.status || '')).toBe(true);
+      expect(
+        ['paused', 'failed', 'completed'].includes(status?.status || ''),
+      ).toBe(true);
 
       logger.info('Timeout test completed', {
         finalStatus: status?.status,
@@ -471,7 +492,7 @@ describe('Gate Pause/Resume Functionality', () => {
       const invalidResumeResult1 = await workflowEngine.resumeWorkflowAfterGate(
         'non-existent-workflow',
         'fake-gate-id',
-        true
+        true,
       );
       expect(invalidResumeResult1.success).toBe(false);
       expect(invalidResumeResult1.error).toContain('not found');
@@ -479,7 +500,7 @@ describe('Gate Pause/Resume Functionality', () => {
       const invalidResumeResult2 = await workflowEngine.resumeWorkflowAfterGate(
         workflowId,
         'wrong-gate-id',
-        true
+        true,
       );
       expect(invalidResumeResult2.success).toBe(false);
 
@@ -540,13 +561,15 @@ describe('Gate Pause/Resume Functionality', () => {
       await new Promise((resolve) => setTimeout(resolve, 200));
 
       for (const result of results) {
-        const gateStatus = workflowEngine.getWorkflowGateStatus(result.workflowId);
+        const gateStatus = workflowEngine.getWorkflowGateStatus(
+          result.workflowId,
+        );
 
         if (gateStatus.pausedForGate) {
           await workflowEngine.resumeWorkflowAfterGate(
             result.workflowId,
             gateStatus.pausedForGate.gateId,
-            true
+            true,
           );
         }
       }
@@ -559,7 +582,8 @@ describe('Gate Pause/Resume Functionality', () => {
         return {
           index: result.index,
           status: status?.status,
-          gateResults: workflowEngine.getWorkflowGateStatus(result.workflowId).gateResults.length,
+          gateResults: workflowEngine.getWorkflowGateStatus(result.workflowId)
+            .gateResults.length,
         };
       });
 
@@ -570,7 +594,9 @@ describe('Gate Pause/Resume Functionality', () => {
 
       // All workflows should have processed
       finalStatuses.forEach((status) => {
-        expect(['completed', 'running', 'paused'].includes(status.status || '')).toBe(true);
+        expect(
+          ['completed', 'running', 'paused'].includes(status.status || ''),
+        ).toBe(true);
       });
     });
   });

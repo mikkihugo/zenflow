@@ -181,7 +181,8 @@ export class USLFactory implements IServiceFactory {
       enableDependencyResolution: config?.enableDependencyResolution ?? true,
       discovery: {
         enabled: config?.discovery?.enabled ?? true,
-        advertisementInterval: config?.discovery?.advertisementInterval ?? 30000,
+        advertisementInterval:
+          config?.discovery?.advertisementInterval ?? 30000,
         heartbeatInterval: config?.discovery?.heartbeatInterval ?? 10000,
       },
       healthMonitoring: {
@@ -189,7 +190,8 @@ export class USLFactory implements IServiceFactory {
         interval: config?.healthMonitoring?.interval ?? 30000,
         alertThresholds: {
           errorRate: config?.healthMonitoring?.alertThresholds?.errorRate ?? 5,
-          responseTime: config?.healthMonitoring?.alertThresholds?.responseTime ?? 1000,
+          responseTime:
+            config?.healthMonitoring?.alertThresholds?.responseTime ?? 1000,
         },
       },
       metricsCollection: {
@@ -212,24 +214,33 @@ export class USLFactory implements IServiceFactory {
    *
    * @param config
    */
-  async create<T extends ServiceConfig = ServiceConfig>(config: T): Promise<IService> {
+  async create<T extends ServiceConfig = ServiceConfig>(
+    config: T,
+  ): Promise<IService> {
     this.logger.info(`Creating service: ${config?.name} (${config?.type})`);
 
     // Validate configuration
     const isValid = await this.validateConfig(config);
     if (!isValid) {
-      throw new ServiceConfigurationError(config?.name, 'Invalid service configuration');
+      throw new ServiceConfigurationError(
+        config?.name,
+        'Invalid service configuration',
+      );
     }
 
     // Check if service already exists
     if (this.services.has(config?.name)) {
-      this.logger.warn(`Service ${config?.name} already exists, returning existing instance`);
+      this.logger.warn(
+        `Service ${config?.name} already exists, returning existing instance`,
+      );
       return this.services.get(config?.name)!;
     }
 
     // Check if service is already being initialized
     if (this.initializationQueue.has(config?.name)) {
-      this.logger.debug(`Service ${config?.name} is already being initialized, waiting...`);
+      this.logger.debug(
+        `Service ${config?.name} is already being initialized, waiting...`,
+      );
       return await this.initializationQueue.get(config?.name)!;
     }
 
@@ -262,7 +273,9 @@ export class USLFactory implements IServiceFactory {
    *
    * @param configs
    */
-  async createMultiple<T extends ServiceConfig = ServiceConfig>(configs: T[]): Promise<IService[]> {
+  async createMultiple<T extends ServiceConfig = ServiceConfig>(
+    configs: T[],
+  ): Promise<IService[]> {
     this.logger.info(`Creating ${configs.length} services concurrently`);
 
     // Sort by priority for initialization order
@@ -284,7 +297,10 @@ export class USLFactory implements IServiceFactory {
         const batchResults = await Promise.all(batchPromises);
         results.push(...batchResults);
       } catch (error) {
-        this.logger.error(`Failed to create service batch starting at index ${i}:`, error);
+        this.logger.error(
+          `Failed to create service batch starting at index ${i}:`,
+          error,
+        );
         throw error;
       }
     }
@@ -386,7 +402,7 @@ export class USLFactory implements IServiceFactory {
       if (priorityServices.length === 0) continue;
 
       this.logger.info(
-        `Starting ${priorityServices.length} services with priority ${ServicePriority[priority]}`
+        `Starting ${priorityServices.length} services with priority ${ServicePriority[priority]}`,
       );
 
       const startPromises = priorityServices.map(async (service) => {
@@ -432,7 +448,7 @@ export class USLFactory implements IServiceFactory {
       if (priorityServices.length === 0) continue;
 
       this.logger.info(
-        `Stopping ${priorityServices.length} services with priority ${ServicePriority[priority]}`
+        `Stopping ${priorityServices.length} services with priority ${ServicePriority[priority]}`,
       );
 
       const stopPromises = priorityServices.map(async (service) => {
@@ -464,7 +480,10 @@ export class USLFactory implements IServiceFactory {
         const status = await service.getStatus();
         results?.set(service.name, status);
       } catch (error) {
-        this.logger.error(`Health check failed for service ${service.name}:`, error);
+        this.logger.error(
+          `Health check failed for service ${service.name}:`,
+          error,
+        );
         results?.set(service.name, {
           name: service.name,
           type: service.type,
@@ -496,7 +515,10 @@ export class USLFactory implements IServiceFactory {
         const metrics = await service.getMetrics();
         results?.set(service.name, metrics);
       } catch (error) {
-        this.logger.error(`Failed to get metrics for service ${service.name}:`, error);
+        this.logger.error(
+          `Failed to get metrics for service ${service.name}:`,
+          error,
+        );
       }
     });
 
@@ -519,7 +541,10 @@ export class USLFactory implements IServiceFactory {
         try {
           await service.destroy();
         } catch (error) {
-          this.logger.error(`Failed to destroy service ${service.name}:`, error);
+          this.logger.error(
+            `Failed to destroy service ${service.name}:`,
+            error,
+          );
         }
       });
 
@@ -564,8 +589,10 @@ export class USLFactory implements IServiceFactory {
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config?.name || !config?.type) {
-        this.logger.error('Service configuration missing required fields: name or type');
+      if (!(config?.name && config?.type)) {
+        this.logger.error(
+          'Service configuration missing required fields: name or type',
+        );
         return false;
       }
 
@@ -580,14 +607,17 @@ export class USLFactory implements IServiceFactory {
       if (!validationResult?.valid) {
         this.logger.error(
           `Service configuration validation failed for ${config?.name}:`,
-          validationResult?.errors
+          validationResult?.errors,
         );
         return false;
       }
 
       return true;
     } catch (error) {
-      this.logger.error(`Error validating service configuration for ${config?.name}:`, error);
+      this.logger.error(
+        `Error validating service configuration for ${config?.name}:`,
+        error,
+      );
       return false;
     }
   }
@@ -655,7 +685,9 @@ export class USLFactory implements IServiceFactory {
   // Private Methods
   // ============================================
 
-  private async createServiceInstance(config: ServiceConfig): Promise<IService> {
+  private async createServiceInstance(
+    config: ServiceConfig,
+  ): Promise<IService> {
     const startTime = Date.now();
 
     try {
@@ -673,13 +705,15 @@ export class USLFactory implements IServiceFactory {
       const duration = Date.now() - startTime;
       this.logger.error(
         `Service ${config?.name} initialization failed after ${duration}ms:`,
-        error
+        error,
       );
       throw error;
     }
   }
 
-  private async instantiateServiceByType(config: ServiceConfig): Promise<IService> {
+  private async instantiateServiceByType(
+    config: ServiceConfig,
+  ): Promise<IService> {
     // Dynamic import based on service type to avoid circular dependencies
     const serviceType = config?.type as ServiceType;
 
@@ -688,7 +722,9 @@ export class USLFactory implements IServiceFactory {
       case ServiceType.WEB_DATA:
       case ServiceType.DOCUMENT: {
         // Use the enhanced DataServiceAdapter for unified data operations
-        const { DataServiceAdapter } = await import('./adapters/data-service-adapter.ts');
+        const { DataServiceAdapter } = await import(
+          './adapters/data-service-adapter.ts'
+        );
         return new DataServiceAdapter(config as any);
       }
 
@@ -710,28 +746,38 @@ export class USLFactory implements IServiceFactory {
 
       case ServiceType.SWARM:
       case ServiceType.ORCHESTRATION: {
-        const { CoordinationService } = await import('./implementations/coordination-service.ts');
+        const { CoordinationService } = await import(
+          './implementations/coordination-service.ts'
+        );
         return new CoordinationService(config as CoordinationServiceConfig);
       }
 
       case ServiceType.NEURAL: {
-        const { NeuralService } = await import('./implementations/neural-service.ts');
+        const { NeuralService } = await import(
+          './implementations/neural-service.ts'
+        );
         return new NeuralService(config as NeuralServiceConfig);
       }
 
       case ServiceType.MEMORY:
       case ServiceType.CACHE: {
-        const { MemoryService } = await import('./implementations/memory-service.ts');
+        const { MemoryService } = await import(
+          './implementations/memory-service.ts'
+        );
         return new MemoryService(config as MemoryServiceConfig);
       }
 
       case ServiceType.DATABASE: {
-        const { DatabaseService } = await import('./implementations/database-service.ts');
+        const { DatabaseService } = await import(
+          './implementations/database-service.ts'
+        );
         return new DatabaseService(config as DatabaseServiceConfig);
       }
 
       case ServiceType.MONITORING: {
-        const { MonitoringService } = await import('./implementations/monitoring-service.ts');
+        const { MonitoringService } = await import(
+          './implementations/monitoring-service.ts'
+        );
         return new MonitoringService(config);
       }
 
@@ -743,13 +789,18 @@ export class USLFactory implements IServiceFactory {
         }
 
         // Fall back to generic service implementation
-        const { GenericService } = await import('./implementations/generic-service.ts');
+        const { GenericService } = await import(
+          './implementations/generic-service.ts'
+        );
         return new GenericService(config);
       }
     }
   }
 
-  private validateTypeSpecificConfig(config: ServiceConfig): { valid: boolean; errors: string[] } {
+  private validateTypeSpecificConfig(config: ServiceConfig): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     try {
@@ -757,19 +808,29 @@ export class USLFactory implements IServiceFactory {
         // Validate data service specific configuration
         if (
           config?.dataSource &&
-          !['database', 'memory', 'file', 'api'].includes(config?.dataSource?.type)
+          !['database', 'memory', 'file', 'api'].includes(
+            config?.dataSource?.type,
+          )
         ) {
           errors.push(`Invalid data source type: ${config?.dataSource?.type}`);
         }
       } else if (isWebServiceConfig(config)) {
         // Validate web service specific configuration
-        if (config?.server?.port && (config?.server?.port < 1 || config?.server?.port > 65535)) {
+        if (
+          config?.server?.port &&
+          (config?.server?.port < 1 || config?.server?.port > 65535)
+        ) {
           errors.push(`Invalid port number: ${config?.server?.port}`);
         }
       } else if (isCoordinationServiceConfig(config)) {
         // Validate coordination service specific configuration
-        if (config?.coordination?.maxAgents && config?.coordination?.maxAgents < 1) {
-          errors.push(`Invalid maxAgents value: ${config?.coordination?.maxAgents}`);
+        if (
+          config?.coordination?.maxAgents &&
+          config?.coordination?.maxAgents < 1
+        ) {
+          errors.push(
+            `Invalid maxAgents value: ${config?.coordination?.maxAgents}`,
+          );
         }
       }
       // Add more type-specific validations as needed
@@ -808,11 +869,14 @@ export class USLFactory implements IServiceFactory {
     });
   }
 
-  private groupServicesByPriority(services: IService[]): Map<ServicePriority, IService[]> {
+  private groupServicesByPriority(
+    services: IService[],
+  ): Map<ServicePriority, IService[]> {
     const groups = new Map<ServicePriority, IService[]>();
 
     services.forEach((service) => {
-      const priority = (service.config as any).priority ?? ServicePriority.NORMAL;
+      const priority =
+        (service.config as any).priority ?? ServicePriority.NORMAL;
       if (!groups.has(priority)) {
         groups.set(priority, []);
       }
@@ -845,7 +909,7 @@ export class USLFactory implements IServiceFactory {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         this.logger.info(
-          `Attempting service recovery for ${service.name} (attempt ${attempt}/${maxRetries})`
+          `Attempting service recovery for ${service.name} (attempt ${attempt}/${maxRetries})`,
         );
 
         // Stop the service if it's still running
@@ -863,25 +927,31 @@ export class USLFactory implements IServiceFactory {
         if (isHealthy) {
           this.logger.info(`Service recovery successful for ${service.name}`);
           return service;
-        } else {
-          throw new Error('Service health check failed after restart');
         }
+        throw new Error('Service health check failed after restart');
       } catch (error) {
-        this.logger.warn(`Service recovery attempt ${attempt} failed for ${service.name}:`, error);
+        this.logger.warn(
+          `Service recovery attempt ${attempt} failed for ${service.name}:`,
+          error,
+        );
 
         if (attempt < maxRetries) {
           const delay = backoffMultiplier ** attempt * 1000;
-          this.logger.info(`Waiting ${delay}ms before next recovery attempt for ${service.name}`);
+          this.logger.info(
+            `Waiting ${delay}ms before next recovery attempt for ${service.name}`,
+          );
           await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
 
-    this.logger.error(`Service recovery failed for ${service.name} after ${maxRetries} attempts`);
+    this.logger.error(
+      `Service recovery failed for ${service.name} after ${maxRetries} attempts`,
+    );
     throw new ServiceOperationError(
       service.name,
       'recovery',
-      new Error('All recovery attempts failed')
+      new Error('All recovery attempts failed'),
     );
   }
 
@@ -909,7 +979,9 @@ export class USLFactory implements IServiceFactory {
           .map(([name, _]) => name);
 
         if (unhealthyServices.length > 0) {
-          this.logger.warn(`Unhealthy services detected: ${unhealthyServices.join(', ')}`);
+          this.logger.warn(
+            `Unhealthy services detected: ${unhealthyServices.join(', ')}`,
+          );
           this.eventEmitter.emit('health-alert', unhealthyServices);
         }
       } catch (error) {
@@ -928,12 +1000,15 @@ export class USLFactory implements IServiceFactory {
         const slowServices = Array.from(metrics.entries())
           .filter(
             ([_, metric]) =>
-              metric.averageLatency > this.config.healthMonitoring.alertThresholds.responseTime
+              metric.averageLatency >
+              this.config.healthMonitoring.alertThresholds.responseTime,
           )
           .map(([name, _]) => name);
 
         if (slowServices.length > 0) {
-          this.logger.warn(`Slow services detected: ${slowServices.join(', ')}`);
+          this.logger.warn(
+            `Slow services detected: ${slowServices.join(', ')}`,
+          );
           this.eventEmitter.emit('performance-alert', slowServices);
         }
       } catch (error) {
@@ -981,13 +1056,18 @@ export class ServiceRegistry implements IServiceRegistry {
     this.logger = getLogger('ServiceRegistry');
   }
 
-  registerFactory<T extends ServiceConfig>(type: string, factory: IServiceFactory<T>): void {
+  registerFactory<T extends ServiceConfig>(
+    type: string,
+    factory: IServiceFactory<T>,
+  ): void {
     this.logger.info(`Registering service factory for type: ${type}`);
     this.factories.set(type, factory);
     this.eventEmitter.emit('factory-registered', type, factory);
   }
 
-  getFactory<T extends ServiceConfig>(type: string): IServiceFactory<T> | undefined {
+  getFactory<T extends ServiceConfig>(
+    type: string,
+  ): IServiceFactory<T> | undefined {
     return this.factories.get(type) as IServiceFactory<T>;
   }
 
@@ -1042,29 +1122,35 @@ export class ServiceRegistry implements IServiceRegistry {
 
   async startAllServices(): Promise<void> {
     this.logger.info('Starting all services across all factories');
-    const startPromises = Array.from(this.factories.values()).map((factory) => factory.startAll());
+    const startPromises = Array.from(this.factories.values()).map((factory) =>
+      factory.startAll(),
+    );
     await Promise.allSettled(startPromises);
   }
 
   async stopAllServices(): Promise<void> {
     this.logger.info('Stopping all services across all factories');
-    const stopPromises = Array.from(this.factories.values()).map((factory) => factory.stopAll());
+    const stopPromises = Array.from(this.factories.values()).map((factory) =>
+      factory.stopAll(),
+    );
     await Promise.allSettled(stopPromises);
   }
 
   async healthCheckAll(): Promise<Map<string, ServiceStatus>> {
     const allResults = new Map<string, ServiceStatus>();
 
-    const healthCheckPromises = Array.from(this.factories.values()).map(async (factory) => {
-      try {
-        const results = await factory.healthCheckAll();
-        results.forEach((status, name) => {
-          allResults?.set(name, status);
-        });
-      } catch (error) {
-        this.logger.error('Error during factory health check:', error);
-      }
-    });
+    const healthCheckPromises = Array.from(this.factories.values()).map(
+      async (factory) => {
+        try {
+          const results = await factory.healthCheckAll();
+          results.forEach((status, name) => {
+            allResults?.set(name, status);
+          });
+        } catch (error) {
+          this.logger.error('Error during factory health check:', error);
+        }
+      },
+    );
 
     await Promise.allSettled(healthCheckPromises);
     return allResults;
@@ -1082,27 +1168,29 @@ export class ServiceRegistry implements IServiceRegistry {
 
     const totalServices = allServices.size;
     const runningServices = Array.from(healthStatuses.values()).filter(
-      (status) => status.lifecycle === 'running'
+      (status) => status.lifecycle === 'running',
     ).length;
     const healthyServices = Array.from(healthStatuses.values()).filter(
-      (status) => status.health === 'healthy'
+      (status) => status.health === 'healthy',
     ).length;
     const errorServices = Array.from(healthStatuses.values()).filter(
-      (status) => status.lifecycle === 'error'
+      (status) => status.lifecycle === 'error',
     ).length;
 
     // Collect aggregated metrics
     const aggregatedMetrics: ServiceMetrics[] = [];
-    const metricsPromises = Array.from(this.factories.values()).map(async (factory) => {
-      try {
-        const metrics = await factory.getMetricsAll();
-        metrics.forEach((metric) => {
-          aggregatedMetrics.push(metric);
-        });
-      } catch (error) {
-        this.logger.error('Error collecting factory metrics:', error);
-      }
-    });
+    const metricsPromises = Array.from(this.factories.values()).map(
+      async (factory) => {
+        try {
+          const metrics = await factory.getMetricsAll();
+          metrics.forEach((metric) => {
+            aggregatedMetrics.push(metric);
+          });
+        } catch (error) {
+          this.logger.error('Error collecting factory metrics:', error);
+        }
+      },
+    );
 
     await Promise.allSettled(metricsPromises);
 
@@ -1117,8 +1205,8 @@ export class ServiceRegistry implements IServiceRegistry {
 
   async shutdownAll(): Promise<void> {
     this.logger.info('Shutting down all service factories');
-    const shutdownPromises = Array.from(this.factories.values()).map((factory) =>
-      factory.shutdown()
+    const shutdownPromises = Array.from(this.factories.values()).map(
+      (factory) => factory.shutdown(),
     );
     await Promise.allSettled(shutdownPromises);
     this.factories.clear();
@@ -1146,7 +1234,7 @@ export class ServiceRegistry implements IServiceRegistry {
       if (criteria.capabilities) {
         const serviceCapabilities = service.getCapabilities();
         const hasAllCapabilities = criteria.capabilities.every((cap) =>
-          serviceCapabilities.includes(cap)
+          serviceCapabilities.includes(cap),
         );
         if (!hasAllCapabilities) {
           return false;
@@ -1156,7 +1244,9 @@ export class ServiceRegistry implements IServiceRegistry {
       // Filter by tags
       if (criteria.tags) {
         const serviceTags = (service.config as any).tags || [];
-        const hasAllTags = criteria.tags.every((tag) => serviceTags.includes(tag));
+        const hasAllTags = criteria.tags.every((tag) =>
+          serviceTags.includes(tag),
+        );
         if (!hasAllTags) {
           return false;
         }
@@ -1170,8 +1260,11 @@ export class ServiceRegistry implements IServiceRegistry {
   }
 
   on(
-    event: 'service-registered' | 'service-unregistered' | 'service-status-changed',
-    handler: (serviceName: string, service?: IService) => void
+    event:
+      | 'service-registered'
+      | 'service-unregistered'
+      | 'service-status-changed',
+    handler: (serviceName: string, service?: IService) => void,
   ): void {
     this.eventEmitter.on(event, handler);
   }
@@ -1234,7 +1327,9 @@ export class ServiceConfigValidator implements IServiceConfigValidator {
       if (config?.type) {
         const typeValid = await this.validateType(config?.type, config);
         if (!typeValid) {
-          errors.push(`Invalid configuration for service type: ${config?.type}`);
+          errors.push(
+            `Invalid configuration for service type: ${config?.type}`,
+          );
         }
       }
 
@@ -1309,25 +1404,35 @@ export class ServiceCapabilityRegistry implements IServiceCapabilityRegistry {
     }
 
     const serviceCapabilities = this.capabilities.get(serviceName)!;
-    const existingIndex = serviceCapabilities.findIndex((cap) => cap.name === capability.name);
+    const existingIndex = serviceCapabilities.findIndex(
+      (cap) => cap.name === capability.name,
+    );
 
     if (existingIndex >= 0) {
       // Update existing capability
       serviceCapabilities[existingIndex] = capability;
-      this.logger.debug(`Updated capability ${capability.name} for service ${serviceName}`);
+      this.logger.debug(
+        `Updated capability ${capability.name} for service ${serviceName}`,
+      );
     } else {
       // Add new capability
       serviceCapabilities.push(capability);
-      this.logger.debug(`Registered capability ${capability.name} for service ${serviceName}`);
+      this.logger.debug(
+        `Registered capability ${capability.name} for service ${serviceName}`,
+      );
     }
   }
 
   unregister(serviceName: string, capabilityName: string): void {
     const serviceCapabilities = this.capabilities.get(serviceName);
     if (serviceCapabilities) {
-      const filteredCapabilities = serviceCapabilities.filter((cap) => cap.name !== capabilityName);
+      const filteredCapabilities = serviceCapabilities.filter(
+        (cap) => cap.name !== capabilityName,
+      );
       this.capabilities.set(serviceName, filteredCapabilities);
-      this.logger.debug(`Unregistered capability ${capabilityName} for service ${serviceName}`);
+      this.logger.debug(
+        `Unregistered capability ${capabilityName} for service ${serviceName}`,
+      );
     }
   }
 

@@ -71,14 +71,17 @@ describe('Cross-Feature Integration Tests', () => {
         task: 'Analyze codebase and suggest neural-guided optimizations',
         requiresBoth: ['traditional-analysis', 'neural-patterns'],
         coordination: 'mixed-team',
-        agents: [...standardAgents.map((a) => a.id), ...neuralAgents.map((a) => a.id)],
+        agents: [
+          ...standardAgents.map((a) => a.id),
+          ...neuralAgents.map((a) => a.id),
+        ],
       });
 
       // Monitor coordination
       const coordinationEvents = [];
       swarm.on('coordination', (event) => coordinationEvents.push(event));
       neuralManager.on('insight', (insight) =>
-        coordinationEvents.push({ type: 'neural-insight', ...insight })
+        coordinationEvents.push({ type: 'neural-insight', ...insight }),
       );
 
       // Wait for task completion
@@ -98,11 +101,11 @@ describe('Cross-Feature Integration Tests', () => {
 
       // Verify knowledge sharing
       expect(
-        coordinationEvents.filter((e) => e.type === 'knowledge-share')
+        coordinationEvents.filter((e) => e.type === 'knowledge-share'),
       ).to.have.length.at.least(3);
-      expect(coordinationEvents.filter((e) => e.type === 'neural-insight')).to.have.length.at.least(
-        2
-      );
+      expect(
+        coordinationEvents.filter((e) => e.type === 'neural-insight'),
+      ).to.have.length.at.least(2);
 
       // Check neural learning from swarm interactions
       const neuralMetrics = await neuralManager.getSwarmLearningMetrics();
@@ -158,7 +161,9 @@ describe('Cross-Feature Integration Tests', () => {
       }
 
       // Analyze learned patterns
-      const learnedPatterns = await neuralManager.getLearnedPatterns(learningAgent.id);
+      const learnedPatterns = await neuralManager.getLearnedPatterns(
+        learningAgent.id,
+      );
       expect(learnedPatterns).to.exist;
       expect(learnedPatterns.architecturalPatterns).to.have.length.at.least(3);
       expect(learnedPatterns.communicationPatterns).to.have.length.at.least(2);
@@ -211,7 +216,7 @@ describe('Cross-Feature Integration Tests', () => {
             swarm.orchestrateTask({
               task: `Workload task ${cycle}-${i}`,
               complexity: Math.random() > 0.5 ? 'high' : 'low',
-            })
+            }),
           );
         }
 
@@ -221,11 +226,14 @@ describe('Cross-Feature Integration Tests', () => {
         const performance = await swarm.getPerformanceMetrics();
 
         // Neural optimization
-        const optimization = await neuralManager.optimizeTopology(topologyOptimizer.id, {
-          currentTopology: await swarm.getTopology(),
-          performanceData: performance,
-          workloadPattern: workloadTasks.map((t) => t.complexity),
-        });
+        const optimization = await neuralManager.optimizeTopology(
+          topologyOptimizer.id,
+          {
+            currentTopology: await swarm.getTopology(),
+            performanceData: performance,
+            workloadPattern: workloadTasks.map((t) => t.complexity),
+          },
+        );
 
         if (optimization.recommendations.length > 0) {
           await swarm.applyTopologyOptimization(optimization.recommendations);
@@ -240,7 +248,9 @@ describe('Cross-Feature Integration Tests', () => {
 
       expect(finalEfficiency).to.be.greaterThan(initialEfficiency);
 
-      const optimizationHistory = await neuralManager.getOptimizationHistory(topologyOptimizer.id);
+      const optimizationHistory = await neuralManager.getOptimizationHistory(
+        topologyOptimizer.id,
+      );
       expect(optimizationHistory.improvements).to.have.length.at.least(1);
       expect(optimizationHistory.averageImprovement).to.be.greaterThan(0.05); // 5% improvement
     });
@@ -317,7 +327,9 @@ describe('Cross-Feature Integration Tests', () => {
       const restoredAgents = await newSwarm.getAgents();
       expect(restoredAgents).to.have.lengthOf(2);
 
-      const restoredAgent1 = restoredAgents.find((a) => a.type === 'researcher');
+      const restoredAgent1 = restoredAgents.find(
+        (a) => a.type === 'researcher',
+      );
       const restoredAgent2 = restoredAgents.find((a) => a.type === 'coder');
 
       const memory1 = await memoryManager.getAgentMemory(restoredAgent1.id);
@@ -330,7 +342,8 @@ describe('Cross-Feature Integration Tests', () => {
       expect(memory2.semanticMemory.concepts).to.include('lazy loading');
 
       // Verify shared memory
-      const sharedMemory = await memoryManager.getSharedMemory('project-context');
+      const sharedMemory =
+        await memoryManager.getSharedMemory('project-context');
       expect(sharedMemory.project).to.equal('React Performance');
       expect(sharedMemory.insights).to.have.lengthOf(2);
 
@@ -396,8 +409,12 @@ describe('Cross-Feature Integration Tests', () => {
       // Verify coordination memory
       const coordinationMemory = await memoryManager.getCoordinationMemory();
       expect(coordinationMemory.interactions).to.have.length.at.least(3);
-      expect(coordinationMemory.sharedKnowledge).to.have.property('api-patterns');
-      expect(coordinationMemory.sharedKnowledge).to.have.property('implementation-details');
+      expect(coordinationMemory.sharedKnowledge).to.have.property(
+        'api-patterns',
+      );
+      expect(coordinationMemory.sharedKnowledge).to.have.property(
+        'implementation-details',
+      );
 
       // Test memory-based future coordination
       const futureTask = await swarm.orchestrateTask({
@@ -408,8 +425,12 @@ describe('Cross-Feature Integration Tests', () => {
 
       const futureTaskStatus = await swarm.getTaskStatus(futureTask.id);
       expect(futureTaskStatus.memoryUtilization).to.exist;
-      expect(futureTaskStatus.memoryUtilization.pastInteractions).to.be.greaterThan(0);
-      expect(futureTaskStatus.memoryUtilization.appliedKnowledge).to.have.length.at.least(2);
+      expect(
+        futureTaskStatus.memoryUtilization.pastInteractions,
+      ).to.be.greaterThan(0);
+      expect(
+        futureTaskStatus.memoryUtilization.appliedKnowledge,
+      ).to.have.length.at.least(2);
     });
   });
 
@@ -459,7 +480,11 @@ describe('Cross-Feature Integration Tests', () => {
       });
 
       expect(taskStatus.id).to.equal(mcpTask.taskId);
-      expect(taskStatus.status).to.be.oneOf(['pending', 'running', 'completed']);
+      expect(taskStatus.status).to.be.oneOf([
+        'pending',
+        'running',
+        'completed',
+      ]);
 
       // MCP metrics collection
       const mcpMetrics = await mcpIntegration.call('agent_metrics', {
@@ -502,7 +527,9 @@ describe('Cross-Feature Integration Tests', () => {
 
       // Create agents through both interfaces
       const swarmAgent = await swarm.spawnAgent({ type: 'coder' });
-      const mcpAgent = await mcpIntegration.call('agent_spawn', { type: 'analyst' });
+      const mcpAgent = await mcpIntegration.call('agent_spawn', {
+        type: 'analyst',
+      });
 
       // Execute tasks through both interfaces
       const _swarmTask = await swarm.orchestrateTask({
@@ -584,7 +611,11 @@ describe('Cross-Feature Integration Tests', () => {
       });
 
       hookSystem.register('post-task-complete', async (context) => {
-        hookEvents.push({ type: 'post-task', taskId: context.taskId, success: context.success });
+        hookEvents.push({
+          type: 'post-task',
+          taskId: context.taskId,
+          success: context.success,
+        });
       });
 
       // Execute operations that trigger hooks
@@ -599,10 +630,18 @@ describe('Cross-Feature Integration Tests', () => {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Verify hooks were triggered
-      expect(hookEvents.filter((e) => e.type === 'pre-spawn')).to.have.lengthOf(1);
-      expect(hookEvents.filter((e) => e.type === 'post-spawn')).to.have.lengthOf(1);
-      expect(hookEvents.filter((e) => e.type === 'pre-task')).to.have.lengthOf(1);
-      expect(hookEvents.filter((e) => e.type === 'post-task')).to.have.lengthOf(1);
+      expect(hookEvents.filter((e) => e.type === 'pre-spawn')).to.have.lengthOf(
+        1,
+      );
+      expect(
+        hookEvents.filter((e) => e.type === 'post-spawn'),
+      ).to.have.lengthOf(1);
+      expect(hookEvents.filter((e) => e.type === 'pre-task')).to.have.lengthOf(
+        1,
+      );
+      expect(hookEvents.filter((e) => e.type === 'post-task')).to.have.lengthOf(
+        1,
+      );
 
       // Verify hook data was applied
       const taskStatus = await swarm.getTaskStatus(task.id);
@@ -637,18 +676,30 @@ describe('Cross-Feature Integration Tests', () => {
 
       // Neural hooks
       hookSystem.register('neural:agent-available', (ctx) => {
-        cascadeEvents.push({ component: 'neural', event: 'available', data: ctx });
+        cascadeEvents.push({
+          component: 'neural',
+          event: 'available',
+          data: ctx,
+        });
         return hookSystem.cascade('memory:agent-initialize', ctx);
       });
 
       // Memory hooks
       hookSystem.register('memory:agent-initialize', (ctx) => {
-        cascadeEvents.push({ component: 'memory', event: 'initialize', data: ctx });
+        cascadeEvents.push({
+          component: 'memory',
+          event: 'initialize',
+          data: ctx,
+        });
       });
 
       // Task completion cascade
       hookSystem.register('swarm:task-complete', (ctx) => {
-        cascadeEvents.push({ component: 'swarm', event: 'complete', data: ctx });
+        cascadeEvents.push({
+          component: 'swarm',
+          event: 'complete',
+          data: ctx,
+        });
         hookSystem.cascade('neural:learn-from-task', ctx);
         hookSystem.cascade('memory:store-experience', ctx);
       });
@@ -674,7 +725,10 @@ describe('Cross-Feature Integration Tests', () => {
 
       // Verify cascade sequence
       const spawnCascade = cascadeEvents.filter(
-        (e) => e.event === 'spawn' || e.event === 'available' || e.event === 'initialize'
+        (e) =>
+          e.event === 'spawn' ||
+          e.event === 'available' ||
+          e.event === 'initialize',
       );
       expect(spawnCascade).to.have.lengthOf(3);
       expect(spawnCascade[0].component).to.equal('swarm');
@@ -682,7 +736,8 @@ describe('Cross-Feature Integration Tests', () => {
       expect(spawnCascade[2].component).to.equal('memory');
 
       const completeCascade = cascadeEvents.filter(
-        (e) => e.event === 'complete' || e.event === 'learn' || e.event === 'store'
+        (e) =>
+          e.event === 'complete' || e.event === 'learn' || e.event === 'store',
       );
       expect(completeCascade).to.have.lengthOf(3);
       expect(completeCascade[0].component).to.equal('swarm');
@@ -839,7 +894,8 @@ describe('Cross-Feature Integration Tests', () => {
       // Verify comprehensive integration
       expect(workflowStatus.status).to.equal('completed');
       expect(workflowStatus.phases).to.have.lengthOf(3);
-      expect(workflowStatus.phases.every((p) => p.status === 'completed')).to.be.true;
+      expect(workflowStatus.phases.every((p) => p.status === 'completed')).to.be
+        .true;
 
       // Verify feature utilization
       expect(integrationMetrics.neuralInsights).to.be.greaterThan(0);
@@ -857,7 +913,11 @@ describe('Cross-Feature Integration Tests', () => {
       // Test system resilience
       const resilienceTest = await swarm.executeResilienceTest({
         duration: 10000,
-        scenarios: ['component-failure', 'memory-pressure', 'network-partition'],
+        scenarios: [
+          'component-failure',
+          'memory-pressure',
+          'network-partition',
+        ],
       });
 
       expect(resilienceTest.overallSuccess).to.be.true;

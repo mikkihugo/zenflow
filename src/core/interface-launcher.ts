@@ -123,7 +123,9 @@ export class InterfaceLauncher extends EventEmitter {
         });
 
         if (!options?.['silent']) {
-          logger.info(`✅ ${detection.mode.toUpperCase()} interface launched successfully`);
+          logger.info(
+            `✅ ${detection.mode.toUpperCase()} interface launched successfully`,
+          );
           if (result?.url) {
             logger.info(`🌐 Available at: ${result?.url}`);
           }
@@ -132,8 +134,12 @@ export class InterfaceLauncher extends EventEmitter {
 
       return result;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      logger.error(`❌ Failed to launch ${detection.mode} interface:`, errorMessage);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      logger.error(
+        `❌ Failed to launch ${detection.mode} interface:`,
+        errorMessage,
+      );
 
       return {
         mode: detection.mode,
@@ -157,15 +163,20 @@ export class InterfaceLauncher extends EventEmitter {
       const cliArgs: string[] = [];
 
       if (options?.['verbose']) cliArgs.push('--verbose');
-      if (options?.['config']?.theme) cliArgs.push('--theme', options?.['config']?.theme);
+      if (options?.['config']?.theme)
+        cliArgs.push('--theme', options?.['config']?.theme);
 
       // CLI mode will be detected automatically based on presence of commands
       // Don't add interactive flag to keep CLI mode behavior
 
-      const cliProcess = spawn('npx', ['tsx', 'src/interfaces/terminal/main.tsx', ...cliArgs], {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      });
+      const cliProcess = spawn(
+        'npx',
+        ['tsx', 'src/interfaces/terminal/main.tsx', ...cliArgs],
+        {
+          stdio: 'inherit',
+          cwd: process.cwd(),
+        },
+      );
 
       return new Promise<LaunchResult>((resolve, reject) => {
         cliProcess.on('close', (code) => {
@@ -202,12 +213,17 @@ export class InterfaceLauncher extends EventEmitter {
       const tuiArgs = ['--ui']; // Force TUI mode
 
       if (options?.['verbose']) tuiArgs.push('--verbose');
-      if (options?.['config']?.theme) tuiArgs.push('--theme', options?.['config']?.theme);
+      if (options?.['config']?.theme)
+        tuiArgs.push('--theme', options?.['config']?.theme);
 
-      const tuiProcess = spawn('npx', ['tsx', 'src/interfaces/terminal/main.tsx', ...tuiArgs], {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      });
+      const tuiProcess = spawn(
+        'npx',
+        ['tsx', 'src/interfaces/terminal/main.tsx', ...tuiArgs],
+        {
+          stdio: 'inherit',
+          cwd: process.cwd(),
+        },
+      );
 
       return new Promise<LaunchResult>((resolve, reject) => {
         tuiProcess.on('close', (code) => {
@@ -238,14 +254,19 @@ export class InterfaceLauncher extends EventEmitter {
    * @param options
    * @param port
    */
-  private async launchWeb(options: LaunchOptions, port?: number): Promise<LaunchResult> {
+  private async launchWeb(
+    options: LaunchOptions,
+    port?: number,
+  ): Promise<LaunchResult> {
     const webPort = port || options?.['webPort'] || 3456;
 
     logger.debug(`Launching Web interface on port ${webPort}`);
 
     try {
       // Dynamic import of Web interface
-      const { WebInterface } = await import('../interfaces/web/web-interface.ts');
+      const { WebInterface } = await import(
+        '../interfaces/web/web-interface.ts'
+      );
 
       const webConfig: WebConfig = {
         port: webPort,
@@ -295,13 +316,21 @@ export class InterfaceLauncher extends EventEmitter {
 
       try {
         // Show system status
-        if (system && typeof system === 'object' && 'getSystemStatus' in system) {
+        if (
+          system &&
+          typeof system === 'object' &&
+          'getSystemStatus' in system
+        ) {
           const getSystemStatusFn = system['getSystemStatus'];
           if (typeof getSystemStatusFn === 'function') {
             const status = await getSystemStatusFn();
-            if (status && typeof status === 'object' && 'components' in status) {
+            if (
+              status &&
+              typeof status === 'object' &&
+              'components' in status
+            ) {
               for (const [_name, _info] of Object.entries(
-                status.components as Record<string, unknown>
+                status.components as Record<string, unknown>,
               )) {
               }
             }
@@ -456,7 +485,9 @@ export class InterfaceLauncher extends EventEmitter {
 }
 
 // Export convenience functions
-export const launchInterface = async (options?: LaunchOptions): Promise<LaunchResult> => {
+export const launchInterface = async (
+  options?: LaunchOptions,
+): Promise<LaunchResult> => {
   const launcher = InterfaceLauncher.getInstance();
   return launcher.launch(options);
 };

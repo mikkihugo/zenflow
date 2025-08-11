@@ -19,11 +19,20 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates.ts';
 import { WorkflowHumanGateType } from '../orchestration/workflow-gates.ts';
-import type { AdvancedFlowManager } from './flow-manager.ts';
-import type { FlowState, FlowWorkItem, FlowStage, FlowMetrics, WIPLimits } from './flow-manager.ts';
+import type {
+  AdvancedFlowManager,
+  FlowMetrics,
+  FlowStage,
+  FlowState,
+  FlowWorkItem,
+  WIPLimits,
+} from './flow-manager.ts';
 
 // ============================================================================
 // BOTTLENECK DETECTION ENGINE CONFIGURATION
@@ -78,7 +87,7 @@ export interface SeverityCriteria {
  */
 export interface AutomatedAction {
   readonly actionType: AutomatedActionType;
-  readonly parameters: Record<string, any>;
+  readonly parameters: Record<string, unknown>;
   readonly confidence: number; // 0-1
   readonly timeToExecute: number; // milliseconds
   readonly rollbackPlan: RollbackPlan;
@@ -125,7 +134,7 @@ export interface RollbackTrigger {
 export interface RollbackStep {
   readonly stepId: string;
   readonly action: string;
-  readonly parameters: Record<string, any>;
+  readonly parameters: Record<string, unknown>;
   readonly timeout: number; // milliseconds
 }
 
@@ -276,7 +285,12 @@ export interface BottleneckImpactMetrics {
 export interface ContributingFactor {
   readonly factorId: string;
   readonly description: string;
-  readonly category: 'resource' | 'process' | 'technical' | 'organizational' | 'external';
+  readonly category:
+    | 'resource'
+    | 'process'
+    | 'technical'
+    | 'organizational'
+    | 'external';
   readonly contribution: number; // 0-1 contribution to bottleneck
   readonly controllable: boolean;
   readonly timeToResolve: number; // milliseconds
@@ -331,7 +345,7 @@ export interface ImplementationStep {
   readonly stepId: string;
   readonly sequence: number;
   readonly action: string;
-  readonly parameters: Record<string, any>;
+  readonly parameters: Record<string, unknown>;
   readonly estimated_duration: number; // milliseconds
   readonly prerequisites: string[];
   readonly validation: ValidationConfig;
@@ -435,7 +449,7 @@ export interface DashboardConfig {
  */
 export interface DashboardWidget {
   readonly type: string;
-  readonly config: Record<string, any>;
+  readonly config: Record<string, unknown>;
   readonly position: { x: number; y: number; width: number; height: number };
 }
 
@@ -601,7 +615,11 @@ export interface TimelinePhase {
 export interface TimelineDependency {
   readonly from: string;
   readonly to: string;
-  readonly type: 'finish-to-start' | 'start-to-start' | 'finish-to-finish' | 'start-to-finish';
+  readonly type:
+    | 'finish-to-start'
+    | 'start-to-start'
+    | 'finish-to-finish'
+    | 'start-to-finish';
   readonly lag: number; // milliseconds
   readonly critical: boolean;
 }
@@ -992,7 +1010,7 @@ export interface AutomationRule {
   readonly ruleId: string;
   readonly condition: string;
   readonly action: AutomatedActionType;
-  readonly parameters: Record<string, any>;
+  readonly parameters: Record<string, unknown>;
   readonly enabled: boolean;
   readonly priority: number;
   readonly cooldown: number; // milliseconds
@@ -1054,7 +1072,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
     memory: MemorySystem,
     gatesManager: WorkflowGatesManager,
     flowManager: AdvancedFlowManager,
-    config: Partial<BottleneckDetectionEngineConfig> = {}
+    config: Partial<BottleneckDetectionEngineConfig> = {},
   ) {
     super();
 
@@ -1133,7 +1151,9 @@ export class BottleneckDetectionEngine extends EventEmitter {
       this.logger.info('Bottleneck Detection Engine initialized successfully');
       this.emit('initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize Bottleneck Detection Engine', { error });
+      this.logger.error('Failed to initialize Bottleneck Detection Engine', {
+        error,
+      });
       throw error;
     }
   }
@@ -1189,14 +1209,18 @@ export class BottleneckDetectionEngine extends EventEmitter {
     const recommendations = await this.generateBottleneckRecommendations(
       bottlenecks,
       predictions,
-      flowState
+      flowState,
     );
 
     // Perform risk assessment
-    const riskAssessment = await this.performBottleneckRiskAssessment(bottlenecks, predictions);
+    const riskAssessment = await this.performBottleneckRiskAssessment(
+      bottlenecks,
+      predictions,
+    );
 
     // Calculate performance impact
-    const performanceImpact = await this.calculatePerformanceImpact(bottlenecks);
+    const performanceImpact =
+      await this.calculatePerformanceImpact(bottlenecks);
 
     const result: BottleneckDetectionResult = {
       detectionId,
@@ -1211,7 +1235,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
 
     // Update state
     bottlenecks.forEach((bottleneck) =>
-      this.state.currentBottlenecks.set(bottleneck.bottleneckId, bottleneck)
+      this.state.currentBottlenecks.set(bottleneck.bottleneckId, bottleneck),
     );
 
     this.state.historicalDetections.push(result);
@@ -1225,7 +1249,9 @@ export class BottleneckDetectionEngine extends EventEmitter {
     this.logger.info('Bottleneck detection completed', {
       detectionId,
       bottleneckCount: bottlenecks.length,
-      criticalCount: bottlenecks.filter((b) => b.severity === BottleneckSeverity.CRITICAL).length,
+      criticalCount: bottlenecks.filter(
+        (b) => b.severity === BottleneckSeverity.CRITICAL,
+      ).length,
     });
 
     this.emit('bottleneck-detection-completed', result);
@@ -1240,7 +1266,10 @@ export class BottleneckDetectionEngine extends EventEmitter {
 
     // Check each flow stage for bottlenecks
     for (const stage of Object.values(FlowStage)) {
-      const stageBottlenecks = await this.detectStageBottlenecks(stage, flowState);
+      const stageBottlenecks = await this.detectStageBottlenecks(
+        stage,
+        flowState,
+      );
       bottlenecks.push(...stageBottlenecks);
     }
 
@@ -1257,8 +1286,8 @@ export class BottleneckDetectionEngine extends EventEmitter {
    */
   async assessBottleneckSeverity(
     stage: FlowStage,
-    metrics: any,
-    flowState: FlowState
+    metrics: unknown,
+    flowState: FlowState,
   ): Promise<BottleneckSeverity> {
     const criteria = {
       wipUtilization: this.calculateWIPUtilization(stage, flowState),
@@ -1286,7 +1315,9 @@ export class BottleneckDetectionEngine extends EventEmitter {
   /**
    * Trigger automatic resolution for detected bottlenecks
    */
-  async triggerAutomaticResolutions(bottlenecks: DetectedBottleneck[]): Promise<void> {
+  async triggerAutomaticResolutions(
+    bottlenecks: DetectedBottleneck[],
+  ): Promise<void> {
     this.logger.info('Triggering automatic resolutions', {
       bottleneckCount: bottlenecks.length,
     });
@@ -1301,7 +1332,9 @@ export class BottleneckDetectionEngine extends EventEmitter {
   /**
    * Initiate automatic resolution for a bottleneck
    */
-  async initiateAutomaticResolution(bottleneck: DetectedBottleneck): Promise<void> {
+  async initiateAutomaticResolution(
+    bottleneck: DetectedBottleneck,
+  ): Promise<void> {
     const strategy = bottleneck.resolutionStrategy;
 
     this.logger.info('Initiating automatic resolution', {
@@ -1322,7 +1355,10 @@ export class BottleneckDetectionEngine extends EventEmitter {
     };
 
     // Store active resolution
-    this.state.activeResolutions.set(activeResolution.resolutionId, activeResolution);
+    this.state.activeResolutions.set(
+      activeResolution.resolutionId,
+      activeResolution,
+    );
 
     // Execute resolution strategy
     try {
@@ -1397,7 +1433,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   async executeResourceReallocation(
     fromStage: FlowStage,
     toStage: FlowStage,
-    resourceCount: number
+    resourceCount: number,
   ): Promise<void> {
     this.logger.info('Executing resource reallocation', {
       fromStage,
@@ -1407,7 +1443,11 @@ export class BottleneckDetectionEngine extends EventEmitter {
 
     // Create AGUI gate if human approval required
     if (resourceCount > 2) {
-      await this.createResourceReallocationGate(fromStage, toStage, resourceCount);
+      await this.createResourceReallocationGate(
+        fromStage,
+        toStage,
+        resourceCount,
+      );
     }
 
     // Perform the reallocation
@@ -1424,7 +1464,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
    */
   async executeWorkloadRedistribution(
     overloadedStage: FlowStage,
-    redistributionPlan: WorkloadRedistributionPlan
+    redistributionPlan: WorkloadRedistributionPlan,
   ): Promise<void> {
     this.logger.info('Executing workload redistribution', {
       overloadedStage,
@@ -1436,7 +1476,11 @@ export class BottleneckDetectionEngine extends EventEmitter {
 
     // Execute redistribution
     for (const target of redistributionPlan.targets) {
-      await this.redistributeWorkload(overloadedStage, target.stage, target.workItems);
+      await this.redistributeWorkload(
+        overloadedStage,
+        target.stage,
+        target.workItems,
+      );
     }
 
     // Update flow state
@@ -1452,7 +1496,9 @@ export class BottleneckDetectionEngine extends EventEmitter {
   /**
    * Generate bottleneck predictions
    */
-  async generateBottleneckPredictions(flowState: FlowState): Promise<BottleneckPrediction[]> {
+  async generateBottleneckPredictions(
+    flowState: FlowState,
+  ): Promise<BottleneckPrediction[]> {
     if (!this.config.enablePredictiveModeling) {
       return [];
     }
@@ -1463,7 +1509,10 @@ export class BottleneckDetectionEngine extends EventEmitter {
 
     // Use prediction models for each stage
     for (const stage of Object.values(FlowStage)) {
-      const stagePredictions = await this.predictStageBottlenecks(stage, flowState);
+      const stagePredictions = await this.predictStageBottlenecks(
+        stage,
+        flowState,
+      );
       predictions.push(...stagePredictions);
     }
 
@@ -1480,7 +1529,8 @@ export class BottleneckDetectionEngine extends EventEmitter {
 
     this.logger.info('Bottleneck predictions generated', {
       predictionCount: rankedPredictions.length,
-      highProbabilityCount: rankedPredictions.filter((p) => p.probability > 0.7).length,
+      highProbabilityCount: rankedPredictions.filter((p) => p.probability > 0.7)
+        .length,
     });
 
     this.emit('bottleneck-predictions-generated', rankedPredictions);
@@ -1490,7 +1540,9 @@ export class BottleneckDetectionEngine extends EventEmitter {
   /**
    * Execute proactive bottleneck prevention
    */
-  async executeBottleneckPrevention(prediction: BottleneckPrediction): Promise<void> {
+  async executeBottleneckPrevention(
+    prediction: BottleneckPrediction,
+  ): Promise<void> {
     this.logger.info('Executing bottleneck prevention', {
       predictionId: prediction.predictionId,
       stage: prediction.stage,
@@ -1539,8 +1591,14 @@ export class BottleneckDetectionEngine extends EventEmitter {
       timeHorizon: this.config.predictionHorizon,
       currentCapacity,
       predictedDemand,
-      capacityGaps: await this.identifyCapacityGaps(currentCapacity, predictedDemand),
-      recommendations: await this.generateCapacityRecommendations(currentCapacity, predictedDemand),
+      capacityGaps: await this.identifyCapacityGaps(
+        currentCapacity,
+        predictedDemand,
+      ),
+      recommendations: await this.generateCapacityRecommendations(
+        currentCapacity,
+        predictedDemand,
+      ),
       confidence: await this.calculateForecastConfidence(historicalTrends),
     };
 
@@ -1569,16 +1627,22 @@ export class BottleneckDetectionEngine extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('bottleneck-detection-engine:state');
+      const persistedState = await this.memory.retrieve(
+        'bottleneck-detection-engine:state',
+      );
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
           currentBottlenecks: new Map(persistedState.currentBottlenecks || []),
-          resolutionStrategies: new Map(persistedState.resolutionStrategies || []),
+          resolutionStrategies: new Map(
+            persistedState.resolutionStrategies || [],
+          ),
           activeResolutions: new Map(persistedState.activeResolutions || []),
           predictionModels: new Map(persistedState.predictionModels || []),
-          performanceBaselines: new Map(persistedState.performanceBaselines || []),
+          performanceBaselines: new Map(
+            persistedState.performanceBaselines || [],
+          ),
           automationRules: new Map(persistedState.automationRules || []),
           escalationPaths: new Map(persistedState.escalationPaths || []),
         };
@@ -1594,15 +1658,22 @@ export class BottleneckDetectionEngine extends EventEmitter {
       const stateToSerialize = {
         ...this.state,
         currentBottlenecks: Array.from(this.state.currentBottlenecks.entries()),
-        resolutionStrategies: Array.from(this.state.resolutionStrategies.entries()),
+        resolutionStrategies: Array.from(
+          this.state.resolutionStrategies.entries(),
+        ),
         activeResolutions: Array.from(this.state.activeResolutions.entries()),
         predictionModels: Array.from(this.state.predictionModels.entries()),
-        performanceBaselines: Array.from(this.state.performanceBaselines.entries()),
+        performanceBaselines: Array.from(
+          this.state.performanceBaselines.entries(),
+        ),
         automationRules: Array.from(this.state.automationRules.entries()),
         escalationPaths: Array.from(this.state.escalationPaths.entries()),
       };
 
-      await this.memory.store('bottleneck-detection-engine:state', stateToSerialize);
+      await this.memory.store(
+        'bottleneck-detection-engine:state',
+        stateToSerialize,
+      );
     } catch (error) {
       this.logger.error('Failed to persist state', { error });
     }
@@ -1633,7 +1704,14 @@ export class BottleneckDetectionEngine extends EventEmitter {
               timeoutMs: 0,
               fallbackAction: '',
             },
-            successCriteria: [{ metric: 'escalated', target: 1, timeframe: 60000, critical: true }],
+            successCriteria: [
+              {
+                metric: 'escalated',
+                target: 1,
+                timeframe: 60000,
+                critical: true,
+              },
+            ],
           },
         ],
         escalationRules: [
@@ -1670,7 +1748,12 @@ export class BottleneckDetectionEngine extends EventEmitter {
               fallbackAction: 'revert',
             },
             successCriteria: [
-              { metric: 'throughput_improvement', target: 20, timeframe: 600000, critical: false },
+              {
+                metric: 'throughput_improvement',
+                target: 20,
+                timeframe: 600000,
+                critical: false,
+              },
             ],
           },
         ],
@@ -1738,16 +1821,21 @@ export class BottleneckDetectionEngine extends EventEmitter {
   private async loadPerformanceBaselines(): Promise<void> {}
   private async detectStageBottlenecks(
     stage: FlowStage,
-    flowState: FlowState
+    flowState: FlowState,
   ): Promise<DetectedBottleneck[]> {
     return [];
   }
-  private async detectSystemBottlenecks(flowState: FlowState): Promise<DetectedBottleneck[]> {
+  private async detectSystemBottlenecks(
+    flowState: FlowState,
+  ): Promise<DetectedBottleneck[]> {
     return [];
   }
-  private rankBottlenecksBySeverity(bottlenecks: DetectedBottleneck[]): DetectedBottleneck[] {
+  private rankBottlenecksBySeverity(
+    bottlenecks: DetectedBottleneck[],
+  ): DetectedBottleneck[] {
     return bottlenecks.sort(
-      (a, b) => this.severityToNumber(b.severity) - this.severityToNumber(a.severity)
+      (a, b) =>
+        this.severityToNumber(b.severity) - this.severityToNumber(a.severity),
     );
   }
   private severityToNumber(severity: BottleneckSeverity): number {
@@ -1768,13 +1856,22 @@ export class BottleneckDetectionEngine extends EventEmitter {
   }
 
   // Additional placeholder methods would continue...
-  private calculateWIPUtilization(stage: FlowStage, flowState: FlowState): number {
+  private calculateWIPUtilization(
+    stage: FlowStage,
+    flowState: FlowState,
+  ): number {
     return 0;
   }
-  private calculateCycleTimeIncrease(stage: FlowStage, metrics: any): number {
+  private calculateCycleTimeIncrease(
+    stage: FlowStage,
+    metrics: unknown,
+  ): number {
     return 0;
   }
-  private calculateThroughputReduction(stage: FlowStage, metrics: any): number {
+  private calculateThroughputReduction(
+    stage: FlowStage,
+    metrics: unknown,
+  ): number {
     return 0;
   }
   private calculateQueueLength(stage: FlowStage, flowState: FlowState): number {
@@ -1783,110 +1880,156 @@ export class BottleneckDetectionEngine extends EventEmitter {
   private calculateBottleneckDuration(stage: FlowStage): number {
     return 0;
   }
-  private calculateImpactRadius(stage: FlowStage, flowState: FlowState): number {
+  private calculateImpactRadius(
+    stage: FlowStage,
+    flowState: FlowState,
+  ): number {
     return 0;
   }
-  private meetsSeverityCriteria(criteria: SeverityCriteria, threshold: SeverityCriteria): boolean {
+  private meetsSeverityCriteria(
+    criteria: SeverityCriteria,
+    threshold: SeverityCriteria,
+  ): boolean {
     return false;
   }
   private async assessSystemHealth(
     flowState: FlowState,
-    bottlenecks: DetectedBottleneck[]
+    bottlenecks: DetectedBottleneck[],
   ): Promise<SystemHealthStatus> {
     return {} as SystemHealthStatus;
   }
   private async generateBottleneckRecommendations(
     bottlenecks: DetectedBottleneck[],
     predictions: BottleneckPrediction[],
-    flowState: FlowState
+    flowState: FlowState,
   ): Promise<BottleneckRecommendation[]> {
     return [];
   }
   private async performBottleneckRiskAssessment(
     bottlenecks: DetectedBottleneck[],
-    predictions: BottleneckPrediction[]
+    predictions: BottleneckPrediction[],
   ): Promise<BottleneckRiskAssessment> {
     return {} as BottleneckRiskAssessment;
   }
   private async calculatePerformanceImpact(
-    bottlenecks: DetectedBottleneck[]
+    bottlenecks: DetectedBottleneck[],
   ): Promise<PerformanceImpact> {
     return {} as PerformanceImpact;
   }
-  private shouldTriggerAutomaticResolution(bottleneck: DetectedBottleneck): boolean {
-    return bottleneck.confidence > this.config.autoResolutionConfidenceThreshold;
+  private shouldTriggerAutomaticResolution(
+    bottleneck: DetectedBottleneck,
+  ): boolean {
+    return (
+      bottleneck.confidence > this.config.autoResolutionConfidenceThreshold
+    );
   }
-  private initializeResolutionProgress(strategy: ResolutionStrategy): ResolutionProgress {
+  private initializeResolutionProgress(
+    strategy: ResolutionStrategy,
+  ): ResolutionProgress {
     return {} as ResolutionProgress;
   }
   private initializeResolutionMetrics(): ResolutionMetrics {
     return {} as ResolutionMetrics;
   }
-  private async executeImmediateReliefStrategy(resolution: ActiveResolution): Promise<void> {}
-  private async executeShortTermFixStrategy(resolution: ActiveResolution): Promise<void> {}
-  private async executeLongTermSolutionStrategy(resolution: ActiveResolution): Promise<void> {}
-  private async executeWorkaroundStrategy(resolution: ActiveResolution): Promise<void> {}
-  private async executeEscalationStrategy(resolution: ActiveResolution): Promise<void> {}
-  private async executePreventionStrategy(resolution: ActiveResolution): Promise<void> {}
-  private async handleResolutionFailure(resolution: ActiveResolution, error: any): Promise<void> {}
+  private async executeImmediateReliefStrategy(
+    resolution: ActiveResolution,
+  ): Promise<void> {}
+  private async executeShortTermFixStrategy(
+    resolution: ActiveResolution,
+  ): Promise<void> {}
+  private async executeLongTermSolutionStrategy(
+    resolution: ActiveResolution,
+  ): Promise<void> {}
+  private async executeWorkaroundStrategy(
+    resolution: ActiveResolution,
+  ): Promise<void> {}
+  private async executeEscalationStrategy(
+    resolution: ActiveResolution,
+  ): Promise<void> {}
+  private async executePreventionStrategy(
+    resolution: ActiveResolution,
+  ): Promise<void> {}
+  private async handleResolutionFailure(
+    resolution: ActiveResolution,
+    error: unknown,
+  ): Promise<void> {}
   private async createResourceReallocationGate(
     from: FlowStage,
     to: FlowStage,
-    count: number
+    count: number,
   ): Promise<void> {}
-  private async reallocateResources(from: FlowStage, to: FlowStage, count: number): Promise<void> {}
-  private async monitorReallocationImpact(from: FlowStage, to: FlowStage): Promise<void> {}
-  private async validateRedistributionPlan(plan: WorkloadRedistributionPlan): Promise<void> {}
+  private async reallocateResources(
+    from: FlowStage,
+    to: FlowStage,
+    count: number,
+  ): Promise<void> {}
+  private async monitorReallocationImpact(
+    from: FlowStage,
+    to: FlowStage,
+  ): Promise<void> {}
+  private async validateRedistributionPlan(
+    plan: WorkloadRedistributionPlan,
+  ): Promise<void> {}
   private async redistributeWorkload(
     from: FlowStage,
     to: FlowStage,
-    items: string[]
+    items: string[],
   ): Promise<void> {}
   private async updateFlowStateAfterRedistribution(
-    plan: WorkloadRedistributionPlan
+    plan: WorkloadRedistributionPlan,
   ): Promise<void> {}
   private async predictStageBottlenecks(
     stage: FlowStage,
-    flowState: FlowState
+    flowState: FlowState,
   ): Promise<BottleneckPrediction[]> {
     return [];
   }
-  private async predictSystemBottlenecks(flowState: FlowState): Promise<BottleneckPrediction[]> {
+  private async predictSystemBottlenecks(
+    flowState: FlowState,
+  ): Promise<BottleneckPrediction[]> {
     return [];
   }
   private async selectOptimalPreventionStrategy(
-    prediction: BottleneckPrediction
+    prediction: BottleneckPrediction,
   ): Promise<PreventionStrategy | null> {
     return null;
   }
   private async executePreventionAction(
     action: PreventionAction,
-    prediction: BottleneckPrediction
+    prediction: BottleneckPrediction,
   ): Promise<void> {}
-  private async setupEarlyWarningMonitoring(prediction: BottleneckPrediction): Promise<void> {}
-  private async getCurrentCapacityMetrics(): Promise<any> {
+  private async setupEarlyWarningMonitoring(
+    prediction: BottleneckPrediction,
+  ): Promise<void> {}
+  private async getCurrentCapacityMetrics(): Promise<unknown> {
     return {};
   }
-  private async getHistoricalCapacityTrends(): Promise<any> {
+  private async getHistoricalCapacityTrends(): Promise<unknown> {
     return {};
   }
-  private async predictWorkloadDemand(): Promise<any> {
+  private async predictWorkloadDemand(): Promise<unknown> {
     return {};
   }
-  private async identifyCapacityGaps(capacity: any, demand: any): Promise<any[]> {
+  private async identifyCapacityGaps(
+    capacity: unknown,
+    demand: unknown,
+  ): Promise<any[]> {
     return [];
   }
-  private async generateCapacityRecommendations(capacity: any, demand: any): Promise<any[]> {
+  private async generateCapacityRecommendations(
+    capacity: unknown,
+    demand: unknown,
+  ): Promise<any[]> {
     return [];
   }
-  private async calculateForecastConfidence(trends: any): Promise<number> {
+  private async calculateForecastConfidence(trends: unknown): Promise<number> {
     return 0.8;
   }
   private async completeActiveResolutions(): Promise<void> {}
   private async monitorActiveResolutions(): Promise<void> {}
-  private async handleFlowStateUpdate(payload: any): Promise<void> {}
-  private async handleWIPViolation(payload: any): Promise<void> {}
-  private async handlePerformanceDegradation(payload: any): Promise<void> {}
+  private async handleFlowStateUpdate(payload: unknown): Promise<void> {}
+  private async handleWIPViolation(payload: unknown): Promise<void> {}
+  private async handlePerformanceDegradation(payload: unknown): Promise<void> {}
 }
 
 // ============================================================================
@@ -1921,10 +2064,10 @@ export interface CapacityForecast {
   readonly forecastId: string;
   readonly timestamp: Date;
   readonly timeHorizon: number;
-  readonly currentCapacity: any;
-  readonly predictedDemand: any;
-  readonly capacityGaps: any[];
-  readonly recommendations: any[];
+  readonly currentCapacity: unknown;
+  readonly predictedDemand: unknown;
+  readonly capacityGaps: unknown[];
+  readonly recommendations: unknown[];
   readonly confidence: number;
 }
 

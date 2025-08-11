@@ -142,7 +142,9 @@ describe('LanceDB Vector Operations Integration Tests', () => {
     it('should handle connection errors gracefully', async () => {
       mockConnection.connect.mockRejectedValue(new Error('Connection timeout'));
 
-      await expect(mockConnection.connect()).rejects.toThrow('Connection timeout');
+      await expect(mockConnection.connect()).rejects.toThrow(
+        'Connection timeout',
+      );
     });
   });
 
@@ -190,7 +192,9 @@ describe('LanceDB Vector Operations Integration Tests', () => {
       expect(normalized[2]).toBeCloseTo(0, 5);
 
       // Check magnitude is 1
-      const magnitude = Math.sqrt(normalized.reduce((sum, x) => sum + x * x, 0));
+      const magnitude = Math.sqrt(
+        normalized.reduce((sum, x) => sum + x * x, 0),
+      );
       expect(magnitude).toBeCloseTo(1, 5);
     });
 
@@ -282,7 +286,11 @@ describe('LanceDB Vector Operations Integration Tests', () => {
       try {
         await lancedb.insertVectors('search_test', testVectors);
 
-        const results = await lancedb.searchSimilar('search_test', queryVector, 5);
+        const results = await lancedb.searchSimilar(
+          'search_test',
+          queryVector,
+          5,
+        );
 
         expect(results).toHaveLength(5);
         expect(results?.[0]?.score).toBeDefined();
@@ -290,7 +298,9 @@ describe('LanceDB Vector Operations Integration Tests', () => {
 
         // Results should be ordered by similarity (best first)
         for (let i = 1; i < results.length; i++) {
-          expect(results?.[i]?.score).toBeGreaterThanOrEqual(results?.[i - 1]?.score);
+          expect(results?.[i]?.score).toBeGreaterThanOrEqual(
+            results?.[i - 1]?.score,
+          );
         }
       } catch {
         // Classical test of similarity calculation
@@ -322,9 +332,14 @@ describe('LanceDB Vector Operations Integration Tests', () => {
       try {
         await lancedb.insertVectors('filter_test', testVectors);
 
-        const filteredResults = await lancedb.searchSimilar('filter_test', queryVector, 10, {
-          category: 'even',
-        });
+        const filteredResults = await lancedb.searchSimilar(
+          'filter_test',
+          queryVector,
+          10,
+          {
+            category: 'even',
+          },
+        );
 
         expect(filteredResults.length).toBeLessThanOrEqual(10);
         filteredResults?.forEach((result) => {
@@ -332,7 +347,9 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         });
       } catch {
         // Classical filtering test
-        const evenDocs = testVectors.filter((doc) => doc.metadata.category === 'even');
+        const evenDocs = testVectors.filter(
+          (doc) => doc.metadata.category === 'even',
+        );
         expect(evenDocs).toHaveLength(10);
 
         const similarities = evenDocs.map((doc) => ({
@@ -341,7 +358,9 @@ describe('LanceDB Vector Operations Integration Tests', () => {
           metadata: doc.metadata,
         }));
 
-        expect(similarities.every((s) => s.metadata.category === 'even')).toBe(true);
+        expect(similarities.every((s) => s.metadata.category === 'even')).toBe(
+          true,
+        );
       }
     });
   });
@@ -405,7 +424,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
       }));
 
       const queries = Array.from({ length: numQueries }, (_, i) =>
-        VectorMath.generateRandomVector(vectorDim, i + 10000)
+        VectorMath.generateRandomVector(vectorDim, i + 10000),
       );
 
       try {
@@ -513,10 +532,15 @@ describe('LanceDB Vector Operations Integration Tests', () => {
     });
 
     it('should maintain precision with very small numbers', () => {
-      const smallVector = Array.from({ length: 100 }, () => Math.random() * 1e-10);
+      const smallVector = Array.from(
+        { length: 100 },
+        () => Math.random() * 1e-10,
+      );
       const normalized = VectorMath.normalizeVector(smallVector);
 
-      const magnitude = Math.sqrt(normalized.reduce((sum, x) => sum + x * x, 0));
+      const magnitude = Math.sqrt(
+        normalized.reduce((sum, x) => sum + x * x, 0),
+      );
 
       // Should still normalize correctly even with very small numbers
       if (magnitude > 0) {

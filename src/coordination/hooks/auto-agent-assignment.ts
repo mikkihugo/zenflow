@@ -46,7 +46,9 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     this.initializeFileTypeMappings();
   }
 
-  async assignOptimalAgent(context: OperationContext): Promise<AgentAssignment> {
+  async assignOptimalAgent(
+    context: OperationContext,
+  ): Promise<AgentAssignment> {
     // 1. Analyze operation requirements
     const analysis = await this.analyzeOperation(context);
 
@@ -58,11 +60,14 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
     // 4. Select optimal agent
     const selectedAgent = scoredAgents.reduce((best, current) =>
-      current?.score > best.score ? current : best
+      current?.score > best.score ? current : best,
     );
 
     // 5. Estimate performance for the assignment
-    const performanceEstimate = await this.estimatePerformance(selectedAgent?.agent, context);
+    const performanceEstimate = await this.estimatePerformance(
+      selectedAgent?.agent,
+      context,
+    );
 
     return {
       agent: selectedAgent?.agent,
@@ -82,14 +87,20 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     };
   }
 
-  async updateAgentWorkload(agent: AgentInfo, operation: Operation): Promise<void> {
+  async updateAgentWorkload(
+    agent: AgentInfo,
+    operation: Operation,
+  ): Promise<void> {
     const currentWorkload = this.workloadTracker.get(agent.id) || 0;
     const estimatedDuration = await this.estimateOperationDuration(operation);
 
     this.workloadTracker.set(agent.id, currentWorkload + estimatedDuration);
 
     // Update agent's current workload
-    await this.persistWorkloadUpdate(agent.id, currentWorkload + estimatedDuration);
+    await this.persistWorkloadUpdate(
+      agent.id,
+      currentWorkload + estimatedDuration,
+    );
   }
 
   async balanceWorkload(agents: AgentInfo[]): Promise<WorkloadBalance> {
@@ -97,7 +108,8 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
       agent,
       currentLoad: this.workloadTracker.get(agent.id) || 0,
       maxLoad: agent.maxWorkload,
-      utilization: (this.workloadTracker.get(agent.id) || 0) / agent.maxWorkload,
+      utilization:
+        (this.workloadTracker.get(agent.id) || 0) / agent.maxWorkload,
     }));
 
     const averageUtilization =
@@ -105,7 +117,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     const threshold = 0.2; // 20% deviation threshold
 
     const unbalanced = workloads.filter(
-      (wl) => Math.abs(wl.utilization - averageUtilization) > threshold
+      (wl) => Math.abs(wl.utilization - averageUtilization) > threshold,
     );
 
     const recommendations: WorkloadRecommendation[] = [];
@@ -132,12 +144,19 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     return {
       balanced: unbalanced.length === 0,
       recommendations,
-      projectedEfficiency: this.calculateProjectedEfficiency(workloads, recommendations),
+      projectedEfficiency: this.calculateProjectedEfficiency(
+        workloads,
+        recommendations,
+      ),
     };
   }
 
-  private async analyzeOperation(context: OperationContext): Promise<OperationAnalysis> {
-    const fileType = context.filePath ? this.detectFileType(context.filePath) : 'unknown';
+  private async analyzeOperation(
+    context: OperationContext,
+  ): Promise<OperationAnalysis> {
+    const fileType = context.filePath
+      ? this.detectFileType(context.filePath)
+      : 'unknown';
     const operationType = this.classifyOperation(context.operation);
     const complexity = await this.assessComplexity(context);
 
@@ -201,16 +220,22 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     return 'general';
   }
 
-  private async assessComplexity(context: OperationContext): Promise<ComplexityLevel> {
+  private async assessComplexity(
+    context: OperationContext,
+  ): Promise<ComplexityLevel> {
     let score = 0;
 
     // File type complexity
     const complexFileTypes = ['cpp', 'rust', 'java'];
-    if (context.fileType && complexFileTypes.includes(context.fileType)) score += 2;
+    if (context.fileType && complexFileTypes.includes(context.fileType))
+      score += 2;
 
     // Operation complexity
     if (context.operation.description.length > 200) score += 1;
-    if (context.operation.parameters && Object.keys(context.operation.parameters).length > 5)
+    if (
+      context.operation.parameters &&
+      Object.keys(context.operation.parameters).length > 5
+    )
       score += 1;
 
     // Dependencies and requirements
@@ -223,7 +248,10 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     return 'simple';
   }
 
-  private inferRequiredSkills(fileType: FileType, operationType: OperationType): string[] {
+  private inferRequiredSkills(
+    fileType: FileType,
+    operationType: OperationType,
+  ): string[] {
     const skills: Set<string> = new Set();
 
     // File type skills
@@ -274,21 +302,26 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     if (context.urgency === 'critical') requirements.push('high-availability');
     if (context.complexity === 'expert') requirements.push('senior-level');
     if (context.estimatedDuration > 7200) requirements.push('long-running');
-    if (context.operation.description.includes('secure')) requirements.push('security-clearance');
+    if (context.operation.description.includes('secure'))
+      requirements.push('security-clearance');
     if (context.operation.description.includes('performance'))
       requirements.push('performance-expertise');
 
     return requirements;
   }
 
-  private async getCandidateAgents(analysis: OperationAnalysis): Promise<AgentInfo[]> {
+  private async getCandidateAgents(
+    analysis: OperationAnalysis,
+  ): Promise<AgentInfo[]> {
     const candidates: AgentInfo[] = [];
 
     // Get agents based on file type
     const fileTypeAgents = this.fileTypeAgentMap.get(analysis.fileType) || [];
 
     // Get agents based on operation type
-    const operationAgents = this.getAgentsByOperationType(analysis.operationType);
+    const operationAgents = this.getAgentsByOperationType(
+      analysis.operationType,
+    );
 
     // Combine and deduplicate
     const allAgentTypes = [...new Set([...fileTypeAgents, ...operationAgents])];
@@ -306,7 +339,12 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private getAgentsByOperationType(operationType: OperationType): AgentType[] {
     const operationAgentMap: Record<OperationType, AgentType[]> = {
-      testing: ['unit-tester', 'integration-tester', 'e2e-tester', 'tdd-london-swarm'],
+      testing: [
+        'unit-tester',
+        'integration-tester',
+        'e2e-tester',
+        'tdd-london-swarm',
+      ],
       debugging: ['debug', 'analyst', 'specialist'],
       refactoring: ['refactoring-analyzer', 'reviewer'],
       'code-review': ['code-review-swarm', 'reviewer', 'quality-gate-agent'],
@@ -316,7 +354,11 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
       security: ['security-analyzer', 'security-architect', 'security-manager'],
       deployment: ['deployment-ops', 'ops-cicd-github', 'infrastructure-ops'],
       configuration: ['infrastructure-ops', 'monitoring-ops'],
-      'data-processing': ['data-ml-model', 'etl-specialist', 'analytics-specialist'],
+      'data-processing': [
+        'data-ml-model',
+        'etl-specialist',
+        'analytics-specialist',
+      ],
       frontend: ['frontend-dev', 'ui-designer', 'ux-designer'],
       backend: ['dev-backend-api', 'api-dev', 'database-architect'],
       'machine-learning': ['ai-ml-specialist', 'data-ml-model'],
@@ -328,7 +370,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private async scoreAgents(
     candidates: AgentInfo[],
-    analysis: OperationAnalysis
+    analysis: OperationAnalysis,
   ): Promise<ScoredAgent[]> {
     const scoredAgents: ScoredAgent[] = [];
 
@@ -349,7 +391,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private async calculateAgentScore(
     agent: AgentInfo,
-    analysis: OperationAnalysis
+    analysis: OperationAnalysis,
   ): Promise<AgentScore> {
     const breakdown: ScoreBreakdown = {
       skillMatch: 0,
@@ -361,7 +403,10 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     };
 
     // Skill matching (40% weight)
-    const skillMatchRatio = this.calculateSkillMatch(agent.capabilities, analysis.requiredSkills);
+    const skillMatchRatio = this.calculateSkillMatch(
+      agent.capabilities,
+      analysis.requiredSkills,
+    );
     breakdown.skillMatch = skillMatchRatio * 40;
 
     // Performance history (25% weight)
@@ -376,23 +421,32 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
     // Specialization bonus (5% weight)
     const specializationMatch = agent.specialties.some((specialty) =>
-      analysis.requiredSkills.includes(specialty)
+      analysis.requiredSkills.includes(specialty),
     );
     breakdown.specialization = specializationMatch ? 5 : 0;
 
     // Historical performance on similar tasks (5% weight)
-    breakdown.historical = (await this.getHistoricalPerformanceScore(agent.id, analysis)) * 5;
+    breakdown.historical =
+      (await this.getHistoricalPerformanceScore(agent.id, analysis)) * 5;
 
-    const total = Object.values(breakdown).reduce((sum, score) => sum + score, 0);
+    const total = Object.values(breakdown).reduce(
+      (sum, score) => sum + score,
+      0,
+    );
 
     return { total, breakdown };
   }
 
-  private calculateSkillMatch(agentCapabilities: string[], requiredSkills: string[]): number {
+  private calculateSkillMatch(
+    agentCapabilities: string[],
+    requiredSkills: string[],
+  ): number {
     if (requiredSkills.length === 0) return 1;
 
     const matches = requiredSkills.filter((skill) =>
-      agentCapabilities.some((cap) => cap.toLowerCase().includes(skill.toLowerCase()))
+      agentCapabilities.some((cap) =>
+        cap.toLowerCase().includes(skill.toLowerCase()),
+      ),
     );
 
     return matches.length / requiredSkills.length;
@@ -401,17 +455,19 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   private generateReasoning(
     agent: AgentInfo,
     analysis: OperationAnalysis,
-    score: AgentScore
+    score: AgentScore,
   ): string {
     const reasons: string[] = [];
 
     if (score.breakdown.skillMatch > 20) {
-      reasons.push(`Strong skill match for ${analysis.fileType} and ${analysis.operationType}`);
+      reasons.push(
+        `Strong skill match for ${analysis.fileType} and ${analysis.operationType}`,
+      );
     }
 
     if (score.breakdown.performance > 20) {
       reasons.push(
-        `Excellent performance history (${(agent.performance.successRate * 100).toFixed(1)}% success rate)`
+        `Excellent performance history (${(agent.performance.successRate * 100).toFixed(1)}% success rate)`,
       );
     }
 
@@ -432,7 +488,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private async getHistoricalPerformanceScore(
     agentId: string,
-    analysis: OperationAnalysis
+    analysis: OperationAnalysis,
   ): Promise<number> {
     // Mock implementation - would query actual performance database
     const historicalData = await this.loadPerformanceHistory(agentId);
@@ -440,19 +496,20 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     const relevantHistory = historicalData?.filter(
       (record) =>
         record.context['fileType'] === analysis['fileType'] ||
-        record.context['operationType'] === analysis['operationType']
+        record.context['operationType'] === analysis['operationType'],
     );
 
     if (relevantHistory.length === 0) return 0.5; // Neutral score
 
     const successRate =
-      relevantHistory.filter((record) => record.success).length / relevantHistory.length;
+      relevantHistory.filter((record) => record.success).length /
+      relevantHistory.length;
     return successRate;
   }
 
   private async estimatePerformance(
     agent: AgentInfo,
-    context: OperationContext
+    context: OperationContext,
   ): Promise<PerformanceEstimate> {
     // Base estimate on historical performance
     const baseTime = context.estimatedDuration;
@@ -478,9 +535,15 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     };
   }
 
-  private meetsRequirements(agent: AgentInfo, analysis: OperationAnalysis): boolean {
+  private meetsRequirements(
+    agent: AgentInfo,
+    analysis: OperationAnalysis,
+  ): boolean {
     // Check if agent can handle the complexity
-    if (analysis.complexity === 'expert' && agent.performance.qualityScore < 0.8) {
+    if (
+      analysis.complexity === 'expert' &&
+      agent.performance.qualityScore < 0.8
+    ) {
       return false;
     }
 
@@ -498,24 +561,30 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   }
 
   private calculateProjectedEfficiency(
-    workloads: any[],
-    recommendations: WorkloadRecommendation[]
+    workloads: unknown[],
+    recommendations: WorkloadRecommendation[],
   ): number {
     // Mock implementation - would calculate efficiency improvement
     const currentEfficiency =
-      workloads.reduce((sum, wl) => sum + Math.min(wl.utilization, 1), 0) / workloads.length;
+      workloads.reduce((sum, wl) => sum + Math.min(wl.utilization, 1), 0) /
+      workloads.length;
     const improvementPotential =
-      recommendations.reduce((sum, rec) => sum + Math.abs(rec.impact), 0) / recommendations.length;
+      recommendations.reduce((sum, rec) => sum + Math.abs(rec.impact), 0) /
+      recommendations.length;
 
     return Math.min(currentEfficiency + improvementPotential * 0.1, 1);
   }
 
   // Mock implementations for data persistence (would integrate with actual storage)
-  private async loadAgentMemory(_agentId: string): Promise<Record<string, any>> {
+  private async loadAgentMemory(
+    _agentId: string,
+  ): Promise<Record<string, unknown>> {
     return {}; // Mock implementation
   }
 
-  private async loadAgentPreferences(_agentId: string): Promise<Record<string, any>> {
+  private async loadAgentPreferences(
+    _agentId: string,
+  ): Promise<Record<string, unknown>> {
     return {}; // Mock implementation
   }
 
@@ -523,16 +592,23 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     return []; // Mock implementation
   }
 
-  private async loadPerformanceHistory(_agentId: string): Promise<PerformanceHistory[]> {
+  private async loadPerformanceHistory(
+    _agentId: string,
+  ): Promise<PerformanceHistory[]> {
     return []; // Mock implementation
   }
 
-  private async estimateOperationDuration(_operation: Operation): Promise<number> {
+  private async estimateOperationDuration(
+    _operation: Operation,
+  ): Promise<number> {
     // Mock implementation - would use ML models for estimation
     return 300; // 5 minutes default
   }
 
-  private async persistWorkloadUpdate(_agentId: string, _newWorkload: number): Promise<void> {
+  private async persistWorkloadUpdate(
+    _agentId: string,
+    _newWorkload: number,
+  ): Promise<void> {
     // Mock implementation
   }
 
@@ -596,15 +672,34 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private initializeFileTypeMappings(): void {
     // Initialize file type to agent mappings
-    this.fileTypeAgentMap.set('typescript', ['frontend-dev', 'fullstack-dev', 'developer']);
-    this.fileTypeAgentMap.set('javascript', ['frontend-dev', 'fullstack-dev', 'developer']);
-    this.fileTypeAgentMap.set('python', ['ai-ml-specialist', 'data-ml-model', 'developer']);
+    this.fileTypeAgentMap.set('typescript', [
+      'frontend-dev',
+      'fullstack-dev',
+      'developer',
+    ]);
+    this.fileTypeAgentMap.set('javascript', [
+      'frontend-dev',
+      'fullstack-dev',
+      'developer',
+    ]);
+    this.fileTypeAgentMap.set('python', [
+      'ai-ml-specialist',
+      'data-ml-model',
+      'developer',
+    ]);
     this.fileTypeAgentMap.set('rust', ['specialist', 'performance-analyzer']);
-    this.fileTypeAgentMap.set('golang', ['dev-backend-api', 'api-dev', 'developer']);
+    this.fileTypeAgentMap.set('golang', [
+      'dev-backend-api',
+      'api-dev',
+      'developer',
+    ]);
     this.fileTypeAgentMap.set('java', ['developer', 'specialist']);
     this.fileTypeAgentMap.set('cpp', ['specialist', 'performance-analyzer']);
     this.fileTypeAgentMap.set('markdown', ['documenter', 'technical-writer']);
-    this.fileTypeAgentMap.set('sql', ['database-architect', 'analytics-specialist']);
+    this.fileTypeAgentMap.set('sql', [
+      'database-architect',
+      'analytics-specialist',
+    ]);
   }
 }
 

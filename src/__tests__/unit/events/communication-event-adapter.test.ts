@@ -19,7 +19,8 @@ import { CommunicationEventFactory } from '../../../interfaces/events/adapters/c
 describe('CommunicationEventAdapter', () => {
   describe('🏗️ Constructor and Configuration (Classical TDD)', () => {
     it('should create adapter with valid configuration', () => {
-      const config = createDefaultCommunicationEventAdapterConfig('test-comm-adapter');
+      const config =
+        createDefaultCommunicationEventAdapterConfig('test-comm-adapter');
       const adapter = new CommunicationEventAdapter(config);
 
       expect(adapter.name).toBe('test-comm-adapter');
@@ -31,37 +32,47 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should apply custom configuration overrides correctly', () => {
-      const config = createDefaultCommunicationEventAdapterConfig('custom-adapter', {
-        websocketCommunication: {
-          enabled: false,
-          wrapConnectionEvents: false,
-          clients: ['custom-client'],
+      const config = createDefaultCommunicationEventAdapterConfig(
+        'custom-adapter',
+        {
+          websocketCommunication: {
+            enabled: false,
+            wrapConnectionEvents: false,
+            clients: ['custom-client'],
+          },
+          mcpProtocol: {
+            enabled: true,
+            servers: ['custom-mcp-server'],
+          },
+          performance: {
+            enableConnectionCorrelation: false,
+            maxConcurrentConnections: 500,
+          },
         },
-        mcpProtocol: {
-          enabled: true,
-          servers: ['custom-mcp-server'],
-        },
-        performance: {
-          enableConnectionCorrelation: false,
-          maxConcurrentConnections: 500,
-        },
-      });
+      );
 
       const adapter = new CommunicationEventAdapter(config);
 
       expect(adapter.config.websocketCommunication?.enabled).toBe(false);
-      expect(adapter.config.websocketCommunication?.clients).toEqual(['custom-client']);
-      expect(adapter.config.mcpProtocol?.servers).toEqual(['custom-mcp-server']);
+      expect(adapter.config.websocketCommunication?.clients).toEqual([
+        'custom-client',
+      ]);
+      expect(adapter.config.mcpProtocol?.servers).toEqual([
+        'custom-mcp-server',
+      ]);
       expect(adapter.config.performance?.maxConcurrentConnections).toBe(500);
     });
 
     it('should set default values for missing configuration', () => {
-      const minimalConfig = createDefaultCommunicationEventAdapterConfig('minimal-adapter');
+      const minimalConfig =
+        createDefaultCommunicationEventAdapterConfig('minimal-adapter');
 
       const adapter = new CommunicationEventAdapter(minimalConfig);
 
       expect(adapter.config.communication?.correlationTTL).toBe(300000);
-      expect(adapter.config.connectionHealthMonitoring?.healthCheckInterval).toBe(30000);
+      expect(
+        adapter.config.connectionHealthMonitoring?.healthCheckInterval,
+      ).toBe(30000);
       expect(adapter.config.communicationOptimization?.enabled).toBe(true);
     });
   });
@@ -78,7 +89,8 @@ describe('CommunicationEventAdapter', () => {
         error: vi.fn(),
       };
 
-      const config = createDefaultCommunicationEventAdapterConfig('lifecycle-test');
+      const config =
+        createDefaultCommunicationEventAdapterConfig('lifecycle-test');
       adapter = new CommunicationEventAdapter(config);
 
       // Mock the logger
@@ -107,7 +119,7 @@ describe('CommunicationEventAdapter', () => {
       expect(mockInitializeCommunicationIntegrations).toHaveBeenCalled();
       expect(mockStartEventProcessing).toHaveBeenCalled();
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Starting communication event adapter')
+        expect.stringContaining('Starting communication event adapter'),
       );
     });
 
@@ -123,7 +135,7 @@ describe('CommunicationEventAdapter', () => {
       expect(adapter.isRunning()).toBe(false);
       expect(mockUnwrapCommunicationComponents).toHaveBeenCalled();
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Stopping communication event adapter')
+        expect.stringContaining('Stopping communication event adapter'),
       );
     });
 
@@ -136,7 +148,7 @@ describe('CommunicationEventAdapter', () => {
       expect(adapter.isRunning()).toBe(false);
       expect(mockLogger.error).toHaveBeenCalledWith(
         expect.stringContaining('Failed to start communication event adapter'),
-        expect.any(Error)
+        expect.any(Error),
       );
     });
 
@@ -160,7 +172,8 @@ describe('CommunicationEventAdapter', () => {
     let mockWebSocketClient: any;
 
     beforeEach(async () => {
-      const config = createDefaultCommunicationEventAdapterConfig('websocket-test');
+      const config =
+        createDefaultCommunicationEventAdapterConfig('websocket-test');
       adapter = new CommunicationEventAdapter(config);
 
       mockWebSocketClient = new EventEmitter();
@@ -193,7 +206,10 @@ describe('CommunicationEventAdapter', () => {
             },
           };
 
-          (adapter as any).wrappedComponents.set('websocket-client-default', wrappedComponent);
+          (adapter as any).wrappedComponents.set(
+            'websocket-client-default',
+            wrappedComponent,
+          );
         });
 
       await adapter.start();
@@ -232,7 +248,7 @@ describe('CommunicationEventAdapter', () => {
           id: expect.any(String),
           timestamp: expect.any(Date),
           correlationId: expect.any(String),
-        })
+        }),
       );
     });
 
@@ -266,7 +282,8 @@ describe('CommunicationEventAdapter', () => {
       await adapter.emitWebSocketCommunicationEvent(connectEvent);
       await adapter.emitWebSocketCommunicationEvent(messageEvent);
 
-      const correlation = adapter.getCommunicationCorrelatedEvents(correlationId);
+      const correlation =
+        adapter.getCommunicationCorrelatedEvents(correlationId);
       expect(correlation).toBeTruthy();
       expect(correlation?.events).toHaveLength(2);
       expect(correlation?.connectionId).toBe('conn-123');
@@ -300,7 +317,7 @@ describe('CommunicationEventAdapter', () => {
           details: expect.objectContaining({
             errorCode: 'CONNECTION_LOST',
           }),
-        })
+        }),
       );
     });
   });
@@ -343,7 +360,10 @@ describe('CommunicationEventAdapter', () => {
             },
           };
 
-          (adapter as any).wrappedComponents.set('mcp-server-http-mcp-server', wrappedComponent);
+          (adapter as any).wrappedComponents.set(
+            'mcp-server-http-mcp-server',
+            wrappedComponent,
+          );
         });
 
       await adapter.start();
@@ -383,7 +403,7 @@ describe('CommunicationEventAdapter', () => {
             toolName: 'system_info',
             requestId: 'req-789',
           }),
-        })
+        }),
       );
     });
 
@@ -421,7 +441,8 @@ describe('CommunicationEventAdapter', () => {
       await adapter.emitMCPProtocolEvent(requestEvent);
       await adapter.emitMCPProtocolEvent(responseEvent);
 
-      const correlation = adapter.getCommunicationCorrelatedEvents(correlationId);
+      const correlation =
+        adapter.getCommunicationCorrelatedEvents(correlationId);
       expect(correlation).toBeTruthy();
       expect(correlation?.events).toHaveLength(2);
       expect(correlation?.operation).toBe('send');
@@ -455,7 +476,7 @@ describe('CommunicationEventAdapter', () => {
           details: expect.objectContaining({
             timeoutDuration: 30000,
           }),
-        })
+        }),
       );
     });
   });
@@ -490,7 +511,10 @@ describe('CommunicationEventAdapter', () => {
             },
           };
 
-          (adapter as any).wrappedComponents.set('http-communication', wrappedComponent);
+          (adapter as any).wrappedComponents.set(
+            'http-communication',
+            wrappedComponent,
+          );
         });
 
       await adapter.start();
@@ -529,7 +553,7 @@ describe('CommunicationEventAdapter', () => {
           operation: 'send',
           protocol: 'https',
           endpoint: 'https://api.example.com/data',
-        })
+        }),
       );
     });
 
@@ -565,7 +589,8 @@ describe('CommunicationEventAdapter', () => {
       await adapter.emit(initialRequest);
       await adapter.emit(retryRequest);
 
-      const correlation = adapter.getCommunicationCorrelatedEvents(correlationId);
+      const correlation =
+        adapter.getCommunicationCorrelatedEvents(correlationId);
       expect(correlation).toBeTruthy();
       expect(correlation?.events).toHaveLength(2);
       expect(correlation?.events[1].operation).toBe('retry');
@@ -576,7 +601,8 @@ describe('CommunicationEventAdapter', () => {
     let adapter: CommunicationEventAdapter;
 
     beforeEach(async () => {
-      const config = createDefaultCommunicationEventAdapterConfig('protocol-test');
+      const config =
+        createDefaultCommunicationEventAdapterConfig('protocol-test');
       adapter = new CommunicationEventAdapter(config);
 
       // Mock protocol communication wrapping
@@ -603,7 +629,10 @@ describe('CommunicationEventAdapter', () => {
               },
             };
 
-            (adapter as any).wrappedComponents.set(`${protocolType}-protocol`, wrappedComponent);
+            (adapter as any).wrappedComponents.set(
+              `${protocolType}-protocol`,
+              wrappedComponent,
+            );
           });
         });
 
@@ -644,7 +673,7 @@ describe('CommunicationEventAdapter', () => {
             statusCode: 200,
             responseTime: 25,
           }),
-        })
+        }),
       );
     });
 
@@ -677,20 +706,23 @@ describe('CommunicationEventAdapter', () => {
     let adapter: CommunicationEventAdapter;
 
     beforeEach(async () => {
-      const config = createDefaultCommunicationEventAdapterConfig('correlation-test', {
-        communication: {
-          enabled: true,
-          strategy: 'websocket',
-          correlationTTL: 60000,
-          maxCorrelationDepth: 10,
-          correlationPatterns: [
-            'communication:websocket->communication:mcp',
-            'communication:http->communication:mcp',
-          ],
-          trackMessageFlow: true,
-          trackConnectionHealth: true,
+      const config = createDefaultCommunicationEventAdapterConfig(
+        'correlation-test',
+        {
+          communication: {
+            enabled: true,
+            strategy: 'websocket',
+            correlationTTL: 60000,
+            maxCorrelationDepth: 10,
+            correlationPatterns: [
+              'communication:websocket->communication:mcp',
+              'communication:http->communication:mcp',
+            ],
+            trackMessageFlow: true,
+            trackConnectionHealth: true,
+          },
         },
-      });
+      );
       adapter = new CommunicationEventAdapter(config);
       await adapter.start();
     });
@@ -731,7 +763,9 @@ describe('CommunicationEventAdapter', () => {
         metadata: {},
       };
 
-      const efficiency = (adapter as any).calculateCommunicationEfficiency(correlation);
+      const efficiency = (adapter as any).calculateCommunicationEfficiency(
+        correlation,
+      );
 
       // Should have high efficiency: all events successful, reasonable time
       expect(efficiency).toBeGreaterThan(0.8);
@@ -760,7 +794,7 @@ describe('CommunicationEventAdapter', () => {
       };
 
       const isComplete = (adapter as any).isCommunicationCorrelationComplete(
-        correlationWithPattern
+        correlationWithPattern,
       );
       expect(isComplete).toBe(true);
     });
@@ -777,7 +811,9 @@ describe('CommunicationEventAdapter', () => {
       ];
 
       testCases.forEach(({ eventType, expected }) => {
-        const operation = (adapter as any).extractCommunicationOperation(eventType);
+        const operation = (adapter as any).extractCommunicationOperation(
+          eventType,
+        );
         expect(operation).toBe(expected);
       });
     });
@@ -787,7 +823,11 @@ describe('CommunicationEventAdapter', () => {
         { eventType: 'websocket:message', data: null, expected: 'ws' },
         { eventType: 'http:request', data: null, expected: 'http' },
         { eventType: 'mcp:tool', data: null, expected: 'stdio' },
-        { eventType: 'custom:event', data: { protocol: 'tcp' }, expected: 'tcp' },
+        {
+          eventType: 'custom:event',
+          data: { protocol: 'tcp' },
+          expected: 'tcp',
+        },
         { eventType: 'unknown:event', data: null, expected: 'custom' },
       ];
 
@@ -810,7 +850,9 @@ describe('CommunicationEventAdapter', () => {
       ];
 
       testCases.forEach(({ eventType, expected }) => {
-        const priority = (adapter as any).determineCommunicationEventPriority(eventType);
+        const priority = (adapter as any).determineCommunicationEventPriority(
+          eventType,
+        );
         expect(priority).toBe(expected);
       });
     });
@@ -820,29 +862,34 @@ describe('CommunicationEventAdapter', () => {
     let adapter: CommunicationEventAdapter;
 
     beforeEach(async () => {
-      const config = createDefaultCommunicationEventAdapterConfig('health-test', {
-        connectionHealthMonitoring: {
-          enabled: true,
-          healthCheckInterval: 10000,
-          connectionHealthThresholds: {
-            'websocket-client': 0.9,
-            'mcp-server': 0.85,
-            'http-client': 0.8,
+      const config = createDefaultCommunicationEventAdapterConfig(
+        'health-test',
+        {
+          connectionHealthMonitoring: {
+            enabled: true,
+            healthCheckInterval: 10000,
+            connectionHealthThresholds: {
+              'websocket-client': 0.9,
+              'mcp-server': 0.85,
+              'http-client': 0.8,
+            },
+            protocolHealthThresholds: {
+              'communication-latency': 100,
+              throughput: 1000,
+              reliability: 0.95,
+            },
+            autoRecoveryEnabled: true,
           },
-          protocolHealthThresholds: {
-            'communication-latency': 100,
-            throughput: 1000,
-            reliability: 0.95,
-          },
-          autoRecoveryEnabled: true,
         },
-      });
+      );
       adapter = new CommunicationEventAdapter(config);
 
       // Mock wrapped components for health testing
       (adapter as any).wrappedComponents.set('websocket-client-test', {
         component: {
-          healthCheck: vi.fn().mockResolvedValue({ responseTime: 50, errorRate: 0.05 }),
+          healthCheck: vi
+            .fn()
+            .mockResolvedValue({ responseTime: 50, errorRate: 0.05 }),
         },
         componentType: 'websocket',
         wrapper: new EventEmitter(),
@@ -925,7 +972,8 @@ describe('CommunicationEventAdapter', () => {
 
       for (const [componentName, health] of Object.entries(healthResults)) {
         const threshold =
-          adapter.config.connectionHealthMonitoring?.connectionHealthThresholds?.[componentName];
+          adapter.config.connectionHealthMonitoring
+            ?.connectionHealthThresholds?.[componentName];
 
         if (health.status === 'healthy') {
           expect(health.reliability).toBeGreaterThanOrEqual(threshold || 0.8);
@@ -933,7 +981,9 @@ describe('CommunicationEventAdapter', () => {
           expect(health.reliability).toBeLessThan(threshold || 0.8);
           expect(health.reliability).toBeGreaterThan((threshold || 0.8) * 0.7);
         } else if (health.status === 'unhealthy') {
-          expect(health.reliability).toBeLessThanOrEqual((threshold || 0.8) * 0.7);
+          expect(health.reliability).toBeLessThanOrEqual(
+            (threshold || 0.8) * 0.7,
+          );
         }
       }
     });
@@ -943,7 +993,8 @@ describe('CommunicationEventAdapter', () => {
     let adapter: CommunicationEventAdapter;
 
     beforeEach(async () => {
-      const config = createDefaultCommunicationEventAdapterConfig('metrics-test');
+      const config =
+        createDefaultCommunicationEventAdapterConfig('metrics-test');
       adapter = new CommunicationEventAdapter(config);
       await adapter.start();
     });
@@ -992,7 +1043,10 @@ describe('CommunicationEventAdapter', () => {
 
     it('should estimate memory usage accurately', () => {
       // Add some data to estimate
-      (adapter as any).subscriptions.set('sub-1', { eventTypes: ['test'], listener: () => {} });
+      (adapter as any).subscriptions.set('sub-1', {
+        eventTypes: ['test'],
+        listener: () => {},
+      });
       (adapter as any).eventHistory.push({ type: 'test' }, { type: 'test2' });
       (adapter as any).communicationCorrelations.set('corr-1', {
         events: [{ type: 'test' }, { type: 'test2' }],
@@ -1031,7 +1085,8 @@ describe('CommunicationEventAdapter', () => {
     let adapter: CommunicationEventAdapter;
 
     beforeEach(async () => {
-      const config = createDefaultCommunicationEventAdapterConfig('config-test');
+      const config =
+        createDefaultCommunicationEventAdapterConfig('config-test');
       adapter = new CommunicationEventAdapter(config);
       await adapter.start();
     });
@@ -1062,7 +1117,9 @@ describe('CommunicationEventAdapter', () => {
 
       adapter.updateConfig(newConfig);
 
-      expect(adapter.config.performance?.enableConnectionCorrelation).toBe(false);
+      expect(adapter.config.performance?.enableConnectionCorrelation).toBe(
+        false,
+      );
       expect(adapter.config.performance?.maxConcurrentConnections).toBe(2000);
       expect(adapter.config.communicationOptimization?.enabled).toBe(false);
     });
@@ -1076,7 +1133,9 @@ describe('CommunicationEventAdapter', () => {
         },
       });
 
-      expect(adapter.config.websocketCommunication).toEqual(originalWebSocketConfig);
+      expect(adapter.config.websocketCommunication).toEqual(
+        originalWebSocketConfig,
+      );
       expect(adapter.config.mcpProtocol?.enabled).toBe(false);
     });
   });
@@ -1093,7 +1152,8 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should create communication adapter through factory', async () => {
-      const config = createDefaultCommunicationEventAdapterConfig('factory-test');
+      const config =
+        createDefaultCommunicationEventAdapterConfig('factory-test');
       const adapter = await factory.create(config);
 
       expect(adapter).toBeInstanceOf(CommunicationEventAdapter);
@@ -1102,7 +1162,9 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should create specialized WebSocket adapter', async () => {
-      const adapter = await factory.createWebSocketAdapter('websocket-specialized');
+      const adapter = await factory.createWebSocketAdapter(
+        'websocket-specialized',
+      );
 
       expect(adapter.config.websocketCommunication?.enabled).toBe(true);
       expect(adapter.config.mcpProtocol?.enabled).toBe(false);
@@ -1120,7 +1182,8 @@ describe('CommunicationEventAdapter', () => {
     });
 
     it('should create comprehensive adapter with all communication types', async () => {
-      const adapter = await factory.createComprehensiveAdapter('comprehensive-test');
+      const adapter =
+        await factory.createComprehensiveAdapter('comprehensive-test');
 
       expect(adapter.config.websocketCommunication?.enabled).toBe(true);
       expect(adapter.config.mcpProtocol?.enabled).toBe(true);
@@ -1183,7 +1246,8 @@ describe('CommunicationEventAdapter', () => {
     let adapter: CommunicationEventAdapter;
 
     beforeEach(async () => {
-      const config = createDefaultCommunicationEventAdapterConfig('cleanup-test');
+      const config =
+        createDefaultCommunicationEventAdapterConfig('cleanup-test');
       adapter = new CommunicationEventAdapter(config);
       await adapter.start();
     });
@@ -1192,7 +1256,9 @@ describe('CommunicationEventAdapter', () => {
       // Add some data to cleanup
       adapter.subscribe(['communication:websocket'], () => {});
       (adapter as any).eventHistory.push({ type: 'test' });
-      (adapter as any).communicationCorrelations.set('cleanup-test', { events: [] });
+      (adapter as any).communicationCorrelations.set('cleanup-test', {
+        events: [],
+      });
 
       await adapter.destroy();
 
@@ -1236,15 +1302,18 @@ describe('CommunicationEventAdapter', () => {
 
     it('should handle start failures and remain in stopped state', async () => {
       const failingAdapter = new CommunicationEventAdapter(
-        createDefaultCommunicationEventAdapterConfig('failing-adapter')
+        createDefaultCommunicationEventAdapterConfig('failing-adapter'),
       );
 
       // Mock initialization to fail
-      vi.spyOn(failingAdapter as any, 'initializeCommunicationIntegrations').mockRejectedValue(
-        new Error('Initialization failed')
-      );
+      vi.spyOn(
+        failingAdapter as any,
+        'initializeCommunicationIntegrations',
+      ).mockRejectedValue(new Error('Initialization failed'));
 
-      await expect(failingAdapter.start()).rejects.toThrow('Initialization failed');
+      await expect(failingAdapter.start()).rejects.toThrow(
+        'Initialization failed',
+      );
       expect(failingAdapter.isRunning()).toBe(false);
 
       await failingAdapter.destroy();

@@ -73,8 +73,12 @@ class DocumentationGenerator {
 
       if (parsed) {
         // Try to find the function/class that follows this comment
-        const afterComment = content.substring(content.indexOf(match) + match.length);
-        const functionMatch = afterComment.match(/(?:function|class|const|let|var)\s+(\w+)/);
+        const afterComment = content.substring(
+          content.indexOf(match) + match.length,
+        );
+        const functionMatch = afterComment.match(
+          /(?:function|class|const|let|var)\s+(\w+)/,
+        );
 
         docs.push({
           ...parsed,
@@ -89,7 +93,9 @@ class DocumentationGenerator {
   }
 
   parseJSDocComment(comment) {
-    const lines = comment.split('\n').map((line) => line.replace(/^\s*\*\s?/, '').trim());
+    const lines = comment
+      .split('\n')
+      .map((line) => line.replace(/^\s*\*\s?/, '').trim());
     const doc = {
       description: '',
       params: [],
@@ -108,7 +114,9 @@ class DocumentationGenerator {
 
       if (line.startsWith('@param')) {
         currentSection = 'param';
-        const paramMatch = line.match(/@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/);
+        const paramMatch = line.match(
+          /@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/,
+        );
 
         if (paramMatch) {
           currentParam = {
@@ -146,9 +154,11 @@ class DocumentationGenerator {
         } else if (currentSection === 'example') {
           doc.example += (doc.example ? '\n' : '') + line;
         } else if (currentSection === 'param' && currentParam) {
-          currentParam.description += (currentParam.description ? ' ' : '') + line;
+          currentParam.description +=
+            (currentParam.description ? ' ' : '') + line;
         } else if (currentSection === 'returns' && doc.returns) {
-          doc.returns.description += (doc.returns.description ? ' ' : '') + line;
+          doc.returns.description +=
+            (doc.returns.description ? ' ' : '') + line;
         }
       }
     }

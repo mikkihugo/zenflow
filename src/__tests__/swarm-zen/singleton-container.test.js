@@ -3,7 +3,11 @@
  * Tests memory safety, concurrent access, and proper lifecycle management
  */
 
-import { getContainer, resetContainer, SingletonContainer } from '../src/singleton-container.js';
+import {
+  getContainer,
+  resetContainer,
+  SingletonContainer,
+} from '../src/singleton-container.js';
 
 // Test class for dependency injection
 class TestService {
@@ -88,9 +92,13 @@ async function runTests() {
     const container = new SingletonContainer();
 
     container.register('testService', () => new TestService('dependency'));
-    container.register('dependent', (testService) => new DependentService(testService), {
-      dependencies: ['testService'],
-    });
+    container.register(
+      'dependent',
+      (testService) => new DependentService(testService),
+      {
+        dependencies: ['testService'],
+      },
+    );
 
     const dependent = container.get('dependent');
 
@@ -129,7 +137,9 @@ async function runTests() {
     container.destroy();
 
     if (!instance.isDestroyed) {
-      throw new Error('Instance should be destroyed after container destruction');
+      throw new Error(
+        'Instance should be destroyed after container destruction',
+      );
     }
   });
 
@@ -158,7 +168,7 @@ async function runTests() {
     const stats = container.getStats();
     if (stats.registeredServices !== 100 || stats.activeInstances !== 100) {
       throw new Error(
-        `Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`
+        `Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`,
       );
     }
 
@@ -166,7 +176,9 @@ async function runTests() {
 
     const statsAfter = container.getStats();
     if (statsAfter.activeInstances !== 0) {
-      throw new Error(`Memory leak detected: ${statsAfter.activeInstances} instances remaining`);
+      throw new Error(
+        `Memory leak detected: ${statsAfter.activeInstances} instances remaining`,
+      );
     }
   });
 
@@ -176,7 +188,9 @@ async function runTests() {
     container.register('concurrent', () => new TestService('concurrent'));
 
     // Simulate concurrent access
-    const promises = Array.from({ length: 10 }, () => Promise.resolve(container.get('concurrent')));
+    const promises = Array.from({ length: 10 }, () =>
+      Promise.resolve(container.get('concurrent')),
+    );
 
     const instances = await Promise.all(promises);
 
@@ -303,9 +317,8 @@ async function runTests() {
 
   if (testsPassed === testsTotal) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 // Run tests if called directly

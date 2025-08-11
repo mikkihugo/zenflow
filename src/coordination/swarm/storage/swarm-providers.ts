@@ -14,10 +14,20 @@ const logger = getLogger('coordination-swarm-storage-swarm-providers');
  */
 
 import { DIContainer } from '../di/container/di-container';
-import { CORE_TOKENS, DATABASE_TOKENS, SWARM_TOKENS } from '../di/tokens/core-tokens';
+import {
+  CORE_TOKENS,
+  DATABASE_TOKENS,
+  SWARM_TOKENS,
+} from '../di/tokens/core-tokens';
 import { type BackupConfig, SwarmBackupManager } from './backup-manager.ts';
-import { type SwarmDatabaseConfig, SwarmDatabaseManager } from './swarm-database-manager.ts';
-import { type MaintenanceConfig, SwarmMaintenanceManager } from './swarm-maintenance.ts';
+import {
+  type SwarmDatabaseConfig,
+  SwarmDatabaseManager,
+} from './swarm-database-manager.ts';
+import {
+  type MaintenanceConfig,
+  SwarmMaintenanceManager,
+} from './swarm-maintenance.ts';
 
 /**
  * Default swarm storage configuration.
@@ -65,7 +75,7 @@ export function registerSwarmProviders(
     swarm: Partial<SwarmDatabaseConfig>;
     maintenance: Partial<MaintenanceConfig>;
     backup: Partial<BackupConfig>;
-  }>
+  }>,
 ): void {
   // Register swarm configuration
   container.register(SWARM_TOKENS.Config, {
@@ -80,7 +90,9 @@ export function registerSwarmProviders(
   container.register(SWARM_TOKENS.StoragePath, {
     type: 'singleton',
     create: (container) => {
-      const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
+      const config = container.resolve(
+        SWARM_TOKENS.Config,
+      ) as SwarmDatabaseConfig;
       return (config as any).basePath;
     },
   });
@@ -92,7 +104,7 @@ export function registerSwarmProviders(
       new SwarmDatabaseManager(
         container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig,
         container.resolve(DATABASE_TOKENS?.DALFactory),
-        container.resolve(CORE_TOKENS.Logger)
+        container.resolve(CORE_TOKENS.Logger),
       ),
   });
 
@@ -100,7 +112,9 @@ export function registerSwarmProviders(
   container.register(SWARM_TOKENS.MaintenanceManager, {
     type: 'singleton',
     create: (container) => {
-      const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
+      const config = container.resolve(
+        SWARM_TOKENS.Config,
+      ) as SwarmDatabaseConfig;
       return new SwarmMaintenanceManager(config?.basePath, {
         ...defaultMaintenanceConfig,
         ...customConfig?.maintenance,
@@ -112,7 +126,9 @@ export function registerSwarmProviders(
   container.register(SWARM_TOKENS.BackupManager, {
     type: 'singleton',
     create: (container) => {
-      const config = container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig;
+      const config = container.resolve(
+        SWARM_TOKENS.Config,
+      ) as SwarmDatabaseConfig;
       return new SwarmBackupManager(config?.basePath, {
         ...defaultBackupConfig,
         ...customConfig?.backup,
@@ -133,11 +149,15 @@ export async function initializeSwarmStorage(container: DIContainer): Promise<{
   backupManager: SwarmBackupManager;
 }> {
   // Resolve all swarm services
-  const databaseManager = container.resolve(SWARM_TOKENS.DatabaseManager) as SwarmDatabaseManager;
+  const databaseManager = container.resolve(
+    SWARM_TOKENS.DatabaseManager,
+  ) as SwarmDatabaseManager;
   const maintenanceManager = container.resolve(
-    SWARM_TOKENS.MaintenanceManager
+    SWARM_TOKENS.MaintenanceManager,
   ) as SwarmMaintenanceManager;
-  const backupManager = container.resolve(SWARM_TOKENS.BackupManager) as SwarmBackupManager;
+  const backupManager = container.resolve(
+    SWARM_TOKENS.BackupManager,
+  ) as SwarmBackupManager;
 
   // Initialize in order
   await databaseManager?.initialize();
@@ -158,7 +178,7 @@ export async function initializeSwarmStorage(container: DIContainer): Promise<{
  * @example
  */
 export function createSwarmContainer(
-  customConfig?: Parameters<typeof registerSwarmProviders>[1]
+  customConfig?: Parameters<typeof registerSwarmProviders>[1],
 ): DIContainer {
   const container = new DIContainer();
 
@@ -177,7 +197,7 @@ export function createSwarmContainer(
     type: 'singleton',
     create: () => ({
       get: (_key: string, defaultValue?: any) => defaultValue,
-      set: (_key: string, _value: any) => {},
+      set: (_key: string, _value: unknown) => {},
       has: (_key: string) => false,
     }),
   });
@@ -196,8 +216,8 @@ export function createSwarmContainer(
         container.resolve(CORE_TOKENS.Config),
         new DatabaseProviderFactory(
           container.resolve(CORE_TOKENS.Logger),
-          container.resolve(CORE_TOKENS.Config)
-        )
+          container.resolve(CORE_TOKENS.Config),
+        ),
       );
     },
   });

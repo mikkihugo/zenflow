@@ -2,21 +2,29 @@
 
 /**
  * @file TODO Implementation Verification Script
- * 
+ *
  * Script to verify that all critical TODO items have been properly implemented
  * with production-ready code. This script runs independently without the full
  * test suite to avoid compilation issues with other tests.
  */
 
-import { initializeClaudeZen, shutdownClaudeZen, healthCheck } from '../src/index.js';
-import { WorkflowEngine } from '../src/workflows/advanced-engine.js';
+import {
+  healthCheck,
+  initializeClaudeZen,
+  shutdownClaudeZen,
+} from '../src/index.js';
 import { MemoryManager } from '../src/memory/memory.js';
+import { WorkflowEngine } from '../src/workflows/advanced-engine.js';
 
 async function verifyTodoImplementations() {
   console.log('🚀 Starting TODO Implementation Verification...\n');
-  
+
   let allTestsPassed = true;
-  const results: Array<{ test: string; status: 'PASS' | 'FAIL'; details?: string }> = [];
+  const results: Array<{
+    test: string;
+    status: 'PASS' | 'FAIL';
+    details?: string;
+  }> = [];
 
   // Test 1: SwarmOrchestrator Integration
   console.log('📋 Test 1: SwarmOrchestrator Integration');
@@ -34,17 +42,23 @@ async function verifyTodoImplementations() {
     if (swarmCoordinator) {
       const hasRequiredMethods = [
         'getSwarmId',
-        'getState', 
+        'getState',
         'getAgentCount',
         'getStatus',
-        'shutdown'
-      ].every(method => typeof swarmCoordinator[method] === 'function');
+        'shutdown',
+      ].every((method) => typeof swarmCoordinator[method] === 'function');
 
       if (hasRequiredMethods) {
         results.push({ test: 'SwarmOrchestrator Integration', status: 'PASS' });
-        console.log('   ✅ SwarmOrchestrator properly integrated with all required methods');
+        console.log(
+          '   ✅ SwarmOrchestrator properly integrated with all required methods',
+        );
       } else {
-        results.push({ test: 'SwarmOrchestrator Integration', status: 'FAIL', details: 'Missing required methods' });
+        results.push({
+          test: 'SwarmOrchestrator Integration',
+          status: 'FAIL',
+          details: 'Missing required methods',
+        });
         console.log('   ❌ SwarmOrchestrator missing required methods');
         allTestsPassed = false;
       }
@@ -53,8 +67,15 @@ async function verifyTodoImplementations() {
       console.log('   ✅ System handles missing SwarmOrchestrator gracefully');
     }
   } catch (error) {
-    results.push({ test: 'SwarmOrchestrator Integration', status: 'FAIL', details: (error as Error).message });
-    console.log('   ❌ SwarmOrchestrator integration failed:', (error as Error).message);
+    results.push({
+      test: 'SwarmOrchestrator Integration',
+      status: 'FAIL',
+      details: (error as Error).message,
+    });
+    console.log(
+      '   ❌ SwarmOrchestrator integration failed:',
+      (error as Error).message,
+    );
     allTestsPassed = false;
   }
 
@@ -65,8 +86,15 @@ async function verifyTodoImplementations() {
     results.push({ test: 'Shutdown Orchestration', status: 'PASS' });
     console.log('   ✅ Shutdown orchestration completed without errors');
   } catch (error) {
-    results.push({ test: 'Shutdown Orchestration', status: 'FAIL', details: (error as Error).message });
-    console.log('   ❌ Shutdown orchestration failed:', (error as Error).message);
+    results.push({
+      test: 'Shutdown Orchestration',
+      status: 'FAIL',
+      details: (error as Error).message,
+    });
+    console.log(
+      '   ❌ Shutdown orchestration failed:',
+      (error as Error).message,
+    );
     allTestsPassed = false;
   }
 
@@ -74,37 +102,52 @@ async function verifyTodoImplementations() {
   console.log('\n📋 Test 3: Comprehensive Health Check');
   try {
     const health = await healthCheck();
-    
+
     const hasRequiredStructure = [
       'status',
       'timestamp',
       'components',
-      'metrics'
-    ].every(prop => health.hasOwnProperty(prop));
+      'metrics',
+    ].every((prop) => Object.hasOwn(health, prop));
 
     const hasRequiredComponents = [
       'core',
       'memory',
-      'neural', 
+      'neural',
       'database',
       'coordination',
-      'interfaces'
-    ].every(component => health.components.hasOwnProperty(component));
+      'interfaces',
+    ].every((component) => Object.hasOwn(health.components, component));
 
-    const validStatus = ['healthy', 'degraded', 'unhealthy'].includes(health.status);
+    const validStatus = ['healthy', 'degraded', 'unhealthy'].includes(
+      health.status,
+    );
 
     if (hasRequiredStructure && hasRequiredComponents && validStatus) {
       results.push({ test: 'Comprehensive Health Check', status: 'PASS' });
-      console.log('   ✅ Health check implemented with comprehensive structure');
+      console.log(
+        '   ✅ Health check implemented with comprehensive structure',
+      );
       console.log('   📊 Overall Status:', health.status);
-      console.log('   📊 Components Checked:', Object.keys(health.components).length);
+      console.log(
+        '   📊 Components Checked:',
+        Object.keys(health.components).length,
+      );
     } else {
-      results.push({ test: 'Comprehensive Health Check', status: 'FAIL', details: 'Missing required structure' });
+      results.push({
+        test: 'Comprehensive Health Check',
+        status: 'FAIL',
+        details: 'Missing required structure',
+      });
       console.log('   ❌ Health check missing required structure');
       allTestsPassed = false;
     }
   } catch (error) {
-    results.push({ test: 'Comprehensive Health Check', status: 'FAIL', details: (error as Error).message });
+    results.push({
+      test: 'Comprehensive Health Check',
+      status: 'FAIL',
+      details: (error as Error).message,
+    });
     console.log('   ❌ Health check failed:', (error as Error).message);
     allTestsPassed = false;
   }
@@ -119,25 +162,36 @@ async function verifyTodoImplementations() {
     });
 
     const engine = new WorkflowEngine(memoryManager);
-    
+
     const hasRequiredMethods = [
       'initialize',
       'startWorkflow',
       'getActiveWorkflows',
-      'shutdown'
-    ].every(method => typeof engine[method] === 'function');
+      'shutdown',
+    ].every((method) => typeof engine[method] === 'function');
 
     if (hasRequiredMethods) {
       results.push({ test: 'MemorySystem Interface', status: 'PASS' });
       console.log('   ✅ WorkflowEngine properly uses MemoryManager interface');
     } else {
-      results.push({ test: 'MemorySystem Interface', status: 'FAIL', details: 'Missing required methods' });
+      results.push({
+        test: 'MemorySystem Interface',
+        status: 'FAIL',
+        details: 'Missing required methods',
+      });
       console.log('   ❌ WorkflowEngine missing required methods');
       allTestsPassed = false;
     }
   } catch (error) {
-    results.push({ test: 'MemorySystem Interface', status: 'FAIL', details: (error as Error).message });
-    console.log('   ❌ MemorySystem interface test failed:', (error as Error).message);
+    results.push({
+      test: 'MemorySystem Interface',
+      status: 'FAIL',
+      details: (error as Error).message,
+    });
+    console.log(
+      '   ❌ MemorySystem interface test failed:',
+      (error as Error).message,
+    );
     allTestsPassed = false;
   }
 
@@ -159,25 +213,38 @@ async function verifyTodoImplementations() {
 
     if (workflowResult.success && workflowResult.workflowId) {
       results.push({ test: 'Memory Error Handling', status: 'PASS' });
-      console.log('   ✅ WorkflowEngine handles memory operations with proper error handling');
+      console.log(
+        '   ✅ WorkflowEngine handles memory operations with proper error handling',
+      );
     } else {
-      results.push({ test: 'Memory Error Handling', status: 'FAIL', details: 'Workflow creation failed' });
+      results.push({
+        test: 'Memory Error Handling',
+        status: 'FAIL',
+        details: 'Workflow creation failed',
+      });
       console.log('   ❌ Workflow creation failed');
       allTestsPassed = false;
     }
 
     await engine.shutdown();
   } catch (error) {
-    results.push({ test: 'Memory Error Handling', status: 'FAIL', details: (error as Error).message });
-    console.log('   ❌ Memory error handling test failed:', (error as Error).message);
+    results.push({
+      test: 'Memory Error Handling',
+      status: 'FAIL',
+      details: (error as Error).message,
+    });
+    console.log(
+      '   ❌ Memory error handling test failed:',
+      (error as Error).message,
+    );
     allTestsPassed = false;
   }
 
   // Summary
   console.log('\n📊 TEST RESULTS SUMMARY');
   console.log('========================');
-  
-  results.forEach(result => {
+
+  results.forEach((result) => {
     const icon = result.status === 'PASS' ? '✅' : '❌';
     console.log(`${icon} ${result.test}: ${result.status}`);
     if (result.details) {
@@ -185,22 +252,32 @@ async function verifyTodoImplementations() {
     }
   });
 
-  const passCount = results.filter(r => r.status === 'PASS').length;
-  const failCount = results.filter(r => r.status === 'FAIL').length;
-  
-  console.log(`\n🎯 Overall Result: ${passCount}/${results.length} tests passed`);
-  
+  const passCount = results.filter((r) => r.status === 'PASS').length;
+  const failCount = results.filter((r) => r.status === 'FAIL').length;
+
+  console.log(
+    `\n🎯 Overall Result: ${passCount}/${results.length} tests passed`,
+  );
+
   if (allTestsPassed) {
     console.log('\n🎉 ALL TODO IMPLEMENTATIONS VERIFIED SUCCESSFULLY!');
-    console.log('✨ All critical TODO items have been replaced with production-ready code:');
-    console.log('   • SwarmOrchestrator integration with proper error handling');
+    console.log(
+      '✨ All critical TODO items have been replaced with production-ready code:',
+    );
+    console.log(
+      '   • SwarmOrchestrator integration with proper error handling',
+    );
     console.log('   • Comprehensive shutdown orchestration for all components');
-    console.log('   • Detailed health checks with metrics and component status');
+    console.log(
+      '   • Detailed health checks with metrics and component status',
+    );
     console.log('   • Proper MemorySystem interface usage in WorkflowEngine');
     console.log('   • Robust error handling for memory operations');
     process.exit(0);
   } else {
-    console.log(`\n❌ ${failCount} test(s) failed. Please review the implementation.`);
+    console.log(
+      `\n❌ ${failCount} test(s) failed. Please review the implementation.`,
+    );
     process.exit(1);
   }
 }

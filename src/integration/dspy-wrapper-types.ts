@@ -278,7 +278,7 @@ export class DSPyWrapperError extends Error {
     message: string,
     public code: DSPyErrorCode,
     public override cause?: Error,
-    public metadata?: Record<string, any>
+    public metadata?: Record<string, any>,
   ) {
     super(message);
     this.name = 'DSPyWrapperError';
@@ -451,7 +451,11 @@ export interface DSPySystemIntegration {
 
   // Metrics Integration
   metrics?: {
-    recordExecution: (programId: string, latency: number, success: boolean) => void;
+    recordExecution: (
+      programId: string,
+      latency: number,
+      success: boolean,
+    ) => void;
     recordOptimization: (programId: string, improvement: number) => void;
     recordError: (error: Error, context: Record<string, any>) => void;
   };

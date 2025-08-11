@@ -22,7 +22,10 @@ export interface ModeDetectionResult {
  * @param flags
  * @example
  */
-export function detectMode(commands: string[], flags: Record<string, any>): TerminalMode {
+export function detectMode(
+  commands: string[],
+  flags: Record<string, any>,
+): TerminalMode {
   // Force interactive mode if --ui or --tui flag is present
   if (flags.ui || flags.tui) {
     return 'interactive';
@@ -56,7 +59,7 @@ export function detectMode(commands: string[], flags: Record<string, any>): Term
  */
 export function detectModeWithReason(
   commands: string[],
-  flags: Record<string, any>
+  flags: Record<string, any>,
 ): ModeDetectionResult {
   // Force interactive mode if --ui or --tui flag is present
   if (flags.ui || flags.tui) {
@@ -70,7 +73,8 @@ export function detectModeWithReason(
   if (flags.interactive || flags.i) {
     return {
       mode: 'interactive',
-      reason: 'Interactive terminal interface forced by --interactive or -i flag',
+      reason:
+        'Interactive terminal interface forced by --interactive or -i flag',
     };
   }
 
@@ -86,7 +90,8 @@ export function detectModeWithReason(
   if (process.stdin.isTTY) {
     return {
       mode: 'interactive',
-      reason: 'Interactive terminal interface - no commands provided and TTY detected',
+      reason:
+        'Interactive terminal interface - no commands provided and TTY detected',
     };
   }
 

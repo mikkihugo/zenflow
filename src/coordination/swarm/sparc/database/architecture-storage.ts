@@ -68,7 +68,7 @@ export class ArchitectureStorageService {
   private validationsTableName = 'sparc_architecture_validations';
 
   constructor(
-    private db: any // DatabaseAdapter - keeping flexible for multi-backend support
+    private db: any, // DatabaseAdapter - keeping flexible for multi-backend support
   ) {}
 
   /**
@@ -155,7 +155,10 @@ export class ArchitectureStorageService {
    * @param architecture
    * @param projectId
    */
-  async saveArchitecture(architecture: ArchitectureDesign, projectId?: string): Promise<string> {
+  async saveArchitecture(
+    architecture: ArchitectureDesign,
+    projectId?: string,
+  ): Promise<string> {
     const architectureId = architecture.id || nanoid();
     const timestamp = new Date();
 
@@ -208,7 +211,7 @@ export class ArchitectureStorageService {
         record.updated_at,
         record.tags,
         record.metadata,
-      ]
+      ],
     );
 
     // Save individual components for detailed tracking
@@ -222,13 +225,15 @@ export class ArchitectureStorageService {
    *
    * @param architectureId
    */
-  async getArchitectureById(architectureId: string): Promise<ArchitectureDesign | null> {
+  async getArchitectureById(
+    architectureId: string,
+  ): Promise<ArchitectureDesign | null> {
     const result = await this.db.query(
       `
       SELECT * FROM ${this.tableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId]
+      [architectureId],
     );
 
     if (!result?.rows || result?.rows.length === 0) {
@@ -244,21 +249,25 @@ export class ArchitectureStorageService {
    *
    * @param projectId
    */
-  async getArchitecturesByProject(projectId: string): Promise<ArchitectureDesign[]> {
+  async getArchitecturesByProject(
+    projectId: string,
+  ): Promise<ArchitectureDesign[]> {
     const result = await this.db.query(
       `
       SELECT * FROM ${this.tableName} 
       WHERE project_id = ?
       ORDER BY updated_at DESC
     `,
-      [projectId]
+      [projectId],
     );
 
     if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    return result?.rows?.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
+    return result?.rows?.map((record: ArchitectureRecord) =>
+      this.recordToArchitecture(record),
+    );
   }
 
   /**
@@ -266,21 +275,25 @@ export class ArchitectureStorageService {
    *
    * @param domain
    */
-  async getArchitecturesByDomain(domain: string): Promise<ArchitectureDesign[]> {
+  async getArchitecturesByDomain(
+    domain: string,
+  ): Promise<ArchitectureDesign[]> {
     const result = await this.db.query(
       `
       SELECT * FROM ${this.tableName} 
       WHERE domain = ?
       ORDER BY updated_at DESC
     `,
-      [domain]
+      [domain],
     );
 
     if (!result?.rows || result?.rows.length === 0) {
       return [];
     }
 
-    return result?.rows?.map((record: ArchitectureRecord) => this.recordToArchitecture(record));
+    return result?.rows?.map((record: ArchitectureRecord) =>
+      this.recordToArchitecture(record),
+    );
   }
 
   /**
@@ -291,7 +304,7 @@ export class ArchitectureStorageService {
    */
   async updateArchitecture(
     architectureId: string,
-    architecture: ArchitectureDesign
+    architecture: ArchitectureDesign,
   ): Promise<void> {
     const timestamp = new Date();
 
@@ -310,12 +323,14 @@ export class ArchitectureStorageService {
       [
         JSON.stringify(architecture),
         JSON.stringify(architecture.components || []),
-        architecture.validationResults ? JSON.stringify(architecture.validationResults) : null,
+        architecture.validationResults
+          ? JSON.stringify(architecture.validationResults)
+          : null,
         timestamp,
         JSON.stringify(this.extractTags(architecture)),
         JSON.stringify(this.extractMetadata(architecture)),
         architectureId,
-      ]
+      ],
     );
 
     // Update components
@@ -334,7 +349,7 @@ export class ArchitectureStorageService {
       DELETE FROM ${this.validationsTableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId]
+      [architectureId],
     );
 
     await this.db.execute(
@@ -342,7 +357,7 @@ export class ArchitectureStorageService {
       DELETE FROM ${this.componentsTableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId]
+      [architectureId],
     );
 
     await this.db.execute(
@@ -350,7 +365,7 @@ export class ArchitectureStorageService {
       DELETE FROM ${this.tableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId]
+      [architectureId],
     );
   }
 
@@ -364,13 +379,13 @@ export class ArchitectureStorageService {
   async saveValidation(
     architectureId: string,
     validation: ArchitecturalValidation,
-    validationType: string = 'general'
+    validationType: string = 'general',
   ): Promise<void> {
     const record = {
       id: nanoid(),
       architecture_id: architectureId,
       validation_type: validationType,
-      passed: validation.approved || false,
+      passed: validation.approved,
       score: validation.overallScore || 0,
       results_data: JSON.stringify(validation.validationResults || []),
       recommendations: JSON.stringify(validation.recommendations || []),
@@ -393,7 +408,7 @@ export class ArchitectureStorageService {
         record.results_data,
         record.recommendations,
         record.created_at,
-      ]
+      ],
     );
   }
 
@@ -402,14 +417,16 @@ export class ArchitectureStorageService {
    *
    * @param architectureId
    */
-  async getValidationHistory(architectureId: string): Promise<ArchitecturalValidation[]> {
+  async getValidationHistory(
+    architectureId: string,
+  ): Promise<ArchitecturalValidation[]> {
     const result = await this.db.query(
       `
       SELECT * FROM ${this.validationsTableName} 
       WHERE architecture_id = ?
       ORDER BY created_at DESC
     `,
-      [architectureId]
+      [architectureId],
     );
 
     if (!result?.rows || result?.rows.length === 0) {
@@ -440,7 +457,7 @@ export class ArchitectureStorageService {
     limit?: number;
   }): Promise<ArchitectureDesign[]> {
     let query = `SELECT * FROM ${this.tableName} WHERE 1=1`;
-    const params: any[] = [];
+    const params: unknown[] = [];
 
     if (criteria.domain) {
       query += ' AND domain = ?';
@@ -469,7 +486,7 @@ export class ArchitectureStorageService {
     }
 
     let architectures = result?.rows?.map((record: ArchitectureRecord) =>
-      this.recordToArchitecture(record)
+      this.recordToArchitecture(record),
     );
 
     // Filter by validation score if specified
@@ -509,7 +526,7 @@ export class ArchitectureStorageService {
       GROUP BY domain
     `);
     const byDomain: Record<string, number> = {};
-    domainResult?.rows?.forEach((row: any) => {
+    domainResult?.rows?.forEach((row: unknown) => {
       byDomain[row.domain] = row.count;
     });
 
@@ -548,14 +565,17 @@ export class ArchitectureStorageService {
 
   // Private helper methods
 
-  private async saveComponents(architectureId: string, components: Component[]): Promise<void> {
+  private async saveComponents(
+    architectureId: string,
+    components: Component[],
+  ): Promise<void> {
     // Clear existing components
     await this.db.execute(
       `
       DELETE FROM ${this.componentsTableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId]
+      [architectureId],
     );
 
     // Insert new components
@@ -594,12 +614,15 @@ export class ArchitectureStorageService {
           record.performance_data,
           record.created_at,
           record.updated_at,
-        ]
+        ],
       );
     }
   }
 
-  private async updateComponents(architectureId: string, components: Component[]): Promise<void> {
+  private async updateComponents(
+    architectureId: string,
+    components: Component[],
+  ): Promise<void> {
     // Simply replace all components for now
     await this.saveComponents(architectureId, components);
   }
@@ -607,7 +630,9 @@ export class ArchitectureStorageService {
   private recordToArchitecture(record: ArchitectureRecord): ArchitectureDesign {
     const designData = JSON.parse(record.design_data);
     const components = JSON.parse(record.components_data);
-    const validationData = record.validation_data ? JSON.parse(record.validation_data) : undefined;
+    const validationData = record.validation_data
+      ? JSON.parse(record.validation_data)
+      : undefined;
 
     return {
       ...designData,
@@ -630,7 +655,10 @@ export class ArchitectureStorageService {
 
   private extractDomain(architecture: ArchitectureDesign): string {
     // Extract domain from architecture design
-    return architecture.systemArchitecture?.technologyStack?.[0]?.category || 'general';
+    return (
+      architecture.systemArchitecture?.technologyStack?.[0]?.category ||
+      'general'
+    );
   }
 
   private extractTags(architecture: ArchitectureDesign): string[] {
@@ -644,21 +672,26 @@ export class ArchitectureStorageService {
     });
 
     // Add architectural patterns as tags
-    architecture.systemArchitecture?.architecturalPatterns?.forEach((pattern) => {
-      if (pattern.name && !tags.includes(pattern.name)) {
-        tags.push(pattern.name);
-      }
-    });
+    architecture.systemArchitecture?.architecturalPatterns?.forEach(
+      (pattern) => {
+        if (pattern.name && !tags.includes(pattern.name)) {
+          tags.push(pattern.name);
+        }
+      },
+    );
 
     return tags;
   }
 
-  private extractMetadata(architecture: ArchitectureDesign): Record<string, any> {
+  private extractMetadata(
+    architecture: ArchitectureDesign,
+  ): Record<string, unknown> {
     return {
       componentCount: architecture.components?.length || 0,
       qualityAttributeCount: architecture.qualityAttributes?.length || 0,
       securityRequirementCount: architecture.securityRequirements?.length || 0,
-      scalabilityRequirementCount: architecture.scalabilityRequirements?.length || 0,
+      scalabilityRequirementCount:
+        architecture.scalabilityRequirements?.length || 0,
       hasValidation: !!architecture.validationResults,
     };
   }

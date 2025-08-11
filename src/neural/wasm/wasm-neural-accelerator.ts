@@ -2,7 +2,7 @@
  * @file Neural network: wasm-neural-accelerator.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config.ts';
 
 const logger = getLogger('neural-wasm-wasm-neural-accelerator');
 
@@ -95,7 +95,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
       this.metrics.compilationTime = this.metrics.initializationTime * 0.7; // Stub estimate
       this.isInitialized = true;
     } catch (error) {
-      throw new Error(`Failed to initialize WASM accelerator: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to initialize WASM accelerator: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -105,7 +107,10 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
    * @param modelId
    * @param definition
    */
-  async createModel(modelId: string, definition: WASMModelDefinition): Promise<void> {
+  async createModel(
+    modelId: string,
+    definition: WASMModelDefinition,
+  ): Promise<void> {
     await this.ensureInitialized();
 
     try {
@@ -134,7 +139,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
       this.models.set(modelId, definition);
     } catch (error) {
-      throw new Error(`Failed to create model ${modelId}: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to create model ${modelId}: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -154,7 +161,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
       memoryOptimization: true,
       precision: 'fp32',
       cacheSize: 1024,
-    }
+    },
   ): Promise<WASMPerformanceMetrics> {
     await this.ensureInitialized();
 
@@ -207,15 +214,23 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
       // Update metrics
       this.metrics.totalOperations++;
       this.metrics.averageExecutionTime =
-        (this.metrics.averageExecutionTime * (this.metrics.totalOperations - 1) + executionTime) /
+        (this.metrics.averageExecutionTime *
+          (this.metrics.totalOperations - 1) +
+          executionTime) /
         this.metrics.totalOperations;
 
-      this.metrics.throughput = trainingData?.inputs.length / (executionTime / 1000);
-      this.metrics.memoryUsage = this.estimateMemoryUsage(model, trainingData?.inputs.length);
+      this.metrics.throughput =
+        trainingData?.inputs.length / (executionTime / 1000);
+      this.metrics.memoryUsage = this.estimateMemoryUsage(
+        model,
+        trainingData?.inputs.length,
+      );
 
       return { ...this.metrics };
     } catch (error) {
-      throw new Error(`Failed to train model ${modelId}: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to train model ${modelId}: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -225,7 +240,10 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
    * @param modelId
    * @param _input
    */
-  async predict(modelId: string, _input: WASMPredictionInput): Promise<WASMPredictionOutput> {
+  async predict(
+    modelId: string,
+    _input: WASMPredictionInput,
+  ): Promise<WASMPredictionOutput> {
     await this.ensureInitialized();
 
     const model = this.models.get(modelId);
@@ -267,7 +285,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
       // Stub output
       const outputData = new Float32Array(
-        model.architecture.layers[model.architecture.layers.length - 1]
+        model.architecture.layers[model.architecture.layers.length - 1],
       );
       for (let i = 0; i < outputData.length; i++) {
         outputData[i] = Math.random(); // Placeholder prediction
@@ -280,7 +298,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
         memoryUsage: 1024, // Placeholder memory usage
       };
     } catch (error) {
-      throw new Error(`Failed to predict with model ${modelId}: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to predict with model ${modelId}: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -290,7 +310,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
    * @param operations
    */
   async benchmark(
-    operations: Array<'create' | 'train' | 'predict'> = ['train', 'predict']
+    operations: Array<'create' | 'train' | 'predict'> = ['train', 'predict'],
   ): Promise<WASMBenchmarkResult> {
     await this.ensureInitialized();
 
@@ -408,7 +428,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
    */
   async optimizeModel(
     modelId: string,
-    _options: WASMOptimizationOptions
+    _options: WASMOptimizationOptions,
   ): Promise<WASMModelDefinition> {
     const model = this.models.get(modelId);
     if (!model) {
@@ -438,7 +458,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
       return optimizedModel;
     } catch (error) {
-      throw new Error(`Failed to optimize model ${modelId}: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to optimize model ${modelId}: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -454,7 +476,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
         this.models.clear();
         this.isInitialized = false;
       } catch (error) {
-        throw new Error(`Failed to dispose accelerator: ${(error as Error).message}`);
+        throw new Error(
+          `Failed to dispose accelerator: ${(error as Error).message}`,
+        );
       }
     }
   }
@@ -488,7 +512,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   async train(
     networkId: string,
     data: number[][],
-    labels: number[][]
+    labels: number[][],
   ): Promise<WASMPerformanceMetrics> {
     const trainingData: WASMTrainingData = {
       inputs: data,
@@ -500,7 +524,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
     };
 
     return this.trainModel(networkId, trainingData, {
-      enableSIMD: this.config.enableSIMD || false,
+      enableSIMD: this.config.enableSIMD,
       threadCount: this.config.maxInstances || 1,
       memoryOptimization: true,
       precision: 'fp32',
@@ -548,7 +572,9 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
    *
    * @param wasmModule
    */
-  private async instantiateWasm(wasmModule: any): Promise<WASMNeuralInstance | null> {
+  private async instantiateWasm(
+    wasmModule: any,
+  ): Promise<WASMNeuralInstance | null> {
     // xxx NEEDS_HUMAN: WASM module typing requires systems expertise
     // This method should properly instantiate WASM with type-safe exports access
     if (!wasmModule || typeof wasmModule !== 'object') {
@@ -631,7 +657,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
    * @param {...any} args
    */
   private safeWasmCall(functionName: string, ...args: any[]): any {
-    if (!this.wasmInstance || !this.wasmInstance.exports) {
+    if (!(this.wasmInstance && this.wasmInstance.exports)) {
       return null;
     }
 
@@ -653,7 +679,7 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
   private generateBenchmarkData(
     samples: number,
     inputSize: number,
-    outputSize: number
+    outputSize: number,
   ): WASMTrainingData {
     const inputs = new Float32Array(samples * inputSize);
     const outputs = new Float32Array(samples * outputSize);
@@ -668,10 +694,10 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
 
     return {
       inputs: Array.from({ length: samples }, (_, i) =>
-        Array.from(inputs.slice(i * inputSize, (i + 1) * inputSize))
+        Array.from(inputs.slice(i * inputSize, (i + 1) * inputSize)),
       ),
       outputs: Array.from({ length: samples }, (_, i) =>
-        Array.from(outputs.slice(i * outputSize, (i + 1) * outputSize))
+        Array.from(outputs.slice(i * outputSize, (i + 1) * outputSize)),
       ),
       epochs: 100,
       batchSize: Math.min(32, samples),
@@ -680,7 +706,10 @@ export class WASMNeuralAccelerator implements IWASMNeuralAccelerator {
     };
   }
 
-  private estimateMemoryUsage(model: WASMModelDefinition, batchSize: number): number {
+  private estimateMemoryUsage(
+    model: WASMModelDefinition,
+    batchSize: number,
+  ): number {
     // Rough estimation of memory usage in bytes
     const layers = model.architecture.layers;
     const totalParams = layers.reduce((acc, curr, idx) => {

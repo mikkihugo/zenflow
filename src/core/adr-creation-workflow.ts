@@ -108,8 +108,13 @@ export class ADRCreationWorkflow extends EventEmitter {
    * @param context - The architectural decision context.
    * @param architect - The architect making the decision.
    */
-  async createADRFromDecision(context: ADRDecisionContext, architect: string): Promise<Document> {
-    logger.info(`🏗️ Creating ADR for architectural decision: ${context.problem}`);
+  async createADRFromDecision(
+    context: ADRDecisionContext,
+    architect: string,
+  ): Promise<Document> {
+    logger.info(
+      `🏗️ Creating ADR for architectural decision: ${context.problem}`,
+    );
 
     // Generate ADR number (would typically query existing ADRs)
     const adrNumber = await this.getNextADRNumber();
@@ -124,7 +129,10 @@ export class ADRCreationWorkflow extends EventEmitter {
       consequences: context.consequences.join('\n\n'),
       relatedADRs: [],
       decisionDate: new Date(),
-      architects: [architect, ...context.stakeholders.filter((s) => s !== architect)],
+      architects: [
+        architect,
+        ...context.stakeholders.filter((s) => s !== architect),
+      ],
       reviewDate: this.calculateReviewDate(),
     };
 
@@ -147,7 +155,10 @@ export class ADRCreationWorkflow extends EventEmitter {
     };
 
     // Process the ADR document
-    await this.docProcessor.processDocument(adrDocument.path, adrDocument.content);
+    await this.docProcessor.processDocument(
+      adrDocument.path,
+      adrDocument.content,
+    );
 
     // Emit ADR created event for governance tracking
     this.emit('adr:created', {
@@ -171,9 +182,11 @@ export class ADRCreationWorkflow extends EventEmitter {
   async updateADRStatus(
     adrId: string,
     newStatus: ADRTemplate['status'],
-    architect: string
+    architect: string,
   ): Promise<void> {
-    logger.info(`📝 Updating ADR ${adrId} status to ${newStatus} by ${architect}`);
+    logger.info(
+      `📝 Updating ADR ${adrId} status to ${newStatus} by ${architect}`,
+    );
 
     // This would update the existing ADR document
     // Implementation would read existing ADR, update status section, and save
@@ -244,7 +257,7 @@ ${option.cons.map((c) => `- ${c}`).join('\n')}
 
 **Complexity:** ${option.complexity}/5  
 **Risk:** ${option.risk}
-`
+`,
   )
   .join('\n')}
     `.trim();
@@ -314,11 +327,16 @@ ${template.relatedADRs.map((adr) => `- ${adr}`).join('\n')}
     const text =
       `${context.problem} ${context.rationale} ${context.consequences.join(' ')}`.toLowerCase();
 
-    if (text.includes('database') || text.includes('storage')) systems.push('data-layer');
-    if (text.includes('api') || text.includes('service')) systems.push('service-layer');
-    if (text.includes('ui') || text.includes('frontend')) systems.push('presentation-layer');
-    if (text.includes('auth') || text.includes('security')) systems.push('security-layer');
-    if (text.includes('deploy') || text.includes('infrastructure')) systems.push('infrastructure');
+    if (text.includes('database') || text.includes('storage'))
+      systems.push('data-layer');
+    if (text.includes('api') || text.includes('service'))
+      systems.push('service-layer');
+    if (text.includes('ui') || text.includes('frontend'))
+      systems.push('presentation-layer');
+    if (text.includes('auth') || text.includes('security'))
+      systems.push('security-layer');
+    if (text.includes('deploy') || text.includes('infrastructure'))
+      systems.push('infrastructure');
 
     return systems;
   }
@@ -333,7 +351,7 @@ ${template.relatedADRs.map((adr) => `- ${adr}`).join('\n')}
  */
 export function createADRCreationWorkflow(
   docProcessor: DocumentProcessor,
-  workflowEngine: WorkflowEngine
+  workflowEngine: WorkflowEngine,
 ): ADRCreationWorkflow {
   return new ADRCreationWorkflow(docProcessor, workflowEngine);
 }

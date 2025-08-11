@@ -15,7 +15,10 @@ import type { Constructor, DIToken } from '../types/di-types.ts';
  * @param type
  * @example
  */
-export function createToken<T>(name: string, type?: Constructor<T>): DIToken<T> {
+export function createToken<T>(
+  name: string,
+  type?: Constructor<T>,
+): DIToken<T> {
   return {
     symbol: Symbol(name),
     name,
@@ -29,7 +32,9 @@ export function createToken<T>(name: string, type?: Constructor<T>): DIToken<T> 
  * @param constructor
  * @example
  */
-export function createTokenFromClass<T>(constructor: Constructor<T>): DIToken<T> {
+export function createTokenFromClass<T>(
+  constructor: Constructor<T>,
+): DIToken<T> {
   return createToken(constructor.name, constructor);
 }
 
@@ -65,6 +70,9 @@ export function getTokenName<T>(token: DIToken<T>): string {
  * @param token2
  * @example
  */
-export function tokensEqual<T>(token1: DIToken<T>, token2: DIToken<T>): boolean {
+export function tokensEqual<T>(
+  token1: DIToken<T>,
+  token2: DIToken<T>,
+): boolean {
   return token1.symbol === token2.symbol;
 }

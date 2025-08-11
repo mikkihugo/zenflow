@@ -74,7 +74,10 @@ class IntegrationTestRunner {
         await this.runSequential();
       }
     } catch (error) {
-      console.error(chalk.red.bold('\n❌ Test execution failed:'), error.message);
+      console.error(
+        chalk.red.bold('\n❌ Test execution failed:'),
+        error.message,
+      );
       process.exit(1);
     }
 
@@ -100,7 +103,9 @@ class IntegrationTestRunner {
     // Set test environment variables
     process.env['NODE_ENV'] = 'test';
     process.env['RUV_SWARM_TEST_MODE'] = 'true';
-    process.env['RUV_SWARM_LOG_LEVEL'] = this.config.verbose ? 'debug' : 'error';
+    process.env['RUV_SWARM_LOG_LEVEL'] = this.config.verbose
+      ? 'debug'
+      : 'error';
   }
 
   async runSequential() {
@@ -119,7 +124,9 @@ class IntegrationTestRunner {
 
     // Run parallel suites first
     if (parallelSuites.length > 0) {
-      const parallelPromises = parallelSuites.map((suite) => this.runSuite(suite));
+      const parallelPromises = parallelSuites.map((suite) =>
+        this.runSuite(suite),
+      );
       await Promise.all(parallelPromises);
     }
 
@@ -229,10 +236,17 @@ class IntegrationTestRunner {
   generateReport() {
     // Summary
     const _successRate =
-      this.results.total > 0 ? ((this.results.passed / this.results.total) * 100).toFixed(1) : 0;
+      this.results.total > 0
+        ? ((this.results.passed / this.results.total) * 100).toFixed(1)
+        : 0;
     const _durationSeconds = (this.results.duration / 1000).toFixed(2);
     this.results.suites.forEach((suite) => {
-      const _icon = suite.status === 'PASSED' ? '✅' : suite.status === 'ERROR' ? '💥' : '❌';
+      const _icon =
+        suite.status === 'PASSED'
+          ? '✅'
+          : suite.status === 'ERROR'
+            ? '💥'
+            : '❌';
       const _critical = suite.critical ? ' [CRITICAL]' : '';
       const _duration = `${suite.duration}ms`;
 
@@ -241,7 +255,9 @@ class IntegrationTestRunner {
     });
 
     // Critical failures
-    const criticalFailures = this.results.suites.filter((s) => s.critical && s.status !== 'PASSED');
+    const criticalFailures = this.results.suites.filter(
+      (s) => s.critical && s.status !== 'PASSED',
+    );
     if (criticalFailures.length > 0) {
       criticalFailures.forEach((_suite) => {});
     }
@@ -263,21 +279,21 @@ class IntegrationTestRunner {
     }
 
     const criticalFailures = this.results.suites.filter(
-      (s) => s.critical && s.status !== 'PASSED'
+      (s) => s.critical && s.status !== 'PASSED',
     ).length;
 
     if (criticalFailures > 0) {
     }
 
     const performanceFailures = this.results.suites.filter(
-      (s) => s.name.includes('Performance') && s.status !== 'PASSED'
+      (s) => s.name.includes('Performance') && s.status !== 'PASSED',
     ).length;
 
     if (performanceFailures > 0) {
     }
 
     const resilienceFailures = this.results.suites.filter(
-      (s) => s.name.includes('Resilience') && s.status !== 'PASSED'
+      (s) => s.name.includes('Resilience') && s.status !== 'PASSED',
     ).length;
 
     if (resilienceFailures > 0) {
@@ -285,7 +301,10 @@ class IntegrationTestRunner {
   }
 
   saveResults() {
-    const resultsPath = path.join(__dirname, '../../test-results/integration-results.json');
+    const resultsPath = path.join(
+      __dirname,
+      '../../test-results/integration-results.json',
+    );
     const resultsDir = path.dirname(resultsPath);
 
     try {
@@ -302,7 +321,9 @@ class IntegrationTestRunner {
 
       fs.writeFileSync(resultsPath, JSON.stringify(fullResults, null, 2));
     } catch (error) {
-      console.warn(chalk.yellow(`Warning: Could not save results - ${error.message}`));
+      console.warn(
+        chalk.yellow(`Warning: Could not save results - ${error.message}`),
+      );
     }
   }
 }

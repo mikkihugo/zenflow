@@ -40,7 +40,11 @@ export interface ADRDiscussion {
   concerns_raised: string[];
   alternatives_suggested: string[];
   consensus_level: 'none' | 'weak' | 'moderate' | 'strong';
-  decision_status: 'needs_more_discussion' | 'ready_for_decision' | 'decided' | 'rejected';
+  decision_status:
+    | 'needs_more_discussion'
+    | 'ready_for_decision'
+    | 'decided'
+    | 'rejected';
   next_steps: string[];
   decision_date?: Date;
   implementation_plan?: string;
@@ -96,7 +100,10 @@ export class ADRProposalSystem {
    * @param adrNumber
    * @param discussion
    */
-  async recordDiscussion(adrNumber: number, discussion: ADRDiscussion): Promise<ADRDocumentEntity> {
+  async recordDiscussion(
+    adrNumber: number,
+    discussion: ADRDiscussion,
+  ): Promise<ADRDocumentEntity> {
     const adr = await adrManager.getADRByNumber(adrNumber);
     if (!adr) {
       throw new Error(`ADR ${adrNumber} not found`);
@@ -106,7 +113,7 @@ export class ADRProposalSystem {
     const updated = await adrManager.updateADRStatus(
       adrNumber,
       'discussion',
-      `Discussion recorded with ${discussion.participants.length} participants`
+      `Discussion recorded with ${discussion.participants.length} participants`,
     );
 
     // Store discussion details in metadata
@@ -158,7 +165,7 @@ export class ADRProposalSystem {
       decision_maker: string;
       stakeholder_signoffs: string[];
       conditions?: string[];
-    }
+    },
   ): Promise<ADRDocumentEntity> {
     const adr = await adrManager.getADRByNumber(adrNumber);
     if (!adr) {
@@ -172,7 +179,7 @@ export class ADRProposalSystem {
     const updated = await adrManager.updateADRStatus(
       adrNumber,
       newStatus,
-      `Decision made by ${decision.decision_maker}: ${decision.approved ? 'APPROVED' : 'REJECTED'}`
+      `Decision made by ${decision.decision_maker}: ${decision.approved ? 'APPROVED' : 'REJECTED'}`,
     );
 
     // Update content with final decision
@@ -190,7 +197,9 @@ export class ADRProposalSystem {
           conditions: decision.conditions || [],
           implementation_plan: decision.implementation_plan,
         },
-        decision_status: decision.approved ? 'approved_for_implementation' : 'rejected',
+        decision_status: decision.approved
+          ? 'approved_for_implementation'
+          : 'rejected',
       },
     });
 
@@ -213,7 +222,7 @@ export class ADRProposalSystem {
     return adrs.filter(
       (adr) =>
         adr.metadata?.['requires_human_discussion'] &&
-        adr.metadata?.['discussion_status'] === 'awaiting_discussion'
+        adr.metadata?.['discussion_status'] === 'awaiting_discussion',
     );
   }
 
@@ -241,7 +250,7 @@ export class ADRProposalSystem {
     return adrs.filter(
       (adr) =>
         adr.metadata?.['discussion_status'] === 'ready_for_decision' &&
-        adr.metadata?.['current_consensus'] !== 'none'
+        adr.metadata?.['current_consensus'] !== 'none',
     );
   }
 
@@ -297,20 +306,32 @@ export class ADRProposalSystem {
         {
           name: 'Simpler Implementation',
           pros: ['Faster to implement', 'Less complexity'],
-          cons: ["Wouldn't meet workflow automation requirements", 'Limited scalability'],
+          cons: [
+            "Wouldn't meet workflow automation requirements",
+            'Limited scalability',
+          ],
           why_not_chosen: 'Insufficient functionality for requirements',
         },
         {
           name: 'External Workflow Engine',
           pros: ['Proven workflow capabilities'],
-          cons: ['Additional dependency', 'Integration complexity', 'Licensing costs'],
+          cons: [
+            'Additional dependency',
+            'Integration complexity',
+            'Licensing costs',
+          ],
           why_not_chosen: 'Increased complexity and external dependencies',
         },
         {
           name: 'File-Based Document Storage',
           pros: ['Simple to understand and debug'],
-          cons: ['No relationship management', 'Poor search performance', 'No transaction support'],
-          why_not_chosen: 'Cannot support advanced document management requirements',
+          cons: [
+            'No relationship management',
+            'Poor search performance',
+            'No transaction support',
+          ],
+          why_not_chosen:
+            'Cannot support advanced document management requirements',
         },
       ],
 
@@ -421,9 +442,10 @@ export class ADRProposalSystem {
    */
   private async logProposalForHumanReview(
     adr: ADRDocumentEntity,
-    proposal: ADRProposal
+    proposal: ADRProposal,
   ): Promise<void> {
-    const _adrId = adr.metadata?.['adr_id'] || `ADR-${adr.metadata?.['adr_number']}`;
+    const _adrId =
+      adr.metadata?.['adr_id'] || `ADR-${adr.metadata?.['adr_number']}`;
     proposal.discussion_points.forEach((_point) => {});
   }
 
@@ -437,7 +459,7 @@ export class ADRProposalSystem {
     // Replace PROPOSED status with final decision
     let updatedContent = content.replace(
       /## Status\n\*\*PROPOSED\*\*/,
-      `## Status\n**${decision.approved ? 'DECIDED' : 'REJECTED'}**`
+      `## Status\n**${decision.approved ? 'DECIDED' : 'REJECTED'}**`,
     );
 
     // Add decision details section

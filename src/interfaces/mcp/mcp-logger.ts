@@ -23,20 +23,32 @@ export function createLogger(name: string): MCPLogger {
   return {
     debug(message: string, meta?: any): void {
       if (process.env['DEBUG'] || process.env['MCP_DEBUG']) {
-        logger.error(`${prefix} DEBUG: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
+        logger.error(
+          `${prefix} DEBUG: ${message}`,
+          meta ? JSON.stringify(meta, null, 2) : '',
+        );
       }
     },
 
     info(message: string, meta?: any): void {
-      logger.error(`${prefix} INFO: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
+      logger.error(
+        `${prefix} INFO: ${message}`,
+        meta ? JSON.stringify(meta, null, 2) : '',
+      );
     },
 
     warn(message: string, meta?: any): void {
-      logger.error(`${prefix} WARN: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
+      logger.error(
+        `${prefix} WARN: ${message}`,
+        meta ? JSON.stringify(meta, null, 2) : '',
+      );
     },
 
     error(message: string, meta?: any): void {
-      logger.error(`${prefix} ERROR: ${message}`, meta ? JSON.stringify(meta, null, 2) : '');
+      logger.error(
+        `${prefix} ERROR: ${message}`,
+        meta ? JSON.stringify(meta, null, 2) : '',
+      );
     },
   };
 }

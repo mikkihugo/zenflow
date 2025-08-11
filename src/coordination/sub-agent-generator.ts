@@ -34,7 +34,8 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
   // Core Development Agents
   coder: {
     name: 'Code Developer',
-    description: 'Full-stack development specialist for implementing features and fixes',
+    description:
+      'Full-stack development specialist for implementing features and fixes',
     systemPrompt:
       'You are a senior software developer specializing in clean, maintainable code. Focus on:\n- **Code Quality**: Write readable, well-documented code following best practices\n- **Testing**: Include comprehensive tests with good coverage\n- **Performance**: Consider performance implications of implementations\n- **Security**: Follow secure coding practices\n- **Maintainability**: Structure code for easy future modifications\nAlways provide working, tested code with clear explanations.',
     tools: ['Read', 'Write', 'Edit', 'MultiEdit', 'Bash', 'Grep'],
@@ -52,7 +53,12 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     tools: ['Read', 'WebSearch', 'Write', 'Edit'],
     capabilities: { analysis: true, research: true, documentation: true },
     domains: ['analysis', 'requirements', 'business-process'],
-    triggers: ['analyze', 'requirements', 'business analysis', 'process review'],
+    triggers: [
+      'analyze',
+      'requirements',
+      'business analysis',
+      'process review',
+    ],
   },
 
   researcher: {
@@ -63,7 +69,12 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
     tools: ['WebSearch', 'Read', 'Grep', 'Write'],
     capabilities: { research: true, webSearch: true, analysis: true },
     domains: ['research', 'investigation', 'technology-trends'],
-    triggers: ['research', 'investigate', 'find information', 'technology comparison'],
+    triggers: [
+      'research',
+      'investigate',
+      'find information',
+      'technology comparison',
+    ],
   },
 
   // Testing Specialists
@@ -91,7 +102,12 @@ export const SUB_AGENT_TEMPLATES: Record<string, Partial<SubAgentConfig>> = {
       technologySelection: true,
     },
     domains: ['architecture', 'system-design', 'scalability'],
-    triggers: ['architecture', 'system design', 'technical design', 'scalability'],
+    triggers: [
+      'architecture',
+      'system design',
+      'technical design',
+      'scalability',
+    ],
   },
 
   debug: {
@@ -164,7 +180,9 @@ function generateGenericConfig(agentType: AgentType): SubAgentConfig {
  * @param outputDir
  * @example
  */
-export async function generateAllSubAgentTemplates(outputDir: string): Promise<void> {
+export async function generateAllSubAgentTemplates(
+  outputDir: string,
+): Promise<void> {
   const agentTypes: AgentType[] = [
     // Core Foundation Agents
     'coder',

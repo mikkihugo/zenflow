@@ -45,7 +45,7 @@ interface CoordinationRepository {
     key: string,
     maxRetries: number,
     retryDelay: number,
-    timeout: number
+    timeout: number,
   ): Promise<CoordinationLock | null>;
   acquireLock(key: string, timeout: number): Promise<CoordinationLock>;
   releaseLock(lockId: string): Promise<void>;
@@ -57,7 +57,7 @@ interface CoordinationRepository {
 export class CoordinationService {
   constructor(
     private logger: Logger,
-    private coordinationRepository: CoordinationRepository
+    private coordinationRepository: CoordinationRepository,
   ) {}
 
   /**
@@ -79,7 +79,7 @@ export class CoordinationService {
       waitForAcknowledgment?: boolean;
       timeout?: number;
       targetNodes?: string[];
-    }
+    },
   ): Promise<{
     published: boolean;
     acknowledgments: number;
@@ -89,7 +89,7 @@ export class CoordinationService {
 
     const eventOptions = {
       channel: options?.channel || 'default',
-      waitForAcknowledgment: options?.waitForAcknowledgment || false,
+      waitForAcknowledgment: options?.waitForAcknowledgment,
       timeout: options?.timeout || 5000,
       targetNodes: options?.targetNodes || [],
     };
@@ -118,7 +118,7 @@ export class CoordinationService {
         const ackResult = await this.waitForAcknowledgments(
           event,
           eventOptions?.targetNodes.length,
-          eventOptions?.timeout
+          eventOptions?.timeout,
         );
         acknowledgments = ackResult?.count;
         errors.push(...ackResult?.errors);
@@ -156,14 +156,17 @@ export class CoordinationService {
       timeout?: number;
       termDuration?: number;
       voteWeight?: number;
-    }
+    },
   ): Promise<{
     isLeader: boolean;
     leaderId?: string;
     term: number;
     votes: number;
   }> {
-    this.logger.debug(`Participating in leader election: ${electionId}`, { candidateId, options });
+    this.logger.debug(`Participating in leader election: ${electionId}`, {
+      candidateId,
+      options,
+    });
 
     const electionOptions = {
       timeout: options?.timeout || 30000,
@@ -177,12 +180,15 @@ export class CoordinationService {
         `election:${electionId}`,
         3, // max retries
         1000, // retry delay
-        electionOptions?.timeout
+        electionOptions?.timeout,
       );
 
       if (!electionLock) {
         // Someone else is conducting the election
-        const result = await this.waitForElectionResult(electionId, electionOptions?.timeout);
+        const result = await this.waitForElectionResult(
+          electionId,
+          electionOptions?.timeout,
+        );
         return {
           isLeader: result?.leaderId === candidateId,
           leaderId: result?.leaderId,
@@ -193,7 +199,11 @@ export class CoordinationService {
 
       try {
         // Conduct the election
-        const electionResult = await this.conductElection(electionId, candidateId, electionOptions);
+        const electionResult = await this.conductElection(
+          electionId,
+          candidateId,
+          electionOptions,
+        );
 
         return electionResult;
       } finally {
@@ -202,7 +212,7 @@ export class CoordinationService {
     } catch (error) {
       this.logger.error(`Leader election failed: ${error}`);
       throw new Error(
-        `Leader election failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Leader election failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -229,7 +239,7 @@ export class CoordinationService {
       parallelExecution?: boolean;
       failureHandling?: 'abort' | 'continue' | 'retry';
       maxRetries?: number;
-    }
+    },
   ): Promise<{
     workflowId: string;
     completed: boolean;
@@ -237,13 +247,16 @@ export class CoordinationService {
     errors: Record<string, string>;
     executionTime: number;
   }> {
-    this.logger.debug(`Coordinating workflow: ${workflowId} with ${steps.length} steps`, {
-      options,
-    });
+    this.logger.debug(
+      `Coordinating workflow: ${workflowId} with ${steps.length} steps`,
+      {
+        options,
+      },
+    );
 
     const startTime = Date.now();
     const workflowOptions = {
-      parallelExecution: options?.parallelExecution || false,
+      parallelExecution: options?.parallelExecution,
       failureHandling: options?.failureHandling || 'abort',
       maxRetries: options?.maxRetries || 3,
     };
@@ -255,14 +268,24 @@ export class CoordinationService {
       // Acquire workflow lock
       const workflowLock = await this.coordinationRepository.acquireLock(
         `workflow:${workflowId}`,
-        300000 // 5 minutes
+        300000, // 5 minutes
       );
 
       try {
         if (workflowOptions?.parallelExecution) {
-          await this.executeWorkflowParallel(steps, results, errors, workflowOptions);
+          await this.executeWorkflowParallel(
+            steps,
+            results,
+            errors,
+            workflowOptions,
+          );
         } else {
-          await this.executeWorkflowSequential(steps, results, errors, workflowOptions);
+          await this.executeWorkflowSequential(
+            steps,
+            results,
+            errors,
+            workflowOptions,
+          );
         }
 
         const executionTime = Date.now() - startTime;
@@ -299,7 +322,9 @@ export class CoordinationService {
         workflowId,
         completed: false,
         results,
-        errors: { workflow: error instanceof Error ? error.message : 'Unknown error' },
+        errors: {
+          workflow: error instanceof Error ? error.message : 'Unknown error',
+        },
         executionTime,
       };
     }
@@ -323,7 +348,8 @@ export class CoordinationService {
     try {
       const stats = await this.coordinationRepository.getCoordinationStats();
       const activeLocks = await this.coordinationRepository.getActiveLocks();
-      const subscriptions = await this.coordinationRepository.getSubscriptions();
+      const subscriptions =
+        await this.coordinationRepository.getSubscriptions();
 
       return {
         stats,
@@ -340,7 +366,7 @@ export class CoordinationService {
     } catch (error) {
       this.logger.error(`Coordination health check failed: ${error}`);
       throw new Error(
-        `Coordination health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Coordination health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -348,7 +374,12 @@ export class CoordinationService {
   /**
    * Get database-specific metadata with coordination information.
    */
-  protected getDatabaseType(): 'relational' | 'graph' | 'vector' | 'memory' | 'coordination' {
+  protected getDatabaseType():
+    | 'relational'
+    | 'graph'
+    | 'vector'
+    | 'memory'
+    | 'coordination' {
     return 'coordination';
   }
 
@@ -413,7 +444,7 @@ export class CoordinationService {
   private async verifyConsensus(
     _operations: TransactionOperation[],
     _results: any,
-    nodeCount: number
+    nodeCount: number,
   ): Promise<void> {
     // Mock consensus verification
     const consensusThreshold = Math.floor(nodeCount / 2) + 1;
@@ -423,13 +454,15 @@ export class CoordinationService {
     // 2. Wait for their validation
     // 3. Ensure consensus threshold is met
 
-    this.logger.debug(`Consensus verified with ${consensusThreshold}/${nodeCount} nodes`);
+    this.logger.debug(
+      `Consensus verified with ${consensusThreshold}/${nodeCount} nodes`,
+    );
   }
 
   private async waitForAcknowledgments(
     _event: CoordinationEvent<any>,
     expectedCount: number,
-    timeout: number
+    timeout: number,
   ): Promise<{
     count: number;
     errors: string[];
@@ -439,18 +472,21 @@ export class CoordinationService {
       setTimeout(
         () => {
           resolve({
-            count: Math.min(expectedCount, Math.floor(Math.random() * expectedCount) + 1),
+            count: Math.min(
+              expectedCount,
+              Math.floor(Math.random() * expectedCount) + 1,
+            ),
             errors: [],
           });
         },
-        Math.min(timeout, 1000)
+        Math.min(timeout, 1000),
       );
     });
   }
 
   private async waitForElectionResult(
     _electionId: string,
-    timeout: number
+    timeout: number,
   ): Promise<{
     leaderId: string;
     term: number;
@@ -464,7 +500,7 @@ export class CoordinationService {
             term: 1,
           });
         },
-        Math.min(timeout, 2000)
+        Math.min(timeout, 2000),
       );
     });
   }
@@ -472,7 +508,7 @@ export class CoordinationService {
   private async conductElection(
     _electionId: string,
     candidateId: string,
-    _options: any
+    _options: any,
   ): Promise<{
     isLeader: boolean;
     leaderId: string;
@@ -484,7 +520,9 @@ export class CoordinationService {
 
     return {
       isLeader: isWinner,
-      leaderId: isWinner ? candidateId : `node_${Math.floor(Math.random() * 5) + 1}`,
+      leaderId: isWinner
+        ? candidateId
+        : `node_${Math.floor(Math.random() * 5) + 1}`,
       term: 1,
       votes: Math.floor(Math.random() * 10) + 1,
     };
@@ -494,14 +532,15 @@ export class CoordinationService {
     steps: any[],
     results: Record<string, any>,
     errors: Record<string, string>,
-    options: any
+    options: any,
   ): Promise<void> {
     const promises = steps.map(async (step) => {
       try {
         const result = await this.executeTransaction([step.operation]);
         results[step.stepId] = result;
       } catch (error) {
-        errors[step.stepId] = error instanceof Error ? error.message : 'Unknown error';
+        errors[step.stepId] =
+          error instanceof Error ? error.message : 'Unknown error';
         if (options.failureHandling === 'abort') {
           throw error;
         }
@@ -515,14 +554,15 @@ export class CoordinationService {
     steps: any[],
     results: Record<string, any>,
     errors: Record<string, string>,
-    options: any
+    options: any,
   ): Promise<void> {
     for (const step of steps) {
       try {
         const result = await this.executeTransaction([step.operation]);
         results[step.stepId] = result;
       } catch (error) {
-        errors[step.stepId] = error instanceof Error ? error.message : 'Unknown error';
+        errors[step.stepId] =
+          error instanceof Error ? error.message : 'Unknown error';
         if (options.failureHandling === 'abort') {
           throw error;
         }
@@ -546,7 +586,9 @@ export class CoordinationService {
     return totalDuration / locks.length;
   }
 
-  private async executeTransaction(operations: TransactionOperation[]): Promise<any> {
+  private async executeTransaction(
+    operations: TransactionOperation[],
+  ): Promise<any> {
     // Mock transaction execution
     return { success: true, operationCount: operations.length };
   }

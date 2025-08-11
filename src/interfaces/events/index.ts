@@ -66,7 +66,7 @@ export {
   type SystemEventAdapterConfig,
   SystemEventHelpers,
   SystemEventManagerFactory,
-} from './adapters';
+} from './adapters/index.js';
 export { CompatibilityFactory } from './compatibility.ts';
 // Core interfaces for UEL
 export type {
@@ -160,8 +160,11 @@ import type {
   CoordinationEventAdapterConfig,
   SystemEventAdapter,
   SystemEventAdapterConfig,
-} from './adapters';
-import type { CompatibilityFactory, UELCompatibleEventEmitter } from './compatibility.ts';
+} from './adapters/index.js';
+import type {
+  CompatibilityFactory,
+  UELCompatibleEventEmitter,
+} from './compatibility.ts';
 // Import missing types
 import type {
   EventManagerConfig,
@@ -264,7 +267,9 @@ import { type UEL, uel } from './core/uel-singleton.ts';
  *
  * @param config
  */
-export const initializeUEL = async (config?: Parameters<UEL['initialize']>[0]): Promise<void> => {
+export const initializeUEL = async (
+  config?: Parameters<UEL['initialize']>[0],
+): Promise<void> => {
   await uel.initialize(config);
 };
 
@@ -288,8 +293,10 @@ export const UELHelpers = {
       enableCompatibility?: boolean;
       healthMonitoring?: boolean;
       autoRegisterFactories?: boolean;
-      logger?: Console | { debug: Function; info: Function; warn: Function; error: Function };
-    } = {}
+      logger?:
+        | Console
+        | { debug: Function; info: Function; warn: Function; error: Function };
+    } = {},
   ): Promise<UEL> {
     // Fix exactOptionalPropertyTypes issue by using explicit undefined handling
     await uel.initialize({
@@ -324,46 +331,51 @@ export const UELHelpers = {
       interfaceEvents?: boolean;
       customConfig?: Record<string, Partial<EventManagerConfig>>;
       useIntegratedManager?: boolean;
-    } = {}
+    } = {},
   ): Promise<{
-    system?: any;
-    coordination?: any;
-    communication?: any;
-    monitoring?: any;
-    interface?: any;
+    system?: unknown;
+    coordination?: unknown;
+    communication?: unknown;
+    monitoring?: unknown;
+    interface?: unknown;
   }> {
     await uel.initialize();
 
     const managers: {
-      system?: any;
-      coordination?: any;
-      communication?: any;
-      monitoring?: any;
-      interface?: any;
+      system?: unknown;
+      coordination?: unknown;
+      communication?: unknown;
+      monitoring?: unknown;
+      interface?: unknown;
     } = {};
 
     try {
       // Use integrated event manager if available and requested
-      const eventManager = config?.useIntegratedManager ? uel.getEventManager() : null;
+      const eventManager = config?.useIntegratedManager
+        ? uel.getEventManager()
+        : null;
 
       if (config?.systemEvents !== false) {
         managers.system = eventManager
           ? await eventManager.createSystemEventManager(
               'common-system',
-              config?.customConfig?.['system']
+              config?.customConfig?.['system'],
             )
-          : await uel.createSystemEventManager('common-system', config?.customConfig?.['system']);
+          : await uel.createSystemEventManager(
+              'common-system',
+              config?.customConfig?.['system'],
+            );
       }
 
       if (config?.coordinationEvents !== false) {
         managers.coordination = eventManager
           ? await eventManager.createCoordinationEventManager(
               'common-coordination',
-              config?.customConfig?.['coordination']
+              config?.customConfig?.['coordination'],
             )
           : await uel.createCoordinationEventManager(
               'common-coordination',
-              config?.customConfig?.['coordination']
+              config?.customConfig?.['coordination'],
             );
       }
 
@@ -371,11 +383,11 @@ export const UELHelpers = {
         managers.communication = eventManager
           ? await eventManager.createCommunicationEventManager(
               'common-communication',
-              config?.customConfig?.['communication']
+              config?.customConfig?.['communication'],
             )
           : await uel.createCommunicationEventManager(
               'common-communication',
-              config?.customConfig?.['communication']
+              config?.customConfig?.['communication'],
             );
       }
 
@@ -383,11 +395,11 @@ export const UELHelpers = {
         managers.monitoring = eventManager
           ? await eventManager.createMonitoringEventManager(
               'common-monitoring',
-              config?.customConfig?.['monitoring']
+              config?.customConfig?.['monitoring'],
             )
           : await uel.createMonitoringEventManager(
               'common-monitoring',
-              config?.customConfig?.['monitoring']
+              config?.customConfig?.['monitoring'],
             );
       }
 
@@ -395,11 +407,11 @@ export const UELHelpers = {
         managers.interface = eventManager
           ? await eventManager.createInterfaceEventManager(
               'common-interface',
-              config?.customConfig?.['interface']
+              config?.customConfig?.['interface'],
             )
           : await uel.createInterfaceEventManager(
               'common-interface',
-              config?.customConfig?.['interface']
+              config?.customConfig?.['interface'],
             );
       }
 
@@ -417,7 +429,10 @@ export const UELHelpers = {
    * @param observerSystem.observers
    * @param observerSystem.notify
    */
-  async migrateObserverSystem(observerSystem: { observers: unknown[]; notify: Function }): Promise<{
+  async migrateObserverSystem(observerSystem: {
+    observers: unknown[];
+    notify: Function;
+  }): Promise<{
     success: boolean;
     migratedManagers: string[];
     errors: string[];
@@ -435,7 +450,10 @@ export const UELHelpers = {
       await uel.initialize({ enableCompatibility: true });
 
       // Migrate EventEmitter if it exists - using proper type casting
-      if (observerSystem && typeof (observerSystem as any).emit === 'function') {
+      if (
+        observerSystem &&
+        typeof (observerSystem as any).emit === 'function'
+      ) {
         const compatible = await uel.migrateEventEmitter(
           observerSystem as unknown as {
             on: Function;
@@ -444,7 +462,7 @@ export const UELHelpers = {
             listeners?: Function;
           },
           'migrated-observer',
-          'system'
+          'system',
         );
         if (compatible) {
           results.migratedManagers.push('migrated-observer');
@@ -469,7 +487,7 @@ export const UELHelpers = {
     } catch (error) {
       results.success = false;
       results.errors.push(
-        `Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
       return results;
     }
@@ -496,12 +514,19 @@ export const UELHelpers = {
     }
 
     const healthStatus = await uel.getHealthStatus();
-    const healthyManagers = healthStatus.filter((status) => status.status === 'healthy').length;
+    const healthyManagers = healthStatus.filter(
+      (status) => status.status === 'healthy',
+    ).length;
     const totalManagers = healthStatus.length;
-    const healthPercentage = totalManagers > 0 ? (healthyManagers / totalManagers) * 100 : 100;
+    const healthPercentage =
+      totalManagers > 0 ? (healthyManagers / totalManagers) * 100 : 100;
 
     const status =
-      healthPercentage >= 80 ? 'healthy' : healthPercentage >= 50 ? 'warning' : 'critical';
+      healthPercentage >= 80
+        ? 'healthy'
+        : healthPercentage >= 50
+          ? 'warning'
+          : 'critical';
 
     return {
       initialized: true,
@@ -536,7 +561,10 @@ export const UELHelpers = {
         };
         return acc;
       },
-      {} as Record<string, { healthy: boolean; details?: Record<string, unknown> }>
+      {} as Record<
+        string,
+        { healthy: boolean; details?: Record<string, unknown> }
+      >,
     );
   },
 
@@ -549,9 +577,9 @@ export const UELHelpers = {
    * @param systems.observerSystem
    */
   async migrateSystemToUEL(systems: {
-    eventBus?: any;
-    applicationCoordinator?: any;
-    observerSystem?: any;
+    eventBus?: unknown;
+    applicationCoordinator?: unknown;
+    observerSystem?: unknown;
     [key: string]: any;
   }): Promise<{
     eventBus?: UELEnhancedEventBus;
@@ -577,7 +605,7 @@ export const UELHelpers = {
       recommendations: [] as string[],
     };
 
-    const result: any = {};
+    const result: unknown = {};
 
     try {
       // Migrate Event Bus
@@ -590,7 +618,7 @@ export const UELHelpers = {
           migrationReport.migratedSystems.push('eventBus');
         } catch (error) {
           migrationReport.errors.push(
-            `Event Bus migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Event Bus migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
@@ -598,18 +626,19 @@ export const UELHelpers = {
       // Migrate Application Coordinator
       if (systems.applicationCoordinator) {
         try {
-          result.applicationCoordinator = await uel.createEnhancedApplicationCoordinator({
-            enableUEL: true,
-            uelConfig: {
-              enableValidation: true,
-              enableCompatibility: true,
-              healthMonitoring: true,
-            },
-          });
+          result.applicationCoordinator =
+            await uel.createEnhancedApplicationCoordinator({
+              enableUEL: true,
+              uelConfig: {
+                enableValidation: true,
+                enableCompatibility: true,
+                healthMonitoring: true,
+              },
+            });
           migrationReport.migratedSystems.push('applicationCoordinator');
         } catch (error) {
           migrationReport.errors.push(
-            `Application Coordinator migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Application Coordinator migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
@@ -623,7 +652,7 @@ export const UELHelpers = {
           migrationReport.migratedSystems.push('observerSystem');
         } catch (error) {
           migrationReport.errors.push(
-            `Observer System migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Observer System migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
@@ -631,14 +660,20 @@ export const UELHelpers = {
       // Analyze remaining systems
       const otherSystems: { [key: string]: any } = {};
       Object.entries(systems).forEach(([name, system]) => {
-        if (!['eventBus', 'applicationCoordinator', 'observerSystem'].includes(name)) {
+        if (
+          !['eventBus', 'applicationCoordinator', 'observerSystem'].includes(
+            name,
+          )
+        ) {
           otherSystems[name] = system;
         }
       });
 
       if (Object.keys(otherSystems).length > 0) {
         const analysis = await uel.analyzeSystemEventEmitters(otherSystems);
-        migrationReport.recommendations.push(...analysis.migrationRecommendations);
+        migrationReport.recommendations.push(
+          ...analysis.migrationRecommendations,
+        );
       }
 
       migrationReport.success = migrationReport.errors.length === 0;
@@ -650,7 +685,7 @@ export const UELHelpers = {
     } catch (error) {
       migrationReport.success = false;
       migrationReport.errors.push(
-        `System migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `System migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
       return { migrationReport };
     }
@@ -698,11 +733,11 @@ export const UELHelpers = {
       observerSystem?: UELEnhancedObserverSystem;
     };
     eventManagers: {
-      system?: any;
-      coordination?: any;
-      communication?: any;
-      monitoring?: any;
-      interface?: any;
+      system?: unknown;
+      coordination?: unknown;
+      communication?: unknown;
+      monitoring?: unknown;
+      interface?: unknown;
     };
     status: {
       initialized: boolean;
@@ -738,18 +773,19 @@ export const UELHelpers = {
           status.componentsCreated++;
         } catch (error) {
           status.errors.push(
-            `Event Bus creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Event Bus creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
 
       if (options?.systemComponents?.applicationCoordinator !== false) {
         try {
-          systems.applicationCoordinator = await uel.createEnhancedApplicationCoordinator();
+          systems.applicationCoordinator =
+            await uel.createEnhancedApplicationCoordinator();
           status.componentsCreated++;
         } catch (error) {
           status.errors.push(
-            `Application Coordinator creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Application Coordinator creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
@@ -760,7 +796,7 @@ export const UELHelpers = {
           status.componentsCreated++;
         } catch (error) {
           status.errors.push(
-            `Observer System creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Observer System creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
@@ -770,23 +806,25 @@ export const UELHelpers = {
 
       if (managerOptions?.system !== false) {
         try {
-          eventManagers.system = await uel.createSystemEventManager('complete-system');
+          eventManagers.system =
+            await uel.createSystemEventManager('complete-system');
           status.componentsCreated++;
         } catch (error) {
           status.errors.push(
-            `System Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `System Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
 
       if (managerOptions?.coordination !== false) {
         try {
-          eventManagers.coordination =
-            await uel.createCoordinationEventManager('complete-coordination');
+          eventManagers.coordination = await uel.createCoordinationEventManager(
+            'complete-coordination',
+          );
           status.componentsCreated++;
         } catch (error) {
           status.errors.push(
-            `Coordination Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Coordination Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
@@ -798,29 +836,32 @@ export const UELHelpers = {
           status.componentsCreated++;
         } catch (error) {
           status.errors.push(
-            `Communication Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Communication Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
 
       if (managerOptions?.monitoring !== false) {
         try {
-          eventManagers.monitoring = await uel.createMonitoringEventManager('complete-monitoring');
+          eventManagers.monitoring = await uel.createMonitoringEventManager(
+            'complete-monitoring',
+          );
           status.componentsCreated++;
         } catch (error) {
           status.errors.push(
-            `Monitoring Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Monitoring Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
 
       if (managerOptions?.interface !== false) {
         try {
-          eventManagers.interface = await uel.createInterfaceEventManager('complete-interface');
+          eventManagers.interface =
+            await uel.createInterfaceEventManager('complete-interface');
           status.componentsCreated++;
         } catch (error) {
           status.errors.push(
-            `Interface Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Interface Event Manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
@@ -833,7 +874,7 @@ export const UELHelpers = {
       };
     } catch (error) {
       status.errors.push(
-        `Complete UEL setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Complete UEL setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
       return {
         uel,
@@ -859,7 +900,7 @@ export const UELHelpers = {
     includeSampleEvents?: boolean;
     exportReport?: boolean;
   }): Promise<{
-    validationResult: any;
+    validationResult?: unknown;
     reportPath?: string;
     summary: {
       passed: boolean;
@@ -905,7 +946,7 @@ export const UELHelpers = {
       const validationResult = await validationFramework.validateComplete(
         eventManager,
         eventRegistry,
-        sampleEvents
+        sampleEvents,
       );
 
       const summary = {
@@ -968,7 +1009,11 @@ export const UELHelpers = {
         details,
       }),
 
-      coordination: (operation: string, targetId: string, details?: any): any => ({
+      coordination: (
+        operation: string,
+        targetId: string,
+        details?: any,
+      ): any => ({
         id: `coord-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-coordination',
@@ -978,7 +1023,11 @@ export const UELHelpers = {
         details,
       }),
 
-      communication: (operation: string, protocol: string, details?: any): any => ({
+      communication: (
+        operation: string,
+        protocol: string,
+        details?: any,
+      ): any => ({
         id: `comm-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-communication',
@@ -988,7 +1037,11 @@ export const UELHelpers = {
         details,
       }),
 
-      monitoring: (operation: string, component: string, details?: any): any => ({
+      monitoring: (
+        operation: string,
+        component: string,
+        details?: any,
+      ): any => ({
         id: `mon-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-monitoring',
@@ -998,7 +1051,11 @@ export const UELHelpers = {
         details,
       }),
 
-      interface: (operation: string, interfaceType: string, details?: any): any => ({
+      interface: (
+        operation: string,
+        interfaceType: string,
+        details?: any,
+      ): any => ({
         id: `int-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-interface',

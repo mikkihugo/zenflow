@@ -107,7 +107,9 @@ export class MemoryCoordinator extends EventEmitter {
    *
    * @param operation
    */
-  async coordinate(operation: Partial<CoordinationDecision>): Promise<CoordinationDecision> {
+  async coordinate(
+    operation: Partial<CoordinationDecision>,
+  ): Promise<CoordinationDecision> {
     const decision: CoordinationDecision = {
       id: `coord_${Date.now()}_${Math.random().toString(36).slice(2)}`,
       type: operation.type || 'read',
@@ -152,7 +154,10 @@ export class MemoryCoordinator extends EventEmitter {
 
     if (operationType === 'write') {
       // For writes, use replication factor
-      const replicationCount = Math.min(this.config.distributed.replication, activeNodes.length);
+      const replicationCount = Math.min(
+        this.config.distributed.replication,
+        activeNodes.length,
+      );
       return activeNodes?.slice(0, replicationCount).map(([id]) => id);
     }
 
@@ -165,7 +170,9 @@ export class MemoryCoordinator extends EventEmitter {
    *
    * @param decision
    */
-  private async executeCoordination(decision: CoordinationDecision): Promise<void> {
+  private async executeCoordination(
+    decision: CoordinationDecision,
+  ): Promise<void> {
     decision.status = 'executing';
 
     switch (decision.type) {
@@ -215,7 +222,10 @@ export class MemoryCoordinator extends EventEmitter {
         throw new Error(`Node not found: ${nodeId}`);
       }
 
-      return await node?.backend?.store(decision.target, decision.metadata?.data);
+      return await node?.backend?.store(
+        decision.target,
+        decision.metadata?.data,
+      );
     });
 
     if (this.config.distributed.consistency === 'strong') {
@@ -223,11 +233,16 @@ export class MemoryCoordinator extends EventEmitter {
       await Promise.all(writePromises);
     } else {
       // Wait for quorum
-      const quorum = Math.ceil(decision.participants.length * this.config.consensus.quorum);
+      const quorum = Math.ceil(
+        decision.participants.length * this.config.consensus.quorum,
+      );
       await Promise.race([
         Promise.all(writePromises.slice(0, quorum)),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Quorum timeout')), this.config.consensus.timeout)
+          setTimeout(
+            () => reject(new Error('Quorum timeout')),
+            this.config.consensus.timeout,
+          ),
         ),
       ]);
     }
@@ -293,7 +308,7 @@ export class MemoryCoordinator extends EventEmitter {
         } catch {
           return null;
         }
-      })
+      }),
     );
 
     // Find the most common value (simple consensus)
@@ -306,7 +321,9 @@ export class MemoryCoordinator extends EventEmitter {
       valueCount.set(key, (valueCount.get(key) || 0) + 1);
     });
 
-    const [winningValue] = Array.from(valueCount.entries()).sort(([, a], [, b]) => b - a)[0];
+    const [winningValue] = Array.from(valueCount.entries()).sort(
+      ([, a], [, b]) => b - a,
+    )[0];
 
     const correctValue = JSON.parse(winningValue);
 
@@ -328,17 +345,27 @@ export class MemoryCoordinator extends EventEmitter {
     return {
       nodes: {
         total: this.nodes.size,
-        active: Array.from(this.nodes.values()).filter((n) => n.status === 'active').length,
-        degraded: Array.from(this.nodes.values()).filter((n) => n.status === 'degraded').length,
+        active: Array.from(this.nodes.values()).filter(
+          (n) => n.status === 'active',
+        ).length,
+        degraded: Array.from(this.nodes.values()).filter(
+          (n) => n.status === 'degraded',
+        ).length,
       },
       decisions: {
         total: this.decisions.size,
-        pending: Array.from(this.decisions.values()).filter((d) => d.status === 'pending').length,
-        executing: Array.from(this.decisions.values()).filter((d) => d.status === 'executing')
-          .length,
-        completed: Array.from(this.decisions.values()).filter((d) => d.status === 'completed')
-          .length,
-        failed: Array.from(this.decisions.values()).filter((d) => d.status === 'failed').length,
+        pending: Array.from(this.decisions.values()).filter(
+          (d) => d.status === 'pending',
+        ).length,
+        executing: Array.from(this.decisions.values()).filter(
+          (d) => d.status === 'executing',
+        ).length,
+        completed: Array.from(this.decisions.values()).filter(
+          (d) => d.status === 'completed',
+        ).length,
+        failed: Array.from(this.decisions.values()).filter(
+          (d) => d.status === 'failed',
+        ).length,
       },
       config: this.config,
     };
@@ -356,7 +383,7 @@ export class MemoryCoordinator extends EventEmitter {
   async store(
     key: string,
     data: any,
-    options?: { ttl?: number; replicas?: number }
+    options?: { ttl?: number; replicas?: number },
   ): Promise<void> {
     const decision = await this.coordinate({
       type: 'write',
@@ -412,14 +439,21 @@ export class MemoryCoordinator extends EventEmitter {
     const results: Array<{ key: string; value: any }> = [];
 
     // Get all active nodes
-    const activeNodes = Array.from(this.nodes.values()).filter((n) => n.status === 'active');
+    const activeNodes = Array.from(this.nodes.values()).filter(
+      (n) => n.status === 'active',
+    );
 
     for (const node of activeNodes) {
       try {
         // Assuming backend implements a keys() method
-        if ('keys' in node?.backend && typeof node?.backend?.keys === 'function') {
+        if (
+          'keys' in node?.backend &&
+          typeof node?.backend?.keys === 'function'
+        ) {
           const keys = await node?.backend?.keys();
-          const matchingKeys = keys.filter((key) => this.matchesPattern(key, pattern));
+          const matchingKeys = keys.filter((key) =>
+            this.matchesPattern(key, pattern),
+          );
 
           for (const key of matchingKeys) {
             try {
@@ -466,13 +500,18 @@ export class MemoryCoordinator extends EventEmitter {
    */
   async healthCheck(): Promise<{ status: string; details: any }> {
     const stats = this.getStats();
-    const unhealthyNodes = Array.from(this.nodes.values()).filter((n) => n.status !== 'active');
+    const unhealthyNodes = Array.from(this.nodes.values()).filter(
+      (n) => n.status !== 'active',
+    );
 
     return {
       status: unhealthyNodes.length === 0 ? 'healthy' : 'degraded',
       details: {
         ...stats,
-        unhealthyNodes: unhealthyNodes?.map((n) => ({ id: n.id, status: n.status })),
+        unhealthyNodes: unhealthyNodes?.map((n) => ({
+          id: n.id,
+          status: n.status,
+        })),
       },
     };
   }

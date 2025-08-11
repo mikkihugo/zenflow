@@ -4,8 +4,8 @@
  *               Ensures consistent client management and interoperability across the system.
  */
 
-import { getLogger } from '../config/logging-config';
 import { EventEmitter } from 'node:events';
+import { getLogger } from '../config/logging-config';
 import type { 
   ClientConfig, 
   ClientMetrics, 
@@ -69,7 +69,7 @@ export interface ClientResult<T = any> {
   error?: {
     code: string;
     message: string;
-    details?: any;
+  details?: unknown;
   };
   /** Operation metadata */
   metadata: {
@@ -142,7 +142,7 @@ export interface ClientComponentHealth {
   /** An optional message providing more details about the component's status. */
   message?: string;
   /** Optional additional details about the component's health. */
-  details?: any;
+  details?: unknown;
 }
 
 // ClientMetrics is now imported from '../core/interfaces.ts'
@@ -276,7 +276,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClientA
     success: boolean,
     data?: T,
     error?: { code: string; message: string; details?: any },
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ): ClientResult<T> {
     return {
       operationId,
@@ -345,7 +345,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClientA
    * @param _message
    * @param _meta.
    */
-  protected log(level: 'debug' | 'info' | 'warn' | 'error', _message: string, _meta?: any): void {
+  protected log(level: 'debug' | 'info' | 'warn' | 'error', _message: string, _meta?: unknown): void {
     if (this.config.logging?.enabled) {
       const _prefix = this.config.logging.prefix || this.type;
       const shouldLog = this.shouldLog(level);

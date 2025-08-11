@@ -5,7 +5,13 @@
  */
 
 export interface DiscoveryState {
-  phase: 'analyzing' | 'reviewing' | 'configuring' | 'deploying' | 'completed' | 'error';
+  phase:
+    | 'analyzing'
+    | 'reviewing'
+    | 'configuring'
+    | 'deploying'
+    | 'completed'
+    | 'error';
   progress: {
     current: number;
     total: number;

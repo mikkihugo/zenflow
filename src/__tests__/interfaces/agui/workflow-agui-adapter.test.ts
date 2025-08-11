@@ -126,7 +126,7 @@ describe('WorkflowAGUIAdapter', () => {
         {
           businessImpact: 'medium',
           priority: 'high',
-        }
+        },
       );
 
       // Mock user input
@@ -143,72 +143,87 @@ describe('WorkflowAGUIAdapter', () => {
       expect(response).toBe('approved');
 
       // Check decision audit
-      const auditHistory = adapter.getWorkflowDecisionHistory('test-workflow-001');
+      const auditHistory =
+        adapter.getWorkflowDecisionHistory('test-workflow-001');
       expect(auditHistory).toHaveLength(1);
       expect(auditHistory[0]!.decision).toBe('approved');
       expect(auditHistory[0]!.gateId).toBe(approvalGate.id);
     });
 
-    test('should process a checkpoint gate with auto-approval', { timeout: 5000 }, async () => {
-      const checkpointData = {
-        confidence: 0.95,
-        validationResults: ['all tests passed', 'code coverage > 90%'],
-      };
+    test(
+      'should process a checkpoint gate with auto-approval',
+      { timeout: 5000 },
+      async () => {
+        const checkpointData = {
+          confidence: 0.95,
+          validationResults: ['all tests passed', 'code coverage > 90%'],
+        };
 
-      const checkpointGate = createCheckpointGate(
-        'test-workflow-002',
-        'pre-deployment-check',
-        checkpointData,
-        {
-          autoApprovalThreshold: 0.9,
-          businessImpact: 'low',
-        }
-      );
+        const checkpointGate = createCheckpointGate(
+          'test-workflow-002',
+          'pre-deployment-check',
+          checkpointData,
+          {
+            autoApprovalThreshold: 0.9,
+            businessImpact: 'low',
+          },
+        );
 
-      // Mock the base askQuestion to return a positive response immediately
-      const mockAskQuestion = vi.spyOn(adapter, 'askQuestion').mockImplementation(async () => {
-        return 'continue';
-      });
+        // Mock the base askQuestion to return a positive response immediately
+        const mockAskQuestion = vi
+          .spyOn(adapter, 'askQuestion')
+          .mockImplementation(async () => {
+            return 'continue';
+          });
 
-      const response = await adapter.processWorkflowGate(checkpointGate);
+        const response = await adapter.processWorkflowGate(checkpointGate);
 
-      expect(response).toBe('continue');
+        expect(response).toBe('continue');
 
-      // Verify audit logging
-      const stats = adapter.getStatistics();
-      expect(stats.totalDecisionAudits).toBe(1);
-    });
+        // Verify audit logging
+        const stats = adapter.getStatistics();
+        expect(stats.totalDecisionAudits).toBe(1);
+      },
+    );
 
-    test('should handle emergency gates with urgency markers', { timeout: 5000 }, async () => {
-      const emergencyGate = createEmergencyGate(
-        'test-workflow-003',
-        'security-breach-response',
-        {
-          severity: 'critical',
-          affectedSystems: ['user-database', 'payment-gateway'],
-        },
-        ['security-lead', 'cto', 'ceo']
-      );
+    test(
+      'should handle emergency gates with urgency markers',
+      { timeout: 5000 },
+      async () => {
+        const emergencyGate = createEmergencyGate(
+          'test-workflow-003',
+          'security-breach-response',
+          {
+            severity: 'critical',
+            affectedSystems: ['user-database', 'payment-gateway'],
+          },
+          ['security-lead', 'cto', 'ceo'],
+        );
 
-      const mockAskQuestion = vi.spyOn(adapter, 'askQuestion').mockImplementation(async () => {
-        return 'emergency approved - immediate action required';
-      });
+        const mockAskQuestion = vi
+          .spyOn(adapter, 'askQuestion')
+          .mockImplementation(async () => {
+            return 'emergency approved - immediate action required';
+          });
 
-      const response = await adapter.processWorkflowGate(emergencyGate);
+        const response = await adapter.processWorkflowGate(emergencyGate);
 
-      expect(response).toBe('URGENT: emergency approved - immediate action required');
-    });
+        expect(response).toBe(
+          'URGENT: emergency approved - immediate action required',
+        );
+      },
+    );
 
     test('should handle gate processing errors gracefully', async () => {
       const invalidGate = createApprovalGate(
         '', // Invalid empty workflow ID
         'test-step',
         'Test question?',
-        []
+        [],
       );
 
       await expect(adapter.processWorkflowGate(invalidGate)).rejects.toThrow(
-        'Gate validation failed'
+        'Gate validation failed',
       );
     });
   });
@@ -218,26 +233,36 @@ describe('WorkflowAGUIAdapter', () => {
   // ============================================================================
 
   describe('Decision Logging and Audit Trail', () => {
-    test('should maintain decision audit trail', { timeout: 5000 }, async () => {
-      const gate1 = createApprovalGate('wf-001', 'step-1', 'Question 1?', ['user1']);
-      const gate2 = createApprovalGate('wf-001', 'step-2', 'Question 2?', ['user2']);
+    test(
+      'should maintain decision audit trail',
+      { timeout: 5000 },
+      async () => {
+        const gate1 = createApprovalGate('wf-001', 'step-1', 'Question 1?', [
+          'user1',
+        ]);
+        const gate2 = createApprovalGate('wf-001', 'step-2', 'Question 2?', [
+          'user2',
+        ]);
 
-      const mockAskQuestion = vi
-        .spyOn(adapter, 'askQuestion')
-        .mockImplementationOnce(async () => 'approved')
-        .mockImplementationOnce(async () => 'rejected');
+        const mockAskQuestion = vi
+          .spyOn(adapter, 'askQuestion')
+          .mockImplementationOnce(async () => 'approved')
+          .mockImplementationOnce(async () => 'rejected');
 
-      await adapter.processWorkflowGate(gate1);
-      await adapter.processWorkflowGate(gate2);
+        await adapter.processWorkflowGate(gate1);
+        await adapter.processWorkflowGate(gate2);
 
-      const history = adapter.getWorkflowDecisionHistory('wf-001');
-      expect(history).toHaveLength(2);
-      expect(history[0]!.decision).toBe('approved');
-      expect(history[1]!.decision).toBe('rejected');
-    });
+        const history = adapter.getWorkflowDecisionHistory('wf-001');
+        expect(history).toHaveLength(2);
+        expect(history[0]!.decision).toBe('approved');
+        expect(history[1]!.decision).toBe('rejected');
+      },
+    );
 
     test('should export audit trail as JSON', async () => {
-      const gate = createApprovalGate('wf-export', 'step-1', 'Export test?', ['user']);
+      const gate = createApprovalGate('wf-export', 'step-1', 'Export test?', [
+        'user',
+      ]);
 
       vi.spyOn(adapter, 'askQuestion').mockResolvedValue('approved');
       await adapter.processWorkflowGate(gate);
@@ -251,7 +276,9 @@ describe('WorkflowAGUIAdapter', () => {
     });
 
     test('should export audit trail as CSV', async () => {
-      const gate = createApprovalGate('wf-csv', 'csv-step', 'CSV test?', ['csv-user']);
+      const gate = createApprovalGate('wf-csv', 'csv-step', 'CSV test?', [
+        'csv-user',
+      ]);
 
       vi.spyOn(adapter, 'askQuestion').mockResolvedValue('csv-approved');
       await adapter.processWorkflowGate(gate);
@@ -274,7 +301,9 @@ describe('WorkflowAGUIAdapter', () => {
 
       // Add 3 records to test the limit
       for (let i = 0; i < 3; i++) {
-        const gate = createApprovalGate(`wf-${i}`, `step-${i}`, 'Test?', ['user']);
+        const gate = createApprovalGate(`wf-${i}`, `step-${i}`, 'Test?', [
+          'user',
+        ]);
         await limitedAdapter.processWorkflowGate(gate);
       }
 
@@ -301,7 +330,7 @@ describe('WorkflowAGUIAdapter', () => {
         {
           businessImpact: 'critical',
           deadline: new Date(Date.now() + 3600000), // 1 hour from now
-        }
+        },
       );
 
       // Add some context
@@ -332,9 +361,15 @@ describe('WorkflowAGUIAdapter', () => {
       await richAdapter.processWorkflowGate(gate);
 
       // Verify that rich prompt elements are displayed
-      expect(consoleOutput.some((output) => output.includes('WORKFLOW GATE'))).toBe(true);
-      expect(consoleOutput.some((output) => output.includes('rich-workflow'))).toBe(true);
-      expect(consoleOutput.some((output) => output.includes('CRITICAL'))).toBe(true);
+      expect(
+        consoleOutput.some((output) => output.includes('WORKFLOW GATE')),
+      ).toBe(true);
+      expect(
+        consoleOutput.some((output) => output.includes('rich-workflow')),
+      ).toBe(true);
+      expect(consoleOutput.some((output) => output.includes('CRITICAL'))).toBe(
+        true,
+      );
     });
 
     test('should not display rich prompts when disabled', async () => {
@@ -342,16 +377,21 @@ describe('WorkflowAGUIAdapter', () => {
         enableRichPrompts: false,
       });
 
-      const gate = createApprovalGate('simple-workflow', 'simple-step', 'Simple question?', [
-        'user',
-      ]);
+      const gate = createApprovalGate(
+        'simple-workflow',
+        'simple-step',
+        'Simple question?',
+        ['user'],
+      );
 
       vi.spyOn(simpleAdapter, 'askQuestion').mockResolvedValue('approved');
 
       await simpleAdapter.processWorkflowGate(gate);
 
       // Should not contain rich prompt elements
-      expect(consoleOutput.some((output) => output.includes('WORKFLOW GATE'))).toBe(false);
+      expect(
+        consoleOutput.some((output) => output.includes('WORKFLOW GATE')),
+      ).toBe(false);
     });
   });
 
@@ -372,7 +412,12 @@ describe('WorkflowAGUIAdapter', () => {
         },
       });
 
-      const gate = createApprovalGate('timeout-test', 'timeout-step', 'Timeout test?', ['user']);
+      const gate = createApprovalGate(
+        'timeout-test',
+        'timeout-step',
+        'Timeout test?',
+        ['user'],
+      );
       gate.timeoutConfig = {
         initialTimeout: 100,
         escalationTimeouts: [200],
@@ -381,7 +426,10 @@ describe('WorkflowAGUIAdapter', () => {
 
       // Don't provide immediate response to trigger timeout
       vi.spyOn(timeoutAdapter, 'askQuestion').mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve('late-response'), 300))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve('late-response'), 300),
+          ),
       );
 
       // Listen for timeout events
@@ -407,9 +455,12 @@ describe('WorkflowAGUIAdapter', () => {
         },
       });
 
-      const gate = createApprovalGate('escalation-test', 'escalation-step', 'Escalation test?', [
-        'user',
-      ]);
+      const gate = createApprovalGate(
+        'escalation-test',
+        'escalation-step',
+        'Escalation test?',
+        ['user'],
+      );
 
       // Listen for escalation events
       eventBus.registerHandler('agui.gate.escalated', async (event) => {
@@ -420,7 +471,10 @@ describe('WorkflowAGUIAdapter', () => {
 
       // Mock delayed response
       vi.spyOn(escalationAdapter, 'askQuestion').mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve('escalated-response'), 200))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve('escalated-response'), 200),
+          ),
       );
 
       escalationAdapter.processWorkflowGate(gate).catch(() => {
@@ -446,7 +500,12 @@ describe('WorkflowAGUIAdapter', () => {
         gateClosedEvents.push(event);
       });
 
-      const gate = createApprovalGate('event-test', 'event-step', 'Event test?', ['user']);
+      const gate = createApprovalGate(
+        'event-test',
+        'event-step',
+        'Event test?',
+        ['user'],
+      );
 
       vi.spyOn(adapter, 'askQuestion').mockResolvedValue('approved');
 
@@ -468,9 +527,12 @@ describe('WorkflowAGUIAdapter', () => {
         auditEvents.push(event);
       });
 
-      const gate = createApprovalGate('audit-event-test', 'audit-step', 'Audit event test?', [
-        'user',
-      ]);
+      const gate = createApprovalGate(
+        'audit-event-test',
+        'audit-step',
+        'Audit event test?',
+        ['user'],
+      );
 
       vi.spyOn(adapter, 'askQuestion').mockResolvedValue('approved');
 
@@ -490,9 +552,12 @@ describe('WorkflowAGUIAdapter', () => {
 
   describe('Batch Question Processing', () => {
     test('should handle mixed workflow gates and standard questions', async () => {
-      const workflowGate = createApprovalGate('batch-workflow', 'batch-step', 'Workflow gate?', [
-        'user',
-      ]);
+      const workflowGate = createApprovalGate(
+        'batch-workflow',
+        'batch-step',
+        'Workflow gate?',
+        ['user'],
+      );
       const standardQuestion = {
         id: 'std-1',
         type: 'relevance' as const,
@@ -505,7 +570,10 @@ describe('WorkflowAGUIAdapter', () => {
         .mockResolvedValueOnce('workflow-approved')
         .mockResolvedValueOnce('standard-answer');
 
-      const responses = await adapter.askBatchQuestions([workflowGate, standardQuestion]);
+      const responses = await adapter.askBatchQuestions([
+        workflowGate,
+        standardQuestion,
+      ]);
 
       expect(responses).toHaveLength(2);
       expect(responses[0]).toBe('workflow-approved');
@@ -519,9 +587,16 @@ describe('WorkflowAGUIAdapter', () => {
 
   describe('Response Processing', () => {
     test('should process approval responses correctly', async () => {
-      const gate = createApprovalGate('approval-processing', 'approval-step', 'Approve?', ['user']);
+      const gate = createApprovalGate(
+        'approval-processing',
+        'approval-step',
+        'Approve?',
+        ['user'],
+      );
 
-      vi.spyOn(adapter, 'askQuestion').mockResolvedValue('yes, I approve this change');
+      vi.spyOn(adapter, 'askQuestion').mockResolvedValue(
+        'yes, I approve this change',
+      );
 
       const response = await adapter.processWorkflowGate(gate);
 
@@ -529,11 +604,16 @@ describe('WorkflowAGUIAdapter', () => {
     });
 
     test('should process rejection responses correctly', async () => {
-      const gate = createApprovalGate('rejection-processing', 'rejection-step', 'Approve?', [
-        'user',
-      ]);
+      const gate = createApprovalGate(
+        'rejection-processing',
+        'rejection-step',
+        'Approve?',
+        ['user'],
+      );
 
-      vi.spyOn(adapter, 'askQuestion').mockResolvedValue('no, I reject this proposal');
+      vi.spyOn(adapter, 'askQuestion').mockResolvedValue(
+        'no, I reject this proposal',
+      );
 
       const response = await adapter.processWorkflowGate(gate);
 
@@ -545,10 +625,12 @@ describe('WorkflowAGUIAdapter', () => {
         'emergency-processing',
         'emergency-step',
         { severity: 'critical' },
-        ['emergency-contact']
+        ['emergency-contact'],
       );
 
-      vi.spyOn(adapter, 'askQuestion').mockResolvedValue('emergency action approved immediately');
+      vi.spyOn(adapter, 'askQuestion').mockResolvedValue(
+        'emergency action approved immediately',
+      );
 
       const response = await adapter.processWorkflowGate(gate);
 

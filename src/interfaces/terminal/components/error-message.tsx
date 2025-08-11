@@ -9,7 +9,7 @@
  */
 
 import { Box, Text } from 'ink';
-import type React from 'react';
+import React from 'react';
 
 export interface ErrorMessageProps {
   error: string | Error;
@@ -86,7 +86,10 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
         marginBottom={showBorder ? 0 : 1}
       >
         <Box flexDirection="column">
-          <Text bold color={config.color}>
+          <Text
+            bold
+            color={config.color}
+          >
             {config.icon} {displayTitle}
           </Text>
 
@@ -98,12 +101,24 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
 
       {/* Stack trace */}
       {showStack && errorStack && (
-        <Box borderStyle="single" borderColor="gray" padding={1} marginTop={1}>
+        <Box
+          borderStyle="single"
+          borderColor="gray"
+          padding={1}
+          marginTop={1}
+        >
           <Box flexDirection="column">
-            <Text bold color="gray" dimColor>
+            <Text
+              bold
+              color="gray"
+              dimColor
+            >
               Stack Trace:
             </Text>
-            <Text color="gray" dimColor>
+            <Text
+              color="gray"
+              dimColor
+            >
               {errorStack}
             </Text>
           </Box>
@@ -115,7 +130,9 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
         <Box marginTop={1}>
           <Text color="gray">
             Available actions:{' '}
-            {actions.map((action) => `[${action.key}] ${action.action}`).join(' ')}
+            {actions
+              .map((action) => `[${action.key}] ${action.action}`)
+              .join(' ')}
           </Text>
         </Box>
       )}
@@ -124,16 +141,31 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
 };
 
 // Convenience components for different error types
-export const StandardError: React.FC<Omit<ErrorMessageProps, 'variant'>> = (props) => (
-  <ErrorMessage {...props} variant="standard" />
+export const StandardError: React.FC<Omit<ErrorMessageProps, 'variant'>> = (
+  props,
+) => (
+  <ErrorMessage
+    {...props}
+    variant="standard"
+  />
 );
 
-export const CriticalError: React.FC<Omit<ErrorMessageProps, 'variant'>> = (props) => (
-  <ErrorMessage {...props} variant="critical" />
+export const CriticalError: React.FC<Omit<ErrorMessageProps, 'variant'>> = (
+  props,
+) => (
+  <ErrorMessage
+    {...props}
+    variant="critical"
+  />
 );
 
-export const WarningMessage: React.FC<Omit<ErrorMessageProps, 'variant'>> = (props) => (
-  <ErrorMessage {...props} variant="warning" />
+export const WarningMessage: React.FC<Omit<ErrorMessageProps, 'variant'>> = (
+  props,
+) => (
+  <ErrorMessage
+    {...props}
+    variant="warning"
+  />
 );
 
 // Command error component with retry actions

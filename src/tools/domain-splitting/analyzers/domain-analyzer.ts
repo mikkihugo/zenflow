@@ -51,11 +51,14 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
 
   async analyzeDomainComplexity(domainPath: string): Promise<DomainAnalysis> {
     // Use config to determine analysis depth and thresholds
-    const complexityThreshold = (this.config['complexityThreshold'] as number) ?? 50;
-    const analysisDepth = (this.config['analysisDepth'] as string) ?? 'moderate';
+    const complexityThreshold =
+      (this.config['complexityThreshold'] as number) ?? 50;
+    const analysisDepth =
+      (this.config['analysisDepth'] as string) ?? 'moderate';
 
     // Adjust complexity based on config
-    const baseComplexity = analysisDepth === 'deep' ? 75 : analysisDepth === 'shallow' ? 25 : 50;
+    const baseComplexity =
+      analysisDepth === 'deep' ? 75 : analysisDepth === 'shallow' ? 25 : 50;
 
     return {
       domainPath,
@@ -96,7 +99,9 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     ];
   }
 
-  async calculateSplittingBenefits(plans: SubDomainPlan[]): Promise<SplittingMetrics> {
+  async calculateSplittingBenefits(
+    plans: SubDomainPlan[],
+  ): Promise<SplittingMetrics> {
     // Minimal stub implementation
     return {
       totalComplexity: plans.length * 25,

@@ -9,6 +9,9 @@
 
 import { EventEmitter } from 'node:events';
 import type { ILogger } from '../core/interfaces/base-interfaces.ts';
+import { inject } from '../di/decorators/inject.ts';
+import { injectable } from '../di/decorators/injectable.ts';
+import { CORE_TOKENS } from '../di/tokens/core-tokens.ts';
 
 @injectable
 export class MultiSystemCoordinator extends EventEmitter {

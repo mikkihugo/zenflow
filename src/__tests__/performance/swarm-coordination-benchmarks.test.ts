@@ -84,15 +84,18 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       }
 
       // Initialization time should scale reasonably
-      const timePerAgent = initializationTimes.map((time, i) => time / swarmSizes[i]);
-      const avgTimePerAgent = timePerAgent.reduce((a, b) => a + b, 0) / timePerAgent.length;
+      const timePerAgent = initializationTimes.map(
+        (time, i) => time / swarmSizes[i],
+      );
+      const avgTimePerAgent =
+        timePerAgent.reduce((a, b) => a + b, 0) / timePerAgent.length;
 
       expect(avgTimePerAgent).toBeLessThan(50); // 50ms per agent max
     });
 
     it('should handle concurrent swarm initialization requests', async () => {
       const concurrentSwarms = 5;
-      const swarmPromises: Promise<any>[] = [];
+      const swarmPromises: Promise<unknown>[] = [];
 
       performance.start('concurrent-swarm-init');
 
@@ -116,7 +119,9 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       });
 
       const totalTime = performance.getDuration('concurrent-swarm-init');
-      expect(totalTime).toBeLessThan(PERFORMANCE_TARGETS?.swarmInitialization * 2);
+      expect(totalTime).toBeLessThan(
+        PERFORMANCE_TARGETS?.swarmInitialization * 2,
+      );
     });
   });
 
@@ -153,7 +158,8 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         expect(spawnTime).toBeLessThan(PERFORMANCE_TARGETS?.agentSpawning);
       }
 
-      const avgSpawnTime = spawnTimes.reduce((a, b) => a + b, 0) / spawnTimes.length;
+      const avgSpawnTime =
+        spawnTimes.reduce((a, b) => a + b, 0) / spawnTimes.length;
       expect(avgSpawnTime).toBeLessThan(PERFORMANCE_TARGETS?.agentSpawning / 2);
     });
 
@@ -180,7 +186,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         agentManager.updateAgent(agent.id, {
           capabilities: [...agent.capabilities, 'monitoring'],
           priority: 'high',
-        })
+        }),
       );
 
       await Promise.all(updatePromises);
@@ -191,7 +197,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       performance.start('bulk-agent-terminate');
 
       const terminatePromises = agents.map((agent) =>
-        agentManager.terminateAgent(agent.id, { graceful: true })
+        agentManager.terminateAgent(agent.id, { graceful: true }),
       );
 
       await Promise.all(terminatePromises);
@@ -202,7 +208,9 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       const updateTime = performance.getDuration('bulk-agent-update');
       const terminateTime = performance.getDuration('bulk-agent-terminate');
 
-      expect(spawnTime / agents.length).toBeLessThan(PERFORMANCE_TARGETS?.agentSpawning);
+      expect(spawnTime / agents.length).toBeLessThan(
+        PERFORMANCE_TARGETS?.agentSpawning,
+      );
       expect(updateTime).toBeLessThan(2000); // 2 seconds for 30 updates
       expect(terminateTime).toBeLessThan(1500); // 1.5 seconds for 30 terminations
     });
@@ -225,7 +233,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       // Wait for auto-scaling to kick in
       await testHelpers.waitForCondition(
         () => agentManager.getActiveAgentCount() > initialAgentCount,
-        5000
+        5000,
       );
 
       const scaledAgentCount = await agentManager.getActiveAgentCount();
@@ -236,7 +244,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
       await testHelpers.waitForCondition(
         () => agentManager.getActiveAgentCount() <= initialAgentCount + 5,
-        10000
+        10000,
       );
 
       performance.end('auto-scaling-test');
@@ -268,11 +276,14 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
         performance.start(`task-distribution-${batchSize}`);
 
-        const distributionResult = await taskOrchestrator.distributeTasks(tasks);
+        const distributionResult =
+          await taskOrchestrator.distributeTasks(tasks);
 
         performance.end(`task-distribution-${batchSize}`);
 
-        const distTime = performance.getDuration(`task-distribution-${batchSize}`);
+        const distTime = performance.getDuration(
+          `task-distribution-${batchSize}`,
+        );
         distributionTimes.push(distTime);
 
         expect(distributionResult?.success).toBe(true);
@@ -281,8 +292,11 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       }
 
       // Distribution should scale sub-linearly
-      const efficiency = distributionTimes.map((time, i) => taskBatches[i] / time);
-      const avgEfficiency = efficiency.reduce((a, b) => a + b, 0) / efficiency.length;
+      const efficiency = distributionTimes.map(
+        (time, i) => taskBatches[i] / time,
+      );
+      const avgEfficiency =
+        efficiency.reduce((a, b) => a + b, 0) / efficiency.length;
 
       expect(avgEfficiency).toBeGreaterThan(50); // 50 tasks per second minimum
     });
@@ -291,7 +305,10 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       // Create specialized agents
       const specialists = [
         { type: 'data_analyst', capabilities: ['data_analysis', 'statistics'] },
-        { type: 'ml_engineer', capabilities: ['machine_learning', 'model_training'] },
+        {
+          type: 'ml_engineer',
+          capabilities: ['machine_learning', 'model_training'],
+        },
         { type: 'coordinator', capabilities: ['coordination', 'supervision'] },
       ];
 
@@ -300,17 +317,32 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       }
 
       const specializedTasks = [
-        { id: 'data-task-1', type: 'data_analysis', requiredCapabilities: ['data_analysis'] },
-        { id: 'ml-task-1', type: 'model_training', requiredCapabilities: ['machine_learning'] },
-        { id: 'coord-task-1', type: 'coordination', requiredCapabilities: ['coordination'] },
+        {
+          id: 'data-task-1',
+          type: 'data_analysis',
+          requiredCapabilities: ['data_analysis'],
+        },
+        {
+          id: 'ml-task-1',
+          type: 'model_training',
+          requiredCapabilities: ['machine_learning'],
+        },
+        {
+          id: 'coord-task-1',
+          type: 'coordination',
+          requiredCapabilities: ['coordination'],
+        },
       ];
 
       performance.start('capability-based-routing');
 
-      const routingResult = await taskOrchestrator.distributeTasks(specializedTasks, {
-        routingStrategy: 'capability_match',
-        optimizeForLatency: true,
-      });
+      const routingResult = await taskOrchestrator.distributeTasks(
+        specializedTasks,
+        {
+          routingStrategy: 'capability_match',
+          optimizeForLatency: true,
+        },
+      );
 
       performance.end('capability-based-routing');
 
@@ -331,7 +363,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
           type: 'processing',
           priority,
           submissionTime: Date.now(),
-        }))
+        })),
       );
 
       // Shuffle tasks to test priority sorting
@@ -342,7 +374,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       await taskOrchestrator.submitTasks(shuffledTasks);
 
       // Track task execution order
-      const executionOrder: any[] = [];
+      const executionOrder: unknown[] = [];
 
       taskOrchestrator.on('task_started', (task) => {
         executionOrder.push({
@@ -357,14 +389,18 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       performance.end('priority-queue-processing');
 
       // Verify priority ordering
-      const criticalTasks = executionOrder.filter((t) => t.priority === 'critical');
+      const criticalTasks = executionOrder.filter(
+        (t) => t.priority === 'critical',
+      );
       const highTasks = executionOrder.filter((t) => t.priority === 'high');
       const normalTasks = executionOrder.filter((t) => t.priority === 'normal');
       const lowTasks = executionOrder.filter((t) => t.priority === 'low');
 
       // Critical tasks should start before others
       if (criticalTasks.length > 0 && highTasks.length > 0) {
-        expect(criticalTasks[0]?.startTime).toBeLessThanOrEqual(highTasks[0]?.startTime);
+        expect(criticalTasks[0]?.startTime).toBeLessThanOrEqual(
+          highTasks[0]?.startTime,
+        );
       }
 
       const totalTime = performance.getDuration('priority-queue-processing');
@@ -396,18 +432,25 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
         performance.start(`message-latency-${sender.id}-${receiver.id}`);
 
-        const result = await swarmCoordinator.sendMessage(sender.id, receiver.id, message);
+        const result = await swarmCoordinator.sendMessage(
+          sender.id,
+          receiver.id,
+          message,
+        );
 
         performance.end(`message-latency-${sender.id}-${receiver.id}`);
 
-        const latency = performance.getDuration(`message-latency-${sender.id}-${receiver.id}`);
+        const latency = performance.getDuration(
+          `message-latency-${sender.id}-${receiver.id}`,
+        );
         latencies.push(latency);
 
         expect(result?.success).toBe(true);
         expect(latency).toBeLessThan(PERFORMANCE_TARGETS?.messageLatency);
       }
 
-      const avgLatency = latencies.reduce((a, b) => a + b, 0) / latencies.length;
+      const avgLatency =
+        latencies.reduce((a, b) => a + b, 0) / latencies.length;
       const maxLatency = Math.max(...latencies);
       const p95Latency = testHelpers.calculatePercentile(latencies, 95);
 
@@ -431,7 +474,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
         const result = await swarmCoordinator.broadcastMessage(
           targetAgents?.map((a) => a.id),
-          broadcastMessage
+          broadcastMessage,
         );
 
         performance.end(`broadcast-${size}`);
@@ -440,7 +483,9 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
         expect(result?.success).toBe(true);
         expect(result?.deliveredCount).toBe(size);
-        expect(broadcastTime).toBeLessThan(PERFORMANCE_TARGETS?.messageLatency * 2);
+        expect(broadcastTime).toBeLessThan(
+          PERFORMANCE_TARGETS?.messageLatency * 2,
+        );
       }
     });
 
@@ -465,7 +510,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
             id: `routing-test-${topology}`,
             type: 'test_message',
             content: { test: true },
-          })
+          }),
         );
 
         await Promise.all(routingPromises);
@@ -521,7 +566,8 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         // Periodic memory check
         if (operationCount % 10 === 0) {
           const currentMemory = process.memoryUsage();
-          const memoryIncrease = currentMemory?.heapUsed - initialMemory.heapUsed;
+          const memoryIncrease =
+            currentMemory?.heapUsed - initialMemory.heapUsed;
           expect(memoryIncrease).toBeLessThan(PERFORMANCE_TARGETS?.memoryUsage);
         }
       }
@@ -532,7 +578,9 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       const totalMemoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
       const throughput = operationCount / 30; // operations per second
 
-      expect(totalMemoryIncrease).toBeLessThan(PERFORMANCE_TARGETS?.memoryUsage);
+      expect(totalMemoryIncrease).toBeLessThan(
+        PERFORMANCE_TARGETS?.memoryUsage,
+      );
       expect(throughput).toBeGreaterThan(10); // At least 10 ops/sec
     });
 
@@ -576,8 +624,10 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       const postShutdownMemory = process.memoryUsage();
 
       const cleanupTime = performance.getDuration('resource-cleanup');
-      const memoryReclaimed = preShutdownMemory.heapUsed - postShutdownMemory.heapUsed;
-      const memoryRetained = postShutdownMemory.heapUsed - preInitMemory.heapUsed;
+      const memoryReclaimed =
+        preShutdownMemory.heapUsed - postShutdownMemory.heapUsed;
+      const memoryRetained =
+        postShutdownMemory.heapUsed - preInitMemory.heapUsed;
 
       expect(cleanupTime).toBeLessThan(15000); // 15 seconds max cleanup
       expect(memoryReclaimed).toBeGreaterThan(0); // Should reclaim some memory
@@ -588,7 +638,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
   describe('Scalability Performance', () => {
     it('should demonstrate linear scalability up to target limits', async () => {
       const scalingSizes = [10, 20, 40, 80];
-      const scalingMetrics: any[] = [];
+      const scalingMetrics: unknown[] = [];
 
       for (const size of scalingSizes) {
         performance.start(`scaling-test-${size}`);

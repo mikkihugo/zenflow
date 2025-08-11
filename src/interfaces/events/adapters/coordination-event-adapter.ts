@@ -36,7 +36,11 @@ import type {
   EventTransform,
   IEventManager,
 } from '../core/interfaces.ts';
-import { EventEmissionError, EventManagerTypes, EventTimeoutError } from '../core/interfaces.ts';
+import {
+  EventEmissionError,
+  EventManagerTypes,
+  EventTimeoutError,
+} from '../core/interfaces.ts';
 import type { CoordinationEvent } from '../types.ts';
 import { EventPriorityMap } from '../types.ts';
 
@@ -173,7 +177,7 @@ interface CoordinationCorrelation {
     coordinationEfficiency: number;
     resourceUtilization: number;
   };
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 /**
@@ -197,7 +201,7 @@ interface CoordinationHealthEntry {
   };
   agentCount?: number;
   activeTaskCount?: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 /**
@@ -206,7 +210,7 @@ interface CoordinationHealthEntry {
  * @example
  */
 interface WrappedCoordinationComponent {
-  component: any;
+  component?: unknown;
   componentType: 'swarm' | 'agent' | 'orchestrator' | 'protocol';
   wrapper: EventEmitter;
   originalMethods: Map<string, Function>;
@@ -393,7 +397,9 @@ export class CoordinationEventAdapter implements IEventManager {
    */
   async start(): Promise<void> {
     if (this.running) {
-      this.logger.warn(`Coordination event adapter ${this.name} is already running`);
+      this.logger.warn(
+        `Coordination event adapter ${this.name} is already running`,
+      );
       return;
     }
 
@@ -425,9 +431,14 @@ export class CoordinationEventAdapter implements IEventManager {
       this.startTime = new Date();
       this.emitInternal('start');
 
-      this.logger.info(`Coordination event adapter started successfully: ${this.name}`);
+      this.logger.info(
+        `Coordination event adapter started successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to start coordination event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to start coordination event adapter ${this.name}:`,
+        error,
+      );
       this.emitInternal('error', error);
       throw error;
     }
@@ -438,7 +449,9 @@ export class CoordinationEventAdapter implements IEventManager {
    */
   async stop(): Promise<void> {
     if (!this.running) {
-      this.logger.warn(`Coordination event adapter ${this.name} is not running`);
+      this.logger.warn(
+        `Coordination event adapter ${this.name} is not running`,
+      );
       return;
     }
 
@@ -457,9 +470,14 @@ export class CoordinationEventAdapter implements IEventManager {
       this.running = false;
       this.emitInternal('stop');
 
-      this.logger.info(`Coordination event adapter stopped successfully: ${this.name}`);
+      this.logger.info(
+        `Coordination event adapter stopped successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to stop coordination event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to stop coordination event adapter ${this.name}:`,
+        error,
+      );
       this.emitInternal('error', error);
       throw error;
     }
@@ -487,7 +505,10 @@ export class CoordinationEventAdapter implements IEventManager {
    * @param event
    * @param options
    */
-  async emit<T extends CoordinationEvent>(event: T, options?: EventEmissionOptions): Promise<void> {
+  async emit<T extends CoordinationEvent>(
+    event: T,
+    options?: EventEmissionOptions,
+  ): Promise<void> {
     const startTime = Date.now();
     const eventId = event.id || this.generateEventId();
 
@@ -497,18 +518,27 @@ export class CoordinationEventAdapter implements IEventManager {
         throw new EventEmissionError(
           this.name,
           eventId,
-          new Error('Invalid coordination event format')
+          new Error('Invalid coordination event format'),
         );
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.config.performance?.coordinationTimeout || 30000;
+      const timeout =
+        options?.timeout ||
+        this.config.performance?.coordinationTimeout ||
+        30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new EventTimeoutError(this.name, timeout, eventId)), timeout);
+        setTimeout(
+          () => reject(new EventTimeoutError(this.name, timeout, eventId)),
+          timeout,
+        );
       });
 
       // Process event emission with timeout
-      const emissionPromise = this.processCoordinationEventEmission(event, options);
+      const emissionPromise = this.processCoordinationEventEmission(
+        event,
+        options,
+      );
       await Promise.race([emissionPromise, timeoutPromise]);
 
       const duration = Date.now() - startTime;
@@ -549,7 +579,8 @@ export class CoordinationEventAdapter implements IEventManager {
         taskId: this.extractTaskId(event),
         coordinationLatency: duration,
         resourceUsage: { cpu: 0, memory: 0, network: 0 },
-        errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
+        errorType:
+          error instanceof Error ? error.constructor.name : 'UnknownError',
         timestamp: new Date(),
       });
 
@@ -557,10 +588,18 @@ export class CoordinationEventAdapter implements IEventManager {
       this.errorCount++;
       this.totalLatency += duration;
 
-      this.eventEmitter.emit('emission', { event, success: false, duration, error });
+      this.eventEmitter.emit('emission', {
+        event,
+        success: false,
+        duration,
+        error,
+      });
       this.eventEmitter.emit('error', error);
 
-      this.logger.error(`Coordination event emission failed for ${event.type}:`, error);
+      this.logger.error(
+        `Coordination event emission failed for ${event.type}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -573,13 +612,13 @@ export class CoordinationEventAdapter implements IEventManager {
    */
   async emitBatch<T extends CoordinationEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const startTime = Date.now();
 
     try {
       this.logger.debug(
-        `Emitting coordination event batch: ${batch.id} (${batch.events.length} events)`
+        `Emitting coordination event batch: ${batch.id} (${batch.events.length} events)`,
       );
 
       // Process events based on strategy
@@ -602,10 +641,13 @@ export class CoordinationEventAdapter implements IEventManager {
 
       const duration = Date.now() - startTime;
       this.logger.debug(
-        `Coordination event batch processed successfully: ${batch.id} in ${duration}ms`
+        `Coordination event batch processed successfully: ${batch.id} in ${duration}ms`,
       );
     } catch (error) {
-      this.logger.error(`Coordination event batch processing failed for ${batch.id}:`, error);
+      this.logger.error(
+        `Coordination event batch processing failed for ${batch.id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -629,7 +671,7 @@ export class CoordinationEventAdapter implements IEventManager {
   subscribe<T extends CoordinationEvent>(
     eventTypes: string | string[],
     listener: EventListener<T>,
-    options?: Partial<EventSubscription<T>>
+    options?: Partial<EventSubscription<T>>,
   ): string {
     const subscriptionId = this.generateSubscriptionId();
     const types = Array.isArray(eventTypes) ? eventTypes : [eventTypes];
@@ -649,7 +691,7 @@ export class CoordinationEventAdapter implements IEventManager {
     this.subscriptions.set(subscriptionId, subscription as EventSubscription);
 
     this.logger.debug(
-      `Created coordination subscription ${subscriptionId} for events: ${types.join(', ')}`
+      `Created coordination subscription ${subscriptionId} for events: ${types.join(', ')}`,
     );
     this.eventEmitter.emit('subscription', { subscriptionId, subscription });
 
@@ -698,7 +740,7 @@ export class CoordinationEventAdapter implements IEventManager {
     }
 
     this.logger.debug(
-      `Removed ${removedCount} coordination subscriptions${eventType ? ` for ${eventType}` : ''}`
+      `Removed ${removedCount} coordination subscriptions${eventType ? ` for ${eventType}` : ''}`,
     );
     return removedCount;
   }
@@ -758,12 +800,16 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param options
    */
-  async query<T extends CoordinationEvent>(options: EventQueryOptions): Promise<T[]> {
+  async query<T extends CoordinationEvent>(
+    options: EventQueryOptions,
+  ): Promise<T[]> {
     let events = [...this.eventHistory] as T[];
 
     // Apply filters
     if (options?.filter) {
-      events = events.filter((event) => this.applyFilter(event, options?.filter!));
+      events = events.filter((event) =>
+        this.applyFilter(event, options?.filter!),
+      );
     }
 
     // Apply sorting
@@ -791,8 +837,13 @@ export class CoordinationEventAdapter implements IEventManager {
    * @param eventType
    * @param limit
    */
-  async getEventHistory(eventType: string, limit?: number): Promise<CoordinationEvent[]> {
-    const events = this.eventHistory.filter((event) => event.type === eventType);
+  async getEventHistory(
+    eventType: string,
+    limit?: number,
+  ): Promise<CoordinationEvent[]> {
+    const events = this.eventHistory.filter(
+      (event) => event.type === eventType,
+    );
     return limit ? events.slice(-limit) : events;
   }
 
@@ -801,8 +852,11 @@ export class CoordinationEventAdapter implements IEventManager {
    */
   async healthCheck(): Promise<EventManagerStatus> {
     const now = new Date();
-    const uptime = this.startTime ? now.getTime() - this.startTime.getTime() : 0;
-    const errorRate = this.eventCount > 0 ? (this.errorCount / this.eventCount) * 100 : 0;
+    const uptime = this.startTime
+      ? now.getTime() - this.startTime.getTime()
+      : 0;
+    const errorRate =
+      this.eventCount > 0 ? (this.errorCount / this.eventCount) * 100 : 0;
 
     // Check coordination component health
     const componentHealth = await this.checkCoordinationComponentHealth();
@@ -837,7 +891,8 @@ export class CoordinationEventAdapter implements IEventManager {
         agentManagers: this.agentManagers.size,
         orchestrators: this.orchestrators.size,
         componentHealth,
-        avgCoordinationLatency: this.eventCount > 0 ? this.totalLatency / this.eventCount : 0,
+        avgCoordinationLatency:
+          this.eventCount > 0 ? this.totalLatency / this.eventCount : 0,
       },
     };
   }
@@ -848,14 +903,18 @@ export class CoordinationEventAdapter implements IEventManager {
   async getMetrics(): Promise<EventManagerMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
-    const avgLatency = this.eventCount > 0 ? this.totalLatency / this.eventCount : 0;
-    const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // events per second
+    const avgLatency =
+      this.eventCount > 0 ? this.totalLatency / this.eventCount : 0;
+    const throughput =
+      recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // events per second
 
     // Calculate percentile latencies
-    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics
+      .map((m) => m.executionTime)
+      .sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
@@ -889,7 +948,9 @@ export class CoordinationEventAdapter implements IEventManager {
    * @param config
    */
   updateConfig(config: Partial<CoordinationEventAdapterConfig>): void {
-    this.logger.info(`Updating configuration for coordination event adapter: ${this.name}`);
+    this.logger.info(
+      `Updating configuration for coordination event adapter: ${this.name}`,
+    );
     Object.assign(this.config, config);
     this.logger.info(`Configuration updated successfully for: ${this.name}`);
   }
@@ -903,12 +964,12 @@ export class CoordinationEventAdapter implements IEventManager {
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
-    handler: (...args: any[]) => void
+    handler: (...args: unknown[]) => void,
   ): void {
     this.eventEmitter.on(event, handler);
   }
 
-  off(event: string, handler?: (...args: any[]) => void): void {
+  off(event: string, handler?: (...args: unknown[]) => void): void {
     if (handler) {
       this.eventEmitter.off(event, handler);
     } else {
@@ -916,7 +977,7 @@ export class CoordinationEventAdapter implements IEventManager {
     }
   }
 
-  once(event: string, handler: (...args: any[]) => void): void {
+  once(event: string, handler: (...args: unknown[]) => void): void {
     this.eventEmitter.once(event, handler);
   }
 
@@ -953,9 +1014,14 @@ export class CoordinationEventAdapter implements IEventManager {
       // Remove all event listeners
       this.eventEmitter.removeAllListeners();
 
-      this.logger.info(`Coordination event adapter destroyed successfully: ${this.name}`);
+      this.logger.info(
+        `Coordination event adapter destroyed successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to destroy coordination event adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to destroy coordination event adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -970,7 +1036,7 @@ export class CoordinationEventAdapter implements IEventManager {
    * @param event
    */
   async emitSwarmCoordinationEvent(
-    event: Omit<CoordinationEvent, 'id' | 'timestamp'>
+    event: Omit<CoordinationEvent, 'id' | 'timestamp'>,
   ): Promise<void> {
     const coordinationEvent: CoordinationEvent = {
       ...event,
@@ -993,7 +1059,9 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeSwarmLifecycleEvents(listener: EventListener<CoordinationEvent>): string {
+  subscribeSwarmLifecycleEvents(
+    listener: EventListener<CoordinationEvent>,
+  ): string {
     return this.subscribe(['coordination:swarm'], listener);
   }
 
@@ -1002,7 +1070,9 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeAgentManagementEvents(listener: EventListener<CoordinationEvent>): string {
+  subscribeAgentManagementEvents(
+    listener: EventListener<CoordinationEvent>,
+  ): string {
     return this.subscribe(['coordination:agent'], listener);
   }
 
@@ -1011,7 +1081,9 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param listener
    */
-  subscribeTaskOrchestrationEvents(listener: EventListener<CoordinationEvent>): string {
+  subscribeTaskOrchestrationEvents(
+    listener: EventListener<CoordinationEvent>,
+  ): string {
     return this.subscribe(['coordination:task'], listener);
   }
 
@@ -1027,7 +1099,9 @@ export class CoordinationEventAdapter implements IEventManager {
   /**
    * Get coordination health status for all components.
    */
-  async getCoordinationHealthStatus(): Promise<Record<string, CoordinationHealthEntry>> {
+  async getCoordinationHealthStatus(): Promise<
+    Record<string, CoordinationHealthEntry>
+  > {
     const healthStatus: Record<string, CoordinationHealthEntry> = {};
 
     for (const [component, health] of this.coordinationHealth.entries()) {
@@ -1042,7 +1116,9 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param correlationId
    */
-  getCoordinationCorrelatedEvents(correlationId: string): CoordinationCorrelation | null {
+  getCoordinationCorrelatedEvents(
+    correlationId: string,
+  ): CoordinationCorrelation | null {
     return this.coordinationCorrelations.get(correlationId) || null;
   }
 
@@ -1050,7 +1126,9 @@ export class CoordinationEventAdapter implements IEventManager {
    * Get active coordination correlations.
    */
   getActiveCoordinationCorrelations(): CoordinationCorrelation[] {
-    return Array.from(this.coordinationCorrelations.values()).filter((c) => c.status === 'active');
+    return Array.from(this.coordinationCorrelations.values()).filter(
+      (c) => c.status === 'active',
+    );
   }
 
   /**
@@ -1058,7 +1136,7 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param swarmId
    */
-  getSwarmMetrics(swarmId?: string): Record<string, any> {
+  getSwarmMetrics(swarmId?: string): Record<string, unknown> {
     if (swarmId) {
       return this.swarmMetrics.get(swarmId) || {};
     }
@@ -1070,7 +1148,7 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param agentId
    */
-  getAgentMetrics(agentId?: string): Record<string, any> {
+  getAgentMetrics(agentId?: string): Record<string, unknown> {
     if (agentId) {
       return this.agentMetrics.get(agentId) || {};
     }
@@ -1082,7 +1160,7 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param taskId
    */
-  getTaskMetrics(taskId?: string): Record<string, any> {
+  getTaskMetrics(taskId?: string): Record<string, unknown> {
     if (taskId) {
       return this.taskMetrics.get(taskId) || {};
     }
@@ -1092,7 +1170,9 @@ export class CoordinationEventAdapter implements IEventManager {
   /**
    * Force health check on all wrapped coordination components.
    */
-  async performCoordinationHealthCheck(): Promise<Record<string, CoordinationHealthEntry>> {
+  async performCoordinationHealthCheck(): Promise<
+    Record<string, CoordinationHealthEntry>
+  > {
     const healthResults: Record<string, CoordinationHealthEntry> = {};
 
     for (const [componentName, wrapped] of this.wrappedComponents.entries()) {
@@ -1106,7 +1186,10 @@ export class CoordinationEventAdapter implements IEventManager {
         let reliability = 1.0;
 
         // Get component-specific health data if available
-        if (wrapped.component && typeof wrapped.component.getMetrics === 'function') {
+        if (
+          wrapped.component &&
+          typeof wrapped.component.getMetrics === 'function'
+        ) {
           const metrics = await wrapped.component.getMetrics();
           coordinationLatency = metrics.averageLatency || 0;
           throughput = metrics.throughput || 0;
@@ -1115,9 +1198,13 @@ export class CoordinationEventAdapter implements IEventManager {
 
         const responseTime = Date.now() - startTime;
         const threshold =
-          this.config.agentHealthMonitoring?.agentHealthThresholds?.[componentName] || 0.8;
+          this.config.agentHealthMonitoring?.agentHealthThresholds?.[
+            componentName
+          ] || 0.8;
         const healthScore =
-          reliability * (coordinationLatency < 100 ? 1 : 0.5) * (throughput > 10 ? 1 : 0.5);
+          reliability *
+          (coordinationLatency < 100 ? 1 : 0.5) *
+          (throughput > 10 ? 1 : 0.5);
 
         const healthEntry: CoordinationHealthEntry = {
           component: componentName,
@@ -1131,7 +1218,8 @@ export class CoordinationEventAdapter implements IEventManager {
           lastCheck: new Date(),
           consecutiveFailures: isHealthy
             ? 0
-            : (this.coordinationHealth.get(componentName)?.consecutiveFailures || 0) + 1,
+            : (this.coordinationHealth.get(componentName)
+                ?.consecutiveFailures || 0) + 1,
           coordinationLatency,
           throughput,
           reliability,
@@ -1164,7 +1252,8 @@ export class CoordinationEventAdapter implements IEventManager {
           status: 'unhealthy',
           lastCheck: new Date(),
           consecutiveFailures:
-            (this.coordinationHealth.get(componentName)?.consecutiveFailures || 0) + 1,
+            (this.coordinationHealth.get(componentName)?.consecutiveFailures ||
+              0) + 1,
           coordinationLatency: 0,
           throughput: 0,
           reliability: 0,
@@ -1212,14 +1301,18 @@ export class CoordinationEventAdapter implements IEventManager {
       await this.wrapProtocolManagers();
     }
 
-    this.logger.debug(`Wrapped ${this.wrappedComponents.size} coordination components`);
+    this.logger.debug(
+      `Wrapped ${this.wrappedComponents.size} coordination components`,
+    );
   }
 
   /**
    * Wrap SwarmCoordinator events with UEL integration.
    */
   private async wrapSwarmCoordinators(): Promise<void> {
-    const coordinators = this.config.swarmCoordination?.coordinators || ['default'];
+    const coordinators = this.config.swarmCoordination?.coordinators || [
+      'default',
+    ];
 
     for (const coordinatorName of coordinators) {
       const wrapper = new EventEmitter();
@@ -1273,7 +1366,10 @@ export class CoordinationEventAdapter implements IEventManager {
         });
       });
 
-      this.wrappedComponents.set(`swarm-coordinator-${coordinatorName}`, wrappedComponent);
+      this.wrappedComponents.set(
+        `swarm-coordinator-${coordinatorName}`,
+        wrappedComponent,
+      );
       this.logger.debug(`Wrapped SwarmCoordinator events: ${coordinatorName}`);
     }
   }
@@ -1333,7 +1429,10 @@ export class CoordinationEventAdapter implements IEventManager {
         };
 
         this.eventEmitter.emit(uelEvent, coordinationEvent);
-        this.updateComponentHealthMetrics('agent-manager', !originalEvent.includes('error'));
+        this.updateComponentHealthMetrics(
+          'agent-manager',
+          !originalEvent.includes('error'),
+        );
       });
     });
 
@@ -1389,7 +1488,10 @@ export class CoordinationEventAdapter implements IEventManager {
         };
 
         this.eventEmitter.emit(uelEvent, coordinationEvent);
-        this.updateComponentHealthMetrics('orchestrator', !originalEvent.includes('Failed'));
+        this.updateComponentHealthMetrics(
+          'orchestrator',
+          !originalEvent.includes('Failed'),
+        );
       });
     });
 
@@ -1438,7 +1540,8 @@ export class CoordinationEventAdapter implements IEventManager {
             source: `${protocolType}-protocol`,
             type: uelEvent as any,
             operation: this.extractCoordinationOperation(originalEvent),
-            targetId: data?.protocolId || data?.agentId || `${protocolType}-protocol`,
+            targetId:
+              data?.protocolId || data?.agentId || `${protocolType}-protocol`,
             priority: this.determineEventPriority(originalEvent),
             correlationId: this.generateCorrelationId(),
             details: {
@@ -1452,7 +1555,7 @@ export class CoordinationEventAdapter implements IEventManager {
           this.eventEmitter.emit(uelEvent, coordinationEvent);
           this.updateComponentHealthMetrics(
             `${protocolType}-protocol`,
-            !originalEvent.includes('error')
+            !originalEvent.includes('error'),
           );
         });
       });
@@ -1481,7 +1584,10 @@ export class CoordinationEventAdapter implements IEventManager {
 
         this.logger.debug(`Unwrapped coordination component: ${componentName}`);
       } catch (error) {
-        this.logger.warn(`Failed to unwrap coordination component ${componentName}:`, error);
+        this.logger.warn(
+          `Failed to unwrap coordination component ${componentName}:`,
+          error,
+        );
       }
     }
 
@@ -1497,7 +1603,7 @@ export class CoordinationEventAdapter implements IEventManager {
    */
   private async processCoordinationEventEmission<T extends CoordinationEvent>(
     event: T,
-    _options?: EventEmissionOptions
+    _options?: EventEmissionOptions,
   ): Promise<void> {
     // Add to event history
     this.eventHistory.push(event);
@@ -1531,20 +1637,31 @@ export class CoordinationEventAdapter implements IEventManager {
 
     // Process subscriptions manually to handle filtering and transformation per subscription
     for (const subscription of this.subscriptions.values()) {
-      if (!subscription.active || !subscription.eventTypes.includes(transformedEvent.type)) {
+      if (
+        !(
+          subscription.active &&
+          subscription.eventTypes.includes(transformedEvent.type)
+        )
+      ) {
         continue;
       }
 
       try {
         // Apply subscription-specific filters
-        if (subscription.filter && !this.applyFilter(transformedEvent, subscription.filter)) {
+        if (
+          subscription.filter &&
+          !this.applyFilter(transformedEvent, subscription.filter)
+        ) {
           continue;
         }
 
         // Apply subscription-specific transforms
         let subscriptionEvent = transformedEvent;
         if (subscription.transform) {
-          subscriptionEvent = await this.applyTransform(transformedEvent, subscription.transform);
+          subscriptionEvent = await this.applyTransform(
+            transformedEvent,
+            subscription.transform,
+          );
         }
 
         // Call the listener
@@ -1552,9 +1669,12 @@ export class CoordinationEventAdapter implements IEventManager {
       } catch (error) {
         this.logger.error(
           `Coordination subscription listener error for ${subscription.id}:`,
-          error
+          error,
         );
-        this.eventEmitter.emit('subscription-error', { subscriptionId: subscription.id, error });
+        this.eventEmitter.emit('subscription-error', {
+          subscriptionId: subscription.id,
+          error,
+        });
       }
     }
 
@@ -1595,7 +1715,8 @@ export class CoordinationEventAdapter implements IEventManager {
    * Start health monitoring for coordination components.
    */
   private startCoordinationHealthMonitoring(): void {
-    const interval = this.config.agentHealthMonitoring?.healthCheckInterval || 30000;
+    const interval =
+      this.config.agentHealthMonitoring?.healthCheckInterval || 30000;
 
     setInterval(async () => {
       try {
@@ -1634,7 +1755,10 @@ export class CoordinationEventAdapter implements IEventManager {
       const now = Date.now();
       const expiredCorrelations: string[] = [];
 
-      for (const [correlationId, correlation] of this.coordinationCorrelations.entries()) {
+      for (const [
+        correlationId,
+        correlation,
+      ] of this.coordinationCorrelations.entries()) {
         if (now - correlation.lastUpdate.getTime() > correlationTTL) {
           expiredCorrelations.push(correlationId);
         }
@@ -1650,7 +1774,7 @@ export class CoordinationEventAdapter implements IEventManager {
 
       if (expiredCorrelations.length > 0) {
         this.logger.debug(
-          `Cleaned up ${expiredCorrelations.length} expired coordination correlations`
+          `Cleaned up ${expiredCorrelations.length} expired coordination correlations`,
         );
       }
     }, cleanupInterval);
@@ -1660,7 +1784,8 @@ export class CoordinationEventAdapter implements IEventManager {
    * Start swarm optimization if enabled.
    */
   private startSwarmOptimization(): void {
-    const interval = this.config.swarmOptimization?.optimizationInterval || 60000;
+    const interval =
+      this.config.swarmOptimization?.optimizationInterval || 60000;
 
     setInterval(async () => {
       if (!this.config.swarmOptimization?.enabled) return;
@@ -1671,7 +1796,8 @@ export class CoordinationEventAdapter implements IEventManager {
 
         // Check if optimization is needed
         for (const [componentName, health] of Object.entries(swarmHealth)) {
-          const thresholds = this.config.swarmOptimization.performanceThresholds;
+          const thresholds =
+            this.config.swarmOptimization.performanceThresholds;
 
           if (
             health.coordinationLatency > thresholds.latency ||
@@ -1715,7 +1841,9 @@ export class CoordinationEventAdapter implements IEventManager {
   private startCoordinationEventCorrelation(event: CoordinationEvent): void {
     const correlationId = event.correlationId || this.generateCorrelationId();
 
-    if (!this.coordinationCorrelations.has(correlationId)) {
+    if (this.coordinationCorrelations.has(correlationId)) {
+      this.updateCoordinationEventCorrelation(event);
+    } else {
       const correlation: CoordinationCorrelation = {
         correlationId,
         events: [event],
@@ -1735,8 +1863,6 @@ export class CoordinationEventAdapter implements IEventManager {
       };
 
       this.coordinationCorrelations.set(correlationId, correlation);
-    } else {
-      this.updateCoordinationEventCorrelation(event);
     }
   }
 
@@ -1767,7 +1893,8 @@ export class CoordinationEventAdapter implements IEventManager {
       }
 
       // Update performance metrics
-      const totalTime = correlation.lastUpdate.getTime() - correlation.startTime.getTime();
+      const totalTime =
+        correlation.lastUpdate.getTime() - correlation.startTime.getTime();
       correlation.performance.totalLatency = totalTime;
       correlation.performance.coordinationEfficiency =
         this.calculateCoordinationEfficiency(correlation);
@@ -1784,7 +1911,9 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param correlation
    */
-  private isCoordinationCorrelationComplete(correlation: CoordinationCorrelation): boolean {
+  private isCoordinationCorrelationComplete(
+    correlation: CoordinationCorrelation,
+  ): boolean {
     const patterns = this.config.coordination?.correlationPatterns || [];
 
     for (const pattern of patterns) {
@@ -1805,13 +1934,20 @@ export class CoordinationEventAdapter implements IEventManager {
    *
    * @param correlation
    */
-  private calculateCoordinationEfficiency(correlation: CoordinationCorrelation): number {
+  private calculateCoordinationEfficiency(
+    correlation: CoordinationCorrelation,
+  ): number {
     const events = correlation.events;
     if (events.length < 2) return 1.0;
 
     // Calculate efficiency based on event timing and success rate
-    const successfulEvents = events.filter((e) => (e.details as any)?.success !== false).length;
-    const timeEfficiency = Math.max(0, 1 - correlation.performance.totalLatency / 60000); // Penalize long correlations
+    const successfulEvents = events.filter(
+      (e) => (e.details as any)?.success !== false,
+    ).length;
+    const timeEfficiency = Math.max(
+      0,
+      1 - correlation.performance.totalLatency / 60000,
+    ); // Penalize long correlations
     const successRate = successfulEvents / events.length;
 
     return (timeEfficiency + successRate) / 2;
@@ -1854,21 +1990,21 @@ export class CoordinationEventAdapter implements IEventManager {
    */
   private async processCoordinationBatchImmediate<T extends CoordinationEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     await Promise.all(batch.events.map((event) => this.emit(event, options)));
   }
 
   private async processCoordinationBatchQueued<T extends CoordinationEvent>(
     batch: EventBatch<T>,
-    _options?: EventEmissionOptions
+    _options?: EventEmissionOptions,
   ): Promise<void> {
     this.eventQueue.push(...(batch.events as CoordinationEvent[]));
   }
 
   private async processCoordinationBatchBatched<T extends CoordinationEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const batchSize = this.config.processing?.batchSize || 50;
 
@@ -1880,7 +2016,7 @@ export class CoordinationEventAdapter implements IEventManager {
 
   private async processCoordinationBatchThrottled<T extends CoordinationEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void> {
     const throttleMs = this.config.processing?.throttleMs || 100;
 
@@ -1918,7 +2054,11 @@ export class CoordinationEventAdapter implements IEventManager {
     }
 
     // Priority filter
-    if (filter.priorities && event.priority && !filter.priorities.includes(event.priority)) {
+    if (
+      filter.priorities &&
+      event.priority &&
+      !filter.priorities.includes(event.priority)
+    ) {
       return false;
     }
 
@@ -1941,7 +2081,7 @@ export class CoordinationEventAdapter implements IEventManager {
 
   private async applyTransform<T extends CoordinationEvent>(
     event: T,
-    transform: EventTransform
+    transform: EventTransform,
   ): Promise<T> {
     let transformedEvent = event;
 
@@ -1957,7 +2097,9 @@ export class CoordinationEventAdapter implements IEventManager {
 
     // Apply validator
     if (transform.validator && !transform.validator(transformedEvent)) {
-      throw new Error(`Coordination event transformation validation failed for ${event.id}`);
+      throw new Error(
+        `Coordination event transformation validation failed for ${event.id}`,
+      );
     }
 
     return transformedEvent;
@@ -1980,24 +2122,35 @@ export class CoordinationEventAdapter implements IEventManager {
     }
   }
 
-  private extractCoordinationOperation(eventType: string): CoordinationEvent['operation'] {
-    if (eventType.includes('init') || eventType.includes('start') || eventType.includes('created'))
+  private extractCoordinationOperation(
+    eventType: string,
+  ): CoordinationEvent['operation'] {
+    if (
+      eventType.includes('init') ||
+      eventType.includes('start') ||
+      eventType.includes('created')
+    )
       return 'init';
-    if (eventType.includes('spawn') || eventType.includes('added')) return 'spawn';
+    if (eventType.includes('spawn') || eventType.includes('added'))
+      return 'spawn';
     if (
       eventType.includes('destroy') ||
       eventType.includes('removed') ||
       eventType.includes('shutdown')
     )
       return 'destroy';
-    if (eventType.includes('assign') || eventType.includes('distribute')) return 'distribute';
+    if (eventType.includes('assign') || eventType.includes('distribute'))
+      return 'distribute';
     if (eventType.includes('complete')) return 'complete';
-    if (eventType.includes('fail') || eventType.includes('error')) return 'fail';
+    if (eventType.includes('fail') || eventType.includes('error'))
+      return 'fail';
     return 'coordinate';
   }
 
-  private extractTargetId(data: any): string {
-    return data?.swarmId || data?.agentId || data?.taskId || data?.id || 'unknown';
+  private extractTargetId(data: unknown): string {
+    return (
+      data?.swarmId || data?.agentId || data?.taskId || data?.id || 'unknown'
+    );
   }
 
   private extractSwarmId(event: CoordinationEvent): string | undefined {
@@ -2031,15 +2184,27 @@ export class CoordinationEventAdapter implements IEventManager {
   }
 
   private determineEventPriority(eventType: string): EventPriority {
-    if (eventType.includes('error') || eventType.includes('fail') || eventType.includes('timeout'))
+    if (
+      eventType.includes('error') ||
+      eventType.includes('fail') ||
+      eventType.includes('timeout')
+    )
       return 'high';
-    if (eventType.includes('start') || eventType.includes('init') || eventType.includes('shutdown'))
+    if (
+      eventType.includes('start') ||
+      eventType.includes('init') ||
+      eventType.includes('shutdown')
+    )
       return 'high';
-    if (eventType.includes('complete') || eventType.includes('success')) return 'medium';
+    if (eventType.includes('complete') || eventType.includes('success'))
+      return 'medium';
     return 'medium';
   }
 
-  private updateComponentHealthMetrics(componentName: string, success: boolean): void {
+  private updateComponentHealthMetrics(
+    componentName: string,
+    success: boolean,
+  ): void {
     const wrapped = this.wrappedComponents.get(componentName);
     if (wrapped) {
       wrapped.healthMetrics.lastSeen = new Date();
@@ -2054,7 +2219,10 @@ export class CoordinationEventAdapter implements IEventManager {
     // Update swarm metrics
     const swarmId = this.extractSwarmId(event);
     if (swarmId && event.type === 'coordination:swarm') {
-      const metrics = this.swarmMetrics.get(swarmId) || { eventCount: 0, lastUpdate: new Date() };
+      const metrics = this.swarmMetrics.get(swarmId) || {
+        eventCount: 0,
+        lastUpdate: new Date(),
+      };
       metrics.eventCount++;
       metrics.lastUpdate = new Date();
       this.swarmMetrics.set(swarmId, metrics);
@@ -2063,7 +2231,10 @@ export class CoordinationEventAdapter implements IEventManager {
     // Update agent metrics
     const agentId = this.extractAgentId(event);
     if (agentId && event.type === 'coordination:agent') {
-      const metrics = this.agentMetrics.get(agentId) || { eventCount: 0, lastUpdate: new Date() };
+      const metrics = this.agentMetrics.get(agentId) || {
+        eventCount: 0,
+        lastUpdate: new Date(),
+      };
       metrics.eventCount++;
       metrics.lastUpdate = new Date();
       this.agentMetrics.set(agentId, metrics);
@@ -2072,7 +2243,10 @@ export class CoordinationEventAdapter implements IEventManager {
     // Update task metrics
     const taskId = this.extractTaskId(event);
     if (taskId && event.type === 'coordination:task') {
-      const metrics = this.taskMetrics.get(taskId) || { eventCount: 0, lastUpdate: new Date() };
+      const metrics = this.taskMetrics.get(taskId) || {
+        eventCount: 0,
+        lastUpdate: new Date(),
+      };
       metrics.eventCount++;
       metrics.lastUpdate = new Date();
       this.taskMetrics.set(taskId, metrics);
@@ -2089,7 +2263,9 @@ export class CoordinationEventAdapter implements IEventManager {
     return this.taskMetrics.size;
   }
 
-  private recordCoordinationEventMetrics(metrics: CoordinationEventMetrics): void {
+  private recordCoordinationEventMetrics(
+    metrics: CoordinationEventMetrics,
+  ): void {
     if (!this.config.performance?.enablePerformanceTracking) {
       return;
     }
@@ -2167,7 +2343,7 @@ export class CoordinationEventAdapter implements IEventManager {
  * @example
  */
 export function createCoordinationEventAdapter(
-  config: CoordinationEventAdapterConfig
+  config: CoordinationEventAdapterConfig,
 ): CoordinationEventAdapter {
   return new CoordinationEventAdapter(config);
 }
@@ -2181,7 +2357,7 @@ export function createCoordinationEventAdapter(
  */
 export function createDefaultCoordinationEventAdapterConfig(
   name: string,
-  overrides?: Partial<CoordinationEventAdapterConfig>
+  overrides?: Partial<CoordinationEventAdapterConfig>,
 ): CoordinationEventAdapterConfig {
   return {
     name,
@@ -2309,7 +2485,7 @@ export const CoordinationEventHelpers = {
   createSwarmInitEvent(
     swarmId: string,
     topology: string,
-    details?: any
+    details?: any,
   ): Omit<CoordinationEvent, 'id' | 'timestamp'> {
     return {
       source: 'swarm-coordinator',
@@ -2334,7 +2510,7 @@ export const CoordinationEventHelpers = {
   createAgentSpawnEvent(
     agentId: string,
     swarmId: string,
-    details?: any
+    details?: any,
   ): Omit<CoordinationEvent, 'id' | 'timestamp'> {
     return {
       source: 'agent-manager',
@@ -2359,7 +2535,7 @@ export const CoordinationEventHelpers = {
   createTaskDistributionEvent(
     taskId: string,
     assignedTo: string[],
-    details?: any
+    details?: any,
   ): Omit<CoordinationEvent, 'id' | 'timestamp'> {
     return {
       source: 'orchestrator',
@@ -2384,7 +2560,7 @@ export const CoordinationEventHelpers = {
   createTopologyChangeEvent(
     swarmId: string,
     topology: string,
-    details?: any
+    details?: any,
   ): Omit<CoordinationEvent, 'id' | 'timestamp'> {
     return {
       source: 'topology-manager',
@@ -2411,7 +2587,7 @@ export const CoordinationEventHelpers = {
     component: string,
     targetId: string,
     error: Error,
-    details?: any
+    details?: any,
   ): Omit<CoordinationEvent, 'id' | 'timestamp'> {
     return {
       source: component,

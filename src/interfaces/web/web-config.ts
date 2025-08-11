@@ -8,6 +8,8 @@
  * @file Interface implementation: web-config.
  */
 
+import type { DIContainer } from '../../di/index.js';
+
 export interface WebConfig {
   port?: number;
   host?: string;
@@ -22,6 +24,7 @@ export interface WebConfig {
   theme?: 'dark' | 'light';
   realTime?: boolean;
   coreSystem?: any; // Reference to core system/orchestrator
+  container?: DIContainer; // DI container for enhanced architecture
 }
 
 export interface WebSession {
@@ -39,7 +42,9 @@ export interface WebSession {
 /**
  * Default web configuration.
  */
-export const DEFAULT_WEB_CONFIG: Required<Omit<WebConfig, 'auth' | 'coreSystem'>> & {
+export const DEFAULT_WEB_CONFIG: Required<
+  Omit<WebConfig, 'auth' | 'coreSystem'>
+> & {
   auth: WebConfig['auth'];
   coreSystem?: any;
 } = {

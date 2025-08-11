@@ -35,7 +35,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
       },
       undefined,
       undefined,
-      gatesManager
+      gatesManager,
     );
 
     // Create mock memory system
@@ -54,10 +54,10 @@ describe('ProductWorkflowEngine Gates Integration', () => {
       getBackend: vi.fn().mockReturnValue('memory'),
       getMetrics: vi.fn().mockReturnValue({}),
       updateConfig: vi.fn().mockResolvedValue(undefined),
-      validateConfig: vi.fn().mockReturnValue(true)
+      validateConfig: vi.fn().mockReturnValue(true),
     };
 
-    // Create mock document manager  
+    // Create mock document manager
     const mockDocumentManager = {
       initialize: vi.fn().mockResolvedValue(undefined),
       shutdown: vi.fn().mockResolvedValue(undefined),
@@ -65,7 +65,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
       update: vi.fn().mockResolvedValue({}),
       delete: vi.fn().mockResolvedValue(true),
       findById: vi.fn().mockResolvedValue({}),
-      findAll: vi.fn().mockResolvedValue([])
+      findAll: vi.fn().mockResolvedValue([]),
     };
 
     productEngine = new ProductWorkflowEngine(
@@ -73,7 +73,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
       mockDocumentManager as any,
       eventBus,
       undefined, // aguiAdapter
-      {} // config
+      {}, // config
     );
 
     await gatesManager.initialize();
@@ -98,29 +98,33 @@ describe('ProductWorkflowEngine Gates Integration', () => {
         constraints: ['Budget: $100k', 'Timeline: 6 months'],
       };
 
-      const result = await productEngine.startProductWorkflow('complete-product-flow', visionContext, {
-        enableGates: true,
-        gateConfiguration: {
-          visionAnalysis: {
-            enabled: true,
-            businessImpact: 'high',
-            stakeholders: ['product-manager', 'business-stakeholder'],
-            autoApproval: false,
-          },
-          marketAnalysis: {
-            enabled: true,
-            businessImpact: 'medium',
-            stakeholders: ['market-analyst'],
-            autoApproval: true,
-          },
-          prdCreation: {
-            enabled: true,
-            businessImpact: 'high',
-            stakeholders: ['technical-lead', 'product-manager'],
-            autoApproval: false,
+      const result = await productEngine.startProductWorkflow(
+        'complete-product-flow',
+        visionContext,
+        {
+          enableGates: true,
+          gateConfiguration: {
+            visionAnalysis: {
+              enabled: true,
+              businessImpact: 'high',
+              stakeholders: ['product-manager', 'business-stakeholder'],
+              autoApproval: false,
+            },
+            marketAnalysis: {
+              enabled: true,
+              businessImpact: 'medium',
+              stakeholders: ['market-analyst'],
+              autoApproval: true,
+            },
+            prdCreation: {
+              enabled: true,
+              businessImpact: 'high',
+              stakeholders: ['technical-lead', 'product-manager'],
+              autoApproval: false,
+            },
           },
         },
-      });
+      );
 
       expect(result.success).toBe(true);
       expect(result.workflowId).toBeDefined();
@@ -147,10 +151,12 @@ describe('ProductWorkflowEngine Gates Integration', () => {
             await workflowEngine.resumeWorkflowAfterGate(
               workflowId,
               gateStatus.pausedForGate.gateId,
-              true
+              true,
             );
           }
-        } else if (['completed', 'failed'].includes(workflowStatus?.status || '')) {
+        } else if (
+          ['completed', 'failed'].includes(workflowStatus?.status || '')
+        ) {
           break;
         }
 
@@ -177,17 +183,21 @@ describe('ProductWorkflowEngine Gates Integration', () => {
         constraints: ['No constraints defined'],
       };
 
-      const result = await productEngine.startProductWorkflow('complete-product-flow', visionContext, {
-        enableGates: true,
-        gateConfiguration: {
-          visionAnalysis: {
-            enabled: true,
-            businessImpact: 'critical',
-            stakeholders: ['executive'],
-            autoApproval: false,
+      const result = await productEngine.startProductWorkflow(
+        'complete-product-flow',
+        visionContext,
+        {
+          enableGates: true,
+          gateConfiguration: {
+            visionAnalysis: {
+              enabled: true,
+              businessImpact: 'critical',
+              stakeholders: ['executive'],
+              autoApproval: false,
+            },
           },
         },
-      });
+      );
 
       expect(result.success).toBe(true);
 
@@ -206,7 +216,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
         await workflowEngine.resumeWorkflowAfterGate(
           workflowId,
           gateStatus.pausedForGate.gateId,
-          false
+          false,
         );
 
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -236,29 +246,33 @@ describe('ProductWorkflowEngine Gates Integration', () => {
         },
       };
 
-      const result = await productEngine.startProductWorkflow('complete-product-flow', epicContext, {
-        enableGates: true,
-        gateConfiguration: {
-          architectureReview: {
-            enabled: true,
-            businessImpact: 'high',
-            stakeholders: ['lead-architect', 'senior-engineer'],
-            autoApproval: false,
-          },
-          technicalFeasibility: {
-            enabled: true,
-            businessImpact: 'high',
-            stakeholders: ['technical-lead'],
-            autoApproval: false,
-          },
-          epicValidation: {
-            enabled: true,
-            businessImpact: 'medium',
-            stakeholders: ['product-manager'],
-            autoApproval: true,
+      const result = await productEngine.startProductWorkflow(
+        'complete-product-flow',
+        epicContext,
+        {
+          enableGates: true,
+          gateConfiguration: {
+            architectureReview: {
+              enabled: true,
+              businessImpact: 'high',
+              stakeholders: ['lead-architect', 'senior-engineer'],
+              autoApproval: false,
+            },
+            technicalFeasibility: {
+              enabled: true,
+              businessImpact: 'high',
+              stakeholders: ['technical-lead'],
+              autoApproval: false,
+            },
+            epicValidation: {
+              enabled: true,
+              businessImpact: 'medium',
+              stakeholders: ['product-manager'],
+              autoApproval: true,
+            },
           },
         },
-      });
+      );
 
       expect(result.success).toBe(true);
 
@@ -272,7 +286,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
       let attempts = 0;
       while (attempts < 25) {
         await new Promise((resolve) => setTimeout(resolve, 100));
-        
+
         const gateStatus = workflowEngine.getWorkflowGateStatus(workflowId);
         const workflowStatus = workflowEngine.getWorkflowStatus(workflowId);
 
@@ -280,9 +294,11 @@ describe('ProductWorkflowEngine Gates Integration', () => {
           await workflowEngine.resumeWorkflowAfterGate(
             workflowId,
             gateStatus.pausedForGate.gateId,
-            true
+            true,
           );
-        } else if (['completed', 'failed'].includes(workflowStatus?.status || '')) {
+        } else if (
+          ['completed', 'failed'].includes(workflowStatus?.status || '')
+        ) {
           break;
         }
 
@@ -293,7 +309,8 @@ describe('ProductWorkflowEngine Gates Integration', () => {
 
       logger.info('Epic creation with gates completed', {
         gateResults: finalGateStatus.gateResults.length,
-        approvedGates: finalGateStatus.gateResults.filter((g) => g.approved).length,
+        approvedGates: finalGateStatus.gateResults.filter((g) => g.approved)
+          .length,
       });
 
       expect(finalGateStatus.gateResults.length).toBeGreaterThan(0);
@@ -323,66 +340,70 @@ describe('ProductWorkflowEngine Gates Integration', () => {
         },
       };
 
-      const result = await productEngine.startProductWorkflow('complete-product-flow', fullProductContext, {
-        enableGates: true,
-        gateConfiguration: {
-          // Strategic gates
-          visionApproval: {
-            enabled: true,
-            businessImpact: 'critical',
-            stakeholders: ['ceo', 'product-director'],
-            autoApproval: false,
-          },
-          marketValidation: {
-            enabled: true,
-            businessImpact: 'high',
-            stakeholders: ['market-analyst', 'sales-director'],
-            autoApproval: false,
-          },
+      const result = await productEngine.startProductWorkflow(
+        'complete-product-flow',
+        fullProductContext,
+        {
+          enableGates: true,
+          gateConfiguration: {
+            // Strategic gates
+            visionApproval: {
+              enabled: true,
+              businessImpact: 'critical',
+              stakeholders: ['ceo', 'product-director'],
+              autoApproval: false,
+            },
+            marketValidation: {
+              enabled: true,
+              businessImpact: 'high',
+              stakeholders: ['market-analyst', 'sales-director'],
+              autoApproval: false,
+            },
 
-          // Technical gates
-          architectureApproval: {
-            enabled: true,
-            businessImpact: 'high',
-            stakeholders: ['cto', 'lead-architect'],
-            autoApproval: false,
-          },
-          securityReview: {
-            enabled: true,
-            businessImpact: 'critical',
-            stakeholders: ['security-officer', 'compliance-lead'],
-            autoApproval: false,
-          },
+            // Technical gates
+            architectureApproval: {
+              enabled: true,
+              businessImpact: 'high',
+              stakeholders: ['cto', 'lead-architect'],
+              autoApproval: false,
+            },
+            securityReview: {
+              enabled: true,
+              businessImpact: 'critical',
+              stakeholders: ['security-officer', 'compliance-lead'],
+              autoApproval: false,
+            },
 
-          // Quality gates
-          testStrategy: {
-            enabled: true,
-            businessImpact: 'medium',
-            stakeholders: ['qa-director'],
-            autoApproval: true,
-          },
-          performanceValidation: {
-            enabled: true,
-            businessImpact: 'high',
-            stakeholders: ['performance-engineer'],
-            autoApproval: false,
-          },
+            // Quality gates
+            testStrategy: {
+              enabled: true,
+              businessImpact: 'medium',
+              stakeholders: ['qa-director'],
+              autoApproval: true,
+            },
+            performanceValidation: {
+              enabled: true,
+              businessImpact: 'high',
+              stakeholders: ['performance-engineer'],
+              autoApproval: false,
+            },
 
-          // Business gates
-          budgetApproval: {
-            enabled: true,
-            businessImpact: 'critical',
-            stakeholders: ['cfo', 'budget-manager'],
-            autoApproval: false,
-          },
-          launchReadiness: {
-            enabled: true,
-            businessImpact: 'critical',
-            stakeholders: ['product-director', 'engineering-director'],
-            autoApproval: false,
+            // Business gates
+            budgetApproval: {
+              enabled: true,
+              businessImpact: 'critical',
+              stakeholders: ['cfo', 'budget-manager'],
+              autoApproval: false,
+            },
+            launchReadiness: {
+              enabled: true,
+              businessImpact: 'critical',
+              stakeholders: ['product-director', 'engineering-director'],
+              autoApproval: false,
+            },
           },
         },
-      });
+      );
 
       expect(result.success).toBe(true);
 
@@ -405,15 +426,19 @@ describe('ProductWorkflowEngine Gates Integration', () => {
 
         if (gateStatus.pausedForGate) {
           gateCount++;
-          logger.info(`Processing gate ${gateCount}: ${gateStatus.pausedForGate.gateId}`);
+          logger.info(
+            `Processing gate ${gateCount}: ${gateStatus.pausedForGate.gateId}`,
+          );
 
           // Approve gates (simulate stakeholder approval)
           await workflowEngine.resumeWorkflowAfterGate(
             workflowId,
             gateStatus.pausedForGate.gateId,
-            true
+            true,
           );
-        } else if (['completed', 'failed'].includes(workflowStatus?.status || '')) {
+        } else if (
+          ['completed', 'failed'].includes(workflowStatus?.status || '')
+        ) {
           logger.info('Workflow reached final status:', workflowStatus?.status);
           break;
         }
@@ -427,7 +452,8 @@ describe('ProductWorkflowEngine Gates Integration', () => {
       logger.info('Comprehensive product flow completed', {
         finalStatus: finalWorkflowStatus?.status,
         totalGates: finalGateStatus.gateResults.length,
-        approvedGates: finalGateStatus.gateResults.filter((g) => g.approved).length,
+        approvedGates: finalGateStatus.gateResults.filter((g) => g.approved)
+          .length,
         gatesProcessed: gateCount,
         attemptsUsed: attempts,
       });
@@ -436,7 +462,9 @@ describe('ProductWorkflowEngine Gates Integration', () => {
       expect(finalGateStatus.gateResults.length).toBeGreaterThan(0);
 
       // All processed gates should be approved
-      const approvedGates = finalGateStatus.gateResults.filter((g) => g.approved);
+      const approvedGates = finalGateStatus.gateResults.filter(
+        (g) => g.approved,
+      );
       expect(approvedGates.length).toBe(finalGateStatus.gateResults.length);
     });
   });
@@ -452,14 +480,30 @@ describe('ProductWorkflowEngine Gates Integration', () => {
         integrations: Array.from({ length: 3 }, (_, i) => `integration-${i}`),
       };
 
-      const result = await productEngine.startProductWorkflow('complete-product-flow', performanceContext, {
-        enableGates: true,
-        gateConfiguration: {
-          performanceGate1: { enabled: true, businessImpact: 'medium', autoApproval: true },
-          performanceGate2: { enabled: true, businessImpact: 'medium', autoApproval: true },
-          performanceGate3: { enabled: true, businessImpact: 'low', autoApproval: true },
+      const result = await productEngine.startProductWorkflow(
+        'complete-product-flow',
+        performanceContext,
+        {
+          enableGates: true,
+          gateConfiguration: {
+            performanceGate1: {
+              enabled: true,
+              businessImpact: 'medium',
+              autoApproval: true,
+            },
+            performanceGate2: {
+              enabled: true,
+              businessImpact: 'medium',
+              autoApproval: true,
+            },
+            performanceGate3: {
+              enabled: true,
+              businessImpact: 'low',
+              autoApproval: true,
+            },
+          },
         },
-      });
+      );
 
       expect(result.success).toBe(true);
 

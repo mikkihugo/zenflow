@@ -20,7 +20,10 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type { MultiLevelOrchestrationManager } from '../orchestration/multi-level-orchestration-manager.ts';
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator.ts';
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator.ts';
@@ -101,7 +104,13 @@ export interface FlowTrigger {
  * Trigger condition
  */
 export interface TriggerCondition {
-  readonly type: 'metric' | 'threshold' | 'trend' | 'anomaly' | 'time' | 'composite';
+  readonly type:
+    | 'metric'
+    | 'threshold'
+    | 'trend'
+    | 'anomaly'
+    | 'time'
+    | 'composite';
   readonly metric?: string;
   readonly operator?: 'gt' | 'lt' | 'eq' | 'gte' | 'lte' | 'neq';
   readonly threshold?: number;
@@ -116,8 +125,14 @@ export interface TriggerCondition {
  * Trigger action
  */
 export interface TriggerAction {
-  readonly type: 'adjust-wip' | 'rebalance' | 'alert' | 'escalate' | 'optimize' | 'analyze';
-  readonly parameters: Record<string, any>;
+  readonly type:
+    | 'adjust-wip'
+    | 'rebalance'
+    | 'alert'
+    | 'escalate'
+    | 'optimize'
+    | 'analyze';
+  readonly parameters: Record<string, unknown>;
   readonly automatic: boolean;
   readonly approvalRequired: boolean;
   readonly rollbackConditions?: TriggerCondition[];
@@ -157,7 +172,14 @@ export interface FlowState {
  */
 export interface FlowWorkItem {
   readonly itemId: string;
-  readonly type: 'epic' | 'feature' | 'story' | 'task' | 'bug' | 'spike' | 'enabler';
+  readonly type:
+    | 'epic'
+    | 'feature'
+    | 'story'
+    | 'task'
+    | 'bug'
+    | 'spike'
+    | 'enabler';
   readonly priority: 'low' | 'medium' | 'high' | 'critical' | 'expedite';
   readonly status: FlowItemStatus;
   readonly stage: FlowStage;
@@ -171,7 +193,7 @@ export interface FlowWorkItem {
   readonly dependencies: string[];
   readonly assignedAgents: string[];
   readonly tags: string[];
-  readonly metadata: Record<string, any>;
+  readonly metadata: Record<string, unknown>;
 }
 
 /**
@@ -205,7 +227,13 @@ export enum FlowStage {
  */
 export interface FlowBlocker {
   readonly blockerId: string;
-  readonly type: 'dependency' | 'resource' | 'decision' | 'technical' | 'external' | 'process';
+  readonly type:
+    | 'dependency'
+    | 'resource'
+    | 'decision'
+    | 'technical'
+    | 'external'
+    | 'process';
   readonly description: string;
   readonly impact: 'low' | 'medium' | 'high' | 'critical';
   readonly blockedSince: Date;
@@ -393,7 +421,13 @@ export interface CustomerValueMetrics {
 export interface FlowBottleneck {
   readonly bottleneckId: string;
   readonly stage: FlowStage;
-  readonly type: 'capacity' | 'dependency' | 'quality' | 'process' | 'resource' | 'external';
+  readonly type:
+    | 'capacity'
+    | 'dependency'
+    | 'quality'
+    | 'process'
+    | 'resource'
+    | 'external';
   readonly severity: 'minor' | 'moderate' | 'major' | 'critical';
   readonly impact: BottleneckImpact;
   readonly duration: number; // milliseconds
@@ -463,7 +497,13 @@ export interface ImplementationStep {
 export interface FlowHealthIndicator {
   readonly indicatorId: string;
   readonly name: string;
-  readonly category: 'flow' | 'quality' | 'predictability' | 'value' | 'cost' | 'risk';
+  readonly category:
+    | 'flow'
+    | 'quality'
+    | 'predictability'
+    | 'value'
+    | 'cost'
+    | 'risk';
   readonly value: number;
   readonly target: number;
   readonly threshold: number;
@@ -479,8 +519,18 @@ export interface FlowHealthIndicator {
  */
 export interface PredictiveInsight {
   readonly insightId: string;
-  readonly type: 'forecast' | 'anomaly' | 'optimization' | 'risk' | 'opportunity';
-  readonly category: 'throughput' | 'quality' | 'delivery' | 'cost' | 'capacity';
+  readonly type:
+    | 'forecast'
+    | 'anomaly'
+    | 'optimization'
+    | 'risk'
+    | 'opportunity';
+  readonly category:
+    | 'throughput'
+    | 'quality'
+    | 'delivery'
+    | 'cost'
+    | 'capacity';
   readonly description: string;
   readonly confidence: number; // 0-1
   readonly timeframe: number; // days into future
@@ -510,7 +560,11 @@ export interface PredictiveDataPoint {
  */
 export interface FlowRecommendation {
   readonly recommendationId: string;
-  readonly type: 'wip-adjustment' | 'rebalancing' | 'optimization' | 'process-improvement';
+  readonly type:
+    | 'wip-adjustment'
+    | 'rebalancing'
+    | 'optimization'
+    | 'process-improvement';
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
   readonly title: string;
   readonly description: string;
@@ -553,10 +607,15 @@ export interface RecommendationImplementation {
  * Machine learning model configuration
  */
 export interface MLModelConfig {
-  readonly modelType: 'regression' | 'classification' | 'timeseries' | 'clustering' | 'neural';
+  readonly modelType:
+    | 'regression'
+    | 'classification'
+    | 'timeseries'
+    | 'clustering'
+    | 'neural';
   readonly features: string[];
   readonly target: string;
-  readonly hyperparameters: Record<string, any>;
+  readonly hyperparameters: Record<string, unknown>;
   readonly trainingData: MLTrainingData;
   readonly validationSplit: number; // 0-1
   readonly crossValidation: number; // folds
@@ -632,9 +691,13 @@ export interface AdvancedFlowManagerState {
 export interface OptimizationAction {
   readonly actionId: string;
   readonly timestamp: Date;
-  readonly type: 'wip-adjustment' | 'rebalancing' | 'process-change' | 'resource-reallocation';
+  readonly type:
+    | 'wip-adjustment'
+    | 'rebalancing'
+    | 'process-change'
+    | 'resource-reallocation';
   readonly description: string;
-  readonly parameters: Record<string, any>;
+  readonly parameters: Record<string, unknown>;
   readonly trigger: string;
   readonly expectedImpact: ExpectedBenefit;
   readonly actualImpact?: ActualBenefit;
@@ -686,7 +749,7 @@ export class AdvancedFlowManager extends EventEmitter {
     portfolioOrchestrator: PortfolioOrchestrator,
     programOrchestrator: ProgramOrchestrator,
     swarmOrchestrator: SwarmExecutionOrchestrator,
-    config: Partial<AdvancedFlowManagerConfig> = {}
+    config: Partial<AdvancedFlowManagerConfig> = {},
   ) {
     super();
 
@@ -777,7 +840,9 @@ export class AdvancedFlowManager extends EventEmitter {
       this.logger.info('Advanced Flow Manager initialized successfully');
       this.emit('initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize Advanced Flow Manager', { error });
+      this.logger.error('Failed to initialize Advanced Flow Manager', {
+        error,
+      });
       throw error;
     }
   }
@@ -817,16 +882,28 @@ export class AdvancedFlowManager extends EventEmitter {
     // Use ML model if available for WIP optimization
     let optimalLimits: WIPLimits;
     if (this.config.enableMachineLearning) {
-      optimalLimits = await this.calculateMLOptimizedWIPLimits(currentMetrics, historicalData);
+      optimalLimits = await this.calculateMLOptimizedWIPLimits(
+        currentMetrics,
+        historicalData,
+      );
     } else {
-      optimalLimits = await this.calculateHeuristicWIPLimits(currentMetrics, historicalData);
+      optimalLimits = await this.calculateHeuristicWIPLimits(
+        currentMetrics,
+        historicalData,
+      );
     }
 
     // Generate optimization triggers
-    const triggers = await this.generateOptimizationTriggers(currentMetrics, optimalLimits);
+    const triggers = await this.generateOptimizationTriggers(
+      currentMetrics,
+      optimalLimits,
+    );
 
     // Calculate confidence based on data quality and model accuracy
-    const confidence = await this.calculateWIPConfidence(currentMetrics, historicalData);
+    const confidence = await this.calculateWIPConfidence(
+      currentMetrics,
+      historicalData,
+    );
 
     const intelligentLimits: IntelligentWIPLimits = {
       current: this.state.wipLimits?.current || this.config.defaultWIPLimits,
@@ -834,10 +911,14 @@ export class AdvancedFlowManager extends EventEmitter {
       historical: this.getHistoricalWIPLimits(),
       adaptationRate: this.config.adaptationRate,
       optimizationTriggers: triggers,
-      performanceThresholds: Array.from(this.state.performanceThresholds.values()),
+      performanceThresholds: Array.from(
+        this.state.performanceThresholds.values(),
+      ),
       confidence,
       lastCalculation: new Date(),
-      nextCalculation: new Date(Date.now() + this.config.wipCalculationInterval),
+      nextCalculation: new Date(
+        Date.now() + this.config.wipCalculationInterval,
+      ),
     };
 
     // Update state
@@ -873,43 +954,43 @@ export class AdvancedFlowManager extends EventEmitter {
       backlog: this.calculateGradualAdjustment(
         currentLimits.backlog,
         optimalLimits.backlog,
-        adaptationRate
+        adaptationRate,
       ),
       analysis: this.calculateGradualAdjustment(
         currentLimits.analysis,
         optimalLimits.analysis,
-        adaptationRate
+        adaptationRate,
       ),
       development: this.calculateGradualAdjustment(
         currentLimits.development,
         optimalLimits.development,
-        adaptationRate
+        adaptationRate,
       ),
       testing: this.calculateGradualAdjustment(
         currentLimits.testing,
         optimalLimits.testing,
-        adaptationRate
+        adaptationRate,
       ),
       review: this.calculateGradualAdjustment(
         currentLimits.review,
         optimalLimits.review,
-        adaptationRate
+        adaptationRate,
       ),
       deployment: this.calculateGradualAdjustment(
         currentLimits.deployment,
         optimalLimits.deployment,
-        adaptationRate
+        adaptationRate,
       ),
       done: currentLimits.done, // Usually unlimited
       blocked: this.calculateGradualAdjustment(
         currentLimits.blocked,
         optimalLimits.blocked,
-        adaptationRate
+        adaptationRate,
       ),
       expedite: this.calculateGradualAdjustment(
         currentLimits.expedite,
         optimalLimits.expedite,
-        adaptationRate
+        adaptationRate,
       ),
       total: 0, // Will be recalculated
     };
@@ -934,7 +1015,10 @@ export class AdvancedFlowManager extends EventEmitter {
         adaptationRate,
       },
       trigger: 'intelligent-calculation',
-      expectedImpact: await this.calculateExpectedWIPImpact(currentLimits, adjustedLimits),
+      expectedImpact: await this.calculateExpectedWIPImpact(
+        currentLimits,
+        adjustedLimits,
+      ),
       success: true, // Will be validated later
       rollbackRequired: false,
     };
@@ -945,7 +1029,10 @@ export class AdvancedFlowManager extends EventEmitter {
       adjustments: this.calculateWIPDifferences(currentLimits, adjustedLimits),
     });
 
-    this.emit('wip-adjusted', { previous: currentLimits, current: adjustedLimits });
+    this.emit('wip-adjusted', {
+      previous: currentLimits,
+      current: adjustedLimits,
+    });
   }
 
   /**
@@ -973,7 +1060,7 @@ export class AdvancedFlowManager extends EventEmitter {
           recommendedActions: await this.generateViolationRecommendations(
             stage as FlowStage,
             current,
-            limit
+            limit,
           ),
           autoResolution: current - limit <= 2, // Auto-resolve minor violations
         };
@@ -1040,7 +1127,9 @@ export class AdvancedFlowManager extends EventEmitter {
 
     // Keep only recent history (last 24 hours)
     const cutoffTime = new Date(timestamp.getTime() - 24 * 60 * 60 * 1000);
-    this.state.flowHistory = this.state.flowHistory.filter((state) => state.timestamp > cutoffTime);
+    this.state.flowHistory = this.state.flowHistory.filter(
+      (state) => state.timestamp > cutoffTime,
+    );
 
     this.logger.debug('Flow state updated', {
       workItems: workItems.length,
@@ -1135,7 +1224,8 @@ export class AdvancedFlowManager extends EventEmitter {
             : 'critical',
       trend: this.calculateValueTrend(metrics),
       lastUpdated: new Date(),
-      description: 'How well delivered features realize expected customer value',
+      description:
+        'How well delivered features realize expected customer value',
       actionRequired: metrics.customer.valueRealizationRate < 0.7,
     });
 
@@ -1155,7 +1245,8 @@ export class AdvancedFlowManager extends EventEmitter {
     const historicalData = this.state.flowHistory.slice(-168); // Last week
 
     // Throughput forecast
-    const throughputForecast = await this.generateThroughputForecast(historicalData);
+    const throughputForecast =
+      await this.generateThroughputForecast(historicalData);
     insights.push({
       insightId: 'throughput-forecast-7d',
       type: 'forecast',
@@ -1165,7 +1256,7 @@ export class AdvancedFlowManager extends EventEmitter {
       timeframe: 7,
       impact: this.calculateForecastImpact(
         throughputForecast.predicted,
-        currentMetrics.throughput.itemsPerDay
+        currentMetrics.throughput.itemsPerDay,
       ),
       recommendation: this.generateThroughputRecommendation(throughputForecast),
       dataPoints: throughputForecast.dataPoints,
@@ -1202,7 +1293,8 @@ export class AdvancedFlowManager extends EventEmitter {
         confidence: qualityAnomaly.confidence,
         timeframe: 1,
         impact: 'medium',
-        recommendation: 'Investigate recent process changes and review quality gates',
+        recommendation:
+          'Investigate recent process changes and review quality gates',
         dataPoints: qualityAnomaly.dataPoints,
         modelUsed: 'anomaly-detection',
         generatedAt: new Date(),
@@ -1234,15 +1326,21 @@ export class AdvancedFlowManager extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('advanced-flow-manager:state');
+      const persistedState = await this.memory.retrieve(
+        'advanced-flow-manager:state',
+      );
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
           flowTriggers: new Map(persistedState.flowTriggers || []),
-          performanceThresholds: new Map(persistedState.performanceThresholds || []),
+          performanceThresholds: new Map(
+            persistedState.performanceThresholds || [],
+          ),
           mlModels: new Map(persistedState.mlModels || []),
-          activeRecommendations: new Map(persistedState.activeRecommendations || []),
+          activeRecommendations: new Map(
+            persistedState.activeRecommendations || [],
+          ),
         };
         this.logger.info('Advanced Flow Manager state loaded');
       }
@@ -1256,9 +1354,13 @@ export class AdvancedFlowManager extends EventEmitter {
       const stateToSerialize = {
         ...this.state,
         flowTriggers: Array.from(this.state.flowTriggers.entries()),
-        performanceThresholds: Array.from(this.state.performanceThresholds.entries()),
+        performanceThresholds: Array.from(
+          this.state.performanceThresholds.entries(),
+        ),
         mlModels: Array.from(this.state.mlModels.entries()),
-        activeRecommendations: Array.from(this.state.activeRecommendations.entries()),
+        activeRecommendations: Array.from(
+          this.state.activeRecommendations.entries(),
+        ),
       };
 
       await this.memory.store('advanced-flow-manager:state', stateToSerialize);
@@ -1378,7 +1480,7 @@ export class AdvancedFlowManager extends EventEmitter {
     return {} as FlowMetrics;
   }
 
-  private async getHistoricalPerformanceData(): Promise<any> {
+  private async getHistoricalPerformanceData(): Promise<unknown> {
     // Placeholder - would get historical data
     return {};
   }
@@ -1386,39 +1488,51 @@ export class AdvancedFlowManager extends EventEmitter {
   // Additional placeholder methods would continue...
   private async calculateMLOptimizedWIPLimits(
     metrics: FlowMetrics,
-    historical: any
+    historical: unknown,
   ): Promise<WIPLimits> {
     return this.config.defaultWIPLimits;
   }
   private async calculateHeuristicWIPLimits(
     metrics: FlowMetrics,
-    historical: any
+    historical: unknown,
   ): Promise<WIPLimits> {
     return this.config.defaultWIPLimits;
   }
   private async generateOptimizationTriggers(
     metrics: FlowMetrics,
-    limits: WIPLimits
+    limits: WIPLimits,
   ): Promise<FlowTrigger[]> {
     return [];
   }
-  private async calculateWIPConfidence(metrics: FlowMetrics, historical: any): Promise<number> {
+  private async calculateWIPConfidence(
+    metrics: FlowMetrics,
+    historical: unknown,
+  ): Promise<number> {
     return 0.8;
   }
   private getHistoricalWIPLimits(): WIPLimits[] {
     return [];
   }
-  private calculateGradualAdjustment(current: number, optimal: number, rate: number): number {
+  private calculateGradualAdjustment(
+    current: number,
+    optimal: number,
+    rate: number,
+  ): number {
     return Math.round(current + (optimal - current) * rate);
   }
-  private async updateOrchestratorsWIPLimits(limits: WIPLimits): Promise<void> {}
+  private async updateOrchestratorsWIPLimits(
+    limits: WIPLimits,
+  ): Promise<void> {}
   private async calculateExpectedWIPImpact(
     current: WIPLimits,
-    new_: WIPLimits
+    new_: WIPLimits,
   ): Promise<ExpectedBenefit> {
     return {} as ExpectedBenefit;
   }
-  private calculateWIPDifferences(current: WIPLimits, new_: WIPLimits): Record<string, number> {
+  private calculateWIPDifferences(
+    current: WIPLimits,
+    new_: WIPLimits,
+  ): Record<string, number> {
     return {};
   }
   private async getCurrentWIPUsage(): Promise<WIPUsage> {
@@ -1426,7 +1540,7 @@ export class AdvancedFlowManager extends EventEmitter {
   }
   private calculateViolationSeverity(
     current: number,
-    limit: number
+    limit: number,
   ): 'minor' | 'major' | 'critical' {
     const excess = (current - limit) / limit;
     if (excess > 0.5) return 'critical';
@@ -1439,11 +1553,13 @@ export class AdvancedFlowManager extends EventEmitter {
   private async generateViolationRecommendations(
     stage: FlowStage,
     current: number,
-    limit: number
+    limit: number,
   ): Promise<string[]> {
     return [];
   }
-  private async handleWIPViolations(violations: WIPViolation[]): Promise<void> {}
+  private async handleWIPViolations(
+    violations: WIPViolation[],
+  ): Promise<void> {}
   private async collectCurrentWorkItems(): Promise<FlowWorkItem[]> {
     return [];
   }
@@ -1456,39 +1572,52 @@ export class AdvancedFlowManager extends EventEmitter {
   private async generateFlowRecommendations(): Promise<FlowRecommendation[]> {
     return [];
   }
-  private calculatePredictabilityTrend(metrics: FlowMetrics): 'improving' | 'stable' | 'degrading' {
+  private calculatePredictabilityTrend(
+    metrics: FlowMetrics,
+  ): 'improving' | 'stable' | 'degrading' {
     return 'stable';
   }
-  private calculateValueTrend(metrics: FlowMetrics): 'improving' | 'stable' | 'degrading' {
+  private calculateValueTrend(
+    metrics: FlowMetrics,
+  ): 'improving' | 'stable' | 'degrading' {
     return 'stable';
   }
-  private async generateThroughputForecast(historical: FlowState[]): Promise<any> {
+  private async generateThroughputForecast(
+    historical: FlowState[],
+  ): Promise<unknown> {
     return { predicted: 10, confidence: 0.8, dataPoints: [] };
   }
   private calculateForecastImpact(
     predicted: number,
-    current: number
+    current: number,
   ): 'low' | 'medium' | 'high' | 'critical' {
     const change = Math.abs(predicted - current) / current;
     if (change > 0.3) return 'high';
     if (change > 0.1) return 'medium';
     return 'low';
   }
-  private generateThroughputRecommendation(forecast: any): string {
+  private generateThroughputRecommendation(forecast: unknown): string {
     return '';
   }
-  private async predictBottlenecks(historical: FlowState[]): Promise<any> {
-    return { probability: 0.3, stage: 'development', timeframe: 3, dataPoints: [] };
+  private async predictBottlenecks(historical: FlowState[]): Promise<unknown> {
+    return {
+      probability: 0.3,
+      stage: 'development',
+      timeframe: 3,
+      dataPoints: [],
+    };
   }
-  private async detectQualityAnomalies(historical: FlowState[]): Promise<any> {
+  private async detectQualityAnomalies(
+    historical: FlowState[],
+  ): Promise<unknown> {
     return { detected: false, confidence: 0, description: '', dataPoints: [] };
   }
   private async performOptimizationAnalysis(): Promise<void> {}
   private async retrainMLModels(): Promise<void> {}
   private async updateFlowVisualization(): Promise<void> {}
-  private async handleWorkItemStarted(payload: any): Promise<void> {}
-  private async handleWorkItemCompleted(payload: any): Promise<void> {}
-  private async handleBottleneckDetected(payload: any): Promise<void> {}
+  private async handleWorkItemStarted(payload: unknown): Promise<void> {}
+  private async handleWorkItemCompleted(payload: unknown): Promise<void> {}
+  private async handleBottleneckDetected(payload: unknown): Promise<void> {}
 }
 
 // ============================================================================

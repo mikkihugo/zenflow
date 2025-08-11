@@ -57,10 +57,13 @@ export class CircuitBreaker {
 
   constructor(
     private readonly name: string,
-    private readonly config: CircuitBreakerConfig
+    private readonly config: CircuitBreakerConfig,
   ) {}
 
-  public async execute<T>(operation: () => Promise<T>, fallback?: () => Promise<T>): Promise<T> {
+  public async execute<T>(
+    operation: () => Promise<T>,
+    fallback?: () => Promise<T>,
+  ): Promise<T> {
     const startTime = Date.now();
     this.totalCalls++;
 
@@ -75,12 +78,11 @@ export class CircuitBreaker {
         }
 
         throw new Error(`Circuit breaker [${this.name}] is open`);
-      } else {
-        // Transition to half-open for testing
-        this.state = CircuitBreakerState['HALF_OPEN'];
-        this.successCount = 0;
-        logger.info(`Circuit breaker [${this.name}] transitioning to HALF_OPEN`);
       }
+      // Transition to half-open for testing
+      this.state = CircuitBreakerState['HALF_OPEN'];
+      this.successCount = 0;
+      logger.info(`Circuit breaker [${this.name}] transitioning to HALF_OPEN`);
     }
 
     try {
@@ -93,10 +95,15 @@ export class CircuitBreaker {
       // If we have a fallback and error is recoverable, try fallback
       if (fallback && isRecoverableError(error as Error)) {
         try {
-          logger.info(`Circuit breaker [${this.name}] attempting fallback after error`);
+          logger.info(
+            `Circuit breaker [${this.name}] attempting fallback after error`,
+          );
           return await fallback();
         } catch (fallbackError) {
-          logger.error(`Circuit breaker [${this.name}] fallback also failed`, fallbackError);
+          logger.error(
+            `Circuit breaker [${this.name}] fallback also failed`,
+            fallbackError,
+          );
           throw error; // Throw original error
         }
       }
@@ -139,7 +146,7 @@ export class CircuitBreaker {
         this.state = CircuitBreakerState['OPEN'];
         this.nextAttemptTime = Date.now() + this.config.recoveryTimeout;
         logger.warn(
-          `Circuit breaker [${this.name}] opened due to failures - next attempt: ${new Date(this.nextAttemptTime).toISOString()}`
+          `Circuit breaker [${this.name}] opened due to failures - next attempt: ${new Date(this.nextAttemptTime).toISOString()}`,
         );
       }
     }
@@ -156,9 +163,11 @@ export class CircuitBreaker {
 
     // Filter failures and calls within the monitoring window
     const recentFailures = this.failureHistory.filter(
-      (timestamp) => timestamp >= windowStart
+      (timestamp) => timestamp >= windowStart,
     ).length;
-    const recentCalls = this.callHistory.filter((timestamp) => timestamp >= windowStart).length;
+    const recentCalls = this.callHistory.filter(
+      (timestamp) => timestamp >= windowStart,
+    ).length;
 
     const failureRate = recentCalls > 0 ? recentFailures / recentCalls : 0;
 
@@ -168,7 +177,8 @@ export class CircuitBreaker {
   public getMetrics(): CircuitBreakerMetrics {
     const avgResponseTime =
       this.responseTimes.length > 0
-        ? this.responseTimes.reduce((a, b) => a + b, 0) / this.responseTimes.length
+        ? this.responseTimes.reduce((a, b) => a + b, 0) /
+          this.responseTimes.length
         : 0;
 
     return {
@@ -217,14 +227,18 @@ export class RetryStrategy {
       maxDelayMs: 30000,
       exponentialBase: 2,
       jitterEnabled: true,
-      retryableErrors: ['NetworkError', 'TimeoutError', 'ServiceUnavailableError'],
+      retryableErrors: [
+        'NetworkError',
+        'TimeoutError',
+        'ServiceUnavailableError',
+      ],
       ...config,
     };
   }
 
   public async execute<T>(
     operation: () => Promise<T>,
-    operationName: string = 'unknown'
+    operationName: string = 'unknown',
   ): Promise<T> {
     let lastError: Error = new Error(`No attempts made for ${operationName}`);
 
@@ -233,7 +247,9 @@ export class RetryStrategy {
         const result = await operation();
 
         if (attempt > 1) {
-          logger.info(`Retry strategy succeeded on attempt ${attempt} for ${operationName}`);
+          logger.info(
+            `Retry strategy succeeded on attempt ${attempt} for ${operationName}`,
+          );
         }
 
         return result;
@@ -242,18 +258,21 @@ export class RetryStrategy {
 
         logger.warn(
           `Retry strategy attempt ${attempt}/${this.config.maxAttempts} failed for ${operationName}:`,
-          error
+          error,
         );
 
         // Check if we should retry
-        if (attempt === this.config.maxAttempts || !this.shouldRetryError(error as Error)) {
+        if (
+          attempt === this.config.maxAttempts ||
+          !this.shouldRetryError(error as Error)
+        ) {
           break;
         }
 
         // Calculate delay with exponential backoff and jitter
         const delay = this.calculateDelay(attempt);
         logger.info(
-          `Retry strategy waiting ${delay}ms before attempt ${attempt + 1} for ${operationName}`
+          `Retry strategy waiting ${delay}ms before attempt ${attempt + 1} for ${operationName}`,
         );
 
         await this.sleep(delay);
@@ -261,7 +280,7 @@ export class RetryStrategy {
     }
 
     logger.error(
-      `Retry strategy exhausted all ${this.config.maxAttempts} attempts for ${operationName}`
+      `Retry strategy exhausted all ${this.config.maxAttempts} attempts for ${operationName}`,
     );
     throw lastError;
   }
@@ -273,7 +292,8 @@ export class RetryStrategy {
 
     // Check if error type is in retryable list
     return this.config.retryableErrors.some(
-      (errorType) => error.constructor.name === errorType || error.name === errorType
+      (errorType) =>
+        error.constructor.name === errorType || error.name === errorType,
     );
   }
 
@@ -317,7 +337,10 @@ export class FallbackManager<T> {
     this.strategies.sort((a, b) => a.priority - b.priority);
   }
 
-  public async executeWithFallbacks(_primaryOperation: () => Promise<T>, error: Error): Promise<T> {
+  public async executeWithFallbacks(
+    _primaryOperation: () => Promise<T>,
+    error: Error,
+  ): Promise<T> {
     // Try each fallback strategy in priority order
     for (const strategy of this.strategies) {
       // Check if strategy applies to this error
@@ -326,14 +349,18 @@ export class FallbackManager<T> {
       }
 
       try {
-        logger.info(`Executing fallback strategy '${strategy.name}' for ${this.operationName}`);
+        logger.info(
+          `Executing fallback strategy '${strategy.name}' for ${this.operationName}`,
+        );
         const result = await strategy.handler();
-        logger.info(`Fallback strategy '${strategy.name}' succeeded for ${this.operationName}`);
+        logger.info(
+          `Fallback strategy '${strategy.name}' succeeded for ${this.operationName}`,
+        );
         return result;
       } catch (fallbackError) {
         logger.warn(
           `Fallback strategy '${strategy.name}' failed for ${this.operationName}:`,
-          fallbackError
+          fallbackError,
         );
       }
     }
@@ -394,7 +421,11 @@ export class GracefulDegradationManager {
       name: 'Core Features Only',
       description: 'Only essential operations available',
       enabledFeatures: ['fact_gather', 'rag_search'],
-      disabledFeatures: ['swarm_coordination', 'neural_processing', 'wasm_computation'],
+      disabledFeatures: [
+        'swarm_coordination',
+        'neural_processing',
+        'wasm_computation',
+      ],
     });
 
     this.addDegradationLevel({
@@ -466,10 +497,14 @@ export class GracefulDegradationManager {
     this.currentLevel = level;
 
     logger.warn(
-      `Graceful degradation: ${degradationLevel.name} (level ${level}) - ${degradationLevel.description}`
+      `Graceful degradation: ${degradationLevel.name} (level ${level}) - ${degradationLevel.description}`,
     );
-    logger.info(`Enabled features: ${degradationLevel.enabledFeatures.join(', ')}`);
-    logger.info(`Disabled features: ${degradationLevel.disabledFeatures.join(', ')}`);
+    logger.info(
+      `Enabled features: ${degradationLevel.enabledFeatures.join(', ')}`,
+    );
+    logger.info(
+      `Disabled features: ${degradationLevel.disabledFeatures.join(', ')}`,
+    );
 
     if (level > previousLevel) {
       logger.warn('System functionality has been reduced due to errors');
@@ -480,7 +515,7 @@ export class GracefulDegradationManager {
 
   public isFeatureEnabled(feature: string): boolean {
     const currentDegradationLevel = this.levels.get(this.currentLevel);
-    return currentDegradationLevel?.enabledFeatures.includes(feature) || false;
+    return currentDegradationLevel?.enabledFeatures.includes(feature);
   }
 
   public getCurrentLevel(): DegradationLevel | undefined {
@@ -513,7 +548,10 @@ export class CircuitBreakerRegistry {
     return CircuitBreakerRegistry.instance;
   }
 
-  public getOrCreate(name: string, config?: Partial<CircuitBreakerConfig>): CircuitBreaker {
+  public getOrCreate(
+    name: string,
+    config?: Partial<CircuitBreakerConfig>,
+  ): CircuitBreaker {
     if (!this.breakers.has(name)) {
       const defaultConfig: CircuitBreakerConfig = {
         failureThreshold: 5,
@@ -561,12 +599,15 @@ export class ErrorRecoveryOrchestrator {
   public async executeWithRecovery<T>(
     operationName: string,
     operation: () => Promise<T>,
-    options: ErrorRecoveryOptions = {}
+    options: ErrorRecoveryOptions = {},
   ): Promise<T> {
-    const circuitBreaker = this.circuitBreakerRegistry.getOrCreate(operationName, {
-      failureThreshold: options?.['circuitBreakerThreshold'] || 5,
-      maxRetries: options?.['maxRetries'] || 3,
-    });
+    const circuitBreaker = this.circuitBreakerRegistry.getOrCreate(
+      operationName,
+      {
+        failureThreshold: options?.['circuitBreakerThreshold'] || 5,
+        maxRetries: options?.['maxRetries'] || 3,
+      },
+    );
 
     const retryStrategy = this.getOrCreateRetryStrategy(operationName, options);
 
@@ -582,7 +623,10 @@ export class ErrorRecoveryOrchestrator {
       if (options?.['fallbackEnabled']) {
         const fallbackManager = this.fallbackManagers.get(operationName);
         if (fallbackManager) {
-          return await fallbackManager.executeWithFallbacks(operation, error as Error);
+          return await fallbackManager.executeWithFallbacks(
+            operation,
+            error as Error,
+          );
         }
       }
 
@@ -592,7 +636,7 @@ export class ErrorRecoveryOrchestrator {
 
   private getOrCreateRetryStrategy(
     operationName: string,
-    options: ErrorRecoveryOptions
+    options: ErrorRecoveryOptions,
   ): RetryStrategy {
     if (!this.retryStrategies.has(operationName)) {
       this.retryStrategies.set(
@@ -601,16 +645,22 @@ export class ErrorRecoveryOrchestrator {
           maxAttempts: options?.['maxRetries'] || 3,
           initialDelayMs: options?.['retryDelayMs'] || 1000,
           exponentialBase: options?.['exponentialBackoff'] ? 2 : 1,
-        })
+        }),
       );
     }
 
     return this.retryStrategies.get(operationName)!;
   }
 
-  public addFallbackStrategy<T>(operationName: string, strategy: FallbackStrategy<T>): void {
+  public addFallbackStrategy<T>(
+    operationName: string,
+    strategy: FallbackStrategy<T>,
+  ): void {
     if (!this.fallbackManagers.has(operationName)) {
-      this.fallbackManagers.set(operationName, new FallbackManager<T>(operationName));
+      this.fallbackManagers.set(
+        operationName,
+        new FallbackManager<T>(operationName),
+      );
     }
 
     this.fallbackManagers.get(operationName)?.addStrategy(strategy);

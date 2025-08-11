@@ -242,8 +242,8 @@ This is a SIMULATION - respond with a brief acknowledgment of the batch processi
       if (match) {
         errors.push({
           file: path.resolve(__dirname, '..', match[1]),
-          line: parseInt(match[2]),
-          column: parseInt(match[3]),
+          line: Number.parseInt(match[2]),
+          column: Number.parseInt(match[3]),
           code: match[4],
           message: match[5],
         });

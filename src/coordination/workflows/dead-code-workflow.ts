@@ -1,15 +1,23 @@
 /**
  * @file Dead Code Management Workflow
- * 
+ *
  * Integrates dead code detection with Claude Zen's workflow system and AGUI interface.
  * Provides automated scanning with human-in-the-loop decision making.
  */
 
 import { getLogger } from '../../config/logging-config.js';
-import { AutomatedDeadCodeManager, DeadCodeScanResult, DeadCodeDecision } from '../../core/automated-dead-code-manager.js';
-import { AGUIInterface } from '../../interfaces/agui/agui-adapter.js';
-import { WorkflowEngine } from '../../workflows/workflow-engine.js';
-import { WorkflowDefinition, WorkflowContext, WorkflowStep } from '../../types/workflow-types.js';
+import {
+  AutomatedDeadCodeManager,
+  type DeadCodeDecision,
+  type DeadCodeScanResult,
+} from '../../core/automated-dead-code-manager.js';
+import type { AGUIInterface } from '../../interfaces/agui/agui-adapter.js';
+import type {
+  WorkflowContext,
+  WorkflowDefinition,
+  WorkflowStep,
+} from '../../types/workflow-types.js';
+import type { WorkflowEngine } from '../../workflows/workflow-engine.js';
 
 const logger = getLogger('dead-code-workflow');
 
@@ -42,7 +50,7 @@ export const deadCodeWorkflowDefinition: WorkflowDefinition = {
       id: 'analyze-results',
       name: 'Analyze Scan Results',
       description: 'Analyze and categorize dead code findings',
-      type: 'action', 
+      type: 'action',
       handler: 'analyzeScanResults',
       timeout: 30000,
     },
@@ -119,14 +127,29 @@ export class DeadCodeWorkflowHandler {
     if (this.workflowEngine) {
       // Register workflow definition
       await this.workflowEngine.registerWorkflow(deadCodeWorkflowDefinition);
-      
+
       // Register step handlers
-      this.workflowEngine.registerStepHandler('scanDeadCode', this.scanDeadCode.bind(this));
-      this.workflowEngine.registerStepHandler('analyzeScanResults', this.analyzeScanResults.bind(this));
-      this.workflowEngine.registerStepHandler('presentToHuman', this.presentToHuman.bind(this));
-      this.workflowEngine.registerStepHandler('executeDecisions', this.executeDecisions.bind(this));
-      this.workflowEngine.registerStepHandler('generateReport', this.generateReport.bind(this));
-      
+      this.workflowEngine.registerStepHandler(
+        'scanDeadCode',
+        this.scanDeadCode.bind(this),
+      );
+      this.workflowEngine.registerStepHandler(
+        'analyzeScanResults',
+        this.analyzeScanResults.bind(this),
+      );
+      this.workflowEngine.registerStepHandler(
+        'presentToHuman',
+        this.presentToHuman.bind(this),
+      );
+      this.workflowEngine.registerStepHandler(
+        'executeDecisions',
+        this.executeDecisions.bind(this),
+      );
+      this.workflowEngine.registerStepHandler(
+        'generateReport',
+        this.generateReport.bind(this),
+      );
+
       logger.info('Dead code workflow initialized successfully');
     }
   }
@@ -134,10 +157,9 @@ export class DeadCodeWorkflowHandler {
   /**
    * Start dead code management workflow
    */
-  async startDeadCodeWorkflow(options: {
-    autoApprove?: boolean;
-    maxItemsToReview?: number;
-  } = {}): Promise<string> {
+  async startDeadCodeWorkflow(
+    options: { autoApprove?: boolean; maxItemsToReview?: number } = {},
+  ): Promise<string> {
     if (!this.workflowEngine) {
       throw new Error('Workflow engine not available');
     }
@@ -150,7 +172,7 @@ export class DeadCodeWorkflowHandler {
 
     const workflowId = await this.workflowEngine.startWorkflow(
       'dead-code-management',
-      context
+      context,
     );
 
     logger.info('Dead code workflow started', { workflowId, options });
@@ -160,13 +182,16 @@ export class DeadCodeWorkflowHandler {
   /**
    * Step handler: Scan for dead code
    */
-  private async scanDeadCode(step: WorkflowStep, context: DeadCodeWorkflowContext): Promise<void> {
+  private async scanDeadCode(
+    step: WorkflowStep,
+    context: DeadCodeWorkflowContext,
+  ): Promise<void> {
     logger.info('Starting dead code scan...');
-    
+
     try {
       const scanResult = await this.deadCodeManager.scanForDeadCode();
       context.scanResult = scanResult;
-      
+
       logger.info('Dead code scan completed', {
         totalItems: scanResult.totalItems,
         highConfidence: scanResult.highConfidenceItems.length,
@@ -181,22 +206,25 @@ export class DeadCodeWorkflowHandler {
   /**
    * Step handler: Analyze scan results
    */
-  private async analyzeScanResults(step: WorkflowStep, context: DeadCodeWorkflowContext): Promise<void> {
+  private async analyzeScanResults(
+    step: WorkflowStep,
+    context: DeadCodeWorkflowContext,
+  ): Promise<void> {
     if (!context.scanResult) {
       throw new Error('No scan result available for analysis');
     }
 
     logger.info('Analyzing dead code scan results...');
-    
+
     const analysis = {
-      criticalItems: context.scanResult.highConfidenceItems.filter(item => 
-        item.confidence > 0.9 && item.safetyScore > 0.8
+      criticalItems: context.scanResult.highConfidenceItems.filter(
+        (item) => item.confidence > 0.9 && item.safetyScore > 0.8,
       ),
-      requiresReview: context.scanResult.highConfidenceItems.filter(item =>
-        item.confidence > 0.8 || item.safetyScore < 0.6
+      requiresReview: context.scanResult.highConfidenceItems.filter(
+        (item) => item.confidence > 0.8 || item.safetyScore < 0.6,
       ),
       lowPriority: context.scanResult.mediumConfidenceItems.concat(
-        context.scanResult.lowConfidenceItems
+        context.scanResult.lowConfidenceItems,
       ),
     };
 
@@ -213,7 +241,10 @@ export class DeadCodeWorkflowHandler {
   /**
    * Step handler: Present to human for decision
    */
-  private async presentToHuman(step: WorkflowStep, context: DeadCodeWorkflowContext): Promise<void> {
+  private async presentToHuman(
+    step: WorkflowStep,
+    context: DeadCodeWorkflowContext,
+  ): Promise<void> {
     if (!context.scanResult) {
       throw new Error('No scan result available for human review');
     }
@@ -222,27 +253,29 @@ export class DeadCodeWorkflowHandler {
 
     if (context.autoApprove) {
       // Auto-approve safe removals
-      const safeItems = context.scanResult.highConfidenceItems.filter(item =>
-        item.confidence > 0.9 && item.safetyScore > 0.8
+      const safeItems = context.scanResult.highConfidenceItems.filter(
+        (item) => item.confidence > 0.9 && item.safetyScore > 0.8,
       );
 
-      context.decisions = safeItems.map(item => ({
+      context.decisions = safeItems.map((item) => ({
         itemId: item.id,
         action: 'remove' as const,
         timestamp: new Date(),
         reason: 'Auto-approved based on high confidence and safety scores',
       }));
 
-      logger.info('Auto-approved dead code removal', { 
-        autoApprovedCount: safeItems.length 
+      logger.info('Auto-approved dead code removal', {
+        autoApprovedCount: safeItems.length,
       });
     } else {
       // Present to human for decision
-      const decisions = await this.deadCodeManager.presentToHuman(context.scanResult);
+      const decisions = await this.deadCodeManager.presentToHuman(
+        context.scanResult,
+      );
       context.decisions = decisions;
 
-      logger.info('Human decisions collected', { 
-        decisionCount: decisions.length 
+      logger.info('Human decisions collected', {
+        decisionCount: decisions.length,
       });
     }
   }
@@ -250,14 +283,17 @@ export class DeadCodeWorkflowHandler {
   /**
    * Step handler: Execute decisions
    */
-  private async executeDecisions(step: WorkflowStep, context: DeadCodeWorkflowContext): Promise<void> {
+  private async executeDecisions(
+    step: WorkflowStep,
+    context: DeadCodeWorkflowContext,
+  ): Promise<void> {
     if (!context.decisions || context.decisions.length === 0) {
       logger.info('No decisions to execute');
       return;
     }
 
-    logger.info('Executing dead code decisions...', { 
-      decisionCount: context.decisions.length 
+    logger.info('Executing dead code decisions...', {
+      decisionCount: context.decisions.length,
     });
 
     const results = {
@@ -276,27 +312,27 @@ export class DeadCodeWorkflowHandler {
             logger.info('Removing dead code', { itemId: decision.itemId });
             results.removed++;
             break;
-            
+
           case 'wire-up':
             // Execute wire-up logic here
             logger.info('Wiring up code', { itemId: decision.itemId });
             results.wiredUp++;
             break;
-            
+
           case 'keep':
             logger.info('Keeping code', { itemId: decision.itemId });
             results.kept++;
             break;
-            
+
           case 'defer':
             logger.info('Deferring decision', { itemId: decision.itemId });
             results.deferred++;
             break;
         }
       } catch (error) {
-        logger.error('Failed to execute decision', { 
-          decision: decision.itemId, 
-          error 
+        logger.error('Failed to execute decision', {
+          decision: decision.itemId,
+          error,
         });
         results.errors++;
       }
@@ -309,19 +345,24 @@ export class DeadCodeWorkflowHandler {
   /**
    * Step handler: Generate report
    */
-  private async generateReport(step: WorkflowStep, context: DeadCodeWorkflowContext): Promise<void> {
+  private async generateReport(
+    step: WorkflowStep,
+    context: DeadCodeWorkflowContext,
+  ): Promise<void> {
     logger.info('Generating dead code management report...');
 
     const report = {
       timestamp: new Date(),
       workflowId: context.workflowId,
-      scanSummary: context.scanResult ? {
-        totalItems: context.scanResult.totalItems,
-        highConfidence: context.scanResult.highConfidenceItems.length,
-        mediumConfidence: context.scanResult.mediumConfidenceItems.length,
-        lowConfidence: context.scanResult.lowConfidenceItems.length,
-        duration: context.scanResult.scanDuration,
-      } : null,
+      scanSummary: context.scanResult
+        ? {
+            totalItems: context.scanResult.totalItems,
+            highConfidence: context.scanResult.highConfidenceItems.length,
+            mediumConfidence: context.scanResult.mediumConfidenceItems.length,
+            lowConfidence: context.scanResult.lowConfidenceItems.length,
+            duration: context.scanResult.scanDuration,
+          }
+        : null,
       decisions: context.decisions?.length || 0,
       executionResults: context.executionResults || null,
       recommendations: this.generateRecommendations(context),
@@ -329,7 +370,7 @@ export class DeadCodeWorkflowHandler {
 
     // Store report (implementation depends on storage backend)
     logger.info('Dead code management report generated', report);
-    
+
     // TODO: Store report in database/file system
     context.finalReport = report;
   }
@@ -342,28 +383,43 @@ export class DeadCodeWorkflowHandler {
 
     if (context.scanResult) {
       const total = context.scanResult.totalItems;
-      
+
       if (total === 0) {
         recommendations.push('✅ Excellent! No dead code found.');
       } else if (total < 5) {
         recommendations.push('👍 Good code hygiene - minimal dead code found.');
       } else if (total < 20) {
-        recommendations.push('⚠️ Consider regular dead code cleanup to maintain code quality.');
+        recommendations.push(
+          '⚠️ Consider regular dead code cleanup to maintain code quality.',
+        );
       } else {
-        recommendations.push('🚨 High amount of dead code detected - prioritize cleanup efforts.');
+        recommendations.push(
+          '🚨 High amount of dead code detected - prioritize cleanup efforts.',
+        );
       }
 
       if (context.scanResult.highConfidenceItems.length > 10) {
-        recommendations.push('🔍 Consider enabling auto-removal for high-confidence, safe-to-remove items.');
+        recommendations.push(
+          '🔍 Consider enabling auto-removal for high-confidence, safe-to-remove items.',
+        );
       }
 
-      if (context.executionResults?.errors && context.executionResults.errors > 0) {
-        recommendations.push('⚠️ Some removal operations failed - manual review recommended.');
+      if (
+        context.executionResults?.errors &&
+        context.executionResults.errors > 0
+      ) {
+        recommendations.push(
+          '⚠️ Some removal operations failed - manual review recommended.',
+        );
       }
     }
 
-    recommendations.push('📅 Schedule regular dead code scans (weekly recommended).');
-    recommendations.push('🔧 Consider integrating dead code detection into your CI/CD pipeline.');
+    recommendations.push(
+      '📅 Schedule regular dead code scans (weekly recommended).',
+    );
+    recommendations.push(
+      '🔧 Consider integrating dead code detection into your CI/CD pipeline.',
+    );
 
     return recommendations;
   }
@@ -377,11 +433,14 @@ export class DeadCodeWorkflowHandler {
 
     return {
       totalScans: history.length,
-      lastScanDate: history.length > 0 ? history[history.length - 1].timestamp : null,
+      lastScanDate:
+        history.length > 0 ? history[history.length - 1].timestamp : null,
       pendingDecisions: pending.size,
-      averageScanDuration: history.length > 0 
-        ? history.reduce((sum, scan) => sum + scan.scanDuration, 0) / history.length 
-        : 0,
+      averageScanDuration:
+        history.length > 0
+          ? history.reduce((sum, scan) => sum + scan.scanDuration, 0) /
+            history.length
+          : 0,
     };
   }
 }

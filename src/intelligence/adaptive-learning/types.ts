@@ -172,7 +172,12 @@ export interface NeuralNetworkPredictor {
 
 export interface ReinforcementLearningEngine {
   selectAction(state: string, availableActions: string[]): string;
-  updateQValue(state: string, action: string, reward: number, nextState: string): void;
+  updateQValue(
+    state: string,
+    action: string,
+    reward: number,
+    nextState: string,
+  ): void;
   getQValue(state: string, action: string): number;
   getPolicy(): Map<string, string>;
 }
@@ -230,8 +235,18 @@ export type PatternType =
   | 'failure'
   | 'coordination'
   | 'optimization';
-export type AnomalyType = 'performance' | 'behavior' | 'resource' | 'failure' | 'coordination';
-export type LearningType = 'supervised' | 'unsupervised' | 'reinforcement' | 'online' | 'transfer';
+export type AnomalyType =
+  | 'performance'
+  | 'behavior'
+  | 'resource'
+  | 'failure'
+  | 'coordination';
+export type LearningType =
+  | 'supervised'
+  | 'unsupervised'
+  | 'reinforcement'
+  | 'online'
+  | 'transfer';
 
 export interface Pattern {
   id: string;

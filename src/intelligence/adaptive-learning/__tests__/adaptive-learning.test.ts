@@ -117,7 +117,10 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
     let mockEmit: vi.MockedFunction<any>;
 
     beforeEach(() => {
-      engine = new PatternRecognitionEngine(createTestConfig(), createTestContext());
+      engine = new PatternRecognitionEngine(
+        createTestConfig(),
+        createTestContext(),
+      );
       mockEmit = vi.spyOn(engine, 'emit');
     });
 
@@ -138,7 +141,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           anomalies: expect.any(Number),
           confidence: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -169,7 +172,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           taskId: 'task_1',
           pattern: 'data_processing',
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -208,7 +211,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           patterns: expect.any(Number),
           messages: 2,
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -218,8 +221,17 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
     let mockEmit: vi.MockedFunction<any>;
 
     beforeEach(() => {
-      const mockLogger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
-      coordinator = new LearningCoordinator(createTestConfig(), createTestContext(), mockLogger);
+      const mockLogger = {
+        debug: vi.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+      };
+      coordinator = new LearningCoordinator(
+        createTestConfig(),
+        createTestContext(),
+        mockLogger,
+      );
       mockEmit = vi.spyOn(coordinator, 'emit').mockImplementation(() => true);
     });
 
@@ -269,7 +281,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           agents: ['agent_1'],
           result: expect.any(Object),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -305,7 +317,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           type: 'optimization',
           confidence: 0.8,
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -337,7 +349,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           category: 'data_processing',
           confidence: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -347,7 +359,10 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
     let mockEmit: vi.MockedFunction<any>;
 
     beforeEach(() => {
-      optimizer = new PerformanceOptimizer(createTestConfig(), createTestContext());
+      optimizer = new PerformanceOptimizer(
+        createTestConfig(),
+        createTestContext(),
+      );
       mockEmit = vi.spyOn(optimizer, 'emit');
     });
 
@@ -388,7 +403,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           expectedImprovement: expect.any(Number),
           confidence: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
 
@@ -449,7 +464,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           efficiency: expect.any(Number),
           utilization: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
     });
   });
@@ -471,7 +486,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           newValue: expect.any(Number),
           reward: 1.0,
           timestamp: expect.any(Number),
-        })
+        }),
       );
 
       mockEmit.mockRestore();
@@ -479,7 +494,10 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
 
     test('NeuralNetworkPredictor should emit training events', async () => {
       // London TDD: Test neural network training interactions
-      const nnPredictor = new NeuralNetworkPredictor({ inputSize: 5, outputSize: 3 });
+      const nnPredictor = new NeuralNetworkPredictor({
+        inputSize: 5,
+        outputSize: 3,
+      });
       const mockEmit = vi.spyOn(nnPredictor, 'emit');
 
       const executionData = createMockExecutionData();
@@ -495,7 +513,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           epochs: expect.any(Number),
           trainingTime: expect.any(Number),
           timestamp: expect.any(Number),
-        })
+        }),
       );
 
       mockEmit.mockRestore();
@@ -517,7 +535,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           totalModels: 1,
           totalWeight: 1.0,
           timestamp: expect.any(Number),
-        })
+        }),
       );
 
       mockEmit.mockRestore();
@@ -594,10 +612,23 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       const zeroExplorationEngine = new ReinforcementLearningEngine({
         explorationRate: 0.0, // Force exploitation
       });
-      zeroExplorationEngine.updateQValue('testState', 'goodAction', 10.0, 'nextState');
-      zeroExplorationEngine.updateQValue('testState', 'badAction', 1.0, 'nextState');
+      zeroExplorationEngine.updateQValue(
+        'testState',
+        'goodAction',
+        10.0,
+        'nextState',
+      );
+      zeroExplorationEngine.updateQValue(
+        'testState',
+        'badAction',
+        1.0,
+        'nextState',
+      );
 
-      const selectedAction = zeroExplorationEngine.selectAction('testState', actions);
+      const selectedAction = zeroExplorationEngine.selectAction(
+        'testState',
+        actions,
+      );
       expect(selectedAction).toBe('goodAction');
     });
   });
@@ -606,7 +637,10 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
     let engine: PatternRecognitionEngine;
 
     beforeEach(() => {
-      engine = new PatternRecognitionEngine(createTestConfig(), createTestContext());
+      engine = new PatternRecognitionEngine(
+        createTestConfig(),
+        createTestContext(),
+      );
     });
 
     test('should correctly calculate statistical variance', async () => {
@@ -648,7 +682,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
                 ...createMockExecutionData()[0],
                 id: `normal_${i}`,
                 duration: normalDuration + (Math.random() - 0.5) * 100, // Small variance
-              }) as ExecutionData
+              }) as ExecutionData,
           ),
         {
           ...createMockExecutionData()[0],
@@ -661,7 +695,9 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
 
       // Should detect the anomaly
       expect(analysis.anomalies.length).toBeGreaterThan(0);
-      const performanceAnomalies = analysis.anomalies.filter((a) => a.type === 'performance');
+      const performanceAnomalies = analysis.anomalies.filter(
+        (a) => a.type === 'performance',
+      );
       expect(performanceAnomalies.length).toBeGreaterThan(0);
 
       const anomaly = performanceAnomalies[0];
@@ -710,13 +746,23 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
   describe('Neural Network Mathematical Operations', () => {
     test('should correctly implement sigmoid activation function', async () => {
       // Classical TDD: Test mathematical function
-      const nnPredictor = new NeuralNetworkPredictor({ inputSize: 2, outputSize: 1 });
+      const nnPredictor = new NeuralNetworkPredictor({
+        inputSize: 2,
+        outputSize: 1,
+      });
 
       // Test sigmoid properties: sigmoid(0) ≈ 0.5, sigmoid(∞) → 1, sigmoid(-∞) → 0
       const testData: ExecutionData[] = [
         {
           ...createMockExecutionData()[0],
-          resourceUsage: { cpu: 0, memory: 0, network: 0, diskIO: 0, bandwidth: 0, latency: 0 },
+          resourceUsage: {
+            cpu: 0,
+            memory: 0,
+            network: 0,
+            diskIO: 0,
+            bandwidth: 0,
+            latency: 0,
+          },
         } as ExecutionData,
       ];
 
@@ -731,7 +777,10 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
 
     test('should implement gradient descent weight updates', async () => {
       // Classical TDD: Test weight update mathematics
-      const nnPredictor = new NeuralNetworkPredictor({ inputSize: 3, outputSize: 2 });
+      const nnPredictor = new NeuralNetworkPredictor({
+        inputSize: 3,
+        outputSize: 2,
+      });
 
       const trainingData = createMockExecutionData();
       const labels = [1, 0]; // Binary classification
@@ -786,14 +835,20 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
 
       // Stream good data first
       for (let i = 0; i < 30; i++) {
-        await onlineLearner.processStream({ ...goodData, id: `good_${i}` } as ExecutionData);
+        await onlineLearner.processStream({
+          ...goodData,
+          id: `good_${i}`,
+        } as ExecutionData);
       }
 
       const midAccuracy = onlineLearner.getAccuracy();
 
       // Stream bad data to trigger adaptation
       for (let i = 0; i < 50; i++) {
-        await onlineLearner.processStream({ ...badData, id: `bad_${i}` } as ExecutionData);
+        await onlineLearner.processStream({
+          ...badData,
+          id: `bad_${i}`,
+        } as ExecutionData);
       }
 
       const finalAccuracy = onlineLearner.getAccuracy();
@@ -864,7 +919,12 @@ describe('Adaptive Learning System - Integration Tests', () => {
     const context = createTestContext();
 
     const patternEngine = new PatternRecognitionEngine(config, context);
-    const mockLogger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
+    const mockLogger = {
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    };
     const coordinator = new LearningCoordinator(config, context, mockLogger);
     const optimizer = new PerformanceOptimizer(config, context);
 
@@ -882,7 +942,8 @@ describe('Adaptive Learning System - Integration Tests', () => {
     }));
 
     // Analyze early patterns
-    const earlyAnalysis = await patternEngine.analyzeExecutionPatterns(earlyData);
+    const earlyAnalysis =
+      await patternEngine.analyzeExecutionPatterns(earlyData);
     expect(earlyAnalysis.patterns.length).toBeGreaterThan(0);
 
     // Learn from patterns
@@ -922,7 +983,10 @@ describe('Adaptive Learning System - Integration Tests', () => {
     expect(learningResult?.patterns.length).toBeGreaterThan(0);
 
     // Apply optimizations
-    const optimization = optimizer.optimizeBehavior('agent_1', learningResult?.patterns);
+    const optimization = optimizer.optimizeBehavior(
+      'agent_1',
+      learningResult?.patterns,
+    );
     expect(optimization.expectedImprovement).toBeGreaterThan(0);
 
     // Analyze later patterns to verify improvement
@@ -932,7 +996,9 @@ describe('Adaptive Learning System - Integration Tests', () => {
 
   test('should handle real-time streaming adaptation', async () => {
     // Integration test: Online learning with streaming data
-    const onlineLearner = new OnlineLearningSystem({ adaptationThreshold: 0.1 });
+    const onlineLearner = new OnlineLearningSystem({
+      adaptationThreshold: 0.1,
+    });
     const rlEngine = new ReinforcementLearningEngine({ learningRate: 0.1 });
 
     // Simulate streaming workload

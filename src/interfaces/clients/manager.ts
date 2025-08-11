@@ -127,8 +127,20 @@ class HTTPClientFactory implements ClientFactory {
 
   private createInitialMetrics(): ClientMetrics {
     return {
-      requests: { total: 0, successful: 0, failed: 0, avgLatency: 0, minLatency: 0, maxLatency: 0 },
-      connections: { attempts: 0, successful: 0, failed: 0, currentStatus: 'initialized' },
+      requests: {
+        total: 0,
+        successful: 0,
+        failed: 0,
+        avgLatency: 0,
+        minLatency: 0,
+        maxLatency: 0,
+      },
+      connections: {
+        attempts: 0,
+        successful: 0,
+        failed: 0,
+        currentStatus: 'initialized',
+      },
       health: {
         lastCheck: new Date(),
         checksTotal: 0,
@@ -191,8 +203,20 @@ class WebSocketClientFactory implements ClientFactory {
 
   private createInitialMetrics(): ClientMetrics {
     return {
-      requests: { total: 0, successful: 0, failed: 0, avgLatency: 0, minLatency: 0, maxLatency: 0 },
-      connections: { attempts: 0, successful: 0, failed: 0, currentStatus: 'initialized' },
+      requests: {
+        total: 0,
+        successful: 0,
+        failed: 0,
+        avgLatency: 0,
+        minLatency: 0,
+        maxLatency: 0,
+      },
+      connections: {
+        attempts: 0,
+        successful: 0,
+        failed: 0,
+        currentStatus: 'initialized',
+      },
       health: {
         lastCheck: new Date(),
         checksTotal: 0,
@@ -259,8 +283,20 @@ class KnowledgeClientFactory implements ClientFactory {
 
   private createInitialMetrics(): ClientMetrics {
     return {
-      requests: { total: 0, successful: 0, failed: 0, avgLatency: 0, minLatency: 0, maxLatency: 0 },
-      connections: { attempts: 0, successful: 0, failed: 0, currentStatus: 'initialized' },
+      requests: {
+        total: 0,
+        successful: 0,
+        failed: 0,
+        avgLatency: 0,
+        minLatency: 0,
+        maxLatency: 0,
+      },
+      connections: {
+        attempts: 0,
+        successful: 0,
+        failed: 0,
+        currentStatus: 'initialized',
+      },
       health: {
         lastCheck: new Date(),
         checksTotal: 0,
@@ -300,7 +336,11 @@ class MCPClientFactory implements ClientFactory {
   validate(config: ClientConfig): boolean {
     if (config?.type !== ClientType.MCP) return false;
     const mcpConfig = config;
-    return !!(mcpConfig?.servers && Object.keys(mcpConfig?.servers).length > 0 && mcpConfig?.id);
+    return !!(
+      mcpConfig?.servers &&
+      Object.keys(mcpConfig?.servers).length > 0 &&
+      mcpConfig?.id
+    );
   }
 
   getDefaultConfig(type: ClientType): Partial<ClientConfig> {
@@ -316,8 +356,20 @@ class MCPClientFactory implements ClientFactory {
 
   private createInitialMetrics(): ClientMetrics {
     return {
-      requests: { total: 0, successful: 0, failed: 0, avgLatency: 0, minLatency: 0, maxLatency: 0 },
-      connections: { attempts: 0, successful: 0, failed: 0, currentStatus: 'initialized' },
+      requests: {
+        total: 0,
+        successful: 0,
+        failed: 0,
+        avgLatency: 0,
+        minLatency: 0,
+        maxLatency: 0,
+      },
+      connections: {
+        attempts: 0,
+        successful: 0,
+        failed: 0,
+        currentStatus: 'initialized',
+      },
       health: {
         lastCheck: new Date(),
         checksTotal: 0,
@@ -376,8 +428,14 @@ export class ClientManager extends EventEmitter {
 
     // Register all client factories
     this.registry.registerFactory(ClientType.HTTP, new HTTPClientFactory());
-    this.registry.registerFactory(ClientType.WEBSOCKET, new WebSocketClientFactory());
-    this.registry.registerFactory(ClientType.KNOWLEDGE, new KnowledgeClientFactory());
+    this.registry.registerFactory(
+      ClientType.WEBSOCKET,
+      new WebSocketClientFactory(),
+    );
+    this.registry.registerFactory(
+      ClientType.KNOWLEDGE,
+      new KnowledgeClientFactory(),
+    );
     this.registry.registerFactory(ClientType.MCP, new MCPClientFactory());
 
     // Start health monitoring
@@ -429,11 +487,20 @@ export class ClientManager extends EventEmitter {
       metrics.connections.attempts++;
 
       // Connect based on client type
-      if (instance.type === ClientType.WEBSOCKET && 'connect' in instance.client) {
+      if (
+        instance.type === ClientType.WEBSOCKET &&
+        'connect' in instance.client
+      ) {
         await (instance.client as WebSocketClient).connect();
-      } else if (instance.type === ClientType.KNOWLEDGE && 'initialize' in instance.client) {
+      } else if (
+        instance.type === ClientType.KNOWLEDGE &&
+        'initialize' in instance.client
+      ) {
         await (instance.client as FACTIntegration).initialize();
-      } else if (instance.type === ClientType.MCP && 'connectAll' in instance.client) {
+      } else if (
+        instance.type === ClientType.MCP &&
+        'connectAll' in instance.client
+      ) {
         await (instance.client as ExternalMCPClient).connectAll();
       }
       // HTTP clients are stateless, so they're always "connected"
@@ -488,11 +555,20 @@ export class ClientManager extends EventEmitter {
       }
 
       // Disconnect based on client type
-      if (instance.type === ClientType.WEBSOCKET && 'disconnect' in instance.client) {
+      if (
+        instance.type === ClientType.WEBSOCKET &&
+        'disconnect' in instance.client
+      ) {
         (instance.client as WebSocketClient).disconnect();
-      } else if (instance.type === ClientType.KNOWLEDGE && 'shutdown' in instance.client) {
+      } else if (
+        instance.type === ClientType.KNOWLEDGE &&
+        'shutdown' in instance.client
+      ) {
         await (instance.client as FACTIntegration).shutdown();
-      } else if (instance.type === ClientType.MCP && 'disconnectAll' in instance.client) {
+      } else if (
+        instance.type === ClientType.MCP &&
+        'disconnectAll' in instance.client
+      ) {
         await (instance.client as ExternalMCPClient).disconnectAll();
       }
 
@@ -570,7 +646,10 @@ export class ClientManager extends EventEmitter {
   getAggregatedMetrics(): {
     total: number;
     connected: number;
-    byType: Record<ClientType, { total: number; connected: number; avgLatency: number }>;
+    byType: Record<
+      ClientType,
+      { total: number; connected: number; avgLatency: number }
+    >;
     totalRequests: number;
     totalErrors: number;
     avgLatency: number;
@@ -578,11 +657,15 @@ export class ClientManager extends EventEmitter {
     const stats = this.registry.getStats();
     const allMetrics = Array.from(this.metricsStore.values());
 
-    const totalRequests = allMetrics.reduce((sum, m) => sum + m.requests.total, 0);
+    const totalRequests = allMetrics.reduce(
+      (sum, m) => sum + m.requests.total,
+      0,
+    );
     const totalErrors = allMetrics.reduce((sum, m) => sum + m.errors.total, 0);
     const avgLatency =
       allMetrics.length > 0
-        ? allMetrics.reduce((sum, m) => sum + m.requests.avgLatency, 0) / allMetrics.length
+        ? allMetrics.reduce((sum, m) => sum + m.requests.avgLatency, 0) /
+          allMetrics.length
         : 0;
 
     const byType = Object.values(ClientType).reduce(
@@ -597,13 +680,17 @@ export class ClientManager extends EventEmitter {
           connected: typeClients.filter((c) => c.status === 'connected').length,
           avgLatency:
             typeMetrics.length > 0
-              ? typeMetrics.reduce((sum, m) => sum + m.requests.avgLatency, 0) / typeMetrics.length
+              ? typeMetrics.reduce((sum, m) => sum + m.requests.avgLatency, 0) /
+                typeMetrics.length
               : 0,
         };
 
         return acc;
       },
-      {} as Record<ClientType, { total: number; connected: number; avgLatency: number }>
+      {} as Record<
+        ClientType,
+        { total: number; connected: number; avgLatency: number }
+      >,
     );
 
     return {
@@ -621,13 +708,20 @@ export class ClientManager extends EventEmitter {
    */
   getHealthStatus(): {
     overall: 'healthy' | 'warning' | 'critical';
-    details: Record<string, { status: 'healthy' | 'warning' | 'critical'; message?: string }>;
+    details: Record<
+      string,
+      { status: 'healthy' | 'warning' | 'critical'; message?: string }
+    >;
   } {
     const stats = this.registry.getStats();
     const healthyPercentage = stats.total > 0 ? stats.healthy / stats.total : 1;
 
     const overall =
-      healthyPercentage >= 0.8 ? 'healthy' : healthyPercentage >= 0.5 ? 'warning' : 'critical';
+      healthyPercentage >= 0.8
+        ? 'healthy'
+        : healthyPercentage >= 0.5
+          ? 'warning'
+          : 'critical';
 
     const details: Record<
       string,
@@ -636,7 +730,9 @@ export class ClientManager extends EventEmitter {
 
     for (const type of Object.values(ClientType)) {
       const typeClients = this.getClientsByType(type);
-      const healthyType = typeClients.filter((c) => c.status === 'connected').length;
+      const healthyType = typeClients.filter(
+        (c) => c.status === 'connected',
+      ).length;
       const totalType = typeClients.length;
 
       if (totalType === 0) {
@@ -644,7 +740,12 @@ export class ClientManager extends EventEmitter {
       } else {
         const typeHealthy = healthyType / totalType;
         details[type] = {
-          status: typeHealthy >= 0.8 ? 'healthy' : typeHealthy >= 0.5 ? 'warning' : 'critical',
+          status:
+            typeHealthy >= 0.8
+              ? 'healthy'
+              : typeHealthy >= 0.5
+                ? 'warning'
+                : 'critical',
           message: `${healthyType}/${totalType} clients healthy`,
         };
       }
@@ -730,8 +831,20 @@ export class ClientManager extends EventEmitter {
    */
   private createInitialMetrics(): ClientMetrics {
     return {
-      requests: { total: 0, successful: 0, failed: 0, avgLatency: 0, minLatency: 0, maxLatency: 0 },
-      connections: { attempts: 0, successful: 0, failed: 0, currentStatus: 'initialized' },
+      requests: {
+        total: 0,
+        successful: 0,
+        failed: 0,
+        avgLatency: 0,
+        minLatency: 0,
+        maxLatency: 0,
+      },
+      connections: {
+        attempts: 0,
+        successful: 0,
+        failed: 0,
+        currentStatus: 'initialized',
+      },
       health: {
         lastCheck: new Date(),
         checksTotal: 0,
@@ -801,7 +914,7 @@ export const ClientManagerHelpers = {
   async createHTTPClient(
     id: string,
     baseURL: string,
-    options: Partial<HTTPClientConfig> = {}
+    options: Partial<HTTPClientConfig> = {},
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
@@ -825,7 +938,7 @@ export const ClientManagerHelpers = {
   async createWebSocketClient(
     id: string,
     url: string,
-    options: Partial<WebSocketClientConfig> = {}
+    options: Partial<WebSocketClientConfig> = {},
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
@@ -853,7 +966,7 @@ export const ClientManagerHelpers = {
     id: string,
     factRepoPath: string,
     anthropicApiKey: string,
-    options: Partial<KnowledgeClientConfig> = {}
+    options: Partial<KnowledgeClientConfig> = {},
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
@@ -879,7 +992,7 @@ export const ClientManagerHelpers = {
   async createMCPClient(
     id: string,
     servers: MCPClientConfig['servers'],
-    options: Partial<MCPClientConfig> = {}
+    options: Partial<MCPClientConfig> = {},
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,

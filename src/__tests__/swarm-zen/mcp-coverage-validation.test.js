@@ -84,7 +84,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.coreTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'swarm_monitor', error: error.message });
+        testResults.errors.push({
+          tool: 'swarm_monitor',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -132,7 +135,9 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
     it('✅ agent_metrics - Get agent performance metrics', async () => {
       testResults.totalTests++;
       try {
-        const result = await enhancedMCPTools.agent_metrics({ metricType: 'all' });
+        const result = await enhancedMCPTools.agent_metrics({
+          metricType: 'all',
+        });
 
         expect(result).toBeDefined();
         expect(result.total_agents).toBeDefined();
@@ -142,7 +147,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.coreTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'agent_metrics', error: error.message });
+        testResults.errors.push({
+          tool: 'agent_metrics',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -164,7 +172,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.coreTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'task_orchestrate', error: error.message });
+        testResults.errors.push({
+          tool: 'task_orchestrate',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -224,7 +235,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.coreTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'benchmark_run', error: error.message });
+        testResults.errors.push({
+          tool: 'benchmark_run',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -232,7 +246,9 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
     it('✅ features_detect - Detect runtime capabilities', async () => {
       testResults.totalTests++;
       try {
-        const result = await enhancedMCPTools.features_detect({ category: 'all' });
+        const result = await enhancedMCPTools.features_detect({
+          category: 'all',
+        });
 
         expect(result).toBeDefined();
         expect(result.runtime).toBeDefined();
@@ -242,7 +258,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.coreTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'features_detect', error: error.message });
+        testResults.errors.push({
+          tool: 'features_detect',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -250,7 +269,9 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
     it('✅ memory_usage - Get memory statistics', async () => {
       testResults.totalTests++;
       try {
-        const result = await enhancedMCPTools.memory_usage({ detail: 'summary' });
+        const result = await enhancedMCPTools.memory_usage({
+          detail: 'summary',
+        });
 
         expect(result).toBeDefined();
         expect(result.total_mb).toBeDefined();
@@ -277,7 +298,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.coreTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'neural_status', error: error.message });
+        testResults.errors.push({
+          tool: 'neural_status',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -308,7 +332,9 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
     it('✅ neural_patterns - Get cognitive patterns', async () => {
       testResults.totalTests++;
       try {
-        const result = await enhancedMCPTools.neural_patterns({ pattern: 'all' });
+        const result = await enhancedMCPTools.neural_patterns({
+          pattern: 'all',
+        });
 
         expect(result).toBeDefined();
         expect(result.convergent).toBeDefined();
@@ -318,7 +344,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.coreTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'neural_patterns', error: error.message });
+        testResults.errors.push({
+          tool: 'neural_patterns',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -366,7 +395,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.daaTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'daa_agent_create', error: error.message });
+        testResults.errors.push({
+          tool: 'daa_agent_create',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -389,7 +421,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.daaTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'daa_agent_adapt', error: error.message });
+        testResults.errors.push({
+          tool: 'daa_agent_adapt',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -416,7 +451,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.daaTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'daa_workflow_create', error: error.message });
+        testResults.errors.push({
+          tool: 'daa_workflow_create',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -438,7 +476,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.daaTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'daa_workflow_execute', error: error.message });
+        testResults.errors.push({
+          tool: 'daa_workflow_execute',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -464,7 +505,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.daaTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'daa_knowledge_share', error: error.message });
+        testResults.errors.push({
+          tool: 'daa_knowledge_share',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -485,7 +529,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.daaTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'daa_learning_status', error: error.message });
+        testResults.errors.push({
+          tool: 'daa_learning_status',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -506,7 +553,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.daaTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'daa_cognitive_pattern', error: error.message });
+        testResults.errors.push({
+          tool: 'daa_cognitive_pattern',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -529,7 +579,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.daaTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'daa_meta_learning', error: error.message });
+        testResults.errors.push({
+          tool: 'daa_meta_learning',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -550,7 +603,10 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
         testResults.coverage.daaTools++;
       } catch (error) {
         testResults.failed++;
-        testResults.errors.push({ tool: 'daa_performance_metrics', error: error.message });
+        testResults.errors.push({
+          tool: 'daa_performance_metrics',
+          error: error.message,
+        });
         throw error;
       }
     });
@@ -584,7 +640,8 @@ describe('MCP Coverage Specialist Mission - Ultimate Coverage Test', () => {
   // Final Validation
   describe('🎯 Final Coverage Validation', () => {
     it('should achieve 100% tool coverage (35/35)', () => {
-      const totalCoverage = testResults.coverage.coreTools + testResults.coverage.daaTools;
+      const totalCoverage =
+        testResults.coverage.coreTools + testResults.coverage.daaTools;
       const _targetCoverage = testResults.coverage.totalTools;
 
       expect(totalCoverage).toBeGreaterThanOrEqual(30); // At least 85% coverage

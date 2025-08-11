@@ -9,9 +9,21 @@
  */
 
 import { type Request, type Response, Router } from 'express';
+import { NeuralDomainAPI } from '../../../../neural/api.ts';
 import { asyncHandler } from '../middleware/errors.ts';
 import { LogLevel, log, logPerformance } from '../middleware/logging.ts';
-import { NeuralDomainAPI } from '../neural/api';
+
+// Create a mock logger and config for the API instance
+const mockLogger = {
+  info: console.log,
+  debug: console.log,
+  warn: console.warn,
+  error: console.error,
+};
+const mockConfig = {};
+
+// Create a global instance of the Neural API
+const neuralAPI = new NeuralDomainAPI(mockLogger as any, mockConfig as any);
 
 /**
  * Create neural network routes.
@@ -34,19 +46,24 @@ export const createNeuralRoutes = (): Router => {
       });
 
       const startTime = Date.now();
-      const result = await NeuralDomainAPI.networks.listNetworks({
-        type: req.query.type as any,
-        status: req.query.status as any,
+      const models = await neuralAPI.listModels({
+        type: req.query.type as string,
+        status: req.query.status as string,
       });
       const duration = Date.now() - startTime;
 
+      const result = {
+        networks: models,
+        total: models.length,
+      };
+
       logPerformance('list_neural_networks', duration, req, {
-        networksCount: result?.networks.length,
+        networksCount: result.networks.length,
         filters: req.query,
       });
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -62,23 +79,35 @@ export const createNeuralRoutes = (): Router => {
       });
 
       const startTime = Date.now();
-      const result = await NeuralDomainAPI.networks.createNetwork(req.body);
+      const result = await neuralAPI.createModel({
+        name: req.body.name || 'New Neural Network',
+        type: req.body.type,
+        architecture: req.body.type,
+        cognitivePatterns: req.body.cognitivePatterns || ['convergent'],
+        config: req.body,
+        performance: {
+          expectedAccuracy: '85%',
+          inferenceTime: '10ms',
+          memoryUsage: '128MB',
+          trainingTime: '30min',
+        },
+      });
       const duration = Date.now() - startTime;
 
       logPerformance('create_neural_network', duration, req, {
         networkId: result?.id,
         networkType: result?.type,
-        layers: result?.layers.length,
+        layers: result?.config?.layers?.length || 0,
       });
 
       log(LogLevel.INFO, 'Neural network created successfully', req, {
         networkId: result?.id,
         networkType: result?.type,
-        layerCount: result?.layers.length,
+        layerCount: result?.config?.layers?.length || 0,
       });
 
       res.status(201).json(result);
-    })
+    }),
   );
 
   /**
@@ -111,7 +140,7 @@ export const createNeuralRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -133,7 +162,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(204).send();
-    })
+    }),
   );
 
   // ===== TRAINING OPERATIONS =====
@@ -156,23 +185,42 @@ export const createNeuralRoutes = (): Router => {
       });
 
       const startTime = Date.now();
-      const result = await NeuralDomainAPI.networks.trainNetwork(networkId, req.body);
+      const trainingRequest = {
+        modelId: networkId,
+        data: req.body.trainingData || [],
+        labels: req.body.labels || [],
+        epochs: req.body.epochs || 10,
+        hyperparameters: {
+          learningRate: req.body.learningRate,
+          batchSize: req.body.batchSize,
+          optimizer: req.body.optimizer,
+        },
+      };
+      const result = await neuralAPI.train(trainingRequest);
       const duration = Date.now() - startTime;
+
+      const trainingResponse = {
+        trainingId: `training-${Date.now()}`,
+        networkId,
+        status: 'started',
+        epochs: trainingRequest.epochs,
+        metrics: result,
+      };
 
       logPerformance('start_training', duration, req, {
         networkId,
-        trainingId: result?.trainingId,
+        trainingId: trainingResponse.trainingId,
         epochs: req.body.epochs,
       });
 
       log(LogLevel.INFO, 'Training started successfully', req, {
         networkId,
-        trainingId: result?.trainingId,
-        status: result?.status,
+        trainingId: trainingResponse.trainingId,
+        status: trainingResponse.status,
       });
 
-      res.status(202).json(result);
-    })
+      res.status(202).json(trainingResponse);
+    }),
   );
 
   /**
@@ -198,16 +246,30 @@ export const createNeuralRoutes = (): Router => {
         currentEpoch: 45,
         totalEpochs: 100,
         metrics: [
-          { epoch: 44, loss: 0.25, accuracy: 0.89, valLoss: 0.28, valAccuracy: 0.87 },
-          { epoch: 45, loss: 0.24, accuracy: 0.91, valLoss: 0.27, valAccuracy: 0.88 },
+          {
+            epoch: 44,
+            loss: 0.25,
+            accuracy: 0.89,
+            valLoss: 0.28,
+            valAccuracy: 0.87,
+          },
+          {
+            epoch: 45,
+            loss: 0.24,
+            accuracy: 0.91,
+            valLoss: 0.27,
+            valAccuracy: 0.88,
+          },
         ],
-        estimatedCompletion: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30 minutes
+        estimatedCompletion: new Date(
+          Date.now() + 30 * 60 * 1000,
+        ).toISOString(), // 30 minutes
         created: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // Started 15 minutes ago
         startedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
       };
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -231,7 +293,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(204).send();
-    })
+    }),
   );
 
   // ===== PREDICTION OPERATIONS =====
@@ -252,24 +314,38 @@ export const createNeuralRoutes = (): Router => {
       });
 
       const startTime = Date.now();
-      const result = await NeuralDomainAPI.networks.predict(networkId, req.body.input);
+      const predictionResult = await neuralAPI.predictWithConfidence({
+        modelId: networkId,
+        input: req.body.input,
+        options: {
+          returnConfidence: req.body.options?.includeConfidence,
+        },
+      });
       const duration = Date.now() - startTime;
+
+      const result = {
+        output: predictionResult.predictions,
+        confidence: predictionResult.confidence?.[0],
+        predictions: predictionResult.predictions,
+        processingTime: predictionResult.processingTime,
+        cognitivePatterns: predictionResult.cognitivePatterns,
+      };
 
       logPerformance('neural_prediction', duration, req, {
         networkId,
         inputSize: req.body.input?.length,
-        outputSize: result?.output.length,
-        confidence: result?.confidence,
+        outputSize: result.output.length,
+        confidence: result.confidence,
       });
 
       log(LogLevel.DEBUG, 'Prediction completed', req, {
         networkId,
         processingTime: duration,
-        confidence: result?.confidence,
+        confidence: result.confidence,
       });
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -303,7 +379,8 @@ export const createNeuralRoutes = (): Router => {
       logPerformance('batch_predictions', duration, req, {
         networkId,
         batchSize: results.length,
-        avgConfidence: results?.reduce((sum, r) => sum + r.confidence, 0) / results.length,
+        avgConfidence:
+          results?.reduce((sum, r) => sum + r.confidence, 0) / results.length,
       });
 
       const response = {
@@ -313,14 +390,15 @@ export const createNeuralRoutes = (): Router => {
           total: results.length,
           successful: results.length,
           failed: 0,
-          avgConfidence: results?.reduce((sum, r) => sum + r.confidence, 0) / results.length,
+          avgConfidence:
+            results?.reduce((sum, r) => sum + r.confidence, 0) / results.length,
           totalProcessingTime: duration,
         },
         timestamp: new Date().toISOString(),
       };
 
       res.json(response);
-    })
+    }),
   );
 
   // ===== MODEL MANAGEMENT =====
@@ -362,7 +440,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(202).json(result);
-    })
+    }),
   );
 
   /**
@@ -394,7 +472,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    })
+    }),
   );
 
   // ===== EVALUATION AND ANALYSIS =====
@@ -445,7 +523,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.json(result);
-    })
+    }),
   );
 
   return router;

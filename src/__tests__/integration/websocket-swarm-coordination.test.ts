@@ -67,7 +67,7 @@ class SwarmCoordinator {
 
   constructor(
     private websocket: MockWebSocket | WebSocket,
-    private protocol: { encode: Function; decode: Function }
+    private protocol: { encode: Function; decode: Function },
   ) {
     this.setupWebSocketHandlers();
   }
@@ -85,7 +85,9 @@ class SwarmCoordinator {
     });
   }
 
-  async broadcastMessage(message: Omit<SwarmMessage, 'timestamp'>): Promise<void> {
+  async broadcastMessage(
+    message: Omit<SwarmMessage, 'timestamp'>,
+  ): Promise<void> {
     const fullMessage: SwarmMessage = {
       ...message,
       timestamp: Date.now(),
@@ -103,7 +105,8 @@ class SwarmCoordinator {
     const latency = Date.now() - message['timestamp'];
     this.metrics.latencySamples.push(latency);
     this.metrics.averageLatency =
-      this.metrics.latencySamples.reduce((a, b) => a + b, 0) / this.metrics.latencySamples.length;
+      this.metrics.latencySamples.reduce((a, b) => a + b, 0) /
+      this.metrics.latencySamples.length;
 
     // Update agent status
     if (message['agentId']) {
@@ -131,7 +134,7 @@ class SwarmCoordinator {
         type: 'task',
         agentId,
         payload: task,
-      })
+      }),
     );
 
     await Promise.all(promises);
@@ -210,7 +213,9 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
       const testMessage = { type: 'sync', timestamp: Date.now() };
       mockWebSocket.emit('message', { data: JSON.stringify(testMessage) });
 
-      expect(mockProtocol.decode).toHaveBeenCalledWith(JSON.stringify(testMessage));
+      expect(mockProtocol.decode).toHaveBeenCalledWith(
+        JSON.stringify(testMessage),
+      );
     });
 
     it('should handle agent coordination workflow', async () => {
@@ -228,7 +233,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
             type: 'task',
             agentId,
             payload: task,
-          })
+          }),
         );
       });
     });
@@ -276,7 +281,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
             type: 'task',
             agentId: `agent-${i % 10}`,
             payload: { index: i },
-          })
+          }),
         );
       }
 
@@ -327,9 +332,9 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
       mockWebSocket.readyState = MockWebSocket['CLOSED'];
 
       // Try to send message
-      await expect(coordinator.broadcastMessage({ type: 'test' })).rejects.toThrow(
-        'WebSocket is not open'
-      );
+      await expect(
+        coordinator.broadcastMessage({ type: 'test' }),
+      ).rejects.toThrow('WebSocket is not open');
 
       // Verify protocol wasn't called for failed send
       expect(mockProtocol.encode).toHaveBeenCalledTimes(0);

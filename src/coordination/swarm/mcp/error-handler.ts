@@ -1,26 +1,26 @@
 /**
  * @fileoverview Comprehensive MCP Error Handling System for Claude Code Zen
- * 
+ *
  * This module provides sophisticated error handling, validation, and recovery mechanisms
  * for all MCP (Model Context Protocol) operations in Claude Code Zen. It includes
  * specialized error types, validation systems, error classification, and recovery
  * strategies for robust swarm coordination.
- * 
+ *
  * ## Error Handling Philosophy
- * 
+ *
  * The error handling system follows these principles:
  * - **Type Safety**: Strongly typed errors with specific context information
  * - **Recoverability**: Errors classified by recovery potential and strategies
  * - **Observability**: Comprehensive logging and error tracking for debugging
  * - **Graceful Degradation**: System continues operating when possible
  * - **Context Preservation**: Rich error context for effective troubleshooting
- * 
+ *
  * ## Error Type Hierarchy
- * 
+ *
  * ### Core MCP Errors
  * - `ValidationError` - Parameter and input validation failures
  * - `MCPErrorHandler` - General MCP error handling and classification
- * 
+ *
  * ### Domain-Specific Errors
  * - `AgentError` - Agent creation, management, and operation failures
  * - `SwarmError` - Swarm coordination and management issues
@@ -30,22 +30,22 @@
  * - `PersistenceError` - Data storage and retrieval problems
  * - `ResourceError` - Resource allocation and management failures
  * - `ZenSwarmError` - Claude Code Zen specific swarm coordination errors
- * 
+ *
  * ## Error Recovery Strategies
- * 
+ *
  * - **Retry Logic**: Automatic retry for transient failures
  * - **Fallback Operations**: Alternative execution paths when primary fails
  * - **Circuit Breaker**: Prevent cascade failures in distributed operations
  * - **Graceful Degradation**: Reduced functionality rather than complete failure
- * 
+ *
  * ## Integration with stdio MCP
- * 
+ *
  * All error handling integrates seamlessly with the stdio MCP server:
  * - Proper MCP error response formatting
  * - Error classification for client handling
  * - Detailed error context for debugging
  * - Recovery suggestions for operational issues
- * 
+ *
  * @example
  * ```typescript
  * // Create specialized errors with context
@@ -53,7 +53,7 @@
  *   'Agent failed to initialize neural network',
  *   'agent-research-001'
  * );
- * 
+ *
  * // Handle errors with classification
  * try {
  *   await swarmOperation();
@@ -63,11 +63,11 @@
  *     await retryOperation();
  *   }
  * }
- * 
+ *
  * // Wrap MCP tools with error handling
  * const safeTool = MCPToolWrapper.wrap(originalTool, 'swarm_status');
  * ```
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
  * @since 1.0.0
@@ -82,18 +82,18 @@ const logger = getLogger('MCP-ErrorHandler');
 
 /**
  * Specialized error for parameter and input validation failures in MCP operations.
- * 
+ *
  * ValidationError is thrown when MCP tool parameters fail validation checks,
  * including missing required parameters, invalid types, or constraint violations.
  * Includes field-specific information for precise error reporting.
- * 
+ *
  * @example
  * ```typescript
  * // Throw validation error for missing required parameter
  * if (!params.agentId) {
  *   throw new ValidationError('Agent ID is required', 'agentId');
  * }
- * 
+ *
  * // Create via factory for consistent context
  * const error = ErrorFactory.createValidationError(
  *   'Invalid cognitive pattern specified',
@@ -107,7 +107,7 @@ export class ValidationError extends Error {
 
   /**
    * Creates a new ValidationError with optional field context.
-   * 
+   *
    * @param message - Descriptive error message explaining the validation failure
    * @param field - The specific field that failed validation (optional)
    */
@@ -120,11 +120,11 @@ export class ValidationError extends Error {
 
 /**
  * Central error handling system for all MCP operations in Claude Code Zen.
- * 
+ *
  * Provides comprehensive error handling, classification, validation, and logging
  * for MCP tool operations. Includes error severity assessment, recoverability
  * analysis, and context preservation for effective debugging and monitoring.
- * 
+ *
  * @example
  * ```typescript
  * // Handle and classify errors with context
@@ -135,7 +135,7 @@ export class ValidationError extends Error {
  *     tool: 'swarm_init',
  *     agentId: 'agent-001'
  *   });
- *   
+ *
  *   if (classification.recoverable) {
  *     // Attempt recovery
  *   } else {
@@ -147,14 +147,14 @@ export class ValidationError extends Error {
 export class MCPErrorHandler {
   /**
    * Handles critical errors by logging and re-throwing with context.
-   * 
+   *
    * This method provides centralized error handling for unrecoverable errors,
    * ensuring proper logging and context preservation before propagating the error.
-   * 
+   *
    * @param error - The error to handle
    * @param context - Optional context string describing where the error occurred
    * @throws The original error after logging
-   * 
+   *
    * @example
    * ```typescript
    * try {
@@ -171,14 +171,14 @@ export class MCPErrorHandler {
 
   /**
    * Validates MCP tool parameters against a schema.
-   * 
+   *
    * Performs basic parameter validation to ensure required parameters are present
    * and meet basic requirements. Can be extended for more sophisticated validation.
-   * 
+   *
    * @param params - The parameters to validate
    * @param schema - The schema defining validation rules
    * @throws {Error} When required parameters are missing
-   * 
+   *
    * @example
    * ```typescript
    * MCPErrorHandler.validateParameters(
@@ -196,11 +196,11 @@ export class MCPErrorHandler {
 
   /**
    * Classifies errors for recovery strategy determination and monitoring.
-   * 
+   *
    * Analyzes errors to determine their type, severity, recoverability, and
    * appropriate handling strategies. Essential for building resilient MCP
    * operations with intelligent error recovery.
-   * 
+   *
    * @param error - The error to classify
    * @param context - Additional context about the error occurrence
    * @returns Error classification with recovery information
@@ -209,14 +209,14 @@ export class MCPErrorHandler {
    * @returns result.severity - Error severity level ('low', 'medium', 'high', 'critical')
    * @returns result.recoverable - Whether the error can potentially be recovered from
    * @returns result.context - Additional context information
-   * 
+   *
    * @example
    * ```typescript
    * const classification = MCPErrorHandler.classifyError(
    *   new AgentError('Agent failed to spawn', 'agent-001'),
    *   { operation: 'agent_spawn', swarmId: 'swarm-alpha' }
    * );
-   * 
+   *
    * if (classification.severity === 'high' && classification.recoverable) {
    *   await attemptErrorRecovery();
    * }
@@ -236,11 +236,11 @@ export class MCPErrorHandler {
 
 /**
  * Wrapper utility for MCP tools that provides automatic error handling and recovery.
- * 
+ *
  * MCPToolWrapper ensures that all MCP tools have consistent error handling behavior,
  * preventing uncaught exceptions from crashing the MCP server and providing
  * standardized error responses for client applications.
- * 
+ *
  * @example
  * ```typescript
  * // Wrap a tool function for safe execution
@@ -252,7 +252,7 @@ export class MCPErrorHandler {
  *   },
  *   'agent_operation'
  * );
- * 
+ *
  * // Safe execution returns standardized response
  * const result = await safeTool({ agentId: 'agent-001' });
  * if (!result.success) {
@@ -263,25 +263,25 @@ export class MCPErrorHandler {
 export class MCPToolWrapper {
   /**
    * Wraps an MCP tool function with comprehensive error handling.
-   * 
+   *
    * Creates a safe wrapper around MCP tool functions that catches all errors,
    * logs them appropriately, and returns standardized error responses instead
    * of allowing exceptions to propagate to the MCP server.
-   * 
+   *
    * @param toolFn - The MCP tool function to wrap
    * @param toolName - The name of the tool for logging purposes
    * @returns Wrapped tool function that never throws, always returns a response
    * @returns result.success - Whether the tool executed successfully (false on error)
    * @returns result.error - Error message if execution failed
    * @returns result.[...] - Original tool response if execution succeeded
-   * 
+   *
    * @example
    * ```typescript
    * const wrappedSwarmInit = MCPToolWrapper.wrap(
    *   swarmTools.swarmInit.bind(swarmTools),
    *   'swarm_init'
    * );
-   * 
+   *
    * const result = await wrappedSwarmInit({ topology: 'mesh' });
    * ```
    */
@@ -302,11 +302,11 @@ export class MCPToolWrapper {
 
 /**
  * Comprehensive parameter validation system for MCP tools.
- * 
+ *
  * Provides validation, sanitization, and security checks for all MCP tool
  * parameters to ensure data integrity and prevent security vulnerabilities.
  * Includes schema validation, input sanitization, and type checking.
- * 
+ *
  * @example
  * ```typescript
  * // Validate tool parameters
@@ -314,7 +314,7 @@ export class MCPToolWrapper {
  *   { agentId: 'agent-001', type: 'coder' },
  *   'agent_spawn'
  * );
- * 
+ *
  * // Sanitize user input
  * const safeInput = MCPParameterValidator.sanitizeInput(
  *   'User input with <script>alert("xss")</script>'
@@ -324,15 +324,15 @@ export class MCPToolWrapper {
 export class MCPParameterValidator {
   /**
    * Validates parameters against a provided schema.
-   * 
+   *
    * Performs comprehensive parameter validation including type checking,
    * required field validation, and constraint enforcement. Can be extended
    * with JSON Schema or other validation libraries.
-   * 
+   *
    * @param _params - Parameters to validate
    * @param _schema - Validation schema
    * @returns Whether validation passed
-   * 
+   *
    * @example
    * ```typescript
    * const isValid = MCPParameterValidator.validate(
@@ -348,15 +348,15 @@ export class MCPParameterValidator {
 
   /**
    * Validates and sanitizes parameters for MCP tool execution.
-   * 
+   *
    * Ensures that tool parameters are present and valid before tool execution.
    * Throws ValidationError for missing or invalid parameters.
-   * 
+   *
    * @param params - Tool parameters to validate
    * @param toolName - Name of the tool for error context
    * @returns Validated parameters
    * @throws {ValidationError} When parameters are missing or invalid
-   * 
+   *
    * @example
    * ```typescript
    * try {
@@ -380,13 +380,13 @@ export class MCPParameterValidator {
 
   /**
    * Sanitizes string input to prevent security vulnerabilities.
-   * 
+   *
    * Removes potentially dangerous characters and patterns from string inputs
    * to prevent XSS, injection attacks, and other security issues.
-   * 
+   *
    * @param input - String input to sanitize
    * @returns Sanitized string safe for processing
-   * 
+   *
    * @example
    * ```typescript
    * // Remove dangerous HTML tags
@@ -404,11 +404,11 @@ export class MCPParameterValidator {
 
 /**
  * Specialized error for agent-related operations and failures.
- * 
+ *
  * AgentError is thrown when agent creation, management, or operation fails.
  * Includes agent-specific context such as agent ID for precise error tracking
  * and debugging in multi-agent environments.
- * 
+ *
  * @example
  * ```typescript
  * // Agent initialization failure
@@ -416,7 +416,7 @@ export class MCPParameterValidator {
  *   'Failed to initialize neural network for agent',
  *   'agent-research-001'
  * );
- * 
+ *
  * // Agent communication failure
  * throw new AgentError(
  *   'Agent communication timeout',
@@ -427,13 +427,13 @@ export class MCPParameterValidator {
 export class AgentError extends Error {
   /**
    * Creates a new AgentError with optional agent context.
-   * 
+   *
    * @param message - Descriptive error message explaining the agent failure
    * @param agentId - The ID of the agent that encountered the error (optional)
    */
   constructor(
     message: string,
-    public agentId?: string
+    public agentId?: string,
   ) {
     super(message);
     this.name = 'AgentError';
@@ -442,11 +442,11 @@ export class AgentError extends Error {
 
 /**
  * Specialized error for neural network and AI model operations.
- * 
+ *
  * NeuralError is thrown when neural network operations fail, including model
  * loading, inference, training, or configuration issues. Includes model-specific
  * context for debugging complex AI operations.
- * 
+ *
  * @example
  * ```typescript
  * // Model loading failure
@@ -455,7 +455,7 @@ export class AgentError extends Error {
  *   'transformer-base-v1',
  *   'model_load'
  * );
- * 
+ *
  * // Inference failure
  * throw new NeuralError(
  *   'Neural inference timeout',
@@ -467,7 +467,7 @@ export class AgentError extends Error {
 export class NeuralError extends Error {
   /**
    * Creates a new NeuralError with model and operation context.
-   * 
+   *
    * @param message - Descriptive error message explaining the neural operation failure
    * @param modelId - The ID of the neural model that encountered the error (optional)
    * @param operation - The specific operation that failed (optional)
@@ -475,7 +475,7 @@ export class NeuralError extends Error {
   constructor(
     message: string,
     public modelId?: string,
-    public operation?: string
+    public operation?: string,
   ) {
     super(message);
     this.name = 'NeuralError';
@@ -484,11 +484,11 @@ export class NeuralError extends Error {
 
 /**
  * Specialized error for data persistence and storage operations.
- * 
+ *
  * PersistenceError is thrown when database operations, file I/O, or other
  * persistence mechanisms fail. Includes key and operation context for
  * debugging storage-related issues.
- * 
+ *
  * @example
  * ```typescript
  * // Database write failure
@@ -497,7 +497,7 @@ export class NeuralError extends Error {
  *   'agent-state-001',
  *   'database_write'
  * );
- * 
+ *
  * // File read failure
  * throw new PersistenceError(
  *   'Configuration file not found',
@@ -509,7 +509,7 @@ export class NeuralError extends Error {
 export class PersistenceError extends Error {
   /**
    * Creates a new PersistenceError with key and operation context.
-   * 
+   *
    * @param message - Descriptive error message explaining the persistence failure
    * @param key - The key, filename, or identifier that failed to persist (optional)
    * @param operation - The specific persistence operation that failed (optional)
@@ -517,7 +517,7 @@ export class PersistenceError extends Error {
   constructor(
     message: string,
     public key?: string,
-    public operation?: string
+    public operation?: string,
   ) {
     super(message);
     this.name = 'PersistenceError';
@@ -526,11 +526,11 @@ export class PersistenceError extends Error {
 
 /**
  * Specialized error for resource allocation and management failures.
- * 
+ *
  * ResourceError is thrown when system resources cannot be allocated,
  * accessed, or managed properly. Includes resource type and ID context
  * for debugging resource-related issues.
- * 
+ *
  * @example
  * ```typescript
  * // Memory allocation failure
@@ -539,7 +539,7 @@ export class PersistenceError extends Error {
  *   'memory',
  *   'neural-buffer-001'
  * );
- * 
+ *
  * // CPU resource unavailable
  * throw new ResourceError(
  *   'CPU cores not available for swarm processing',
@@ -551,7 +551,7 @@ export class PersistenceError extends Error {
 export class ResourceError extends Error {
   /**
    * Creates a new ResourceError with resource type and ID context.
-   * 
+   *
    * @param message - Descriptive error message explaining the resource failure
    * @param resourceType - The type of resource that failed (optional)
    * @param resourceId - The specific resource identifier that failed (optional)
@@ -559,7 +559,7 @@ export class ResourceError extends Error {
   constructor(
     message: string,
     public resourceType?: string,
-    public resourceId?: string
+    public resourceId?: string,
   ) {
     super(message);
     this.name = 'ResourceError';
@@ -568,11 +568,11 @@ export class ResourceError extends Error {
 
 /**
  * Specialized error for swarm coordination and management failures.
- * 
+ *
  * SwarmError is thrown when swarm operations fail, including swarm creation,
  * agent coordination, or swarm management issues. Includes swarm-specific
  * context such as swarm ID and agent count for debugging.
- * 
+ *
  * @example
  * ```typescript
  * // Swarm initialization failure
@@ -581,7 +581,7 @@ export class ResourceError extends Error {
  *   'swarm-mesh-001',
  *   8
  * );
- * 
+ *
  * // Agent coordination failure
  * throw new SwarmError(
  *   'Swarm coordination timeout with agents',
@@ -593,7 +593,7 @@ export class ResourceError extends Error {
 export class SwarmError extends Error {
   /**
    * Creates a new SwarmError with swarm context.
-   * 
+   *
    * @param message - Descriptive error message explaining the swarm failure
    * @param swarmId - The ID of the swarm that encountered the error (optional)
    * @param agentCount - The number of agents in the swarm (optional)
@@ -601,7 +601,7 @@ export class SwarmError extends Error {
   constructor(
     message: string,
     public swarmId?: string,
-    public agentCount?: number
+    public agentCount?: number,
   ) {
     super(message);
     this.name = 'SwarmError';
@@ -610,11 +610,11 @@ export class SwarmError extends Error {
 
 /**
  * Specialized error for task execution and orchestration failures.
- * 
+ *
  * TaskError is thrown when task operations fail, including task creation,
  * execution, coordination, or completion issues. Includes task-specific
  * context for debugging complex workflows.
- * 
+ *
  * @example
  * ```typescript
  * // Task execution failure
@@ -623,7 +623,7 @@ export class SwarmError extends Error {
  *   'task-analysis-001',
  *   'code-analysis'
  * );
- * 
+ *
  * // Task orchestration failure
  * throw new TaskError(
  *   'Failed to orchestrate task dependencies',
@@ -635,7 +635,7 @@ export class SwarmError extends Error {
 export class TaskError extends Error {
   /**
    * Creates a new TaskError with task context.
-   * 
+   *
    * @param message - Descriptive error message explaining the task failure
    * @param taskId - The ID of the task that encountered the error (optional)
    * @param taskType - The type of task that failed (optional)
@@ -643,7 +643,7 @@ export class TaskError extends Error {
   constructor(
     message: string,
     public taskId?: string,
-    public taskType?: string
+    public taskType?: string,
   ) {
     super(message);
     this.name = 'TaskError';
@@ -652,11 +652,11 @@ export class TaskError extends Error {
 
 /**
  * Specialized error for WebAssembly (WASM) module operations.
- * 
+ *
  * WasmError is thrown when WebAssembly operations fail, including module
  * loading, function execution, or memory management issues. Includes
  * module and function context for debugging WASM operations.
- * 
+ *
  * @example
  * ```typescript
  * // WASM module loading failure
@@ -665,7 +665,7 @@ export class TaskError extends Error {
  *   'neural-compute.wasm',
  *   undefined
  * );
- * 
+ *
  * // WASM function execution failure
  * throw new WasmError(
  *   'WASM function execution failed',
@@ -677,7 +677,7 @@ export class TaskError extends Error {
 export class WasmError extends Error {
   /**
    * Creates a new WasmError with module and function context.
-   * 
+   *
    * @param message - Descriptive error message explaining the WASM failure
    * @param module - The WASM module that encountered the error (optional)
    * @param functionName - The specific WASM function that failed (optional)
@@ -685,7 +685,7 @@ export class WasmError extends Error {
   constructor(
     message: string,
     public module?: string,
-    public functionName?: string
+    public functionName?: string,
   ) {
     super(message);
     this.name = 'WasmError';
@@ -694,11 +694,11 @@ export class WasmError extends Error {
 
 /**
  * Specialized error for Claude Code Zen specific swarm operations.
- * 
+ *
  * ZenSwarmError is thrown when Claude Code Zen specific swarm features fail,
  * including advanced coordination patterns, zen-specific algorithms, or
  * integration issues. Includes swarm type and coordination context.
- * 
+ *
  * @example
  * ```typescript
  * // Zen coordination failure
@@ -707,7 +707,7 @@ export class WasmError extends Error {
  *   'zen-meditation-swarm',
  *   'mindfulness-coordination'
  * );
- * 
+ *
  * // Advanced swarm pattern failure
  * throw new ZenSwarmError(
  *   'Quantum swarm entanglement lost',
@@ -719,7 +719,7 @@ export class WasmError extends Error {
 export class ZenSwarmError extends Error {
   /**
    * Creates a new ZenSwarmError with swarm type and coordination context.
-   * 
+   *
    * @param message - Descriptive error message explaining the zen swarm failure
    * @param swarmType - The type of zen swarm that encountered the error (optional)
    * @param coordination - The specific coordination pattern that failed (optional)
@@ -727,7 +727,7 @@ export class ZenSwarmError extends Error {
   constructor(
     message: string,
     public swarmType?: string,
-    public coordination?: string
+    public coordination?: string,
   ) {
     super(message);
     this.name = 'ZenSwarmError';
@@ -736,11 +736,11 @@ export class ZenSwarmError extends Error {
 
 /**
  * Comprehensive error context interface for detailed error tracking and debugging.
- * 
+ *
  * ErrorContext provides rich contextual information about error occurrences,
  * enabling effective debugging, monitoring, and error analysis across the
  * Claude Code Zen system.
- * 
+ *
  * @example
  * ```typescript
  * const context: ErrorContext = {
@@ -760,29 +760,29 @@ export class ZenSwarmError extends Error {
 export interface ErrorContext {
   /** The operation that was being performed when the error occurred */
   operation: string;
-  
+
   /** Timestamp when the error occurred */
   timestamp: Date;
-  
+
   /** Additional metadata relevant to the error context (optional) */
   metadata?: Record<string, any> | undefined;
-  
+
   /** Stack trace of the error occurrence (optional) */
   stackTrace?: string | undefined;
-  
+
   /** User ID associated with the operation (optional) */
   userId?: string | undefined;
-  
+
   /** Session ID associated with the operation (optional) */
   sessionId?: string | undefined;
 }
 
 /**
  * Factory class for creating consistent error contexts across the system.
- * 
+ *
  * ErrorContextFactory provides standardized error context creation with
  * automatic timestamp generation and stack trace capture for debugging.
- * 
+ *
  * @example
  * ```typescript
  * // Create error context for agent operation
@@ -799,14 +799,14 @@ export interface ErrorContext {
 export class ErrorContextFactory {
   /**
    * Creates a standardized error context with automatic metadata.
-   * 
+   *
    * Generates an ErrorContext object with current timestamp, stack trace,
    * and provided metadata for comprehensive error tracking.
-   * 
+   *
    * @param operation - The operation being performed when context is created
    * @param metadata - Additional context metadata (optional)
    * @returns Complete ErrorContext object with timestamp and stack trace
-   * 
+   *
    * @example
    * ```typescript
    * const context = ErrorContextFactory.create(
@@ -815,7 +815,10 @@ export class ErrorContextFactory {
    * );
    * ```
    */
-  static create(operation: string, metadata?: Record<string, any>): ErrorContext {
+  static create(
+    operation: string,
+    metadata?: Record<string, any>,
+  ): ErrorContext {
     return {
       operation,
       timestamp: new Date(),
@@ -827,13 +830,13 @@ export class ErrorContextFactory {
 
 /**
  * Comprehensive error factory for consistent error creation across Claude Code Zen.
- * 
+ *
  * ErrorFactory provides standardized methods for creating all types of errors
  * with proper context, metadata, and error hierarchy. Ensures consistent error
  * handling patterns across the entire system.
- * 
+ *
  * ## Factory Methods
- * 
+ *
  * - **Validation Errors**: `createValidationError()` for parameter validation failures
  * - **Agent Errors**: `createAgentError()` for agent-related failures
  * - **Neural Errors**: `createNeuralError()` for AI/ML operation failures
@@ -843,7 +846,7 @@ export class ErrorContextFactory {
  * - **Task Errors**: `createTaskError()` for task execution failures
  * - **WASM Errors**: `createWasmError()` for WebAssembly failures
  * - **Zen Swarm Errors**: `createZenSwarmError()` for zen-specific failures
- * 
+ *
  * @example
  * ```typescript
  * // Create specific error types
@@ -851,14 +854,14 @@ export class ErrorContextFactory {
  *   'Agent failed to initialize',
  *   'agent-001'
  * );
- * 
+ *
  * // Create dynamic errors with metadata
  * const dynamicError = ErrorFactory.createError(
  *   'neural',
  *   'Model inference timeout',
  *   { modelId: 'transformer-v1', operation: 'inference' }
  * );
- * 
+ *
  * // Create errors with full context
  * const contextError = ErrorFactory.createErrorWithContext(
  *   SwarmError,
@@ -870,7 +873,10 @@ export class ErrorContextFactory {
  * ```
  */
 export class ErrorFactory {
-  static createValidationError(message: string, field?: string): ValidationError {
+  static createValidationError(
+    message: string,
+    field?: string,
+  ): ValidationError {
     return new ValidationError(message, field);
   }
 
@@ -878,14 +884,18 @@ export class ErrorFactory {
     return new AgentError(message, agentId);
   }
 
-  static createNeuralError(message: string, modelId?: string, operation?: string): NeuralError {
+  static createNeuralError(
+    message: string,
+    modelId?: string,
+    operation?: string,
+  ): NeuralError {
     return new NeuralError(message, modelId, operation);
   }
 
   static createPersistenceError(
     message: string,
     key?: string,
-    operation?: string
+    operation?: string,
   ): PersistenceError {
     return new PersistenceError(message, key, operation);
   }
@@ -893,27 +903,39 @@ export class ErrorFactory {
   static createResourceError(
     message: string,
     resourceType?: string,
-    resourceId?: string
+    resourceId?: string,
   ): ResourceError {
     return new ResourceError(message, resourceType, resourceId);
   }
 
-  static createSwarmError(message: string, swarmId?: string, agentCount?: number): SwarmError {
+  static createSwarmError(
+    message: string,
+    swarmId?: string,
+    agentCount?: number,
+  ): SwarmError {
     return new SwarmError(message, swarmId, agentCount);
   }
 
-  static createTaskError(message: string, taskId?: string, taskType?: string): TaskError {
+  static createTaskError(
+    message: string,
+    taskId?: string,
+    taskType?: string,
+  ): TaskError {
     return new TaskError(message, taskId, taskType);
   }
 
-  static createWasmError(message: string, module?: string, functionName?: string): WasmError {
+  static createWasmError(
+    message: string,
+    module?: string,
+    functionName?: string,
+  ): WasmError {
     return new WasmError(message, module, functionName);
   }
 
   static createZenSwarmError(
     message: string,
     swarmType?: string,
-    coordination?: string
+    coordination?: string,
   ): ZenSwarmError {
     return new ZenSwarmError(message, swarmType, coordination);
   }
@@ -931,13 +953,13 @@ export class ErrorFactory {
 
   /**
    * Generic error factory method for dynamic error creation based on type string.
-   * 
+   *
    * Creates errors dynamically based on error type string with optional metadata.
    * Useful for creating errors from configuration, API responses, or other
    * dynamic contexts where the error type is determined at runtime.
-   * 
+   *
    * ## Supported Error Types
-   * 
+   *
    * - `'validation'` - Creates ValidationError with field context
    * - `'agent'` - Creates AgentError with agent ID context
    * - `'neural'` - Creates NeuralError with model and operation context
@@ -947,12 +969,12 @@ export class ErrorFactory {
    * - `'task'` - Creates TaskError with task ID and type context
    * - `'wasm'` - Creates WasmError with module and function context
    * - `'zenswarm'` - Creates ZenSwarmError with swarm type and coordination context
-   * 
+   *
    * @param errorType - The type of error to create (case-insensitive)
    * @param message - Error message describing the failure
    * @param metadata - Optional metadata providing error context
    * @returns Specific error instance with appropriate context
-   * 
+   *
    * @example
    * ```typescript
    * // Create agent error dynamically
@@ -961,17 +983,17 @@ export class ErrorFactory {
    *   'Agent initialization failed',
    *   { agentId: 'research-agent-001' }
    * );
-   * 
+   *
    * // Create neural error with operation context
    * const neuralError = ErrorFactory.createError(
    *   'neural',
    *   'Model inference timeout',
-   *   { 
+   *   {
    *     modelId: 'transformer-base-v1',
    *     operation: 'text-generation'
    *   }
    * );
-   * 
+   *
    * // Create validation error with field context
    * const validationError = ErrorFactory.createError(
    *   'validation',
@@ -980,7 +1002,11 @@ export class ErrorFactory {
    * );
    * ```
    */
-  static createError(errorType: string, message: string, metadata?: Record<string, any>): Error {
+  static createError(
+    errorType: string,
+    message: string,
+    metadata?: Record<string, any>,
+  ): Error {
     const context = ErrorContextFactory.create(`create-${errorType}`, metadata);
 
     switch (errorType.toLowerCase()) {
@@ -989,14 +1015,14 @@ export class ErrorFactory {
           ValidationError,
           message,
           context,
-          metadata?.['field']
+          metadata?.['field'],
         );
       case 'agent':
         return ErrorFactory.createErrorWithContext(
           AgentError,
           message,
           context,
-          metadata?.['agentId']
+          metadata?.['agentId'],
         );
       case 'neural':
         return ErrorFactory.createErrorWithContext(
@@ -1004,7 +1030,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['modelId'],
-          metadata?.['operation']
+          metadata?.['operation'],
         );
       case 'persistence':
         return ErrorFactory.createErrorWithContext(
@@ -1012,7 +1038,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['key'],
-          metadata?.['operation']
+          metadata?.['operation'],
         );
       case 'resource':
         return ErrorFactory.createErrorWithContext(
@@ -1020,7 +1046,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['resourceType'],
-          metadata?.['resourceId']
+          metadata?.['resourceId'],
         );
       case 'swarm':
         return ErrorFactory.createErrorWithContext(
@@ -1028,7 +1054,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['swarmId'],
-          metadata?.['agentCount']
+          metadata?.['agentCount'],
         );
       case 'task':
         return ErrorFactory.createErrorWithContext(
@@ -1036,7 +1062,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['taskId'],
-          metadata?.['taskType']
+          metadata?.['taskType'],
         );
       case 'wasm':
         return ErrorFactory.createErrorWithContext(
@@ -1044,7 +1070,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['module'],
-          metadata?.['functionName']
+          metadata?.['functionName'],
         );
       case 'zenswarm':
         return ErrorFactory.createErrorWithContext(
@@ -1052,7 +1078,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['swarmType'],
-          metadata?.['coordination']
+          metadata?.['coordination'],
         );
       default: {
         // Generic error with context
@@ -1067,14 +1093,14 @@ export class ErrorFactory {
 
 /**
  * Default MCP error handler export for backward compatibility.
- * 
+ *
  * Provides a simplified interface to the most commonly used error handling
  * functions for easy integration with existing code.
- * 
+ *
  * @example
  * ```typescript
  * import mcpErrorHandler from './error-handler.ts';
- * 
+ *
  * // Classify and handle errors
  * try {
  *   await riskyOperation();

@@ -107,7 +107,10 @@ import { TaskDistributionEngine } from './distribution/task-distribution-engine.
 import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager.ts';
 import { PerformanceOptimizer } from './optimization/performance-optimizer.ts';
 import { CoordinationPatterns } from './patterns/coordination-patterns.ts';
-import { TopologyManager, type TopologyType } from './topology/topology-manager.ts';
+import {
+  TopologyManager,
+  type TopologyType,
+} from './topology/topology-manager.ts';
 
 export interface AdvancedCoordinationConfig {
   nodeId: string;
@@ -292,7 +295,7 @@ export interface CoordinationMetrics {
 export async function createAdvancedCoordinationSystem(
   config: AdvancedCoordinationConfig,
   logger: ILogger,
-  eventBus: IEventBus
+  eventBus: IEventBus,
 ): Promise<AdvancedCoordinationSystem> {
   // Create topology manager
   const topologyManager = new TopologyManager(
@@ -303,18 +306,22 @@ export async function createAdvancedCoordinationSystem(
       adaptation: config?.topology?.adaptation,
     },
     logger,
-    eventBus
+    eventBus,
   );
 
   // Create task distribution engine
-  const distributionEngine = new TaskDistributionEngine(config?.distribution, logger, eventBus);
+  const distributionEngine = new TaskDistributionEngine(
+    config?.distribution,
+    logger,
+    eventBus,
+  );
 
   // Create communication protocols
   const communicationProtocols = new CommunicationProtocols(
     config?.nodeId,
     config?.communication,
     logger,
-    eventBus
+    eventBus,
   );
 
   // Create agent lifecycle manager
@@ -332,7 +339,7 @@ export async function createAdvancedCoordinationSystem(
       qualityThresholds: config?.lifecycle?.qualityThresholds,
     },
     logger,
-    eventBus
+    eventBus,
   );
 
   // Create coordination patterns
@@ -340,11 +347,15 @@ export async function createAdvancedCoordinationSystem(
     config?.nodeId,
     config?.patterns,
     logger,
-    eventBus
+    eventBus,
   );
 
   // Create performance optimizer
-  const performanceOptimizer = new PerformanceOptimizer(config?.optimization, logger, eventBus);
+  const performanceOptimizer = new PerformanceOptimizer(
+    config?.optimization,
+    logger,
+    eventBus,
+  );
 
   // Set up cross-system integrations
   await setupIntegrations(
@@ -356,7 +367,7 @@ export async function createAdvancedCoordinationSystem(
       coordinationPatterns,
       performanceOptimizer,
     },
-    logger
+    logger,
   );
 
   return {
@@ -378,7 +389,7 @@ export async function createAdvancedCoordinationSystem(
  */
 async function setupIntegrations(
   systems: AdvancedCoordinationSystem,
-  logger: ILogger
+  logger: ILogger,
 ): Promise<void> {
   // Topology -> Distribution: Optimal task routing based on network topology
   systems.topologyManager.on('topology:optimized', (data) => {
@@ -389,17 +400,24 @@ async function setupIntegrations(
   // Distribution -> Lifecycle: Dynamic agent scaling based on task load
   systems.distributionEngine.on('load:spike', (data) => {
     logger.info('Task load spike detected, triggering agent scaling', data);
-    systems.lifecycleManager.triggerScaling('worker', data?.targetAgents).catch((error) => {
-      logger.error('Auto-scaling failed', { error });
-    });
+    systems.lifecycleManager
+      .triggerScaling('worker', data?.targetAgents)
+      .catch((error) => {
+        logger.error('Auto-scaling failed', { error });
+      });
   });
 
   // Communication -> Patterns: Network events affect coordination patterns
   systems.communicationProtocols.on('network:partition', (data) => {
-    logger.warn('Network partition detected, switching coordination pattern', data);
-    systems.coordinationPatterns.switchPattern('leader-follower').catch((error) => {
-      logger.error('Pattern switch failed', { error });
-    });
+    logger.warn(
+      'Network partition detected, switching coordination pattern',
+      data,
+    );
+    systems.coordinationPatterns
+      .switchPattern('leader-follower')
+      .catch((error) => {
+        logger.error('Pattern switch failed', { error });
+      });
   });
 
   // Lifecycle -> Topology: Agent health affects network topology
@@ -429,7 +447,9 @@ async function setupIntegrations(
  * @param systems
  * @example
  */
-export function getCoordinationMetrics(systems: AdvancedCoordinationSystem): CoordinationMetrics {
+export function getCoordinationMetrics(
+  systems: AdvancedCoordinationSystem,
+): CoordinationMetrics {
   const topologyMetrics = systems.topologyManager.getTopologyMetrics();
   const distributionMetrics = systems.distributionEngine.getMetrics();
   const communicationMetrics = systems.communicationProtocols.getMetrics();
@@ -466,7 +486,9 @@ export function getCoordinationMetrics(systems: AdvancedCoordinationSystem): Coo
     6;
 
   const adaptability =
-    ((topologyMetrics.networkDiameter > 0 ? 1 / topologyMetrics.networkDiameter : 1) +
+    ((topologyMetrics.networkDiameter > 0
+      ? 1 / topologyMetrics.networkDiameter
+      : 1) +
       distributionMetrics.resourceEfficiency +
       communicationMetrics.networkHealth +
       lifecycleMetrics.recoveryRate +
@@ -493,7 +515,10 @@ export function getCoordinationMetrics(systems: AdvancedCoordinationSystem): Coo
 function calculateOptimizationEfficiency(metrics: any): number {
   // Calculate efficiency based on optimization metrics
   const latencyScore = Math.max(0, 1 - metrics.latency.average / 1000);
-  const throughputScore = Math.min(1, metrics.throughput.requestsPerSecond / 1000);
+  const throughputScore = Math.min(
+    1,
+    metrics.throughput.requestsPerSecond / 1000,
+  );
   const resourceScore = Math.max(0, 1 - metrics.resourceUsage.cpuUsage);
 
   return (latencyScore + throughputScore + resourceScore) / 3;
@@ -517,7 +542,7 @@ function calculateAdaptabilityScore(metrics: any): number {
  */
 export async function shutdownCoordinationSystem(
   systems: AdvancedCoordinationSystem,
-  logger: ILogger
+  logger: ILogger,
 ): Promise<void> {
   logger.info('Shutting down advanced coordination system...');
 
@@ -543,7 +568,9 @@ export async function shutdownCoordinationSystem(
  * @param nodeId
  * @example
  */
-export function getDefaultCoordinationConfig(nodeId: string): AdvancedCoordinationConfig {
+export function getDefaultCoordinationConfig(
+  nodeId: string,
+): AdvancedCoordinationConfig {
   return {
     nodeId,
     topology: {

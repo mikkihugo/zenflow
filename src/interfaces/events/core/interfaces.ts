@@ -16,7 +16,11 @@ export type EventPriority = 'critical' | 'high' | 'medium' | 'low';
 /**
  * Event processing strategies.
  */
-export type EventProcessingStrategy = 'immediate' | 'queued' | 'batched' | 'throttled';
+export type EventProcessingStrategy =
+  | 'immediate'
+  | 'queued'
+  | 'batched'
+  | 'throttled';
 
 /**
  * Event filtering criteria for selective event processing.
@@ -211,7 +215,9 @@ export interface SystemEvent {
  * };
  * ```
  */
-export type EventListener<T extends SystemEvent = SystemEvent> = (event: T) => void | Promise<void>;
+export type EventListener<T extends SystemEvent = SystemEvent> = (
+  event: T,
+) => void | Promise<void>;
 
 /**
  * Event subscription configuration for managing event listeners.
@@ -405,7 +411,10 @@ export interface IEventManager {
    * @param options - Optional emission configuration.
    * @throws {EventEmissionError} If event emission fails.
    */
-  emit<T extends SystemEvent>(event: T, options?: EventEmissionOptions): Promise<void>;
+  emit<T extends SystemEvent>(
+    event: T,
+    options?: EventEmissionOptions,
+  ): Promise<void>;
 
   /**
    * Emit a batch of events efficiently.
@@ -417,7 +426,7 @@ export interface IEventManager {
    */
   emitBatch<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions
+    options?: EventEmissionOptions,
   ): Promise<void>;
 
   /**
@@ -443,7 +452,7 @@ export interface IEventManager {
   subscribe<T extends SystemEvent>(
     eventTypes: string | string[],
     listener: EventListener<T>,
-    options?: Partial<EventSubscription<T>>
+    options?: Partial<EventSubscription<T>>,
   ): string;
 
   /**
@@ -557,7 +566,7 @@ export interface IEventManager {
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
-    handler: (...args: any[]) => void
+    handler: (...args: any[]) => void,
   ): void;
 
   /**
@@ -603,7 +612,9 @@ export interface IEventManager {
  * }
  * ```
  */
-export interface IEventManagerFactory<TConfig extends EventManagerConfig = EventManagerConfig> {
+export interface IEventManagerFactory<
+  TConfig extends EventManagerConfig = EventManagerConfig,
+> {
   // Event manager creation
   /**
    * Create a new event manager instance.
@@ -747,7 +758,7 @@ export interface IEventManagerRegistry {
    */
   registerFactory<T extends EventManagerConfig>(
     type: EventManagerType,
-    factory: IEventManagerFactory<T>
+    factory: IEventManagerFactory<T>,
   ): void;
 
   /**
@@ -758,7 +769,7 @@ export interface IEventManagerRegistry {
    * @returns Factory instance or undefined if not registered.
    */
   getFactory<T extends EventManagerConfig>(
-    type: EventManagerType
+    type: EventManagerType,
   ): IEventManagerFactory<T> | undefined;
 
   /**
@@ -838,7 +849,10 @@ export interface IEventManagerRegistry {
    * @param event - Event to broadcast.
    * @throws {EventEmissionError} If broadcast fails.
    */
-  broadcastToType<T extends SystemEvent>(type: EventManagerType, event: T): Promise<void>;
+  broadcastToType<T extends SystemEvent>(
+    type: EventManagerType,
+    event: T,
+  ): Promise<void>;
 }
 
 /**
@@ -903,7 +917,7 @@ export class EventError extends Error {
     public readonly code: string,
     public readonly manager: string,
     public readonly eventId?: string,
-    public readonly cause?: Error
+    public readonly cause?: Error,
   ) {
     super(message);
     this.name = 'EventError';
@@ -934,7 +948,7 @@ export class EventSubscriptionError extends EventError {
       'SUBSCRIPTION_ERROR',
       manager,
       subscriptionId,
-      cause
+      cause,
     );
     this.name = 'EventSubscriptionError';
   }
@@ -947,7 +961,7 @@ export class EventEmissionError extends EventError {
       'EMISSION_ERROR',
       manager,
       eventId,
-      cause
+      cause,
     );
     this.name = 'EventEmissionError';
   }
@@ -955,32 +969,48 @@ export class EventEmissionError extends EventError {
 
 export class EventFilterError extends EventError {
   constructor(manager: string, filterId: string, cause?: Error) {
-    super(`Event filter error for manager: ${manager}`, 'FILTER_ERROR', manager, filterId, cause);
+    super(
+      `Event filter error for manager: ${manager}`,
+      'FILTER_ERROR',
+      manager,
+      filterId,
+      cause,
+    );
     this.name = 'EventFilterError';
   }
 }
 
 export class EventTimeoutError extends EventError {
-  constructor(manager: string, timeout: number, eventId?: string, cause?: Error) {
+  constructor(
+    manager: string,
+    timeout: number,
+    eventId?: string,
+    cause?: Error,
+  ) {
     super(
       `Event timeout (${timeout}ms) for manager: ${manager}`,
       'TIMEOUT_ERROR',
       manager,
       eventId,
-      cause
+      cause,
     );
     this.name = 'EventTimeoutError';
   }
 }
 
 export class EventRetryExhaustedError extends EventError {
-  constructor(manager: string, attempts: number, eventId?: string, cause?: Error) {
+  constructor(
+    manager: string,
+    attempts: number,
+    eventId?: string,
+    cause?: Error,
+  ) {
     super(
       `Event retry exhausted (${attempts} attempts) for manager: ${manager}`,
       'RETRY_EXHAUSTED',
       manager,
       eventId,
-      cause
+      cause,
     );
     this.name = 'EventRetryExhaustedError';
   }

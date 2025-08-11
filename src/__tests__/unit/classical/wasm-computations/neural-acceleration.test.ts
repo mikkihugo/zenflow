@@ -58,12 +58,17 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         // WASM accelerated implementation
         performance.start(`wasm-matrix-mult-${size}`);
-        const wasmResult = await wasmAccelerator.multiplyMatrices(matrixA, matrixB);
+        const wasmResult = await wasmAccelerator.multiplyMatrices(
+          matrixA,
+          matrixB,
+        );
         performance.end(`wasm-matrix-mult-${size}`);
 
         // Verify mathematical correctness
         const tolerance = 1e-6;
-        expect(testHelpers.matricesEqual(jsResult, wasmResult, tolerance)).toBe(true);
+        expect(testHelpers.matricesEqual(jsResult, wasmResult, tolerance)).toBe(
+          true,
+        );
 
         const jsTime = performance.getDuration(`js-matrix-mult-${size}`);
         const wasmTime = performance.getDuration(`wasm-matrix-mult-${size}`);
@@ -75,7 +80,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         // Large matrices should meet performance targets
         if (size >= 1000) {
           expect(wasmTime).toBeLessThan(
-            WASM_PERFORMANCE_TARGETS?.matrixMultiplication * (size / 1000)
+            WASM_PERFORMANCE_TARGETS?.matrixMultiplication * (size / 1000),
           );
         }
       }
@@ -84,7 +89,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
     it('should optimize memory layout for matrix operations', async () => {
       const size = 1000;
       const matrices = Array.from({ length: 5 }, () =>
-        testHelpers.generateRandomMatrix(size, size)
+        testHelpers.generateRandomMatrix(size, size),
       );
 
       const initialMemory = await wasmAccelerator.getMemoryUsage();
@@ -94,7 +99,10 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       // Perform batch operations to test memory efficiency
       const results = [];
       for (let i = 0; i < matrices.length - 1; i++) {
-        const result = await wasmAccelerator.multiplyMatrices(matrices[i], matrices[i + 1]);
+        const result = await wasmAccelerator.multiplyMatrices(
+          matrices[i],
+          matrices[i + 1],
+        );
         results?.push(result);
       }
 
@@ -107,7 +115,9 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       const expectedMemory = size * size * 4 * matrices.length; // 4 bytes per float
       const memoryEfficiency = expectedMemory / memoryIncrease;
 
-      expect(memoryEfficiency).toBeGreaterThan(WASM_PERFORMANCE_TARGETS?.memoryEfficiency);
+      expect(memoryEfficiency).toBeGreaterThan(
+        WASM_PERFORMANCE_TARGETS?.memoryEfficiency,
+      );
 
       const totalTime = performance.getDuration('batch-matrix-operations');
       expect(totalTime).toBeLessThan(5000); // 5 seconds for batch operations
@@ -117,22 +127,35 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       const size = 2000;
       const sparsity = 0.95; // 95% zeros
 
-      const sparseMatrix = testHelpers.generateSparseMatrix(size, size, sparsity);
+      const sparseMatrix = testHelpers.generateSparseMatrix(
+        size,
+        size,
+        sparsity,
+      );
       const denseVector = testHelpers.generateRandomVector(size);
 
       performance.start('sparse-matrix-vector-mult');
 
-      const result = await wasmAccelerator.multiplyMatrixVector(sparseMatrix, denseVector, {
-        sparse: true,
-      });
+      const result = await wasmAccelerator.multiplyMatrixVector(
+        sparseMatrix,
+        denseVector,
+        {
+          sparse: true,
+        },
+      );
 
       performance.end('sparse-matrix-vector-mult');
 
       expect(result.length).toBe(size);
 
       // Verify mathematical correctness with reference implementation
-      const referenceResult = testHelpers.multiplyMatrixVectorJS(sparseMatrix, denseVector);
-      expect(testHelpers.vectorsEqual(result, referenceResult, 1e-6)).toBe(true);
+      const referenceResult = testHelpers.multiplyMatrixVectorJS(
+        sparseMatrix,
+        denseVector,
+      );
+      expect(testHelpers.vectorsEqual(result, referenceResult, 1e-6)).toBe(
+        true,
+      );
 
       const sparseTime = performance.getDuration('sparse-matrix-vector-mult');
 
@@ -167,14 +190,16 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       const wasmOutputs = await wasmAccelerator.forwardPassBatch(
         network.getWeights(),
         inputBatch,
-        networkConfig
+        networkConfig,
       );
       performance.end('wasm-forward-pass');
 
       // Verify outputs match
       expect(jsOutputs.length).toBe(wasmOutputs.length);
       for (let i = 0; i < jsOutputs.length; i++) {
-        expect(testHelpers.vectorsEqual(jsOutputs[i], wasmOutputs[i], 1e-6)).toBe(true);
+        expect(
+          testHelpers.vectorsEqual(jsOutputs[i], wasmOutputs[i], 1e-6),
+        ).toBe(true);
       }
 
       const jsTime = performance.getDuration('js-forward-pass');
@@ -185,7 +210,13 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
     });
 
     it('should optimize activation function computations', async () => {
-      const activationFunctions = ['sigmoid', 'tanh', 'relu', 'leaky_relu', 'swish'];
+      const activationFunctions = [
+        'sigmoid',
+        'tanh',
+        'relu',
+        'leaky_relu',
+        'swish',
+      ];
       const vectorSize = 10000;
       const inputVector = testHelpers.generateRandomVector(vectorSize, -5, 5);
 
@@ -197,7 +228,10 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         // WASM implementation
         performance.start(`wasm-${activation}`);
-        const wasmResult = await wasmAccelerator.applyActivation(inputVector, activation);
+        const wasmResult = await wasmAccelerator.applyActivation(
+          inputVector,
+          activation,
+        );
         performance.end(`wasm-${activation}`);
 
         // Verify mathematical correctness
@@ -224,16 +258,22 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         padding: 'same',
       };
 
-      const inputImage = testHelpers.generateRandomTensor(convConfig?.inputShape);
+      const inputImage = testHelpers.generateRandomTensor(
+        convConfig?.inputShape,
+      );
       const kernels = testHelpers.generateConvKernels(
         convConfig?.kernelSize,
         convConfig?.inputShape?.[2],
-        convConfig?.filters
+        convConfig?.filters,
       );
 
       performance.start('wasm-convolution');
 
-      const convResult = await wasmAccelerator.convolve2D(inputImage, kernels, convConfig);
+      const convResult = await wasmAccelerator.convolve2D(
+        inputImage,
+        kernels,
+        convConfig,
+      );
 
       performance.end('wasm-convolution');
 
@@ -242,7 +282,7 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         convConfig?.inputShape,
         convConfig?.kernelSize,
         convConfig?.stride,
-        convConfig?.padding
+        convConfig?.padding,
       );
       expectedShape[2] = convConfig?.filters;
 
@@ -252,9 +292,15 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       expect(convTime).toBeLessThan(WASM_PERFORMANCE_TARGETS?.convolution);
 
       // Verify mathematical correctness with reference implementation
-      const referenceResult = testHelpers.convolve2DReference(inputImage, kernels, convConfig);
+      const referenceResult = testHelpers.convolve2DReference(
+        inputImage,
+        kernels,
+        convConfig,
+      );
 
-      expect(testHelpers.tensorsEqual(convResult, referenceResult, 1e-6)).toBe(true);
+      expect(testHelpers.tensorsEqual(convResult, referenceResult, 1e-6)).toBe(
+        true,
+      );
     });
   });
 
@@ -288,13 +334,15 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
       const wasmGradients = await wasmAccelerator.computeGradientsBatch(
         network.getWeights(),
         trainingData?.slice(0, 10),
-        networkConfig
+        networkConfig,
       );
 
       performance.end('wasm-backpropagation');
 
       // Verify gradients match
-      expect(testHelpers.gradientsEqual(jsGradients, wasmGradients, 1e-8)).toBe(true);
+      expect(testHelpers.gradientsEqual(jsGradients, wasmGradients, 1e-8)).toBe(
+        true,
+      );
 
       const jsTime = performance.getDuration('js-backpropagation');
       const wasmTime = performance.getDuration('wasm-backpropagation');
@@ -312,7 +360,11 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         const gradients = testHelpers.generateRandomVector(size, -0.1, 0.1);
         const learningRate = 0.01;
         const momentum = 0.9;
-        const previousMomentum = testHelpers.generateRandomVector(size, -0.01, 0.01);
+        const previousMomentum = testHelpers.generateRandomVector(
+          size,
+          -0.01,
+          0.01,
+        );
 
         // JavaScript weight update
         performance.start(`js-weight-update-${size}`);
@@ -321,23 +373,26 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
           gradients,
           learningRate,
           momentum,
-          previousMomentum
+          previousMomentum,
         );
         performance.end(`js-weight-update-${size}`);
 
         // WASM weight update
         performance.start(`wasm-weight-update-${size}`);
-        const wasmUpdatedWeights = await wasmAccelerator.updateWeightsWithMomentum(
-          weights,
-          gradients,
-          learningRate,
-          momentum,
-          previousMomentum
-        );
+        const wasmUpdatedWeights =
+          await wasmAccelerator.updateWeightsWithMomentum(
+            weights,
+            gradients,
+            learningRate,
+            momentum,
+            previousMomentum,
+          );
         performance.end(`wasm-weight-update-${size}`);
 
         // Verify updates match
-        expect(testHelpers.vectorsEqual(jsUpdatedWeights, wasmUpdatedWeights, 1e-12)).toBe(true);
+        expect(
+          testHelpers.vectorsEqual(jsUpdatedWeights, wasmUpdatedWeights, 1e-12),
+        ).toBe(true);
 
         const jsTime = performance.getDuration(`js-weight-update-${size}`);
         const wasmTime = performance.getDuration(`wasm-weight-update-${size}`);
@@ -359,18 +414,28 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         performance.start(`wasm-batch-norm-${batchSize}`);
 
-        const normalizedBatch = await wasmAccelerator.batchNormalize(batch, gamma, beta, epsilon);
+        const normalizedBatch = await wasmAccelerator.batchNormalize(
+          batch,
+          gamma,
+          beta,
+          epsilon,
+        );
 
         performance.end(`wasm-batch-norm-${batchSize}`);
 
         // Verify batch normalization properties
         const batchMean = testHelpers.calculateBatchMean(normalizedBatch);
-        const _batchVariance = testHelpers.calculateBatchVariance(normalizedBatch, batchMean);
+        const _batchVariance = testHelpers.calculateBatchVariance(
+          normalizedBatch,
+          batchMean,
+        );
 
         // Mean should be close to beta, variance should be close to gamma^2
         expect(testHelpers.vectorsEqual(batchMean, beta, 1e-6)).toBe(true);
 
-        const normTime = performance.getDuration(`wasm-batch-norm-${batchSize}`);
+        const normTime = performance.getDuration(
+          `wasm-batch-norm-${batchSize}`,
+        );
         expect(normTime).toBeLessThan(20); // 20ms max for batch normalization
       }
     });
@@ -419,11 +484,14 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         // Measure transfer back to JS
         performance.start(`transfer-to-js-${size}`);
-        const retrievedData = await wasmAccelerator.transferFromWasm(wasmBuffer);
+        const retrievedData =
+          await wasmAccelerator.transferFromWasm(wasmBuffer);
         performance.end(`transfer-to-js-${size}`);
 
         // Verify data integrity
-        expect(testHelpers.vectorsEqual(jsData, retrievedData, 1e-15)).toBe(true);
+        expect(testHelpers.vectorsEqual(jsData, retrievedData, 1e-15)).toBe(
+          true,
+        );
 
         const toWasmTime = performance.getDuration(`transfer-to-wasm-${size}`);
         const fromWasmTime = performance.getDuration(`transfer-to-js-${size}`);
@@ -502,12 +570,22 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
         // Test various SIMD operations
         const operations = [
-          { name: 'add', op: (a: number[], b: number[]) => a.map((x, i) => x + b[i]) },
-          { name: 'multiply', op: (a: number[], b: number[]) => a.map((x, i) => x * b[i]) },
-          { name: 'subtract', op: (a: number[], b: number[]) => a.map((x, i) => x - b[i]) },
+          {
+            name: 'add',
+            op: (a: number[], b: number[]) => a.map((x, i) => x + b[i]),
+          },
+          {
+            name: 'multiply',
+            op: (a: number[], b: number[]) => a.map((x, i) => x * b[i]),
+          },
+          {
+            name: 'subtract',
+            op: (a: number[], b: number[]) => a.map((x, i) => x - b[i]),
+          },
           {
             name: 'divide',
-            op: (a: number[], b: number[]) => a.map((x, i) => x / (b[i] || 1e-10)),
+            op: (a: number[], b: number[]) =>
+              a.map((x, i) => x / (b[i] || 1e-10)),
           },
         ];
 
@@ -523,15 +601,21 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
             vectorA,
             vectorB,
             operation.name,
-            { useSIMD: true }
+            { useSIMD: true },
           );
           performance.end(`simd-${operation.name}-${size}`);
 
           // Verify results match
-          expect(testHelpers.vectorsEqual(jsResult, simdResult, 1e-12)).toBe(true);
+          expect(testHelpers.vectorsEqual(jsResult, simdResult, 1e-12)).toBe(
+            true,
+          );
 
-          const jsTime = performance.getDuration(`js-${operation.name}-${size}`);
-          const simdTime = performance.getDuration(`simd-${operation.name}-${size}`);
+          const jsTime = performance.getDuration(
+            `js-${operation.name}-${size}`,
+          );
+          const simdTime = performance.getDuration(
+            `simd-${operation.name}-${size}`,
+          );
 
           // SIMD should provide significant speedup for large vectors
           if (size >= 512) {
@@ -550,15 +634,22 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
         { name: 'sum', expected: testVector.reduce((a, b) => a + b, 0) },
         { name: 'max', expected: Math.max(...testVector) },
         { name: 'min', expected: Math.min(...testVector) },
-        { name: 'mean', expected: testVector.reduce((a, b) => a + b, 0) / testVector.length },
+        {
+          name: 'mean',
+          expected: testVector.reduce((a, b) => a + b, 0) / testVector.length,
+        },
       ];
 
       for (const reduction of reductions) {
         performance.start(`simd-${reduction.name}`);
 
-        const result = await wasmAccelerator.vectorReduction(testVector, reduction.name, {
-          useSIMD: true,
-        });
+        const result = await wasmAccelerator.vectorReduction(
+          testVector,
+          reduction.name,
+          {
+            useSIMD: true,
+          },
+        );
 
         performance.end(`simd-${reduction.name}`);
 
@@ -585,12 +676,20 @@ describe('WASM Neural Acceleration (Classical TDD)', () => {
 
       // CPU-only computation
       performance.start('cpu-matrix-multiply');
-      const cpuResult = await wasmAccelerator.multiplyMatrices(matrixA, matrixB, { useGPU: false });
+      const cpuResult = await wasmAccelerator.multiplyMatrices(
+        matrixA,
+        matrixB,
+        { useGPU: false },
+      );
       performance.end('cpu-matrix-multiply');
 
       // GPU-accelerated computation
       performance.start('gpu-matrix-multiply');
-      const gpuResult = await wasmAccelerator.multiplyMatrices(matrixA, matrixB, { useGPU: true });
+      const gpuResult = await wasmAccelerator.multiplyMatrices(
+        matrixA,
+        matrixB,
+        { useGPU: true },
+      );
       performance.end('gpu-matrix-multiply');
 
       // Verify results match

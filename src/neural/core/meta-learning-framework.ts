@@ -59,7 +59,9 @@ export class MetaLearningFramework {
    */
   selectStrategy(taskType, _context = {}) {
     const strategies = Array.from(this.learningStrategies.values())
-      .filter((s) => s.applicableTasks?.includes(taskType) || !s.applicableTasks)
+      .filter(
+        (s) => s.applicableTasks?.includes(taskType) || !s.applicableTasks,
+      )
       .sort((a, b) => b.performance - a.performance);
 
     return strategies[0] || null;
@@ -75,7 +77,8 @@ export class MetaLearningFramework {
     const strategy = this.learningStrategies.get(strategyId);
     if (strategy) {
       strategy.performance =
-        (strategy.performance * strategy.usage + performance) / (strategy.usage + 1);
+        (strategy.performance * strategy.usage + performance) /
+        (strategy.usage + 1);
       strategy.usage++;
 
       this.performanceHistory.push({
@@ -86,7 +89,9 @@ export class MetaLearningFramework {
 
       // Keep history within window
       if (this.performanceHistory.length > this.options.evaluationWindow) {
-        this.performanceHistory = this.performanceHistory.slice(-this.options.evaluationWindow);
+        this.performanceHistory = this.performanceHistory.slice(
+          -this.options.evaluationWindow,
+        );
       }
     }
   }
@@ -114,8 +119,9 @@ export class MetaLearningFramework {
   private getBestStrategy() {
     const strategies = Array.from(this.learningStrategies.values());
     return strategies.reduce(
-      (best, current) => (current?.performance > best.performance ? current : best),
-      { performance: -1 }
+      (best, current) =>
+        current?.performance > best.performance ? current : best,
+      { performance: -1 },
     );
   }
 
@@ -134,7 +140,7 @@ export class MetaLearningFramework {
 
     // Find best performing configuration from history
     const bestTask = agentHistory.reduce((best, task) =>
-      task.performance > best.performance ? task : best
+      task.performance > best.performance ? task : best,
     );
 
     // Adapt configuration based on best performance
@@ -163,7 +169,8 @@ export class MetaLearningFramework {
     // Analyze historical training performance
     const recentTasks = agentHistory.slice(-5);
     const avgPerformance =
-      recentTasks.reduce((sum, task) => sum + task.performance, 0) / recentTasks.length;
+      recentTasks.reduce((sum, task) => sum + task.performance, 0) /
+      recentTasks.length;
 
     const optimizedOptions = { ...options };
 
@@ -225,7 +232,7 @@ export class MetaLearningFramework {
   getStatistics() {
     const totalTasks = Array.from(this.taskHistory.values()).reduce(
       (sum, history) => sum + history.length,
-      0
+      0,
     );
 
     return {

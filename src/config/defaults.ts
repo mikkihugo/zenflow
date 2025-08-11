@@ -121,7 +121,9 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
         process.env['ANTHROPIC_API_KEY'] ||
         (() => {
           if (process.env['NODE_ENV'] === 'production') {
-            throw new Error('ANTHROPIC_API_KEY environment variable is required in production');
+            throw new Error(
+              'ANTHROPIC_API_KEY environment variable is required in production',
+            );
           }
           return null; // Allow null in development
         })(),
@@ -147,10 +149,13 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
   // Monitoring and logging
   monitoring: {
     dashboard: {
-      port: parseInt(process.env['DASHBOARD_PORT'] || '3456', 10),
+      port: Number.parseInt(process.env['DASHBOARD_PORT'] || '3456', 10),
       host: process.env['DASHBOARD_HOST'] || 'localhost',
       enableMetrics: process.env['ENABLE_METRICS'] !== 'false',
-      metricsInterval: parseInt(process.env['METRICS_INTERVAL'] || '10000', 10),
+      metricsInterval: Number.parseInt(
+        process.env['METRICS_INTERVAL'] || '10000',
+        10,
+      ),
     },
     logging: {
       level: process.env['LOG_LEVEL'] || 'info',
@@ -161,16 +166,21 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
     },
     performance: {
       enableProfiling: process.env['ENABLE_PROFILING'] === 'true',
-      sampleRate: parseFloat(process.env['PROFILE_SAMPLE_RATE'] || '0.1'),
+      sampleRate: Number.parseFloat(
+        process.env['PROFILE_SAMPLE_RATE'] || '0.1',
+      ),
       enableTracing: process.env['ENABLE_TRACING'] === 'true',
     },
   },
 
   // Network and connectivity
   network: {
-    defaultTimeout: parseInt(process.env['DEFAULT_TIMEOUT'] || '30000', 10),
-    maxRetries: parseInt(process.env['MAX_RETRIES'] || '3', 10),
-    retryDelay: parseInt(process.env['RETRY_DELAY'] || '1000', 10),
+    defaultTimeout: Number.parseInt(
+      process.env['DEFAULT_TIMEOUT'] || '30000',
+      10,
+    ),
+    maxRetries: Number.parseInt(process.env['MAX_RETRIES'] || '3', 10),
+    retryDelay: Number.parseInt(process.env['RETRY_DELAY'] || '1000', 10),
     enableKeepAlive: process.env['KEEP_ALIVE'] !== 'false',
   },
 
@@ -342,19 +352,19 @@ export interface ConfigValidationSchema {
 
 /**
  * Production-Ready Configuration Validation Rules.
- * 
+ *
  * Comprehensive validation rule set that defines acceptable values, ranges,
  * and constraints for all system configuration parameters. Includes both
  * development and production-specific validation with automatic fallbacks,
  * conflict detection, and security enforcement.
- * 
+ *
  * Key Features:
  * - Type validation with enum constraints
  * - Production-specific min/max ranges
  * - Port conflict detection and safe fallbacks
  * - Security-aware defaults for production environments
  * - Adaptive validation based on deployment environment
- * 
+ *
  * Rule Structure:
  * - `type`: Data type validation (string, number, boolean)
  * - `enum`: Allowed enumeration values
@@ -363,26 +373,26 @@ export interface ConfigValidationSchema {
  * - `conflictCheck`: Enable port conflict detection
  * - `fallback`: Safe default value when validation fails
  * - `required`: Whether the field is mandatory
- * 
+ *
  * @example
  * ```typescript
  * import { VALIDATION_RULES } from 'claude-code-zen/config';
- * 
+ *
  * // Validate a configuration value
  * const portRule = VALIDATION_RULES['interfaces.web.port'];
  * const port = 3456;
- * 
+ *
  * if (port < portRule.min || port > portRule.max) {
  *   console.error(`Port ${port} is outside valid range ${portRule.min}-${portRule.max}`);
  *   port = portRule.fallback; // Use safe fallback
  * }
- * 
+ *
  * // Check production constraints
  * if (process.env.NODE_ENV === 'production' && port < portRule.productionMin) {
  *   console.warn(`Port ${port} below production minimum ${portRule.productionMin}`);
  * }
  * ```
- * 
+ *
  * @const VALIDATION_RULES
  * @see {@link ConfigValidator} - Uses these rules for validation
  * @see {@link PRODUCTION_VALIDATION_SCHEMA} - Production-specific schema
@@ -467,19 +477,19 @@ export const VALIDATION_RULES = {
 
 /**
  * Production Environment Validation Schema.
- * 
+ *
  * Comprehensive validation schema specifically designed for production
  * deployments with enhanced security, strict validation rules, and
  * mandatory environment variable requirements. Enforces production
  * best practices and prevents unsafe configurations.
- * 
+ *
  * Security Features:
  * - Mandatory environment variables for production
  * - Forbidden unsafe configuration options
  * - Automatic fallback to secure defaults
  * - API key validation and presence checking
  * - Port range restrictions for production environments
- * 
+ *
  * Schema Components:
  * - `required`: Environment variables that must be present
  * - `optional`: Environment variables that are recommended but not mandatory
@@ -488,15 +498,15 @@ export const VALIDATION_RULES = {
  * - `production.forbidden`: Settings that are prohibited in production
  * - `production.fallbacks`: Safe default values for production
  * - `portRanges`: Environment-specific port allocation ranges
- * 
+ *
  * @example
  * ```typescript
  * import { PRODUCTION_VALIDATION_SCHEMA } from 'claude-code-zen/config';
- * 
+ *
  * // Validate production environment
  * const isValid = PRODUCTION_VALIDATION_SCHEMA.validation.NODE_ENV('production');
  * console.log('Valid NODE_ENV:', isValid); // true
- * 
+ *
  * // Check API key requirement
  * if (process.env.NODE_ENV === 'production') {
  *   const hasValidKey = PRODUCTION_VALIDATION_SCHEMA.validation.ANTHROPIC_API_KEY(
@@ -506,12 +516,12 @@ export const VALIDATION_RULES = {
  *     throw new Error('ANTHROPIC_API_KEY is required in production');
  *   }
  * }
- * 
+ *
  * // Get production fallbacks
  * const fallbacks = PRODUCTION_VALIDATION_SCHEMA.production.fallbacks;
  * console.log('Safe port fallback:', fallbacks['interfaces.web.port']); // 3456
  * ```
- * 
+ *
  * @const PRODUCTION_VALIDATION_SCHEMA
  * @see {@link ConfigValidationSchema} - Schema type definition
  * @see {@link VALIDATION_RULES} - General validation rules
@@ -519,22 +529,34 @@ export const VALIDATION_RULES = {
  */
 export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
   required: ['NODE_ENV'],
-  optional: ['CLAUDE_WEB_PORT', 'CLAUDE_MCP_PORT', 'CLAUDE_LOG_LEVEL', 'CLAUDE_MAX_AGENTS'],
+  optional: [
+    'CLAUDE_WEB_PORT',
+    'CLAUDE_MCP_PORT',
+    'CLAUDE_LOG_LEVEL',
+    'CLAUDE_MAX_AGENTS',
+  ],
   validation: {
-    NODE_ENV: (value: string) => ['production', 'development', 'test'].includes(value),
+    NODE_ENV: (value: string) =>
+      ['production', 'development', 'test'].includes(value),
     ANTHROPIC_API_KEY: (value: string) =>
-      process.env['NODE_ENV'] === 'production' ? !!value && value.length > 10 : true,
+      process.env['NODE_ENV'] === 'production'
+        ? !!value && value.length > 10
+        : true,
     CLAUDE_WEB_PORT: (value: string) => {
-      const port = parseInt(value, 10);
+      const port = Number.parseInt(value, 10);
       return !isNaN(port) && port >= 3000 && port <= 65535;
     },
     CLAUDE_MCP_PORT: (value: string) => {
-      const port = parseInt(value, 10);
+      const port = Number.parseInt(value, 10);
       return !isNaN(port) && port >= 3000 && port <= 65535;
     },
   },
   production: {
-    enforced: ['core.security.enableSandbox', 'core.logger.level', 'environment.strictValidation'],
+    enforced: [
+      'core.security.enableSandbox',
+      'core.logger.level',
+      'environment.strictValidation',
+    ],
     forbidden: [
       'core.security.allowShellAccess',
       'environment.allowUnsafeOperations',
@@ -560,42 +582,42 @@ export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
 
 /**
  * Default Port Allocation Strategy.
- * 
+ *
  * Carefully planned port allocation strategy designed to prevent conflicts
  * between different system components. Provides a stable, predictable port
  * assignment scheme that works across development, testing, and production
  * environments while avoiding common port conflicts.
- * 
+ *
  * Port Assignment Philosophy:
  * - Primary services get well-known, memorable ports
  * - Sequential allocation for related services
  * - Gaps between service groups to allow expansion
  * - Avoids system ports (< 1024) and common application ports
  * - Compatible with firewall rules and load balancer configurations
- * 
+ *
  * Service Port Mapping:
  * - `3000`: MCP HTTP Server (primary Claude integration)
  * - `3456`: Web Dashboard (administrative interface)
  * - `3457`: Monitoring Dashboard (metrics and health)
  * - `3001`: Development Server (when needed)
  * - `3002`: Backup/Failover Port (high availability)
- * 
+ *
  * @example
  * ```typescript
  * import { DEFAULT_PORT_ALLOCATION } from 'claude-code-zen/config';
- * 
+ *
  * // Get assigned port for a service
  * const mcpPort = DEFAULT_PORT_ALLOCATION['interfaces.mcp.http.port'];
  * console.log('MCP server will run on port:', mcpPort); // 3000
- * 
+ *
  * // Check for conflicts before starting services
  * const webPort = DEFAULT_PORT_ALLOCATION['interfaces.web.port'];
  * const monitorPort = DEFAULT_PORT_ALLOCATION['monitoring.dashboard.port'];
- * 
+ *
  * if (webPort === monitorPort) {
  *   throw new Error('Port conflict detected!');
  * }
- * 
+ *
  * // Use in server configuration
  * const serverConfig = {
  *   mcp: { port: DEFAULT_PORT_ALLOCATION['interfaces.mcp.http.port'] },
@@ -603,7 +625,7 @@ export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
  *   monitoring: { port: DEFAULT_PORT_ALLOCATION['monitoring.dashboard.port'] }
  * };
  * ```
- * 
+ *
  * @const DEFAULT_PORT_ALLOCATION
  * @see {@link PORT_ALLOCATION_BY_ENV} - Environment-specific overrides
  * @see {@link VALIDATION_RULES} - Port validation rules
@@ -619,38 +641,38 @@ export const DEFAULT_PORT_ALLOCATION = {
 
 /**
  * Environment-Specific Port Allocation Overrides.
- * 
+ *
  * Environment-aware port allocation that provides different port assignments
  * for development, production, and testing environments. Allows for isolation
  * between environments while maintaining service functionality and preventing
  * conflicts when multiple environments run on the same system.
- * 
+ *
  * Environment Strategy:
  * - **Development**: Standard ports for easy access and debugging
  * - **Production**: Environment variable override support with fallbacks
  * - **Testing**: Offset ports to avoid conflicts with development services
- * 
+ *
  * Port Environment Mapping:
  * - Development: 3000, 3456, 3457 (standard allocation)
  * - Production: Environment variable driven with same fallbacks
  * - Testing: 3100, 3556, 3557 (offset by +100/+100/+100)
- * 
+ *
  * Environment Variables:
  * - `CLAUDE_MCP_PORT`: Override MCP server port in production
- * - `CLAUDE_WEB_PORT`: Override web dashboard port in production  
+ * - `CLAUDE_WEB_PORT`: Override web dashboard port in production
  * - `CLAUDE_MONITOR_PORT`: Override monitoring dashboard port in production
- * 
+ *
  * @example
  * ```typescript
  * import { PORT_ALLOCATION_BY_ENV } from 'claude-code-zen/config';
- * 
+ *
  * const env = process.env.NODE_ENV || 'development';
  * const ports = PORT_ALLOCATION_BY_ENV[env];
- * 
+ *
  * // Get environment-specific port
  * const mcpPort = ports['interfaces.mcp.http.port'];
  * console.log(`MCP server port for ${env}:`, mcpPort);
- * 
+ *
  * // Start services with environment-appropriate ports
  * const config = {
  *   environment: env,
@@ -660,14 +682,14 @@ export const DEFAULT_PORT_ALLOCATION = {
  *     monitoring: { port: ports['monitoring.dashboard.port'] }
  *   }
  * };
- * 
+ *
  * // Production example with environment variables
  * // CLAUDE_MCP_PORT=8080 CLAUDE_WEB_PORT=8081 npm start
  * if (env === 'production') {
  *   console.log('Production ports can be overridden via environment variables');
  * }
  * ```
- * 
+ *
  * @const PORT_ALLOCATION_BY_ENV
  * @see {@link DEFAULT_PORT_ALLOCATION} - Base port allocation strategy
  * @see {@link VALIDATION_RULES} - Port validation and conflict checking
@@ -680,9 +702,18 @@ export const PORT_ALLOCATION_BY_ENV = {
     'monitoring.dashboard.port': 3457,
   },
   production: {
-    'interfaces.mcp.http.port': parseInt(process.env['CLAUDE_MCP_PORT'] || '3000', 10),
-    'interfaces.web.port': parseInt(process.env['CLAUDE_WEB_PORT'] || '3456', 10),
-    'monitoring.dashboard.port': parseInt(process.env['CLAUDE_MONITOR_PORT'] || '3457', 10),
+    'interfaces.mcp.http.port': Number.parseInt(
+      process.env['CLAUDE_MCP_PORT'] || '3000',
+      10,
+    ),
+    'interfaces.web.port': Number.parseInt(
+      process.env['CLAUDE_WEB_PORT'] || '3456',
+      10,
+    ),
+    'monitoring.dashboard.port': Number.parseInt(
+      process.env['CLAUDE_MONITOR_PORT'] || '3457',
+      10,
+    ),
   },
   test: {
     'interfaces.mcp.http.port': 3100,
@@ -693,45 +724,45 @@ export const PORT_ALLOCATION_BY_ENV = {
 
 /**
  * URL Builder Configuration and Utilities.
- * 
+ *
  * Comprehensive URL construction system consolidated from url-builder.ts.
  * Provides type-safe, environment-aware URL building capabilities for
  * all system services including MCP servers, web dashboards, monitoring
  * endpoints, and API routes.
- * 
+ *
  * Features:
  * - Protocol-aware URL construction (HTTP/HTTPS)
  * - Environment-specific host and port resolution
  * - Path normalization and query parameter handling
  * - Service-specific URL builders with validation
  * - Development vs production URL differences
- * 
+ *
  * @since 1.0.0-alpha.43
  */
 
 /**
  * URL Builder Configuration Interface.
- * 
+ *
  * Defines the configuration options for URL construction including protocol
  * selection, host specification, port assignment, and path configuration.
  * Used by URLBuilder class and service-specific URL generation functions.
- * 
+ *
  * @example
  * ```typescript
  * import type { URLBuilderConfig } from 'claude-code-zen/config';
- * 
+ *
  * const config: URLBuilderConfig = {
  *   protocol: 'https',
  *   host: 'api.example.com',
  *   port: 443,
  *   path: '/v1/mcp'
  * };
- * 
+ *
  * // Used with URLBuilder
  * const builder = new URLBuilder(systemConfig);
  * const url = builder.buildURL('mcp', config);
  * ```
- * 
+ *
  * @interface URLBuilderConfig
  * @see {@link URLBuilder} - URL builder class implementation
  * @since 1.0.0-alpha.43
@@ -824,7 +855,7 @@ export class URLBuilder {
    */
   getServiceBaseURL(
     service: 'mcp' | 'web' | 'monitoring',
-    overrides: Partial<URLBuilderConfig> = {}
+    overrides: Partial<URLBuilderConfig> = {},
   ): string {
     switch (service) {
       case 'mcp':
@@ -846,9 +877,15 @@ export class URLBuilder {
    * @param port
    * @param path
    */
-  private buildURL(protocol: string, host: string, port: number, path: string): string {
+  private buildURL(
+    protocol: string,
+    host: string,
+    port: number,
+    path: string,
+  ): string {
     const shouldOmitPort =
-      (protocol === 'http' && port === 80) || (protocol === 'https' && port === 443);
+      (protocol === 'http' && port === 80) ||
+      (protocol === 'https' && port === 443);
 
     const portPart = shouldOmitPort ? '' : `:${port}`;
     const pathPart = path.startsWith('/') ? path : `/${path}`;
@@ -908,7 +945,8 @@ export const getMCPServerURL = (overrides?: Partial<URLBuilderConfig>) =>
 export const getWebDashboardURL = (overrides?: Partial<URLBuilderConfig>) =>
   defaultURLBuilder.getWebDashboardURL(overrides);
 
-export const getMonitoringDashboardURL = (overrides?: Partial<URLBuilderConfig>) =>
-  defaultURLBuilder.getMonitoringDashboardURL(overrides);
+export const getMonitoringDashboardURL = (
+  overrides?: Partial<URLBuilderConfig>,
+) => defaultURLBuilder.getMonitoringDashboardURL(overrides);
 
 export const getCORSOrigins = () => defaultURLBuilder.getCORSOrigins();

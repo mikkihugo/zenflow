@@ -103,9 +103,13 @@ export class MemorySystemFactory {
   }) {
     // Import directly from source modules instead of circular self-import
     const { MemoryCoordinator } = await import('./core/memory-coordinator.ts');
-    const { PerformanceOptimizer } = await import('./optimization/performance-optimizer.ts');
+    const { PerformanceOptimizer } = await import(
+      './optimization/performance-optimizer.ts'
+    );
     const { MemoryMonitor } = await import('./monitoring/memory-monitor.ts');
-    const { RecoveryStrategyManager } = await import('./error-handling/recovery-strategies.ts');
+    const { RecoveryStrategyManager } = await import(
+      './error-handling/recovery-strategies.ts'
+    );
     const { MemoryBackendFactory } = await import('./backends/factory.ts');
 
     // Initialize components
@@ -115,7 +119,9 @@ export class MemorySystemFactory {
     const optimizer = config?.['optimization']
       ? new PerformanceOptimizer(config?.['optimization'])
       : undefined;
-    const monitor = config?.['monitoring'] ? new MemoryMonitor(config?.['monitoring']) : undefined;
+    const monitor = config?.['monitoring']
+      ? new MemoryMonitor(config?.['monitoring'])
+      : undefined;
     const recoveryManager = new RecoveryStrategyManager();
 
     // Initialize backends
@@ -124,13 +130,14 @@ export class MemorySystemFactory {
       for (const backendConfig of config?.['backends']) {
         const backend = await MemoryBackendFactory.createBackend(
           backendConfig?.type as 'sqlite' | 'json' | 'lancedb' | 'memory',
-          backendConfig?.config
+          backendConfig?.config,
         );
         await backend.initialize();
         backends.set(backendConfig?.id, backend);
 
         // Register with components
-        if (coordinator) await coordinator.registerNode(backendConfig?.id, backend);
+        if (coordinator)
+          await coordinator.registerNode(backendConfig?.id, backend);
         if (optimizer) optimizer.registerBackend(backendConfig?.id, backend);
         if (monitor) monitor.registerBackend(backendConfig?.id, backend);
       }
@@ -153,9 +160,17 @@ export class MemorySystemFactory {
       async shutdown() {
         if (monitor) monitor.stopCollection();
         for (const backend of backends.values()) {
-          if (backend && 'cleanup' in backend && typeof backend.cleanup === 'function') {
+          if (
+            backend &&
+            'cleanup' in backend &&
+            typeof backend.cleanup === 'function'
+          ) {
             await backend.cleanup();
-          } else if (backend && 'close' in backend && typeof backend.close === 'function') {
+          } else if (
+            backend &&
+            'close' in backend &&
+            typeof backend.close === 'function'
+          ) {
             await backend.close();
           }
         }
@@ -204,7 +219,7 @@ export class MemorySystemFactory {
       id: string;
       type: string;
       config: Record<string, unknown>;
-    }>
+    }>,
   ) {
     return MemorySystemFactory.createAdvancedMemorySystem({
       backends,

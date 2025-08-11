@@ -40,14 +40,15 @@ const fixes = {
         .replace(/catch\s*\(\s*error\s*\)/g, 'catch (error)')
         .replace(
           /\{ error \}/g,
-          '{ error: error instanceof Error ? error.message : String(error) }'
+          '{ error: error instanceof Error ? error.message : String(error) }',
         );
     },
   },
 
   // Fix type assignments with exactOptionalPropertyTypes
   exactOptionalProps: {
-    pattern: /not assignable to type .* with 'exactOptionalPropertyTypes: true'/,
+    pattern:
+      /not assignable to type .* with 'exactOptionalPropertyTypes: true'/,
     fix: (content) => {
       // Add 'as Type | undefined' where needed
       return content;

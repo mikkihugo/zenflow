@@ -103,17 +103,17 @@ export { DatabaseAdapter } from '../../core/interfaces/base-interfaces.ts';
 export interface GraphResult {
   /** Graph nodes */
   nodes: Array<{
-    id: any;
+    id?: unknown;
     labels: string[];
-    properties: Record<string, any>;
+    properties: Record<string, unknown>;
   }>;
   /** Graph relationships */
   relationships: Array<{
-    id: any;
+    id?: unknown;
     type: string;
-    startNodeId: any;
-    endNodeId: any;
-    properties: Record<string, any>;
+    startNodeId?: unknown;
+    endNodeId?: unknown;
+    properties: Record<string, unknown>;
   }>;
   /** Query execution time */
   executionTime: number;
@@ -150,10 +150,10 @@ export interface GraphResult {
 export interface VectorResult {
   /** Matching vectors with scores */
   matches: Array<{
-    id: any;
+    id?: unknown;
     vector: number[];
     score: number;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   }>;
   /** Query execution time */
   executionTime: number;
@@ -216,11 +216,11 @@ export interface VectorResult {
  */
 export interface VectorData {
   /** Vector ID */
-  id: any;
+  id?: unknown;
   /** Vector values */
   vector: number[];
   /** Optional metadata */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -308,7 +308,7 @@ export interface IndexConfig {
  */
 export interface GraphDatabaseAdapter extends DatabaseAdapter {
   /** Execute a graph query (e.g., Cypher) */
-  queryGraph(cypher: string, params?: any[]): Promise<GraphResult>;
+  queryGraph(cypher: string, params?: unknown[]): Promise<GraphResult>;
   /** Get total number of nodes in the graph */
   getNodeCount(): Promise<number>;
   /** Get total number of relationships in the graph */
@@ -482,7 +482,7 @@ export interface DatabaseConfig {
     key?: string;
   };
   /** Additional adapter-specific options */
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 }
 
 /**
@@ -525,7 +525,7 @@ export interface DatabaseConfig {
 export class DatabaseProviderFactory {
   constructor(
     private logger: ILogger,
-    private config: IConfig
+    private config: IConfig,
   ) {}
 
   /**
@@ -596,7 +596,10 @@ export class DatabaseProviderFactory {
         case 'kuzu':
           return new KuzuAdapter(config, this.logger) as GraphDatabaseAdapter;
         case 'lancedb':
-          return new LanceDBAdapter(config, this.logger) as VectorDatabaseAdapter;
+          return new LanceDBAdapter(
+            config,
+            this.logger,
+          ) as VectorDatabaseAdapter;
         case 'mysql':
           return new MySQLAdapter(config, this.logger);
         default:
@@ -605,7 +608,7 @@ export class DatabaseProviderFactory {
     } catch (error) {
       this.logger.error(`Failed to create database adapter: ${error}`);
       throw new Error(
-        `Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -671,7 +674,9 @@ export class DatabaseProviderFactory {
    * );
    * ```
    */
-  createGraphAdapter(config: DatabaseConfig & { type: 'kuzu' }): GraphDatabaseAdapter {
+  createGraphAdapter(
+    config: DatabaseConfig & { type: 'kuzu' },
+  ): GraphDatabaseAdapter {
     return new KuzuAdapter(config, this.logger);
   }
 
@@ -759,7 +764,9 @@ export class DatabaseProviderFactory {
    * );
    * ```
    */
-  createVectorAdapter(config: DatabaseConfig & { type: 'lancedb' }): VectorDatabaseAdapter {
+  createVectorAdapter(
+    config: DatabaseConfig & { type: 'lancedb' },
+  ): VectorDatabaseAdapter {
     return new LanceDBAdapter(config, this.logger);
   }
 }
@@ -782,7 +789,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {
@@ -824,7 +831,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
     }
   }
 
-  async query(sql: string, params?: any[]): Promise<QueryResult> {
+  async query(sql: string, params?: unknown[]): Promise<QueryResult> {
     this.logger.debug(`Executing PostgreSQL query: ${sql}`);
     await this.ensureConnected();
 
@@ -861,7 +868,10 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
    * @param sql
    * @param params
    */
-  async queryWithResult<T = any>(sql: string, params?: any[]): Promise<DatabaseResult<T>> {
+  async queryWithResult<T = any>(
+    sql: string,
+    params?: unknown[],
+  ): Promise<DatabaseResult<T>> {
     this.logger.debug(`Executing PostgreSQL query with result: ${sql}`);
 
     try {
@@ -906,7 +916,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
     }
   }
 
-  async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
+  async execute(sql: string, params?: unknown[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing PostgreSQL command: ${sql}`);
     await this.ensureConnected();
 
@@ -940,8 +950,10 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
     try {
       // PostgreSQL transaction implementation would go here
       const txContext: TransactionContext = {
-        query: async (sql: string, params?: any[]) => this.query(sql, params),
-        execute: async (sql: string, params?: any[]) => this.execute(sql, params),
+        query: async (sql: string, params?: unknown[]) =>
+          this.query(sql, params),
+        execute: async (sql: string, params?: unknown[]) =>
+          this.execute(sql, params),
         commit: async () => {
           this.logger.debug('Committing PostgreSQL transaction');
           await this.simulateAsync(5);
@@ -1062,11 +1074,13 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {
-    this.logger.info(`Connecting to SQLite database: ${this.config.database || ':memory:'}`);
+    this.logger.info(
+      `Connecting to SQLite database: ${this.config.database || ':memory:'}`,
+    );
 
     try {
       // SQLite connection implementation would go here
@@ -1101,7 +1115,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
     }
   }
 
-  async query(sql: string, params?: any[]): Promise<QueryResult> {
+  async query(sql: string, params?: unknown[]): Promise<QueryResult> {
     this.logger.debug(`Executing SQLite query: ${sql}`);
     await this.ensureConnected();
 
@@ -1131,7 +1145,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
     }
   }
 
-  async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
+  async execute(sql: string, params?: unknown[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing SQLite command: ${sql}`);
     await this.ensureConnected();
 
@@ -1163,8 +1177,10 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
     try {
       const txContext: TransactionContext = {
-        query: async (sql: string, params?: any[]) => this.query(sql, params),
-        execute: async (sql: string, params?: any[]) => this.execute(sql, params),
+        query: async (sql: string, params?: unknown[]) =>
+          this.query(sql, params),
+        execute: async (sql: string, params?: unknown[]) =>
+          this.execute(sql, params),
         commit: async () => {
           this.logger.debug('Committing SQLite transaction');
           await this.simulateAsync(3);
@@ -1286,7 +1302,7 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {
@@ -1325,7 +1341,7 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
     }
   }
 
-  async query(sql: string, params?: any[]): Promise<QueryResult> {
+  async query(sql: string, params?: unknown[]): Promise<QueryResult> {
     this.logger.debug(`Executing Kuzu query: ${sql}`);
     await this.ensureConnected();
 
@@ -1352,7 +1368,7 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
     }
   }
 
-  async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
+  async execute(sql: string, params?: unknown[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing Kuzu command: ${sql}`);
     await this.ensureConnected();
 
@@ -1383,8 +1399,10 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
 
     try {
       const txContext: TransactionContext = {
-        query: async (sql: string, params?: any[]) => this.query(sql, params),
-        execute: async (sql: string, params?: any[]) => this.execute(sql, params),
+        query: async (sql: string, params?: unknown[]) =>
+          this.query(sql, params),
+        execute: async (sql: string, params?: unknown[]) =>
+          this.execute(sql, params),
         commit: async () => {
           this.logger.debug('Committing Kuzu transaction');
           await this.simulateAsync(10);
@@ -1421,7 +1439,7 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
   }
 
   // Graph-specific methods implementation
-  async queryGraph(cypher: string, params?: any[]): Promise<GraphResult> {
+  async queryGraph(cypher: string, params?: unknown[]): Promise<GraphResult> {
     this.logger.debug(`Executing Kuzu graph query: ${cypher}`);
     await this.ensureConnected();
 
@@ -1573,7 +1591,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {
@@ -1641,7 +1659,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     }
   }
 
-  async query(sql: string, params?: any[]): Promise<QueryResult> {
+  async query(sql: string, params?: unknown[]): Promise<QueryResult> {
     this.logger.debug(`Executing LanceDB query: ${sql}`);
     await this.ensureConnected();
 
@@ -1659,11 +1677,13 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         if (vectorMatch && tableMatch) {
           const vectorStr = vectorMatch?.[1];
           const tableName = tableMatch?.[1] || 'default';
-          const limit = limitMatch ? parseInt(limitMatch[1], 10) : 10;
+          const limit = limitMatch ? Number.parseInt(limitMatch[1], 10) : 10;
 
           // Parse vector from string - fix for possible undefined
           if (vectorStr !== undefined) {
-            const queryVector = vectorStr.split(',').map((v) => parseFloat(v.trim()));
+            const queryVector = vectorStr
+              .split(',')
+              .map((v) => Number.parseFloat(v.trim()));
 
             // Use vector search
             const vectorResults = await this.vectorSearch(queryVector, limit);
@@ -1688,7 +1708,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
               executionTime,
             };
 
-            this.logger.debug(`LanceDB vector query completed in ${executionTime}ms`);
+            this.logger.debug(
+              `LanceDB vector query completed in ${executionTime}ms`,
+            );
             return result;
           }
         }
@@ -1714,7 +1736,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
     }
   }
 
-  async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
+  async execute(sql: string, params?: unknown[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing LanceDB command: ${sql}`);
     await this.ensureConnected();
 
@@ -1755,8 +1777,10 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
     try {
       const txContext: TransactionContext = {
-        query: async (sql: string, params?: any[]) => this.query(sql, params),
-        execute: async (sql: string, params?: any[]) => this.execute(sql, params),
+        query: async (sql: string, params?: unknown[]) =>
+          this.query(sql, params),
+        execute: async (sql: string, params?: unknown[]) =>
+          this.execute(sql, params),
         commit: async () => {
           this.logger.debug('Committing LanceDB transaction');
           // LanceDB handles transactions internally
@@ -1780,7 +1804,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
   async health(): Promise<boolean> {
     try {
-      if (!this.connected || !this.vectorRepository) {
+      if (!(this.connected && this.vectorRepository)) {
         return false;
       }
 
@@ -1797,7 +1821,10 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
   }
 
   // Vector-specific methods implementation
-  async vectorSearch(query: number[], limit: number = 10): Promise<VectorResult> {
+  async vectorSearch(
+    query: number[],
+    limit: number = 10,
+  ): Promise<VectorResult> {
     this.logger.debug(`Executing LanceDB vector search with limit: ${limit}`);
     await this.ensureConnected();
 
@@ -1816,7 +1843,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
       // Convert DAL results to VectorResult format
       const result: VectorResult = {
         matches:
-          (searchResults as any[])?.map((result: any) => ({
+          (searchResults as any[])?.map((result: unknown) => ({
             id: result?.id,
             vector: result?.vector || query, // fallback to query vector if not available
             score: result?.score || result?.similarity || 1.0,
@@ -1825,7 +1852,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         executionTime,
       };
 
-      this.logger.debug(`LanceDB vector search completed in ${executionTime}ms`);
+      this.logger.debug(
+        `LanceDB vector search completed in ${executionTime}ms`,
+      );
       return result;
     } catch (error) {
       this.logger.error(`LanceDB vector search failed: ${error}`);
@@ -1853,7 +1882,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
           : vectorOperations;
 
       const inserted = Array.isArray(result) ? result.length : 1;
-      this.logger.debug(`Successfully added ${inserted} vectors to LanceDB via DAL`);
+      this.logger.debug(
+        `Successfully added ${inserted} vectors to LanceDB via DAL`,
+      );
     } catch (error) {
       this.logger.error(`Failed to add vectors to LanceDB: ${error}`);
       throw error;
@@ -1895,7 +1926,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
       // Get schema info from DAL repository
       const repo = this.vectorRepository as any;
       const allVectors =
-        repo && typeof repo.findAll === 'function' ? await repo.findAll({ limit: 1 }) : [];
+        repo && typeof repo.findAll === 'function'
+          ? await repo.findAll({ limit: 1 })
+          : [];
       const vectorDim = this.config.options?.['vectorSize'] || 384;
 
       const schemaInfo: SchemaInfo = {
@@ -1932,7 +1965,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
                 isForeignKey: false,
               },
             ],
-            indexes: [{ name: 'vector_index', columns: ['vector'], unique: false }],
+            indexes: [
+              { name: 'vector_index', columns: ['vector'], unique: false },
+            ],
           },
         ],
         views: [],
@@ -1975,7 +2010,7 @@ export class MySQLAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger
+    private logger: ILogger,
   ) {}
 
   async connect(): Promise<void> {
@@ -2016,7 +2051,7 @@ export class MySQLAdapter implements DatabaseAdapter {
     }
   }
 
-  async query(sql: string, params?: any[]): Promise<QueryResult> {
+  async query(sql: string, params?: unknown[]): Promise<QueryResult> {
     this.logger.debug(`Executing MySQL query: ${sql}`);
     await this.ensureConnected();
 
@@ -2047,7 +2082,7 @@ export class MySQLAdapter implements DatabaseAdapter {
     }
   }
 
-  async execute(sql: string, params?: any[]): Promise<ExecuteResult> {
+  async execute(sql: string, params?: unknown[]): Promise<ExecuteResult> {
     this.logger.debug(`Executing MySQL command: ${sql}`);
     await this.ensureConnected();
 
@@ -2079,8 +2114,10 @@ export class MySQLAdapter implements DatabaseAdapter {
 
     try {
       const txContext: TransactionContext = {
-        query: async (sql: string, params?: any[]) => this.query(sql, params),
-        execute: async (sql: string, params?: any[]) => this.execute(sql, params),
+        query: async (sql: string, params?: unknown[]) =>
+          this.query(sql, params),
+        execute: async (sql: string, params?: unknown[]) =>
+          this.execute(sql, params),
         commit: async () => {
           this.logger.debug('Committing MySQL transaction');
           await this.simulateAsync(8);
@@ -2126,7 +2163,13 @@ export class MySQLAdapter implements DatabaseAdapter {
           {
             name: 'users',
             columns: [
-              { name: 'id', type: 'int', nullable: false, isPrimaryKey: true, isForeignKey: false },
+              {
+                name: 'id',
+                type: 'int',
+                nullable: false,
+                isPrimaryKey: true,
+                isForeignKey: false,
+              },
               {
                 name: 'username',
                 type: 'varchar',
@@ -2152,7 +2195,11 @@ export class MySQLAdapter implements DatabaseAdapter {
             indexes: [
               { name: 'PRIMARY', columns: ['id'], unique: true },
               { name: 'users_email_unique', columns: ['email'], unique: true },
-              { name: 'users_username_idx', columns: ['username'], unique: false },
+              {
+                name: 'users_username_idx',
+                columns: ['username'],
+                unique: false,
+              },
             ],
           },
         ],

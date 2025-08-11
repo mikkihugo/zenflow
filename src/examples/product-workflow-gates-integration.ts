@@ -14,7 +14,10 @@
 import { getLogger } from '../config/logging-config.ts';
 import { ProductWorkflowEngine } from '../coordination/orchestration/product-workflow-engine.ts';
 import type { MemorySystem } from '../core/memory-system.ts';
-import { createTypeSafeEventBus, type TypeSafeEventBus } from '../core/type-safe-event-system.ts';
+import {
+  createTypeSafeEventBus,
+  type TypeSafeEventBus,
+} from '../core/type-safe-event-system.ts';
 import type { DocumentManager } from '../database/managers/document-manager.ts';
 import { WorkflowAGUIAdapter } from '../interfaces/agui/workflow-agui-adapter.ts';
 
@@ -45,7 +48,10 @@ class MockMemorySystem implements Partial<MemorySystem> {
     return this.storage.get(fullKey) || null;
   }
 
-  async search(pattern: string, namespace?: string): Promise<Record<string, any>> {
+  async search(
+    pattern: string,
+    namespace?: string,
+  ): Promise<Record<string, any>> {
     const results: Record<string, any> = {};
     const searchPattern = namespace ? `${namespace}:${pattern}` : pattern;
 
@@ -127,7 +133,7 @@ export class ProductWorkflowGatesIntegrationDemo {
         defaultTimeout: 300000,
         enableMetrics: true,
         enablePersistence: true,
-      }
+      },
     );
   }
 
@@ -174,10 +180,14 @@ export class ProductWorkflowGatesIntegrationDemo {
 
     // Show gate definitions
     const gateDefinitions = this.engine.getGateDefinitions();
-    console.log(`🚪 Gate Definitions: ${gateDefinitions.size} gates configured`);
+    console.log(
+      `🚪 Gate Definitions: ${gateDefinitions.size} gates configured`,
+    );
 
     for (const [stepName, gate] of gateDefinitions) {
-      console.log(`   • ${stepName}: ${gate.title} (${gate.priority} priority)`);
+      console.log(
+        `   • ${stepName}: ${gate.title} (${gate.priority} priority)`,
+      );
     }
 
     // Show pending gates
@@ -187,7 +197,7 @@ export class ProductWorkflowGatesIntegrationDemo {
     // Show AGUI adapter statistics
     const stats = this.engine.getGateStatistics();
     console.log(
-      `📈 AGUI Statistics: ${stats.totalDecisionAudits} decisions logged, ${stats.activeGates} active gates`
+      `📈 AGUI Statistics: ${stats.totalDecisionAudits} decisions logged, ${stats.activeGates} active gates`,
     );
 
     console.log('='.repeat(80) + '\n');
@@ -197,39 +207,47 @@ export class ProductWorkflowGatesIntegrationDemo {
     logger.info('🔄 Starting product workflow with integrated gates');
 
     // Start a complete product workflow
-    const workflowResult = await this.engine.startProductWorkflow('complete-product-flow', {
-      workspaceId: 'demo-workspace',
-      sessionId: 'gates-demo-session',
-      documents: {},
-      variables: {
-        projectName: 'Social Features Enhancement',
-        businessPriority: 'high',
-        technicalComplexity: 'medium',
-        targetMarket: 'b2c',
-        estimatedEffort: '6 months',
-        stakeholders: ['product-manager', 'tech-lead', 'business-analyst', 'ux-designer'],
-      },
-      environment: {
-        type: 'development',
-        nodeVersion: process.version,
-        workflowVersion: '2.0.0',
-        features: ['product-flow', 'sparc-integration', 'agui-gates'],
-        limits: {
-          maxSteps: 100,
-          maxDuration: 3600000,
-          maxMemory: 1024 * 1024 * 1024,
-          maxFileSize: 10 * 1024 * 1024,
-          maxConcurrency: 5,
+    const workflowResult = await this.engine.startProductWorkflow(
+      'complete-product-flow',
+      {
+        workspaceId: 'demo-workspace',
+        sessionId: 'gates-demo-session',
+        documents: {},
+        variables: {
+          projectName: 'Social Features Enhancement',
+          businessPriority: 'high',
+          technicalComplexity: 'medium',
+          targetMarket: 'b2c',
+          estimatedEffort: '6 months',
+          stakeholders: [
+            'product-manager',
+            'tech-lead',
+            'business-analyst',
+            'ux-designer',
+          ],
+        },
+        environment: {
+          type: 'development',
+          nodeVersion: process.version,
+          workflowVersion: '2.0.0',
+          features: ['product-flow', 'sparc-integration', 'agui-gates'],
+          limits: {
+            maxSteps: 100,
+            maxDuration: 3600000,
+            maxMemory: 1024 * 1024 * 1024,
+            maxFileSize: 10 * 1024 * 1024,
+            maxConcurrency: 5,
+          },
+        },
+        permissions: {
+          canReadDocuments: true,
+          canWriteDocuments: true,
+          canDeleteDocuments: false,
+          canExecuteSteps: ['*'],
+          canAccessResources: ['*'],
         },
       },
-      permissions: {
-        canReadDocuments: true,
-        canWriteDocuments: true,
-        canDeleteDocuments: false,
-        canExecuteSteps: ['*'],
-        canAccessResources: ['*'],
-      },
-    });
+    );
 
     if (!workflowResult.success) {
       throw new Error(`Failed to start workflow: ${workflowResult.error}`);
@@ -255,7 +273,8 @@ export class ProductWorkflowGatesIntegrationDemo {
         iterationCount++;
 
         // Get workflow status
-        const workflowStatus = await this.engine.getProductWorkflowStatus(workflowId);
+        const workflowStatus =
+          await this.engine.getProductWorkflowStatus(workflowId);
         if (!workflowStatus) {
           console.log('⚠️  Workflow not found');
           monitoring = false;
@@ -263,9 +282,15 @@ export class ProductWorkflowGatesIntegrationDemo {
         }
 
         // Display progress
-        console.log(`⏱️  Iteration ${iterationCount}: Status = ${workflowStatus.status}`);
-        console.log(`   Current Step: ${workflowStatus.productFlow.currentStep}`);
-        console.log(`   Completed Steps: ${workflowStatus.productFlow.completedSteps.length}`);
+        console.log(
+          `⏱️  Iteration ${iterationCount}: Status = ${workflowStatus.status}`,
+        );
+        console.log(
+          `   Current Step: ${workflowStatus.productFlow.currentStep}`,
+        );
+        console.log(
+          `   Completed Steps: ${workflowStatus.productFlow.completedSteps.length}`,
+        );
         console.log(`   Progress: ${workflowStatus.progress.percentage}%`);
 
         // Check for pending gates
@@ -276,7 +301,7 @@ export class ProductWorkflowGatesIntegrationDemo {
           // Simulate gate decisions for demo
           for (const [gateId, gateRequest] of pendingGates) {
             console.log(
-              `      Gate: ${gateRequest.workflowContext.stepName} - ${gateRequest.question}`
+              `      Gate: ${gateRequest.workflowContext.stepName} - ${gateRequest.question}`,
             );
 
             // Auto-approve gates for demo (in real scenario, this would be human decisions)
@@ -285,7 +310,10 @@ export class ProductWorkflowGatesIntegrationDemo {
         }
 
         // Check if workflow is complete
-        if (workflowStatus.status === 'completed' || workflowStatus.status === 'failed') {
+        if (
+          workflowStatus.status === 'completed' ||
+          workflowStatus.status === 'failed'
+        ) {
           console.log(`✅ Workflow ${workflowStatus.status}`);
           monitoring = false;
         }
@@ -308,21 +336,28 @@ export class ProductWorkflowGatesIntegrationDemo {
     // Wait for monitoring to complete
     return new Promise<void>((resolve) => {
       const checkComplete = () => {
-        if (!monitoring) {
-          resolve();
-        } else {
+        if (monitoring) {
           setTimeout(checkComplete, 100);
+        } else {
+          resolve();
         }
       };
       checkComplete();
     });
   }
 
-  private async simulateGateDecision(gateId: string, gateRequest: any): Promise<void> {
+  private async simulateGateDecision(
+    gateId: string,
+    gateRequest: any,
+  ): Promise<void> {
     console.log(`   🤖 Auto-approving gate: ${gateId}`);
     console.log(`      Question: ${gateRequest.question}`);
-    console.log(`      Business Impact: ${gateRequest.workflowContext.businessImpact}`);
-    console.log(`      Stakeholders: ${gateRequest.workflowContext.stakeholders.join(', ')}`);
+    console.log(
+      `      Business Impact: ${gateRequest.workflowContext.businessImpact}`,
+    );
+    console.log(
+      `      Stakeholders: ${gateRequest.workflowContext.stakeholders.join(', ')}`,
+    );
 
     // In a real scenario, this would be handled by the AGUI system
     // For demo purposes, we simulate approval
@@ -393,7 +428,9 @@ export async function runProductWorkflowGatesDemo(): Promise<void> {
  */
 export async function runInteractiveDemo(): Promise<void> {
   console.log('\n🎯 Interactive Product Workflow Gates Demo');
-  console.log('This demo will show you each step of the workflow with gate integration.\n');
+  console.log(
+    'This demo will show you each step of the workflow with gate integration.\n',
+  );
 
   const demo = new ProductWorkflowGatesIntegrationDemo();
 

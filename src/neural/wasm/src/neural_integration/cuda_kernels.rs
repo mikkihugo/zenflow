@@ -3,15 +3,19 @@
 //! This module contains hand-optimized CUDA kernels for common neural network
 //! operations, designed for maximum performance and efficiency.
 
-use super::{ActivationFunction, NeuralResult, NeuralIntegrationError};
+use super::{ActivationFunction, NeuralIntegrationError, NeuralResult};
 
 /// Collection of optimized CUDA kernels for neural operations
 pub struct OptimizedKernels;
 
 impl OptimizedKernels {
-    /// Get optimized matrix multiplication kernel
-    pub fn matrix_multiply_kernel(rows_a: usize, cols_a: usize, cols_b: usize) -> &'static str {
-        r#"
+  /// Get optimized matrix multiplication kernel
+  pub fn matrix_multiply_kernel(
+    rows_a: usize,
+    cols_a: usize,
+    cols_b: usize,
+  ) -> &'static str {
+    r#"
 extern "C" __global__ void optimized_matrix_multiply(
     const float* __restrict__ A,
     const float* __restrict__ B,
@@ -66,11 +70,11 @@ extern "C" __global__ void optimized_matrix_multiply(
     }
 }
 "#
-    }
-    
-    /// Get optimized vector operations kernel
-    pub fn vector_operations_kernel() -> &'static str {
-        r#"
+  }
+
+  /// Get optimized vector operations kernel
+  pub fn vector_operations_kernel() -> &'static str {
+    r#"
 extern "C" __global__ void optimized_vector_add(
     const float* __restrict__ a,
     const float* __restrict__ b,
@@ -114,11 +118,11 @@ extern "C" __global__ void optimized_vector_scale(
     }
 }
 "#
-    }
-    
-    /// Get optimized activation functions kernel
-    pub fn activation_functions_kernel() -> &'static str {
-        r#"
+  }
+
+  /// Get optimized activation functions kernel
+  pub fn activation_functions_kernel() -> &'static str {
+    r#"
 // Fast approximation functions
 __device__ __forceinline__ float fast_sigmoid(float x) {
     return 1.0f / (1.0f + expf(-x));
@@ -227,11 +231,11 @@ extern "C" __global__ void optimized_activation_derivatives(
     }
 }
 "#
-    }
-    
-    /// Get optimized convolution kernel
-    pub fn convolution_kernel() -> &'static str {
-        r#"
+  }
+
+  /// Get optimized convolution kernel
+  pub fn convolution_kernel() -> &'static str {
+    r#"
 extern "C" __global__ void optimized_conv2d(
     const float* __restrict__ input,
     const float* __restrict__ kernel,
@@ -288,11 +292,11 @@ extern "C" __global__ void optimized_conv2d(
     output[output_idx] = sum;
 }
 "#
-    }
-    
-    /// Get optimized forward propagation kernel
-    pub fn forward_propagation_kernel() -> &'static str {
-        r#"
+  }
+
+  /// Get optimized forward propagation kernel
+  pub fn forward_propagation_kernel() -> &'static str {
+    r#"
 extern "C" __global__ void optimized_forward_propagation(
     const float* __restrict__ input,
     const float* __restrict__ weights,
@@ -367,11 +371,11 @@ extern "C" __global__ void optimized_forward_propagation(
     output[batch * output_size + output_neuron] = result;
 }
 "#
-    }
-    
-    /// Get optimized backward propagation kernel
-    pub fn backward_propagation_kernel() -> &'static str {
-        r#"
+  }
+
+  /// Get optimized backward propagation kernel
+  pub fn backward_propagation_kernel() -> &'static str {
+    r#"
 extern "C" __global__ void optimized_backward_propagation(
     const float* __restrict__ delta_output,
     const float* __restrict__ weights,
@@ -479,11 +483,11 @@ extern "C" __global__ void optimized_compute_gradients(
     }
 }
 "#
-    }
-    
-    /// Get optimized reduction operations kernel
-    pub fn reduction_operations_kernel() -> &'static str {
-        r#"
+  }
+
+  /// Get optimized reduction operations kernel
+  pub fn reduction_operations_kernel() -> &'static str {
+    r#"
 extern "C" __global__ void optimized_reduce_sum(
     const float* __restrict__ input,
     float* __restrict__ output,
@@ -627,20 +631,23 @@ __device__ float warpReduceMax(float val) {
     return val;
 }
 "#
-    }
-    
-    /// Get kernel for specific activation function
-    pub fn get_activation_kernel(function: ActivationFunction) -> NeuralResult<String> {
-        let activation_code = match function {
-            ActivationFunction::Sigmoid => "fast_sigmoid(x)",
-            ActivationFunction::ReLU => "fmaxf(0.0f, x)",
-            ActivationFunction::Tanh => "fast_tanh(x)",
-            ActivationFunction::LeakyReLU => "x > 0.0f ? x : 0.01f * x",
-            ActivationFunction::Swish => "x * fast_sigmoid(x)",
-            ActivationFunction::GELU => "fast_gelu(x)",
-        };
-        
-        let kernel = format!(r#"
+  }
+
+  /// Get kernel for specific activation function
+  pub fn get_activation_kernel(
+    function: ActivationFunction,
+  ) -> NeuralResult<String> {
+    let activation_code = match function {
+      ActivationFunction::Sigmoid => "fast_sigmoid(x)",
+      ActivationFunction::ReLU => "fmaxf(0.0f, x)",
+      ActivationFunction::Tanh => "fast_tanh(x)",
+      ActivationFunction::LeakyReLU => "x > 0.0f ? x : 0.01f * x",
+      ActivationFunction::Swish => "x * fast_sigmoid(x)",
+      ActivationFunction::GELU => "fast_gelu(x)",
+    };
+
+    let kernel = format!(
+      r#"
 {}
 
 extern "C" __global__ void specialized_activation(
@@ -656,14 +663,17 @@ extern "C" __global__ void specialized_activation(
         output[i] = {};
     }}
 }}
-"#, Self::activation_functions_kernel(), activation_code);
-        
-        Ok(kernel)
-    }
-    
-    /// Get all kernels as a single compilation unit
-    pub fn get_combined_kernels() -> &'static str {
-        r#"
+"#,
+      Self::activation_functions_kernel(),
+      activation_code
+    );
+
+    Ok(kernel)
+  }
+
+  /// Get all kernels as a single compilation unit
+  pub fn get_combined_kernels() -> &'static str {
+    r#"
 // Combined optimized kernels for neural operations
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
@@ -755,117 +765,124 @@ extern "C" __global__ void optimized_reduce_sum(...);
 extern "C" __global__ void optimized_reduce_max(...);
 extern "C" __global__ void optimized_softmax(...);
 "#
-    }
+  }
 }
 
 /// Kernel configuration parameters
 #[derive(Debug, Clone)]
 pub struct KernelConfig {
-    pub block_size: (u32, u32, u32),
-    pub grid_size: (u32, u32, u32),
-    pub shared_memory_size: u32,
+  pub block_size: (u32, u32, u32),
+  pub grid_size: (u32, u32, u32),
+  pub shared_memory_size: u32,
 }
 
 impl KernelConfig {
-    /// Create optimal configuration for matrix multiplication
-    pub fn for_matrix_multiply(rows: usize, cols: usize) -> Self {
-        let block_x = 32u32;
-        let block_y = 32u32;
-        let grid_x = (cols as u32).div_ceil(block_x);
-        let grid_y = (rows as u32).div_ceil(block_y);
-        
-        Self {
-            block_size: (block_x, block_y, 1),
-            grid_size: (grid_x, grid_y, 1),
-            shared_memory_size: block_x * block_y * 4 * 2, // Two tiles of f32
-        }
+  /// Create optimal configuration for matrix multiplication
+  pub fn for_matrix_multiply(rows: usize, cols: usize) -> Self {
+    let block_x = 32u32;
+    let block_y = 32u32;
+    let grid_x = (cols as u32).div_ceil(block_x);
+    let grid_y = (rows as u32).div_ceil(block_y);
+
+    Self {
+      block_size: (block_x, block_y, 1),
+      grid_size: (grid_x, grid_y, 1),
+      shared_memory_size: block_x * block_y * 4 * 2, // Two tiles of f32
     }
-    
-    /// Create optimal configuration for vector operations
-    pub fn for_vector_operation(size: usize) -> Self {
-        let block_size = 256u32;
-        let grid_size = (size as u32).div_ceil(block_size);
-        
-        Self {
-            block_size: (block_size, 1, 1),
-            grid_size: (grid_size, 1, 1),
-            shared_memory_size: 0,
-        }
+  }
+
+  /// Create optimal configuration for vector operations
+  pub fn for_vector_operation(size: usize) -> Self {
+    let block_size = 256u32;
+    let grid_size = (size as u32).div_ceil(block_size);
+
+    Self {
+      block_size: (block_size, 1, 1),
+      grid_size: (grid_size, 1, 1),
+      shared_memory_size: 0,
     }
-    
-    /// Create optimal configuration for convolution
-    pub fn for_convolution(batch_size: usize, out_channels: usize, out_height: usize, out_width: usize) -> Self {
-        let block_x = 16u32;
-        let block_y = 16u32;
-        let grid_x = (out_width as u32).div_ceil(block_x);
-        let grid_y = (out_channels as u32).div_ceil(block_y);
-        let grid_z = batch_size as u32;
-        
-        Self {
-            block_size: (block_x, block_y, 1),
-            grid_size: (grid_x, grid_y, grid_z),
-            shared_memory_size: block_x * block_y * 4, // Shared input tile
-        }
+  }
+
+  /// Create optimal configuration for convolution
+  pub fn for_convolution(
+    batch_size: usize,
+    out_channels: usize,
+    out_height: usize,
+    out_width: usize,
+  ) -> Self {
+    let block_x = 16u32;
+    let block_y = 16u32;
+    let grid_x = (out_width as u32).div_ceil(block_x);
+    let grid_y = (out_channels as u32).div_ceil(block_y);
+    let grid_z = batch_size as u32;
+
+    Self {
+      block_size: (block_x, block_y, 1),
+      grid_size: (grid_x, grid_y, grid_z),
+      shared_memory_size: block_x * block_y * 4, // Shared input tile
     }
+  }
 }
 
 /// Kernel launch parameters
 #[derive(Debug, Clone)]
 pub struct LaunchParams {
-    pub config: KernelConfig,
-    pub stream: Option<u64>, // CUDA stream handle
+  pub config: KernelConfig,
+  pub stream: Option<u64>, // CUDA stream handle
 }
 
 impl LaunchParams {
-    pub fn new(config: KernelConfig) -> Self {
-        Self {
-            config,
-            stream: None,
-        }
+  pub fn new(config: KernelConfig) -> Self {
+    Self {
+      config,
+      stream: None,
     }
-    
-    pub fn with_stream(mut self, stream: u64) -> Self {
-        self.stream = Some(stream);
-        self
-    }
+  }
+
+  pub fn with_stream(mut self, stream: u64) -> Self {
+    self.stream = Some(stream);
+    self
+  }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    
-    #[test]
-    fn test_kernel_availability() {
-        let matrix_kernel = OptimizedKernels::matrix_multiply_kernel(4, 4, 4);
-        assert!(matrix_kernel.contains("optimized_matrix_multiply"));
-        assert!(matrix_kernel.contains("__shared__"));
-    }
-    
-    #[test]
-    fn test_vector_kernels() {
-        let vector_kernel = OptimizedKernels::vector_operations_kernel();
-        assert!(vector_kernel.contains("optimized_vector_add"));
-        assert!(vector_kernel.contains("grid-stride loop"));
-    }
-    
-    #[test]
-    fn test_activation_kernels() {
-        let activation_kernel = OptimizedKernels::activation_functions_kernel();
-        assert!(activation_kernel.contains("fast_sigmoid"));
-        assert!(activation_kernel.contains("fast_gelu"));
-    }
-    
-    #[test]
-    fn test_kernel_config() {
-        let config = KernelConfig::for_matrix_multiply(128, 128);
-        assert_eq!(config.block_size, (32, 32, 1));
-        assert_eq!(config.grid_size, (4, 4, 1));
-    }
-    
-    #[test]
-    fn test_activation_kernel_generation() {
-        let kernel = OptimizedKernels::get_activation_kernel(ActivationFunction::ReLU).unwrap();
-        assert!(kernel.contains("fmaxf"));
-        assert!(kernel.contains("specialized_activation"));
-    }
+  use super::*;
+
+  #[test]
+  fn test_kernel_availability() {
+    let matrix_kernel = OptimizedKernels::matrix_multiply_kernel(4, 4, 4);
+    assert!(matrix_kernel.contains("optimized_matrix_multiply"));
+    assert!(matrix_kernel.contains("__shared__"));
+  }
+
+  #[test]
+  fn test_vector_kernels() {
+    let vector_kernel = OptimizedKernels::vector_operations_kernel();
+    assert!(vector_kernel.contains("optimized_vector_add"));
+    assert!(vector_kernel.contains("grid-stride loop"));
+  }
+
+  #[test]
+  fn test_activation_kernels() {
+    let activation_kernel = OptimizedKernels::activation_functions_kernel();
+    assert!(activation_kernel.contains("fast_sigmoid"));
+    assert!(activation_kernel.contains("fast_gelu"));
+  }
+
+  #[test]
+  fn test_kernel_config() {
+    let config = KernelConfig::for_matrix_multiply(128, 128);
+    assert_eq!(config.block_size, (32, 32, 1));
+    assert_eq!(config.grid_size, (4, 4, 1));
+  }
+
+  #[test]
+  fn test_activation_kernel_generation() {
+    let kernel =
+      OptimizedKernels::get_activation_kernel(ActivationFunction::ReLU)
+        .unwrap();
+    assert!(kernel.contains("fmaxf"));
+    assert!(kernel.contains("specialized_activation"));
+  }
 }

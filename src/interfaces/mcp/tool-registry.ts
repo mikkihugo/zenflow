@@ -73,7 +73,10 @@ export const toolRegistry = new ToolRegistry();
  */
 export class MCPToolsManager {
   private initialized = false;
-  private toolStats = new Map<string, { calls: number; errors: number; avgTime: number }>();
+  private toolStats = new Map<
+    string,
+    { calls: number; errors: number; avgTime: number }
+  >();
   private documentService?: DocumentService;
 
   constructor(documentService?: DocumentService) {
@@ -231,11 +234,11 @@ export class MCPToolsManager {
     const categoryStats = toolRegistry.getCategorySummary();
     const totalCalls = Array.from(this.toolStats.values()).reduce(
       (sum, stats) => sum + stats.calls,
-      0
+      0,
     );
     const totalErrors = Array.from(this.toolStats.values()).reduce(
       (sum, stats) => sum + stats.errors,
-      0
+      0,
     );
 
     return {
@@ -244,7 +247,10 @@ export class MCPToolsManager {
       statistics: {
         totalCalls,
         totalErrors,
-        errorRate: totalCalls > 0 ? `${((totalErrors / totalCalls) * 100).toFixed(2)}%` : '0%',
+        errorRate:
+          totalCalls > 0
+            ? `${((totalErrors / totalCalls) * 100).toFixed(2)}%`
+            : '0%',
         avgResponseTime: this.calculateAvgResponseTime(),
       },
       status: 'operational',
@@ -265,7 +271,9 @@ export class MCPToolsManager {
         (tool) =>
           tool.name.toLowerCase().includes(lowercaseQuery) ||
           tool.description.toLowerCase().includes(lowercaseQuery) ||
-          tool.metadata.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
+          tool.metadata.tags.some((tag) =>
+            tag.toLowerCase().includes(lowercaseQuery),
+          ),
       );
   }
 
@@ -296,8 +304,10 @@ export class MCPToolsManager {
       .getAllTools()
       .filter((tool) =>
         tool.permissions.some(
-          (perm) => perm.type === permissionType && (!resource || perm.resource === resource)
-        )
+          (perm) =>
+            perm.type === permissionType &&
+            (!resource || perm.resource === resource),
+        ),
       );
   }
 
@@ -305,12 +315,17 @@ export class MCPToolsManager {
     this.toolStats.set(toolName, { calls: 0, errors: 0, avgTime: 0 });
   }
 
-  private updateToolStats(toolName: string, executionTime: number, isError: boolean): void {
+  private updateToolStats(
+    toolName: string,
+    executionTime: number,
+    isError: boolean,
+  ): void {
     const stats = this.toolStats.get(toolName);
     if (stats) {
       stats.calls++;
       if (isError) stats.errors++;
-      stats.avgTime = (stats.avgTime * (stats.calls - 1) + executionTime) / stats.calls;
+      stats.avgTime =
+        (stats.avgTime * (stats.calls - 1) + executionTime) / stats.calls;
     }
   }
 
@@ -318,7 +333,8 @@ export class MCPToolsManager {
     const allStats = Array.from(this.toolStats.values());
     if (allStats.length === 0) return '0ms';
 
-    const avgTime = allStats.reduce((sum, stats) => sum + stats.avgTime, 0) / allStats.length;
+    const avgTime =
+      allStats.reduce((sum, stats) => sum + stats.avgTime, 0) / allStats.length;
     return `${Math.round(avgTime)}ms`;
   }
 }
@@ -332,7 +348,9 @@ export const mcpToolsManager = new MCPToolsManager();
  * @param documentService
  * @example
  */
-export function initializeWithDatabaseServices(documentService: DocumentService): MCPToolsManager {
+export function initializeWithDatabaseServices(
+  documentService: DocumentService,
+): MCPToolsManager {
   // Create new instance with database services for SPARC tools
   const manager = new MCPToolsManager(documentService);
   return manager;

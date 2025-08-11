@@ -72,7 +72,11 @@ describe('Memory Stores Integration Test Suite', () => {
 
         classical: {
           description: 'Test real implementations and data flow',
-          benefits: ['Real behavior validation', 'Integration confidence', 'Performance insights'],
+          benefits: [
+            'Real behavior validation',
+            'Integration confidence',
+            'Performance insights',
+          ],
           examples: [
             'Actual SQLite persistence',
             'Real vector similarity calculations',
@@ -129,7 +133,10 @@ describe('Memory Stores Integration Test Suite', () => {
 
         cachePerformance: {
           london: ['Mock cache strategies', 'Mock eviction policies'],
-          classical: ['Real performance measurement', 'Actual algorithm comparison'],
+          classical: [
+            'Real performance measurement',
+            'Actual algorithm comparison',
+          ],
         },
 
         dataIntegrity: {
@@ -151,7 +158,11 @@ describe('Memory Stores Integration Test Suite', () => {
       const benchmarkCategories = [
         {
           category: 'SQLite Operations',
-          metrics: ['Writes per second', 'Reads per second', 'Concurrent operations'],
+          metrics: [
+            'Writes per second',
+            'Reads per second',
+            'Concurrent operations',
+          ],
           approach: 'Classical - actual database operations',
         },
         {
@@ -165,17 +176,29 @@ describe('Memory Stores Integration Test Suite', () => {
         },
         {
           category: 'Cache Performance',
-          metrics: ['Hit rate optimization', 'Eviction efficiency', 'Memory usage'],
+          metrics: [
+            'Hit rate optimization',
+            'Eviction efficiency',
+            'Memory usage',
+          ],
           approach: 'Classical - actual cache algorithm performance',
         },
         {
           category: 'Session Management',
-          metrics: ['Session creation rate', 'Cleanup efficiency', 'Concurrent access'],
+          metrics: [
+            'Session creation rate',
+            'Cleanup efficiency',
+            'Concurrent access',
+          ],
           approach: 'Classical - real session lifecycle operations',
         },
         {
           category: 'Data Integrity',
-          metrics: ['Validation speed', 'Repair success rate', 'Corruption detection'],
+          metrics: [
+            'Validation speed',
+            'Repair success rate',
+            'Corruption detection',
+          ],
           approach: 'Classical - actual integrity operations',
         },
       ];
@@ -237,22 +260,26 @@ describe('Memory Stores Integration Test Suite', () => {
         {
           pattern: 'High-frequency reads with occasional writes',
           stores: ['Cache', 'SQLite'],
-          testingApproach: 'Classical for performance, London for error injection',
+          testingApproach:
+            'Classical for performance, London for error injection',
         },
         {
           pattern: 'Vector similarity search with caching',
           stores: ['LanceDB', 'Cache'],
-          testingApproach: 'Classical for math accuracy, London for database mocking',
+          testingApproach:
+            'Classical for math accuracy, London for database mocking',
         },
         {
           pattern: 'Session-based data with expiration',
           stores: ['Session Management', 'SQLite'],
-          testingApproach: 'Classical for lifecycle, London for storage failures',
+          testingApproach:
+            'Classical for lifecycle, London for storage failures',
         },
         {
           pattern: 'Data integrity with automatic repair',
           stores: ['Data Integrity', 'All stores'],
-          testingApproach: 'Classical for validation, London for corruption simulation',
+          testingApproach:
+            'Classical for validation, London for corruption simulation',
         },
         {
           pattern: 'Multi-store coordination and consistency',
@@ -297,7 +324,9 @@ describe('Memory Stores Integration Test Suite', () => {
       expect(qualityMetrics.testExecution.totalSuites).toBe(5);
       expect(qualityMetrics.testDistribution.londonTests).toBeGreaterThan(0);
       expect(qualityMetrics.testDistribution.classicalTests).toBeGreaterThan(0);
-      expect(qualityMetrics.qualityIndicators.mockUsage).toContain('External dependencies only');
+      expect(qualityMetrics.qualityIndicators.mockUsage).toContain(
+        'External dependencies only',
+      );
     });
   });
 });

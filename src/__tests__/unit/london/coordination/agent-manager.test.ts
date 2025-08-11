@@ -4,7 +4,7 @@
  * @file Basic tests for agent management coordination using London School approach
  */
 
-import { createCoordinationTestSuite } from '../../../helpers';
+import { createCoordinationTestSuite } from '../../../helpers/index.js';
 
 describe('Simple Agent Manager - London TDD', () => {
   let mockAgentManager: any;
@@ -19,12 +19,19 @@ describe('Simple Agent Manager - London TDD', () => {
       agents: new Map(),
 
       registerAgent: vi.fn().mockImplementation((agent) => {
-        mockEventEmitter('emit', { type: 'agent_registered', agentId: agent.id });
+        mockEventEmitter('emit', {
+          type: 'agent_registered',
+          agentId: agent.id,
+        });
         return { success: true, agentId: agent.id };
       }),
 
       assignTask: vi.fn().mockImplementation((agentId, task) => {
-        mockEventEmitter('emit', { type: 'task_assigned', agentId, taskId: task.id });
+        mockEventEmitter('emit', {
+          type: 'task_assigned',
+          agentId,
+          taskId: task.id,
+        });
         return { success: true, taskId: task.id, assignedTo: agentId };
       }),
 
@@ -56,7 +63,7 @@ describe('Simple Agent Manager - London TDD', () => {
         expect.objectContaining({
           type: 'agent_registered',
           agentId: agent.id,
-        })
+        }),
       );
     });
 
@@ -66,7 +73,9 @@ describe('Simple Agent Manager - London TDD', () => {
         { id: 'agent-2', type: 'coordinator' },
       ];
 
-      const results = agents.map((agent) => mockAgentManager.registerAgent(agent));
+      const results = agents.map((agent) =>
+        mockAgentManager.registerAgent(agent),
+      );
 
       // Verify interaction pattern
       expect(mockAgentManager.registerAgent).toHaveBeenCalledTimes(2);
@@ -84,7 +93,10 @@ describe('Simple Agent Manager - London TDD', () => {
       const result = mockAgentManager.assignTask('worker-1', task);
 
       // Verify assignment interaction
-      expect(mockAgentManager.assignTask).toHaveBeenCalledWith('worker-1', task);
+      expect(mockAgentManager.assignTask).toHaveBeenCalledWith(
+        'worker-1',
+        task,
+      );
       expect(result?.success).toBe(true);
       expect(result?.taskId).toBe(task.id);
 
@@ -95,7 +107,7 @@ describe('Simple Agent Manager - London TDD', () => {
           type: 'task_assigned',
           agentId: 'worker-1',
           taskId: task.id,
-        })
+        }),
       );
     });
   });
@@ -116,7 +128,7 @@ describe('Simple Agent Manager - London TDD', () => {
         expect.objectContaining({
           type: 'message_broadcast',
           message,
-        })
+        }),
       );
     });
   });

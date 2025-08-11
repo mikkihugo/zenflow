@@ -31,7 +31,11 @@ export class AssertionHelpers {
    * @param expected
    * @param precision
    */
-  toBeApproximately(actual: number, expected: number, precision?: number): void {
+  toBeApproximately(
+    actual: number,
+    expected: number,
+    precision?: number,
+  ): void {
     const actualPrecision = precision ?? this.options.precision!;
     const _message =
       this.options.messages?.approximately ||
@@ -48,21 +52,27 @@ export class AssertionHelpers {
    */
   toMeetPerformanceThreshold(
     metrics: PerformanceMetrics,
-    thresholds: Partial<PerformanceMetrics>
+    thresholds: Partial<PerformanceMetrics>,
   ): void {
     if (thresholds.executionTime !== undefined) {
       const _message = `Execution time ${metrics.executionTime}ms exceeded threshold ${thresholds.executionTime}ms`;
-      expect(metrics.executionTime).toBeLessThanOrEqual(thresholds.executionTime);
+      expect(metrics.executionTime).toBeLessThanOrEqual(
+        thresholds.executionTime,
+      );
     }
 
     if (thresholds.memoryUsage?.heap !== undefined) {
       const _message = `Heap usage ${metrics.memoryUsage.heap} exceeded threshold ${thresholds.memoryUsage.heap}`;
-      expect(metrics.memoryUsage.heap).toBeLessThanOrEqual(thresholds.memoryUsage.heap);
+      expect(metrics.memoryUsage.heap).toBeLessThanOrEqual(
+        thresholds.memoryUsage.heap,
+      );
     }
 
     if (thresholds.memoryUsage?.total !== undefined) {
       const _message = `Total memory ${metrics.memoryUsage.total} exceeded threshold ${thresholds.memoryUsage.total}`;
-      expect(metrics.memoryUsage.total).toBeLessThanOrEqual(thresholds.memoryUsage.total);
+      expect(metrics.memoryUsage.total).toBeLessThanOrEqual(
+        thresholds.memoryUsage.total,
+      );
     }
 
     if (thresholds.throughput !== undefined) {
@@ -80,8 +90,9 @@ export class AssertionHelpers {
   async toResolveWithin<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
     const timeout = new Promise<never>((_, reject) => {
       setTimeout(
-        () => reject(new Error(`Promise did not resolve within ${timeoutMs}ms`)),
-        timeoutMs
+        () =>
+          reject(new Error(`Promise did not resolve within ${timeoutMs}ms`)),
+        timeoutMs,
       );
     });
 
@@ -98,7 +109,7 @@ export class AssertionHelpers {
    */
   async toEventuallyBeTrue(
     predicate: () => boolean | Promise<boolean>,
-    options: { timeout?: number; interval?: number } = {}
+    options: { timeout?: number; interval?: number } = {},
   ): Promise<void> {
     const timeout = options?.timeout || 5000;
     const interval = options?.interval || 100;
@@ -144,10 +155,14 @@ export class AssertionHelpers {
   toDeepEqualWith<T>(
     actual: T,
     expected: T,
-    customComparator?: (a: any, b: any, path: string) => boolean
+    customComparator?: (a: any, b: any, path: string) => boolean,
   ): void {
     if (customComparator) {
-      const isEqual = this.deepEqualWithCustom(actual, expected, customComparator);
+      const isEqual = this.deepEqualWithCustom(
+        actual,
+        expected,
+        customComparator,
+      );
       expect(isEqual).toBe(true);
     } else {
       expect(actual).toEqual(expected);
@@ -171,8 +186,13 @@ export class AssertionHelpers {
    * @param pattern
    * @param customMessage
    */
-  toMatchPattern(actual: string, pattern: RegExp, customMessage?: string): void {
-    const _message = customMessage || `Expected "${actual}" to match pattern ${pattern}`;
+  toMatchPattern(
+    actual: string,
+    pattern: RegExp,
+    customMessage?: string,
+  ): void {
+    const _message =
+      customMessage || `Expected "${actual}" to match pattern ${pattern}`;
     expect(actual).toMatch(pattern);
   }
 
@@ -187,7 +207,11 @@ export class AssertionHelpers {
    */
   toBeErrorWithProperties(
     actual: Error,
-    expectedProperties: { message?: string; code?: string | number; type?: string }
+    expectedProperties: {
+      message?: string;
+      code?: string | number;
+      type?: string;
+    },
   ): void {
     expect(actual).toBeInstanceOf(Error);
 
@@ -212,7 +236,7 @@ export class AssertionHelpers {
    */
   async toThrowAsyncError<T>(
     operation: () => Promise<T>,
-    expectedError?: string | RegExp | Error
+    expectedError?: string | RegExp | Error,
   ): Promise<void> {
     try {
       await operation();
@@ -240,7 +264,7 @@ export class AssertionHelpers {
   toBeHttpResponse(
     response: any,
     expectedStatus: number,
-    expectedHeaders?: Record<string, string>
+    expectedHeaders?: Record<string, string>,
   ): void {
     expect(response?.status).toBe(expectedStatus);
 
@@ -261,7 +285,7 @@ export class AssertionHelpers {
   toConvergeToTarget(
     trainingResults: { epoch: number; error: number }[],
     targetError: number,
-    maxEpochs?: number
+    maxEpochs?: number,
   ): void {
     const finalResult = trainingResults?.[trainingResults.length - 1];
 
@@ -274,9 +298,12 @@ export class AssertionHelpers {
     // Check that error generally decreases over time
     const errorReductions = trainingResults
       ?.slice(1)
-      .filter((result, index) => result?.error < trainingResults?.[index]?.error);
+      .filter(
+        (result, index) => result?.error < trainingResults?.[index]?.error,
+      );
 
-    const reductionRatio = errorReductions.length / (trainingResults.length - 1);
+    const reductionRatio =
+      errorReductions.length / (trainingResults.length - 1);
     expect(reductionRatio).toBeGreaterThan(0.7); // 70% of epochs should show improvement
   }
 
@@ -297,7 +324,7 @@ export class AssertionHelpers {
       topology?: string;
       efficiency?: number;
       completion?: number;
-    }
+    },
   ): void {
     if (expectedPatterns.agentCount !== undefined) {
       expect(swarmMetrics.activeAgents).toBe(expectedPatterns.agentCount);
@@ -308,11 +335,15 @@ export class AssertionHelpers {
     }
 
     if (expectedPatterns.efficiency !== undefined) {
-      expect(swarmMetrics.efficiency).toBeGreaterThanOrEqual(expectedPatterns.efficiency);
+      expect(swarmMetrics.efficiency).toBeGreaterThanOrEqual(
+        expectedPatterns.efficiency,
+      );
     }
 
     if (expectedPatterns.completion !== undefined) {
-      expect(swarmMetrics.completionRate).toBeGreaterThanOrEqual(expectedPatterns.completion);
+      expect(swarmMetrics.completionRate).toBeGreaterThanOrEqual(
+        expectedPatterns.completion,
+      );
     }
   }
 
@@ -322,7 +353,10 @@ export class AssertionHelpers {
    * @param mock
    * @param expectedSequence
    */
-  toHaveInteractionSequence(mock: any, expectedSequence: { method: string; args?: any[] }[]): void {
+  toHaveInteractionSequence(
+    mock: any,
+    expectedSequence: { method: string; args?: any[] }[],
+  ): void {
     const interactions = mock.__interactions || [];
 
     expect(interactions).toHaveLength(expectedSequence.length);
@@ -345,7 +379,11 @@ export class AssertionHelpers {
    */
   toSatisfyMathematicalProperty(
     values: number[],
-    property: 'monotonic-increasing' | 'monotonic-decreasing' | 'convex' | 'concave'
+    property:
+      | 'monotonic-increasing'
+      | 'monotonic-decreasing'
+      | 'convex'
+      | 'concave',
   ): void {
     switch (property) {
       case 'monotonic-increasing':
@@ -363,7 +401,8 @@ export class AssertionHelpers {
       case 'convex':
         // Check second derivative > 0 (simplified)
         for (let i = 2; i < values.length; i++) {
-          const secondDerivative = values[i] - 2 * values[i - 1] + values[i - 2];
+          const secondDerivative =
+            values[i] - 2 * values[i - 1] + values[i - 2];
           expect(secondDerivative).toBeGreaterThanOrEqual(0);
         }
         break;
@@ -371,7 +410,8 @@ export class AssertionHelpers {
       case 'concave':
         // Check second derivative < 0 (simplified)
         for (let i = 2; i < values.length; i++) {
-          const secondDerivative = values[i] - 2 * values[i - 1] + values[i - 2];
+          const secondDerivative =
+            values[i] - 2 * values[i - 1] + values[i - 2];
           expect(secondDerivative).toBeLessThanOrEqual(0);
         }
         break;
@@ -382,7 +422,7 @@ export class AssertionHelpers {
     a: any,
     b: any,
     customComparator: (a: any, b: any, path: string) => boolean,
-    path: string = ''
+    path: string = '',
   ): boolean {
     if (customComparator(a, b, path)) {
       return true;
@@ -400,7 +440,14 @@ export class AssertionHelpers {
 
       for (const key of keysA) {
         if (!keysB.includes(key)) return false;
-        if (!this.deepEqualWithCustom(a[key], b[key], customComparator, `${path}.${key}`)) {
+        if (
+          !this.deepEqualWithCustom(
+            a[key],
+            b[key],
+            customComparator,
+            `${path}.${key}`,
+          )
+        ) {
           return false;
         }
       }
@@ -420,27 +467,31 @@ export class AssertionHelpers {
 export const assertionHelpers = new AssertionHelpers();
 
 // Convenience functions for common assertions
-export function expectApproximately(actual: number, expected: number, precision?: number): void {
+export function expectApproximately(
+  actual: number,
+  expected: number,
+  precision?: number,
+): void {
   assertionHelpers.toBeApproximately(actual, expected, precision);
 }
 
 export function expectPerformance(
   metrics: PerformanceMetrics,
-  thresholds: Partial<PerformanceMetrics>
+  thresholds: Partial<PerformanceMetrics>,
 ): void {
   assertionHelpers.toMeetPerformanceThreshold(metrics, thresholds);
 }
 
 export async function expectEventually(
   predicate: () => boolean | Promise<boolean>,
-  options?: { timeout?: number; interval?: number }
+  options?: { timeout?: number; interval?: number },
 ): Promise<void> {
   return assertionHelpers.toEventuallyBeTrue(predicate, options);
 }
 
 export function expectInteractionSequence(
   mock: any,
-  sequence: { method: string; args?: any[] }[]
+  sequence: { method: string; args?: any[] }[],
 ): void {
   assertionHelpers.toHaveInteractionSequence(mock, sequence);
 }

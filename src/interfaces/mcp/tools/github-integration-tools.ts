@@ -116,7 +116,11 @@ const githubIntegrationTools: MCPTool[] = [
       type: 'object',
       properties: {
         prNumber: { type: 'number' },
-        state: { type: 'string', enum: ['open', 'closed', 'merged'], default: 'open' },
+        state: {
+          type: 'string',
+          enum: ['open', 'closed', 'merged'],
+          default: 'open',
+        },
         includeChecks: { type: 'boolean', default: true },
       },
     },

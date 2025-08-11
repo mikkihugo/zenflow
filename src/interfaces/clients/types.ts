@@ -31,12 +31,26 @@ export type ProtocolType =
 /**
  * Authentication types.
  */
-export type AuthType = 'none' | 'bearer' | 'basic' | 'api-key' | 'oauth' | 'jwt' | 'custom';
+export type AuthType =
+  | 'none'
+  | 'bearer'
+  | 'basic'
+  | 'api-key'
+  | 'oauth'
+  | 'jwt'
+  | 'custom';
 
 /**
  * HTTP methods.
  */
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS';
+export type HttpMethod =
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'DELETE'
+  | 'PATCH'
+  | 'HEAD'
+  | 'OPTIONS';
 
 /**
  * WebSocket event types.
@@ -52,7 +66,12 @@ export type WebSocketEventType =
 /**
  * Knowledge query types.
  */
-export type KnowledgeQueryType = 'exact' | 'fuzzy' | 'semantic' | 'vector' | 'hybrid';
+export type KnowledgeQueryType =
+  | 'exact'
+  | 'fuzzy'
+  | 'semantic'
+  | 'vector'
+  | 'hybrid';
 
 /**
  * MCP message types.
@@ -73,7 +92,13 @@ export type ClientStatus =
 /**
  * Response format types.
  */
-export type ResponseFormat = 'json' | 'xml' | 'text' | 'binary' | 'stream' | 'auto';
+export type ResponseFormat =
+  | 'json'
+  | 'xml'
+  | 'text'
+  | 'binary'
+  | 'stream'
+  | 'auto';
 
 /**
  * Compression types.
@@ -83,7 +108,13 @@ export type CompressionType = 'none' | 'gzip' | 'deflate' | 'brotli' | 'lz4';
 /**
  * Client configuration presets.
  */
-export type ClientPreset = 'default' | 'fast' | 'reliable' | 'minimal' | 'secure' | 'debug';
+export type ClientPreset =
+  | 'default'
+  | 'fast'
+  | 'reliable'
+  | 'minimal'
+  | 'secure'
+  | 'debug';
 
 /**
  * Error severity levels.
@@ -108,7 +139,12 @@ export type CircuitBreakerState = 'closed' | 'open' | 'half-open';
 /**
  * Serialization formats.
  */
-export type SerializationFormat = 'json' | 'msgpack' | 'protobuf' | 'avro' | 'custom';
+export type SerializationFormat =
+  | 'json'
+  | 'msgpack'
+  | 'protobuf'
+  | 'avro'
+  | 'custom';
 
 /**
  * Client type enum for runtime usage.

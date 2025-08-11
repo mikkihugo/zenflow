@@ -42,7 +42,12 @@ class MCPServerTester {
   // Test 1: Server starts without ANSI escape codes
   async testServerStartup() {
     return new Promise((resolve, reject) => {
-      const serverPath = join(__dirname, '..', 'bin', 'ruv-swarm-mcp-enhanced.js');
+      const serverPath = join(
+        __dirname,
+        '..',
+        'bin',
+        'ruv-swarm-mcp-enhanced.js',
+      );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, MCP_TEST_MODE: 'true', DEBUG: 'false' },
@@ -56,7 +61,10 @@ class MCPServerTester {
         stdoutData += data.toString();
 
         // Check for ANSI escape codes in stdout (this should NOT happen)
-        if (data.toString().includes('\x1b[') || data.toString().includes('\u001b[')) {
+        if (
+          data.toString().includes('\x1b[') ||
+          data.toString().includes('\u001b[')
+        ) {
           hasAnsiEscape = true;
         }
       });
@@ -78,7 +86,11 @@ class MCPServerTester {
 
           // Validate no ANSI codes in stdout
           if (hasAnsiEscape) {
-            reject(new Error('ANSI escape codes found in stdout - this breaks JSON-RPC'));
+            reject(
+              new Error(
+                'ANSI escape codes found in stdout - this breaks JSON-RPC',
+              ),
+            );
           } else {
             if (stdoutData.trim()) {
             }
@@ -102,7 +114,12 @@ class MCPServerTester {
   // Test 2: Test notifications/initialized handling
   async testNotificationsInitialized() {
     return new Promise((resolve, reject) => {
-      const serverPath = join(__dirname, '..', 'bin', 'ruv-swarm-mcp-enhanced.js');
+      const serverPath = join(
+        __dirname,
+        '..',
+        'bin',
+        'ruv-swarm-mcp-enhanced.js',
+      );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, MCP_TEST_MODE: 'true', DEBUG: 'false' },
@@ -167,18 +184,29 @@ class MCPServerTester {
             }
 
             if (initResponse.error) {
-              reject(new Error(`Initialize failed: ${initResponse.error.message}`));
+              reject(
+                new Error(`Initialize failed: ${initResponse.error.message}`),
+              );
               return;
             }
 
             if (!notificationResponse) {
-              reject(new Error('No response to notifications/initialized request'));
+              reject(
+                new Error('No response to notifications/initialized request'),
+              );
               return;
             }
 
             // This should NOT return an error (previously it returned "Method not found")
-            if (notificationResponse.error && notificationResponse.error.code === -32601) {
-              reject(new Error('notifications/initialized still returns "Method not found" error'));
+            if (
+              notificationResponse.error &&
+              notificationResponse.error.code === -32601
+            ) {
+              reject(
+                new Error(
+                  'notifications/initialized still returns "Method not found" error',
+                ),
+              );
               return;
             }
 
@@ -201,7 +229,12 @@ class MCPServerTester {
   // Test 3: JSON parsing with stderr output
   async testJsonParsingWithStderr() {
     return new Promise((resolve, reject) => {
-      const serverPath = join(__dirname, '..', 'bin', 'ruv-swarm-mcp-enhanced.js');
+      const serverPath = join(
+        __dirname,
+        '..',
+        'bin',
+        'ruv-swarm-mcp-enhanced.js',
+      );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, MCP_TEST_MODE: 'true', DEBUG: 'true' }, // Enable debug logs
@@ -224,8 +257,8 @@ class MCPServerTester {
             } catch (parseError) {
               reject(
                 new Error(
-                  `JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`
-                )
+                  `JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`,
+                ),
               );
               return;
             }
@@ -292,7 +325,12 @@ class MCPServerTester {
   // Test 4: Connection stability (no premature timeouts)
   async testConnectionStability() {
     return new Promise((resolve, reject) => {
-      const serverPath = join(__dirname, '..', 'bin', 'ruv-swarm-mcp-enhanced.js');
+      const serverPath = join(
+        __dirname,
+        '..',
+        'bin',
+        'ruv-swarm-mcp-enhanced.js',
+      );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, MCP_TEST_MODE: 'true' },
@@ -345,8 +383,8 @@ class MCPServerTester {
                 if (responseCount < 5) {
                   reject(
                     new Error(
-                      `Expected 5 responses, got ${responseCount} - server may have timed out`
-                    )
+                      `Expected 5 responses, got ${responseCount} - server may have timed out`,
+                    ),
                   );
                 } else {
                   resolve();
@@ -373,7 +411,12 @@ class MCPServerTester {
   // Test 5: Error handling improvement
   async testErrorHandling() {
     return new Promise((resolve, reject) => {
-      const serverPath = join(__dirname, '..', 'bin', 'ruv-swarm-mcp-enhanced.js');
+      const serverPath = join(
+        __dirname,
+        '..',
+        'bin',
+        'ruv-swarm-mcp-enhanced.js',
+      );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, MCP_TEST_MODE: 'true' },
@@ -423,19 +466,25 @@ class MCPServerTester {
 
             // Validate error response structure
             if (errorResponse.error.code !== -32601) {
-              reject(new Error(`Expected error code -32601, got ${errorResponse.error.code}`));
+              reject(
+                new Error(
+                  `Expected error code -32601, got ${errorResponse.error.code}`,
+                ),
+              );
               return;
             }
 
             // Check for improved error message
             if (
-              !errorResponse.error.data ||
-              !errorResponse.error.data.includes('Supported methods:')
+              !(
+                errorResponse.error.data &&
+                errorResponse.error.data.includes('Supported methods:')
+              )
             ) {
               reject(
                 new Error(
-                  'Error response should include helpful information about supported methods'
-                )
+                  'Error response should include helpful information about supported methods',
+                ),
               );
               return;
             }
@@ -459,7 +508,12 @@ class MCPServerTester {
   // Test 6: Memory and resource management
   async testResourceManagement() {
     return new Promise((resolve, reject) => {
-      const serverPath = join(__dirname, '..', 'bin', 'ruv-swarm-mcp-enhanced.js');
+      const serverPath = join(
+        __dirname,
+        '..',
+        'bin',
+        'ruv-swarm-mcp-enhanced.js',
+      );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, MCP_TEST_MODE: 'true' },
@@ -516,7 +570,7 @@ class MCPServerTester {
 
             // Check resource properties
             const resource = resources[0];
-            if (!resource.uri || !resource.name || !resource.description) {
+            if (!(resource.uri && resource.name && resource.description)) {
               reject(new Error('Resource missing required properties'));
               return;
             }
@@ -538,14 +592,24 @@ class MCPServerTester {
   }
 
   async runAllTests() {
-    await this.runTest('Server Startup Without ANSI Codes', () => this.testServerStartup());
-    await this.runTest('notifications/initialized Handling', () =>
-      this.testNotificationsInitialized()
+    await this.runTest('Server Startup Without ANSI Codes', () =>
+      this.testServerStartup(),
     );
-    await this.runTest('JSON Parsing with stderr Output', () => this.testJsonParsingWithStderr());
-    await this.runTest('Connection Stability', () => this.testConnectionStability());
-    await this.runTest('Enhanced Error Handling', () => this.testErrorHandling());
-    await this.runTest('Resource Management', () => this.testResourceManagement());
+    await this.runTest('notifications/initialized Handling', () =>
+      this.testNotificationsInitialized(),
+    );
+    await this.runTest('JSON Parsing with stderr Output', () =>
+      this.testJsonParsingWithStderr(),
+    );
+    await this.runTest('Connection Stability', () =>
+      this.testConnectionStability(),
+    );
+    await this.runTest('Enhanced Error Handling', () =>
+      this.testErrorHandling(),
+    );
+    await this.runTest('Resource Management', () =>
+      this.testResourceManagement(),
+    );
 
     if (this.results.failed > 0) {
       this.results.errors.forEach((_error) => {});
@@ -555,9 +619,8 @@ class MCPServerTester {
 
     if (successRate >= 90) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 }
 

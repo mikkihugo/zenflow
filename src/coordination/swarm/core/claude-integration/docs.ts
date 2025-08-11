@@ -17,7 +17,7 @@ import { AdvancedCommandsGenerator } from './advanced-commands.ts';
 
 interface DocsGeneratorOptions {
   workingDir?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface GenerateOptions {
@@ -58,7 +58,7 @@ function hasTool(config: CommandConfig): config is ToolCommand {
 
 class ClaudeDocsGenerator {
   private workingDir: string;
-  private advancedGenerator: any;
+  private advancedGenerator: unknown;
 
   constructor(options: DocsGeneratorOptions = {}) {
     this.workingDir = options?.workingDir || process.cwd();
@@ -89,7 +89,8 @@ class ClaudeDocsGenerator {
         const action = await this.promptUserAction(filePath);
         if (action === 'cancel') {
           throw new Error('CLAUDE.md generation cancelled by user');
-        } else if (action === 'overwrite') {
+        }
+        if (action === 'overwrite') {
           await this.createBackup(filePath);
         } else if (action === 'merge') {
           return await this.mergeClaudeMd(filePath);
@@ -97,14 +98,14 @@ class ClaudeDocsGenerator {
       } else {
         // Non-interactive mode - fail safely
         throw new Error(
-          'CLAUDE.md already exists. Use --force to overwrite, --backup to backup existing, or --merge to combine.'
+          'CLAUDE.md already exists. Use --force to overwrite, --backup to backup existing, or --merge to combine.',
         );
       }
     } else if (fileExists && force) {
       // Force flag: overwrite with optional backup creation
-      if (!noBackup) {
-        await this.createBackup(filePath);
+      if (noBackup) {
       } else {
+        await this.createBackup(filePath);
       }
     } else if (fileExists && backup && !force && !merge) {
       // Backup flag: create backup then overwrite
@@ -759,7 +760,8 @@ The orchestrator creates a plan that Claude Code follows using its native tools.
         title: 'Check Coordination Status',
         tool: 'mcp__claude-zen-swarm__swarm_status',
         params: '{"verbose": true}',
-        description: 'Monitor the effectiveness of current coordination patterns',
+        description:
+          'Monitor the effectiveness of current coordination patterns',
         details: `Shows:
 - Active coordination topologies
 - Current cognitive patterns in use
@@ -771,7 +773,8 @@ The orchestrator creates a plan that Claude Code follows using its native tools.
         title: 'List Active Patterns',
         tool: 'mcp__claude-zen-swarm__agent_list',
         params: '{"filter": "active"}',
-        description: 'View all active cognitive patterns and their current focus areas',
+        description:
+          'View all active cognitive patterns and their current focus areas',
         details: `Filters:
 - **all**: Show all defined patterns
 - **active**: Currently engaged patterns
@@ -784,7 +787,8 @@ The orchestrator creates a plan that Claude Code follows using its native tools.
         title: 'Memory Management',
         tool: 'mcp__claude-zen-swarm__memory_usage',
         params: '{"detail": "detailed"}',
-        description: 'Track persistent memory usage across Claude Code sessions',
+        description:
+          'Track persistent memory usage across Claude Code sessions',
         details: `Memory helps Claude Code:
 - Maintain context between sessions
 - Remember project decisions
@@ -795,7 +799,8 @@ The orchestrator creates a plan that Claude Code follows using its native tools.
         title: 'Neural Pattern Training',
         tool: 'mcp__claude-zen-swarm__neural_train',
         params: '{"iterations": 10}',
-        description: 'Improve coordination patterns through neural network training',
+        description:
+          'Improve coordination patterns through neural network training',
         details: `Training improves:
 - Task breakdown effectiveness
 - Coordination pattern selection
@@ -1153,7 +1158,12 @@ ${config?.details}
           'Bash(pwd)',
           'Bash(ls *)',
         ],
-        deny: ['Bash(rm -rf /)', 'Bash(curl * | bash)', 'Bash(wget * | sh)', 'Bash(eval *)'],
+        deny: [
+          'Bash(rm -rf /)',
+          'Bash(curl * | bash)',
+          'Bash(wget * | sh)',
+          'Bash(eval *)',
+        ],
       },
       hooks: {},
       mcpServers: {
@@ -1197,7 +1207,10 @@ ${config?.details}
    * @param filePath
    */
   async createBackup(filePath: string) {
-    const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
+    const timestamp = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace(/[:-]/g, '');
     const backupPath = `${filePath}.backup.${timestamp}`;
 
     try {
@@ -1287,16 +1300,19 @@ ${config?.details}
       const existingContent = await fs.readFile(filePath, 'utf8');
 
       // Create backup first (unless disabled)
-      if (!noBackup) {
-        await this.createBackup(filePath);
+      if (noBackup) {
       } else {
+        await this.createBackup(filePath);
       }
 
       // Generate new Claude Zen content
       const claudeZenContent = this.getClaudeZenContent();
 
       // Intelligent merging
-      const mergedContent = this.intelligentMerge(existingContent, claudeZenContent);
+      const mergedContent = this.intelligentMerge(
+        existingContent,
+        claudeZenContent,
+      );
 
       // Write merged content
       await fs.writeFile(filePath, mergedContent);
@@ -1496,7 +1512,10 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     const claudeZenSectionIndex = this.findClaudeZenSection(existingLines);
 
     if (claudeZenSectionIndex !== -1) {
-      const sectionEnd = this.findSectionEnd(existingLines, claudeZenSectionIndex);
+      const sectionEnd = this.findSectionEnd(
+        existingLines,
+        claudeZenSectionIndex,
+      );
 
       // Replace the section
       const beforeSection = existingLines.slice(0, claudeZenSectionIndex);
@@ -1606,11 +1625,13 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
    *
    * @param options
    */
-  async generateAll(options: GenerateOptions = {}): Promise<any> {
+  async generateAll(options: GenerateOptions = {}): Promise<unknown> {
     try {
       const commandDocs = await this.generateCommandDocs();
-      const advancedCommands = await this.advancedGenerator.generateAdvancedCommands();
-      const totalCommands = commandDocs.files.length + advancedCommands.files.length;
+      const advancedCommands =
+        await this.advancedGenerator.generateAdvancedCommands();
+      const totalCommands =
+        commandDocs.files.length + advancedCommands.files.length;
 
       const results = {
         claudeMd: await this.generateClaudeMd(options),
@@ -1626,7 +1647,10 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
 
       return results;
     } catch (error) {
-      logger.error('❌ Failed to generate documentation:', (error as Error).message);
+      logger.error(
+        '❌ Failed to generate documentation:',
+        (error as Error).message,
+      );
       throw error;
     }
   }

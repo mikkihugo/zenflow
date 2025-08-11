@@ -14,7 +14,11 @@ import type {
 
 export interface OptimizationAlert {
   id: string;
-  type: 'performance_degradation' | 'optimization_failure' | 'target_missed' | 'resource_threshold';
+  type:
+    | 'performance_degradation'
+    | 'optimization_failure'
+    | 'target_missed'
+    | 'resource_threshold';
   severity: 'low' | 'medium' | 'high' | 'critical';
   domain: string;
   message: string;
@@ -106,7 +110,7 @@ export class OptimizationMonitor extends EventEmitter {
     // Start monitoring loop
     this.monitoringInterval = setInterval(
       () => this.performMonitoringCycle(),
-      this.config.monitoringInterval
+      this.config.monitoringInterval,
     );
   }
 
@@ -137,7 +141,7 @@ export class OptimizationMonitor extends EventEmitter {
     // Cleanup old history
     const cutoff = Date.now() - this.config.retentionPeriod;
     this.optimizationHistory = this.optimizationHistory.filter(
-      (r) => r.afterMetrics.timestamp.getTime() > cutoff
+      (r) => r.afterMetrics.timestamp.getTime() > cutoff,
     );
 
     this.emit('optimization:recorded', result);
@@ -158,7 +162,9 @@ export class OptimizationMonitor extends EventEmitter {
 
     // Keep only recent metrics
     const cutoff = Date.now() - this.config.retentionPeriod;
-    const filteredHistory = domainHistory.filter((m) => m.timestamp.getTime() > cutoff);
+    const filteredHistory = domainHistory.filter(
+      (m) => m.timestamp.getTime() > cutoff,
+    );
 
     this.metricsHistory.set(domain, filteredHistory);
 
@@ -193,9 +199,11 @@ export class OptimizationMonitor extends EventEmitter {
    * @param severity
    */
   public getAlertsBySeverity(
-    severity: 'low' | 'medium' | 'high' | 'critical'
+    severity: 'low' | 'medium' | 'high' | 'critical',
   ): OptimizationAlert[] {
-    return this.alerts.filter((alert) => alert.severity === severity && !alert.acknowledged);
+    return this.alerts.filter(
+      (alert) => alert.severity === severity && !alert.acknowledged,
+    );
   }
 
   /**
@@ -219,7 +227,7 @@ export class OptimizationMonitor extends EventEmitter {
    */
   public getOptimizationTrends(
     _domain: string,
-    period: number = 3600000
+    period: number = 3600000,
   ): {
     improvements: number[];
     successes: number[];
@@ -227,7 +235,7 @@ export class OptimizationMonitor extends EventEmitter {
   } {
     const cutoff = Date.now() - period;
     const recentOptimizations = this.optimizationHistory.filter(
-      (r) => r.afterMetrics.timestamp.getTime() > cutoff
+      (r) => r.afterMetrics.timestamp.getTime() > cutoff,
     );
 
     const improvements = recentOptimizations.map((r) => r.improvement);
@@ -410,11 +418,18 @@ export class OptimizationMonitor extends EventEmitter {
     }
 
     return {
-      latency: allMetrics.reduce((sum, m) => sum + m.latency, 0) / allMetrics.length,
-      throughput: allMetrics.reduce((sum, m) => sum + m.throughput, 0) / allMetrics.length,
-      memoryUsage: allMetrics.reduce((sum, m) => sum + m.memoryUsage, 0) / allMetrics.length,
-      cpuUsage: allMetrics.reduce((sum, m) => sum + m.cpuUsage, 0) / allMetrics.length,
-      errorRate: allMetrics.reduce((sum, m) => sum + m.errorRate, 0) / allMetrics.length,
+      latency:
+        allMetrics.reduce((sum, m) => sum + m.latency, 0) / allMetrics.length,
+      throughput:
+        allMetrics.reduce((sum, m) => sum + m.throughput, 0) /
+        allMetrics.length,
+      memoryUsage:
+        allMetrics.reduce((sum, m) => sum + m.memoryUsage, 0) /
+        allMetrics.length,
+      cpuUsage:
+        allMetrics.reduce((sum, m) => sum + m.cpuUsage, 0) / allMetrics.length,
+      errorRate:
+        allMetrics.reduce((sum, m) => sum + m.errorRate, 0) / allMetrics.length,
       timestamp: new Date(),
     };
   }
@@ -513,7 +528,8 @@ export class OptimizationMonitor extends EventEmitter {
         domain: 'system',
         type: 'latency_reduction',
         priority: 'high',
-        description: 'Implement caching and optimize message routing to reduce latency',
+        description:
+          'Implement caching and optimize message routing to reduce latency',
         estimatedImpact: 0.4,
         implementationEffort: 'medium',
         automated: true,
@@ -527,7 +543,8 @@ export class OptimizationMonitor extends EventEmitter {
         domain: 'system',
         type: 'memory_optimization',
         priority: 'critical',
-        description: 'Enable memory compression and implement garbage collection optimization',
+        description:
+          'Enable memory compression and implement garbage collection optimization',
         estimatedImpact: 0.3,
         implementationEffort: 'high',
         automated: true,
@@ -570,10 +587,14 @@ export class OptimizationMonitor extends EventEmitter {
    *
    * @param domain
    */
-  private async collectDomainMetrics(domain: string): Promise<PerformanceMetrics> {
+  private async collectDomainMetrics(
+    domain: string,
+  ): Promise<PerformanceMetrics> {
     // Mock implementation - replace with actual metrics collection
-    const baseLatency = { neural: 50, swarm: 10, data: 30, wasm: 5 }[domain] || 20;
-    const baseThroughput = { neural: 500, swarm: 2000, data: 1000, wasm: 3000 }[domain] || 1000;
+    const baseLatency =
+      { neural: 50, swarm: 10, data: 30, wasm: 5 }[domain] || 20;
+    const baseThroughput =
+      { neural: 500, swarm: 2000, data: 1000, wasm: 3000 }[domain] || 1000;
 
     return {
       latency: baseLatency + Math.random() * 20,
@@ -593,7 +614,9 @@ export class OptimizationMonitor extends EventEmitter {
 
     // Cleanup metrics history
     for (const [domain, metrics] of this.metricsHistory.entries()) {
-      const filteredMetrics = metrics.filter((m) => m.timestamp.getTime() > cutoff);
+      const filteredMetrics = metrics.filter(
+        (m) => m.timestamp.getTime() > cutoff,
+      );
       this.metricsHistory.set(domain, filteredMetrics);
     }
 
@@ -602,7 +625,7 @@ export class OptimizationMonitor extends EventEmitter {
 
     // Cleanup optimization history
     this.optimizationHistory = this.optimizationHistory.filter(
-      (r) => r.afterMetrics.timestamp.getTime() > cutoff
+      (r) => r.afterMetrics.timestamp.getTime() > cutoff,
     );
   }
 }

@@ -9,18 +9,18 @@ const logger = getLogger('coordination-swarm-core-hooks-index');
 import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+// fileURLToPath is provided by esbuild banner
 
-import type { AgentMemoryCoordinationDao } from '../../../../database';
+import type { AgentMemoryCoordinationDao } from '../../../../database/index.js';
 
 // import { DALFactory } from '../../database'; // TODO: Implement proper DI integration
 
 type SwarmPersistence = AgentMemoryCoordinationDao;
 
-const __filename = fileURLToPath(import.meta.url);
+// __filename is provided by esbuild banner
 
 class ZenSwarmHooks {
-  public sessionData: any;
+  public sessionData: unknown;
   public persistence: SwarmPersistence | null;
   private _sessionId?: string;
 
@@ -50,11 +50,16 @@ class ZenSwarmHooks {
       // Create a simple mock implementation for now
       // TODO: Implement proper DALFactory integration with DI
       this.persistence = {
-        query: async (_sql: string, _params?: any[]) => [],
-        execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
+        query: async (_sql: string, _params?: unknown[]) => [],
+        execute: async (_sql: string, _params?: unknown[]) => ({
+          affectedRows: 1,
+        }),
       } as any;
     } catch (error) {
-      logger.warn('⚠️ Failed to initialize persistence layer:', (error as Error).message);
+      logger.warn(
+        '⚠️ Failed to initialize persistence layer:',
+        (error as Error).message,
+      );
       logger.warn('⚠️ Operating in memory-only mode');
       this.persistence = null;
     }
@@ -66,7 +71,7 @@ class ZenSwarmHooks {
    * @param hookType
    * @param args
    */
-  async handleHook(hookType: string, args: any[]) {
+  async handleHook(hookType: string, args: unknown[]) {
     try {
       switch (hookType) {
         // Pre-operation hooks
@@ -133,7 +138,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preSearchHook(args: any) {
+  async preSearchHook(args: unknown) {
     const { pattern } = args;
 
     // Initialize search cache
@@ -165,7 +170,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preMcpHook(args: any) {
+  async preMcpHook(args: unknown) {
     const { tool, params } = args;
 
     // Parse params if string
@@ -203,7 +208,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preEditHook(args: any) {
+  async preEditHook(args: unknown) {
     const { file } = args;
 
     // Determine file type and assign appropriate agent
@@ -248,18 +253,23 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preTaskHook(args: any) {
+  async preTaskHook(args: unknown) {
     const { description, autoSpawnAgents, optimizeTopology } = args;
 
     // Analyze task complexity
     const complexity = this.analyzeTaskComplexity(description);
 
     // Determine optimal topology
-    const topology = optimizeTopology ? this.selectOptimalTopology(complexity) : 'mesh';
+    const topology = optimizeTopology
+      ? this.selectOptimalTopology(complexity)
+      : 'mesh';
 
     // Auto-spawn required agents
     if (autoSpawnAgents) {
-      const requiredAgents = this.determineRequiredAgents(description, complexity);
+      const requiredAgents = this.determineRequiredAgents(
+        description,
+        complexity,
+      );
       for (const agentType of requiredAgents) {
         await this.ensureAgent(agentType);
       }
@@ -282,9 +292,9 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async postEditHook(args: any) {
+  async postEditHook(args: unknown) {
     const { file, autoFormat, trainPatterns, updateGraph } = args;
-    const result: any = {
+    const result: unknown = {
       continue: true,
       formatted: false,
       training: null,
@@ -320,12 +330,14 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async postTaskHook(args: any) {
+  async postTaskHook(args: unknown) {
     const { taskId, analyzePerformance, updateCoordination } = args;
 
     const performance: any = {
       taskId,
-      completionTime: Date.now() - (this.sessionData.taskStartTimes?.get(taskId) || Date.now()),
+      completionTime:
+        Date.now() -
+        (this.sessionData.taskStartTimes?.get(taskId) || Date.now()),
       agentsUsed: this.sessionData.taskAgents?.get(taskId) || [],
       success: true,
     };
@@ -358,7 +370,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async postWebSearchHook(args: any) {
+  async postWebSearchHook(args: unknown) {
     const { query, updateKnowledge } = args;
 
     // Track search patterns
@@ -393,7 +405,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async postWebFetchHook(args: any) {
+  async postWebFetchHook(args: unknown) {
     const { url, extractPatterns, cacheContent } = args;
 
     const result: {
@@ -431,8 +443,16 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async notificationHook(args: any) {
-    const { message, level, withSwarmStatus, sendTelemetry, type, context, agentId } = args;
+  async notificationHook(args: unknown) {
+    const {
+      message,
+      level,
+      withSwarmStatus,
+      sendTelemetry,
+      type,
+      context,
+      agentId,
+    } = args;
 
     const notification: any = {
       message,
@@ -454,7 +474,10 @@ class ZenSwarmHooks {
     }
 
     // Send telemetry if enabled
-    if (sendTelemetry && process.env['RUV_SWARM_TELEMETRY_ENABLED'] === 'true') {
+    if (
+      sendTelemetry &&
+      process.env['RUV_SWARM_TELEMETRY_ENABLED'] === 'true'
+    ) {
       this.sendTelemetry('notification', notification);
     }
 
@@ -479,7 +502,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async preBashHook(args: any) {
+  async preBashHook(args: unknown) {
     const { command } = args;
 
     // Safety checks
@@ -513,7 +536,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async mcpSwarmInitializedHook(args: any) {
+  async mcpSwarmInitializedHook(args: unknown) {
     const { swarmId, topology, persistConfig, enableMonitoring } = args;
 
     // Store swarm configuration
@@ -530,7 +553,7 @@ class ZenSwarmHooks {
       await fs.mkdir(configDir, { recursive: true });
       await fs.writeFile(
         path.join(configDir, 'swarm-config.json'),
-        JSON.stringify(swarmConfig, null, 2)
+        JSON.stringify(swarmConfig, null, 2),
       );
     }
 
@@ -555,7 +578,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async mcpAgentSpawnedHook(args: any) {
+  async mcpAgentSpawnedHook(args: unknown) {
     const { agentId, type, updateRoster, trainSpecialization } = args;
 
     // Update agent roster
@@ -571,7 +594,11 @@ class ZenSwarmHooks {
       this.sessionData.agents.set(agentId, agent);
 
       // Persist roster
-      const rosterPath = path.join(process.cwd(), '.ruv-swarm', 'agent-roster.json');
+      const rosterPath = path.join(
+        process.cwd(),
+        '.ruv-swarm',
+        'agent-roster.json',
+      );
       const roster = Array.from(this.sessionData.agents.values());
       await fs.writeFile(rosterPath, JSON.stringify(roster, null, 2));
     }
@@ -601,7 +628,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async mcpTaskOrchestratedHook(args: any) {
+  async mcpTaskOrchestratedHook(args: unknown) {
     const { taskId, monitorProgress, optimizeDistribution } = args;
 
     // Initialize task tracking
@@ -616,7 +643,8 @@ class ZenSwarmHooks {
 
     // Monitor progress setup
     if (monitorProgress) {
-      this.sessionData.taskMonitoring = this.sessionData.taskMonitoring || new Map();
+      this.sessionData.taskMonitoring =
+        this.sessionData.taskMonitoring || new Map();
       this.sessionData.taskMonitoring.set(taskId, {
         checkpoints: [],
         resources: [],
@@ -652,19 +680,23 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async mcpNeuralTrainedHook(args: any) {
+  async mcpNeuralTrainedHook(args: unknown) {
     const { improvement, saveWeights, updatePatterns } = args;
 
     const result = {
       continue: true,
-      improvement: parseFloat(improvement),
+      improvement: Number.parseFloat(improvement),
       saved: false,
       patternsUpdated: false,
     };
 
     // Save neural weights
     if (saveWeights) {
-      const weightsDir = path.join(process.cwd(), '.ruv-swarm', 'neural-weights');
+      const weightsDir = path.join(
+        process.cwd(),
+        '.ruv-swarm',
+        'neural-weights',
+      );
       await fs.mkdir(weightsDir, { recursive: true });
 
       const weightData = {
@@ -676,7 +708,7 @@ class ZenSwarmHooks {
 
       await fs.writeFile(
         path.join(weightsDir, `weights-${Date.now()}.json`),
-        JSON.stringify(weightData, null, 2)
+        JSON.stringify(weightData, null, 2),
       );
 
       result.saved = true;
@@ -690,7 +722,7 @@ class ZenSwarmHooks {
         timestamp: Date.now(),
         improvement,
         patterns: ['convergent', 'divergent', 'lateral'],
-        confidence: 0.85 + parseFloat(improvement),
+        confidence: 0.85 + Number.parseFloat(improvement),
       };
 
       this.sessionData.learnings.push(patternUpdate);
@@ -743,7 +775,9 @@ class ZenSwarmHooks {
       .slice(0, 5)
       .map((p) => `- ${p.replace(/^[-*•\d+.\s]+/, '').trim()}`);
 
-    return points.length > 0 ? points.join('\n') : '- Task completed successfully';
+    return points.length > 0
+      ? points.join('\n')
+      : '- Task completed successfully';
   }
 
   /**
@@ -751,7 +785,7 @@ class ZenSwarmHooks {
    */
   getModifiedFilesCount(): number {
     const fileOps = this.sessionData.operations.filter((op) =>
-      ['edit', 'write', 'create'].includes(op.type)
+      ['edit', 'write', 'create'].includes(op.type),
     );
 
     const uniqueFiles = new Set(fileOps.map((op) => op.file).filter(Boolean));
@@ -763,7 +797,7 @@ class ZenSwarmHooks {
    */
   getModifiedFilesList(): string {
     const fileOps = this.sessionData.operations.filter((op) =>
-      ['edit', 'write', 'create'].includes(op.type)
+      ['edit', 'write', 'create'].includes(op.type),
     );
 
     const fileMap = new Map();
@@ -790,7 +824,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async sessionRestoreHook(args: any) {
+  async sessionRestoreHook(args: unknown) {
     const { loadMemory, loadAgents } = args;
 
     const result = {
@@ -830,7 +864,7 @@ class ZenSwarmHooks {
             .catch(() => false)
         ) {
           const roster = JSON.parse(await fs.readFile(rosterPath, 'utf-8'));
-          roster.forEach((agent: any) => {
+          roster.forEach((agent: unknown) => {
             this.sessionData.agents.set(agent.id, agent);
           });
           result.restored.agents = true;
@@ -861,7 +895,7 @@ class ZenSwarmHooks {
    *
    * @param args
    */
-  async sessionEndHook(args: any) {
+  async sessionEndHook(args: unknown) {
     const { generateSummary, saveMemory, exportMetrics } = args;
     const sessionDir = path.join(process.cwd(), '.claude', 'sessions');
     await fs.mkdir(sessionDir, { recursive: true });
@@ -947,7 +981,7 @@ class ZenSwarmHooks {
     }
   }
 
-  async ensureAgent(type: string): Promise<any> {
+  async ensureAgent(type: string): Promise<unknown> {
     let agent = this.sessionData.agents.get(type);
 
     if (!agent) {
@@ -978,7 +1012,7 @@ class ZenSwarmHooks {
   }
 
   async autoFormatFile(
-    filePath: string
+    filePath: string,
   ): Promise<{ success: boolean; reason?: string; details?: any }> {
     const ext = path.extname(filePath);
     const formatters = {
@@ -995,7 +1029,10 @@ class ZenSwarmHooks {
 
     const formatter = formatters[ext];
     if (!formatter) {
-      return { success: false, reason: 'No formatter configured for file type' };
+      return {
+        success: false,
+        reason: 'No formatter configured for file type',
+      };
     }
 
     try {
@@ -1006,7 +1043,7 @@ class ZenSwarmHooks {
     }
   }
 
-  async trainPatternsFromEdit(filePath: string): Promise<any> {
+  async trainPatternsFromEdit(filePath: string): Promise<unknown> {
     // Simulate neural pattern training
     const improvement = Math.random() * 0.05; // 0-5% improvement
     const confidence = 0.85 + Math.random() * 0.1; // 85-95% confidence
@@ -1027,7 +1064,11 @@ class ZenSwarmHooks {
     };
   }
 
-  validateCommandSafety(command: string): { safe: boolean; reason?: string; riskLevel?: string } {
+  validateCommandSafety(command: string): {
+    safe: boolean;
+    reason?: string;
+    riskLevel?: string;
+  } {
     const dangerousPatterns = [
       /rm\s+-rf\s+\//,
       /curl.*\|\s*bash/,
@@ -1051,8 +1092,16 @@ class ZenSwarmHooks {
 
   estimateCommandResources(command: string): any {
     const resourceMap = {
-      'npm test': { duration: 30000, requiresAgent: true, agentType: 'coordinator' },
-      'npm run build': { duration: 60000, requiresAgent: true, agentType: 'optimizer' },
+      'npm test': {
+        duration: 30000,
+        requiresAgent: true,
+        agentType: 'coordinator',
+      },
+      'npm run build': {
+        duration: 60000,
+        requiresAgent: true,
+        agentType: 'optimizer',
+      },
       git: { duration: 1000, requiresAgent: false },
       ls: { duration: 100, requiresAgent: false },
     };
@@ -1076,17 +1125,17 @@ Duration: ${this.formatDuration(duration)}
 Token Reduction: ${this.sessionData.metrics.tokensSaved} tokens
 
 ## Swarm Activity
-- Active Agents: ${agentList.length} (${agentList.map((a: any) => a.type).join(', ')})
+- Active Agents: ${agentList.length} (${agentList.map((a: unknown) => a.type).join(', ')})
 - Operations Performed: ${this.sessionData.operations.length}
-- Files Modified: ${new Set(this.sessionData.operations.map((o: any) => o.file)).size}
+- Files Modified: ${new Set(this.sessionData.operations.map((o: unknown) => o.file)).size}
 - Neural Improvements: ${this.sessionData.metrics.patternsImproved}
 
 ## Operations Breakdown
 ${this.sessionData.operations
   .slice(-10)
   .map(
-    (op: any) =>
-      `- ${new Date(op.timestamp).toLocaleTimeString()}: ${op.type} on ${op.file} (${op.agent})`
+    (op: unknown) =>
+      `- ${new Date(op.timestamp).toLocaleTimeString()}: ${op.type} on ${op.file} (${op.agent})`,
   )
   .join('\n')}
 
@@ -1094,8 +1143,8 @@ ${this.sessionData.operations
 ${this.sessionData.learnings
   .slice(-5)
   .map(
-    (l: any) =>
-      `- Pattern "${l.pattern}" improved by ${(l.improvement * 100).toFixed(1)}% (confidence: ${l.confidence})`
+    (l: unknown) =>
+      `- Pattern "${l.pattern}" improved by ${(l.improvement * 100).toFixed(1)}% (confidence: ${l.confidence})`,
   )
   .join('\n')}
 
@@ -1122,17 +1171,23 @@ ${this.sessionData.learnings
     return {
       performance: {
         duration_ms: duration,
-        operations_per_minute: (this.sessionData.operations.length / (duration / 60000)).toFixed(1),
+        operations_per_minute: (
+          this.sessionData.operations.length /
+          (duration / 60000)
+        ).toFixed(1),
         tokens_saved: this.sessionData.metrics.tokensSaved,
         efficiency_score: (
-          this.sessionData.metrics.tokensSaved / this.sessionData.operations.length
+          this.sessionData.metrics.tokensSaved /
+          this.sessionData.operations.length
         ).toFixed(1),
       },
       learning: {
         patterns_improved: this.sessionData.metrics.patternsImproved,
         average_improvement: (
-          this.sessionData.learnings.reduce((acc, l) => acc + l.improvement, 0) /
-          this.sessionData.learnings.length
+          this.sessionData.learnings.reduce(
+            (acc, l) => acc + l.improvement,
+            0,
+          ) / this.sessionData.learnings.length
         ).toFixed(3),
         confidence_average: (
           this.sessionData.learnings.reduce((acc, l) => acc + l.confidence, 0) /
@@ -1142,10 +1197,13 @@ ${this.sessionData.learnings
       agents: {
         total_spawned: this.sessionData.agents.size,
         by_type: Object.fromEntries(
-          Array.from((this.sessionData.agents).values()).reduce((acc: any, agent: any) => {
-            acc.set(agent.type, (acc.get(agent.type) || 0) + 1);
-            return acc;
-          }, new Map()) as any
+          Array.from(this.sessionData.agents.values()).reduce(
+            (acc: unknown, agent: unknown) => {
+              acc.set(agent.type, (acc.get(agent.type) || 0) + 1);
+              return acc;
+            },
+            new Map(),
+          ) as any,
         ),
       },
     };
@@ -1158,7 +1216,8 @@ ${this.sessionData.learnings
 
     if (hours > 0) {
       return `${hours}h ${minutes % 60}m`;
-    } else if (minutes > 0) {
+    }
+    if (minutes > 0) {
       return `${minutes}m ${seconds % 60}s`;
     }
     return `${seconds}s`;
@@ -1190,7 +1249,8 @@ ${this.sessionData.learnings
     }
 
     // Adjust for multiple files or components
-    const fileCount = (desc.match(/\b(files?|components?|modules?)\b/g) || []).length;
+    const fileCount = (desc.match(/\b(files?|components?|modules?)\b/g) || [])
+      .length;
     if (fileCount > 1) {
       score += 0.5;
       estimatedMinutes *= 1.5;
@@ -1205,7 +1265,7 @@ ${this.sessionData.learnings
     };
   }
 
-  selectOptimalTopology(complexity: any): string {
+  selectOptimalTopology(complexity: unknown): string {
     const topologyMap = {
       simple: 'star', // Centralized for simple tasks
       medium: 'mesh', // Flexible for medium complexity
@@ -1221,19 +1281,39 @@ ${this.sessionData.learnings
     const desc = description.toLowerCase();
 
     // Add agents based on task keywords
-    if (desc.includes('code') || desc.includes('implement') || desc.includes('fix')) {
+    if (
+      desc.includes('code') ||
+      desc.includes('implement') ||
+      desc.includes('fix')
+    ) {
       agents.add('coder');
     }
-    if (desc.includes('research') || desc.includes('analyze') || desc.includes('investigate')) {
+    if (
+      desc.includes('research') ||
+      desc.includes('analyze') ||
+      desc.includes('investigate')
+    ) {
       agents.add('researcher');
     }
-    if (desc.includes('data') || desc.includes('metrics') || desc.includes('performance')) {
+    if (
+      desc.includes('data') ||
+      desc.includes('metrics') ||
+      desc.includes('performance')
+    ) {
       agents.add('analyst');
     }
-    if (desc.includes('design') || desc.includes('architect') || desc.includes('structure')) {
+    if (
+      desc.includes('design') ||
+      desc.includes('architect') ||
+      desc.includes('structure')
+    ) {
       agents.add('architect');
     }
-    if (desc.includes('optimize') || desc.includes('improve') || desc.includes('enhance')) {
+    if (
+      desc.includes('optimize') ||
+      desc.includes('improve') ||
+      desc.includes('enhance')
+    ) {
       agents.add('optimizer');
     }
 
@@ -1279,7 +1359,9 @@ ${this.sessionData.learnings
     relatedFiles.forEach((related) => {
       if (
         !graph.edges.find(
-          (e) => (e.from === nodeId && e.to === related) || (e.from === related && e.to === nodeId)
+          (e) =>
+            (e.from === nodeId && e.to === related) ||
+            (e.from === related && e.to === nodeId),
         )
       ) {
         graph.edges.push({
@@ -1292,9 +1374,12 @@ ${this.sessionData.learnings
     });
   }
 
-  calculateEfficiency(performance: any): any {
+  calculateEfficiency(performance: unknown): any {
     const baselineTime = 60000; // 1 minute baseline
-    const efficiencyScore = Math.max(0, Math.min(1, baselineTime / performance.completionTime));
+    const efficiencyScore = Math.max(
+      0,
+      Math.min(1, baselineTime / performance.completionTime),
+    );
 
     // Adjust for agent utilization
     const agentUtilization =
@@ -1317,9 +1402,12 @@ ${this.sessionData.learnings
     };
   }
 
-  identifyBottlenecks(
-    performance: any
-  ): Array<{ type: string; severity: string; description: string; recommendation: string }> {
+  identifyBottlenecks(performance: unknown): Array<{
+    type: string;
+    severity: string;
+    description: string;
+    recommendation: string;
+  }> {
     const bottlenecks: Array<{
       type: string;
       severity: string;
@@ -1362,14 +1450,17 @@ ${this.sessionData.learnings
   }
 
   suggestImprovements(
-    performance
+    performance,
   ): Array<{ area: string; suggestion: string; expectedImprovement: string }> {
-    const improvements: Array<{ area: string; suggestion: string; expectedImprovement: string }> =
-      [];
+    const improvements: Array<{
+      area: string;
+      suggestion: string;
+      expectedImprovement: string;
+    }> = [];
     const efficiency = this.calculateEfficiency(performance);
 
     // Time improvements
-    if (parseFloat(efficiency.timeEfficiency) < 0.7) {
+    if (Number.parseFloat(efficiency.timeEfficiency) < 0.7) {
       improvements.push({
         area: 'execution_time',
         suggestion: 'Use parallel task execution',
@@ -1378,7 +1469,7 @@ ${this.sessionData.learnings
     }
 
     // Coordination improvements
-    if (parseFloat(efficiency.agentEfficiency) < 0.8) {
+    if (Number.parseFloat(efficiency.agentEfficiency) < 0.8) {
       improvements.push({
         area: 'agent_coordination',
         suggestion: 'Implement specialized agent patterns',
@@ -1398,7 +1489,7 @@ ${this.sessionData.learnings
     return improvements;
   }
 
-  updateCoordinationStrategy(performance: any): void {
+  updateCoordinationStrategy(performance: unknown): void {
     const efficiency = this.calculateEfficiency(performance);
 
     // Update strategy based on performance
@@ -1418,10 +1509,10 @@ ${this.sessionData.learnings
     });
 
     // Adjust strategy if needed
-    if (parseFloat(efficiency.score) < 0.6) {
+    if (Number.parseFloat(efficiency.score) < 0.6) {
       strategy.current = 'adaptive';
       strategy.adjustments++;
-    } else if (parseFloat(efficiency.score) > 0.9) {
+    } else if (Number.parseFloat(efficiency.score) > 0.9) {
       strategy.current = 'specialized';
       strategy.adjustments++;
     }
@@ -1437,7 +1528,9 @@ ${this.sessionData.learnings
     }
 
     // Extract function/class patterns
-    const codePatterns = query.match(/\b(function|class|interface|struct|impl)\s+\w+/gi);
+    const codePatterns = query.match(
+      /\b(function|class|interface|struct|impl)\s+\w+/gi,
+    );
     if (codePatterns) {
       patterns.push(...codePatterns.map((cp) => `code:${cp}`));
     }
@@ -1451,8 +1544,12 @@ ${this.sessionData.learnings
     return patterns;
   }
 
-  async updateKnowledgeBase(type: string, data: any): Promise<void> {
-    const kbPath = path.join(process.cwd(), '.ruv-swarm', 'knowledge-base.json');
+  async updateKnowledgeBase(type: string, data: unknown): Promise<void> {
+    const kbPath = path.join(
+      process.cwd(),
+      '.ruv-swarm',
+      'knowledge-base.json',
+    );
 
     // Load existing knowledge base
     let kb: any = { searches: [], patterns: {}, insights: [] };
@@ -1539,7 +1636,7 @@ ${this.sessionData.learnings
     return patterns;
   }
 
-  async getSwarmStatus(): Promise<any> {
+  async getSwarmStatus(): Promise<unknown> {
     try {
       const statusPath = path.join(process.cwd(), '.ruv-swarm', 'status.json');
       if (
@@ -1557,16 +1654,20 @@ ${this.sessionData.learnings
     return {
       agents: this.sessionData.agents,
       activeTasks: this.sessionData.operations.filter(
-        (op) => Date.now() - op.timestamp < 300000 // Last 5 minutes
+        (op) => Date.now() - op.timestamp < 300000, // Last 5 minutes
       ).length,
       health: 'operational',
     };
   }
 
-  sendTelemetry(event: string, data: any): void {
+  sendTelemetry(event: string, data: unknown): void {
     // In production, this would send to telemetry service
     // For now, just log to telemetry file
-    const telemetryPath = path.join(process.cwd(), '.ruv-swarm', 'telemetry.jsonl');
+    const telemetryPath = path.join(
+      process.cwd(),
+      '.ruv-swarm',
+      'telemetry.jsonl',
+    );
 
     const telemetryEvent = {
       event,
@@ -1577,33 +1678,59 @@ ${this.sessionData.learnings
     };
 
     // Async write without blocking
-    fs.appendFile(telemetryPath, `${JSON.stringify(telemetryEvent)}\n`).catch(() => {
-      /* intentionally empty */
-    });
+    fs.appendFile(telemetryPath, `${JSON.stringify(telemetryEvent)}\n`).catch(
+      () => {
+        /* intentionally empty */
+      },
+    );
   }
 
   // Helper methods for other functionality
 
   getSpecializationForType(type: string): string[] {
     const specializations: Record<string, string[]> = {
-      researcher: ['literature-review', 'data-analysis', 'trend-identification'],
+      researcher: [
+        'literature-review',
+        'data-analysis',
+        'trend-identification',
+      ],
       coder: ['implementation', 'refactoring', 'optimization'],
       analyst: ['metrics', 'performance', 'data-visualization'],
       architect: ['system-design', 'api-design', 'database-schema'],
-      coordinator: ['task-planning', 'resource-allocation', 'progress-tracking'],
-      optimizer: ['performance-tuning', 'algorithm-optimization', 'resource-usage'],
+      coordinator: [
+        'task-planning',
+        'resource-allocation',
+        'progress-tracking',
+      ],
+      optimizer: [
+        'performance-tuning',
+        'algorithm-optimization',
+        'resource-usage',
+      ],
     };
     return specializations[type] || ['general'];
   }
 
   generateSpecializationPatterns(type: string): string[] {
     const patterns: Record<string, string[]> = {
-      researcher: ['depth-first-search', 'breadth-first-search', 'citation-tracking'],
+      researcher: [
+        'depth-first-search',
+        'breadth-first-search',
+        'citation-tracking',
+      ],
       coder: ['modular-design', 'error-handling', 'code-reuse'],
       analyst: ['statistical-analysis', 'trend-detection', 'anomaly-detection'],
       architect: ['layered-architecture', 'microservices', 'event-driven'],
-      coordinator: ['dependency-tracking', 'parallel-execution', 'milestone-planning'],
-      optimizer: ['bottleneck-identification', 'caching-strategies', 'lazy-loading'],
+      coordinator: [
+        'dependency-tracking',
+        'parallel-execution',
+        'milestone-planning',
+      ],
+      optimizer: [
+        'bottleneck-identification',
+        'caching-strategies',
+        'lazy-loading',
+      ],
     };
     return patterns[type] || ['adaptive-learning'];
   }
@@ -1642,10 +1769,11 @@ ${this.sessionData.learnings
     const agents = Array.from(this.sessionData.agents.values());
     const allocation = {};
 
-    agents.forEach((agent: any) => {
+    agents.forEach((agent: unknown) => {
       // Allocate based on agent type and current load
       const load = this.sessionData.operations.filter(
-        (op: any) => op.agent === agent.id && Date.now() - op.timestamp < 60000
+        (op: unknown) =>
+          op.agent === agent.id && Date.now() - op.timestamp < 60000,
       ).length;
 
       allocation[agent.id] = {
@@ -1700,7 +1828,9 @@ ${this.sessionData.learnings
       }
     });
 
-    const sorted = Object.entries(agentCounts).sort((a, b) => Number(b[1]) - Number(a[1]));
+    const sorted = Object.entries(agentCounts).sort(
+      (a, b) => Number(b[1]) - Number(a[1]),
+    );
     return sorted.length > 0 && sorted[0] ? sorted[0]?.[0] : 'coordinator';
   }
 
@@ -1736,9 +1866,11 @@ ${this.sessionData.learnings
    *
    * @param notification
    */
-  async storeNotificationInDatabase(notification: any): Promise<void> {
+  async storeNotificationInDatabase(notification: unknown): Promise<void> {
     if (!this.persistence) {
-      logger.warn('⚠️ No persistence layer - notification stored in memory only');
+      logger.warn(
+        '⚠️ No persistence layer - notification stored in memory only',
+      );
       return;
     }
 
@@ -1756,7 +1888,10 @@ ${this.sessionData.learnings
         sessionId: this.getSessionId(),
       });
     } catch (error) {
-      logger.error('❌ Failed to store notification in database:', error.message);
+      logger.error(
+        '❌ Failed to store notification in database:',
+        error.message,
+      );
     }
   }
 
@@ -1768,7 +1903,7 @@ ${this.sessionData.learnings
    */
   async getNotificationsFromDatabase(
     agentId: string | null = null,
-    type: string | null = null
+    type: string | null = null,
   ): Promise<any[]> {
     if (!this.persistence) {
       return [];
@@ -1784,7 +1919,10 @@ ${this.sessionData.learnings
         .map((memory) => memory.value)
         .sort((a, b) => b.timestamp - a.timestamp);
     } catch (error) {
-      logger.error('❌ Failed to retrieve notifications from database:', error.message);
+      logger.error(
+        '❌ Failed to retrieve notifications from database:',
+        error.message,
+      );
       return [];
     }
   }
@@ -1794,19 +1932,23 @@ ${this.sessionData.learnings
    *
    * @param args
    */
-  async agentCompleteHook(args: any) {
+  async agentCompleteHook(args: unknown) {
     const { agentId, taskId, results, learnings } = args;
 
     // Store completion in database for other agents to see
     if (this.persistence && agentId) {
       try {
-        await this.persistence.storeAgentMemory(agentId, `completion/${taskId}`, {
-          taskId,
-          results,
-          learnings,
-          completedAt: Date.now(),
-          source: 'agent-completion',
-        });
+        await this.persistence.storeAgentMemory(
+          agentId,
+          `completion/${taskId}`,
+          {
+            taskId,
+            results,
+            learnings,
+            completedAt: Date.now(),
+            source: 'agent-completion',
+          },
+        );
 
         // Update agent status in database
         await this.persistence.updateAgentStatus(agentId, 'completed');
@@ -1850,7 +1992,10 @@ ${this.sessionData.learnings
    * @param key
    * @param agentId
    */
-  async getSharedMemory(key: string, agentId: string | null = null): Promise<any> {
+  async getSharedMemory(
+    key: string,
+    agentId: string | null = null,
+  ): Promise<unknown> {
     // Check runtime memory first
     const runtimeValue = this.sessionData[key];
 
@@ -1858,7 +2003,10 @@ ${this.sessionData.learnings
     if (this.persistence) {
       try {
         const targetAgentId = agentId || 'shared-memory';
-        const memory = await this.persistence.getAgentMemory(targetAgentId, key);
+        const memory = await this.persistence.getAgentMemory(
+          targetAgentId,
+          key,
+        );
 
         if (memory) {
           return memory.value;
@@ -1878,7 +2026,11 @@ ${this.sessionData.learnings
    * @param value
    * @param agentId
    */
-  async setSharedMemory(key: string, value: any, agentId: string | null = null): Promise<void> {
+  async setSharedMemory(
+    key: string,
+    value: unknown,
+    agentId: string | null = null,
+  ): Promise<void> {
     // Store in runtime memory
     this.sessionData[key] = value;
 
@@ -1897,7 +2049,7 @@ ${this.sessionData.learnings
 // Export singleton instance and its methods
 const hooksInstance = new ZenSwarmHooks();
 
-export const handleHook = (hookType: string, options: any[]) =>
+export const handleHook = (hookType: string, options: unknown[]) =>
   hooksInstance.handleHook(hookType, options);
 
 export default hooksInstance;

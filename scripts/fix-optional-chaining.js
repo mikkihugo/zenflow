@@ -22,7 +22,13 @@ class OptionalChainingFixer {
     // Find all TypeScript files
     const pattern = path.join(this.baseDir, '**/*.{ts,tsx}');
     const files = await glob(pattern, {
-      ignore: ['**/node_modules/**', '**/dist/**', '**/*.d.ts', '**/__tests__/**', '**/tests/**'],
+      ignore: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/*.d.ts',
+        '**/__tests__/**',
+        '**/tests/**',
+      ],
     });
 
     // console.log(`📁 Found ${files.length} TypeScript files to check`);
@@ -88,11 +94,15 @@ class OptionalChainingFixer {
       // Common patterns where object is guaranteed to exist
       {
         // results?.files[key] = value -> results.files[key] = value
-        pattern: /(\w+)\?\.(files|properties|items|data|config|options|params)\[/g,
+        pattern:
+          /(\w+)\?\.(files|properties|items|data|config|options|params)\[/g,
         replacement: '$1.$2[',
         condition: (match, objName) => {
           // Only fix if object is initialized in same function/block
-          const objPattern = new RegExp(`(const|let|var)\\s+${objName}\\s*=\\s*\\{`, 'i');
+          const objPattern = new RegExp(
+            `(const|let|var)\\s+${objName}\\s*=\\s*\\{`,
+            'i',
+          );
           return objPattern.test(content);
         },
       },
@@ -125,12 +135,18 @@ class OptionalChainingFixer {
     let updatedContent = content;
 
     fixes.forEach((fix) => {
-      updatedContent = updatedContent.replace(fix.pattern, (match, ...groups) => {
-        if (fix.condition && !fix.condition(match, ...groups)) {
-          return match; // Don't replace if condition fails
-        }
-        return fix.replacement.replace(/\$(\d+)/g, (_, num) => groups[parseInt(num) - 1]);
-      });
+      updatedContent = updatedContent.replace(
+        fix.pattern,
+        (match, ...groups) => {
+          if (fix.condition && !fix.condition(match, ...groups)) {
+            return match; // Don't replace if condition fails
+          }
+          return fix.replacement.replace(
+            /\$(\d+)/g,
+            (_, num) => groups[Number.parseInt(num) - 1],
+          );
+        },
+      );
     });
 
     return updatedContent;
@@ -142,13 +158,18 @@ class OptionalChainingFixer {
     const fixes = [
       // Array methods that should not use optional chaining
       {
-        pattern: /(\w+)\?\.(forEach|map|filter|reduce|find|some|every|slice|push|pop)\(/g,
+        pattern:
+          /(\w+)\?\.(forEach|map|filter|reduce|find|some|every|slice|push|pop)\(/g,
         replacement: '$1.$2(',
         condition: (match, arrayName) => {
           // Check if array is initialized or is a known array type
-          const arrayInitPattern = new RegExp(`(const|let|var)\\s+${arrayName}\\s*=\\s*\\[`);
+          const arrayInitPattern = new RegExp(
+            `(const|let|var)\\s+${arrayName}\\s*=\\s*\\[`,
+          );
           const arrayTypePattern = new RegExp(`${arrayName}:\\s*\\w+\\[\\]`);
-          return arrayInitPattern.test(content) || arrayTypePattern.test(content);
+          return (
+            arrayInitPattern.test(content) || arrayTypePattern.test(content)
+          );
         },
       },
 
@@ -166,7 +187,9 @@ class OptionalChainingFixer {
         replacement: '$1.$2',
         condition: (match, varName) => {
           // Check if variable is typed as string or initialized as string
-          const stringPattern = new RegExp(`${varName}:\\s*string|${varName}\\s*=\\s*['"']`);
+          const stringPattern = new RegExp(
+            `${varName}:\\s*string|${varName}\\s*=\\s*['"']`,
+          );
           return stringPattern.test(content);
         },
       },
@@ -186,12 +209,18 @@ class OptionalChainingFixer {
     let updatedContent = content;
 
     fixes.forEach((fix) => {
-      updatedContent = updatedContent.replace(fix.pattern, (match, ...groups) => {
-        if (fix.condition && !fix.condition(match, ...groups)) {
-          return match;
-        }
-        return fix.replacement.replace(/\$(\d+)/g, (_, num) => groups[parseInt(num) - 1]);
-      });
+      updatedContent = updatedContent.replace(
+        fix.pattern,
+        (match, ...groups) => {
+          if (fix.condition && !fix.condition(match, ...groups)) {
+            return match;
+          }
+          return fix.replacement.replace(
+            /\$(\d+)/g,
+            (_, num) => groups[Number.parseInt(num) - 1],
+          );
+        },
+      );
     });
 
     return updatedContent;
@@ -207,9 +236,15 @@ class OptionalChainingFixer {
         replacement: '$1[$2]',
         condition: (match, arrayName) => {
           // Check if array is initialized or guaranteed to exist
-          const guaranteedArrays = ['Array', 'arguments', 'results', 'items', 'data'];
+          const guaranteedArrays = [
+            'Array',
+            'arguments',
+            'results',
+            'items',
+            'data',
+          ];
           return guaranteedArrays.some((name) =>
-            arrayName.toLowerCase().includes(name.toLowerCase())
+            arrayName.toLowerCase().includes(name.toLowerCase()),
           );
         },
       },
@@ -229,12 +264,18 @@ class OptionalChainingFixer {
     let updatedContent = content;
 
     fixes.forEach((fix) => {
-      updatedContent = updatedContent.replace(fix.pattern, (match, ...groups) => {
-        if (fix.condition && !fix.condition(match, ...groups)) {
-          return match;
-        }
-        return fix.replacement.replace(/\$(\d+)/g, (_, num) => groups[parseInt(num) - 1]);
-      });
+      updatedContent = updatedContent.replace(
+        fix.pattern,
+        (match, ...groups) => {
+          if (fix.condition && !fix.condition(match, ...groups)) {
+            return match;
+          }
+          return fix.replacement.replace(
+            /\$(\d+)/g,
+            (_, num) => groups[Number.parseInt(num) - 1],
+          );
+        },
+      );
     });
 
     return updatedContent;

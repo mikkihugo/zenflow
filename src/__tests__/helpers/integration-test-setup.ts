@@ -11,7 +11,7 @@ import { join } from 'node:path';
 export class IntegrationTestSetup {
   private config: IntegrationTestConfig;
   private tempDirs: string[] = [];
-  private processes: any[] = [];
+  private processes: unknown[] = [];
   private cleanupCallbacks: Array<() => Promise<void>> = [];
 
   constructor(config: IntegrationTestConfig = {}) {
@@ -97,7 +97,9 @@ export class IntegrationTestSetup {
       database: {
         type: this.config.environment?.database || 'memory',
         path:
-          this.config.environment?.database === 'sqlite' ? join(workDir, 'test.db') : ':memory:',
+          this.config.environment?.database === 'sqlite'
+            ? join(workDir, 'test.db')
+            : ':memory:',
       },
       filesystem: {
         root: workDir,
@@ -184,7 +186,7 @@ export class IntegrationTestSetup {
         memoryDb.clear();
       },
 
-      async seed(data: any[]) {
+      async seed(data: unknown[]) {
         data?.forEach((item, index) => {
           memoryDb.set(`item-${index}`, item);
         });
@@ -197,7 +199,7 @@ export class IntegrationTestSetup {
       getConnection() {
         return {
           get: (key: string) => memoryDb.get(key),
-          set: (key: string, value: any) => memoryDb.set(key, value),
+          set: (key: string, value: unknown) => memoryDb.set(key, value),
           delete: (key: string) => memoryDb.delete(key),
           has: (key: string) => memoryDb.has(key),
           clear: () => memoryDb.clear(),
@@ -229,10 +231,10 @@ export class IntegrationTestSetup {
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
               );
             `,
-              (err: any) => {
+              (err: unknown) => {
                 if (err) reject(err);
                 else resolve();
-              }
+              },
             );
           });
         } catch (_error) {
@@ -254,14 +256,16 @@ export class IntegrationTestSetup {
         }
       },
 
-      async seed(data: any[]) {
+      async seed(data: unknown[]) {
         if (!db) return;
 
-        const stmt = db.prepare('INSERT OR REPLACE INTO test_data (key, value) VALUES (?, ?)');
+        const stmt = db.prepare(
+          'INSERT OR REPLACE INTO test_data (key, value) VALUES (?, ?)',
+        );
 
         for (const [index, item] of data?.entries()) {
           await new Promise<void>((resolve, reject) => {
-            stmt.run(`item-${index}`, JSON.stringify(item), (err: any) => {
+            stmt.run(`item-${index}`, JSON.stringify(item), (err: unknown) => {
               if (err) reject(err);
               else resolve();
             });
@@ -275,7 +279,7 @@ export class IntegrationTestSetup {
         if (!db) return;
 
         await new Promise<void>((resolve, reject) => {
-          db.run('DELETE FROM test_data', (err: any) => {
+          db.run('DELETE FROM test_data', (err: unknown) => {
             if (err) reject(err);
             else resolve();
           });
@@ -291,7 +295,9 @@ export class IntegrationTestSetup {
   private async createPostgresDatabaseHelper(): Promise<DatabaseTestHelper> {
     // This would require a PostgreSQL connection
     // For now, return a mock implementation
-    console.warn('PostgreSQL integration not implemented, using memory database');
+    console.warn(
+      'PostgreSQL integration not implemented, using memory database',
+    );
     return this.createMemoryDatabaseHelper();
   }
 
@@ -377,7 +383,7 @@ export class IntegrationTestSetup {
   }
 
   private createMockNetworkHelper(): NetworkTestHelper {
-    const mockRequests: any[] = [];
+    const mockRequests: unknown[] = [];
     const mockResponses = new Map<string, any>();
 
     return {
@@ -394,7 +400,7 @@ export class IntegrationTestSetup {
         mockResponses?.set(path, response);
       },
 
-      captureRequests(): any[] {
+      captureRequests(): unknown[] {
         return [...mockRequests];
       },
 
@@ -406,11 +412,13 @@ export class IntegrationTestSetup {
 
   private async createLocalhostNetworkHelper(): Promise<NetworkTestHelper> {
     let server: any = null;
-    const requests: any[] = [];
+    const requests: unknown[] = [];
     const routes = new Map<string, any>();
 
     return {
-      async startMockServer(port: number = this.getRandomPort()): Promise<void> {
+      async startMockServer(
+        port: number = this.getRandomPort(),
+      ): Promise<void> {
         try {
           const http = await import('node:http');
 
@@ -435,7 +443,7 @@ export class IntegrationTestSetup {
           });
 
           await new Promise<void>((resolve, reject) => {
-            server.listen(port, (err: any) => {
+            server.listen(port, (err: unknown) => {
               if (err) reject(err);
               else resolve();
             });
@@ -458,7 +466,7 @@ export class IntegrationTestSetup {
         routes.set(path, response);
       },
 
-      captureRequests(): any[] {
+      captureRequests(): unknown[] {
         return [...requests];
       },
 
@@ -480,11 +488,13 @@ export class IntegrationTestSetup {
   }
 
   private async stopServices(): Promise<void> {
-    await Promise.allSettled(this.processes.map((process) => this.stopProcess(process)));
+    await Promise.allSettled(
+      this.processes.map((process) => this.stopProcess(process)),
+    );
     this.processes = [];
   }
 
-  private async stopProcess(process: any): Promise<void> {
+  private async stopProcess(process: unknown): Promise<void> {
     if (process?.kill) {
       process.kill('SIGTERM');
 
@@ -508,7 +518,7 @@ export class IntegrationTestSetup {
   private async createTempDir(prefix: string = 'test'): Promise<string> {
     const tempPath = join(
       tmpdir(),
-      `claude-zen-flow-${prefix}-${Date.now()}-${Math.random().toString(36)}`
+      `claude-zen-flow-${prefix}-${Date.now()}-${Math.random().toString(36)}`,
     );
     await fs.mkdir(tempPath, { recursive: true });
     this.tempDirs.push(tempPath);
@@ -551,7 +561,10 @@ export async function setupTestEnvironment(config?: IntegrationTestConfig) {
   return setup.setup();
 }
 
-export async function createTestWorkspace(testName: string, config?: IntegrationTestConfig) {
+export async function createTestWorkspace(
+  testName: string,
+  config?: IntegrationTestConfig,
+) {
   const setup = new IntegrationTestSetup(config);
   return setup.createIsolatedEnvironment(testName);
 }

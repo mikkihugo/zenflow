@@ -114,7 +114,9 @@ describe('LanceDB Adapter Integration', () => {
       expect(schema).toHaveProperty('version');
 
       // Should have embeddings table
-      const embeddingsTable = schema.tables.find((t) => t.name === 'embeddings');
+      const embeddingsTable = schema.tables.find(
+        (t) => t.name === 'embeddings',
+      );
       expect(embeddingsTable).toBeDefined();
     } catch (error) {
       // Expected in test environment
@@ -123,7 +125,8 @@ describe('LanceDB Adapter Integration', () => {
   });
 
   it('should support vector SQL queries', async () => {
-    const vectorQuery = 'SELECT * FROM vectors WHERE vector <-> [0.1,0.2,0.3] LIMIT 5';
+    const vectorQuery =
+      'SELECT * FROM vectors WHERE vector <-> [0.1,0.2,0.3] LIMIT 5';
 
     try {
       await adapter.connect();

@@ -48,7 +48,13 @@ export interface DocumentWorkspace {
 export interface WorkflowContext {
   workspace: DocumentWorkspace;
   activeDocuments: Map<string, VisionaryDocument>;
-  maestroPhase?: 'requirements' | 'research' | 'design' | 'planning' | 'execution' | 'validation';
+  maestroPhase?:
+    | 'requirements'
+    | 'research'
+    | 'design'
+    | 'planning'
+    | 'execution'
+    | 'validation';
   swarmSupport: boolean; // Background swarm assistance
 }
 
@@ -116,7 +122,10 @@ export class DocumentDrivenSystem extends EventEmitter {
    * @param workspaceId
    * @param docPath
    */
-  async processVisionaryDocument(workspaceId: string, docPath: string): Promise<void> {
+  async processVisionaryDocument(
+    workspaceId: string,
+    docPath: string,
+  ): Promise<void> {
     const context = this.workspaces.get(workspaceId);
     if (!context) throw new Error(`Workspace ${workspaceId} not found`);
 
@@ -170,7 +179,10 @@ export class DocumentDrivenSystem extends EventEmitter {
    * @param workspaceId
    * @param doc
    */
-  private async processVisionDocument(workspaceId: string, doc: VisionaryDocument): Promise<void> {
+  private async processVisionDocument(
+    workspaceId: string,
+    doc: VisionaryDocument,
+  ): Promise<void> {
     logger.info('🔮 Processing Vision document');
 
     // Emit event for workflow processing
@@ -188,7 +200,10 @@ export class DocumentDrivenSystem extends EventEmitter {
    * @param doc.
    * @param doc
    */
-  private async processADR(workspaceId: string, doc: VisionaryDocument): Promise<void> {
+  private async processADR(
+    workspaceId: string,
+    doc: VisionaryDocument,
+  ): Promise<void> {
     logger.info('📐 Processing ADR document');
 
     this.emit('document:processed', {
@@ -204,7 +219,10 @@ export class DocumentDrivenSystem extends EventEmitter {
    * @param workspaceId
    * @param doc
    */
-  private async processPRD(workspaceId: string, doc: VisionaryDocument): Promise<void> {
+  private async processPRD(
+    workspaceId: string,
+    doc: VisionaryDocument,
+  ): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
 
     logger.info('📋 Processing PRD document');
@@ -225,7 +243,10 @@ export class DocumentDrivenSystem extends EventEmitter {
    * @param workspaceId
    * @param doc
    */
-  private async processEpic(workspaceId: string, doc: VisionaryDocument): Promise<void> {
+  private async processEpic(
+    workspaceId: string,
+    doc: VisionaryDocument,
+  ): Promise<void> {
     logger.info('🏔️ Processing Epic document');
 
     this.emit('document:processed', {
@@ -241,7 +262,10 @@ export class DocumentDrivenSystem extends EventEmitter {
    * @param workspaceId
    * @param doc
    */
-  private async processFeature(workspaceId: string, doc: VisionaryDocument): Promise<void> {
+  private async processFeature(
+    workspaceId: string,
+    doc: VisionaryDocument,
+  ): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
 
     logger.info('⭐ Processing Feature document');
@@ -262,7 +286,10 @@ export class DocumentDrivenSystem extends EventEmitter {
    * @param workspaceId
    * @param doc
    */
-  private async processTask(workspaceId: string, doc: VisionaryDocument): Promise<void> {
+  private async processTask(
+    workspaceId: string,
+    doc: VisionaryDocument,
+  ): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
 
     logger.info('✅ Processing Task document');
@@ -287,7 +314,12 @@ export class DocumentDrivenSystem extends EventEmitter {
     const dirs = Object.entries(context.workspace);
 
     for (const [type, path] of dirs) {
-      if (path && existsSync(path) && type !== 'root' && type !== 'implementation') {
+      if (
+        path &&
+        existsSync(path) &&
+        type !== 'root' &&
+        type !== 'implementation'
+      ) {
         try {
           const files = await readdir(path);
           for (const file of files) {
@@ -319,11 +351,13 @@ export class DocumentDrivenSystem extends EventEmitter {
    * @param path
    */
   private getDocumentType(path: string): VisionaryDocument['type'] {
-    if (path.includes('/01-vision/') || path.includes('/vision/')) return 'vision';
+    if (path.includes('/01-vision/') || path.includes('/vision/'))
+      return 'vision';
     if (path.includes('/02-adrs/') || path.includes('/adrs/')) return 'adr';
     if (path.includes('/03-prds/') || path.includes('/prds/')) return 'prd';
     if (path.includes('/04-epics/') || path.includes('/epics/')) return 'epic';
-    if (path.includes('/05-features/') || path.includes('/features/')) return 'feature';
+    if (path.includes('/05-features/') || path.includes('/features/'))
+      return 'feature';
     if (path.includes('/06-tasks/') || path.includes('/tasks/')) return 'task';
     if (path.includes('/07-specs/') || path.includes('/specs/')) return 'spec';
     return 'task'; // default
@@ -341,9 +375,12 @@ export class DocumentDrivenSystem extends EventEmitter {
     // Simple extraction - would be more sophisticated
     const lines = content.split('\n');
     for (const line of lines.slice(0, 10)) {
-      if (line.startsWith('Author:')) metadata.author = line.substring(7).trim();
-      if (line.startsWith('Created:')) metadata.created = new Date(line.substring(8).trim());
-      if (line.startsWith('Status:')) metadata.status = line.substring(7).trim();
+      if (line.startsWith('Author:'))
+        metadata.author = line.substring(7).trim();
+      if (line.startsWith('Created:'))
+        metadata.created = new Date(line.substring(8).trim());
+      if (line.startsWith('Status:'))
+        metadata.status = line.substring(7).trim();
       if (line.startsWith('Related:')) {
         metadata.relatedDocs = line
           .substring(8)

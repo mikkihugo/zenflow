@@ -14,7 +14,13 @@ import {
   initializeErrorHandling,
   shutdownErrorHandling,
 } from '../../utils/error-system-integration';
-import { FACTError, NetworkError, RAGError, SwarmError, TimeoutError } from '../../utils/errors';
+import {
+  FACTError,
+  NetworkError,
+  RAGError,
+  SwarmError,
+  TimeoutError,
+} from '../../utils/errors';
 import { systemResilienceOrchestrator } from '../../utils/system-resilience';
 
 describe('Comprehensive Error Handling System Integration', () => {
@@ -64,7 +70,11 @@ describe('Comprehensive Error Handling System Integration', () => {
     });
 
     it('should correctly classify Swarm coordination errors', async () => {
-      const swarmError = new SwarmError('Agent communication failed', 'swarm_01', 'high');
+      const swarmError = new SwarmError(
+        'Agent communication failed',
+        'swarm_01',
+        'high',
+      );
 
       const result = await handleErrorGlobally(swarmError, {
         component: 'Swarm',
@@ -100,7 +110,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             maxRetries: 3,
             fallbackEnabled: false,
           },
-        }
+        },
       );
 
       expect(result).toBe('Success on retry');
@@ -130,7 +140,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             maxRetries: 1,
             fallbackEnabled: true,
           },
-        }
+        },
       );
 
       expect(result).toBe('Fallback result');
@@ -166,7 +176,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             queueSize: 5,
             timeoutMs: 1000,
             priority: 5,
-          })
+          }),
         );
       }
 
@@ -177,7 +187,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             return 'Task 1';
           },
           { component: 'Test', operation: 'bulkhead_test_1' },
-          { resilience: { bulkhead: 'test' } }
+          { resilience: { bulkhead: 'test' } },
         ),
         executeWithErrorHandling(
           async () => {
@@ -185,7 +195,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             return 'Task 2';
           },
           { component: 'Test', operation: 'bulkhead_test_2' },
-          { resilience: { bulkhead: 'test' } }
+          { resilience: { bulkhead: 'test' } },
         ),
       ]);
 
@@ -202,7 +212,7 @@ describe('Comprehensive Error Handling System Integration', () => {
         1024,
         async () => {
           // Cleanup function
-        }
+        },
       );
 
       // Check resource stats
@@ -232,7 +242,9 @@ describe('Comprehensive Error Handling System Integration', () => {
       }
 
       const finalMetrics = errorMonitor.getComponentMetrics('TestComponent');
-      expect(finalMetrics.errorCount).toBeGreaterThan(initialMetrics.errorCount);
+      expect(finalMetrics.errorCount).toBeGreaterThan(
+        initialMetrics.errorCount,
+      );
     });
 
     it('should maintain error trends', async () => {
@@ -263,7 +275,9 @@ describe('Comprehensive Error Handling System Integration', () => {
 
       expect(typeof healthMetrics.errorRate).toBe('number');
       expect(typeof healthMetrics.uptime).toBe('number');
-      expect(['excellent', 'good', 'degraded', 'critical']).toContain(healthMetrics.overallHealth);
+      expect(['excellent', 'good', 'degraded', 'critical']).toContain(
+        healthMetrics.overallHealth,
+      );
     });
   });
 
@@ -328,8 +342,8 @@ describe('Comprehensive Error Handling System Integration', () => {
             component: 'LoadTest',
             operation: 'concurrent_operation',
             correlationId: `load_${i}`,
-          }
-        ).catch(() => `Handled error ${i}`)
+          },
+        ).catch(() => `Handled error ${i}`),
       );
 
       const results = await Promise.all(operations);
@@ -339,8 +353,12 @@ describe('Comprehensive Error Handling System Integration', () => {
       expect(endTime - startTime).toBeLessThan(5000); // Should complete within 5 seconds
 
       // Check that some operations succeeded and some were handled
-      const successCount = results?.filter((r) => r.startsWith('Success')).length;
-      const handledCount = results?.filter((r) => r.startsWith('Handled')).length;
+      const successCount = results?.filter((r) =>
+        r.startsWith('Success'),
+      ).length;
+      const handledCount = results?.filter((r) =>
+        r.startsWith('Handled'),
+      ).length;
 
       expect(successCount).toBeGreaterThan(0);
       expect(handledCount).toBeGreaterThan(0);
@@ -350,7 +368,9 @@ describe('Comprehensive Error Handling System Integration', () => {
   describe('Error Recovery Edge Cases', () => {
     it('should handle non-recoverable errors correctly', async () => {
       const nonRecoverableError = new Error('Critical system failure');
-      Object.defineProperty(nonRecoverableError, 'recoverable', { value: false });
+      Object.defineProperty(nonRecoverableError, 'recoverable', {
+        value: false,
+      });
 
       const result = await handleErrorGlobally(nonRecoverableError, {
         component: 'System',
@@ -380,7 +400,7 @@ describe('Comprehensive Error Handling System Integration', () => {
             maxRetries: 3,
             fallbackEnabled: false,
           },
-        }
+        },
       );
 
       // Should not attempt infinite recovery
@@ -396,25 +416,30 @@ describe('Comprehensive Error Handling System Integration', () => {
           .allocateResource(
             'memory',
             'exhaustion_test',
-            1024 * 1024 // 1MB each
+            1024 * 1024, // 1MB each
           )
-          .catch((error) => error)
+          .catch((error) => error),
       );
 
       const results = await Promise.allSettled(resourcePromises);
 
       // Should have some successful allocations and some failures due to limits
       const successes = results?.filter(
-        (r) => r.status === 'fulfilled' && typeof r.value === 'string'
+        (r) => r.status === 'fulfilled' && typeof r.value === 'string',
       );
-      const failures = results?.filter((r) => r.status === 'fulfilled' && r.value instanceof Error);
+      const failures = results?.filter(
+        (r) => r.status === 'fulfilled' && r.value instanceof Error,
+      );
 
       expect(successes.length).toBeGreaterThan(0);
       expect(failures.length).toBeGreaterThan(0);
 
       // Clean up allocated resources
       for (const result of successes) {
-        if (result?.status === 'fulfilled' && typeof result?.value === 'string') {
+        if (
+          result?.status === 'fulfilled' &&
+          typeof result?.value === 'string'
+        ) {
           await resourceManager.releaseResource(result?.value).catch(() => {});
         }
       }
@@ -424,7 +449,9 @@ describe('Comprehensive Error Handling System Integration', () => {
 
 describe('MCP Error Handling Integration', () => {
   it('should wrap MCP tools with error handling automatically', async () => {
-    const { MCPToolWrapper } = await import('../../coordination/swarm/mcp/error-handler.ts');
+    const { MCPToolWrapper } = await import(
+      '../../coordination/swarm/mcp/error-handler.ts'
+    );
 
     const mockTool = {
       name: 'test_tool',
@@ -436,7 +463,7 @@ describe('MCP Error Handling Integration', () => {
         },
         required: ['input'],
       },
-      handler: async (params: any) => {
+      handler: async (params: unknown) => {
         if (params?.input === 'error') {
           throw new Error('Simulated tool error');
         }
@@ -460,7 +487,9 @@ describe('MCP Error Handling Integration', () => {
   });
 
   it('should validate MCP tool parameters', async () => {
-    const { MCPParameterValidator } = await import('../../coordination/swarm/mcp/error-handler.ts');
+    const { MCPParameterValidator } = await import(
+      '../../coordination/swarm/mcp/error-handler.ts'
+    );
 
     const schema = {
       type: 'object',
@@ -475,7 +504,7 @@ describe('MCP Error Handling Integration', () => {
     const validResult = MCPParameterValidator.validateParameters(
       'test_tool',
       { required_param: 'test', optional_param: 50 },
-      schema
+      schema,
     );
     expect(validResult?.valid).toBe(true);
     expect(validResult?.errors).toHaveLength(0);
@@ -484,28 +513,34 @@ describe('MCP Error Handling Integration', () => {
     const missingResult = MCPParameterValidator.validateParameters(
       'test_tool',
       { optional_param: 50 },
-      schema
+      schema,
     );
     expect(missingResult?.valid).toBe(false);
-    expect(missingResult?.errors).toContain('Missing required parameter: required_param');
+    expect(missingResult?.errors).toContain(
+      'Missing required parameter: required_param',
+    );
 
     // Test invalid parameter type
     const typeResult = MCPParameterValidator.validateParameters(
       'test_tool',
       { required_param: 123 }, // Should be string
-      schema
+      schema,
     );
     expect(typeResult?.valid).toBe(false);
-    expect(typeResult?.errors?.some((e) => e.includes('expected type string'))).toBe(true);
+    expect(
+      typeResult?.errors?.some((e) => e.includes('expected type string')),
+    ).toBe(true);
 
     // Test parameter constraints
     const constraintResult = MCPParameterValidator.validateParameters(
       'test_tool',
       { required_param: 'test', optional_param: 150 }, // Exceeds maximum
-      schema
+      schema,
     );
     expect(constraintResult?.valid).toBe(false);
-    expect(constraintResult?.errors?.some((e) => e.includes('must be at most 100'))).toBe(true);
+    expect(
+      constraintResult?.errors?.some((e) => e.includes('must be at most 100')),
+    ).toBe(true);
   });
 });
 

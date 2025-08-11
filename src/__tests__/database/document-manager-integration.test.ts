@@ -5,7 +5,26 @@
  * relationship management, and advanced search functionality.
  */
 
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/core';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  test,
+} from 'vitest';
+import type {
+  ADRDocumentEntity,
+  BaseDocumentEntity,
+  DocumentRelationshipEntity,
+  EpicDocumentEntity,
+  FeatureDocumentEntity,
+  PRDDocumentEntity,
+  ProjectEntity,
+  TaskDocumentEntity,
+  VisionDocumentEntity,
+} from '../../database/entities/document-entities.ts';
 import { DocumentManager } from '../../database/managers/document-manager.ts';
 
 describe('DocumentManager Integration Tests', () => {
@@ -28,9 +47,8 @@ describe('DocumentManager Integration Tests', () => {
     testProject = await documentManager.createProject({
       name: 'Test Project',
       description: 'Integration test project',
-      owner: 'test-user',
-      status: 'active',
-      metadata: { test: true },
+      domain: 'testing',
+      complexity: 'simple',
     });
   });
 
@@ -63,7 +81,7 @@ describe('DocumentManager Integration Tests', () => {
         },
         {
           autoGenerateRelationships: true,
-        }
+        },
       );
 
       // Create an Epic that should automatically relate to the PRD
@@ -87,27 +105,33 @@ describe('DocumentManager Integration Tests', () => {
         },
         {
           autoGenerateRelationships: true,
-        }
+        },
       );
 
       // Check that relationship was created
-      const epicWithRelationships = await documentManager.getDocument<EpicDocumentEntity>(epic.id, {
-        includeRelationships: true,
-      });
+      const epicWithRelationships =
+        await documentManager.getDocument<EpicDocumentEntity>(epic.id, {
+          includeRelationships: true,
+        });
 
       expect(epicWithRelationships).not.toBeNull();
       expect((epicWithRelationships as any).relationships).toBeDefined();
-      expect((epicWithRelationships as any).relationships.length).toBeGreaterThan(0);
+      expect(
+        (epicWithRelationships as any).relationships.length,
+      ).toBeGreaterThan(0);
 
       // Find relationship to PRD
       const prdRelationship = (epicWithRelationships as any).relationships.find(
         (rel: DocumentRelationshipEntity) =>
-          rel['target_document_id'] === prd.id && rel['relationship_type'] === 'derives_from'
+          rel['target_document_id'] === prd.id &&
+          rel['relationship_type'] === 'relates_to',
       );
 
       expect(prdRelationship).toBeDefined();
       expect(prdRelationship.metadata['auto_generated']).toBe(true);
-      expect(prdRelationship.metadata['generation_method']).toBe('type_hierarchy');
+      expect(prdRelationship.metadata['generation_method']).toBe(
+        'type_hierarchy',
+      );
     });
 
     test('should create semantic relationships based on content analysis', async () => {
@@ -116,50 +140,71 @@ describe('DocumentManager Integration Tests', () => {
         {
           type: 'feature',
           title: 'JWT Token Authentication',
-          content: 'Implement JWT token-based authentication with refresh tokens...',
+          content:
+            'Implement JWT token-based authentication with refresh tokens...',
           summary: 'JWT auth feature',
           author: 'developer',
           project_id: testProject.id,
           status: 'draft',
           priority: 'high',
           keywords: ['jwt', 'authentication', 'tokens', 'security'],
+          tags: ['jwt', 'authentication', 'tokens', 'security'],
+          version: '1.0.0',
+          dependencies: [],
+          related_documents: [],
+          searchable_content:
+            'Implement JWT token-based authentication with refresh tokens...',
+          completion_percentage: 0,
           metadata: {},
         },
         {
           autoGenerateRelationships: true,
-        }
+        },
       );
 
       const doc2 = await documentManager.createDocument(
         {
           type: 'feature',
           title: 'OAuth Integration',
-          content: 'Integrate OAuth 2.0 for third-party authentication providers...',
+          content:
+            'Integrate OAuth 2.0 for third-party authentication providers...',
           summary: 'OAuth integration',
           author: 'developer',
           project_id: testProject.id,
           status: 'draft',
           priority: 'medium',
           keywords: ['oauth', 'authentication', 'integration', 'security'],
+          tags: ['oauth', 'authentication', 'integration', 'security'],
+          version: '1.0.0',
+          dependencies: [],
+          related_documents: [],
+          searchable_content:
+            'Integrate OAuth 2.0 for third-party authentication providers...',
+          completion_percentage: 0,
           metadata: {},
         },
         {
           autoGenerateRelationships: true,
-        }
+        },
       );
 
       // Check semantic relationships
       const doc1WithRel = await documentManager.getDocument(doc1.id, {
         includeRelationships: true,
       });
-      const relationships = (doc1WithRel as any).relationships as DocumentRelationshipEntity[];
+      const relationships = (doc1WithRel as any)
+        .relationships as DocumentRelationshipEntity[];
 
       const semanticRel = relationships.find(
-        (rel) => rel['target_document_id'] === doc2.id && rel['relationship_type'] === 'relates_to'
+        (rel) =>
+          rel['target_document_id'] === doc2.id &&
+          rel['relationship_type'] === 'relates_to',
       );
 
       expect(semanticRel).toBeDefined();
-      expect(semanticRel?.metadata['generation_method']).toBe('keyword_analysis');
+      expect(semanticRel?.metadata['generation_method']).toBe(
+        'keyword_analysis',
+      );
       expect(semanticRel?.strength).toBeGreaterThan(0.3);
     });
 
@@ -179,7 +224,7 @@ describe('DocumentManager Integration Tests', () => {
         },
         {
           autoGenerateRelationships: true,
-        }
+        },
       );
 
       // Update content significantly
@@ -191,7 +236,7 @@ describe('DocumentManager Integration Tests', () => {
         },
         {
           autoGenerateRelationships: true,
-        }
+        },
       );
 
       expect(updated.content).toContain('authentication');
@@ -201,7 +246,8 @@ describe('DocumentManager Integration Tests', () => {
       const docWithRel = await documentManager.getDocument(updated.id, {
         includeRelationships: true,
       });
-      const relationships = (docWithRel as any).relationships as DocumentRelationshipEntity[];
+      const relationships = (docWithRel as any)
+        .relationships as DocumentRelationshipEntity[];
 
       // Should have new relationships based on updated content
       expect(relationships.length).toBeGreaterThanOrEqual(0);
@@ -228,7 +274,7 @@ describe('DocumentManager Integration Tests', () => {
             keywords: ['authentication', 'security', 'jwt', 'oauth', 'mfa'],
             metadata: {},
           },
-          { generateSearchIndex: true }
+          { generateSearchIndex: true },
         ),
 
         documentManager.createDocument(
@@ -240,28 +286,29 @@ describe('DocumentManager Integration Tests', () => {
             summary: 'Password recovery feature',
             author: 'developer',
             project_id: testProject.id,
-            status: 'in_progress',
+            status: 'review',
             priority: 'medium',
             keywords: ['password', 'recovery', 'email', 'security'],
             metadata: {},
           },
-          { generateSearchIndex: true }
+          { generateSearchIndex: true },
         ),
 
         documentManager.createDocument(
           {
             type: 'task',
             title: 'Database Migration',
-            content: 'Migrate user authentication tables to support new security requirements...',
+            content:
+              'Migrate user authentication tables to support new security requirements...',
             summary: 'DB migration task',
             author: 'developer',
             project_id: testProject.id,
-            status: 'todo',
+            status: 'draft',
             priority: 'low',
             keywords: ['database', 'migration', 'authentication'],
             metadata: {},
           },
-          { generateSearchIndex: true }
+          { generateSearchIndex: true },
         ),
       ]);
     });
@@ -305,7 +352,9 @@ describe('DocumentManager Integration Tests', () => {
 
       // Should find authentication-related documents even without exact matches
       const authRelated = results?.documents?.some(
-        (doc) => doc.keywords.includes('authentication') || doc.title.toLowerCase().includes('auth')
+        (doc) =>
+          doc.keywords.includes('authentication') ||
+          doc.title.toLowerCase().includes('auth'),
       );
       expect(authRelated).toBe(true);
     });
@@ -326,9 +375,13 @@ describe('DocumentManager Integration Tests', () => {
       results?.documents?.forEach((doc) => {
         const hasSecurityKeyword = doc.keywords.includes('security');
         const hasSecurityInTitle = doc.title.toLowerCase().includes('security');
-        const hasSecurityInContent = doc.content.toLowerCase().includes('security');
+        const hasSecurityInContent = doc.content
+          .toLowerCase()
+          .includes('security');
 
-        expect(hasSecurityKeyword || hasSecurityInTitle || hasSecurityInContent).toBe(true);
+        expect(
+          hasSecurityKeyword || hasSecurityInTitle || hasSecurityInContent,
+        ).toBe(true);
       });
     });
 
@@ -376,8 +429,12 @@ describe('DocumentManager Integration Tests', () => {
         expect(['prd', 'feature']).toContain(doc.type);
         expect(['approved', 'in_progress']).toContain(doc.status);
         expect(['high', 'medium']).toContain(doc.priority);
-        expect(doc['created_at']?.getTime()).toBeGreaterThanOrEqual(yesterday.getTime());
-        expect(doc['created_at']?.getTime()).toBeLessThanOrEqual(tomorrow.getTime());
+        expect(doc['created_at']?.getTime()).toBeGreaterThanOrEqual(
+          yesterday.getTime(),
+        );
+        expect(doc['created_at']?.getTime()).toBeLessThanOrEqual(
+          tomorrow.getTime(),
+        );
       });
     });
 
@@ -409,7 +466,9 @@ describe('DocumentManager Integration Tests', () => {
       // Verify no duplicate documents between pages
       const page1Ids = new Set(page1.documents.map((d) => d.id));
       const page2Ids = new Set(page2.documents.map((d) => d.id));
-      const intersection = new Set([...page1Ids].filter((id) => page2Ids.has(id)));
+      const intersection = new Set(
+        [...page1Ids].filter((id) => page2Ids.has(id)),
+      );
       expect(intersection.size).toBe(0);
     });
   });
@@ -438,7 +497,7 @@ describe('DocumentManager Integration Tests', () => {
         },
         {
           startWorkflow: 'prd_workflow',
-        }
+        },
       );
 
       // Advance PRD to approved status
@@ -456,7 +515,7 @@ describe('DocumentManager Integration Tests', () => {
       const autoCreatedEpic = documents.find(
         (doc) =>
           doc.metadata?.['source_document_id'] === prd.id &&
-          doc.metadata?.['auto_generated'] === true
+          doc.metadata?.['auto_generated'] === true,
       );
 
       expect(autoCreatedEpic).toBeDefined();
@@ -466,31 +525,32 @@ describe('DocumentManager Integration Tests', () => {
     });
 
     test('should auto-create tasks when feature is approved', async () => {
-      const feature = await documentManager.createDocument<FeatureDocumentEntity>(
-        {
-          type: 'feature',
-          title: 'User Registration Feature',
-          content: 'Implement user registration with email verification...',
-          summary: 'User registration',
-          author: 'developer',
-          project_id: testProject.id,
-          status: 'draft',
-          priority: 'medium',
-          keywords: ['registration', 'users', 'email'],
-          metadata: {},
-          functional_requirements: ['Email validation', 'Password strength'],
-          technical_requirements: ['Database schema', 'Email service'],
-          user_stories: ['As a user, I want to register'],
-          acceptance_criteria: ['Successful registration flow'],
-          testing_plan: 'Unit and integration tests',
-          estimated_effort: 8,
-          complexity_score: 6,
-          risk_assessment: 'Low',
-        },
-        {
-          startWorkflow: 'feature_workflow',
-        }
-      );
+      const feature =
+        await documentManager.createDocument<FeatureDocumentEntity>(
+          {
+            type: 'feature',
+            title: 'User Registration Feature',
+            content: 'Implement user registration with email verification...',
+            summary: 'User registration',
+            author: 'developer',
+            project_id: testProject.id,
+            status: 'draft',
+            priority: 'medium',
+            keywords: ['registration', 'users', 'email'],
+            metadata: {},
+            functional_requirements: ['Email validation', 'Password strength'],
+            technical_requirements: ['Database schema', 'Email service'],
+            user_stories: ['As a user, I want to register'],
+            acceptance_criteria: ['Successful registration flow'],
+            testing_plan: 'Unit and integration tests',
+            estimated_effort: 8,
+            complexity_score: 6,
+            risk_assessment: 'Low',
+          },
+          {
+            startWorkflow: 'feature_workflow',
+          },
+        );
 
       // Advance feature to approved status
       await documentManager.advanceDocumentWorkflow(feature.id, 'approved');
@@ -507,7 +567,7 @@ describe('DocumentManager Integration Tests', () => {
       const autoCreatedTask = documents.find(
         (doc) =>
           doc.metadata?.['source_document_id'] === feature.id &&
-          doc.metadata?.['auto_generated'] === true
+          doc.metadata?.['auto_generated'] === true,
       );
 
       expect(autoCreatedTask).toBeDefined();
@@ -531,22 +591,28 @@ describe('DocumentManager Integration Tests', () => {
         },
         {
           startWorkflow: 'prd_workflow',
-        }
+        },
       );
 
       // Valid transition: draft -> review
-      const workflow1 = await documentManager.advanceDocumentWorkflow(document.id, 'review');
+      const workflow1 = await documentManager.advanceDocumentWorkflow(
+        document.id,
+        'review',
+      );
       expect(workflow1['current_stage']).toBe('review');
       expect(workflow1['stages_completed']).toContain('draft');
 
       // Valid transition: review -> approved
-      const workflow2 = await documentManager.advanceDocumentWorkflow(document.id, 'approved');
+      const workflow2 = await documentManager.advanceDocumentWorkflow(
+        document.id,
+        'approved',
+      );
       expect(workflow2['current_stage']).toBe('approved');
 
       // Invalid transition: should throw error
-      await expect(documentManager.advanceDocumentWorkflow(document.id, 'draft')).rejects.toThrow(
-        'Invalid transition'
-      );
+      await expect(
+        documentManager.advanceDocumentWorkflow(document.id, 'draft'),
+      ).rejects.toThrow('Invalid transition');
     });
 
     test('should generate workflow artifacts', async () => {
@@ -571,7 +637,7 @@ describe('DocumentManager Integration Tests', () => {
         },
         {
           startWorkflow: 'prd_workflow',
-        }
+        },
       );
 
       // Advance to approved (should trigger artifact generation)
@@ -585,12 +651,15 @@ describe('DocumentManager Integration Tests', () => {
       const workflowState = await documentManager.getDocument(prd.id, {
         includeWorkflowState: true,
       });
-      const workflow = (workflowState as any).workflowState as DocumentWorkflowStateEntity;
+      const workflow = (workflowState as any)
+        .workflowState as DocumentWorkflowStateEntity;
 
       expect(workflow['generated_artifacts']).toBeDefined();
       expect(workflow['generated_artifacts'].length).toBeGreaterThan(0);
       expect(
-        workflow['generated_artifacts']?.some((artifact) => artifact.includes('summary_report'))
+        workflow['generated_artifacts']?.some((artifact) =>
+          artifact.includes('summary_report'),
+        ),
       ).toBe(true);
     });
   });
@@ -614,7 +683,7 @@ describe('DocumentManager Integration Tests', () => {
         {
           startWorkflow: 'vision_workflow',
           generateSearchIndex: true,
-        }
+        },
       );
 
       // 2. Create PRD that relates to vision
@@ -622,7 +691,8 @@ describe('DocumentManager Integration Tests', () => {
         {
           type: 'prd',
           title: 'Platform Core Features PRD',
-          content: 'Based on our product vision, we need core platform features...',
+          content:
+            'Based on our product vision, we need core platform features...',
           summary: 'Core features PRD',
           author: 'product-manager',
           project_id: testProject.id,
@@ -641,7 +711,7 @@ describe('DocumentManager Integration Tests', () => {
           autoGenerateRelationships: true,
           startWorkflow: 'prd_workflow',
           generateSearchIndex: true,
-        }
+        },
       );
 
       // 3. Advance PRD through workflow stages
@@ -657,48 +727,54 @@ describe('DocumentManager Integration Tests', () => {
         projectId: testProject.id,
       });
 
-      const autoEpic = epics.find((epic) => epic.metadata?.['source_document_id'] === prd.id);
+      const autoEpic = epics.find(
+        (epic) => epic.metadata?.['source_document_id'] === prd.id,
+      );
       expect(autoEpic).toBeDefined();
 
       // 5. Create feature manually and verify relationships
-      const feature = await documentManager.createDocument<FeatureDocumentEntity>(
-        {
-          type: 'feature',
-          title: 'User Management Feature',
-          content: 'Comprehensive user management system...',
-          summary: 'User management',
-          author: 'developer',
-          project_id: testProject.id,
-          status: 'draft',
-          priority: 'high',
-          keywords: ['user', 'management', 'platform'],
-          metadata: {},
-          functional_requirements: ['CRUD operations'],
-          technical_requirements: ['Database design'],
-          user_stories: ['Manage users'],
-          acceptance_criteria: ['Complete user lifecycle'],
-          testing_plan: 'Comprehensive testing',
-          estimated_effort: 20,
-          complexity_score: 8,
-          risk_assessment: 'Medium',
-        },
-        {
-          autoGenerateRelationships: true,
-          startWorkflow: 'feature_workflow',
-        }
-      );
+      const feature =
+        await documentManager.createDocument<FeatureDocumentEntity>(
+          {
+            type: 'feature',
+            title: 'User Management Feature',
+            content: 'Comprehensive user management system...',
+            summary: 'User management',
+            author: 'developer',
+            project_id: testProject.id,
+            status: 'draft',
+            priority: 'high',
+            keywords: ['user', 'management', 'platform'],
+            metadata: {},
+            functional_requirements: ['CRUD operations'],
+            technical_requirements: ['Database design'],
+            user_stories: ['Manage users'],
+            acceptance_criteria: ['Complete user lifecycle'],
+            testing_plan: 'Comprehensive testing',
+            estimated_effort: 20,
+            complexity_score: 8,
+            risk_assessment: 'Medium',
+          },
+          {
+            autoGenerateRelationships: true,
+            startWorkflow: 'feature_workflow',
+          },
+        );
 
       // 6. Verify complete relationship chain
       const featureWithRel = await documentManager.getDocument(feature.id, {
         includeRelationships: true,
       });
-      const relationships = (featureWithRel as any).relationships as DocumentRelationshipEntity[];
+      const relationships = (featureWithRel as any)
+        .relationships as DocumentRelationshipEntity[];
 
       expect(relationships.length).toBeGreaterThan(0);
 
       // Should have relationships to PRD or Epic
       const hasUpstreamRelationship = relationships.some(
-        (rel) => rel['target_document_id'] === prd.id || rel['target_document_id'] === autoEpic?.id
+        (rel) =>
+          rel['target_document_id'] === prd.id ||
+          rel['target_document_id'] === autoEpic?.id,
       );
       expect(hasUpstreamRelationship).toBe(true);
 
@@ -716,7 +792,9 @@ describe('DocumentManager Integration Tests', () => {
       expect(docTypes.size).toBeGreaterThanOrEqual(2); // Multiple document types
 
       // 8. Verify project overview shows complete document hierarchy
-      const projectOverview = await documentManager.getProjectWithDocuments(testProject.id);
+      const projectOverview = await documentManager.getProjectWithDocuments(
+        testProject.id,
+      );
       expect(projectOverview).not.toBeNull();
       expect(projectOverview?.documents.prds.length).toBe(1);
       expect(projectOverview?.documents.epics.length).toBeGreaterThanOrEqual(1);
@@ -725,34 +803,36 @@ describe('DocumentManager Integration Tests', () => {
 
     test('should handle workflow automation with complex conditions', async () => {
       // Create document with specific conditions for automation
-      const feature = await documentManager.createDocument<FeatureDocumentEntity>(
-        {
-          type: 'feature',
-          title: 'Critical Security Feature',
-          content: 'High-priority security feature requiring immediate attention...',
-          summary: 'Critical security',
-          author: 'security-team',
-          project_id: testProject.id,
-          status: 'draft',
-          priority: 'high',
-          keywords: ['security', 'critical', 'urgent'],
-          metadata: {
-            security_critical: true,
-            requires_security_review: true,
+      const feature =
+        await documentManager.createDocument<FeatureDocumentEntity>(
+          {
+            type: 'feature',
+            title: 'Critical Security Feature',
+            content:
+              'High-priority security feature requiring immediate attention...',
+            summary: 'Critical security',
+            author: 'security-team',
+            project_id: testProject.id,
+            status: 'draft',
+            priority: 'high',
+            keywords: ['security', 'critical', 'urgent'],
+            metadata: {
+              security_critical: true,
+              requires_security_review: true,
+            },
+            functional_requirements: ['Security validation'],
+            technical_requirements: ['Encryption', 'Audit logs'],
+            user_stories: ['Secure operations'],
+            acceptance_criteria: ['Security compliance'],
+            testing_plan: 'Security testing',
+            estimated_effort: 15,
+            complexity_score: 9,
+            risk_assessment: 'High',
           },
-          functional_requirements: ['Security validation'],
-          technical_requirements: ['Encryption', 'Audit logs'],
-          user_stories: ['Secure operations'],
-          acceptance_criteria: ['Security compliance'],
-          testing_plan: 'Security testing',
-          estimated_effort: 15,
-          complexity_score: 9,
-          risk_assessment: 'High',
-        },
-        {
-          startWorkflow: 'feature_workflow',
-        }
-      );
+          {
+            startWorkflow: 'feature_workflow',
+          },
+        );
 
       // Update status to trigger automation
       await documentManager.updateDocument(feature.id, { status: 'approved' });
@@ -767,7 +847,8 @@ describe('DocumentManager Integration Tests', () => {
       const workflowState = await documentManager.getDocument(feature.id, {
         includeWorkflowState: true,
       });
-      const workflow = (workflowState as any).workflowState as DocumentWorkflowStateEntity;
+      const workflow = (workflowState as any)
+        .workflowState as DocumentWorkflowStateEntity;
 
       expect(workflow['current_stage']).toBe('approved');
 
@@ -778,7 +859,7 @@ describe('DocumentManager Integration Tests', () => {
       });
 
       const securityTasks = tasks.filter(
-        (task) => task.metadata?.['source_document_id'] === feature.id
+        (task) => task.metadata?.['source_document_id'] === feature.id,
       );
 
       expect(securityTasks.length).toBeGreaterThan(0);

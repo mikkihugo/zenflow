@@ -1,14 +1,14 @@
 // Test full GPT-5 model with 130K token context
-import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-import { AzureKeyCredential } from "@azure/core-auth";
+import ModelClient, { isUnexpected } from '@azure-rest/ai-inference';
+import { AzureKeyCredential } from '@azure/core-auth';
 
-const token = process.env["GITHUB_TOKEN"];
-const endpoint = "https://models.github.ai/inference";
-const model = "openai/gpt-5";
+const token = process.env['GITHUB_TOKEN'];
+const endpoint = 'https://models.github.ai/inference';
+const model = 'openai/gpt-5';
 
 async function testFullGPT5() {
   if (!token) {
-    console.log("❌ GITHUB_TOKEN not set");
+    console.log('❌ GITHUB_TOKEN not set');
     return;
   }
 
@@ -17,11 +17,8 @@ async function testFullGPT5() {
     console.log('  - Model: openai/gpt-5 (full model)');
     console.log('  - Max completion tokens: 128,000 (maximum limit)');
     console.log('  - Endpoint:', endpoint);
-    
-    const client = ModelClient(
-      endpoint,
-      new AzureKeyCredential(token)
-    );
+
+    const client = ModelClient(endpoint, new AzureKeyCredential(token));
 
     // Create an extensive context to test GPT-5's capabilities
     const comprehensiveContext = `
@@ -234,86 +231,143 @@ Please provide specific, actionable recommendations with implementation prioriti
 `;
 
     console.log('  - Context size:', comprehensiveContext.length, 'characters');
-    console.log('  - Estimated input tokens:', Math.round(comprehensiveContext.length / 4));
+    console.log(
+      '  - Estimated input tokens:',
+      Math.round(comprehensiveContext.length / 4),
+    );
 
-    const response = await client.path("/chat/completions").post({
+    const response = await client.path('/chat/completions').post({
       body: {
         messages: [
-          { 
-            role: "system", 
-            content: "You are a world-class software architect and AI systems expert with deep expertise in graph neural networks, distributed systems, and high-performance computing. Provide extremely detailed, technical analysis with specific implementation recommendations, code examples, and architectural diagrams described in text. Your analysis should be comprehensive and actionable."
+          {
+            role: 'system',
+            content:
+              'You are a world-class software architect and AI systems expert with deep expertise in graph neural networks, distributed systems, and high-performance computing. Provide extremely detailed, technical analysis with specific implementation recommendations, code examples, and architectural diagrams described in text. Your analysis should be comprehensive and actionable.',
           },
-          { 
-            role: "user", 
-            content: comprehensiveContext
-          }
+          {
+            role: 'user',
+            content: comprehensiveContext,
+          },
         ],
         model: model,
-        max_completion_tokens: 128000 // Full 128K token limit (maximum)
-      }
+        max_completion_tokens: 128000, // Full 128K token limit (maximum)
+      },
     });
 
     if (isUnexpected(response)) {
       console.log('Error details:', JSON.stringify(response, null, 2));
-      throw new Error(`Full GPT-5 API Error: ${JSON.stringify(response.body?.error || response.body)}`);
+      throw new Error(
+        `Full GPT-5 API Error: ${JSON.stringify(response.body?.error || response.body)}`,
+      );
     }
 
-    console.log("✅ Full GPT-5 with 130K Context Success!");
+    console.log('✅ Full GPT-5 with 130K Context Success!');
     const content = response.body.choices[0].message.content;
-    
+
     console.log('\n📊 Response Analysis:');
     console.log('  - Input length:', comprehensiveContext.length, 'characters');
-    console.log('  - Input tokens (est):', Math.round(comprehensiveContext.length / 4));
-    console.log('  - Response length:', content.length, 'characters'); 
+    console.log(
+      '  - Input tokens (est):',
+      Math.round(comprehensiveContext.length / 4),
+    );
+    console.log('  - Response length:', content.length, 'characters');
     console.log('  - Response tokens (est):', Math.round(content.length / 4));
     console.log('  - Model used:', response.body.model);
-    console.log('  - Total tokens used (est):', Math.round((comprehensiveContext.length + content.length) / 4));
-    
+    console.log(
+      '  - Total tokens used (est):',
+      Math.round((comprehensiveContext.length + content.length) / 4),
+    );
+
     // Quality assessment
     console.log('\n🎯 Response Quality Assessment:');
-    const hasArchitecturalAnalysis = content.toLowerCase().includes('architectural') || content.toLowerCase().includes('architecture');
-    const hasPerformanceAnalysis = content.toLowerCase().includes('performance') || content.toLowerCase().includes('optimization');
-    const hasScalabilityAnalysis = content.toLowerCase().includes('scalability') || content.toLowerCase().includes('scaling');
-    const hasCodeExamples = content.includes('```') || content.includes('function') || content.includes('class');
-    const hasSpecificRecommendations = content.toLowerCase().includes('recommend') || content.toLowerCase().includes('suggest');
-    
-    console.log('  - ✅ Architectural Analysis:', hasArchitecturalAnalysis ? 'Present' : 'Missing');
-    console.log('  - ✅ Performance Analysis:', hasPerformanceAnalysis ? 'Present' : 'Missing');
-    console.log('  - ✅ Scalability Analysis:', hasScalabilityAnalysis ? 'Present' : 'Missing');
-    console.log('  - ✅ Code Examples:', hasCodeExamples ? 'Present' : 'Missing');
-    console.log('  - ✅ Specific Recommendations:', hasSpecificRecommendations ? 'Present' : 'Missing');
+    const hasArchitecturalAnalysis =
+      content.toLowerCase().includes('architectural') ||
+      content.toLowerCase().includes('architecture');
+    const hasPerformanceAnalysis =
+      content.toLowerCase().includes('performance') ||
+      content.toLowerCase().includes('optimization');
+    const hasScalabilityAnalysis =
+      content.toLowerCase().includes('scalability') ||
+      content.toLowerCase().includes('scaling');
+    const hasCodeExamples =
+      content.includes('```') ||
+      content.includes('function') ||
+      content.includes('class');
+    const hasSpecificRecommendations =
+      content.toLowerCase().includes('recommend') ||
+      content.toLowerCase().includes('suggest');
+
+    console.log(
+      '  - ✅ Architectural Analysis:',
+      hasArchitecturalAnalysis ? 'Present' : 'Missing',
+    );
+    console.log(
+      '  - ✅ Performance Analysis:',
+      hasPerformanceAnalysis ? 'Present' : 'Missing',
+    );
+    console.log(
+      '  - ✅ Scalability Analysis:',
+      hasScalabilityAnalysis ? 'Present' : 'Missing',
+    );
+    console.log(
+      '  - ✅ Code Examples:',
+      hasCodeExamples ? 'Present' : 'Missing',
+    );
+    console.log(
+      '  - ✅ Specific Recommendations:',
+      hasSpecificRecommendations ? 'Present' : 'Missing',
+    );
 
     // Show structured sections
     console.log('\n📋 Response Structure Preview:');
-    const sections = content.split('\n').filter(line => 
-      line.startsWith('#') || 
-      line.startsWith('##') || 
-      line.startsWith('###') ||
-      line.match(/^\d+\./) ||
-      line.toUpperCase() === line && line.length > 10 && line.length < 100
-    ).slice(0, 15);
-    
+    const sections = content
+      .split('\n')
+      .filter(
+        (line) =>
+          line.startsWith('#') ||
+          line.startsWith('##') ||
+          line.startsWith('###') ||
+          line.match(/^\d+\./) ||
+          (line.toUpperCase() === line &&
+            line.length > 10 &&
+            line.length < 100),
+      )
+      .slice(0, 15);
+
     sections.forEach((section, index) => {
-      console.log(`  ${index + 1}. ${section.substring(0, 80)}${section.length > 80 ? '...' : ''}`);
+      console.log(
+        `  ${index + 1}. ${section.substring(0, 80)}${section.length > 80 ? '...' : ''}`,
+      );
     });
 
     // Rate limit information
     console.log('\n📊 Rate Limit Status:');
     const headers = response.headers;
     if (headers['x-ratelimit-remaining-requests']) {
-      console.log('  - Remaining requests:', headers['x-ratelimit-remaining-requests']);
+      console.log(
+        '  - Remaining requests:',
+        headers['x-ratelimit-remaining-requests'],
+      );
       console.log('  - Request limit:', headers['x-ratelimit-limit-requests']);
-      console.log('  - Remaining tokens:', headers['x-ratelimit-remaining-tokens']);
+      console.log(
+        '  - Remaining tokens:',
+        headers['x-ratelimit-remaining-tokens'],
+      );
       console.log('  - Token limit:', headers['x-ratelimit-limit-tokens']);
     }
 
     // Test completion quality
     const responseComplete = content.length > 10000 && !content.endsWith('...');
-    console.log('  - Response appears complete:', responseComplete ? '✅' : '⚠️');
-    console.log('  - Likely truncated:', content.length > 100000 ? '⚠️ Very long response' : '✅ Reasonable length');
-
+    console.log(
+      '  - Response appears complete:',
+      responseComplete ? '✅' : '⚠️',
+    );
+    console.log(
+      '  - Likely truncated:',
+      content.length > 100000 ? '⚠️ Very long response' : '✅ Reasonable length',
+    );
   } catch (error) {
-    console.error("❌ Full GPT-5 test failed:", error.message);
+    console.error('❌ Full GPT-5 test failed:', error.message);
   }
 }
 

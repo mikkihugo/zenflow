@@ -36,7 +36,7 @@ function OLD_PATTERN_example() {
     const coordinationResult = await mockCoordination.coordinateAgents(
       ['agent-1', 'agent-2'],
       'peer_to_peer',
-      'memory-intensive-task'
+      'memory-intensive-task',
     );
 
     expect(allocation.id).toBeDefined(); // ❌ Testing return value
@@ -56,7 +56,9 @@ function OLD_PATTERN_example() {
  * Focuses on method calls and collaboration patterns
  */
 class MockMemoryPool {
-  allocate: vi.MockedFunction<(type: string, size: number) => MemoryAllocation> = vi.fn();
+  allocate: vi.MockedFunction<
+    (type: string, size: number) => MemoryAllocation
+  > = vi.fn();
   deallocate: vi.MockedFunction<(id: number) => boolean> = vi.fn();
 
   constructor() {
@@ -95,7 +97,11 @@ class MockMemoryPool {
 
 class MockCoordinationService {
   coordinateAgents: vi.MockedFunction<
-    (agentIds: string[], topology: string, task: string) => Promise<CoordinationResult>
+    (
+      agentIds: string[],
+      topology: string,
+      task: string,
+    ) => Promise<CoordinationResult>
   > = vi.fn();
 
   constructor() {
@@ -107,7 +113,11 @@ class MockCoordinationService {
   }
 
   expectCoordinationCalled(agentIds: string[], topology: string, task: string) {
-    expect(this.coordinateAgents).toHaveBeenCalledWith(agentIds, topology, task);
+    expect(this.coordinateAgents).toHaveBeenCalledWith(
+      agentIds,
+      topology,
+      task,
+    );
     return this;
   }
 
@@ -137,7 +147,10 @@ describe('Neural Agent Coordination - TDD London Pattern', () => {
     mockCoordination = new MockCoordinationService();
 
     // Inject mocks into system under test (dependency injection)
-    systemUnderTest = new NeuralCoordinationOrchestrator(mockMemoryPool, mockCoordination);
+    systemUnderTest = new NeuralCoordinationOrchestrator(
+      mockMemoryPool,
+      mockCoordination,
+    );
   });
 
   afterEach(() => {
@@ -161,21 +174,31 @@ describe('Neural Agent Coordination - TDD London Pattern', () => {
       .expectCallOrder(); // Allocate should happen before deallocate
 
     mockCoordination
-      .expectCoordinationCalled(['agent-1', 'agent-2'], 'peer_to_peer', 'memory-intensive-task')
+      .expectCoordinationCalled(
+        ['agent-1', 'agent-2'],
+        'peer_to_peer',
+        'memory-intensive-task',
+      )
       .expectCoordinationCalledOnce();
   });
 
   test('✅ TDD LONDON - should handle coordination failure gracefully', async () => {
     // ARRANGE: Setup failure scenario
-    mockCoordination.coordinateAgents.mockRejectedValueOnce(new Error('Network timeout'));
+    mockCoordination.coordinateAgents.mockRejectedValueOnce(
+      new Error('Network timeout'),
+    );
 
     // ACT & ASSERT: Verify error handling interactions
     await expect(
-      systemUnderTest.executeCoordinatedNeuralTask(['agent-1'], 'test-task')
+      systemUnderTest.executeCoordinatedNeuralTask(['agent-1'], 'test-task'),
     ).rejects.toThrow('Network timeout');
 
     // Verify cleanup was attempted even after coordination failure
-    mockCoordination.expectCoordinationCalled(['agent-1'], 'peer_to_peer', 'test-task');
+    mockCoordination.expectCoordinationCalled(
+      ['agent-1'],
+      'peer_to_peer',
+      'test-task',
+    );
     mockMemoryPool.expectAllocationCalled('neural-coordination', 2048);
     mockMemoryPool.expectDeallocationCalled(1); // Should still cleanup memory
   });
@@ -185,11 +208,18 @@ describe('Neural Agent Coordination - TDD London Pattern', () => {
     const manyAgents = ['agent-1', 'agent-2', 'agent-3', 'agent-4', 'agent-5'];
 
     // ACT: Execute with many agents
-    await systemUnderTest.executeCoordinatedNeuralTask(manyAgents, 'complex-task');
+    await systemUnderTest.executeCoordinatedNeuralTask(
+      manyAgents,
+      'complex-task',
+    );
 
     // ASSERT: Verify memory allocation scales with agent count
     mockMemoryPool.expectAllocationCalled('neural-coordination', 5 * 2048); // Should scale
-    mockCoordination.expectCoordinationCalled(manyAgents, 'mesh', 'complex-task'); // Should use mesh for many agents
+    mockCoordination.expectCoordinationCalled(
+      manyAgents,
+      'mesh',
+      'complex-task',
+    ); // Should use mesh for many agents
   });
 });
 
@@ -216,13 +246,19 @@ interface CoordinationResult {
 class NeuralCoordinationOrchestrator {
   constructor(
     private memoryPool: MockMemoryPool,
-    private coordination: MockCoordinationService
+    private coordination: MockCoordinationService,
   ) {}
 
-  async executeCoordinatedNeuralTask(agentIds: string[], task: string): Promise<void> {
+  async executeCoordinatedNeuralTask(
+    agentIds: string[],
+    task: string,
+  ): Promise<void> {
     // Allocate memory based on agent count
     const memorySize = agentIds.length * 2048;
-    const allocation = this.memoryPool.allocate('neural-coordination', memorySize);
+    const allocation = this.memoryPool.allocate(
+      'neural-coordination',
+      memorySize,
+    );
 
     try {
       // Determine topology based on agent count

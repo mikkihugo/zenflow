@@ -53,13 +53,13 @@ export class DSPySimpleIntegration {
       // Create error diagnosis program
       this.errorDiagnosisProgram = await this.dspy.createProgram(
         'error_text: string, file_context: string -> diagnosis: string, fix_approach: string, confidence: number',
-        'Analyze TypeScript compilation errors and provide direct fix approaches'
+        'Analyze TypeScript compilation errors and provide direct fix approaches',
       );
 
       // Create code generation program
       this.codeGenerationProgram = await this.dspy.createProgram(
         'error_description: string, fix_approach: string, original_code: string -> fixed_code: string, explanation: string',
-        'Generate fixed TypeScript code based on error diagnosis and fix approach'
+        'Generate fixed TypeScript code based on error diagnosis and fix approach',
       );
 
       console.log('🧠 DSPy Simple Integration initialized');
@@ -93,37 +93,57 @@ export class DSPySimpleIntegration {
       console.log(`   🔍 Processing ${errors.length} errors`);
 
       // Check pattern cache first
-      const patternKey = this.generatePatternKey(errors, path.extname(filePath));
+      const patternKey = this.generatePatternKey(
+        errors,
+        path.extname(filePath),
+      );
       if (this.patternCache.has(patternKey)) {
         console.log(`   ⚡ PATTERN CACHE: Using learned fix`);
-        return await this.applyLearnedPattern(filePath, patternKey, fileContent, startTime);
+        return await this.applyLearnedPattern(
+          filePath,
+          patternKey,
+          fileContent,
+          startTime,
+        );
       }
 
       // Use DSPy for error diagnosis
       const errorText = errors.map((e) => e.message || e).join('\n');
-      const diagnosisResult = await this.dspy.execute(this.errorDiagnosisProgram, {
-        error_text: errorText,
-        file_context: fileContent.substring(0, 2000), // First 2000 chars for context
-      });
+      const diagnosisResult = await this.dspy.execute(
+        this.errorDiagnosisProgram,
+        {
+          error_text: errorText,
+          file_context: fileContent.substring(0, 2000), // First 2000 chars for context
+        },
+      );
 
       if (!diagnosisResult?.success) {
-        throw new Error(`Diagnosis failed: ${diagnosisResult?.error?.message || 'Unknown error'}`);
+        throw new Error(
+          `Diagnosis failed: ${diagnosisResult?.error?.message || 'Unknown error'}`,
+        );
       }
 
       const diagnosis = diagnosisResult.result;
-      console.log(`   🎯 Confidence: ${((diagnosis.confidence || 0.7) * 100).toFixed(1)}%`);
-      console.log(`   📝 Approach: ${(diagnosis.fix_approach || '').substring(0, 60)}...`);
+      console.log(
+        `   🎯 Confidence: ${((diagnosis.confidence || 0.7) * 100).toFixed(1)}%`,
+      );
+      console.log(
+        `   📝 Approach: ${(diagnosis.fix_approach || '').substring(0, 60)}...`,
+      );
 
       // Generate fixed code
-      const codeGenResult = await this.dspy.execute(this.codeGenerationProgram, {
-        error_description: diagnosis.diagnosis || '',
-        fix_approach: diagnosis.fix_approach || '',
-        original_code: fileContent,
-      });
+      const codeGenResult = await this.dspy.execute(
+        this.codeGenerationProgram,
+        {
+          error_description: diagnosis.diagnosis || '',
+          fix_approach: diagnosis.fix_approach || '',
+          original_code: fileContent,
+        },
+      );
 
       if (!codeGenResult?.success) {
         throw new Error(
-          `Code generation failed: ${codeGenResult?.error?.message || 'Unknown error'}`
+          `Code generation failed: ${codeGenResult?.error?.message || 'Unknown error'}`,
         );
       }
 
@@ -133,7 +153,8 @@ export class DSPySimpleIntegration {
       fs.writeFileSync(filePath, fixedCode);
 
       // Simple validation - check if file still has content
-      const success = fixedCode.trim().length > 0 && !fixedCode.includes('undefined');
+      const success =
+        fixedCode.trim().length > 0 && !fixedCode.includes('undefined');
       const duration = Date.now() - startTime;
       const cost = 0.05; // Estimate based on gpt-4o-mini usage
 
@@ -145,7 +166,9 @@ export class DSPySimpleIntegration {
 
       this.totalCost += cost;
 
-      console.log(`   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(2)})`);
+      console.log(
+        `   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(2)})`,
+      );
 
       // Save progress periodically
       if (this.successCount % 5 === 0) {
@@ -200,7 +223,8 @@ export class DSPySimpleIntegration {
       return 'missing-properties';
     if (errorLine.includes('is not assignable to')) return 'type-assignment';
     if (errorLine.includes('Duplicate identifier')) return 'duplicate-ids';
-    if (errorLine.includes('exactOptionalPropertyTypes')) return 'optional-properties';
+    if (errorLine.includes('exactOptionalPropertyTypes'))
+      return 'optional-properties';
     return 'general';
   }
 
@@ -238,11 +262,14 @@ export class DSPySimpleIntegration {
 
     try {
       // Use the cached approach to generate code quickly
-      const codeGenResult = await this.dspy.execute(this.codeGenerationProgram, {
-        error_description: pattern.diagnosis,
-        fix_approach: pattern.fixApproach,
-        original_code: fileContent,
-      });
+      const codeGenResult = await this.dspy.execute(
+        this.codeGenerationProgram,
+        {
+          error_description: pattern.diagnosis,
+          fix_approach: pattern.fixApproach,
+          original_code: fileContent,
+        },
+      );
 
       if (!codeGenResult?.success) {
         throw new Error('Pattern application failed');
@@ -256,7 +283,7 @@ export class DSPySimpleIntegration {
       this.totalCost += cost;
 
       console.log(
-        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (cost: $${cost.toFixed(2)}) - Used ${pattern.usageCount}x`
+        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (cost: $${cost.toFixed(2)}) - Used ${pattern.usageCount}x`,
       );
 
       return {

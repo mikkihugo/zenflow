@@ -3,8 +3,8 @@
  * 27+ Production-Ready Neural Network Architectures with Cognitive Patterns
  */
 
-import { CognitivePatternEvolution } from '../cognitive-pattern-evolution.js';
-import { MetaLearningFramework } from '../meta-learning-framework.js';
+import { CognitivePatternEvolution } from '../../core/cognitive-pattern-evolution.ts';
+import { MetaLearningFramework } from '../../core/meta-learning-framework.ts';
 
 // Comprehensive neural model presets with cognitive patterns
 export const COMPLETE_NEURAL_PRESETS = {
@@ -30,7 +30,8 @@ export const COMPLETE_NEURAL_PRESETS = {
         memoryUsage: '420MB',
         trainingTime: '4 days on 16 TPUs',
       },
-      useCase: 'Text classification, sentiment analysis, named entity recognition',
+      useCase:
+        'Text classification, sentiment analysis, named entity recognition',
     },
     gpt_small: {
       name: 'GPT Small',
@@ -874,8 +875,12 @@ export class CognitivePatternSelector {
    */
   handleHighComplexity(patterns) {
     // For high complexity, ensure both analytical and creative patterns
-    const hasAnalytical = patterns.some((p) => ['convergent', 'critical', 'systems'].includes(p));
-    const hasCreative = patterns.some((p) => ['divergent', 'lateral', 'abstract'].includes(p));
+    const hasAnalytical = patterns.some((p) =>
+      ['convergent', 'critical', 'systems'].includes(p),
+    );
+    const hasCreative = patterns.some((p) =>
+      ['divergent', 'lateral', 'abstract'].includes(p),
+    );
 
     if (!hasAnalytical) {
       patterns.push('systems');
@@ -900,10 +905,10 @@ export class CognitivePatternSelector {
 
     // Ensure at least 2 patterns for robustness
     if (patterns.length < 2) {
-      if (!patterns.includes('convergent')) {
-        patterns.push('convergent');
-      } else {
+      if (patterns.includes('convergent')) {
         patterns.push('systems');
+      } else {
+        patterns.push('convergent');
       }
     }
 
@@ -984,7 +989,11 @@ export class CognitivePatternSelector {
             presetName,
             preset,
             score,
-            cognitivePatterns: this.selectPatternsForPreset(modelType, presetName, requirements),
+            cognitivePatterns: this.selectPatternsForPreset(
+              modelType,
+              presetName,
+              requirements,
+            ),
           });
         }
       });
@@ -1004,7 +1013,10 @@ export class CognitivePatternSelector {
 
     // Check performance requirements
     if (requirements.maxInferenceTime) {
-      const inferenceTime = parseInt(preset.performance.inferenceTime, 10);
+      const inferenceTime = Number.parseInt(
+        preset.performance.inferenceTime,
+        10,
+      );
       if (inferenceTime <= requirements.maxInferenceTime) {
         score += 0.2;
       } else {
@@ -1013,7 +1025,7 @@ export class CognitivePatternSelector {
     }
 
     if (requirements.maxMemoryUsage) {
-      const memoryUsage = parseInt(preset.performance.memoryUsage, 10);
+      const memoryUsage = Number.parseInt(preset.performance.memoryUsage, 10);
       if (memoryUsage <= requirements.maxMemoryUsage) {
         score += 0.2;
       } else {
@@ -1022,7 +1034,7 @@ export class CognitivePatternSelector {
     }
 
     if (requirements.minAccuracy) {
-      const accuracy = parseFloat(preset.performance.expectedAccuracy);
+      const accuracy = Number.parseFloat(preset.performance.expectedAccuracy);
       if (accuracy >= requirements.minAccuracy) {
         score += 0.3;
       } else {
@@ -1033,7 +1045,7 @@ export class CognitivePatternSelector {
     // Cognitive pattern alignment
     if (requirements.cognitivePreference) {
       const hasPreferred = preset.cognitivePatterns.some(
-        (p) => p === requirements.cognitivePreference
+        (p) => p === requirements.cognitivePreference,
       );
       if (hasPreferred) {
         score += 0.2;
@@ -1074,7 +1086,10 @@ export class NeuralAdaptationEngine {
       performanceGains: [],
     });
 
-    this.performanceBaselines.set(`${modelType}/${presetName}`, preset.performance);
+    this.performanceBaselines.set(
+      `${modelType}/${presetName}`,
+      preset.performance,
+    );
   }
 
   /**
@@ -1090,7 +1105,10 @@ export class NeuralAdaptationEngine {
       timestamp: Date.now(),
       sessionId: history.sessionCount++,
       result: adaptationResult,
-      performanceGain: this.calculatePerformanceGain(adaptationResult, history.baselinePerformance),
+      performanceGain: this.calculatePerformanceGain(
+        adaptationResult,
+        history.baselinePerformance,
+      ),
     });
 
     // Update cross-session memory
@@ -1101,14 +1119,18 @@ export class NeuralAdaptationEngine {
    * Calculate performance gain from adaptation
    */
   calculatePerformanceGain(result, baseline) {
-    const baselineAccuracy = parseFloat(baseline.expectedAccuracy) || 0;
+    const baselineAccuracy = Number.parseFloat(baseline.expectedAccuracy) || 0;
     const currentAccuracy = result.accuracy || 0;
 
     return {
       accuracyGain: currentAccuracy - baselineAccuracy,
       relativeGain:
-        baselineAccuracy > 0 ? (currentAccuracy - baselineAccuracy) / baselineAccuracy : 0,
-      efficiency: result.trainingTime ? baseline.trainingTime / result.trainingTime : 1,
+        baselineAccuracy > 0
+          ? (currentAccuracy - baselineAccuracy) / baselineAccuracy
+          : 0,
+      efficiency: result.trainingTime
+        ? baseline.trainingTime / result.trainingTime
+        : 1,
     };
   }
 
@@ -1194,7 +1216,7 @@ export class NeuralAdaptationEngine {
   suggestHyperparameters(history) {
     // Analyze successful adaptations
     const successfulAdaptations = history.adaptations.filter(
-      (a) => a.performanceGain.accuracyGain > 0
+      (a) => a.performanceGain.accuracyGain > 0,
     );
 
     if (successfulAdaptations.length === 0) {
@@ -1235,14 +1257,18 @@ export class NeuralAdaptationEngine {
     const isImproving = recentPerformance.every(
       (a, i) =>
         i === 0 ||
-        a.performanceGain.accuracyGain >= recentPerformance[i - 1].performanceGain.accuracyGain
+        a.performanceGain.accuracyGain >=
+          recentPerformance[i - 1].performanceGain.accuracyGain,
     );
 
     if (isImproving) {
       return {
         strategy: 'continue_current',
         description: 'Current approach is showing consistent improvement',
-        recommendations: ['Maintain current learning rate', 'Consider increasing batch size'],
+        recommendations: [
+          'Maintain current learning rate',
+          'Consider increasing batch size',
+        ],
       };
     }
     return {
@@ -1302,7 +1328,8 @@ export class NeuralAdaptationEngine {
     });
 
     if (insights.overallPerformance.totalAdaptations > 0) {
-      insights.overallPerformance.avgAccuracyGain /= insights.overallPerformance.totalAdaptations;
+      insights.overallPerformance.avgAccuracyGain /=
+        insights.overallPerformance.totalAdaptations;
     }
 
     return insights;

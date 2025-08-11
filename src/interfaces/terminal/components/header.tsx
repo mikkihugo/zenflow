@@ -9,7 +9,7 @@
  */
 
 import { Box, Text } from 'ink';
-import type React from 'react';
+import React from 'react';
 
 export interface SwarmStatus {
   status: 'active' | 'initializing' | 'error' | 'idle';
@@ -80,24 +80,28 @@ export const Header: React.FC<HeaderProps> = ({
 
     if (hours > 0) {
       return `${hours}h ${minutes % 60}m`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${seconds % 60}s`;
-    } else {
-      return `${seconds}s`;
     }
+    if (minutes > 0) {
+      return `${minutes}m ${seconds % 60}s`;
+    }
+    return `${seconds}s`;
   };
 
   return (
     <Box
       flexDirection="column"
-      borderStyle={showBorder ? 'round' : undefined}
+      borderStyle={showBorder ? 'double' : undefined}
       borderColor="cyan"
-      padding={showBorder ? 1 : 0}
+      paddingX={3}
+      paddingY={1}
       marginBottom={1}
     >
       {/* Main title line */}
       <Box justifyContent={centerAlign ? 'center' : 'flex-start'}>
-        <Text bold color="cyan">
+        <Text
+          bold
+          color="cyan"
+        >
           {mode === 'swarm' ? '🐝 ' : ''}
           {titleText}
         </Text>
@@ -111,18 +115,25 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Swarm status line */}
       {swarmStatus && mode === 'swarm' && (
-        <Box justifyContent={centerAlign ? 'center' : 'flex-start'} marginTop={0}>
+        <Box
+          justifyContent={centerAlign ? 'center' : 'flex-start'}
+          marginTop={0}
+        >
           <Text dimColor>
-            Topology: {swarmStatus.topology} • Agents: {swarmStatus.activeAgents}/
-            {swarmStatus.totalAgents}
-            {swarmStatus.uptime > 0 && ` • Uptime: ${formatUptime(swarmStatus.uptime)}`}
+            Topology: {swarmStatus.topology} • Agents:{' '}
+            {swarmStatus.activeAgents}/{swarmStatus.totalAgents}
+            {swarmStatus.uptime > 0 &&
+              ` • Uptime: ${formatUptime(swarmStatus.uptime)}`}
           </Text>
         </Box>
       )}
 
       {/* Subtitle */}
       {subtitle && (
-        <Box justifyContent={centerAlign ? 'center' : 'flex-start'} marginTop={0}>
+        <Box
+          justifyContent={centerAlign ? 'center' : 'flex-start'}
+          marginTop={0}
+        >
           <Text dimColor>{subtitle}</Text>
         </Box>
       )}
@@ -132,11 +143,17 @@ export const Header: React.FC<HeaderProps> = ({
 
 // Export specific variants for convenience.
 export const StandardHeader: React.FC<Omit<HeaderProps, 'mode'>> = (props) => (
-  <Header {...props} mode="standard" />
+  <Header
+    {...props}
+    mode="standard"
+  />
 );
 
 export const SwarmHeader: React.FC<Omit<HeaderProps, 'mode'>> = (props) => (
-  <Header {...props} mode="swarm" />
+  <Header
+    {...props}
+    mode="swarm"
+  />
 );
 
 export default Header;

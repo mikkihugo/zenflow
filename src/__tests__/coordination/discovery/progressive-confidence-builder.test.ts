@@ -1,18 +1,31 @@
-import { describe, it, expect, beforeEach, afterEach, vi, type Mocked } from 'vitest'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mocked,
+  vi,
+} from 'vitest'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import type {
+  DiscoveredDomain,
+  DomainDiscoveryBridge,
+} from '../../../coordination/discovery/domain-discovery-bridge.ts';
 import { ProgressiveConfidenceBuilder } from '../../../coordination/discovery/progressive-confidence-builder.ts';
-import type { DomainDiscoveryBridge, DiscoveredDomain } from '../../../coordination/discovery/domain-discovery-bridge.ts';
-import type { SessionMemoryStore } from '../../../memory/memory.ts';
 import type { AGUIInterface } from '../../../interfaces/agui/agui-adapter.ts';
+import type { SessionMemoryStore } from '../../../memory/memory.ts';
 
-// Mock HiveFACT
-vi.mock('../../../coordination/hive-fact-integration.ts', () => ({
-  getHiveFACT: vi.fn(),
+// Mock CollectiveFACT
+vi.mock('../../../coordination/collective-fact-integration.ts', () => ({
+  getCollectiveFACT: vi.fn(),
 }));
 
-import { getHiveFACT } from '../../../coordination/hive-fact-integration.ts';
+import { getCollectiveFACT } from '../../../coordination/collective-fact-integration.ts';
 
 // Helper function to create valid DiscoveredDomain test objects
-const createTestDomain = (overrides: Partial<DiscoveredDomain> = {}): DiscoveredDomain => ({
+const createTestDomain = (
+  overrides: Partial<DiscoveredDomain> = {},
+): DiscoveredDomain => ({
   id: `domain-${Date.now()}`,
   name: 'test-domain',
   description: 'Test domain for unit testing',
@@ -61,14 +74,19 @@ describe('ProgressiveConfidenceBuilder', () => {
       searchFacts: vi.fn().mockResolvedValue([]),
     };
 
-    (getHiveFACT as any).mockReturnValue(mockHiveFact);
+    (getCollectiveFACT as any).mockReturnValue(mockHiveFact);
 
     // Create builder instance
-    builder = new ProgressiveConfidenceBuilder(mockDiscoveryBridge, mockMemoryStore, mockAgui, {
-      targetConfidence: 0.8,
-      maxIterations: 3,
-      researchThreshold: 0.6,
-    });
+    builder = new ProgressiveConfidenceBuilder(
+      mockDiscoveryBridge,
+      mockMemoryStore,
+      mockAgui,
+      {
+        targetConfidence: 0.8,
+        maxIterations: 3,
+        researchThreshold: 0.6,
+      },
+    );
   });
 
   afterEach(() => {
@@ -82,7 +100,8 @@ describe('ProgressiveConfidenceBuilder', () => {
         existingDomains: [
           createTestDomain({
             name: 'auth',
-            description: 'Authentication domain handling user login and JWT tokens',
+            description:
+              'Authentication domain handling user login and JWT tokens',
             codeFiles: ['auth.ts', 'login.ts'],
             concepts: ['authentication', 'jwt'],
             category: 'security',
@@ -108,6 +127,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           content: { description: 'JSON Web Token implementation' },
           metadata: { source: 'npm', timestamp: Date.now(), confidence: 0.9 },
           accessCount: 10,
+          cubeAccess: new Set(),
           swarmAccess: new Set(),
         },
       ]);
@@ -162,7 +182,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       expect(mockHiveFact.searchFacts).toHaveBeenCalledWith(
         expect.objectContaining({
           query: expect.stringContaining('payment'),
-        })
+        }),
       );
     });
 
@@ -184,7 +204,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           iteration: expect.any(Number),
           confidence: expect.any(Number),
           metrics: expect.any(Object),
-        })
+        }),
       );
     });
 
@@ -285,16 +305,20 @@ describe('ProgressiveConfidenceBuilder', () => {
       mockAgui.askBatchQuestions.mockResolvedValue([]);
 
       const searchQueries: string[] = [];
-      mockHiveFact.searchFacts.mockImplementation(async ({ query }: { query: string }) => {
-        searchQueries.push(query);
-        return [];
-      });
+      mockHiveFact.searchFacts.mockImplementation(
+        async ({ query }: { query: string }) => {
+          searchQueries.push(query);
+          return [];
+        },
+      );
 
       await builder.buildConfidence(context);
 
       expect(searchQueries.length).toBeGreaterThan(0);
       expect(searchQueries.some((q) => q.includes('graphql'))).toBe(true);
-      expect(searchQueries.some((q) => q.includes('best practices'))).toBe(true);
+      expect(searchQueries.some((q) => q.includes('best practices'))).toBe(
+        true,
+      );
     });
 
     it('should extract insights from research results', async () => {
@@ -320,8 +344,13 @@ describe('ProgressiveConfidenceBuilder', () => {
           type: 'security-advisory',
           subject: 'jwt-security',
           content: 'Always validate JWT signatures and check expiration',
-          metadata: { source: 'security-db', timestamp: Date.now(), confidence: 0.95 },
+          metadata: {
+            source: 'security-db',
+            timestamp: Date.now(),
+            confidence: 0.95,
+          },
           accessCount: 100,
+          cubeAccess: new Set(),
           swarmAccess: new Set(),
         },
       ]);
@@ -395,6 +424,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           content: 'Useful information',
           metadata: { source: 'test', timestamp: Date.now(), confidence: 0.8 },
           accessCount: 5,
+          cubeAccess: new Set(),
           swarmAccess: new Set(),
         },
       ]);
@@ -403,9 +433,9 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       // Check that confidence improved over iterations
       if (progressEvents.length >= 2) {
-        expect(progressEvents[progressEvents.length - 1]?.confidence).toBeGreaterThan(
-          progressEvents[0]?.confidence
-        );
+        expect(
+          progressEvents[progressEvents.length - 1]?.confidence,
+        ).toBeGreaterThan(progressEvents[0]?.confidence);
       }
     });
   });
@@ -458,7 +488,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           maxIterations: 5,
           validationCheckpoints: [0.3, 0.5, 0.7],
           requireHumanApprovalAt: [0.5],
-        }
+        },
       );
 
       const context = {
@@ -481,7 +511,9 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       // Should have triggered checkpoint questions
       expect(checkpointQuestions.length).toBeGreaterThan(0);
-      expect(checkpointQuestions.some((q) => q.priority === 'critical')).toBe(true);
+      expect(checkpointQuestions.some((q) => q.priority === 'critical')).toBe(
+        true,
+      );
     });
 
     it('should allow domain review at checkpoints', async () => {
@@ -516,7 +548,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       // Should have shown domain review
       expect(mockAgui.showMessage).toHaveBeenCalledWith(
         expect.stringContaining('Domain Review'),
-        'info'
+        'info',
       );
     });
   });
@@ -561,7 +593,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         {
           targetConfidence: 0.8,
           enableDetailedAuditTrail: true,
-        }
+        },
       );
 
       const context = {
@@ -581,7 +613,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         expect.objectContaining({
           sessionId: expect.any(String),
           auditTrail: expect.any(Array),
-        })
+        }),
       );
     });
   });
@@ -598,7 +630,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           targetConfidence: 0.8,
           minimumValidationsPerDomain: 3,
           maxIterations: 2,
-        }
+        },
       );
 
       const context = {
@@ -665,7 +697,11 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       // Check that confidence changed based on responses
       const confidenceChanges = progressEvents.map((e) => e.confidence);
-      expect(confidenceChanges.some((c, i) => i > 0 && c !== confidenceChanges[i - 1])).toBe(true);
+      expect(
+        confidenceChanges.some(
+          (c, i) => i > 0 && c !== confidenceChanges[i - 1],
+        ),
+      ).toBe(true);
     });
   });
 

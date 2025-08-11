@@ -52,7 +52,7 @@ class TypeScriptGraphESLintAnalyzer {
     console.log(`📊 Dependency graph complete:`);
     console.log(`  • ${this.fileNodes.size} files mapped`);
     console.log(
-      `  • ${[...this.dependencyEdges.values()].reduce((sum, deps) => sum + deps.size, 0)} dependencies`
+      `  • ${[...this.dependencyEdges.values()].reduce((sum, deps) => sum + deps.size, 0)} dependencies`,
     );
     console.log(`  • ${this.circularDeps.size} circular dependencies detected`);
 
@@ -69,7 +69,7 @@ class TypeScriptGraphESLintAnalyzer {
     for (let i = 0; i < files.length; i += batchSize) {
       const batch = files.slice(i, i + batchSize);
       console.log(
-        `📖 Processing files ${i + 1}-${Math.min(i + batchSize, files.length)}/${files.length}`
+        `📖 Processing files ${i + 1}-${Math.min(i + batchSize, files.length)}/${files.length}`,
       );
 
       const batchPromises = batch.map(async (filePath) => {
@@ -144,7 +144,9 @@ class TypeScriptGraphESLintAnalyzer {
             const similarPaths = [...this.fileNodes.keys()].filter(
               (p) =>
                 path.basename(p) === path.basename(resolvedPath) ||
-                p.includes(path.basename(resolvedPath, path.extname(resolvedPath)))
+                p.includes(
+                  path.basename(resolvedPath, path.extname(resolvedPath)),
+                ),
             );
 
             failedResolutions.push({
@@ -153,7 +155,9 @@ class TypeScriptGraphESLintAnalyzer {
               resolved: resolvedPath,
               exists: fs.existsSync(resolvedPath),
               inFileNodes: this.fileNodes.has(resolvedPath),
-              similarPaths: similarPaths.slice(0, 2).map((p) => path.basename(p)),
+              similarPaths: similarPaths
+                .slice(0, 2)
+                .map((p) => path.basename(p)),
             });
           }
         }
@@ -161,7 +165,7 @@ class TypeScriptGraphESLintAnalyzer {
     }
 
     console.log(
-      `🔗 Dependency resolution: ${resolvedImports}/${totalImports} imports resolved to existing files`
+      `🔗 Dependency resolution: ${resolvedImports}/${totalImports} imports resolved to existing files`,
     );
 
     // Show failed resolutions for key files
@@ -170,16 +174,22 @@ class TypeScriptGraphESLintAnalyzer {
       failedResolutions.slice(0, 10).forEach((failure) => {
         console.log(`  📁 ${failure.from} → "${failure.import}"`);
         console.log(`    Resolved: ${failure.resolved}`);
-        console.log(`    Exists: ${failure.exists}, In fileNodes: ${failure.inFileNodes}`);
+        console.log(
+          `    Exists: ${failure.exists}, In fileNodes: ${failure.inFileNodes}`,
+        );
         if (failure.similarPaths?.length > 0) {
-          console.log(`    Similar files found: ${failure.similarPaths.join(', ')}`);
+          console.log(
+            `    Similar files found: ${failure.similarPaths.join(', ')}`,
+          );
         }
       });
     }
 
     // Show some sample file paths in fileNodes for comparison
     const sampleAdapterPaths = [...this.fileNodes.keys()].filter(
-      (p) => p.includes('integration-service-adapter') || p.includes('mcp-tool-registry')
+      (p) =>
+        p.includes('integration-service-adapter') ||
+        p.includes('mcp-tool-registry'),
     );
     if (sampleAdapterPaths.length > 0) {
       console.log(`🔍 Sample adapter file paths in fileNodes:`);
@@ -189,9 +199,13 @@ class TypeScriptGraphESLintAnalyzer {
     // Debug specific adapter file dependents
     sampleAdapterPaths.forEach((filePath) => {
       const dependents = this.dependentEdges.get(filePath);
-      console.log(`🎯 ${path.basename(filePath)}: ${dependents?.size || 0} dependents`);
+      console.log(
+        `🎯 ${path.basename(filePath)}: ${dependents?.size || 0} dependents`,
+      );
       if (dependents && dependents.size > 0) {
-        [...dependents].slice(0, 3).forEach((dep) => console.log(`    ← ${path.basename(dep)}`));
+        [...dependents]
+          .slice(0, 3)
+          .forEach((dep) => console.log(`    ← ${path.basename(dep)}`));
       }
     });
   }
@@ -275,7 +289,9 @@ class TypeScriptGraphESLintAnalyzer {
 
       // Circular dependency penalty
       const fileName = path.basename(filePath);
-      const isInCycle = [...this.circularDeps].some((cycle) => cycle.includes(fileName));
+      const isInCycle = [...this.circularDeps].some((cycle) =>
+        cycle.includes(fileName),
+      );
       if (isInCycle) {
         score += 100; // Very high priority for circular deps
       }
@@ -307,7 +323,7 @@ class TypeScriptGraphESLintAnalyzer {
       const node = this.fileNodes.get(file.path);
       const dependents = this.dependentEdges.get(file.path)?.size || 0;
       console.log(
-        `  ${i + 1}. ${path.basename(file.path)} (score: ${file.score.toFixed(1)}, ${dependents} dependents)`
+        `  ${i + 1}. ${path.basename(file.path)} (score: ${file.score.toFixed(1)}, ${dependents} dependents)`,
       );
     });
 
@@ -325,7 +341,9 @@ class TypeScriptGraphESLintAnalyzer {
 
     // Simple efficient batching: fixed sizes to avoid ENOBUFS
     for (let i = 0; i < totalFiles; i += maxBatchSize) {
-      const batch = prioritizedFiles.slice(i, i + maxBatchSize).map((fileInfo) => fileInfo.path);
+      const batch = prioritizedFiles
+        .slice(i, i + maxBatchSize)
+        .map((fileInfo) => fileInfo.path);
 
       if (batch.length > 0) {
         batches.push(batch);
@@ -333,13 +351,13 @@ class TypeScriptGraphESLintAnalyzer {
     }
 
     console.log(
-      `📊 Created ${batches.length} efficient batches (avg size: ${(totalFiles / batches.length).toFixed(1)})`
+      `📊 Created ${batches.length} efficient batches (avg size: ${(totalFiles / batches.length).toFixed(1)})`,
     );
     console.log(
       `🎯 Batch sizes: ${batches
         .slice(0, 5)
         .map((b) => b.length)
-        .join(', ')}${batches.length > 5 ? ', ...' : ''}`
+        .join(', ')}${batches.length > 5 ? ', ...' : ''}`,
     );
 
     return batches;
@@ -362,11 +380,13 @@ class TypeScriptGraphESLintAnalyzer {
 
     // Quick mode: only process first 2 batches for testing
     const isQuickMode = process.argv.includes('--quick');
-    const batchesToProcess = isQuickMode ? Math.min(2, batches.length) : batches.length;
+    const batchesToProcess = isQuickMode
+      ? Math.min(2, batches.length)
+      : batches.length;
 
     if (isQuickMode) {
       console.log(
-        `⚡ Quick mode: Processing only first ${batchesToProcess} batches (${batchesToProcess * 10} files) for TypeScript API testing`
+        `⚡ Quick mode: Processing only first ${batchesToProcess} batches (${batchesToProcess * 10} files) for TypeScript API testing`,
       );
     }
 
@@ -378,7 +398,7 @@ class TypeScriptGraphESLintAnalyzer {
 
       const progress = (((index + 1) / batchesToProcess) * 100).toFixed(1);
       console.log(
-        `📊 Batch ${index + 1}/${batchesToProcess} (${batch.length} files, ${progress}% complete)`
+        `📊 Batch ${index + 1}/${batchesToProcess} (${batch.length} files, ${progress}% complete)`,
       );
 
       try {
@@ -396,9 +416,11 @@ class TypeScriptGraphESLintAnalyzer {
         }
 
         const batchViolationCount = violations.length;
-        const totalFiles = isQuickMode ? batchesToProcess * 10 : prioritizedFiles.length;
+        const totalFiles = isQuickMode
+          ? batchesToProcess * 10
+          : prioritizedFiles.length;
         console.log(
-          `✅ Batch ${index + 1}: ${batchViolationCount} violations found (${processedFiles}/${totalFiles} files processed)`
+          `✅ Batch ${index + 1}: ${batchViolationCount} violations found (${processedFiles}/${totalFiles} files processed)`,
         );
 
         // Brief pause to prevent overwhelming the system
@@ -469,7 +491,7 @@ class TypeScriptGraphESLintAnalyzer {
               rule: msg.ruleId,
               message: msg.message,
               severity: msg.severity,
-            }))
+            })),
           );
           resolve(violations);
         } catch (parseError) {
@@ -500,7 +522,9 @@ class TypeScriptGraphESLintAnalyzer {
         content,
         ts.ScriptTarget.Latest,
         true, // setParentNodes
-        path.extname(filePath) === '.tsx' ? ts.ScriptKind.TSX : ts.ScriptKind.TS
+        path.extname(filePath) === '.tsx'
+          ? ts.ScriptKind.TSX
+          : ts.ScriptKind.TS,
       );
 
       // Traverse AST and extract import/export declarations
@@ -527,7 +551,9 @@ class TypeScriptGraphESLintAnalyzer {
       ts.forEachChild(sourceFile, visitNode);
     } catch (error) {
       // Fallback to regex on TypeScript parsing error
-      console.warn(`⚠️  TypeScript parsing failed for ${path.basename(filePath)}: ${error.message}`);
+      console.warn(
+        `⚠️  TypeScript parsing failed for ${path.basename(filePath)}: ${error.message}`,
+      );
       return this.extractDependenciesRegexFallback(content, filePath);
     }
 
@@ -682,10 +708,14 @@ class TypeScriptGraphESLintAnalyzer {
   async getAllTypeScriptFiles() {
     return new Promise((resolve) => {
       const repoRoot = path.resolve(__dirname, '../..');
-      const find = spawn('find', ['src', '-name', '*.ts', '-o', '-name', '*.tsx'], {
-        stdio: 'pipe',
-        cwd: repoRoot,
-      });
+      const find = spawn(
+        'find',
+        ['src', '-name', '*.ts', '-o', '-name', '*.tsx'],
+        {
+          stdio: 'pipe',
+          cwd: repoRoot,
+        },
+      );
 
       let stdout = '';
       find.stdout.on('data', (data) => (stdout += data.toString()));
@@ -693,7 +723,9 @@ class TypeScriptGraphESLintAnalyzer {
         const files = stdout
           .trim()
           .split('\n')
-          .filter((f) => f && !f.includes('node_modules') && !f.includes('.d.ts'))
+          .filter(
+            (f) => f && !f.includes('node_modules') && !f.includes('.d.ts'),
+          )
           .map((f) => {
             // Ensure consistent absolute path normalization
             const absolutePath = path.resolve(repoRoot, f);
@@ -716,8 +748,12 @@ class TypeScriptGraphESLintAnalyzer {
  * Main execution
  */
 async function main() {
-  console.log('🧘 Claude Code Zen AI ESLint Fixer - TypeScript Compiler API Edition');
-  console.log('====================================================================');
+  console.log(
+    '🧘 Claude Code Zen AI ESLint Fixer - TypeScript Compiler API Edition',
+  );
+  console.log(
+    '====================================================================',
+  );
 
   const analyzer = new TypeScriptGraphESLintAnalyzer();
 
@@ -770,7 +806,7 @@ async function main() {
       filesByViolations.forEach((node, i) => {
         const dependents = result.dependentEdges.get(node.path)?.size || 0;
         console.log(
-          `  ${i + 1}. ${node.name}: ${node.violations} violations (${dependents} dependents)`
+          `  ${i + 1}. ${node.name}: ${node.violations} violations (${dependents} dependents)`,
         );
       });
     }
@@ -788,7 +824,7 @@ async function main() {
     highImpactFiles.forEach((node, i) => {
       const dependents = result.dependentEdges.get(node.path)?.size || 0;
       console.log(
-        `  ${i + 1}. ${node.name}: ${dependents} dependents, ${node.violations} violations`
+        `  ${i + 1}. ${node.name}: ${dependents} dependents, ${node.violations} violations`,
       );
     });
 

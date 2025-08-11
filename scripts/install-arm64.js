@@ -46,11 +46,11 @@ async function main() {
   // Only run on ARM64 macOS
   if (platform === 'darwin' && arch === 'arm64') {
     const bindingsWork = await checkSqliteBindings();
-    if (!bindingsWork) {
+    if (bindingsWork) {
+    } else {
       const rebuildSuccess = await rebuildSqlite();
       if (!rebuildSuccess) {
       }
-    } else {
     }
   }
 }

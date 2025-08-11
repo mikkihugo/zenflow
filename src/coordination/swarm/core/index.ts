@@ -19,7 +19,7 @@ const logger = getLogger('coordination-swarm-core-index');
  * - Chaos engineering and fault tolerance.
  */
 
-import type { SessionCoordinationDao } from '../../../database';
+import type { SessionCoordinationDao } from '../../../database/index.js';
 // import { DALFactory } from '../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.ts';
 import { AgentPool, createAgent } from '../../agents/agent.ts';
@@ -36,7 +36,12 @@ import type {
   Task,
   TaskStatus,
 } from './types.ts';
-import { formatMetrics, generateId, priorityToNumber, validateSwarmOptions } from './utils.ts';
+import {
+  formatMetrics,
+  generateId,
+  priorityToNumber,
+  validateSwarmOptions,
+} from './utils.ts';
 
 export * from '../../../neural/core/neural-network-manager.ts';
 export * from '../../../neural/wasm/wasm-loader2.ts';
@@ -46,7 +51,7 @@ export * from '../mcp/mcp-daa-tools.ts';
 // Export the base implementation as BaseZenSwarm to avoid conflict
 export { ZenSwarm as BaseZenSwarm } from './base-swarm.ts';
 export * from './errors.ts';
-export * from './hooks';
+export * from './hooks/index.js';
 export * from './logger.ts';
 export * from './logging-config.ts';
 export * from './monitoring-dashboard.ts';
@@ -85,7 +90,9 @@ export class Agent {
     this.type = config?.type || 'generic';
     this.config = config;
     this.isActive = false;
-    this.neuralNetworkId = config?.enableNeuralNetwork ? `nn-${Date.now()}` : undefined;
+    this.neuralNetworkId = config?.enableNeuralNetwork
+      ? `nn-${Date.now()}`
+      : undefined;
     this.cognitivePattern = config?.cognitivePattern || 'adaptive';
     this.capabilities = config?.capabilities || [];
     this.status = 'idle';
@@ -365,7 +372,9 @@ export class ZenSwarm implements SwarmEventEmitter {
           // TODO: Implement proper DALFactory integration with DI
           instance.persistence = {
             query: async (_sql: string, _params?: any[]) => [],
-            execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
+            execute: async (_sql: string, _params?: any[]) => ({
+              affectedRows: 1,
+            }),
           } as any;
         } catch (error) {
           logger.warn('⚠️ Persistence not available:', (error as Error).message);
@@ -386,7 +395,11 @@ export class ZenSwarm implements SwarmEventEmitter {
       }
 
       // Pre-load forecasting if enabled
-      if (enableForecasting && enableNeuralNetworks && loadingStrategy !== 'minimal') {
+      if (
+        enableForecasting &&
+        enableNeuralNetworks &&
+        loadingStrategy !== 'minimal'
+      ) {
         try {
           await instance.wasmLoader.loadModule();
           instance.features.forecasting = true;
@@ -460,7 +473,8 @@ export class ZenSwarm implements SwarmEventEmitter {
       name,
       topology_type: topology,
       max_agents: maxAgents,
-      enable_cognitive_diversity: enableCognitiveDiversity && this.features.cognitive_diversity,
+      enable_cognitive_diversity:
+        enableCognitiveDiversity && this.features.cognitive_diversity,
     };
 
     // Use the core module exports to create swarm
@@ -492,14 +506,25 @@ export class ZenSwarm implements SwarmEventEmitter {
     }
 
     // Create JavaScript wrapper with full neural capabilities
-    const swarm = new SwarmWrapper(wasmSwarm.id || wasmSwarm.name, wasmSwarm, this);
+    const swarm = new SwarmWrapper(
+      wasmSwarm.id || wasmSwarm.name,
+      wasmSwarm,
+      this,
+    );
 
     // Persist swarm if persistence is enabled and this is a new swarm
     if (this.persistence && !id) {
       try {
         await this.persistence.execute(
           'INSERT INTO swarms (id, name, topology, strategy, max_agents, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-          [swarm.id, name, topology, strategy, maxAgents, new Date().toISOString()]
+          [
+            swarm.id,
+            name,
+            topology,
+            strategy,
+            maxAgents,
+            new Date().toISOString(),
+          ],
         );
       } catch (error) {
         if (!(error as Error).message.includes('UNIQUE constraint failed')) {
@@ -548,7 +573,11 @@ export class ZenSwarm implements SwarmEventEmitter {
    * @param type
    * @param options
    */
-  async spawnAgent(name: string, type = 'researcher', options: any = {}): Promise<Agent> {
+  async spawnAgent(
+    name: string,
+    type = 'researcher',
+    options: any = {},
+  ): Promise<Agent> {
     // Create a default swarm if none exists
     if (this.activeSwarms.size === 0) {
       await this.createSwarm({
@@ -569,7 +598,9 @@ export class ZenSwarm implements SwarmEventEmitter {
     }
 
     if (this.state.agents.size >= this.options.maxAgents) {
-      throw new Error(`Maximum agent limit (${this.options.maxAgents}) reached`);
+      throw new Error(
+        `Maximum agent limit (${this.options.maxAgents}) reached`,
+      );
     }
 
     const agent = createAgent(config as any);
@@ -602,7 +633,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     this.agentPool.removeAgent(agentId);
 
     this.state.connections = this.state.connections.filter(
-      (conn) => conn.from !== agentId && conn.to !== agentId
+      (conn) => conn.from !== agentId && conn.to !== agentId,
     );
 
     this.emit('agent:removed', { agentId });
@@ -638,7 +669,9 @@ export class ZenSwarm implements SwarmEventEmitter {
   }
 
   getTasksByStatus(status: TaskStatus): Task[] {
-    return Array.from(this.state.tasks.values()).filter((task) => task.status === status);
+    return Array.from(this.state.tasks.values()).filter(
+      (task) => task.status === status,
+    );
   }
 
   getMetrics(): SwarmMetrics {
@@ -768,7 +801,9 @@ export class ZenSwarm implements SwarmEventEmitter {
 
       const pendingTasks = this.getTasksByStatus('pending');
       if (pendingTasks.length > 0) {
-        pendingTasks.sort((a, b) => priorityToNumber(b.priority) - priorityToNumber(a.priority));
+        pendingTasks.sort(
+          (a, b) => priorityToNumber(b.priority) - priorityToNumber(a.priority),
+        );
         const nextTask = pendingTasks[0];
         if (nextTask) {
           await this.assignTask(nextTask);
@@ -809,8 +844,12 @@ export class ZenSwarm implements SwarmEventEmitter {
         break;
 
       case 'distributed': {
-        const numConnections = Math.floor(agents.length * this.options.connectionDensity);
-        const shuffled = agents.filter((id) => id !== newAgentId).sort(() => Math.random() - 0.5);
+        const numConnections = Math.floor(
+          agents.length * this.options.connectionDensity,
+        );
+        const shuffled = agents
+          .filter((id) => id !== newAgentId)
+          .sort(() => Math.random() - 0.5);
         for (let i = 0; i < Math.min(numConnections, shuffled.length); i++) {
           const target = shuffled[i];
           if (target) {
@@ -841,7 +880,8 @@ export class ZenSwarm implements SwarmEventEmitter {
         (currentAvg * (totalCompleted - 1) + executionTime) / totalCompleted;
     }
 
-    const totalProcessed = this.state.metrics.completedTasks + this.state.metrics.failedTasks;
+    const totalProcessed =
+      this.state.metrics.completedTasks + this.state.metrics.failedTasks;
     const elapsedSeconds = (Date.now() - this.startTime) / 1000;
     this.state.metrics.throughput = totalProcessed / elapsedSeconds;
   }
@@ -858,7 +898,7 @@ export class ZenSwarm implements SwarmEventEmitter {
       for (const agent of Array.from(this.state.agents.values())) {
         this.state.metrics.agentUtilization.set(
           (agent as any).id,
-          (agent as any).status === 'busy' ? 1 : 0
+          (agent as any).status === 'busy' ? 1 : 0,
         );
       }
     }, this.options.syncInterval);
@@ -928,15 +968,23 @@ export class SwarmWrapper {
     this.tasks = new Map();
   }
 
-  async spawnAgent(name: string, type = 'researcher', options: any = {}): Promise<Agent> {
+  async spawnAgent(
+    name: string,
+    type = 'researcher',
+    options: any = {},
+  ): Promise<Agent> {
     const agent = new Agent({
       id: options?.id || `agent-${Date.now()}`,
       name,
       type,
       enableNeuralNetwork:
-        options?.enableNeuralNetwork !== false && this.ruvSwarm.features.neural_networks,
+        options?.enableNeuralNetwork !== false &&
+        this.ruvSwarm.features.neural_networks,
       cognitivePattern: options?.cognitivePattern || 'adaptive',
-      capabilities: options?.capabilities || ['neural-processing', 'pattern-matching'],
+      capabilities: options?.capabilities || [
+        'neural-processing',
+        'pattern-matching',
+      ],
       ...options,
     });
 
@@ -950,15 +998,24 @@ export class SwarmWrapper {
       id: this.id,
       agents: {
         total: this.agents.size,
-        active: Array.from(this.agents.values()).filter((a) => a.status === 'active').length,
-        idle: Array.from(this.agents.values()).filter((a) => a.status === 'idle').length,
+        active: Array.from(this.agents.values()).filter(
+          (a) => a.status === 'active',
+        ).length,
+        idle: Array.from(this.agents.values()).filter(
+          (a) => a.status === 'idle',
+        ).length,
       },
       tasks: {
         total: this.tasks.size,
-        pending: Array.from(this.tasks.values()).filter((t) => t.status === 'pending').length,
-        in_progress: Array.from(this.tasks.values()).filter((t) => t.status === 'in_progress')
-          .length,
-        completed: Array.from(this.tasks.values()).filter((t) => t.status === 'completed').length,
+        pending: Array.from(this.tasks.values()).filter(
+          (t) => t.status === 'pending',
+        ).length,
+        in_progress: Array.from(this.tasks.values()).filter(
+          (t) => t.status === 'in_progress',
+        ).length,
+        completed: Array.from(this.tasks.values()).filter(
+          (t) => t.status === 'completed',
+        ).length,
       },
     };
   }
@@ -1002,7 +1059,9 @@ export class TaskWrapper {
       status: this.status,
       assignedAgents: this.assignedAgents,
       progress: this.progress,
-      execution_time_ms: this.startTime ? (this.endTime || Date.now()) - this.startTime : 0,
+      execution_time_ms: this.startTime
+        ? (this.endTime || Date.now()) - this.startTime
+        : 0,
     };
   }
 }
@@ -1030,7 +1089,10 @@ export const NeuralSwarmUtils = {
    * @param swarm
    * @param teamConfig
    */
-  async spawnNeuralTeam(swarm: ZenSwarm, teamConfig: any = {}): Promise<Agent[]> {
+  async spawnNeuralTeam(
+    swarm: ZenSwarm,
+    teamConfig: any = {},
+  ): Promise<Agent[]> {
     const {
       size = 3,
       cognitivePatterns = ['analytical', 'creative', 'systematic'],
@@ -1040,11 +1102,19 @@ export const NeuralSwarmUtils = {
     const agents: Agent[] = [];
 
     for (let i = 0; i < size; i++) {
-      const agent = await swarm.spawnAgent(`neural-agent-${i + 1}`, types[i % types.length], {
-        enableNeuralNetwork: true,
-        cognitivePattern: cognitivePatterns[i % cognitivePatterns.length],
-        capabilities: ['neural-processing', 'pattern-matching', 'adaptive-learning'],
-      });
+      const agent = await swarm.spawnAgent(
+        `neural-agent-${i + 1}`,
+        types[i % types.length],
+        {
+          enableNeuralNetwork: true,
+          cognitivePattern: cognitivePatterns[i % cognitivePatterns.length],
+          capabilities: [
+            'neural-processing',
+            'pattern-matching',
+            'adaptive-learning',
+          ],
+        },
+      );
       agents.push(agent);
     }
     return agents;

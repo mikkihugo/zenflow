@@ -5,6 +5,18 @@
 
 **Next-Generation AI Workflow Architecture** featuring **Advanced Kanban Flow** with intelligent multi-level parallel execution, ML-powered optimization, and comprehensive testing frameworks. Transforms linear AI workflows into adaptive, enterprise-scale systems with human-in-the-loop coordination.
 
+## 🎯 Philosophy: Biome-First Development
+
+Claude Code Zen has adopted a **Biome-first approach** to code quality, moving away from ESLint to embrace a simpler, faster, and more consistent toolchain following Google's standards.
+
+### Why Biome Over ESLint?
+
+- **Speed**: 100x faster than ESLint for linting and formatting
+- **Consistency**: Single tool for both linting and formatting 
+- **Zero Config**: Works out of the box with sensible defaults
+- **Google Standards**: Follows Google TypeScript Style guidelines
+- **Less Dependencies**: Eliminates the ESLint ecosystem complexity
+
 ## 🚀 **Advanced Kanban Flow Architecture (NEW!)** 
 
 **MAJOR BREAKTHROUGH:** Complete transformation from linear AI workflows to intelligent multi-level parallel streams with ML-powered optimization and comprehensive enterprise features.

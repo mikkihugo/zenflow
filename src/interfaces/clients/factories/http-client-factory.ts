@@ -15,7 +15,12 @@ const logger = getLogger('interfaces-clients-factories-http-client-factory');
 
 import { HTTPClientAdapter } from '../adapters/http-client-adapter.ts';
 import type { HTTPClientConfig } from '../adapters/http-types.ts';
-import type { ClientMetrics, ClientStatus, IClient, IClientFactory } from '../core/interfaces.ts';
+import type {
+  ClientMetrics,
+  ClientStatus,
+  IClient,
+  IClientFactory,
+} from '../core/interfaces.ts';
 
 /**
  * HTTP Client Factory implementing UACL IClientFactory interface.
@@ -87,7 +92,10 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
           this.clients.delete(client.name);
         } catch (cleanupError) {
           // Log cleanup error but don't throw
-          logger.error(`Failed to cleanup client ${client.name}:`, cleanupError);
+          logger.error(
+            `Failed to cleanup client ${client.name}:`,
+            cleanupError,
+          );
         }
       }
 
@@ -96,7 +104,9 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
         .map(({ config, error }) => `${config?.name}: ${error.message}`)
         .join('; ');
 
-      throw new Error(`Failed to create ${errors.length} clients: ${errorMessages}`);
+      throw new Error(
+        `Failed to create ${errors.length} clients: ${errorMessages}`,
+      );
     }
 
     return clients;
@@ -139,24 +149,26 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   async healthCheckAll(): Promise<Map<string, ClientStatus>> {
     const results = new Map<string, ClientStatus>();
 
-    const promises = Array.from(this.clients.entries()).map(async ([name, client]) => {
-      try {
-        const status = await client.healthCheck();
-        results?.set(name, status);
-      } catch (error) {
-        results?.set(name, {
-          name,
-          status: 'unhealthy',
-          lastCheck: new Date(),
-          responseTime: 0,
-          errorRate: 1,
-          uptime: 0,
-          metadata: {
-            error: (error as Error).message,
-          },
-        });
-      }
-    });
+    const promises = Array.from(this.clients.entries()).map(
+      async ([name, client]) => {
+        try {
+          const status = await client.healthCheck();
+          results?.set(name, status);
+        } catch (error) {
+          results?.set(name, {
+            name,
+            status: 'unhealthy',
+            lastCheck: new Date(),
+            responseTime: 0,
+            errorRate: 1,
+            uptime: 0,
+            metadata: {
+              error: (error as Error).message,
+            },
+          });
+        }
+      },
+    );
 
     await Promise.allSettled(promises);
     return results;
@@ -165,25 +177,27 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   async getMetricsAll(): Promise<Map<string, ClientMetrics>> {
     const results = new Map<string, ClientMetrics>();
 
-    const promises = Array.from(this.clients.entries()).map(async ([name, client]) => {
-      try {
-        const metrics = await client.getMetrics();
-        results?.set(name, metrics);
-      } catch (_error) {
-        // Return empty metrics on error
-        results?.set(name, {
-          name,
-          requestCount: 0,
-          successCount: 0,
-          errorCount: 0,
-          averageLatency: 0,
-          p95Latency: 0,
-          p99Latency: 0,
-          throughput: 0,
-          timestamp: new Date(),
-        });
-      }
-    });
+    const promises = Array.from(this.clients.entries()).map(
+      async ([name, client]) => {
+        try {
+          const metrics = await client.getMetrics();
+          results?.set(name, metrics);
+        } catch (_error) {
+          // Return empty metrics on error
+          results?.set(name, {
+            name,
+            requestCount: 0,
+            successCount: 0,
+            errorCount: 0,
+            averageLatency: 0,
+            p95Latency: 0,
+            p99Latency: 0,
+            throughput: 0,
+            timestamp: new Date(),
+          });
+        }
+      },
+    );
 
     await Promise.allSettled(promises);
     return results;
@@ -194,13 +208,15 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
   async shutdown(): Promise<void> {
     this.isShuttingDown = true;
 
-    const shutdownPromises = Array.from(this.clients.values()).map(async (client) => {
-      try {
-        await client.destroy();
-      } catch (error) {
-        logger.error(`Failed to shutdown client ${client.name}:`, error);
-      }
-    });
+    const shutdownPromises = Array.from(this.clients.values()).map(
+      async (client) => {
+        try {
+          await client.destroy();
+        } catch (error) {
+          logger.error(`Failed to shutdown client ${client.name}:`, error);
+        }
+      },
+    );
 
     await Promise.allSettled(shutdownPromises);
     this.clients.clear();
@@ -224,7 +240,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     name: string,
     baseURL: string,
     authType: 'bearer' | 'apikey' | 'basic',
-    credentials: string | { username: string; password: string }
+    credentials: string | { username: string; password: string },
   ): Promise<IClient> {
     let authentication: HTTPClientConfig['authentication'];
 
@@ -242,7 +258,10 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
         };
         break;
       case 'basic': {
-        const basicCreds = credentials as { username: string; password: string };
+        const basicCreds = credentials as {
+          username: string;
+          password: string;
+        };
         authentication = {
           type: 'basic',
           username: basicCreds.username,
@@ -290,7 +309,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       attempts: number;
       delay: number;
       backoff?: 'linear' | 'exponential' | 'fixed';
-    }
+    },
   ): Promise<IClient> {
     const config: HTTPClientConfig = {
       name,
@@ -322,7 +341,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       metricsInterval?: number;
       healthCheckInterval?: number;
       healthEndpoint?: string;
-    }
+    },
   ): Promise<IClient> {
     const config: HTTPClientConfig = {
       name,
@@ -363,7 +382,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     options?: {
       strategy?: 'round-robin' | 'random' | 'least-connections';
       healthCheck?: boolean;
-    }
+    },
   ): Promise<IClient[]> {
     const configs: HTTPClientConfig[] = baseURLs.map((baseURL, index) => ({
       name: `${baseName}-${index}`,
@@ -397,7 +416,9 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
    *
    * @param status
    */
-  async getClientsByStatus(status: 'healthy' | 'degraded' | 'unhealthy'): Promise<IClient[]> {
+  async getClientsByStatus(
+    status: 'healthy' | 'degraded' | 'unhealthy',
+  ): Promise<IClient[]> {
     const healthResults = await this.healthCheckAll();
     const matchingClients: IClient[] = [];
 
@@ -438,7 +459,8 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     return {
       totalClients: this.clients.size,
       connectedClients: connectedCount,
-      averageResponseTime: healthyCount > 0 ? totalResponseTime / healthyCount : 0,
+      averageResponseTime:
+        healthyCount > 0 ? totalResponseTime / healthyCount : 0,
       totalRequests,
       totalErrors,
     };
@@ -474,7 +496,9 @@ export const httpClientFactory = new HTTPClientFactory();
  *
  * @param config
  */
-export const createHTTPClient = async (config: HTTPClientConfig): Promise<IClient> => {
+export const createHTTPClient = async (
+  config: HTTPClientConfig,
+): Promise<IClient> => {
   return httpClientFactory.create(config);
 };
 
@@ -483,6 +507,8 @@ export const createHTTPClient = async (config: HTTPClientConfig): Promise<IClien
  *
  * @param configs
  */
-export const createHTTPClients = async (configs: HTTPClientConfig[]): Promise<IClient[]> => {
+export const createHTTPClients = async (
+  configs: HTTPClientConfig[],
+): Promise<IClient[]> => {
   return httpClientFactory.createMultiple(configs);
 };

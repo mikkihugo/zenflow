@@ -65,7 +65,12 @@ declare module 'ruv-swarm' {
   }
 
   // Agent types
-  export type AgentType = 'researcher' | 'coder' | 'analyst' | 'optimizer' | 'coordinator';
+  export type AgentType =
+    | 'researcher'
+    | 'coder'
+    | 'analyst'
+    | 'optimizer'
+    | 'coordinator';
 
   // Agent configuration
   export interface AgentConfig {
@@ -133,7 +138,9 @@ declare module 'ruv-swarm' {
     // Core MCP tools
     swarm_init(params: SwarmInitParams): Promise<SwarmInitResult>;
     agent_spawn(params: AgentSpawnParams): Promise<AgentSpawnResult>;
-    task_orchestrate(params: TaskOrchestrateParams): Promise<TaskOrchestrateResult>;
+    task_orchestrate(
+      params: TaskOrchestrateParams,
+    ): Promise<TaskOrchestrateResult>;
     swarm_status(params: SwarmStatusParams): Promise<SwarmStatusResult>;
     benchmark_run(params: BenchmarkParams): Promise<BenchmarkResult>;
     features_detect(params: FeaturesParams): Promise<FeaturesResult>;
@@ -142,7 +149,9 @@ declare module 'ruv-swarm' {
     // Neural network tools
     neural_status(params: NeuralStatusParams): Promise<NeuralStatusResult>;
     neural_train(params: NeuralTrainParams): Promise<NeuralTrainResult>;
-    neural_patterns(params: NeuralPatternsParams): Promise<NeuralPatternsResult>;
+    neural_patterns(
+      params: NeuralPatternsParams,
+    ): Promise<NeuralPatternsResult>;
   }
 
   // Neural Network Manager
@@ -152,15 +161,18 @@ declare module 'ruv-swarm' {
     neuralNetworks: Map<string, NeuralNetwork>;
     templates: NeuralTemplates;
 
-    createAgentNeuralNetwork(agentId: string, config?: NeuralConfig): Promise<NeuralNetwork>;
+    createAgentNeuralNetwork(
+      agentId: string,
+      config?: NeuralConfig,
+    ): Promise<NeuralNetwork>;
     fineTuneNetwork(
       agentId: string,
       trainingData: TrainingData,
-      options?: TrainingOptions
+      options?: TrainingOptions,
     ): Promise<NeuralMetrics>;
     enableCollaborativeLearning(
       agentIds: string[],
-      options?: CollaborativeOptions
+      options?: CollaborativeOptions,
     ): Promise<CollaborativeSession>;
     getNetworkMetrics(agentId: string): NeuralMetrics | null;
     saveNetworkState(agentId: string, filePath: string): Promise<boolean>;
@@ -379,7 +391,11 @@ declare module 'ruv-swarm' {
   export function formatJsError(error: Error): string;
 
   // Neural agent exports
-  export { NeuralAgent, NeuralAgentFactory, NeuralNetwork } from './neural-agent';
+  export {
+    NeuralAgent,
+    NeuralAgentFactory,
+    NeuralNetwork,
+  } from './neural-agent';
   export const COGNITIVE_PATTERNS: Record<string, CognitivePattern>;
   export const AGENT_COGNITIVE_PROFILES: Record<string, CognitiveProfile>;
 

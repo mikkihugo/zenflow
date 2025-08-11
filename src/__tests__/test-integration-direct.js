@@ -88,7 +88,11 @@ class IntegrationTester {
 
     try {
       // Test with tsx (TypeScript runner)
-      const result = await this.runCommand('npx', ['tsx', 'src/cli/cli-main.ts', '--help']);
+      const result = await this.runCommand('npx', [
+        'tsx',
+        'src/cli/cli-main.ts',
+        '--help',
+      ]);
 
       if (result.success) {
         this.log('CLI startup successful');
@@ -96,10 +100,9 @@ class IntegrationTester {
           this.log(`CLI Help Output:\n${result.stdout}`);
         }
         return true;
-      } else {
-        this.log(`CLI startup failed: ${result.stderr}`, 'error');
-        return false;
       }
+      this.log(`CLI startup failed: ${result.stderr}`, 'error');
+      return false;
     } catch (error) {
       this.log(`CLI startup error: ${error.message}`, 'error');
       return false;
@@ -156,10 +159,9 @@ class IntegrationTester {
           this.log(`Import test output:\n${result.stdout}`);
         }
         return true;
-      } else {
-        this.log(`Import tests failed: ${result.stderr}`, 'error');
-        return false;
       }
+      this.log(`Import tests failed: ${result.stderr}`, 'error');
+      return false;
     } catch (error) {
       this.log(`Import test error: ${error.message}`, 'error');
       return false;
@@ -238,19 +240,21 @@ class IntegrationTester {
       // Clean up
       fs.unlinkSync(testFile);
 
-      if (result.success && result.stdout.includes('operations completed successfully')) {
+      if (
+        result.success &&
+        result.stdout.includes('operations completed successfully')
+      ) {
         this.log('Swarm operations test passed');
         if (this.verbose) {
           this.log(`Swarm test output:\n${result.stdout}`);
         }
         return true;
-      } else {
-        this.log(`Swarm operations test failed: ${result.stderr}`, 'error');
-        if (this.verbose) {
-          this.log(`Swarm test stdout:\n${result.stdout}`);
-        }
-        return false;
       }
+      this.log(`Swarm operations test failed: ${result.stderr}`, 'error');
+      if (this.verbose) {
+        this.log(`Swarm test stdout:\n${result.stdout}`);
+      }
+      return false;
     } catch (error) {
       this.log(`Swarm operations test error: ${error.message}`, 'error');
       return false;
@@ -270,23 +274,22 @@ class IntegrationTester {
 
     let allExist = true;
     for (const file of requiredFiles) {
-      if (!fs.existsSync(file)) {
-        this.log(`Missing required file: ${file}`, 'error');
-        allExist = false;
-      } else {
+      if (fs.existsSync(file)) {
         if (this.verbose) {
           this.log(`Found required file: ${file}`);
         }
+      } else {
+        this.log(`Missing required file: ${file}`, 'error');
+        allExist = false;
       }
     }
 
     if (allExist) {
       this.log('Package structure validation passed');
       return true;
-    } else {
-      this.log('Package structure validation failed', 'error');
-      return false;
     }
+    this.log('Package structure validation failed', 'error');
+    return false;
   }
 
   async testNeuralIntegration() {
@@ -312,10 +315,12 @@ class IntegrationTester {
     if (neuralAvailable) {
       this.log('Neural components are available');
       return true;
-    } else {
-      this.log('Neural components not fully available (expected after simplification)', 'warn');
-      return true; // Not a failure, just a warning
     }
+    this.log(
+      'Neural components not fully available (expected after simplification)',
+      'warn',
+    );
+    return true; // Not a failure, just a warning
   }
 
   async testBuildProcess() {
@@ -333,10 +338,9 @@ class IntegrationTester {
       if (result.success) {
         this.log('TypeScript compilation successful');
         return true;
-      } else {
-        this.log(`TypeScript compilation failed: ${result.stderr}`, 'error');
-        return false;
       }
+      this.log(`TypeScript compilation failed: ${result.stderr}`, 'error');
+      return false;
     } catch (error) {
       this.log(`Build test error: ${error.message}`, 'error');
       return false;
@@ -364,13 +368,16 @@ class IntegrationTester {
       summary: {
         totalTests: totalCount,
         successful: successCount,
-        successRate: parseFloat(successRate),
+        successRate: Number.parseFloat(successRate),
         timestamp: new Date().toISOString(),
       },
       results: this.testResults,
     };
 
-    fs.writeFileSync('integration-test-report.json', JSON.stringify(reportData, null, 2));
+    fs.writeFileSync(
+      'integration-test-report.json',
+      JSON.stringify(reportData, null, 2),
+    );
     this.log(`\nDetailed report saved to: integration-test-report.json`);
 
     return successRate >= 70; // Consider passing if 70% or more tests pass
@@ -386,7 +393,10 @@ class IntegrationTester {
       { name: 'CLI Startup', method: () => this.testCliStartup() },
       { name: 'Build Process', method: () => this.testBuildProcess() },
       { name: 'Swarm Operations', method: () => this.testSwarmOperations() },
-      { name: 'Neural Integration', method: () => this.testNeuralIntegration() },
+      {
+        name: 'Neural Integration',
+        method: () => this.testNeuralIntegration(),
+      },
     ];
 
     let _passedTests = 0;

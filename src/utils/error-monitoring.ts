@@ -143,12 +143,16 @@ export class ErrorMonitoring extends EventEmitter {
 
     for (const [key, errors] of Array.from(this.errors)) {
       if (key.startsWith(`${component}:`)) {
-        const filteredErrors = errors.filter((e) => e.timestamp.getTime() >= sinceTime);
+        const filteredErrors = errors.filter(
+          (e) => e.timestamp.getTime() >= sinceTime,
+        );
         allErrors.push(...filteredErrors);
       }
     }
 
-    return allErrors.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return allErrors.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
+    );
   }
 
   /**
@@ -159,7 +163,7 @@ export class ErrorMonitoring extends EventEmitter {
    */
   getErrorTrends(
     component?: string,
-    timeWindow: number = 3600000
+    timeWindow: number = 3600000,
   ): {
     hourly: number[];
     daily: number[];
@@ -175,14 +179,17 @@ export class ErrorMonitoring extends EventEmitter {
 
       const componentName = key.split(':')[0];
       if (componentName) {
-        components[componentName] = (components[componentName] || 0) + errors.length;
+        components[componentName] =
+          (components[componentName] || 0) + errors.length;
       }
 
       for (const error of errors) {
         const errorTime = error.timestamp.getTime();
         if (now - errorTime <= timeWindow) {
           const hourIndex = Math.floor((now - errorTime) / (1000 * 60 * 60));
-          const dayIndex = Math.floor((now - errorTime) / (1000 * 60 * 60 * 24));
+          const dayIndex = Math.floor(
+            (now - errorTime) / (1000 * 60 * 60 * 24),
+          );
 
           if (hourIndex >= 0 && hourIndex < 24) {
             const hourlyIdx = 23 - hourIndex;
@@ -251,7 +258,9 @@ export class ErrorMonitoring extends EventEmitter {
     const errorCounts = new Map<string, { count: number; component: string }>();
     for (const [key, errors] of Array.from(this.errors)) {
       const [component, _errorType] = key.split(':');
-      const recentErrors = errors.filter((e) => Date.now() - e.timestamp.getTime() <= timeWindow);
+      const recentErrors = errors.filter(
+        (e) => Date.now() - e.timestamp.getTime() <= timeWindow,
+      );
 
       if (recentErrors.length > 0 && component) {
         errorCounts.set(key, { count: recentErrors.length, component });
@@ -290,7 +299,8 @@ export class ErrorMonitoring extends EventEmitter {
 
     // Update error type metrics
     const errorType = error.name;
-    this.metrics.errorsByType[errorType] = (this.metrics.errorsByType[errorType] || 0) + 1;
+    this.metrics.errorsByType[errorType] =
+      (this.metrics.errorsByType[errorType] || 0) + 1;
 
     // Check if critical error
     if (this.isCriticalError(error, context)) {
@@ -301,7 +311,9 @@ export class ErrorMonitoring extends EventEmitter {
     const oneHourAgo = Date.now() - 60 * 60 * 1000;
     let recentErrors = 0;
     for (const errors of Array.from(this.errors.values())) {
-      recentErrors += errors.filter((e) => e.timestamp.getTime() > oneHourAgo).length;
+      recentErrors += errors.filter(
+        (e) => e.timestamp.getTime() > oneHourAgo,
+      ).length;
     }
     this.metrics.errorRate = recentErrors / 60; // errors per minute
   }
@@ -318,7 +330,11 @@ export class ErrorMonitoring extends EventEmitter {
     }
   }
 
-  private matchesPattern(error: Error, context: ErrorContext, pattern: ErrorPattern): boolean {
+  private matchesPattern(
+    error: Error,
+    context: ErrorContext,
+    pattern: ErrorPattern,
+  ): boolean {
     const regex = new RegExp(pattern.pattern, 'i');
 
     return (
@@ -382,7 +398,8 @@ export class ErrorMonitoring extends EventEmitter {
 
     return (
       criticalPatterns.some(
-        (pattern) => error.name.includes(pattern) || error.message.includes(pattern)
+        (pattern) =>
+          error.name.includes(pattern) || error.message.includes(pattern),
       ) ||
       context.component === 'security' ||
       context.component === 'database'
@@ -441,7 +458,7 @@ export class ErrorMonitoring extends EventEmitter {
         // Just clear old errors during periodic monitoring
         // Don't record artificial errors for metrics
       },
-      5 * 60 * 1000
+      5 * 60 * 1000,
     ); // Every 5 minutes
   }
 

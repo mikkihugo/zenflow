@@ -29,7 +29,9 @@ vi.mock('../src/logger.js', () => ({
 }));
 
 vi.mock('../src/utils.js', () => ({
-  generateId: vi.fn().mockImplementation((prefix) => `${prefix}-${Date.now()}-${Math.random()}`),
+  generateId: vi
+    .fn()
+    .mockImplementation((prefix) => `${prefix}-${Date.now()}-${Math.random()}`),
 }));
 
 // Mock process methods for testing
@@ -84,10 +86,14 @@ describe('Health Monitor', () => {
   test('should register custom health check', () => {
     const checkFunction = vi.fn().mockResolvedValue({ status: 'ok' });
 
-    const checkId = healthMonitor.registerHealthCheck('custom.test', checkFunction, {
-      category: 'test',
-      priority: 'low',
-    });
+    const checkId = healthMonitor.registerHealthCheck(
+      'custom.test',
+      checkFunction,
+      {
+        category: 'test',
+        priority: 'low',
+      },
+    );
 
     expect(checkId).toBeDefined();
     expect(healthMonitor.healthChecks.has('custom.test')).toBe(true);
@@ -410,17 +416,22 @@ describe('Chaos Engineering', () => {
 
   test('should initialize with built-in experiments', async () => {
     expect(chaosEngineering.experiments.size).toBeGreaterThan(0);
-    expect(chaosEngineering.experiments.has('memory_pressure_recovery')).toBe(true);
+    expect(chaosEngineering.experiments.has('memory_pressure_recovery')).toBe(
+      true,
+    );
     expect(chaosEngineering.failureInjectors.size).toBeGreaterThan(0);
   });
 
   test('should register custom experiment', () => {
-    const experimentId = chaosEngineering.registerExperiment('test.experiment', {
-      description: 'Test experiment',
-      failureType: 'memory_pressure',
-      duration: 1000,
-      blastRadius: 0.1,
-    });
+    const experimentId = chaosEngineering.registerExperiment(
+      'test.experiment',
+      {
+        description: 'Test experiment',
+        failureType: 'memory_pressure',
+        duration: 1000,
+        blastRadius: 0.1,
+      },
+    );
 
     expect(experimentId).toBeDefined();
     expect(chaosEngineering.experiments.has('test.experiment')).toBe(true);
@@ -641,7 +652,8 @@ describe('End-to-End Recovery Scenarios', () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Check connection status
-    const connectionStatus = connectionManager.getConnectionStatus(connectionId);
+    const connectionStatus =
+      connectionManager.getConnectionStatus(connectionId);
     expect(connectionStatus.status).toBe('failed');
 
     // Verify recovery stats are updated
@@ -729,7 +741,9 @@ describe('Performance and Load Testing', () => {
     const recoveryPromises = [];
     for (let i = 0; i < 3; i++) {
       // Within concurrent limit
-      recoveryPromises.push(recoveryWorkflows.triggerRecovery(`test.trigger.${i}`));
+      recoveryPromises.push(
+        recoveryWorkflows.triggerRecovery(`test.trigger.${i}`),
+      );
     }
 
     const results = await Promise.all(recoveryPromises);
@@ -768,9 +782,9 @@ describe('Error Handling and Edge Cases', () => {
     });
 
     // Manually try to initialize a failing component
-    await expect(integration.initializeComponent('failing', FailingComponent)).rejects.toThrow(
-      'Initialization failed'
-    );
+    await expect(
+      integration.initializeComponent('failing', FailingComponent),
+    ).rejects.toThrow('Initialization failed');
 
     await integration.shutdown();
   });

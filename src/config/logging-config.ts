@@ -46,7 +46,8 @@ class LoggingConfigurationManager {
   private loadConfiguration(): LoggingConfig {
     // Load from environment variables with sensible defaults
     const nodeEnv = process.env['NODE_ENV'] || 'development';
-    const defaultLevel = nodeEnv === 'development' ? LoggingLevel.DEBUG : LoggingLevel.INFO;
+    const defaultLevel =
+      nodeEnv === 'development' ? LoggingLevel.DEBUG : LoggingLevel.INFO;
 
     return {
       level: (process.env['LOG_LEVEL'] as LoggingLevel) || defaultLevel,
@@ -56,9 +57,12 @@ class LoggingConfigurationManager {
       format: (process.env['LOG_FORMAT'] as 'json' | 'text') || 'text',
       components: {
         // Override levels for specific components
-        'swarm-coordinator': (process.env['LOG_LEVEL_SWARM'] as LoggingLevel) || defaultLevel,
-        'neural-network': (process.env['LOG_LEVEL_NEURAL'] as LoggingLevel) || defaultLevel,
-        'mcp-server': (process.env['LOG_LEVEL_MCP'] as LoggingLevel) || defaultLevel,
+        'swarm-coordinator':
+          (process.env['LOG_LEVEL_SWARM'] as LoggingLevel) || defaultLevel,
+        'neural-network':
+          (process.env['LOG_LEVEL_NEURAL'] as LoggingLevel) || defaultLevel,
+        'mcp-server':
+          (process.env['LOG_LEVEL_MCP'] as LoggingLevel) || defaultLevel,
         database: (process.env['LOG_LEVEL_DB'] as LoggingLevel) || defaultLevel,
       },
     };
@@ -99,7 +103,8 @@ class LoggingConfigurationManager {
 
   private createLoggerForComponent(component: string): Logger {
     // Use component-specific log level if configured
-    const componentLevel = this.config.components[component] || this.config.level;
+    const componentLevel =
+      this.config.components[component] || this.config.level;
 
     // Set environment variable for the component so existing loggers pick it up
     const originalLevel = process.env['LOG_LEVEL'];
@@ -152,8 +157,12 @@ class LoggingConfigurationManager {
       info: (message: string, meta?: any) => logger.info(message, meta),
       warn: (message: string, meta?: any) => logger.warn(message, meta),
       error: (message: string, meta?: any) => logger.error(message, meta),
-      success: logger.success || ((message: string, meta?: any) => logger.info(message, meta)),
-      progress: logger.progress || ((message: string, meta?: any) => logger.info(message, meta)),
+      success:
+        logger.success ||
+        ((message: string, meta?: any) => logger.info(message, meta)),
+      progress:
+        logger.progress ||
+        ((message: string, meta?: any) => logger.info(message, meta)),
     };
   }
 
@@ -164,7 +173,10 @@ class LoggingConfigurationManager {
     this.updateConfig({
       level: LoggingLevel.DEBUG,
       components: Object.fromEntries(
-        Object.keys(this.config.components).map((key) => [key, LoggingLevel.DEBUG])
+        Object.keys(this.config.components).map((key) => [
+          key,
+          LoggingLevel.DEBUG,
+        ]),
       ),
     });
   }
@@ -176,7 +188,10 @@ class LoggingConfigurationManager {
     this.updateConfig({
       level: LoggingLevel.INFO,
       components: Object.fromEntries(
-        Object.keys(this.config.components).map((key) => [key, LoggingLevel.INFO])
+        Object.keys(this.config.components).map((key) => [
+          key,
+          LoggingLevel.INFO,
+        ]),
       ),
     });
   }
@@ -188,7 +203,10 @@ class LoggingConfigurationManager {
     this.updateConfig({
       level: LoggingLevel.ERROR,
       components: Object.fromEntries(
-        Object.keys(this.config.components).map((key) => [key, LoggingLevel.ERROR])
+        Object.keys(this.config.components).map((key) => [
+          key,
+          LoggingLevel.ERROR,
+        ]),
       ),
     });
   }
@@ -234,5 +252,49 @@ export const logger = {
   // Database logger
   database: getLogger('database'),
 };
+
+// Simple in-memory log storage for TUI display
+const logEntries: any[] = [];
+
+/**
+ * Add log entry for TUI display
+ */
+export function addLogEntry(entry: {
+  level: 'debug' | 'info' | 'warn' | 'error' | 'trace';
+  component: string;
+  message: string;
+  metadata?: Record<string, any>;
+}) {
+  logEntries.push({
+    id: `log-${Date.now()}-${Math.random()}`,
+    timestamp: new Date(),
+    ...entry,
+  });
+
+  // Keep only last 1000 entries
+  if (logEntries.length > 1000) {
+    logEntries.splice(0, logEntries.length - 1000);
+  }
+}
+
+/**
+ * Get log entries for TUI display
+ */
+export function getLogEntries() {
+  return [...logEntries];
+}
+
+// Add some system startup logs
+addLogEntry({
+  level: 'info',
+  component: 'system',
+  message: 'Claude Code Zen TUI initialized',
+});
+
+addLogEntry({
+  level: 'info',
+  component: 'terminal',
+  message: 'Terminal interface ready',
+});
 
 export default loggingConfigManager;

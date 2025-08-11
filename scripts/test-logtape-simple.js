@@ -33,7 +33,9 @@ async function testLogtapeConfiguration() {
 
     // Step 4: Test structured logging functions
     // console.log('📋 Step 4: Testing structured logging functions...');
-    const { logClaudeOperation, logClaudeMetrics } = await import('../src/utils/logging-config.js');
+    const { logClaudeOperation, logClaudeMetrics } = await import(
+      '../src/utils/logging-config.js'
+    );
 
     logClaudeOperation(aiLogger, 'test_operation', {
       filePath: 'test.ts',

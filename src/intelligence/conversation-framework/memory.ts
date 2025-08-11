@@ -12,7 +12,11 @@ const logger = getLogger('intelligence-conversation-framework-memory');
  * Memory management for conversation persistence using existing memory backends.
  */
 
-import type { ConversationMemory, ConversationQuery, ConversationSession } from './types.ts';
+import type {
+  ConversationMemory,
+  ConversationQuery,
+  ConversationSession,
+} from './types.ts';
 
 /**
  * Memory backend adapter interface.
@@ -42,7 +46,7 @@ class MemoryBackendAdapter implements BackendAdapter {
     } catch (error) {
       logger.error(`Failed to save conversation data for key ${key}:`, error);
       throw new Error(
-        `Memory save operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Memory save operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -51,7 +55,10 @@ class MemoryBackendAdapter implements BackendAdapter {
     try {
       return await this.backend.retrieve(key, 'conversations');
     } catch (error) {
-      logger.error(`Failed to retrieve conversation data for key ${key}:`, error);
+      logger.error(
+        `Failed to retrieve conversation data for key ${key}:`,
+        error,
+      );
       return null;
     }
   }
@@ -62,7 +69,7 @@ class MemoryBackendAdapter implements BackendAdapter {
     } catch (error) {
       logger.error(`Failed to delete conversation data for key ${key}:`, error);
       throw new Error(
-        `Memory delete operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Memory delete operation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -71,7 +78,10 @@ class MemoryBackendAdapter implements BackendAdapter {
     try {
       return await this.backend.search(pattern, 'conversations');
     } catch (error) {
-      logger.error(`Failed to search conversation data for pattern ${pattern}:`, error);
+      logger.error(
+        `Failed to search conversation data for pattern ${pattern}:`,
+        error,
+      );
       return {};
     }
   }
@@ -167,7 +177,9 @@ export class ConversationMemoryImpl implements ConversationMemory {
    *
    * @param query
    */
-  async searchConversations(query: ConversationQuery): Promise<ConversationSession[]> {
+  async searchConversations(
+    query: ConversationQuery,
+  ): Promise<ConversationSession[]> {
     const results: ConversationSession[] = [];
     const limit = query.limit || 50;
     const offset = query.offset || 0;
@@ -211,7 +223,10 @@ export class ConversationMemoryImpl implements ConversationMemory {
    * @param id
    * @param updates
    */
-  async updateConversation(id: string, updates: Partial<ConversationSession>): Promise<void> {
+  async updateConversation(
+    id: string,
+    updates: Partial<ConversationSession>,
+  ): Promise<void> {
     const existing = await this.getConversation(id);
     if (!existing) {
       throw new Error(`Conversation ${id} not found`);
@@ -256,7 +271,9 @@ export class ConversationMemoryImpl implements ConversationMemory {
    *
    * @param agentId
    */
-  async getAgentConversationHistory(agentId: string): Promise<ConversationSession[]> {
+  async getAgentConversationHistory(
+    agentId: string,
+  ): Promise<ConversationSession[]> {
     return this.searchConversations({ agentId });
   }
 
@@ -266,7 +283,10 @@ export class ConversationMemoryImpl implements ConversationMemory {
    * @param conversation
    * @param query
    */
-  private matchesQuery(conversation: ConversationSession, query: ConversationQuery): boolean {
+  private matchesQuery(
+    conversation: ConversationSession,
+    query: ConversationQuery,
+  ): boolean {
     if (query.domain && conversation.context.domain !== query.domain) {
       return false;
     }
@@ -283,7 +303,9 @@ export class ConversationMemoryImpl implements ConversationMemory {
     }
 
     if (query.outcome) {
-      const hasOutcome = conversation.outcomes.some((o) => o.type === query.outcome);
+      const hasOutcome = conversation.outcomes.some(
+        (o) => o.type === query.outcome,
+      );
       if (!hasOutcome) {
         return false;
       }
@@ -305,7 +327,9 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithSQLite(config: any = {}): Promise<ConversationMemory> {
-    const { MemoryBackendFactory } = await import('../../memory/backends/factory.ts');
+    const { MemoryBackendFactory } = await import(
+      '../../memory/backends/factory.ts'
+    );
     const backend = await MemoryBackendFactory.createBackend('sqlite', {
       type: 'sqlite',
       path: config?.path || './data',
@@ -320,7 +344,9 @@ export class ConversationMemoryFactory {
    * @param config
    */
   static async createWithJSON(config: any = {}): Promise<ConversationMemory> {
-    const { MemoryBackendFactory } = await import('../../memory/backends/factory.ts');
+    const { MemoryBackendFactory } = await import(
+      '../../memory/backends/factory.ts'
+    );
     const backend = await MemoryBackendFactory.createBackend('jsonb', {
       type: 'jsonb',
       path: config?.basePath || '/tmp/conversations',
@@ -334,9 +360,13 @@ export class ConversationMemoryFactory {
    *
    * @param config
    */
-  static async createWithLanceDB(config: any = {}): Promise<ConversationMemory> {
+  static async createWithLanceDB(
+    config: any = {},
+  ): Promise<ConversationMemory> {
     // LanceDB not available in factory, using SQLite as fallback for vector operations
-    const { MemoryBackendFactory } = await import('../../memory/backends/factory.ts');
+    const { MemoryBackendFactory } = await import(
+      '../../memory/backends/factory.ts'
+    );
     const backend = await MemoryBackendFactory.createBackend('sqlite', {
       type: 'sqlite',
       path: config?.path || './data',

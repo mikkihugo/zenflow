@@ -13,7 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 interface SessionData {
   sessionId: string;
   userId?: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   metadata: {
     created: number;
     lastAccessed: number;
@@ -28,7 +28,7 @@ interface SessionStorage {
   initialize(): Promise<void>;
   createSession(sessionId: string, data?: any): Promise<SessionData>;
   getSession(sessionId: string): Promise<SessionData | null>;
-  updateSession(sessionId: string, data: any): Promise<SessionData>;
+  updateSession(sessionId: string, data: unknown): Promise<SessionData>;
   deleteSession(sessionId: string): Promise<boolean>;
   listSessions(userId?: string): Promise<string[]>;
   cleanupExpiredSessions(): Promise<number>;
@@ -66,7 +66,7 @@ class SessionManager extends EventEmitter {
   async createSession(
     sessionId?: string,
     initialData?: any,
-    userId?: string
+    userId?: string,
   ): Promise<SessionData> {
     sessionId = sessionId || this.generateSessionId();
 
@@ -133,7 +133,11 @@ class SessionManager extends EventEmitter {
     return { ...session };
   }
 
-  async updateSession(sessionId: string, data: any, merge = true): Promise<SessionData> {
+  async updateSession(
+    sessionId: string,
+    data: unknown,
+    merge = true,
+  ): Promise<SessionData> {
     const session = await this.getSession(sessionId);
     if (!session) {
       throw new Error(`Session ${sessionId} not found`);
@@ -241,7 +245,7 @@ class SessionManager extends EventEmitter {
           this.emit('error', error);
         }
       },
-      5 * 60 * 1000
+      5 * 60 * 1000,
     ); // Every 5 minutes
   }
 
@@ -294,7 +298,7 @@ class MockSessionStorage implements SessionStorage {
     return this.mockData.get(sessionId) || null;
   }
 
-  async updateSession(sessionId: string, data: any): Promise<SessionData> {
+  async updateSession(sessionId: string, data: unknown): Promise<SessionData> {
     this.operations.push(`update:${sessionId}`);
     const session = data as SessionData;
     this.mockData.set(sessionId, session);
@@ -358,7 +362,9 @@ describe('Session Management Integration Tests', () => {
     it('should delegate operations to storage', async () => {
       await sessionManager.initialize();
 
-      const _session = await sessionManager.createSession('test-session', { test: 'data' });
+      const _session = await sessionManager.createSession('test-session', {
+        test: 'data',
+      });
       await sessionManager.getSession('test-session');
       await sessionManager.updateSession('test-session', { updated: true });
       await sessionManager.deleteSession('test-session');
@@ -370,14 +376,16 @@ describe('Session Management Integration Tests', () => {
 
     it('should handle storage failures gracefully', async () => {
       const failingStorage = new MockSessionStorage();
-      failingStorage.createSession = vi.fn().mockRejectedValue(new Error('Storage error'));
+      failingStorage.createSession = vi
+        .fn()
+        .mockRejectedValue(new Error('Storage error'));
 
       const failingManager = new SessionManager(failingStorage);
       await failingManager.initialize();
 
-      await expect(failingManager.createSession('failing-session', {})).rejects.toThrow(
-        'Storage error'
-      );
+      await expect(
+        failingManager.createSession('failing-session', {}),
+      ).rejects.toThrow('Storage error');
     });
   });
 
@@ -389,7 +397,11 @@ describe('Session Management Integration Tests', () => {
     it('should create sessions with proper metadata', async () => {
       const sessionData = { user: 'john', preferences: { theme: 'dark' } };
 
-      const session = await sessionManager.createSession('user-session', sessionData, 'john');
+      const session = await sessionManager.createSession(
+        'user-session',
+        sessionData,
+        'john',
+      );
 
       expect(session.sessionId).toBe('user-session');
       expect(session.userId).toBe('john');
@@ -425,7 +437,7 @@ describe('Session Management Integration Tests', () => {
       const session2 = await sessionManager.getSession('access-test');
       expect(session2?.metadata.accessCount).toBe(3);
       expect(session2?.metadata.lastAccessed).toBeGreaterThanOrEqual(
-        session1?.metadata.lastAccessed
+        session1?.metadata.lastAccessed,
       );
     });
 
@@ -433,17 +445,26 @@ describe('Session Management Integration Tests', () => {
       await sessionManager.createSession('update-test', { a: 1, b: 2 });
 
       // Merge update
-      const updated1 = await sessionManager.updateSession('update-test', { b: 3, c: 4 });
+      const updated1 = await sessionManager.updateSession('update-test', {
+        b: 3,
+        c: 4,
+      });
       expect(updated1.data).toEqual({ a: 1, b: 3, c: 4 });
 
       // Add small delay to ensure timestamp difference
       await new Promise((resolve) => setTimeout(resolve, 2));
 
       // Replace update
-      const updated2 = await sessionManager.updateSession('update-test', { x: 10 }, false);
+      const updated2 = await sessionManager.updateSession(
+        'update-test',
+        { x: 10 },
+        false,
+      );
       expect(updated2.data).toEqual({ x: 10 });
 
-      expect(updated2.metadata.lastModified).toBeGreaterThanOrEqual(updated1.metadata.lastModified);
+      expect(updated2.metadata.lastModified).toBeGreaterThanOrEqual(
+        updated1.metadata.lastModified,
+      );
     });
 
     it('should handle session deletion', async () => {
@@ -545,10 +566,15 @@ describe('Session Management Integration Tests', () => {
     it('should calculate session statistics correctly', async () => {
       // Create some test sessions
       await sessionManager.createSession('stats-1', { data: 'small' });
-      await sessionManager.createSession('stats-2', { data: 'larger data content' });
+      await sessionManager.createSession('stats-2', {
+        data: 'larger data content',
+      });
 
       // Create expired session
-      const expiredSession = await sessionManager.createSession('stats-expired', {});
+      const expiredSession = await sessionManager.createSession(
+        'stats-expired',
+        {},
+      );
       expiredSession.ttl = Date.now() - 1000;
       (sessionManager as any).sessions.set('stats-expired', expiredSession);
 
@@ -617,7 +643,7 @@ describe('Session Management Integration Tests', () => {
 
     it('should handle concurrent session creation', async () => {
       const createPromises = Array.from({ length: 10 }, (_, i) =>
-        sessionManager.createSession(`concurrent-${i}`, { index: i })
+        sessionManager.createSession(`concurrent-${i}`, { index: i }),
       );
 
       const sessions = await Promise.all(createPromises);
@@ -633,7 +659,7 @@ describe('Session Management Integration Tests', () => {
       await sessionManager.createSession('concurrent-access', { counter: 0 });
 
       const accessPromises = Array.from({ length: 5 }, () =>
-        sessionManager.getSession('concurrent-access')
+        sessionManager.getSession('concurrent-access'),
       );
 
       const results = await Promise.all(accessPromises);

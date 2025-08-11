@@ -21,12 +21,12 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates.ts';
 import { WorkflowHumanGateType } from '../orchestration/workflow-gates.ts';
-import type { ProgramIncrementManager } from './program-increment-manager.ts';
-import type { ValueStreamMapper } from './value-stream-mapper.ts';
-import type { PortfolioManager } from './portfolio-manager.ts';
 import type {
   AgileReleaseTrain,
   ARTTeam,
@@ -36,6 +36,9 @@ import type {
   SAFeIntegrationConfig,
   ValueStream,
 } from './index.ts';
+import type { PortfolioManager } from './portfolio-manager.ts';
+import type { ProgramIncrementManager } from './program-increment-manager.ts';
+import type { ValueStreamMapper } from './value-stream-mapper.ts';
 
 // ============================================================================
 // SAFE EVENTS MANAGER CONFIGURATION
@@ -138,8 +141,13 @@ export interface RelativeSchedulingConfig {
 export interface SchedulingCondition {
   readonly conditionId: string;
   readonly description: string;
-  readonly evaluator: 'milestone' | 'metric' | 'approval' | 'completion' | 'custom';
-  readonly parameters: Record<string, any>;
+  readonly evaluator:
+    | 'milestone'
+    | 'metric'
+    | 'approval'
+    | 'completion'
+    | 'custom';
+  readonly parameters: Record<string, unknown>;
   readonly required: boolean;
 }
 
@@ -263,9 +271,15 @@ export enum AgendaItemType {
  */
 export interface InteractiveElement {
   readonly elementId: string;
-  readonly type: 'poll' | 'survey' | 'whiteboard' | 'breakout' | 'voting' | 'quiz';
+  readonly type:
+    | 'poll'
+    | 'survey'
+    | 'whiteboard'
+    | 'breakout'
+    | 'voting'
+    | 'quiz';
   readonly duration: number; // minutes
-  readonly configuration: Record<string, any>;
+  readonly configuration: Record<string, unknown>;
   readonly participantRoles: EventRole[];
   readonly dataCollection: boolean;
 }
@@ -276,7 +290,12 @@ export interface InteractiveElement {
 export interface EventDeliverable {
   readonly deliverableId: string;
   readonly name: string;
-  readonly type: 'document' | 'decision' | 'action-item' | 'artifact' | 'recording';
+  readonly type:
+    | 'document'
+    | 'decision'
+    | 'action-item'
+    | 'artifact'
+    | 'recording';
   readonly description: string;
   readonly owner: string;
   readonly dueDate?: Date;
@@ -315,8 +334,18 @@ export interface AGUIIntegrationConfig {
  */
 export interface AGUIGatePoint {
   readonly gateId: string;
-  readonly triggerPoint: 'start' | 'agenda-item' | 'decision' | 'end' | 'custom';
-  readonly gateType: 'approval' | 'feedback' | 'decision' | 'validation' | 'checkpoint';
+  readonly triggerPoint:
+    | 'start'
+    | 'agenda-item'
+    | 'decision'
+    | 'end'
+    | 'custom';
+  readonly gateType:
+    | 'approval'
+    | 'feedback'
+    | 'decision'
+    | 'validation'
+    | 'checkpoint';
   readonly participants: string[];
   readonly timeout?: number; // minutes
   readonly fallback?: 'proceed' | 'pause' | 'reschedule' | 'escalate';
@@ -441,7 +470,10 @@ export interface HybridLocationDetails {
   readonly physicalLocation: PhysicalLocationDetails;
   readonly virtualLocation: VirtualLocationDetails;
   readonly bridgingTechnology: string;
-  readonly facilitationModel: 'physical-lead' | 'virtual-lead' | 'co-facilitated';
+  readonly facilitationModel:
+    | 'physical-lead'
+    | 'virtual-lead'
+    | 'co-facilitated';
 }
 
 /**
@@ -459,8 +491,14 @@ export interface TechnologySetup {
  */
 export interface Platform {
   readonly name: string;
-  readonly purpose: 'video' | 'audio' | 'collaboration' | 'presentation' | 'polling' | 'whiteboard';
-  readonly configuration: Record<string, any>;
+  readonly purpose:
+    | 'video'
+    | 'audio'
+    | 'collaboration'
+    | 'presentation'
+    | 'polling'
+    | 'whiteboard';
+  readonly configuration: Record<string, unknown>;
   readonly participants: string[];
   readonly backupOptions: string[];
 }
@@ -472,7 +510,7 @@ export interface TechnologyIntegration {
   readonly source: string;
   readonly target: string;
   readonly integrationType: 'data' | 'identity' | 'workflow' | 'notification';
-  readonly configuration: Record<string, any>;
+  readonly configuration: Record<string, unknown>;
 }
 
 /**
@@ -501,7 +539,12 @@ export interface TechnicalSupport {
 export interface EventMaterial {
   readonly materialId: string;
   readonly name: string;
-  readonly type: 'presentation' | 'document' | 'template' | 'checklist' | 'reference';
+  readonly type:
+    | 'presentation'
+    | 'document'
+    | 'template'
+    | 'checklist'
+    | 'reference';
   readonly location: string;
   readonly accessPermissions: string[];
   readonly lastModified: Date;
@@ -588,7 +631,12 @@ export interface ActionItem {
   readonly owner: string;
   readonly dueDate: Date;
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
-  readonly status: 'open' | 'in-progress' | 'completed' | 'blocked' | 'cancelled';
+  readonly status:
+    | 'open'
+    | 'in-progress'
+    | 'completed'
+    | 'blocked'
+    | 'cancelled';
   readonly dependencies?: string[];
   readonly updates?: ActionItemUpdate[];
   readonly completionCriteria: string[];
@@ -792,7 +840,7 @@ export class SAFeEventsManager extends EventEmitter {
     piManager: ProgramIncrementManager,
     valueStreamMapper: ValueStreamMapper,
     portfolioManager: PortfolioManager,
-    config: Partial<SAFeEventsManagerConfig> = {}
+    config: Partial<SAFeEventsManagerConfig> = {},
   ) {
     super();
 
@@ -896,7 +944,7 @@ export class SAFeEventsManager extends EventEmitter {
     artId: string,
     iterationNumber: number,
     features: Feature[],
-    stakeholders: string[]
+    stakeholders: string[],
   ): Promise<string> {
     this.logger.info('Scheduling System Demo', {
       artId,
@@ -909,7 +957,7 @@ export class SAFeEventsManager extends EventEmitter {
       artId,
       iterationNumber,
       features,
-      stakeholders
+      stakeholders,
     );
 
     // Schedule the event
@@ -954,14 +1002,21 @@ export class SAFeEventsManager extends EventEmitter {
     const eventConfig = this.getEventConfiguration(executionContext);
     for (const agendaItem of eventConfig.agenda) {
       try {
-        const itemOutcome = await this.executeSystemDemoAgendaItem(agendaItem, executionContext);
+        const itemOutcome = await this.executeSystemDemoAgendaItem(
+          agendaItem,
+          executionContext,
+        );
         outcomes.push(itemOutcome.objective);
         decisions.push(...itemOutcome.decisions);
         actionItems.push(...itemOutcome.actionItems);
 
         // Process AGUI gates if configured
         if (agendaItem.aguiGateRequired) {
-          await this.processSystemDemoGate(agendaItem, itemOutcome, executionContext);
+          await this.processSystemDemoGate(
+            agendaItem,
+            itemOutcome,
+            executionContext,
+          );
         }
       } catch (error) {
         this.logger.error('System Demo agenda item failed', {
@@ -969,7 +1024,9 @@ export class SAFeEventsManager extends EventEmitter {
           error,
         });
         // Create action item for failed demo
-        actionItems.push(await this.createFailedDemoActionItem(agendaItem, error));
+        actionItems.push(
+          await this.createFailedDemoActionItem(agendaItem, error),
+        );
       }
     }
 
@@ -987,14 +1044,21 @@ export class SAFeEventsManager extends EventEmitter {
       executionId: executionContext.executionId,
       completionDate: new Date(),
       objectives: outcomes,
-      deliverables: await this.generateSystemDemoDeliverables(executionContext, outcomes),
+      deliverables: await this.generateSystemDemoDeliverables(
+        executionContext,
+        outcomes,
+      ),
       decisions,
       actionItems,
       feedback,
       metrics,
       lessonsLearned: await this.extractDemoLessonsLearned(feedback, metrics),
       improvements: await this.identifyDemoImprovements(feedback, metrics),
-      nextSteps: await this.generateDemoNextSteps(outcomes, decisions, actionItems),
+      nextSteps: await this.generateDemoNextSteps(
+        outcomes,
+        decisions,
+        actionItems,
+      ),
     };
 
     // Store outcome
@@ -1020,8 +1084,8 @@ export class SAFeEventsManager extends EventEmitter {
   async scheduleInspectAndAdaptWorkshop(
     artId: string,
     piId: string,
-    piMetrics: any,
-    retrospectiveData: any[]
+    piMetrics: unknown,
+    retrospectiveData: unknown[],
   ): Promise<string> {
     this.logger.info('Scheduling Inspect & Adapt workshop', { artId, piId });
 
@@ -1030,14 +1094,18 @@ export class SAFeEventsManager extends EventEmitter {
       artId,
       piId,
       piMetrics,
-      retrospectiveData
+      retrospectiveData,
     );
 
     // Schedule the workshop
     const executionContext = await this.scheduleEvent(iaConfig);
 
     // Setup workshop preparation
-    await this.setupInspectAndAdaptPreparation(executionContext, piMetrics, retrospectiveData);
+    await this.setupInspectAndAdaptPreparation(
+      executionContext,
+      piMetrics,
+      retrospectiveData,
+    );
 
     // Create AGUI gates for facilitated activities
     if (this.config.enableAGUIIntegration) {
@@ -1069,10 +1137,16 @@ export class SAFeEventsManager extends EventEmitter {
 
     // Execute I&A phases
     const inspectResults = await this.executeInspectPhase(executionContext);
-    const adaptResults = await this.executeAdaptPhase(executionContext, inspectResults);
+    const adaptResults = await this.executeAdaptPhase(
+      executionContext,
+      inspectResults,
+    );
 
     // Generate workshop outcomes
-    const objectives = await this.generateIAObjectiveOutcomes(inspectResults, adaptResults);
+    const objectives = await this.generateIAObjectiveOutcomes(
+      inspectResults,
+      adaptResults,
+    );
     const decisions = await this.captureIADecisions(adaptResults);
     const actionItems = await this.generateIAActionItems(adaptResults);
 
@@ -1090,12 +1164,18 @@ export class SAFeEventsManager extends EventEmitter {
       executionId: executionContext.executionId,
       completionDate: new Date(),
       objectives,
-      deliverables: await this.generateIADeliverables(inspectResults, adaptResults),
+      deliverables: await this.generateIADeliverables(
+        inspectResults,
+        adaptResults,
+      ),
       decisions,
       actionItems,
       feedback,
       metrics,
-      lessonsLearned: await this.extractIALessonsLearned(inspectResults, adaptResults),
+      lessonsLearned: await this.extractIALessonsLearned(
+        inspectResults,
+        adaptResults,
+      ),
       improvements: await this.identifyIAImprovements(feedback, metrics),
       nextSteps: await this.generateIANextSteps(decisions, actionItems),
     };
@@ -1123,8 +1203,8 @@ export class SAFeEventsManager extends EventEmitter {
   async scheduleARTSyncMeeting(
     artId: string,
     teams: ARTTeam[],
-    impediments: any[],
-    dependencies: any[]
+    impediments: unknown[],
+    dependencies: unknown[],
   ): Promise<string> {
     this.logger.info('Scheduling ART Sync meeting', {
       artId,
@@ -1136,7 +1216,7 @@ export class SAFeEventsManager extends EventEmitter {
       artId,
       teams,
       impediments,
-      dependencies
+      dependencies,
     );
 
     // Schedule the meeting
@@ -1170,17 +1250,22 @@ export class SAFeEventsManager extends EventEmitter {
 
     // Execute sync activities
     const statusUpdates = await this.collectTeamStatusUpdates(executionContext);
-    const impedimentDiscussion = await this.facilitateImpedimentDiscussion(executionContext);
-    const dependencyCoordination = await this.coordinateDependencies(executionContext);
+    const impedimentDiscussion =
+      await this.facilitateImpedimentDiscussion(executionContext);
+    const dependencyCoordination =
+      await this.coordinateDependencies(executionContext);
     const riskReview = await this.reviewARTRisks(executionContext);
 
     // Generate action items and decisions
     const actionItems = await this.generateSyncActionItems(
       impedimentDiscussion,
       dependencyCoordination,
-      riskReview
+      riskReview,
     );
-    const decisions = await this.captureSyncDecisions(impedimentDiscussion, dependencyCoordination);
+    const decisions = await this.captureSyncDecisions(
+      impedimentDiscussion,
+      dependencyCoordination,
+    );
 
     // Collect feedback
     const feedback = await this.collectSyncFeedback(executionContext);
@@ -1198,14 +1283,21 @@ export class SAFeEventsManager extends EventEmitter {
       objectives: await this.generateSyncObjectiveOutcomes(
         statusUpdates,
         impedimentDiscussion,
-        dependencyCoordination
+        dependencyCoordination,
       ),
-      deliverables: await this.generateSyncDeliverables(statusUpdates, actionItems, decisions),
+      deliverables: await this.generateSyncDeliverables(
+        statusUpdates,
+        actionItems,
+        decisions,
+      ),
       decisions,
       actionItems,
       feedback,
       metrics,
-      lessonsLearned: await this.extractSyncLessonsLearned(statusUpdates, feedback),
+      lessonsLearned: await this.extractSyncLessonsLearned(
+        statusUpdates,
+        feedback,
+      ),
       improvements: await this.identifySyncImprovements(feedback, metrics),
       nextSteps: await this.generateSyncNextSteps(actionItems, decisions),
     };
@@ -1243,18 +1335,26 @@ export class SAFeEventsManager extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('safe-events-manager:state');
+      const persistedState = await this.memory.retrieve(
+        'safe-events-manager:state',
+      );
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
-          eventConfigurations: new Map(persistedState.eventConfigurations || []),
+          eventConfigurations: new Map(
+            persistedState.eventConfigurations || [],
+          ),
           scheduledEvents: new Map(persistedState.scheduledEvents || []),
           eventHistory: new Map(persistedState.eventHistory || []),
           eventTemplates: new Map(persistedState.eventTemplates || []),
-          participantRegistry: new Map(persistedState.participantRegistry || []),
+          participantRegistry: new Map(
+            persistedState.participantRegistry || [],
+          ),
           eventMetrics: new Map(persistedState.eventMetrics || []),
-          recurringEventSchedules: new Map(persistedState.recurringEventSchedules || []),
+          recurringEventSchedules: new Map(
+            persistedState.recurringEventSchedules || [],
+          ),
           eventDependencies: new Map(persistedState.eventDependencies || []),
         };
         this.logger.info('SAFe Events Manager state loaded');
@@ -1268,13 +1368,19 @@ export class SAFeEventsManager extends EventEmitter {
     try {
       const stateToSerialize = {
         ...this.state,
-        eventConfigurations: Array.from(this.state.eventConfigurations.entries()),
+        eventConfigurations: Array.from(
+          this.state.eventConfigurations.entries(),
+        ),
         scheduledEvents: Array.from(this.state.scheduledEvents.entries()),
         eventHistory: Array.from(this.state.eventHistory.entries()),
         eventTemplates: Array.from(this.state.eventTemplates.entries()),
-        participantRegistry: Array.from(this.state.participantRegistry.entries()),
+        participantRegistry: Array.from(
+          this.state.participantRegistry.entries(),
+        ),
         eventMetrics: Array.from(this.state.eventMetrics.entries()),
-        recurringEventSchedules: Array.from(this.state.recurringEventSchedules.entries()),
+        recurringEventSchedules: Array.from(
+          this.state.recurringEventSchedules.entries(),
+        ),
         eventDependencies: Array.from(this.state.eventDependencies.entries()),
       };
 
@@ -1345,7 +1451,9 @@ export class SAFeEventsManager extends EventEmitter {
 
   // Many placeholder implementations would follow...
 
-  private async createEventTemplate(eventType: SAFeEventType): Promise<SAFeEventConfig> {
+  private async createEventTemplate(
+    eventType: SAFeEventType,
+  ): Promise<SAFeEventConfig> {
     // Placeholder implementation
     return {} as SAFeEventConfig;
   }
@@ -1363,75 +1471,88 @@ export class SAFeEventsManager extends EventEmitter {
     artId: string,
     iterationNumber: number,
     features: Feature[],
-    stakeholders: string[]
+    stakeholders: string[],
   ): Promise<SAFeEventConfig> {
     return {} as SAFeEventConfig;
   }
 
-  private async scheduleEvent(config: SAFeEventConfig): Promise<EventExecutionContext> {
+  private async scheduleEvent(
+    config: SAFeEventConfig,
+  ): Promise<EventExecutionContext> {
     return {} as EventExecutionContext;
   }
 
   private async setupSystemDemoPreparation(
     context: EventExecutionContext,
-    features: Feature[]
+    features: Feature[],
   ): Promise<void> {}
 
   private async createSystemDemoAGUIGates(
     context: EventExecutionContext,
-    features: Feature[]
+    features: Feature[],
   ): Promise<void> {}
 
   // Additional placeholder methods would continue...
-  private async startEventExecution(context: EventExecutionContext): Promise<void> {}
-  private async completeEventExecution(context: EventExecutionContext): Promise<void> {}
-  private getEventConfiguration(context: EventExecutionContext): SAFeEventConfig {
+  private async startEventExecution(
+    context: EventExecutionContext,
+  ): Promise<void> {}
+  private async completeEventExecution(
+    context: EventExecutionContext,
+  ): Promise<void> {}
+  private getEventConfiguration(
+    context: EventExecutionContext,
+  ): SAFeEventConfig {
     return {} as SAFeEventConfig;
   }
   private async executeSystemDemoAgendaItem(
     item: EventAgendaItem,
-    context: EventExecutionContext
-  ): Promise<any> {
+    context: EventExecutionContext,
+  ): Promise<unknown> {
     return {};
   }
   private async processSystemDemoGate(
     item: EventAgendaItem,
-    outcome: any,
-    context: EventExecutionContext
+    outcome: unknown,
+    context: EventExecutionContext,
   ): Promise<void> {}
-  private async createFailedDemoActionItem(item: EventAgendaItem, error: any): Promise<ActionItem> {
+  private async createFailedDemoActionItem(
+    item: EventAgendaItem,
+    error: unknown,
+  ): Promise<ActionItem> {
     return {} as ActionItem;
   }
   private async collectSystemDemoFeedback(
-    context: EventExecutionContext
+    context: EventExecutionContext,
   ): Promise<ParticipantFeedback[]> {
     return [];
   }
-  private async calculateEventMetrics(context: EventExecutionContext): Promise<EventMetrics> {
+  private async calculateEventMetrics(
+    context: EventExecutionContext,
+  ): Promise<EventMetrics> {
     return {} as EventMetrics;
   }
   private async generateSystemDemoDeliverables(
     context: EventExecutionContext,
-    outcomes: ObjectiveOutcome[]
+    outcomes: ObjectiveOutcome[],
   ): Promise<DeliverableOutcome[]> {
     return [];
   }
   private async extractDemoLessonsLearned(
     feedback: ParticipantFeedback[],
-    metrics: EventMetrics
+    metrics: EventMetrics,
   ): Promise<string[]> {
     return [];
   }
   private async identifyDemoImprovements(
     feedback: ParticipantFeedback[],
-    metrics: EventMetrics
+    metrics: EventMetrics,
   ): Promise<string[]> {
     return [];
   }
   private async generateDemoNextSteps(
     outcomes: ObjectiveOutcome[],
     decisions: EventDecision[],
-    actionItems: ActionItem[]
+    actionItems: ActionItem[],
   ): Promise<string[]> {
     return [];
   }
@@ -1440,61 +1561,72 @@ export class SAFeEventsManager extends EventEmitter {
   private async createInspectAndAdaptConfiguration(
     artId: string,
     piId: string,
-    piMetrics: any,
-    retrospectiveData: any[]
+    piMetrics: unknown,
+    retrospectiveData: unknown[],
   ): Promise<SAFeEventConfig> {
     return {} as SAFeEventConfig;
   }
   private async setupInspectAndAdaptPreparation(
     context: EventExecutionContext,
-    piMetrics: any,
-    retrospectiveData: any[]
+    piMetrics: unknown,
+    retrospectiveData: unknown[],
   ): Promise<void> {}
-  private async createInspectAndAdaptAGUIGates(context: EventExecutionContext): Promise<void> {}
-  private async executeInspectPhase(context: EventExecutionContext): Promise<any> {
+  private async createInspectAndAdaptAGUIGates(
+    context: EventExecutionContext,
+  ): Promise<void> {}
+  private async executeInspectPhase(
+    context: EventExecutionContext,
+  ): Promise<unknown> {
     return {};
   }
   private async executeAdaptPhase(
     context: EventExecutionContext,
-    inspectResults: any
-  ): Promise<any> {
+    inspectResults: unknown,
+  ): Promise<unknown> {
     return {};
   }
   private async generateIAObjectiveOutcomes(
-    inspectResults: any,
-    adaptResults: any
+    inspectResults: unknown,
+    adaptResults: unknown,
   ): Promise<ObjectiveOutcome[]> {
     return [];
   }
-  private async captureIADecisions(adaptResults: any): Promise<EventDecision[]> {
+  private async captureIADecisions(
+    adaptResults: unknown,
+  ): Promise<EventDecision[]> {
     return [];
   }
-  private async generateIAActionItems(adaptResults: any): Promise<ActionItem[]> {
+  private async generateIAActionItems(
+    adaptResults: unknown,
+  ): Promise<ActionItem[]> {
     return [];
   }
   private async collectWorkshopFeedback(
-    context: EventExecutionContext
+    context: EventExecutionContext,
   ): Promise<ParticipantFeedback[]> {
     return [];
   }
   private async generateIADeliverables(
-    inspectResults: any,
-    adaptResults: any
+    inspectResults: unknown,
+    adaptResults: unknown,
   ): Promise<DeliverableOutcome[]> {
     return [];
   }
-  private async extractIALessonsLearned(inspectResults: any, adaptResults: any): Promise<string[]> {
+  private async extractIALessonsLearned(
+    inspectResults: unknown,
+    adaptResults: unknown,
+  ): Promise<string[]> {
     return [];
   }
   private async identifyIAImprovements(
     feedback: ParticipantFeedback[],
-    metrics: EventMetrics
+    metrics: EventMetrics,
   ): Promise<string[]> {
     return [];
   }
   private async generateIANextSteps(
     decisions: EventDecision[],
-    actionItems: ActionItem[]
+    actionItems: ActionItem[],
   ): Promise<string[]> {
     return [];
   }
@@ -1503,83 +1635,91 @@ export class SAFeEventsManager extends EventEmitter {
   private async createARTSyncConfiguration(
     artId: string,
     teams: ARTTeam[],
-    impediments: any[],
-    dependencies: any[]
+    impediments: unknown[],
+    dependencies: unknown[],
   ): Promise<SAFeEventConfig> {
     return {} as SAFeEventConfig;
   }
   private async setupARTSyncPreparation(
     context: EventExecutionContext,
     teams: ARTTeam[],
-    impediments: any[]
+    impediments: unknown[],
   ): Promise<void> {}
-  private async collectTeamStatusUpdates(context: EventExecutionContext): Promise<any> {
+  private async collectTeamStatusUpdates(
+    context: EventExecutionContext,
+  ): Promise<unknown> {
     return {};
   }
-  private async facilitateImpedimentDiscussion(context: EventExecutionContext): Promise<any> {
+  private async facilitateImpedimentDiscussion(
+    context: EventExecutionContext,
+  ): Promise<unknown> {
     return {};
   }
-  private async coordinateDependencies(context: EventExecutionContext): Promise<any> {
+  private async coordinateDependencies(
+    context: EventExecutionContext,
+  ): Promise<unknown> {
     return {};
   }
-  private async reviewARTRisks(context: EventExecutionContext): Promise<any> {
+  private async reviewARTRisks(
+    context: EventExecutionContext,
+  ): Promise<unknown> {
     return {};
   }
   private async generateSyncActionItems(
-    impediments: any,
-    dependencies: any,
-    risks: any
+    impediments: unknown,
+    dependencies: unknown,
+    risks: unknown,
   ): Promise<ActionItem[]> {
     return [];
   }
   private async captureSyncDecisions(
-    impediments: any,
-    dependencies: any
+    impediments: unknown,
+    dependencies: unknown,
   ): Promise<EventDecision[]> {
     return [];
   }
   private async collectSyncFeedback(
-    context: EventExecutionContext
+    context: EventExecutionContext,
   ): Promise<ParticipantFeedback[]> {
     return [];
   }
   private async generateSyncObjectiveOutcomes(
-    statusUpdates: any,
-    impediments: any,
-    dependencies: any
+    statusUpdates: unknown,
+    impediments: unknown,
+    dependencies: unknown,
   ): Promise<ObjectiveOutcome[]> {
     return [];
   }
   private async generateSyncDeliverables(
-    statusUpdates: any,
+    statusUpdates: unknown,
     actionItems: ActionItem[],
-    decisions: EventDecision[]
+    decisions: EventDecision[],
   ): Promise<DeliverableOutcome[]> {
     return [];
   }
   private async extractSyncLessonsLearned(
-    statusUpdates: any,
-    feedback: ParticipantFeedback[]
+    statusUpdates: unknown,
+    feedback: ParticipantFeedback[],
   ): Promise<string[]> {
     return [];
   }
   private async identifySyncImprovements(
     feedback: ParticipantFeedback[],
-    metrics: EventMetrics
+    metrics: EventMetrics,
   ): Promise<string[]> {
     return [];
   }
   private async generateSyncNextSteps(
     actionItems: ActionItem[],
-    decisions: EventDecision[]
+    decisions: EventDecision[],
   ): Promise<string[]> {
     return [];
   }
 
   // Event handlers
-  private async handlePIStart(payload: any): Promise<void> {}
-  private async handleIterationCompletion(payload: any): Promise<void> {}
-  private async handleFeatureDemoReady(payload: any): Promise<void> {}
+  private async handlePIStart(payload: unknown): Promise<void> {}
+  private async handleIterationCompletion(payload: unknown): Promise<void> {}
+  private async handleFeatureDemoReady(payload: unknown): Promise<void> {}
 }
 
 // ============================================================================

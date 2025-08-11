@@ -25,7 +25,9 @@ export interface StartupValidationOptions {
   /** Check production readiness even in development */
   enforceProductionStandards?: boolean;
   /** Skip certain validation categories */
-  skipValidation?: Array<'structure' | 'security' | 'performance' | 'ports' | 'environment'>;
+  skipValidation?: Array<
+    'structure' | 'security' | 'performance' | 'ports' | 'environment'
+  >;
   /** Output format for validation results */
   outputFormat?: 'console' | 'json' | 'silent';
 }
@@ -59,7 +61,7 @@ export interface StartupValidationResult {
  * @example
  */
 export async function runStartupValidation(
-  options: StartupValidationOptions = {}
+  options: StartupValidationOptions = {},
 ): Promise<StartupValidationResult> {
   const {
     strict = process.env['NODE_ENV'] === 'production',
@@ -125,7 +127,9 @@ export async function runStartupValidation(
       }
 
       if (outputFormat === 'console') {
-        logger.info(validationDetails.securityIssues.length === 0 ? '✅' : '❌');
+        logger.info(
+          validationDetails.securityIssues.length === 0 ? '✅' : '❌',
+        );
       }
     }
 
@@ -144,19 +148,30 @@ export async function runStartupValidation(
       portConflicts = portCheck.conflicts;
 
       if (portConflicts.length > 0) {
-        const criticalConflicts = portConflicts.filter((c) => c.severity === 'error');
+        const criticalConflicts = portConflicts.filter(
+          (c) => c.severity === 'error',
+        );
         if (criticalConflicts.length > 0) {
           errors.push(
             ...criticalConflicts.map(
-              (c) => `Port conflict: ${c.port} used by ${c.services.join(', ')}`
-            )
+              (c) =>
+                `Port conflict: ${c.port} used by ${c.services.join(', ')}`,
+            ),
           );
-          blockers.push(...criticalConflicts.map((c) => `Critical port conflict on ${c.port}`));
+          blockers.push(
+            ...criticalConflicts.map(
+              (c) => `Critical port conflict on ${c.port}`,
+            ),
+          );
         }
 
-        const warningConflicts = portConflicts.filter((c) => c.severity === 'warning');
+        const warningConflicts = portConflicts.filter(
+          (c) => c.severity === 'warning',
+        );
         warnings.push(
-          ...warningConflicts.map((c) => `Port ${c.port} shared by ${c.services.join(', ')}`)
+          ...warningConflicts.map(
+            (c) => `Port ${c.port} shared by ${c.services.join(', ')}`,
+          ),
         );
       }
 
@@ -166,7 +181,7 @@ export async function runStartupValidation(
             ? '✅'
             : portConflicts.some((c) => c.severity === 'error')
               ? '❌'
-              : '⚠️'
+              : '⚠️',
         );
       }
     }
@@ -177,7 +192,9 @@ export async function runStartupValidation(
         process.stdout.write('🌍 Validating environment variables... ');
       }
 
-      const envIssues = await validateEnvironmentVariables(environment === 'production');
+      const envIssues = await validateEnvironmentVariables(
+        environment === 'production',
+      );
       if (envIssues.errors.length > 0) {
         errors.push(...envIssues.errors);
         if (environment === 'production') {
@@ -200,7 +217,9 @@ export async function runStartupValidation(
       warnings.push(...validationDetails.performanceWarnings);
 
       if (outputFormat === 'console') {
-        logger.info(validationDetails.performanceWarnings.length <= 2 ? '✅' : '⚠️');
+        logger.info(
+          validationDetails.performanceWarnings.length <= 2 ? '✅' : '⚠️',
+        );
       }
     }
 
@@ -244,7 +263,8 @@ export async function runStartupValidation(
 
     return result;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown validation error';
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown validation error';
     const result: StartupValidationResult = {
       success: false,
       errors: [errorMessage],
@@ -298,14 +318,20 @@ async function validateEnvironmentVariables(isProduction: boolean): Promise<{
 
   // Validate NODE_ENV value
   const validNodeEnvs = ['development', 'production', 'test'];
-  if (process.env['NODE_ENV'] && !validNodeEnvs?.includes(process.env['NODE_ENV'])) {
+  if (
+    process.env['NODE_ENV'] &&
+    !validNodeEnvs?.includes(process.env['NODE_ENV'])
+  ) {
     errors.push(
-      `Invalid NODE_ENV value: ${process.env['NODE_ENV']}. Must be one of: ${validNodeEnvs?.join(', ')}`
+      `Invalid NODE_ENV value: ${process.env['NODE_ENV']}. Must be one of: ${validNodeEnvs?.join(', ')}`,
     );
   }
 
   // Validate API key format (basic check)
-  if (process.env['ANTHROPIC_API_KEY'] && process.env['ANTHROPIC_API_KEY'].length < 10) {
+  if (
+    process.env['ANTHROPIC_API_KEY'] &&
+    process.env['ANTHROPIC_API_KEY'].length < 10
+  ) {
     errors.push('ANTHROPIC_API_KEY appears to be too short or invalid');
   }
 
@@ -315,7 +341,9 @@ async function validateEnvironmentVariables(isProduction: boolean): Promise<{
       warnings.push('DEBUG environment variable is set in production');
     }
     if (process.env['CLAUDE_LOG_LEVEL'] === 'debug') {
-      warnings.push('Debug logging enabled in production - consider using "info" level');
+      warnings.push(
+        'Debug logging enabled in production - consider using "info" level',
+      );
     }
   }
 
@@ -331,7 +359,7 @@ async function validateEnvironmentVariables(isProduction: boolean): Promise<{
  */
 async function outputValidationResults(
   result: StartupValidationResult,
-  format: 'console' | 'json' | 'silent'
+  format: 'console' | 'json' | 'silent',
 ): Promise<void> {
   if (format === 'silent') {
     return;
@@ -365,7 +393,9 @@ async function outputValidationResults(
     logger.info('\n🌐 Port Conflicts:');
     result?.portConflicts?.forEach((conflict) => {
       const icon = conflict.severity === 'error' ? '❌' : '⚠️';
-      logger.info(`  ${icon} Port ${conflict.port}: ${conflict.services.join(', ')}`);
+      logger.info(
+        `  ${icon} Port ${conflict.port}: ${conflict.services.join(', ')}`,
+      );
     });
   }
 
@@ -373,20 +403,22 @@ async function outputValidationResults(
   if (result?.validationDetails?.failsafeApplied.length > 0) {
     logger.info('\n🛡️  Failsafe Defaults Applied:');
     result?.validationDetails?.failsafeApplied?.forEach((applied) =>
-      logger.info(`  🛡️  ${applied}`)
+      logger.info(`  🛡️  ${applied}`),
     );
   }
 
   // Health score
   const healthReport = await configHealthChecker?.getHealthReport();
   logger.info(
-    `\n💯 Configuration Health Score: ${healthReport.score}/100 (${healthReport.status.toUpperCase()})`
+    `\n💯 Configuration Health Score: ${healthReport.score}/100 (${healthReport.status.toUpperCase()})`,
   );
 
   if (!result?.success) {
     logger.info('\n🚨 Fix the issues above before deploying to production!');
   } else if (result?.warnings.length > 0) {
-    logger.info('\n✅ Configuration is valid but consider addressing the warnings above.');
+    logger.info(
+      '\n✅ Configuration is valid but consider addressing the warnings above.',
+    );
   } else {
     logger.info('\n🎉 Configuration is healthy and production-ready!');
   }
@@ -400,7 +432,9 @@ async function outputValidationResults(
  * @param options - Validation options.
  * @example
  */
-export async function validateAndExit(options: StartupValidationOptions = {}): Promise<never> {
+export async function validateAndExit(
+  options: StartupValidationOptions = {},
+): Promise<never> {
   const result = await runStartupValidation(options);
   process.exit(result?.exitCode);
 }
@@ -425,11 +459,15 @@ export async function cli(): Promise<void> {
   };
 
   // Parse skip validation flags
-  if (args.includes('--skip-structure')) options?.['skipValidation']!.push('structure');
-  if (args.includes('--skip-security')) options?.['skipValidation']!.push('security');
-  if (args.includes('--skip-performance')) options?.['skipValidation']!.push('performance');
+  if (args.includes('--skip-structure'))
+    options?.['skipValidation']!.push('structure');
+  if (args.includes('--skip-security'))
+    options?.['skipValidation']!.push('security');
+  if (args.includes('--skip-performance'))
+    options?.['skipValidation']!.push('performance');
   if (args.includes('--skip-ports')) options?.['skipValidation']!.push('ports');
-  if (args.includes('--skip-environment')) options?.['skipValidation']!.push('environment');
+  if (args.includes('--skip-environment'))
+    options?.['skipValidation']!.push('environment');
 
   // Show help
   if (args.includes('--help') || args.includes('-h')) {

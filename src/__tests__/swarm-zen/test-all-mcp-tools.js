@@ -113,13 +113,19 @@ async function testAllMcpTools() {
 
   // Test 2: Create 5 Agents in Parallel
   log('\n2. Creating 5-agent swarm in parallel...', 'blue');
-  const agentTypes = ['researcher', 'coder', 'analyst', 'optimizer', 'coordinator'];
+  const agentTypes = [
+    'researcher',
+    'coder',
+    'analyst',
+    'optimizer',
+    'coordinator',
+  ];
   const agentPromises = agentTypes.map((type, index) =>
     executeMcpTool('agent_spawn', {
       type,
       name: `agent-${type}-${index + 1}`,
       capabilities: [`capability-${index + 1}`, `capability-${index + 2}`],
-    })
+    }),
   );
 
   try {
@@ -298,7 +304,10 @@ async function testAllMcpTools() {
       results.tools.task_results = { status: 'passed', result };
     } else {
       log('⚠️  task_results: SKIPPED (no tasks found)', 'yellow');
-      results.tools.task_results = { status: 'skipped', reason: 'No tasks available' };
+      results.tools.task_results = {
+        status: 'skipped',
+        reason: 'No tasks available',
+      };
     }
   } catch (error) {
     log('❌ task_results: FAILED', 'red');
@@ -318,9 +327,18 @@ async function testAllMcpTools() {
   // Tool-by-tool summary
   log('\nTool Results:', 'blue');
   Object.entries(results.tools).forEach(([tool, result]) => {
-    const status = result.status === 'passed' ? '✅' : result.status === 'failed' ? '❌' : '⚠️';
+    const status =
+      result.status === 'passed'
+        ? '✅'
+        : result.status === 'failed'
+          ? '❌'
+          : '⚠️';
     const color =
-      result.status === 'passed' ? 'green' : result.status === 'failed' ? 'red' : 'yellow';
+      result.status === 'passed'
+        ? 'green'
+        : result.status === 'failed'
+          ? 'red'
+          : 'yellow';
     log(`  ${status} ${tool}: ${result.status.toUpperCase()}`, color);
   });
 

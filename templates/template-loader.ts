@@ -4,11 +4,11 @@
 
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+// fileURLToPath is provided by esbuild banner
 import type { AgentTemplate } from '../agents/agent-manager.js';
-import type { AgentType } from '../types/agent-types.js';
+import type { AgentType } from '../types/agent-types.ts';
 
-const __filename = fileURLToPath(import.meta.url);
+// __filename is provided by esbuild banner
 const __dirname = dirname(__filename);
 
 export interface TemplateManifest {
@@ -234,9 +234,7 @@ export class TemplateLoader {
   /**
    * Capability interface defining agent capabilities and limitations
    */
-  interface;
-  Capability;
-  {
+  interface Capability {
   codeGeneration: boolean;
   codeReview: boolean;
   testing: boolean;
@@ -265,10 +263,7 @@ export class TemplateLoader {
  * @param type - The agent type to create capabilities for
  * @returns Capability configuration for the agent type
  */
-private
-createDefaultCapabilities(type: string)
-: Capability
-{
+private createDefaultCapabilities(type: string): Capability {
   const capabilityMap: Record<string, Capability> = {
     'automation-smart-agent': {
       codeGeneration: true,
@@ -325,10 +320,7 @@ createDefaultCapabilities(type: string)
  *
  * @returns Generic capability configuration
  */
-private
-createGenericCapabilities();
-: Capability
-{
+private createGenericCapabilities(): Capability {
   return {
       codeGeneration: false,
       codeReview: true,
@@ -359,10 +351,7 @@ createGenericCapabilities();
  * @param expertiseStr - String containing expertise data in format "skill:level,skill:level"
  * @returns Record mapping skills to their expertise levels (0-1)
  */
-private
-parseExpertise(expertiseStr: string)
-: Record<string, number>
-{
+private parseExpertise(expertiseStr: string): Record<string, number> {
   if (!expertiseStr) return {};
 
   try {
@@ -387,10 +376,7 @@ parseExpertise(expertiseStr: string)
  * @param preferencesStr - String containing preferences in format "key:value,key:value"
  * @returns Record mapping preference keys to their values
  */
-private
-parsePreferences(preferencesStr: string)
-: Record<string, any>
-{
+private parsePreferences(preferencesStr: string): Record<string, any> {
   if (!preferencesStr) return {};
 
   try {
@@ -415,10 +401,7 @@ parsePreferences(preferencesStr: string)
  * @param type - The agent type to create a basic template for
  * @returns Basic agent template configuration
  */
-private
-createBasicTemplate(type: string)
-: AgentTemplate
-{
+private createBasicTemplate(type: string): AgentTemplate {
   return {
       name: this.formatAgentName(type),
       type: type as AgentType,
@@ -449,29 +432,26 @@ createBasicTemplate(type: string)
         toolConfigs: {},
       },
       startupScript: `./scripts/start-${type}.ts`,
+      dependencies: [],
     };
-}
+  }
 
-/**
- * Get loaded template by type
- *
- * @param type - The agent type to retrieve template for
- * @returns The agent template if found, undefined otherwise
- */
-getTemplate(type: string)
-: AgentTemplate | undefined
-{
-  return this.loadedTemplates.get(type);
-}
+  /**
+   * Get loaded template by type
+   *
+   * @param type - The agent type to retrieve template for
+   * @returns The agent template if found, undefined otherwise
+   */
+  getTemplate(type: string): AgentTemplate | undefined {
+    return this.loadedTemplates.get(type);
+  }
 
-/**
- * Get all loaded templates
- *
- * @returns A copy of the map containing all loaded agent templates
- */
-getAllTemplates();
-: Map<string, AgentTemplate>
-{
-  return new Map(this.loadedTemplates);
-}
+  /**
+   * Get all loaded templates
+   *
+   * @returns A copy of the map containing all loaded agent templates
+   */
+  getAllTemplates(): Map<string, AgentTemplate> {
+    return new Map(this.loadedTemplates);
+  }
 }

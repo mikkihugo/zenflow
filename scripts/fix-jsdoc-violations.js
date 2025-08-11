@@ -25,7 +25,13 @@ class JSDocFixer {
     // Find all TypeScript files
     const pattern = path.join(this.baseDir, '**/*.{ts,tsx}');
     const files = await glob(pattern, {
-      ignore: ['**/node_modules/**', '**/dist/**', '**/*.d.ts', '**/__tests__/**', '**/tests/**'],
+      ignore: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/*.d.ts',
+        '**/__tests__/**',
+        '**/tests/**',
+      ],
     });
 
     // console.log(`📁 Found ${files.length} TypeScript files to check`);
@@ -53,7 +59,9 @@ class JSDocFixer {
     const changes = [];
 
     // 1. Add file overview if missing
-    const needsFileOverview = !content.includes('@file') && !content.includes('@fileoverview');
+    const needsFileOverview = !(
+      content.includes('@file') || content.includes('@fileoverview')
+    );
     if (needsFileOverview) {
       updatedContent = this.addFileOverview(updatedContent, filePath);
       changes.push('file overview');
@@ -109,7 +117,11 @@ class JSDocFixer {
     // Skip license comments and imports
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-      if (line.startsWith('/*') || line.startsWith('*') || line.startsWith('*/')) {
+      if (
+        line.startsWith('/*') ||
+        line.startsWith('*') ||
+        line.startsWith('*/')
+      ) {
         insertIndex = i + 1;
       } else if (line.startsWith('//')) {
         insertIndex = i + 1;
@@ -152,7 +164,9 @@ class JSDocFixer {
     }
     if (fileName === 'types' || fileName.includes('types')) {
       const domain = pathParts.find((part) =>
-        ['core', 'interfaces', 'database', 'neural', 'coordination'].includes(part)
+        ['core', 'interfaces', 'database', 'neural', 'coordination'].includes(
+          part,
+        ),
       );
       return `TypeScript type definitions${domain ? ` for ${domain}` : ''}`;
     }
@@ -195,7 +209,11 @@ class JSDocFixer {
       {
         pattern: /(\* [A-Z][^.]*[a-z])\s*\n/g,
         replacement: (match, description) => {
-          if (description.endsWith('.') || description.endsWith('!') || description.endsWith('?')) {
+          if (
+            description.endsWith('.') ||
+            description.endsWith('!') ||
+            description.endsWith('?')
+          ) {
             return match;
           }
           return `${description}.\n`;
@@ -215,16 +233,19 @@ class JSDocFixer {
     // Find JSDoc blocks with @param but no description
     const paramPattern = /(@param\s+(?:\{[^}]+\}\s+)?(\w+))(\s*\n)/g;
 
-    return content.replace(paramPattern, (match, paramTag, paramName, ending) => {
-      // If there's already a description, don't modify
-      if (match.includes(' - ') || match.includes(' ')) {
-        return match;
-      }
+    return content.replace(
+      paramPattern,
+      (match, paramTag, paramName, ending) => {
+        // If there's already a description, don't modify
+        if (match.includes(' - ') || match.includes(' ')) {
+          return match;
+        }
 
-      // Generate basic description based on parameter name
-      const description = this.generateParamDescription(paramName);
-      return `${paramTag} ${description}${ending}`;
-    });
+        // Generate basic description based on parameter name
+        const description = this.generateParamDescription(paramName);
+        return `${paramTag} ${description}${ending}`;
+      },
+    );
   }
 
   generateParamDescription(paramName) {

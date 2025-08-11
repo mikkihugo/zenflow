@@ -31,7 +31,13 @@ async function comprehensiveOrchestrationTest() {
       maxAgents: 2,
       strategy: 'balanced',
     });
-    const agentTypes = ['researcher', 'coder', 'analyst', 'optimizer', 'coordinator'];
+    const agentTypes = [
+      'researcher',
+      'coder',
+      'analyst',
+      'optimizer',
+      'coordinator',
+    ];
     let _agentCount = 0;
 
     for (let i = 0; i < agentTypes.length; i++) {

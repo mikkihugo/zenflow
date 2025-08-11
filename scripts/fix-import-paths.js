@@ -13,7 +13,8 @@ import path from 'path';
 // Known import mappings (from error analysis)
 const IMPORT_MAPPINGS = {
   // Document entities (moved to product-entities)
-  '../database/entities/feature-document': '../database/entities/product-entities',
+  '../database/entities/feature-document':
+    '../database/entities/product-entities',
   '../database/entities/task-document': '../database/entities/product-entities',
   '../database/entities/adr-document': '../database/entities/product-entities',
   '../database/entities/epic-document': '../database/entities/product-entities',
@@ -29,7 +30,8 @@ const IMPORT_MAPPINGS = {
   '../config/logging-config': '../core/logger',
 
   // Missing modules that should be created
-  '../database/entities/document-entities': '../database/entities/product-entities',
+  '../database/entities/document-entities':
+    '../database/entities/product-entities',
 };
 
 // File extensions to search
@@ -48,7 +50,13 @@ class ImportPathFixer {
     // Find all TypeScript files
     const pattern = path.join(this.baseDir, '**/*.{ts,tsx}');
     const files = await glob(pattern, {
-      ignore: ['**/node_modules/**', '**/dist/**', '**/*.d.ts', '**/__tests__/**', '**/tests/**'],
+      ignore: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/*.d.ts',
+        '**/__tests__/**',
+        '**/tests/**',
+      ],
     });
 
     // console.log(`📁 Found ${files.length} TypeScript files to check`);
@@ -81,7 +89,10 @@ class ImportPathFixer {
 
     // Fix each known import mapping
     for (const [oldImport, newImport] of Object.entries(IMPORT_MAPPINGS)) {
-      const oldPattern = new RegExp(`from ['"]${this.escapeRegex(oldImport)}['"]`, 'g');
+      const oldPattern = new RegExp(
+        `from ['"]${this.escapeRegex(oldImport)}['"]`,
+        'g',
+      );
       const newReplacement = `from '${newImport}'`;
 
       if (oldPattern.test(updatedContent)) {
@@ -92,12 +103,15 @@ class ImportPathFixer {
       // Also fix require() statements
       const oldRequirePattern = new RegExp(
         `require\\(['"]${this.escapeRegex(oldImport)}['"]\\)`,
-        'g'
+        'g',
       );
       const newRequireReplacement = `require('${newImport}')`;
 
       if (oldRequirePattern.test(updatedContent)) {
-        updatedContent = updatedContent.replace(oldRequirePattern, newRequireReplacement);
+        updatedContent = updatedContent.replace(
+          oldRequirePattern,
+          newRequireReplacement,
+        );
         changeCount++;
       }
     }
@@ -152,7 +166,11 @@ class ImportPathFixer {
       {
         missingPath: 'src/database/entities/document-entities.ts',
         existingPath: 'src/database/entities/product-entities.ts',
-        exports: ['FeatureDocumentEntity', 'TaskDocumentEntity', 'BaseDocumentEntity'],
+        exports: [
+          'FeatureDocumentEntity',
+          'TaskDocumentEntity',
+          'BaseDocumentEntity',
+        ],
       },
       {
         missingPath: 'src/types/task-types.ts',
@@ -179,7 +197,7 @@ class ImportPathFixer {
       // Create re-export file
       const relativePath = path.relative(
         path.dirname(fullMissingPath),
-        fullExistingPath.replace('.ts', '')
+        fullExistingPath.replace('.ts', ''),
       );
 
       const content = `/**

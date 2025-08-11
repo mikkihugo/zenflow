@@ -11,7 +11,8 @@ export class FailoverManager {
 
   public async activateFailover(failedAgentId: string): Promise<void> {
     // Implement failover logic
-    const strategy = this.failoverStrategies.get(failedAgentId) || 'redistribute';
+    const strategy =
+      this.failoverStrategies.get(failedAgentId) || 'redistribute';
 
     switch (strategy) {
       case 'redistribute':

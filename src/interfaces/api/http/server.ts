@@ -13,7 +13,11 @@ const logger = getLogger('interfaces-api-http-server');
 import cors from 'cors';
 // Core dependencies
 import { randomBytes } from 'crypto';
-import express, { type Application, type Request, type Response } from 'express';
+import express, {
+  type Application,
+  type Request,
+  type Response,
+} from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 
@@ -29,13 +33,17 @@ let swaggerUi: any = null;
 try {
   compression = require('compression');
 } catch (_e) {
-  logger.warn('compression package not available - performance middleware disabled');
+  logger.warn(
+    'compression package not available - performance middleware disabled',
+  );
 }
 
 try {
   ({ OpenApiValidator } = require('express-openapi-validator'));
 } catch (_e) {
-  logger.warn('express-openapi-validator package not available - request validation disabled');
+  logger.warn(
+    'express-openapi-validator package not available - request validation disabled',
+  );
 }
 
 try {
@@ -45,7 +53,7 @@ try {
   logger.warn('swagger packages not available - API documentation disabled');
 }
 
-import { config as getConfig } from '../../../config';
+import { config as getConfig } from '../../../config/index.js';
 import { authMiddleware } from './middleware/auth.ts';
 // Import middleware
 import { errorHandler } from './middleware/errors.ts';
@@ -221,7 +229,7 @@ export class APIServer {
             imgSrc: ["'self'", 'data:', 'https:'],
           },
         },
-      })
+      }),
     );
 
     // CORS configuration
@@ -231,7 +239,7 @@ export class APIServer {
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-      })
+      }),
     );
 
     // Performance middleware
@@ -302,7 +310,7 @@ export class APIServer {
     if (this.config.enableSwagger && swaggerJsdoc && swaggerUi) {
       const specs = swaggerJsdoc(swaggerOptions);
       this.app.use(
-        '/docs',
+        '/api-docs',
         swaggerUi.serve,
         swaggerUi.setup(specs, {
           explorer: true,
@@ -316,7 +324,7 @@ export class APIServer {
               return req;
             },
           },
-        })
+        }),
       );
 
       // Raw OpenAPI spec endpoint
@@ -441,9 +449,13 @@ export class APIServer {
   public async start(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        this.server = this.app.listen(this.config.port, this.config.host, () => {
-          resolve();
-        });
+        this.server = this.app.listen(
+          this.config.port,
+          this.config.host,
+          () => {
+            resolve();
+          },
+        );
 
         this.server.on('error', (error: Error) => {
           reject(error);
@@ -497,7 +509,9 @@ export class APIServer {
  *
  * @param config
  */
-export const createAPIServer = async (config?: Partial<APIServerConfig>): Promise<APIServer> => {
+export const createAPIServer = async (
+  config?: Partial<APIServerConfig>,
+): Promise<APIServer> => {
   const server = new APIServer(config);
   await server.start();
   return server;

@@ -8,7 +8,11 @@
  */
 
 import type { ILogger } from '../../core/interfaces/base-interfaces.ts';
-import type { EventManagerConfig, EventManagerType, SystemEvent } from './core/interfaces.ts';
+import type {
+  EventManagerConfig,
+  EventManagerType,
+  SystemEvent,
+} from './core/interfaces.ts';
 
 import { EventManagerTypes, EventTypeGuards } from './core/interfaces.ts';
 import type { EventManager } from './manager.ts';
@@ -236,7 +240,10 @@ export class UELValidationFramework {
     };
 
     this.integrationConfig = {
-      requiredManagerTypes: [EventManagerTypes.SYSTEM, EventManagerTypes.COORDINATION],
+      requiredManagerTypes: [
+        EventManagerTypes.SYSTEM,
+        EventManagerTypes.COORDINATION,
+      ],
       requiredEventTypes: ['system:lifecycle', 'coordination:swarm'],
       crossManagerTests: true,
       performanceBenchmarks: {
@@ -255,7 +262,10 @@ export class UELValidationFramework {
    * @param event
    * @param schema
    */
-  validateEventType<T extends SystemEvent>(event: T, schema?: EventTypeSchema): ValidationResult {
+  validateEventType<T extends SystemEvent>(
+    event: T,
+    schema?: EventTypeSchema,
+  ): ValidationResult {
     const startTime = Date.now();
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
@@ -265,15 +275,7 @@ export class UELValidationFramework {
       // Get schema for event type
       const eventSchema = schema || this.eventTypeSchemas.get(event.type);
 
-      if (!eventSchema) {
-        warnings.push({
-          code: 'SCHEMA_NOT_FOUND',
-          message: `No validation schema found for event type: ${event.type}`,
-          category: 'best-practice',
-          impact: 'medium',
-          context: { eventType: event.type },
-        });
-      } else {
+      if (eventSchema) {
         // Validate required properties
         for (const required of eventSchema.required) {
           if (!(required in event)) {
@@ -289,10 +291,15 @@ export class UELValidationFramework {
         }
 
         // Validate property types
-        for (const [property, definition] of Object.entries(eventSchema.properties)) {
+        for (const [property, definition] of Object.entries(
+          eventSchema.properties,
+        )) {
           if (property in event) {
             const value = (event as any)[property];
-            const isValidType = this.validatePropertyType(value, definition.type);
+            const isValidType = this.validatePropertyType(
+              value,
+              definition.type,
+            );
 
             if (!isValidType) {
               errors.push({
@@ -301,7 +308,11 @@ export class UELValidationFramework {
                 severity: 'medium',
                 category: 'type',
                 suggestion: `Ensure property '${property}' is of type ${definition.type}`,
-                context: { property, expectedType: definition.type, actualType: typeof value },
+                context: {
+                  property,
+                  expectedType: definition.type,
+                  actualType: typeof value,
+                },
               });
             }
 
@@ -337,17 +348,32 @@ export class UELValidationFramework {
             }
           }
         }
+      } else {
+        warnings.push({
+          code: 'SCHEMA_NOT_FOUND',
+          message: `No validation schema found for event type: ${event.type}`,
+          category: 'best-practice',
+          impact: 'medium',
+          context: { eventType: event.type },
+        });
       }
 
       // General event validation
-      this.validateGeneralEventStructure(event, errors, warnings, recommendations);
+      this.validateGeneralEventStructure(
+        event,
+        errors,
+        warnings,
+        recommendations,
+      );
 
       const validationTime = Date.now() - startTime;
       const score = this.calculateValidationScore(errors, warnings);
 
       return {
         valid:
-          errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
+          errors.filter(
+            (e) => e.severity === 'critical' || e.severity === 'high',
+          ).length === 0,
         score,
         errors,
         warnings,
@@ -441,7 +467,10 @@ export class UELValidationFramework {
       });
     }
 
-    if (config?.processing?.queueSize !== undefined && config?.processing?.queueSize > 50000) {
+    if (
+      config?.processing?.queueSize !== undefined &&
+      config?.processing?.queueSize > 50000
+    ) {
       warnings.push({
         code: 'LARGE_QUEUE_SIZE',
         message: `Large queue size may impact memory usage: ${config?.processing?.queueSize}`,
@@ -468,7 +497,9 @@ export class UELValidationFramework {
     const score = this.calculateValidationScore(errors, warnings);
 
     return {
-      valid: errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
+      valid:
+        errors.filter((e) => e.severity === 'critical' || e.severity === 'high')
+          .length === 0,
       score,
       errors,
       warnings,
@@ -495,7 +526,7 @@ export class UELValidationFramework {
    */
   async validateSystemHealth(
     eventManager: EventManager,
-    config?: Partial<HealthValidationConfig>
+    config?: Partial<HealthValidationConfig>,
   ): Promise<ValidationResult> {
     const startTime = Date.now();
     const errors: ValidationError[] = [];
@@ -508,7 +539,10 @@ export class UELValidationFramework {
       const systemStatus = await Promise.race([
         eventManager.getSystemStatus(),
         new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Health check timeout')), healthConfig?.timeout)
+          setTimeout(
+            () => reject(new Error('Health check timeout')),
+            healthConfig?.timeout,
+          ),
         ),
       ]);
 
@@ -545,17 +579,24 @@ export class UELValidationFramework {
       const globalMetrics = await eventManager.getGlobalMetrics();
 
       // Validate performance metrics
-      if (globalMetrics.registry.errorRate > healthConfig?.errorRateThreshold / 100) {
+      if (
+        globalMetrics.registry.errorRate >
+        healthConfig?.errorRateThreshold / 100
+      ) {
         errors.push({
           code: 'HIGH_ERROR_RATE',
           message: `Error rate exceeds threshold: ${(globalMetrics.registry.errorRate * 100).toFixed(2)}%`,
           severity: 'high',
           category: 'performance',
-          suggestion: 'Investigate and fix sources of errors in event processing',
+          suggestion:
+            'Investigate and fix sources of errors in event processing',
         });
       }
 
-      if (globalMetrics.registry.averageLatency > healthConfig?.responseTimeThreshold) {
+      if (
+        globalMetrics.registry.averageLatency >
+        healthConfig?.responseTimeThreshold
+      ) {
         warnings.push({
           code: 'HIGH_LATENCY',
           message: `Average latency is high: ${globalMetrics.registry.averageLatency}ms`,
@@ -582,7 +623,9 @@ export class UELValidationFramework {
 
       return {
         valid:
-          errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
+          errors.filter(
+            (e) => e.severity === 'critical' || e.severity === 'high',
+          ).length === 0,
         score,
         errors,
         warnings,
@@ -643,7 +686,7 @@ export class UELValidationFramework {
   async validateIntegration(
     eventManager: EventManager,
     registry: EventRegistry,
-    config?: Partial<IntegrationValidationConfig>
+    config?: Partial<IntegrationValidationConfig>,
   ): Promise<ValidationResult> {
     const startTime = Date.now();
     const errors: ValidationError[] = [];
@@ -686,7 +729,7 @@ export class UELValidationFramework {
       // Validate factory coverage
       const factoryTypes = registry.listFactoryTypes();
       const missingFactories = Object.values(EventManagerTypes).filter(
-        (type) => !factoryTypes.includes(type)
+        (type) => !factoryTypes.includes(type),
       );
 
       if (missingFactories.length > 0) {
@@ -708,7 +751,9 @@ export class UELValidationFramework {
       const globalMetrics = await eventManager.getGlobalMetrics();
       const performanceBenchmarks = integrationConfig?.performanceBenchmarks;
 
-      if (globalMetrics.registry.averageLatency > performanceBenchmarks.maxLatency) {
+      if (
+        globalMetrics.registry.averageLatency > performanceBenchmarks.maxLatency
+      ) {
         warnings.push({
           code: 'PERFORMANCE_BELOW_BENCHMARK',
           message: `Latency exceeds benchmark: ${globalMetrics.registry.averageLatency}ms > ${performanceBenchmarks.maxLatency}ms`,
@@ -722,7 +767,9 @@ export class UELValidationFramework {
 
       return {
         valid:
-          errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
+          errors.filter(
+            (e) => e.severity === 'critical' || e.severity === 'high',
+          ).length === 0,
         score,
         errors,
         warnings,
@@ -783,7 +830,7 @@ export class UELValidationFramework {
   async validateComplete(
     eventManager: EventManager,
     registry: EventRegistry,
-    sampleEvents?: SystemEvent[]
+    sampleEvents?: SystemEvent[],
   ): Promise<{
     overall: ValidationResult;
     health: ValidationResult;
@@ -823,20 +870,28 @@ export class UELValidationFramework {
 
     // Calculate overall result
     const allResults = [health, integration, ...events];
-    const totalErrors = allResults.reduce((sum, result) => sum + result?.errors.length, 0);
-    const totalWarnings = allResults.reduce((sum, result) => sum + result?.warnings.length, 0);
+    const totalErrors = allResults.reduce(
+      (sum, result) => sum + result?.errors.length,
+      0,
+    );
+    const totalWarnings = allResults.reduce(
+      (sum, result) => sum + result?.warnings.length,
+      0,
+    );
     const totalRecommendations = allResults.reduce(
       (sum, result) => sum + result?.recommendations.length,
-      0
+      0,
     );
     const criticalIssues = allResults.reduce(
-      (sum, result) => sum + result?.errors.filter((e) => e.severity === 'critical').length,
-      0
+      (sum, result) =>
+        sum + result?.errors.filter((e) => e.severity === 'critical').length,
+      0,
     );
 
     const overallScore =
       allResults.length > 0
-        ? allResults.reduce((sum, result) => sum + result?.score, 0) / allResults.length
+        ? allResults.reduce((sum, result) => sum + result?.score, 0) /
+          allResults.length
         : 0;
 
     const overall: ValidationResult = {
@@ -888,7 +943,9 @@ export class UELValidationFramework {
    */
   registerEventTypeSchema(eventType: string, schema: EventTypeSchema): void {
     this.eventTypeSchemas.set(eventType, schema);
-    this.logger.debug(`📋 Registered validation schema for event type: ${eventType}`);
+    this.logger.debug(
+      `📋 Registered validation schema for event type: ${eventType}`,
+    );
   }
 
   /**
@@ -928,10 +985,15 @@ export class UELValidationFramework {
     const summary = {
       totalValidations: results.length,
       averageScore:
-        results.length > 0 ? results.reduce((sum, r) => sum + r.score, 0) / results.length : 0,
+        results.length > 0
+          ? results.reduce((sum, r) => sum + r.score, 0) / results.length
+          : 0,
       totalErrors: results.reduce((sum, r) => sum + r.errors.length, 0),
       totalWarnings: results.reduce((sum, r) => sum + r.warnings.length, 0),
-      totalRecommendations: results.reduce((sum, r) => sum + r.recommendations.length, 0),
+      totalRecommendations: results.reduce(
+        (sum, r) => sum + r.recommendations.length,
+        0,
+      ),
     };
 
     const scoreOverTime = results.map((r) => ({
@@ -944,11 +1006,13 @@ export class UELValidationFramework {
 
     results.forEach((result) => {
       result?.errors.forEach((error) => {
-        errorsByCategory[error.category] = (errorsByCategory[error.category] || 0) + 1;
+        errorsByCategory[error.category] =
+          (errorsByCategory[error.category] || 0) + 1;
       });
 
       result?.recommendations.forEach((rec) => {
-        recommendationsByType[rec.type] = (recommendationsByType[rec.type] || 0) + 1;
+        recommendationsByType[rec.type] =
+          (recommendationsByType[rec.type] || 0) + 1;
       });
     });
 
@@ -976,7 +1040,9 @@ export class UELValidationFramework {
       case 'boolean':
         return typeof value === 'boolean';
       case 'object':
-        return typeof value === 'object' && value !== null && !Array.isArray(value);
+        return (
+          typeof value === 'object' && value !== null && !Array.isArray(value)
+        );
       case 'array':
         return Array.isArray(value);
       default:
@@ -988,7 +1054,7 @@ export class UELValidationFramework {
     event: SystemEvent,
     errors: ValidationError[],
     warnings: ValidationWarning[],
-    recommendations: ValidationRecommendation[]
+    recommendations: ValidationRecommendation[],
   ): void {
     // Validate required base properties
     if (!event.id) {
@@ -1061,7 +1127,7 @@ export class UELValidationFramework {
 
   private calculateValidationScore(
     errors: ValidationError[],
-    warnings: ValidationWarning[]
+    warnings: ValidationWarning[],
   ): number {
     let score = 100;
 
@@ -1147,8 +1213,14 @@ export class UELValidationFramework {
         timestamp: { type: 'object' },
         source: { type: 'string' },
         type: { type: 'string' },
-        operation: { type: 'string', enum: ['start', 'stop', 'restart', 'error', 'health'] },
-        status: { type: 'string', enum: ['success', 'failure', 'pending', 'unknown'] },
+        operation: {
+          type: 'string',
+          enum: ['start', 'stop', 'restart', 'error', 'health'],
+        },
+        status: {
+          type: 'string',
+          enum: ['success', 'failure', 'pending', 'unknown'],
+        },
         details: { type: 'object' },
       },
       additionalProperties: true,
@@ -1162,7 +1234,10 @@ export class UELValidationFramework {
         timestamp: { type: 'object' },
         source: { type: 'string' },
         type: { type: 'string' },
-        operation: { type: 'string', enum: ['create', 'update', 'destroy', 'coordinate'] },
+        operation: {
+          type: 'string',
+          enum: ['create', 'update', 'destroy', 'coordinate'],
+        },
         targetId: { type: 'string' },
         details: { type: 'object' },
       },

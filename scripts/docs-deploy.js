@@ -15,7 +15,7 @@
 const fs = require('node:fs').promises;
 const path = require('node:path');
 const { execSync } = require('node:child_process');
-const { DocsBuilder } = require('./docs-build');
+const { DocsBuilder } = require('./docs-build.js');
 
 /**
  * Documentation Deployment Pipeline - Automated deployment system
@@ -314,7 +314,9 @@ class DocsDeploymentPipeline {
       this.results.validations.build = validation;
 
       if (!validation.passed) {
-        throw new Error(`Build validation failed: ${validation.issues.length} issues found`);
+        throw new Error(
+          `Build validation failed: ${validation.issues.length} issues found`,
+        );
       }
       return validation;
     } catch (error) {
@@ -390,7 +392,7 @@ class DocsDeploymentPipeline {
         if (stats.size > 1024 * 1024) {
           // 1MB
           validation.issues.push(
-            `${file}: Large file size (${(stats.size / 1024 / 1024).toFixed(1)}MB)`
+            `${file}: Large file size (${(stats.size / 1024 / 1024).toFixed(1)}MB)`,
           );
         }
       } catch (_error) {
@@ -484,7 +486,9 @@ class DocsDeploymentPipeline {
         optimization.css.savings += originalSize - newSize;
         optimization.css.minified++;
       } catch (error) {
-        console.warn(`⚠️ CSS optimization failed for ${cssFile}: ${error.message}`);
+        console.warn(
+          `⚠️ CSS optimization failed for ${cssFile}: ${error.message}`,
+        );
       }
     }
   }
@@ -520,7 +524,9 @@ class DocsDeploymentPipeline {
         optimization.js.savings += originalSize - newSize;
         optimization.js.minified++;
       } catch (error) {
-        console.warn(`⚠️ JS optimization failed for ${jsFile}: ${error.message}`);
+        console.warn(
+          `⚠️ JS optimization failed for ${jsFile}: ${error.message}`,
+        );
       }
     }
   }
@@ -554,7 +560,9 @@ class DocsDeploymentPipeline {
         optimization.html.savings += originalSize - newSize;
         optimization.html.minified++;
       } catch (error) {
-        console.warn(`⚠️ HTML optimization failed for ${htmlFile}: ${error.message}`);
+        console.warn(
+          `⚠️ HTML optimization failed for ${htmlFile}: ${error.message}`,
+        );
       }
     }
   }
@@ -644,7 +652,9 @@ class DocsDeploymentPipeline {
     // This would recursively copy files from build to deploy directory
     // For now, this is a simplified placeholder
     try {
-      execSync(`cp -r ${this.buildDir}/* ${this.deployDir}/`, { stdio: 'ignore' });
+      execSync(`cp -r ${this.buildDir}/* ${this.deployDir}/`, {
+        stdio: 'ignore',
+      });
     } catch (error) {
       throw new Error(`Failed to copy build files: ${error.message}`);
     }
@@ -663,7 +673,8 @@ class DocsDeploymentPipeline {
 
       switch (targetName) {
         case 'github-pages':
-          configs[targetName] = await this.generateGitHubPagesConfig(targetConfig);
+          configs[targetName] =
+            await this.generateGitHubPagesConfig(targetConfig);
           break;
         case 'netlify':
           configs[targetName] = await this.generateNetlifyConfig(targetConfig);
@@ -707,7 +718,10 @@ class DocsDeploymentPipeline {
 
     // Create CNAME file if custom domain is specified
     if (targetConfig.customDomain) {
-      await fs.writeFile(path.join(this.deployDir, 'CNAME'), targetConfig.customDomain);
+      await fs.writeFile(
+        path.join(this.deployDir, 'CNAME'),
+        targetConfig.customDomain,
+      );
     }
 
     return config;
@@ -755,7 +769,10 @@ class DocsDeploymentPipeline {
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
 `;
 
-    await fs.writeFile(path.join(this.deployDir, 'netlify.toml'), netlifyConfig);
+    await fs.writeFile(
+      path.join(this.deployDir, 'netlify.toml'),
+      netlifyConfig,
+    );
 
     return config;
   }
@@ -824,7 +841,7 @@ class DocsDeploymentPipeline {
 
     await fs.writeFile(
       path.join(this.deployDir, 'vercel.json'),
-      JSON.stringify(vercelConfig, null, 2)
+      JSON.stringify(vercelConfig, null, 2),
     );
 
     return config;
@@ -857,12 +874,18 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
     };
 
     // Create robots.txt
-    await fs.writeFile(path.join(this.deployDir, 'robots.txt'), security.robotsTxt);
+    await fs.writeFile(
+      path.join(this.deployDir, 'robots.txt'),
+      security.robotsTxt,
+    );
 
     // Create security.txt
     const wellKnownDir = path.join(this.deployDir, '.well-known');
     await fs.mkdir(wellKnownDir, { recursive: true });
-    await fs.writeFile(path.join(wellKnownDir, 'security.txt'), security.securityTxt);
+    await fs.writeFile(
+      path.join(wellKnownDir, 'security.txt'),
+      security.securityTxt,
+    );
 
     return security;
   }
@@ -884,7 +907,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
 
     await fs.writeFile(
       path.join(this.deployDir, 'deployment.json'),
-      JSON.stringify(metadata, null, 2)
+      JSON.stringify(metadata, null, 2),
     );
 
     return metadata;
@@ -915,7 +938,10 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
       }
 
       try {
-        const deployResult = await this.deployToTarget(targetName, targetConfig);
+        const deployResult = await this.deployToTarget(
+          targetName,
+          targetConfig,
+        );
         deployments[targetName] = deployResult;
         if (deployResult.url) {
         }
@@ -1071,8 +1097,10 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
   async verifyDeployments() {
     const verifications = {};
 
-    for (const [targetName, deployResult] of Object.entries(this.results.deployments)) {
-      if (!deployResult.success || !deployResult.url) {
+    for (const [targetName, deployResult] of Object.entries(
+      this.results.deployments,
+    )) {
+      if (!(deployResult.success && deployResult.url)) {
         verifications[targetName] = {
           accessible: false,
           error: 'Deployment failed or URL not available',
@@ -1137,14 +1165,18 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
   async performanceTest() {
     const performanceResults = {};
 
-    for (const [targetName, deployResult] of Object.entries(this.results.deployments)) {
-      if (!deployResult.success || !deployResult.url) continue;
+    for (const [targetName, deployResult] of Object.entries(
+      this.results.deployments,
+    )) {
+      if (!(deployResult.success && deployResult.url)) continue;
 
       try {
         const metrics = await this.runPerformanceTest(deployResult.url);
         performanceResults[targetName] = metrics;
       } catch (error) {
-        console.warn(`⚠️ Performance test failed for ${targetName}: ${error.message}`);
+        console.warn(
+          `⚠️ Performance test failed for ${targetName}: ${error.message}`,
+        );
         performanceResults[targetName] = { error: error.message };
       }
     }
@@ -1182,9 +1214,15 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
     const report = await this.generateFinalReport();
 
     // Save report
-    await fs.writeFile(path.join(this.deployDir, 'deployment-report.html'), report.html);
+    await fs.writeFile(
+      path.join(this.deployDir, 'deployment-report.html'),
+      report.html,
+    );
 
-    await fs.writeFile(path.join(this.deployDir, 'deployment-report.md'), report.markdown);
+    await fs.writeFile(
+      path.join(this.deployDir, 'deployment-report.md'),
+      report.markdown,
+    );
   }
 
   /**
@@ -1193,12 +1231,12 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    * @returns {Promise<Object>} Final report in multiple formats
    */
   async generateFinalReport() {
-    const successfulDeployments = Object.entries(this.results.deployments).filter(
-      ([_, result]) => result.success
-    );
+    const successfulDeployments = Object.entries(
+      this.results.deployments,
+    ).filter(([_, result]) => result.success);
 
     const failedDeployments = Object.entries(this.results.deployments).filter(
-      ([_, result]) => !result.success
+      ([_, result]) => !result.success,
     );
 
     const markdown = `# 🚀 Documentation Deployment Report
@@ -1222,7 +1260,7 @@ ${successfulDeployments
 - **URL:** [${result.url}](${result.url})
 - **Status:** ✅ Success
 - **Deployed:** ${result.timestamp}
-`
+`,
   )
   .join('')}
 
@@ -1237,7 +1275,7 @@ ${failedDeployments
 - **Status:** ❌ Failed
 - **Error:** ${result.error}
 - **Timestamp:** ${result.timestamp}
-`
+`,
   )
   .join('')}`
     : ''
@@ -1252,7 +1290,7 @@ ${Object.entries(this.results.performance)
 - **Load Time:** ${metrics.loadTime || 'N/A'}ms
 - **Page Size:** ${metrics.pageSize || 'N/A'}KB
 - **Performance Score:** ${metrics.lighthouse || 'N/A'}/100
-`
+`,
   )
   .join('')}
 
@@ -1303,7 +1341,7 @@ ${Object.entries(this.results.performance)
             ${result.url ? `<p><strong>URL:</strong> <a href="${result.url}">${result.url}</a></p>` : ''}
             ${result.error ? `<p><strong>Error:</strong> ${result.error}</p>` : ''}
         </div>
-        `
+        `,
           )
           .join('')}
     </div>

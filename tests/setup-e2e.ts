@@ -100,7 +100,11 @@ async function startTestServices() {
   ]);
 
   // Start Swarm coordination server
-  await startService('swarm', ['npx', 'tsx', 'src/coordination/mcp/mcp-server.ts']);
+  await startService('swarm', [
+    'npx',
+    'tsx',
+    'src/coordination/mcp/mcp-server.ts',
+  ]);
 
   // Wait for all services to be ready
   await waitForServicesReady();
@@ -267,7 +271,9 @@ async function clearSystemCaches() {
 
 async function resetDatabaseState() {
   // Reset test databases to clean state
-  const dbEndpoints = [`http://localhost:${global.e2eConfig.services.api.port}/test/reset`];
+  const dbEndpoints = [
+    `http://localhost:${global.e2eConfig.services.api.port}/test/reset`,
+  ];
 
   for (const endpoint of dbEndpoints) {
     try {
@@ -350,8 +356,10 @@ async function generateE2EReport() {
     summary: {
       totalOperations: global.testMetrics.operations.length,
       avgDuration:
-        global.testMetrics.operations.reduce((sum, op) => sum + op.duration, 0) /
-          global.testMetrics.operations.length || 0,
+        global.testMetrics.operations.reduce(
+          (sum, op) => sum + op.duration,
+          0,
+        ) / global.testMetrics.operations.length || 0,
     },
   };
 }
@@ -443,7 +451,9 @@ global.createE2EClient = (serviceName: string): E2EHttpClient => {
   };
 };
 
-global.runE2EWorkflow = async (workflow: WorkflowStep[]): Promise<WorkflowResult[]> => {
+global.runE2EWorkflow = async (
+  workflow: WorkflowStep[],
+): Promise<WorkflowResult[]> => {
   const results: WorkflowResult[] = [];
   for (const step of workflow) {
     const start = Date.now();
@@ -471,7 +481,7 @@ global.runE2EWorkflow = async (workflow: WorkflowStep[]): Promise<WorkflowResult
 async function executeWorkflowStep(step: WorkflowStep): Promise<unknown> {
   switch (step.type) {
     case 'http': {
-      if (!step.service || !step.method || !step.path) {
+      if (!(step.service && step.method && step.path)) {
         throw new Error('HTTP step requires service, method, and path');
       }
       const client = global.createE2EClient(step.service);
@@ -495,7 +505,7 @@ async function executeWorkflowStep(step: WorkflowStep): Promise<unknown> {
 
 global.measureE2EPerformance = async (
   operation: () => Promise<unknown>,
-  expectedMaxTime: number
+  expectedMaxTime: number,
 ): Promise<PerformanceMeasurement> => {
   const start = Date.now();
   const result = await operation();
@@ -595,6 +605,6 @@ declare global {
   function runE2EWorkflow(workflow: WorkflowStep[]): Promise<WorkflowResult[]>;
   function measureE2EPerformance(
     operation: () => Promise<unknown>,
-    expectedMaxTime: number
+    expectedMaxTime: number,
   ): Promise<PerformanceMeasurement>;
 }

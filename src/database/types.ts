@@ -51,7 +51,9 @@ export interface DatabaseConnection {
   disconnect(): Promise<void>;
   query<T = unknown>(sql: string, params?: unknown[]): Promise<T[]>;
   execute(sql: string, params?: unknown[]): Promise<{ rowsAffected: number }>;
-  transaction<T>(callback: (conn: DatabaseConnection) => Promise<T>): Promise<T>;
+  transaction<T>(
+    callback: (conn: DatabaseConnection) => Promise<T>,
+  ): Promise<T>;
 }
 
 // Database manager interfaces
@@ -159,7 +161,16 @@ export interface MigrationStatus {
 }
 
 // Query builder types
-export type QueryOperator = '=' | '!=' | '>' | '<' | '>=' | '<=' | 'LIKE' | 'IN' | 'NOT IN';
+export type QueryOperator =
+  | '='
+  | '!='
+  | '>'
+  | '<'
+  | '>='
+  | '<='
+  | 'LIKE'
+  | 'IN'
+  | 'NOT IN';
 
 export interface QueryCondition {
   readonly field: string;
@@ -184,7 +195,11 @@ export interface QueryOptions {
 export interface TransactionContext {
   readonly id: string;
   readonly startTime: string;
-  readonly isolation: 'READ_UNCOMMITTED' | 'READ_COMMITTED' | 'REPEATABLE_READ' | 'SERIALIZABLE';
+  readonly isolation:
+    | 'READ_UNCOMMITTED'
+    | 'READ_COMMITTED'
+    | 'REPEATABLE_READ'
+    | 'SERIALIZABLE';
   commit(): Promise<void>;
   rollback(): Promise<void>;
 }
@@ -194,7 +209,7 @@ export class DatabaseError extends Error {
   constructor(
     message: string,
     public readonly code?: string,
-    public readonly details?: Record<string, unknown>
+    public readonly details?: Record<string, unknown>,
   ) {
     super(message);
     this.name = 'DatabaseError';
@@ -204,7 +219,7 @@ export class DatabaseError extends Error {
 export class MigrationError extends DatabaseError {
   constructor(
     message: string,
-    public readonly migrationVersion?: string
+    public readonly migrationVersion?: string,
   ) {
     super(message, 'MIGRATION_ERROR');
     this.name = 'MigrationError';
@@ -214,7 +229,7 @@ export class MigrationError extends DatabaseError {
 export class ConnectionError extends DatabaseError {
   constructor(
     message: string,
-    public readonly connectionConfig?: Partial<DatabaseConfig>
+    public readonly connectionConfig?: Partial<DatabaseConfig>,
   ) {
     super(message, 'CONNECTION_ERROR');
     this.name = 'ConnectionError';
@@ -225,7 +240,7 @@ export class QueryError extends DatabaseError {
   constructor(
     message: string,
     public readonly query?: string,
-    public readonly parameters?: unknown[]
+    public readonly parameters?: unknown[],
   ) {
     super(message, 'QUERY_ERROR');
     this.name = 'QueryError';
@@ -251,13 +266,24 @@ export type EntityType =
   | 'project-template'
   | 'competitor-analysis';
 
-export type EntityStatus = 'draft' | 'active' | 'completed' | 'archived' | 'deprecated';
+export type EntityStatus =
+  | 'draft'
+  | 'active'
+  | 'completed'
+  | 'archived'
+  | 'deprecated';
 
 export type EntityPriority = 'low' | 'medium' | 'high' | 'critical';
 
 // Event types for database operations
 export interface DatabaseEvent {
-  readonly type: 'created' | 'updated' | 'deleted' | 'migrated' | 'connected' | 'disconnected';
+  readonly type:
+    | 'created'
+    | 'updated'
+    | 'deleted'
+    | 'migrated'
+    | 'connected'
+    | 'disconnected';
   readonly entityType?: EntityType;
   readonly entityId?: string;
   readonly timestamp: string;

@@ -48,8 +48,8 @@ class ClaudeIntegrationCore {
   private workingDir: string;
 
   constructor(options: ClaudeIntegrationOptions = {}) {
-    this._autoSetup = options?.autoSetup || false;
-    this.forceSetup = options?.forceSetup || false;
+    this._autoSetup = options?.autoSetup;
+    this.forceSetup = options?.forceSetup;
     this.workingDir = options?.workingDir || process.cwd();
   }
 
@@ -71,7 +71,7 @@ class ClaudeIntegrationCore {
   async addMcpServer() {
     if (!(await this.isClaudeAvailable())) {
       throw new Error(
-        'Claude Code CLI not found. Install with: npm install -g @anthropic-ai/claude-code'
+        'Claude Code CLI not found. Install with: npm install -g @anthropic-ai/claude-code',
       );
     }
 
@@ -79,7 +79,10 @@ class ClaudeIntegrationCore {
       // Add ruv-swarm MCP server using stdio (no port needed)
       const mcpCommand = 'claude mcp add ruv-swarm npx ruv-swarm mcp start';
       execSync(mcpCommand, { stdio: 'inherit', cwd: this.workingDir });
-      return { success: true, message: 'Added ruv-swarm MCP server to Claude Code (stdio)' };
+      return {
+        success: true,
+        message: 'Added ruv-swarm MCP server to Claude Code (stdio)',
+      };
     } catch (error) {
       throw new Error(`Failed to add MCP server: ${(error as Error).message}`);
     }
@@ -114,7 +117,10 @@ class ClaudeIntegrationCore {
       };
       return results;
     } catch (error) {
-      logger.error('❌ Failed to initialize Claude integration:', (error as Error).message);
+      logger.error(
+        '❌ Failed to initialize Claude integration:',
+        (error as Error).message,
+      );
       throw error;
     }
   }
@@ -126,8 +132,11 @@ class ClaudeIntegrationCore {
    * @param options.
    * @param options
    */
-  async invokeClaudeWithPrompt(prompt: string, options: ClaudeInvokeOptions = {}) {
-    if (!prompt || !prompt.trim()) {
+  async invokeClaudeWithPrompt(
+    prompt: string,
+    options: ClaudeInvokeOptions = {},
+  ) {
+    if (!(prompt && prompt.trim())) {
       throw new Error('No prompt provided');
     }
 

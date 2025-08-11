@@ -25,7 +25,11 @@ describe('Database Adapter Interface Consistency', () => {
         'getSchema',
         'getConnectionStats',
       ],
-      GraphDatabaseAdapter: ['queryGraph', 'getNodeCount', 'getRelationshipCount'],
+      GraphDatabaseAdapter: [
+        'queryGraph',
+        'getNodeCount',
+        'getRelationshipCount',
+      ],
       VectorDatabaseAdapter: ['vectorSearch', 'addVectors', 'createIndex'],
     };
 

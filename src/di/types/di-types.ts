@@ -146,7 +146,7 @@ export interface DIContainerOptions {
 export class DIError extends Error {
   constructor(
     message: string,
-    public readonly code?: string
+    public readonly code?: string,
   ) {
     super(message);
     this.name = 'DIError';
@@ -155,7 +155,10 @@ export class DIError extends Error {
 
 export class CircularDependencyError extends DIError {
   constructor(dependencyChain: string[]) {
-    super(`Circular dependency detected: ${dependencyChain.join(' -> ')}`, 'CIRCULAR_DEPENDENCY');
+    super(
+      `Circular dependency detected: ${dependencyChain.join(' -> ')}`,
+      'CIRCULAR_DEPENDENCY',
+    );
     this.name = 'CircularDependencyError';
   }
 }
@@ -188,7 +191,7 @@ export type Constructor<T = {}> = new (...args: any[]) => T;
 export type ParameterDecorator = (
   target: any,
   propertyKey: string | symbol | undefined,
-  parameterIndex: number
+  parameterIndex: number,
 ) => void;
 
 /**

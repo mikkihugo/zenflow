@@ -10,7 +10,12 @@
 
 import { getLogger } from '../config/logging-config.ts';
 import { errorMonitor } from './error-monitoring.ts';
-import { AgentError, SystemError, TimeoutError, WASMMemoryError } from './errors.ts';
+import {
+  AgentError,
+  SystemError,
+  TimeoutError,
+  WASMMemoryError,
+} from './errors.ts';
 
 const logger = getLogger('SystemResilience');
 
@@ -127,9 +132,11 @@ export class ResourceManager {
     };
 
     // Initialize type tracking
-    ['memory', 'file', 'network', 'wasm', 'agent', 'database'].forEach((type) => {
-      this.resourcesByType.set(type, new Set());
-    });
+    ['memory', 'file', 'network', 'wasm', 'agent', 'database'].forEach(
+      (type) => {
+        this.resourcesByType.set(type, new Set());
+      },
+    );
 
     this.startCleanupMonitoring();
   }
@@ -159,7 +166,7 @@ export class ResourceManager {
     type: ResourceHandle['type'],
     owner: string,
     size?: number,
-    cleanup?: () => Promise<void>
+    cleanup?: () => Promise<void>,
   ): Promise<string> {
     // Check limits before allocation
     await this.enforceResourceLimits(type, size);
@@ -229,7 +236,7 @@ export class ResourceManager {
       throw new SystemError(
         `Resource cleanup failed: ${error instanceof Error ? error.message : String(error)}`,
         'RESOURCE_CLEANUP_FAILED',
-        'high'
+        'high',
       );
     }
   }
@@ -249,12 +256,17 @@ export class ResourceManager {
       return;
     }
 
-    logger.info(`Releasing ${ownerResources.size} resources for owner: ${owner}`);
+    logger.info(
+      `Releasing ${ownerResources.size} resources for owner: ${owner}`,
+    );
 
     const releasePromises = Array.from(ownerResources).map((resourceId) =>
       this.releaseResource(resourceId).catch((error) => {
-        logger.error(`Failed to release resource ${resourceId} for owner ${owner}:`, error);
-      })
+        logger.error(
+          `Failed to release resource ${resourceId} for owner ${owner}:`,
+          error,
+        );
+      }),
     );
 
     await Promise.allSettled(releasePromises);
@@ -268,7 +280,10 @@ export class ResourceManager {
    * @param size - Size of resource in bytes (optional).
    * @throws {SystemError} When resource limits would be exceeded.
    */
-  private async enforceResourceLimits(type: ResourceHandle['type'], size?: number): Promise<void> {
+  private async enforceResourceLimits(
+    type: ResourceHandle['type'],
+    size?: number,
+  ): Promise<void> {
     const currentCount = this.resourcesByType.get(type)?.size ?? 0;
 
     // Check count limits
@@ -278,7 +293,7 @@ export class ResourceManager {
           throw new SystemError(
             `File handle limit exceeded: ${currentCount}/${this.limits.maxFileHandles}`,
             'RESOURCE_LIMIT_EXCEEDED',
-            'high'
+            'high',
           );
         }
         break;
@@ -287,7 +302,7 @@ export class ResourceManager {
           throw new SystemError(
             `Network connection limit exceeded: ${currentCount}/${this.limits.maxNetworkConnections}`,
             'RESOURCE_LIMIT_EXCEEDED',
-            'high'
+            'high',
           );
         }
         break;
@@ -296,7 +311,7 @@ export class ResourceManager {
           throw new WASMMemoryError(
             `WASM instance limit exceeded: ${currentCount}/${this.limits.maxWASMInstances}`,
             size || 0,
-            this.limits.maxWASMInstances
+            this.limits.maxWASMInstances,
           );
         }
         break;
@@ -306,7 +321,7 @@ export class ResourceManager {
             `Agent limit exceeded: ${currentCount}/${this.limits.maxAgents}`,
             undefined,
             undefined,
-            'high'
+            'high',
           );
         }
         break;
@@ -315,7 +330,7 @@ export class ResourceManager {
           throw new SystemError(
             `Database connection limit exceeded: ${currentCount}/${this.limits.maxDatabaseConnections}`,
             'RESOURCE_LIMIT_EXCEEDED',
-            'high'
+            'high',
           );
         }
         break;
@@ -333,7 +348,7 @@ export class ResourceManager {
           throw new SystemError(
             `Memory limit would be exceeded: ${newMemoryMB + size / 1024 / 1024}MB > ${this.limits.maxMemoryMB}MB`,
             'MEMORY_LIMIT_EXCEEDED',
-            'critical'
+            'critical',
           );
         }
       }
@@ -387,7 +402,7 @@ export class ResourceManager {
           logger.error('Resource cleanup monitoring error:', error);
         }
       },
-      5 * 60 * 1000
+      5 * 60 * 1000,
     ); // Every 5 minutes
   }
 
@@ -443,10 +458,14 @@ export class ResourceManager {
   public async emergencyCleanup(): Promise<void> {
     logger.warn('Emergency resource cleanup initiated');
 
-    const releasePromises = Array.from(this.resources.keys()).map((resourceId) =>
-      this.releaseResource(resourceId).catch((error) => {
-        logger.error(`Emergency cleanup failed for resource ${resourceId}:`, error);
-      })
+    const releasePromises = Array.from(this.resources.keys()).map(
+      (resourceId) =>
+        this.releaseResource(resourceId).catch((error) => {
+          logger.error(
+            `Emergency cleanup failed for resource ${resourceId}:`,
+            error,
+          );
+        }),
     );
 
     await Promise.allSettled(releasePromises);
@@ -596,7 +615,7 @@ export class Bulkhead {
    */
   public async execute<T>(
     operation: () => Promise<T>,
-    priority: number = this.config.priority
+    priority: number = this.config.priority,
   ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       // Check if we can execute immediately
@@ -609,8 +628,8 @@ export class Bulkhead {
             new SystemError(
               `Bulkhead queue full for ${this.config.name}`,
               'BULKHEAD_QUEUE_FULL',
-              'high'
-            )
+              'high',
+            ),
           );
           return;
         }
@@ -632,7 +651,7 @@ export class Bulkhead {
   private async executeOperation<T>(
     operation: () => Promise<T>,
     resolve: (value: T) => void,
-    reject: (error: any) => void
+    reject: (error: any) => void,
   ): Promise<void> {
     this.currentExecutions++;
     this.totalExecutions++;
@@ -645,8 +664,8 @@ export class Bulkhead {
         new TimeoutError(
           `Bulkhead operation timeout in ${this.config.name}`,
           this.config.timeoutMs,
-          Date.now() - startTime
-        )
+          Date.now() - startTime,
+        ),
       );
       this.processQueue();
     }, this.config.timeoutMs);
@@ -682,7 +701,10 @@ export class Bulkhead {
   }
 
   private processQueue(): void {
-    if (this.queue.length > 0 && this.currentExecutions < this.config.maxConcurrentExecutions) {
+    if (
+      this.queue.length > 0 &&
+      this.currentExecutions < this.config.maxConcurrentExecutions
+    ) {
       const next = this.queue.shift()!;
 
       // Check if queued operation has timed out
@@ -693,8 +715,8 @@ export class Bulkhead {
           new TimeoutError(
             `Bulkhead queue timeout in ${this.config.name}`,
             this.config.timeoutMs,
-            queuedTime
-          )
+            queuedTime,
+          ),
         );
         this.processQueue(); // Try next in queue
         return;
@@ -717,10 +739,12 @@ export class Bulkhead {
   public getMetrics(): BulkheadMetrics {
     const avgExecutionTime =
       this.executionTimes.length > 0
-        ? this.executionTimes.reduce((a, b) => a + b, 0) / this.executionTimes.length
+        ? this.executionTimes.reduce((a, b) => a + b, 0) /
+          this.executionTimes.length
         : 0;
 
-    const maxExecutionTime = this.executionTimes.length > 0 ? Math.max(...this.executionTimes) : 0;
+    const maxExecutionTime =
+      this.executionTimes.length > 0 ? Math.max(...this.executionTimes) : 0;
 
     return {
       name: this.config.name,
@@ -798,7 +822,7 @@ export class TimeoutManager {
   public static async withTimeout<T>(
     operation: () => Promise<T>,
     timeoutMs: number,
-    operationName: string = 'unknown'
+    operationName: string = 'unknown',
   ): Promise<T> {
     const timeoutId = `timeout_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
@@ -806,7 +830,10 @@ export class TimeoutManager {
       const timeout = setTimeout(() => {
         TimeoutManager.timeouts.delete(timeoutId);
         reject(
-          new TimeoutError(`Operation '${operationName}' timed out after ${timeoutMs}ms`, timeoutMs)
+          new TimeoutError(
+            `Operation '${operationName}' timed out after ${timeoutMs}ms`,
+            timeoutMs,
+          ),
         );
       }, timeoutMs);
 
@@ -970,7 +997,7 @@ export class ErrorBoundary {
             boundaryName: this.config.name,
             errorCount: this.errors.length,
           },
-        }
+        },
       );
     }
 
@@ -989,14 +1016,16 @@ export class ErrorBoundary {
     this.errors.push({ error, timestamp: now });
 
     // Clean old errors outside window
-    this.errors = this.errors.filter((e) => now - e.timestamp <= this.config.windowMs);
+    this.errors = this.errors.filter(
+      (e) => now - e.timestamp <= this.config.windowMs,
+    );
 
     // Check if we've breached the boundary
     if (this.errors.length >= this.config.maxErrors && !this.breached) {
       this.breached = true;
 
       logger.error(
-        `Error boundary '${this.config.name}' breached with ${this.errors.length} errors`
+        `Error boundary '${this.config.name}' breached with ${this.errors.length} errors`,
       );
 
       try {
@@ -1004,7 +1033,7 @@ export class ErrorBoundary {
       } catch (breachError) {
         logger.error(
           `Error boundary breach handler failed for '${this.config.name}':`,
-          breachError
+          breachError,
         );
       }
     }
@@ -1037,18 +1066,19 @@ export class ErrorBoundary {
         this.errors = [];
         this.recoveryAttempts = 0;
 
-        logger.info(`Error boundary '${this.config.name}' recovered successfully`);
-        return true;
-      } else {
-        logger.warn(
-          `Error boundary '${this.config.name}' recovery attempt ${this.recoveryAttempts} failed`
+        logger.info(
+          `Error boundary '${this.config.name}' recovered successfully`,
         );
-        return false;
+        return true;
       }
+      logger.warn(
+        `Error boundary '${this.config.name}' recovery attempt ${this.recoveryAttempts} failed`,
+      );
+      return false;
     } catch (recoveryError) {
       logger.error(
         `Error boundary '${this.config.name}' recovery attempt ${this.recoveryAttempts} threw error:`,
-        recoveryError
+        recoveryError,
       );
       return false;
     }
@@ -1190,7 +1220,11 @@ export class EmergencyShutdownSystem {
 
     // Report emergency shutdown
     errorMonitor.reportError(
-      new SystemError(`Emergency shutdown: ${reason}`, 'EMERGENCY_SHUTDOWN', 'critical')
+      new SystemError(
+        `Emergency shutdown: ${reason}`,
+        'EMERGENCY_SHUTDOWN',
+        'critical',
+      ),
     );
 
     // Execute shutdown procedures in priority order
@@ -1201,7 +1235,7 @@ export class EmergencyShutdownSystem {
         await TimeoutManager.withTimeout(
           procedure.procedure,
           procedure.timeoutMs,
-          `emergency_${procedure.name}`
+          `emergency_${procedure.name}`,
         );
 
         logger.info(`Emergency procedure completed: ${procedure.name}`);
@@ -1279,7 +1313,7 @@ export class SystemResilienceOrchestrator {
         queueSize: 20,
         timeoutMs: 60000, // 1 minute
         priority: 5,
-      })
+      }),
     );
 
     // RAG system bulkhead
@@ -1291,7 +1325,7 @@ export class SystemResilienceOrchestrator {
         queueSize: 15,
         timeoutMs: 30000, // 30 seconds
         priority: 7,
-      })
+      }),
     );
 
     // Swarm coordination bulkhead
@@ -1303,7 +1337,7 @@ export class SystemResilienceOrchestrator {
         queueSize: 50,
         timeoutMs: 45000, // 45 seconds
         priority: 8,
-      })
+      }),
     );
 
     // WASM execution bulkhead
@@ -1315,7 +1349,7 @@ export class SystemResilienceOrchestrator {
         queueSize: 10,
         timeoutMs: 20000, // 20 seconds
         priority: 3,
-      })
+      }),
     );
   }
 
@@ -1337,7 +1371,7 @@ export class SystemResilienceOrchestrator {
           // Implement FACT system health check
           return true;
         },
-      })
+      }),
     );
 
     // Swarm coordination error boundary
@@ -1357,7 +1391,7 @@ export class SystemResilienceOrchestrator {
           // Implement swarm health check
           return true;
         },
-      })
+      }),
     );
   }
 
@@ -1369,7 +1403,9 @@ export class SystemResilienceOrchestrator {
       timeoutMs: 5000,
       procedure: async () => {
         // Drain all bulkheads
-        const drainPromises = Array.from(this.bulkheads.values()).map((b) => b.drain());
+        const drainPromises = Array.from(this.bulkheads.values()).map((b) =>
+          b.drain(),
+        );
         await Promise.allSettled(drainPromises);
       },
     });
@@ -1485,7 +1521,7 @@ export class SystemResilienceOrchestrator {
       errorBoundary?: string;
       timeoutMs?: number;
       operationName?: string;
-    }
+    },
   ): Promise<T> {
     let wrappedOperation = operation;
 
@@ -1496,7 +1532,7 @@ export class SystemResilienceOrchestrator {
         TimeoutManager.withTimeout(
           timeoutOperation,
           options.timeoutMs!,
-          options.operationName || 'resilient_operation'
+          options.operationName || 'resilient_operation',
         );
     }
 

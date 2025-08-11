@@ -3,7 +3,10 @@
  */
 
 import { getLogger } from './config/logging-config.js';
-import type { Priority, RiskLevel } from './coordination/swarm/sparc/types/sparc-types.js';
+import type {
+  Priority,
+  RiskLevel,
+} from './coordination/swarm/sparc/types/sparc-types.js';
 
 const logger = getLogger('comprehensive-sparc-test');
 
@@ -89,7 +92,9 @@ async function testCoreEngine() {
 
     // Test all core methods
     const algorithms = await engine.generateAlgorithmPseudocode(testSpec);
-    const dataStructures = await engine.designDataStructures(testSpec.functionalRequirements);
+    const dataStructures = await engine.designDataStructures(
+      testSpec.functionalRequirements,
+    );
     const controlFlows = await engine.mapControlFlows(algorithms);
     const validation = await engine.validatePseudocodeLogic(algorithms);
     const pseudocodeStructure = await engine.generatePseudocode(testSpec);
@@ -112,7 +117,10 @@ async function testCoreEngine() {
       },
     };
   } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 
@@ -145,7 +153,10 @@ async function testCLIIntegration() {
       successMetrics: [],
     };
 
-    await writeFile('/tmp/cli-test-spec.json', JSON.stringify(testSpec, null, 2));
+    await writeFile(
+      '/tmp/cli-test-spec.json',
+      JSON.stringify(testSpec, null, 2),
+    );
 
     // Import CLI command functions (simulate CLI usage)
     const { exec } = await import('node:child_process');
@@ -171,23 +182,31 @@ async function testCLIIntegration() {
       },
     };
   } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 
 async function testMCPIntegration() {
   try {
-    const createSPARCTools = (await import('./interfaces/mcp/tools/sparc-integration-tools.js'))
-      .default;
+    const createSPARCTools = (
+      await import('./interfaces/mcp/tools/sparc-integration-tools.js')
+    ).default;
     const tools = createSPARCTools({} as any);
 
     const pseudocodeGenerationTool = tools.find(
-      (tool) => tool.name === 'sparc_generate_pseudocode'
+      (tool) => tool.name === 'sparc_generate_pseudocode',
     );
-    const validationTool = tools.find((tool) => tool.name === 'sparc_validate_pseudocode');
-    const algorithmsOnlyTool = tools.find((tool) => tool.name === 'sparc_generate_algorithms_only');
+    const validationTool = tools.find(
+      (tool) => tool.name === 'sparc_validate_pseudocode',
+    );
+    const algorithmsOnlyTool = tools.find(
+      (tool) => tool.name === 'sparc_generate_algorithms_only',
+    );
 
-    if (!pseudocodeGenerationTool || !validationTool || !algorithmsOnlyTool) {
+    if (!(pseudocodeGenerationTool && validationTool && algorithmsOnlyTool)) {
       return { success: false, error: 'Required MCP tools not found' };
     }
 
@@ -218,7 +237,9 @@ async function testMCPIntegration() {
       successMetrics: [],
     };
 
-    const generateResult = await pseudocodeGenerationTool.handler({ specification: testSpec });
+    const generateResult = await pseudocodeGenerationTool.handler({
+      specification: testSpec,
+    });
 
     if (!generateResult?.success) {
       return { success: false, error: 'MCP generation failed' };
@@ -233,7 +254,9 @@ async function testMCPIntegration() {
       },
     });
 
-    const algorithmsResult = await algorithmsOnlyTool.handler({ specification: testSpec });
+    const algorithmsResult = await algorithmsOnlyTool.handler({
+      specification: testSpec,
+    });
 
     const success: boolean =
       generateResult?.success &&
@@ -251,7 +274,10 @@ async function testMCPIntegration() {
       },
     };
   } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 
@@ -352,7 +378,10 @@ async function testEndToEndFlow() {
       },
     };
   } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 

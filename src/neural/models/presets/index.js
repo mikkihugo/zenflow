@@ -16,10 +16,12 @@ export { VAEModel } from './vae.js';
 // Model factory for easy instantiation
 export const createNeuralModel = (type, config = {}) => {
   const models = {
-    transformer: () => import('./transformer.js').then((m) => new m.TransformerModel(config)),
+    transformer: () =>
+      import('./transformer.js').then((m) => new m.TransformerModel(config)),
     cnn: () => import('./cnn.js').then((m) => new m.CNNModel(config)),
     gru: () => import('./gru.js').then((m) => new m.GRUModel(config)),
-    autoencoder: () => import('./autoencoder.js').then((m) => new m.AutoencoderModel(config)),
+    autoencoder: () =>
+      import('./autoencoder.js').then((m) => new m.AutoencoderModel(config)),
     gnn: () => import('./gnn.js').then((m) => new m.GNNModel(config)),
     resnet: () => import('./resnet.js').then((m) => new m.ResNetModel(config)),
     vae: () => import('./vae.js').then((m) => new m.VAEModel(config)),
@@ -28,7 +30,7 @@ export const createNeuralModel = (type, config = {}) => {
 
   if (!models[type]) {
     throw new Error(
-      `Unknown neural model type: ${type}. Available types: ${Object.keys(models).join(', ')}`
+      `Unknown neural model type: ${type}. Available types: ${Object.keys(models).join(', ')}`,
     );
   }
 
@@ -67,8 +69,20 @@ export const MODEL_PRESETS = {
     mnist: {
       inputShape: [28, 28, 1],
       convLayers: [
-        { filters: 32, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
-        { filters: 64, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
+        {
+          filters: 32,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
+        {
+          filters: 64,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
       ],
       denseLayers: [128],
       outputSize: 10,
@@ -77,9 +91,27 @@ export const MODEL_PRESETS = {
     cifar10: {
       inputShape: [32, 32, 3],
       convLayers: [
-        { filters: 32, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
-        { filters: 64, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
-        { filters: 128, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
+        {
+          filters: 32,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
+        {
+          filters: 64,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
+        {
+          filters: 128,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
       ],
       denseLayers: [256, 128],
       outputSize: 10,
@@ -88,10 +120,34 @@ export const MODEL_PRESETS = {
     imagenet: {
       inputShape: [224, 224, 3],
       convLayers: [
-        { filters: 64, kernelSize: 7, stride: 2, padding: 'same', activation: 'relu' },
-        { filters: 128, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
-        { filters: 256, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
-        { filters: 512, kernelSize: 3, stride: 1, padding: 'same', activation: 'relu' },
+        {
+          filters: 64,
+          kernelSize: 7,
+          stride: 2,
+          padding: 'same',
+          activation: 'relu',
+        },
+        {
+          filters: 128,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
+        {
+          filters: 256,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
+        {
+          filters: 512,
+          kernelSize: 3,
+          stride: 1,
+          padding: 'same',
+          activation: 'relu',
+        },
       ],
       denseLayers: [4096, 4096],
       outputSize: 1000,
@@ -268,7 +324,9 @@ export const getModelPreset = (modelType, presetName) => {
   }
 
   if (!MODEL_PRESETS[modelType][presetName]) {
-    throw new Error(`No preset named '${presetName}' for model type: ${modelType}`);
+    throw new Error(
+      `No preset named '${presetName}' for model type: ${modelType}`,
+    );
   }
 
   return MODEL_PRESETS[modelType][presetName];

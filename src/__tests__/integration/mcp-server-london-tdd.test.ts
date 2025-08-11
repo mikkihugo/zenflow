@@ -110,7 +110,10 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
       }
 
       if (message.method === 'tools/call') {
-        return await this.toolExecutor.executeTool(message.params.name, message.params.arguments);
+        return await this.toolExecutor.executeTool(
+          message.params.name,
+          message.params.arguments,
+        );
       }
 
       return this.messageHandler.createResponse(message.id, { success: true });
@@ -135,9 +138,15 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
         await mcpServer.initialize({ stdio: true });
 
         // Assert - Verify initialization contract (London School: test the conversation)
-        expect(mockSqliteMemoryStore?.initialize).toHaveBeenCalledWith(':memory:');
-        expect(mockNeuralEngine.initialize).toHaveBeenCalledWith({ model: 'claude-zen-v1' });
-        expect(mockZenSwarm.initialize).toHaveBeenCalledWith({ topology: 'hive-mind' });
+        expect(mockSqliteMemoryStore?.initialize).toHaveBeenCalledWith(
+          ':memory:',
+        );
+        expect(mockNeuralEngine.initialize).toHaveBeenCalledWith({
+          model: 'claude-zen-v1',
+        });
+        expect(mockZenSwarm.initialize).toHaveBeenCalledWith({
+          topology: 'hive-mind',
+        });
 
         // Verify initialization order (important for dependencies)
         const initCalls = [
@@ -167,13 +176,18 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           },
         };
 
-        mockMCPMessageHandler.validateMessage.mockResolvedValue({ valid: true });
+        mockMCPMessageHandler.validateMessage.mockResolvedValue({
+          valid: true,
+        });
         mockMCPToolExecutor.executeTool.mockResolvedValue({
           jsonrpc: '2.0',
           id: 1,
           result: {
             analysis: 'clean-architecture-detected',
-            recommendations: ['add-dependency-injection', 'enhance-error-handling'],
+            recommendations: [
+              'add-dependency-injection',
+              'enhance-error-handling',
+            ],
             confidence: 0.89,
           },
         });
@@ -184,11 +198,16 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
         const response = await mcpServer.handleStdioMessage(toolCallMessage);
 
         // Assert - Verify the tool call conversation (London School principle)
-        expect(mockMCPMessageHandler.validateMessage).toHaveBeenCalledWith(toolCallMessage);
-        expect(mockMCPToolExecutor.executeTool).toHaveBeenCalledWith('claude-zen-analyze', {
-          codebase: 'typescript-project',
-          focus: 'architecture',
-        });
+        expect(mockMCPMessageHandler.validateMessage).toHaveBeenCalledWith(
+          toolCallMessage,
+        );
+        expect(mockMCPToolExecutor.executeTool).toHaveBeenCalledWith(
+          'claude-zen-analyze',
+          {
+            codebase: 'typescript-project',
+            focus: 'architecture',
+          },
+        );
 
         expect(response?.result?.analysis).toBe('clean-architecture-detected');
         expect(response?.result?.confidence).toBe(0.89);
@@ -223,10 +242,12 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
         const response = await mcpServer.handleStdioMessage(invalidMessage);
 
         // Assert - Verify error handling conversation
-        expect(mockMCPMessageHandler.validateMessage).toHaveBeenCalledWith(invalidMessage);
+        expect(mockMCPMessageHandler.validateMessage).toHaveBeenCalledWith(
+          invalidMessage,
+        );
         expect(mockMCPMessageHandler.createError).toHaveBeenCalledWith(
           2,
-          'Unknown method: invalid/method'
+          'Unknown method: invalid/method',
         );
         expect(response?.error?.code).toBe(-32601);
       });
@@ -244,24 +265,27 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
 
         mockSqliteMemoryStore?.store?.mockResolvedValue(undefined);
 
-        mockMCPToolExecutor.executeTool.mockImplementation(async (name, args) => {
-          // Simulate tool accessing memory
-          const context = await mockSqliteMemoryStore?.retrieve('project-context');
+        mockMCPToolExecutor.executeTool.mockImplementation(
+          async (name, args) => {
+            // Simulate tool accessing memory
+            const context =
+              await mockSqliteMemoryStore?.retrieve('project-context');
 
-          // Store analysis results
-          await mockSqliteMemoryStore?.store('latest-analysis', {
-            tool: name,
-            args,
-            result: 'analysis-complete',
-            timestamp: Date.now(),
-          });
+            // Store analysis results
+            await mockSqliteMemoryStore?.store('latest-analysis', {
+              tool: name,
+              args,
+              result: 'analysis-complete',
+              timestamp: Date.now(),
+            });
 
-          return {
-            jsonrpc: '2.0',
-            id: 1,
-            result: { analysis: 'context-aware-result', context },
-          };
-        });
+            return {
+              jsonrpc: '2.0',
+              id: 1,
+              result: { analysis: 'context-aware-result', context },
+            };
+          },
+        );
 
         const mcpServer = new MockMCPServer();
 
@@ -273,22 +297,28 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           params: { name: 'analyze-with-context', arguments: {} },
         };
 
-        mockMCPMessageHandler.validateMessage.mockResolvedValue({ valid: true });
+        mockMCPMessageHandler.validateMessage.mockResolvedValue({
+          valid: true,
+        });
 
         const response = await mcpServer.handleStdioMessage(toolMessage);
 
         // Assert - Verify memory integration conversation
-        expect(mockSqliteMemoryStore?.retrieve).toHaveBeenCalledWith('project-context');
+        expect(mockSqliteMemoryStore?.retrieve).toHaveBeenCalledWith(
+          'project-context',
+        );
         expect(mockSqliteMemoryStore?.store).toHaveBeenCalledWith(
           'latest-analysis',
           expect.objectContaining({
             tool: 'analyze-with-context',
             result: 'analysis-complete',
-          })
+          }),
         );
 
         expect(response?.result?.analysis).toBe('context-aware-result');
-        expect(response?.result?.context?.previous_analysis).toBe('microservices-pattern');
+        expect(response?.result?.context?.previous_analysis).toBe(
+          'microservices-pattern',
+        );
       });
     });
 
@@ -301,24 +331,26 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           reasoning: ['high-complexity-detected', 'duplicate-code-patterns'],
         });
 
-        mockMCPToolExecutor.executeTool.mockImplementation(async (name, args) => {
-          // Tool requests neural enhancement
-          const neuralResult = await mockNeuralEngine.predict({
-            tool: name,
-            input: args,
-            model: 'code-analysis-v1',
-          });
+        mockMCPToolExecutor.executeTool.mockImplementation(
+          async (name, args) => {
+            // Tool requests neural enhancement
+            const neuralResult = await mockNeuralEngine.predict({
+              tool: name,
+              input: args,
+              model: 'code-analysis-v1',
+            });
 
-          return {
-            jsonrpc: '2.0',
-            id: 1,
-            result: {
-              basic_analysis: 'completed',
-              neural_enhancement: neuralResult,
-              recommendation: neuralResult?.prediction,
-            },
-          };
-        });
+            return {
+              jsonrpc: '2.0',
+              id: 1,
+              result: {
+                basic_analysis: 'completed',
+                neural_enhancement: neuralResult,
+                recommendation: neuralResult?.prediction,
+              },
+            };
+          },
+        );
 
         const mcpServer = new MockMCPServer();
 
@@ -333,7 +365,9 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           },
         };
 
-        mockMCPMessageHandler.validateMessage.mockResolvedValue({ valid: true });
+        mockMCPMessageHandler.validateMessage.mockResolvedValue({
+          valid: true,
+        });
 
         const response = await mcpServer.handleStdioMessage(toolMessage);
 
@@ -344,7 +378,9 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
           model: 'code-analysis-v1',
         });
 
-        expect(response?.result?.neural_enhancement?.prediction).toBe('refactor-recommended');
+        expect(response?.result?.neural_enhancement?.prediction).toBe(
+          'refactor-recommended',
+        );
         expect(response?.result?.neural_enhancement?.confidence).toBe(0.94);
         expect(response?.result?.recommendation).toBe('refactor-recommended');
       });
@@ -363,8 +399,12 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
       const protocolHandler = {
         processMessage: (message: unknown) => {
           const isValidRpc = mockProtocolValidator.validateJsonRpc(message);
-          const methodExists = mockProtocolValidator.checkMethodExists(message.method);
-          const paramsValid = mockProtocolValidator.validateParams(message.params);
+          const methodExists = mockProtocolValidator.checkMethodExists(
+            message.method,
+          );
+          const paramsValid = mockProtocolValidator.validateParams(
+            message.params,
+          );
 
           return { isValidRpc, methodExists, paramsValid };
         },
@@ -386,8 +426,12 @@ describe('Claude-Zen MCP Server - London School TDD', () => {
       const result = protocolHandler.processMessage(testMessage);
 
       // Assert - Verify the protocol conversation
-      expect(mockProtocolValidator.validateJsonRpc).toHaveBeenCalledWith(testMessage);
-      expect(mockProtocolValidator.checkMethodExists).toHaveBeenCalledWith('tools/list');
+      expect(mockProtocolValidator.validateJsonRpc).toHaveBeenCalledWith(
+        testMessage,
+      );
+      expect(mockProtocolValidator.checkMethodExists).toHaveBeenCalledWith(
+        'tools/list',
+      );
       expect(mockProtocolValidator.validateParams).toHaveBeenCalledWith({});
 
       expect(result?.isValidRpc).toBe(true);

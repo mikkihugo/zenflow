@@ -92,7 +92,7 @@ class LoadTestingSuite extends EventEmitter {
       // Update peak values
       this.testResults.performance.memoryPeak = Math.max(
         this.testResults.performance.memoryPeak,
-        memUsage.heapUsed
+        memUsage.heapUsed,
       );
     }, 1000);
   }
@@ -194,10 +194,11 @@ class LoadTestingSuite extends EventEmitter {
         await new Promise((resolve) => setTimeout(resolve, 2000));
       }
 
-      scenario.passed = scenario.agents.length >= 50 && scenario.metrics.errors.length < 5;
+      scenario.passed =
+        scenario.agents.length >= 50 && scenario.metrics.errors.length < 5;
       this.testResults.performance.maxConcurrentAgents = Math.max(
         this.testResults.performance.maxConcurrentAgents,
-        scenario.agents.length
+        scenario.agents.length,
       );
     } catch (error) {
       scenario.error = error.message;
@@ -248,7 +249,7 @@ class LoadTestingSuite extends EventEmitter {
               error: error.message,
             });
             return null;
-          })
+          }),
       );
 
       const spawnedAgents = await Promise.all(spawnPromises);
@@ -288,7 +289,8 @@ class LoadTestingSuite extends EventEmitter {
       const validResponses = responseTimes.filter((t) => t !== null);
       this.metrics.responseTimes.push(...validResponses);
 
-      scenario.passed = scenario.agents.length >= 45 && scenario.metrics.errors.length < 10;
+      scenario.passed =
+        scenario.agents.length >= 45 && scenario.metrics.errors.length < 10;
     } catch (error) {
       scenario.error = error.message;
     }
@@ -329,7 +331,7 @@ class LoadTestingSuite extends EventEmitter {
         swarm.spawn({
           type: ['coder', 'researcher', 'analyst'][i % 3],
           name: `sustained-agent-${i}`,
-        })
+        }),
       );
 
       scenario.agents = await Promise.all(spawnPromises);
@@ -438,7 +440,7 @@ class LoadTestingSuite extends EventEmitter {
       ];
       for (const { type, count } of agentTypes) {
         const typePromises = Array.from({ length: count }, (_, i) =>
-          swarm.spawn({ type, name: `${type}-${i}` })
+          swarm.spawn({ type, name: `${type}-${i}` }),
         );
 
         const typeAgents = await Promise.all(typePromises);
@@ -447,51 +449,62 @@ class LoadTestingSuite extends EventEmitter {
         scenario.metrics.avgTimesByType[type] = [];
       }
 
-      const workloadPromises = Object.entries(scenario.agents).map(async ([agentType, agents]) => {
-        const type = agentType.slice(0, -1); // Remove 's' suffix
+      const workloadPromises = Object.entries(scenario.agents).map(
+        async ([agentType, agents]) => {
+          const type = agentType.slice(0, -1); // Remove 's' suffix
 
-        return Promise.all(
-          agents.map(async (agent, i) => {
-            const tasks = this.getTasksForType(type, i);
+          return Promise.all(
+            agents.map(async (agent, i) => {
+              const tasks = this.getTasksForType(type, i);
 
-            for (const task of tasks) {
-              const taskStart = Date.now();
-              try {
-                await agent.execute({
-                  task: task.description,
-                  timeout: task.timeout,
-                });
+              for (const task of tasks) {
+                const taskStart = Date.now();
+                try {
+                  await agent.execute({
+                    task: task.description,
+                    timeout: task.timeout,
+                  });
 
-                const taskTime = Date.now() - taskStart;
-                scenario.metrics.avgTimesByType[type].push(taskTime);
-                scenario.metrics.tasksByType[type]++;
-              } catch (error) {
-                scenario.metrics.errors.push({
-                  phase: 'mixed_workload',
-                  agentType: type,
-                  agent: i,
-                  task: task.description,
-                  error: error.message,
-                });
+                  const taskTime = Date.now() - taskStart;
+                  scenario.metrics.avgTimesByType[type].push(taskTime);
+                  scenario.metrics.tasksByType[type]++;
+                } catch (error) {
+                  scenario.metrics.errors.push({
+                    phase: 'mixed_workload',
+                    agentType: type,
+                    agent: i,
+                    task: task.description,
+                    error: error.message,
+                  });
+                }
               }
-            }
-          })
-        );
-      });
+            }),
+          );
+        },
+      );
 
       await Promise.all(workloadPromises);
 
       // Calculate averages
-      Object.entries(scenario.metrics.avgTimesByType).forEach(([type, times]) => {
-        scenario.metrics.avgTimesByType[type] =
-          times.length > 0 ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : 0;
-      });
+      Object.entries(scenario.metrics.avgTimesByType).forEach(
+        ([type, times]) => {
+          scenario.metrics.avgTimesByType[type] =
+            times.length > 0
+              ? Math.round(times.reduce((a, b) => a + b, 0) / times.length)
+              : 0;
+        },
+      );
 
       const totalAgents = Object.values(scenario.agents).flat().length;
-      const totalTasks = Object.values(scenario.metrics.tasksByType).reduce((a, b) => a + b, 0);
+      const totalTasks = Object.values(scenario.metrics.tasksByType).reduce(
+        (a, b) => a + b,
+        0,
+      );
 
       scenario.passed =
-        totalAgents >= 50 && totalTasks >= 150 && scenario.metrics.errors.length < 15;
+        totalAgents >= 50 &&
+        totalTasks >= 150 &&
+        scenario.metrics.errors.length < 15;
     } catch (error) {
       scenario.error = error.message;
     }
@@ -557,7 +570,7 @@ class LoadTestingSuite extends EventEmitter {
                     error: error.message,
                   });
                   return null;
-                })
+                }),
             );
           }
 
@@ -618,7 +631,8 @@ class LoadTestingSuite extends EventEmitter {
         await new Promise((resolve) => setTimeout(resolve, 2000));
       }
 
-      scenario.metrics.memoryAtFailure = process.memoryUsage().heapUsed / 1024 / 1024;
+      scenario.metrics.memoryAtFailure =
+        process.memoryUsage().heapUsed / 1024 / 1024;
       scenario.passed = scenario.maxAgentsReached >= 80; // Minimum threshold for stress test
     } catch (error) {
       scenario.error = error.message;
@@ -639,39 +653,72 @@ class LoadTestingSuite extends EventEmitter {
           description: `Implementation task ${agentIndex}: Write sorting algorithm`,
           timeout: 12000,
         },
-        { description: `Debug task ${agentIndex}: Find memory leak`, timeout: 10000 },
+        {
+          description: `Debug task ${agentIndex}: Find memory leak`,
+          timeout: 10000,
+        },
       ],
       researcher: [
-        { description: `Research task ${agentIndex}: Literature review on AI`, timeout: 15000 },
-        { description: `Analysis task ${agentIndex}: Trend analysis`, timeout: 12000 },
+        {
+          description: `Research task ${agentIndex}: Literature review on AI`,
+          timeout: 15000,
+        },
+        {
+          description: `Analysis task ${agentIndex}: Trend analysis`,
+          timeout: 12000,
+        },
       ],
       analyst: [
-        { description: `Data analysis ${agentIndex}: Process dataset`, timeout: 10000 },
-        { description: `Statistical analysis ${agentIndex}: Correlation study`, timeout: 8000 },
+        {
+          description: `Data analysis ${agentIndex}: Process dataset`,
+          timeout: 10000,
+        },
+        {
+          description: `Statistical analysis ${agentIndex}: Correlation study`,
+          timeout: 8000,
+        },
       ],
       optimizer: [
-        { description: `Optimization task ${agentIndex}: Algorithm tuning`, timeout: 15000 },
-        { description: `Performance task ${agentIndex}: Bottleneck analysis`, timeout: 12000 },
+        {
+          description: `Optimization task ${agentIndex}: Algorithm tuning`,
+          timeout: 15000,
+        },
+        {
+          description: `Performance task ${agentIndex}: Bottleneck analysis`,
+          timeout: 12000,
+        },
       ],
       coordinator: [
-        { description: `Coordination task ${agentIndex}: Task scheduling`, timeout: 6000 },
-        { description: `Management task ${agentIndex}: Resource allocation`, timeout: 8000 },
+        {
+          description: `Coordination task ${agentIndex}: Task scheduling`,
+          timeout: 6000,
+        },
+        {
+          description: `Management task ${agentIndex}: Resource allocation`,
+          timeout: 8000,
+        },
       ],
     };
 
-    return taskSets[type] || [{ description: `Generic task ${agentIndex}`, timeout: 8000 }];
+    return (
+      taskSets[type] || [
+        { description: `Generic task ${agentIndex}`, timeout: 8000 },
+      ]
+    );
   }
 
   async generateLoadTestReport() {
     // Calculate overall metrics
-    const passedScenarios = this.testResults.scenarios.filter((s) => s.passed).length;
+    const passedScenarios = this.testResults.scenarios.filter(
+      (s) => s.passed,
+    ).length;
     const totalScenarios = this.testResults.scenarios.length;
 
     this.testResults.performance.avgResponseTime =
       this.metrics.responseTimes.length > 0
         ? Math.round(
             this.metrics.responseTimes.reduce((a, b) => a + b, 0) /
-              this.metrics.responseTimes.length
+              this.metrics.responseTimes.length,
           )
         : 0;
 
@@ -679,12 +726,14 @@ class LoadTestingSuite extends EventEmitter {
       this.metrics.errors.length > 0
         ? (
             (this.metrics.errors.length /
-              (this.metrics.responseTimes.length + this.metrics.errors.length)) *
+              (this.metrics.responseTimes.length +
+                this.metrics.errors.length)) *
             100
           ).toFixed(2)
         : 0;
 
-    this.testResults.performance.memoryPeak = this.testResults.performance.memoryPeak / 1024 / 1024; // Convert to MB
+    this.testResults.performance.memoryPeak =
+      this.testResults.performance.memoryPeak / 1024 / 1024; // Convert to MB
 
     this.testResults.passed = passedScenarios >= 4; // At least 4/5 scenarios must pass
 
@@ -700,7 +749,8 @@ class LoadTestingSuite extends EventEmitter {
     };
 
     // Save detailed report
-    const reportPath = '/workspaces/ruv-FANN/ruv-swarm/npm/test/load-test-report.json';
+    const reportPath =
+      '/workspaces/ruv-FANN/ruv-swarm/npm/test/load-test-report.json';
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
     this.testResults.scenarios.forEach((_scenario) => {});
 

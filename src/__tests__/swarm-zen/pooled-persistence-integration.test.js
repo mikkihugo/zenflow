@@ -20,11 +20,13 @@ const TEST_DB_PATH = path.join(__dirname, 'test-pooled-integration.db');
 // Cleanup function
 function cleanup() {
   try {
-    [TEST_DB_PATH, `${TEST_DB_PATH}-wal`, `${TEST_DB_PATH}-shm`].forEach((file) => {
-      if (fs.existsSync(file)) {
-        fs.unlinkSync(file);
-      }
-    });
+    [TEST_DB_PATH, `${TEST_DB_PATH}-wal`, `${TEST_DB_PATH}-shm`].forEach(
+      (file) => {
+        if (fs.existsSync(file)) {
+          fs.unlinkSync(file);
+        }
+      },
+    );
   } catch (error) {
     console.error('Cleanup error:', error);
   }
@@ -97,7 +99,7 @@ async function testZenSwarmCoreIntegration() {
     // Test that it's the pooled version
     if (ruvSwarm.persistence.constructor.name !== 'SwarmPersistencePooled') {
       throw new Error(
-        `Expected SwarmPersistencePooled, got ${ruvSwarm.persistence.constructor.name}`
+        `Expected SwarmPersistencePooled, got ${ruvSwarm.persistence.constructor.name}`,
       );
     }
 
@@ -134,7 +136,7 @@ async function testConcurrentOperations() {
           topology: 'mesh',
           maxAgents: 3,
           strategy: 'balanced',
-        })
+        }),
       );
     }
 
@@ -148,7 +150,7 @@ async function testConcurrentOperations() {
           type: 'researcher',
           name: `Concurrent Agent ${i}`,
           capabilities: ['analysis'],
-        })
+        }),
       );
     }
 
@@ -167,7 +169,7 @@ async function testConcurrentOperations() {
 
     // Verify all operations succeeded
     const healthResult = monitoringResults[0];
-    if (!healthResult.healthy && !healthResult.error) {
+    if (!(healthResult.healthy || healthResult.error)) {
       throw new Error('Pool health check failed during concurrent operations');
     }
   } catch (error) {
@@ -203,7 +205,9 @@ async function testPerformanceComparison() {
 
     if (avgTime > 100) {
       // Should be much faster with pooling
-      console.warn(`⚠️  Average time higher than expected: ${avgTime.toFixed(2)}ms`);
+      console.warn(
+        `⚠️  Average time higher than expected: ${avgTime.toFixed(2)}ms`,
+      );
     } else {
     }
 

@@ -19,12 +19,21 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates.ts';
 import { WorkflowHumanGateType } from '../orchestration/workflow-gates.ts';
-import type { AdvancedFlowManager } from './flow-manager.ts';
 import type { BottleneckDetectionEngine } from './bottleneck-detector.ts';
-import type { FlowState, FlowWorkItem, FlowStage, FlowMetrics, WIPLimits } from './flow-manager.ts';
+import type {
+  AdvancedFlowManager,
+  FlowMetrics,
+  FlowStage,
+  FlowState,
+  FlowWorkItem,
+  WIPLimits,
+} from './flow-manager.ts';
 
 // ============================================================================
 // ADVANCED METRICS TRACKER CONFIGURATION
@@ -73,7 +82,12 @@ export interface MetricCategory {
   readonly category: MetricCategoryType;
   readonly metrics: string[];
   readonly weight: number; // 0-1, importance in overall performance
-  readonly aggregationMethod: 'sum' | 'average' | 'weighted_average' | 'max' | 'min';
+  readonly aggregationMethod:
+    | 'sum'
+    | 'average'
+    | 'weighted_average'
+    | 'max'
+    | 'min';
   readonly alertThresholds: AlertThreshold[];
 }
 
@@ -107,7 +121,7 @@ export interface AlertThreshold {
  */
 export interface AlertAction {
   readonly type: 'notification' | 'optimization' | 'escalation' | 'logging';
-  readonly parameters: Record<string, any>;
+  readonly parameters: Record<string, unknown>;
   readonly delay: number; // milliseconds
 }
 
@@ -636,7 +650,11 @@ export interface BenchmarkingAnalysis {
   readonly industryBenchmark: number;
   readonly internalBenchmark: number;
   readonly gap: number;
-  readonly ranking: 'top-quartile' | 'above-average' | 'below-average' | 'bottom-quartile';
+  readonly ranking:
+    | 'top-quartile'
+    | 'above-average'
+    | 'below-average'
+    | 'bottom-quartile';
   readonly improvementPotential: number;
 }
 
@@ -2129,7 +2147,7 @@ export interface TestVariant {
   readonly variantId: string;
   readonly name: string;
   readonly description: string;
-  readonly configuration: Record<string, any>;
+  readonly configuration: Record<string, unknown>;
   readonly trafficAllocation: number; // 0-1
   readonly expectedImpact: number;
 }
@@ -2511,7 +2529,12 @@ export interface ScenarioOutcome {
  */
 export interface FlowDisruptionRisk {
   readonly riskId: string;
-  readonly category: 'capacity' | 'quality' | 'dependency' | 'external' | 'technical';
+  readonly category:
+    | 'capacity'
+    | 'quality'
+    | 'dependency'
+    | 'external'
+    | 'technical';
   readonly description: string;
   readonly probability: number; // 0-1
   readonly impact: DisruptionImpact;
@@ -2618,7 +2641,7 @@ export interface WidgetData {
 export interface DataFilter {
   readonly field: string;
   readonly operator: string;
-  readonly value: any;
+  readonly value: unknown;
 }
 
 /**
@@ -2796,7 +2819,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
     gatesManager: WorkflowGatesManager,
     flowManager: AdvancedFlowManager,
     bottleneckDetector: BottleneckDetectionEngine,
-    config: Partial<AdvancedMetricsTrackerConfig> = {}
+    config: Partial<AdvancedMetricsTrackerConfig> = {},
   ) {
     super();
 
@@ -2872,7 +2895,9 @@ export class AdvancedMetricsTracker extends EventEmitter {
       this.logger.info('Advanced Metrics Tracker initialized successfully');
       this.emit('initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize Advanced Metrics Tracker', { error });
+      this.logger.error('Failed to initialize Advanced Metrics Tracker', {
+        error,
+      });
       throw error;
     }
   }
@@ -2986,7 +3011,10 @@ export class AdvancedMetricsTracker extends EventEmitter {
     const wipMetrics = await this.analyzeWIP(flowState, historicalData);
 
     // Calculate flow efficiency
-    const flowEfficiency = await this.analyzeFlowEfficiency(flowState, historicalData);
+    const flowEfficiency = await this.analyzeFlowEfficiency(
+      flowState,
+      historicalData,
+    );
 
     // Calculate cumulative flow
     const cumulativeFlow = await this.analyzeCumulativeFlow(historicalData);
@@ -2995,7 +3023,10 @@ export class AdvancedMetricsTracker extends EventEmitter {
     const flowDebt = await this.analyzeFlowDebt(flowState, historicalData);
 
     // Calculate flow velocity
-    const flowVelocity = await this.analyzeFlowVelocity(flowState, historicalData);
+    const flowVelocity = await this.analyzeFlowVelocity(
+      flowState,
+      historicalData,
+    );
 
     return {
       cycleTime,
@@ -3023,7 +3054,10 @@ export class AdvancedMetricsTracker extends EventEmitter {
     // Calculate by stage
     const byStage = new Map<FlowStage, FlowEfficiencyMeasurement>();
     for (const stage of Object.values(FlowStage)) {
-      const stageEfficiency = await this.calculateStageFlowEfficiency(stage, flowState);
+      const stageEfficiency = await this.calculateStageFlowEfficiency(
+        stage,
+        flowState,
+      );
       byStage.set(stage, stageEfficiency);
     }
 
@@ -3031,14 +3065,17 @@ export class AdvancedMetricsTracker extends EventEmitter {
     const trends = await this.analyzeFlowEfficiencyTrends();
 
     // Benchmark against industry standards
-    const benchmarking = await this.performFlowEfficiencyBenchmarking(overall.efficiency);
+    const benchmarking = await this.performFlowEfficiencyBenchmarking(
+      overall.efficiency,
+    );
 
     // Identify improvement opportunities
-    const improvementOpportunities = await this.identifyFlowImprovementOpportunities(
-      overall,
-      byStage,
-      benchmarking
-    );
+    const improvementOpportunities =
+      await this.identifyFlowImprovementOpportunities(
+        overall,
+        byStage,
+        benchmarking,
+      );
 
     return {
       overall,
@@ -3069,23 +3106,32 @@ export class AdvancedMetricsTracker extends EventEmitter {
     const targetState = await this.defineTargetPerformanceState(currentState);
 
     // Generate optimization recommendations
-    const optimizations = await this.generateOptimizationRecommendations(currentState, targetState);
+    const optimizations = await this.generateOptimizationRecommendations(
+      currentState,
+      targetState,
+    );
 
     // Create A/B tests for promising optimizations
     const abTests = await this.createOptimizationABTests(optimizations);
 
     // Create implementation plan
-    const implementation = await this.createOptimizationImplementation(optimizations, abTests);
+    const implementation = await this.createOptimizationImplementation(
+      optimizations,
+      abTests,
+    );
 
     // Calculate expected impact
     const expectedImpact = await this.calculateOptimizationImpact(
       currentState,
       targetState,
-      optimizations
+      optimizations,
     );
 
     // Calculate confidence level
-    const confidence = await this.calculateOptimizationConfidence(optimizations, expectedImpact);
+    const confidence = await this.calculateOptimizationConfidence(
+      optimizations,
+      expectedImpact,
+    );
 
     const result: PerformanceOptimizationResult = {
       optimizationId,
@@ -3124,7 +3170,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
    */
   async generateOptimizationRecommendations(
     currentState: PerformanceState,
-    targetState: PerformanceState
+    targetState: PerformanceState,
   ): Promise<OptimizationRecommendation[]> {
     this.logger.debug('Generating optimization recommendations');
 
@@ -3140,17 +3186,18 @@ export class AdvancedMetricsTracker extends EventEmitter {
     }
 
     // Analyze bottlenecks for optimization opportunities
-    const bottleneckRecommendations = await this.generateBottleneckOptimizations(
-      currentState.bottlenecks
-    );
+    const bottleneckRecommendations =
+      await this.generateBottleneckOptimizations(currentState.bottlenecks);
     recommendations.push(...bottleneckRecommendations);
 
     // Generate process improvement recommendations
-    const processRecommendations = await this.generateProcessImprovements(currentState);
+    const processRecommendations =
+      await this.generateProcessImprovements(currentState);
     recommendations.push(...processRecommendations);
 
     // Prioritize recommendations
-    const prioritizedRecommendations = await this.prioritizeRecommendations(recommendations);
+    const prioritizedRecommendations =
+      await this.prioritizeRecommendations(recommendations);
 
     return prioritizedRecommendations.slice(0, 10); // Top 10 recommendations
   }
@@ -3159,7 +3206,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
    * Create A/B testing for flow improvements
    */
   async createOptimizationABTests(
-    recommendations: OptimizationRecommendation[]
+    recommendations: OptimizationRecommendation[],
   ): Promise<ABTest[]> {
     if (!this.config.enableABTesting) {
       return [];
@@ -3173,7 +3220,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
     const testableRecommendations = recommendations.filter(
       (rec) =>
         rec.implementation.approach === 'pilot' &&
-        rec.risks.every((risk) => risk.severity !== 'high')
+        rec.risks.every((risk) => risk.severity !== 'high'),
     );
 
     for (const recommendation of testableRecommendations.slice(0, 3)) {
@@ -3193,7 +3240,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
   async measureOptimizationImpact(
     optimizationId: string,
     baseline: PerformanceState,
-    timeframe: number // milliseconds
+    timeframe: number, // milliseconds
   ): Promise<OptimizationImpactMeasurement> {
     this.logger.info('Measuring optimization impact', { optimizationId });
 
@@ -3205,7 +3252,9 @@ export class AdvancedMetricsTracker extends EventEmitter {
     while (Date.now() < endTime) {
       const currentState = await this.analyzeCurrentPerformanceState();
       measurements.push(currentState);
-      await new Promise((resolve) => setTimeout(resolve, this.config.collectionInterval));
+      await new Promise((resolve) =>
+        setTimeout(resolve, this.config.collectionInterval),
+      );
     }
 
     // Calculate impact
@@ -3213,7 +3262,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
 
     // Update optimization history
     const optimization = this.state.optimizationHistory.find(
-      (opt) => opt.optimizationId === optimizationId
+      (opt) => opt.optimizationId === optimizationId,
     );
     if (optimization) {
       (optimization as any).actualImpact = impact;
@@ -3248,22 +3297,34 @@ export class AdvancedMetricsTracker extends EventEmitter {
     const forecasts: MetricForecast[] = [];
 
     // Forecast throughput
-    const throughputForecast = await this.forecastThroughput(historicalData, horizon);
+    const throughputForecast = await this.forecastThroughput(
+      historicalData,
+      horizon,
+    );
     forecasts.push(throughputForecast);
 
     // Forecast cycle time
-    const cycleTimeForecast = await this.forecastCycleTime(historicalData, horizon);
+    const cycleTimeForecast = await this.forecastCycleTime(
+      historicalData,
+      horizon,
+    );
     forecasts.push(cycleTimeForecast);
 
     // Forecast quality metrics
-    const qualityForecast = await this.forecastQualityMetrics(historicalData, horizon);
+    const qualityForecast = await this.forecastQualityMetrics(
+      historicalData,
+      horizon,
+    );
     forecasts.push(qualityForecast);
 
     // Generate scenarios
     const scenarios = await this.generateForecastScenarios(forecasts);
 
     // Calculate overall confidence
-    const confidence = await this.calculateForecastConfidence(forecasts, historicalData);
+    const confidence = await this.calculateForecastConfidence(
+      forecasts,
+      historicalData,
+    );
 
     // Get historical accuracy
     const accuracy = await this.calculateHistoricalForecastAccuracy();
@@ -3314,7 +3375,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
     const basePrediction = await this.calculateBaseDeliveryPrediction(
       workItem,
       flowState,
-      historicalData
+      historicalData,
     );
 
     // Identify factors that could affect delivery
@@ -3324,10 +3385,18 @@ export class AdvancedMetricsTracker extends EventEmitter {
     const risks = await this.assessDeliveryRisks(workItem, factors);
 
     // Generate scenarios
-    const scenarios = await this.generateDeliveryScenarios(basePrediction, factors, risks);
+    const scenarios = await this.generateDeliveryScenarios(
+      basePrediction,
+      factors,
+      risks,
+    );
 
     // Calculate confidence interval
-    const confidence = await this.calculateDeliveryConfidence(basePrediction, factors, risks);
+    const confidence = await this.calculateDeliveryConfidence(
+      basePrediction,
+      factors,
+      risks,
+    );
 
     const prediction: DeliveryPrediction = {
       predictionId: `pred-${Date.now()}-${workItemId}`,
@@ -3369,20 +3438,23 @@ export class AdvancedMetricsTracker extends EventEmitter {
     const demandForecast = await this.generateDemandForecast();
 
     // Identify capacity gaps
-    const capacityGaps = await this.identifyCapacityGaps(currentCapacity, demandForecast);
+    const capacityGaps = await this.identifyCapacityGaps(
+      currentCapacity,
+      demandForecast,
+    );
 
     // Generate recommendations
     const recommendations = await this.generateCapacityRecommendations(
       currentCapacity,
       demandForecast,
-      capacityGaps
+      capacityGaps,
     );
 
     // Create scenarios
     const scenarios = await this.generateCapacityScenarios(
       currentCapacity,
       demandForecast,
-      recommendations
+      recommendations,
     );
 
     const analytics: CapacityPlanningAnalytics = {
@@ -3429,13 +3501,14 @@ export class AdvancedMetricsTracker extends EventEmitter {
     risks.sort(
       (a, b) =>
         b.probability * this.getImpactScore(b.impact) -
-        a.probability * this.getImpactScore(a.impact)
+        a.probability * this.getImpactScore(a.impact),
     );
 
     this.logger.info('Flow disruption risk assessment completed', {
       riskCount: risks.length,
-      highRisks: risks.filter((r) => r.probability > 0.7 && this.getImpactScore(r.impact) > 3)
-        .length,
+      highRisks: risks.filter(
+        (r) => r.probability > 0.7 && this.getImpactScore(r.impact) > 3,
+      ).length,
     });
 
     this.emit('flow-disruption-risks-assessed', risks);
@@ -3466,12 +3539,16 @@ export class AdvancedMetricsTracker extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('advanced-metrics-tracker:state');
+      const persistedState = await this.memory.retrieve(
+        'advanced-metrics-tracker:state',
+      );
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
-          performanceBaselines: new Map(persistedState.performanceBaselines || []),
+          performanceBaselines: new Map(
+            persistedState.performanceBaselines || [],
+          ),
           activeABTests: new Map(persistedState.activeABTests || []),
           completedABTests: new Map(persistedState.completedABTests || []),
           forecasts: new Map(persistedState.forecasts || []),
@@ -3490,7 +3567,9 @@ export class AdvancedMetricsTracker extends EventEmitter {
     try {
       const stateToSerialize = {
         ...this.state,
-        performanceBaselines: Array.from(this.state.performanceBaselines.entries()),
+        performanceBaselines: Array.from(
+          this.state.performanceBaselines.entries(),
+        ),
         activeABTests: Array.from(this.state.activeABTests.entries()),
         completedABTests: Array.from(this.state.completedABTests.entries()),
         forecasts: Array.from(this.state.forecasts.entries()),
@@ -3499,7 +3578,10 @@ export class AdvancedMetricsTracker extends EventEmitter {
         dashboards: Array.from(this.state.dashboards.entries()),
       };
 
-      await this.memory.store('advanced-metrics-tracker:state', stateToSerialize);
+      await this.memory.store(
+        'advanced-metrics-tracker:state',
+        stateToSerialize,
+      );
     } catch (error) {
       this.logger.error('Failed to persist state', { error });
     }
@@ -3651,14 +3733,21 @@ export class AdvancedMetricsTracker extends EventEmitter {
       impact.throughputLoss * 0.4 +
       impact.cycleTimeIncrease * 0.3 +
       impact.qualityImpact * 0.2 +
-      (impact.customerImpact === 'critical' ? 3 : impact.customerImpact === 'high' ? 2 : 1) * 0.1
+      (impact.customerImpact === 'critical'
+        ? 3
+        : impact.customerImpact === 'high'
+          ? 2
+          : 1) *
+        0.1
     );
   }
 
   // Many placeholder implementations would follow...
 
   private async initializeBaselines(): Promise<void> {}
-  private async collectDetailedFlowMetrics(flowState: FlowState): Promise<DetailedFlowMetrics> {
+  private async collectDetailedFlowMetrics(
+    flowState: FlowState,
+  ): Promise<DetailedFlowMetrics> {
     return {} as DetailedFlowMetrics;
   }
   private async collectPerformanceMetrics(): Promise<PerformanceMetrics> {
@@ -3685,55 +3774,64 @@ export class AdvancedMetricsTracker extends EventEmitter {
   private async collectContextualMetrics(): Promise<ContextualMetrics> {
     return {} as ContextualMetrics;
   }
-  private async calculateDerivedMetrics(baseMetrics: any[]): Promise<DerivedMetrics> {
+  private async calculateDerivedMetrics(
+    baseMetrics: unknown[],
+  ): Promise<DerivedMetrics> {
     return {} as DerivedMetrics;
   }
   private async cleanupOldMetrics(): Promise<void> {}
-  private async checkMetricAlerts(metrics: ComprehensiveFlowMetrics): Promise<void> {}
+  private async checkMetricAlerts(
+    metrics: ComprehensiveFlowMetrics,
+  ): Promise<void> {}
 
   // Additional placeholder methods would continue...
-  private getHistoricalFlowData(): any[] {
+  private getHistoricalFlowData(): unknown[] {
     return [];
   }
   private async analyzeCycleTime(
     flowState: FlowState,
-    historical: any[]
+    historical: unknown[],
   ): Promise<CycleTimeAnalysis> {
     return {} as CycleTimeAnalysis;
   }
   private async analyzeLeadTime(
     flowState: FlowState,
-    historical: any[]
+    historical: unknown[],
   ): Promise<LeadTimeAnalysis> {
     return {} as LeadTimeAnalysis;
   }
   private async analyzeThroughput(
     flowState: FlowState,
-    historical: any[]
+    historical: unknown[],
   ): Promise<ThroughputAnalysis> {
     return {} as ThroughputAnalysis;
   }
-  private async analyzeWIP(flowState: FlowState, historical: any[]): Promise<WIPAnalysis> {
+  private async analyzeWIP(
+    flowState: FlowState,
+    historical: unknown[],
+  ): Promise<WIPAnalysis> {
     return {} as WIPAnalysis;
   }
   private async analyzeFlowEfficiency(
     flowState: FlowState,
-    historical: any[]
+    historical: unknown[],
   ): Promise<FlowEfficiencyAnalysis> {
     return {} as FlowEfficiencyAnalysis;
   }
-  private async analyzeCumulativeFlow(historical: any[]): Promise<CumulativeFlowAnalysis> {
+  private async analyzeCumulativeFlow(
+    historical: unknown[],
+  ): Promise<CumulativeFlowAnalysis> {
     return {} as CumulativeFlowAnalysis;
   }
   private async analyzeFlowDebt(
     flowState: FlowState,
-    historical: any[]
+    historical: unknown[],
   ): Promise<FlowDebtAnalysis> {
     return {} as FlowDebtAnalysis;
   }
   private async analyzeFlowVelocity(
     flowState: FlowState,
-    historical: any[]
+    historical: unknown[],
   ): Promise<FlowVelocityAnalysis> {
     return {} as FlowVelocityAnalysis;
   }
@@ -3742,37 +3840,41 @@ export class AdvancedMetricsTracker extends EventEmitter {
   private async analyzeCurrentPerformanceState(): Promise<PerformanceState> {
     return {} as PerformanceState;
   }
-  private async defineTargetPerformanceState(current: PerformanceState): Promise<PerformanceState> {
+  private async defineTargetPerformanceState(
+    current: PerformanceState,
+  ): Promise<PerformanceState> {
     return {} as PerformanceState;
   }
   private async identifyPerformanceGaps(
     current: PerformanceState,
-    target: PerformanceState
+    target: PerformanceState,
   ): Promise<any[]> {
     return [];
   }
-  private async generateGapRecommendations(gap: any): Promise<OptimizationRecommendation[]> {
+  private async generateGapRecommendations(
+    gap: unknown,
+  ): Promise<OptimizationRecommendation[]> {
     return [];
   }
   private async generateBottleneckOptimizations(
-    bottlenecks: string[]
+    bottlenecks: string[],
   ): Promise<OptimizationRecommendation[]> {
     return [];
   }
   private async generateProcessImprovements(
-    state: PerformanceState
+    state: PerformanceState,
   ): Promise<OptimizationRecommendation[]> {
     return [];
   }
   private async prioritizeRecommendations(
-    recommendations: OptimizationRecommendation[]
+    recommendations: OptimizationRecommendation[],
   ): Promise<OptimizationRecommendation[]> {
     return recommendations;
   }
 
   // A/B testing methods
   private async createABTestForRecommendation(
-    recommendation: OptimizationRecommendation
+    recommendation: OptimizationRecommendation,
   ): Promise<ABTest | null> {
     return null;
   }
@@ -3780,26 +3882,32 @@ export class AdvancedMetricsTracker extends EventEmitter {
   private async completeActiveABTests(): Promise<void> {}
 
   // Forecasting methods
-  private async forecastThroughput(historical: any[], horizon: number): Promise<MetricForecast> {
+  private async forecastThroughput(
+    historical: unknown[],
+    horizon: number,
+  ): Promise<MetricForecast> {
     return {} as MetricForecast;
   }
-  private async forecastCycleTime(historical: any[], horizon: number): Promise<MetricForecast> {
+  private async forecastCycleTime(
+    historical: unknown[],
+    horizon: number,
+  ): Promise<MetricForecast> {
     return {} as MetricForecast;
   }
   private async forecastQualityMetrics(
-    historical: any[],
-    horizon: number
+    historical: unknown[],
+    horizon: number,
   ): Promise<MetricForecast> {
     return {} as MetricForecast;
   }
   private async generateForecastScenarios(
-    forecasts: MetricForecast[]
+    forecasts: MetricForecast[],
   ): Promise<ForecastScenario[]> {
     return [];
   }
   private async calculateForecastConfidence(
     forecasts: MetricForecast[],
-    historical: any[]
+    historical: unknown[],
   ): Promise<number> {
     return 0.8;
   }
@@ -3817,33 +3925,33 @@ export class AdvancedMetricsTracker extends EventEmitter {
   private async calculateBaseDeliveryPrediction(
     item: FlowWorkItem,
     flow: FlowState,
-    historical: any[]
+    historical: unknown[],
   ): Promise<Date> {
     return new Date();
   }
   private async identifyDeliveryFactors(
     item: FlowWorkItem,
-    flow: FlowState
+    flow: FlowState,
   ): Promise<PredictionFactor[]> {
     return [];
   }
   private async assessDeliveryRisks(
     item: FlowWorkItem,
-    factors: PredictionFactor[]
+    factors: PredictionFactor[],
   ): Promise<DeliveryRisk[]> {
     return [];
   }
   private async generateDeliveryScenarios(
     prediction: Date,
     factors: PredictionFactor[],
-    risks: DeliveryRisk[]
+    risks: DeliveryRisk[],
   ): Promise<DeliveryScenario[]> {
     return [];
   }
   private async calculateDeliveryConfidence(
     prediction: Date,
     factors: PredictionFactor[],
-    risks: DeliveryRisk[]
+    risks: DeliveryRisk[],
   ): Promise<ConfidenceInterval> {
     return { lower: 0, upper: 0, confidence: 0.8 };
   }
@@ -3857,21 +3965,21 @@ export class AdvancedMetricsTracker extends EventEmitter {
   }
   private async identifyCapacityGaps(
     capacity: CapacitySnapshot,
-    demand: DemandForecast
+    demand: DemandForecast,
   ): Promise<CapacityGap[]> {
     return [];
   }
   private async generateCapacityRecommendations(
     capacity: CapacitySnapshot,
     demand: DemandForecast,
-    gaps: CapacityGap[]
+    gaps: CapacityGap[],
   ): Promise<CapacityPlanningRecommendation[]> {
     return [];
   }
   private async generateCapacityScenarios(
     capacity: CapacitySnapshot,
     demand: DemandForecast,
-    recommendations: CapacityPlanningRecommendation[]
+    recommendations: CapacityPlanningRecommendation[],
   ): Promise<CapacityScenario[]> {
     return [];
   }
@@ -3883,25 +3991,29 @@ export class AdvancedMetricsTracker extends EventEmitter {
   private async assessQualityDisruptionRisks(): Promise<FlowDisruptionRisk[]> {
     return [];
   }
-  private async assessDependencyDisruptionRisks(): Promise<FlowDisruptionRisk[]> {
+  private async assessDependencyDisruptionRisks(): Promise<
+    FlowDisruptionRisk[]
+  > {
     return [];
   }
   private async assessExternalDisruptionRisks(): Promise<FlowDisruptionRisk[]> {
     return [];
   }
-  private async assessTechnicalDisruptionRisks(): Promise<FlowDisruptionRisk[]> {
+  private async assessTechnicalDisruptionRisks(): Promise<
+    FlowDisruptionRisk[]
+  > {
     return [];
   }
 
   // Additional methods
   private async calculateFlowEfficiencyMeasurement(
-    flowState: FlowState
+    flowState: FlowState,
   ): Promise<FlowEfficiencyMeasurement> {
     return {} as FlowEfficiencyMeasurement;
   }
   private async calculateStageFlowEfficiency(
     stage: FlowStage,
-    flowState: FlowState
+    flowState: FlowState,
   ): Promise<FlowEfficiencyMeasurement> {
     return {} as FlowEfficiencyMeasurement;
   }
@@ -3909,47 +4021,47 @@ export class AdvancedMetricsTracker extends EventEmitter {
     return {} as TrendAnalysis;
   }
   private async performFlowEfficiencyBenchmarking(
-    efficiency: number
+    efficiency: number,
   ): Promise<BenchmarkingAnalysis> {
     return {} as BenchmarkingAnalysis;
   }
   private async identifyFlowImprovementOpportunities(
     overall: FlowEfficiencyMeasurement,
     byStage: Map<FlowStage, FlowEfficiencyMeasurement>,
-    benchmarking: BenchmarkingAnalysis
+    benchmarking: BenchmarkingAnalysis,
   ): Promise<ImprovementOpportunity[]> {
     return [];
   }
   private async createOptimizationImplementation(
     optimizations: OptimizationRecommendation[],
-    tests: ABTest[]
+    tests: ABTest[],
   ): Promise<OptimizationImplementation> {
     return {} as OptimizationImplementation;
   }
   private async calculateOptimizationImpact(
     current: PerformanceState,
     target: PerformanceState,
-    optimizations: OptimizationRecommendation[]
+    optimizations: OptimizationRecommendation[],
   ): Promise<OptimizationImpact> {
     return {} as OptimizationImpact;
   }
   private async calculateOptimizationConfidence(
     optimizations: OptimizationRecommendation[],
-    impact: OptimizationImpact
+    impact: OptimizationImpact,
   ): Promise<number> {
     return 0.8;
   }
   private async calculateActualImpact(
     baseline: PerformanceState,
-    measurements: PerformanceState[]
+    measurements: PerformanceState[],
   ): Promise<OptimizationImpactMeasurement> {
     return {} as OptimizationImpactMeasurement;
   }
 
   // Event handlers
-  private async handleFlowStateUpdate(payload: any): Promise<void> {}
-  private async handleBottleneckDetected(payload: any): Promise<void> {}
-  private async handlePerformanceDegradation(payload: any): Promise<void> {}
+  private async handleFlowStateUpdate(payload: unknown): Promise<void> {}
+  private async handleBottleneckDetected(payload: unknown): Promise<void> {}
+  private async handlePerformanceDegradation(payload: unknown): Promise<void> {}
 }
 
 // ============================================================================

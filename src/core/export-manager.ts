@@ -78,7 +78,9 @@ export class ExportSystem extends EventEmitter {
       mimeType: 'application/json',
       description: 'Export data as JSON format',
       export: (data: unknown, options?: ExportOptions) => {
-        return options?.pretty !== false ? JSON.stringify(data, null, 2) : JSON.stringify(data);
+        return options?.pretty !== false
+          ? JSON.stringify(data, null, 2)
+          : JSON.stringify(data);
       },
       validate: (data: unknown) => {
         try {
@@ -193,7 +195,7 @@ export class ExportSystem extends EventEmitter {
   async exportData(
     data: unknown,
     format: string,
-    options: ExportOptions = {}
+    options: ExportOptions = {},
   ): Promise<ExportResult> {
     const exporter = this.exporters.get(format.toLowerCase());
 
@@ -215,7 +217,8 @@ export class ExportSystem extends EventEmitter {
       const size = Buffer.byteLength(exportedData, 'utf8');
 
       // Generate filename if not provided
-      const filename = options?.filename || `export_${timestamp}${exporter.extension}`;
+      const filename =
+        options?.filename || `export_${timestamp}${exporter.extension}`;
 
       // Save to file if output path provided
       if (options?.outputPath) {
@@ -241,7 +244,9 @@ export class ExportSystem extends EventEmitter {
 
       this.exportHistory.push(result);
       this.emit('export:success', result);
-      logger.info(`Successfully exported data as ${format.toUpperCase()}: ${filename}`);
+      logger.info(
+        `Successfully exported data as ${format.toUpperCase()}: ${filename}`,
+      );
 
       return result;
     } catch (error) {
@@ -272,7 +277,7 @@ export class ExportSystem extends EventEmitter {
   async batchExport(
     data: unknown,
     formats: string[],
-    options: ExportOptions = {}
+    options: ExportOptions = {},
   ): Promise<ExportResult[]> {
     const results: ExportResult[] = [];
 
@@ -321,7 +326,7 @@ export class ExportSystem extends EventEmitter {
       tasks?: Record<string, unknown>[];
     },
     format: string,
-    options: ExportOptions = {}
+    options: ExportOptions = {},
   ): Promise<ExportResult> {
     const documentData = {
       metadata: {
@@ -329,7 +334,7 @@ export class ExportSystem extends EventEmitter {
         workflow: 'Vision → ADRs → PRDs → Epics → Features → Tasks → Code',
         totalDocuments: Object.values(workflowData).reduce(
           (sum, docs) => sum + (docs?.length || 0),
-          0
+          0,
         ),
       },
       ...workflowData,
@@ -355,7 +360,7 @@ export class ExportSystem extends EventEmitter {
   async exportSystemStatus(
     statusData: Record<string, unknown>,
     format: string,
-    options: ExportOptions = {}
+    options: ExportOptions = {},
   ): Promise<ExportResult> {
     const systemExport = {
       timestamp: new Date().toISOString(),
@@ -393,7 +398,10 @@ export class ExportSystem extends EventEmitter {
       const values = headers.map((header) => {
         const value = row[header];
         // Escape values that contain commas or quotes
-        if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+        if (
+          typeof value === 'string' &&
+          (value.includes(',') || value.includes('"'))
+        ) {
           return `"${value.replace(/"/g, '""')}"`;
         }
         return value;
@@ -414,7 +422,9 @@ export class ExportSystem extends EventEmitter {
 
     if (Array.isArray(obj)) {
       if (obj.length === 0) return '[]';
-      return obj.map((item) => `${spaces}- ${this.convertToYAML(item, 0)}`).join('\n');
+      return obj
+        .map((item) => `${spaces}- ${this.convertToYAML(item, 0)}`)
+        .join('\n');
     }
 
     if (typeof obj === 'object') {
@@ -422,7 +432,10 @@ export class ExportSystem extends EventEmitter {
       if (entries.length === 0) return '{}';
 
       return entries
-        .map(([key, value]) => `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`)
+        .map(
+          ([key, value]) =>
+            `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`,
+        )
         .join('\n');
     }
 
@@ -432,7 +445,11 @@ export class ExportSystem extends EventEmitter {
   private convertToXML(obj: unknown, indent: number): string {
     const spaces = '  '.repeat(indent);
 
-    if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean') {
+    if (
+      typeof obj === 'string' ||
+      typeof obj === 'number' ||
+      typeof obj === 'boolean'
+    ) {
       return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;
     }
 
@@ -442,7 +459,7 @@ export class ExportSystem extends EventEmitter {
           (item, index) =>
             `${spaces}<item index="${index}">
       ${this.convertToXML(item, indent + 1)}
-      ${spaces}</item>`
+      ${spaces}</item>`,
         )
         .join('\n');
     }
@@ -453,7 +470,7 @@ export class ExportSystem extends EventEmitter {
           ([key, value]) =>
             `${spaces}<${this.sanitizeXMLTag(key)}>
       ${this.convertToXML(value, indent + 1)}
-      ${spaces}</${this.sanitizeXMLTag(key)}>`
+      ${spaces}</${this.sanitizeXMLTag(key)}>`,
         )
         .join('\n');
     }
@@ -479,7 +496,9 @@ export class ExportSystem extends EventEmitter {
 
       if (dataObj['metadata']) {
         markdown += '## Metadata\n';
-        for (const [key, value] of Object.entries(dataObj['metadata'] as Record<string, unknown>)) {
+        for (const [key, value] of Object.entries(
+          dataObj['metadata'] as Record<string, unknown>,
+        )) {
           markdown += `- **${key}**: ${value}\n`;
         }
         markdown += '\n';
@@ -525,7 +544,8 @@ export class ExportSystem extends EventEmitter {
   }
 
   private convertToHTML(data: unknown, _options?: ExportOptions): string {
-    const title = (data as Record<string, unknown>)['title'] || 'Claude Code Zen Export';
+    const title =
+      (data as Record<string, unknown>)['title'] || 'Claude Code Zen Export';
 
     let html = `<!DOCTYPE html>
 <html lang="en">
@@ -569,7 +589,8 @@ export class ExportSystem extends EventEmitter {
 
     if (typeof obj === 'object' && obj !== null) {
       for (const [key, value] of Object.entries(obj)) {
-        if (key === 'title' || key === 'timestamp' || key === 'exportedAt') continue;
+        if (key === 'title' || key === 'timestamp' || key === 'exportedAt')
+          continue;
 
         html += `<h${Math.min(level, 6)}>${this.escapeHTML(key.charAt(0).toUpperCase() + key.slice(1))}</h${Math.min(level, 6)}>`;
 
@@ -655,7 +676,9 @@ export class ExportSystem extends EventEmitter {
   }
 
   getExportHistory(limit?: number): ExportResult[] {
-    const history = [...this.exportHistory].sort((a, b) => b.timestamp - a.timestamp);
+    const history = [...this.exportHistory].sort(
+      (a, b) => b.timestamp - a.timestamp,
+    );
     return limit ? history.slice(0, limit) : history;
   }
 
@@ -678,12 +701,16 @@ export class ExportSystem extends EventEmitter {
 
     for (const record of this.exportHistory) {
       if (record.success) {
-        stats.formatBreakdown[record.format] = (stats.formatBreakdown[record.format] || 0) + 1;
+        stats.formatBreakdown[record.format] =
+          (stats.formatBreakdown[record.format] || 0) + 1;
         stats.totalSize += record.size;
       }
     }
 
-    stats.averageSize = stats.successfulExports > 0 ? stats.totalSize / stats.successfulExports : 0;
+    stats.averageSize =
+      stats.successfulExports > 0
+        ? stats.totalSize / stats.successfulExports
+        : 0;
 
     return stats;
   }

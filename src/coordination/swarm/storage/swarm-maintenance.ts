@@ -83,7 +83,10 @@ export class SwarmMaintenanceManager extends EventEmitter {
    * @param swarmId
    * @param metadata
    */
-  async createSwarmStorage(swarmId: string, metadata: Partial<SwarmMeta>): Promise<string> {
+  async createSwarmStorage(
+    swarmId: string,
+    metadata: Partial<SwarmMeta>,
+  ): Promise<string> {
     const swarmDir = path.join(this.swarmsPath, 'active', swarmId);
     await fs.mkdir(swarmDir, { recursive: true });
 
@@ -100,7 +103,10 @@ export class SwarmMaintenanceManager extends EventEmitter {
       ...metadata,
     };
 
-    await fs.writeFile(path.join(swarmDir, 'meta.json'), JSON.stringify(meta, null, 2));
+    await fs.writeFile(
+      path.join(swarmDir, 'meta.json'),
+      JSON.stringify(meta, null, 2),
+    );
 
     this.emit('swarm:created', { swarmId, path: swarmDir });
     return swarmDir;
@@ -145,7 +151,11 @@ export class SwarmMaintenanceManager extends EventEmitter {
    */
   async archiveSwarm(swarmId: string): Promise<void> {
     const activeDir = path.join(this.swarmsPath, 'active', swarmId);
-    const archiveDir = path.join(this.swarmsPath, 'archived', this.getArchiveMonth());
+    const archiveDir = path.join(
+      this.swarmsPath,
+      'archived',
+      this.getArchiveMonth(),
+    );
 
     await fs.mkdir(archiveDir, { recursive: true });
 
@@ -155,9 +165,15 @@ export class SwarmMaintenanceManager extends EventEmitter {
     // Use tar compression
     const { spawn } = require('node:child_process');
     await new Promise((resolve, reject) => {
-      const tar = spawn('tar', ['-czf', archivePath, '-C', path.dirname(activeDir), swarmId]);
+      const tar = spawn('tar', [
+        '-czf',
+        archivePath,
+        '-C',
+        path.dirname(activeDir),
+        swarmId,
+      ]);
       tar.on('close', (code) =>
-        code === 0 ? resolve(void 0) : reject(new Error(`tar failed: ${code}`))
+        code === 0 ? resolve(void 0) : reject(new Error(`tar failed: ${code}`)),
       );
     });
 
@@ -186,18 +202,24 @@ export class SwarmMaintenanceManager extends EventEmitter {
         const yearStr = splitResult?.[0];
         const monthStr = splitResult?.[1];
 
-        if (!yearStr || !monthStr) {
+        if (!(yearStr && monthStr)) {
           logger.warn(`Invalid month directory format: ${monthDir}`);
           continue;
         }
 
-        const monthDate = new Date(parseInt(yearStr), parseInt(monthStr) - 1);
+        const monthDate = new Date(
+          Number.parseInt(yearStr),
+          Number.parseInt(monthStr) - 1,
+        );
 
         if (monthDate < cutoffDate) {
           const archives = await fs.readdir(monthPath);
           deletedCount += archives.length;
           await fs.rm(monthPath, { recursive: true });
-          this.emit('archives:deleted', { month: monthDir, count: archives.length });
+          this.emit('archives:deleted', {
+            month: monthDir,
+            count: archives.length,
+          });
         }
       }
     } catch (error) {
@@ -242,12 +264,12 @@ export class SwarmMaintenanceManager extends EventEmitter {
         output += data;
       });
       du.on('close', (code) =>
-        code === 0 ? resolve(output) : reject(new Error(`du failed: ${code}`))
+        code === 0 ? resolve(output) : reject(new Error(`du failed: ${code}`)),
       );
     });
 
     const sizeStr = sizeResult?.split('\t')[0];
-    const totalSizeBytes = sizeStr ? parseInt(sizeStr) : 0;
+    const totalSizeBytes = sizeStr ? Number.parseInt(sizeStr) : 0;
 
     return {
       active: activeCount,

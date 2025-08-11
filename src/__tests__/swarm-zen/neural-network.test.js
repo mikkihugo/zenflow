@@ -120,12 +120,19 @@ describe('Neural Network WASM Integration', () => {
         outputs: [[0], [1], [1], [0]],
       };
 
-      const result = await trainer.trainUntilTarget(network, trainingData, 0.01, 500);
+      const result = await trainer.trainUntilTarget(
+        network,
+        trainingData,
+        0.01,
+        500,
+      );
       expect(result.converged).toBe(true);
       expect(result.finalError).toBeLessThan(0.01);
 
       // Test predictions
-      const predictions = await Promise.all(trainingData.inputs.map((input) => network.run(input)));
+      const predictions = await Promise.all(
+        trainingData.inputs.map((input) => network.run(input)),
+      );
 
       // Check XOR logic
       expect(predictions[0][0]).toBeLessThan(0.5); // [0,0] => 0
@@ -256,7 +263,10 @@ describe('Neural Network WASM Integration', () => {
           .map(() => [Math.random(), Math.random(), Math.random()]),
         outputs: Array(10)
           .fill(null)
-          .map(() => [Math.random() > 0.5 ? 1 : 0, Math.random() > 0.5 ? 1 : 0]),
+          .map(() => [
+            Math.random() > 0.5 ? 1 : 0,
+            Math.random() > 0.5 ? 1 : 0,
+          ]),
       };
 
       const result = await manager.trainAgentNetwork(agentId, trainingData);
@@ -282,7 +292,10 @@ describe('Neural Network WASM Integration', () => {
         context: { task: 'optimization' },
       };
 
-      const result = await manager.fineTuneDuringExecution(agentId, experienceData);
+      const result = await manager.fineTuneDuringExecution(
+        agentId,
+        experienceData,
+      );
       expect(result).toBeDefined();
       expect(result.adapted).toBe(true);
     });
@@ -313,7 +326,9 @@ describe('Neural Network WASM Integration', () => {
 
       // Test inference on all agents
       const testInput = Array(10).fill(0.5);
-      const inferencePromises = agentIds.map((id) => manager.getAgentInference(id, testInput));
+      const inferencePromises = agentIds.map((id) =>
+        manager.getAgentInference(id, testInput),
+      );
 
       const results = await Promise.all(inferencePromises);
       expect(results).toHaveLength(100);

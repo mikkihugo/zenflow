@@ -1,14 +1,14 @@
 // Test GPT-5 with proper understanding: 4K input, 128K output
-import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-import { AzureKeyCredential } from "@azure/core-auth";
+import ModelClient, { isUnexpected } from '@azure-rest/ai-inference';
+import { AzureKeyCredential } from '@azure/core-auth';
 
-const token = process.env["GITHUB_TOKEN"];
-const endpoint = "https://models.github.ai/inference";
-const model = "openai/gpt-5";
+const token = process.env['GITHUB_TOKEN'];
+const endpoint = 'https://models.github.ai/inference';
+const model = 'openai/gpt-5';
 
 async function testProperLimits() {
   if (!token) {
-    console.log("❌ GITHUB_TOKEN not set");
+    console.log('❌ GITHUB_TOKEN not set');
     return;
   }
 
@@ -108,38 +108,49 @@ Please provide detailed, actionable recommendations with:
 `;
 
   const inputTokens = Math.round(optimizedContext.length / 4);
-  
+
   try {
     console.log('🚀 Testing GPT-5 with Proper Input/Output Limits...');
     console.log('  - Model: openai/gpt-5');
     console.log('  - Input context:', optimizedContext.length, 'characters');
-    console.log('  - Estimated input tokens:', inputTokens, '(within 4K limit)');
+    console.log(
+      '  - Estimated input tokens:',
+      inputTokens,
+      '(within 4K limit)',
+    );
     console.log('  - Max output tokens: 128,000');
-    console.log('  - Input utilization:', ((inputTokens / 4000) * 100).toFixed(1), '% of 4K input limit');
-    
+    console.log(
+      '  - Input utilization:',
+      ((inputTokens / 4000) * 100).toFixed(1),
+      '% of 4K input limit',
+    );
+
     const client = ModelClient(endpoint, new AzureKeyCredential(token));
 
     const startTime = Date.now();
-    
-    const response = await client.path("/chat/completions").post({
+
+    const response = await client.path('/chat/completions').post({
       body: {
         messages: [
-          { 
-            role: "system", 
-            content: "You are a world-class software architect and AI systems expert. Provide extremely detailed, comprehensive analysis with specific implementation recommendations, code examples, and architectural diagrams described in text. Make your response as thorough and detailed as possible to demonstrate the full 128K output capability."
+          {
+            role: 'system',
+            content:
+              'You are a world-class software architect and AI systems expert. Provide extremely detailed, comprehensive analysis with specific implementation recommendations, code examples, and architectural diagrams described in text. Make your response as thorough and detailed as possible to demonstrate the full 128K output capability.',
           },
-          { 
-            role: "user", 
-            content: optimizedContext
-          }
+          {
+            role: 'user',
+            content: optimizedContext,
+          },
         ],
         model: model,
-        max_completion_tokens: 128000 // Full 128K output capacity
-      }
+        max_completion_tokens: 128000, // Full 128K output capacity
+      },
     });
 
     if (isUnexpected(response)) {
-      throw new Error(`GPT-5 API Error: ${JSON.stringify(response.body?.error || response.body)}`);
+      throw new Error(
+        `GPT-5 API Error: ${JSON.stringify(response.body?.error || response.body)}`,
+      );
     }
 
     const executionTime = Date.now() - startTime;
@@ -147,59 +158,134 @@ Please provide detailed, actionable recommendations with:
     const outputTokens = Math.round(content.length / 4);
     const totalTokens = inputTokens + outputTokens;
 
-    console.log("✅ GPT-5 Proper Limits Test Success!");
-    
+    console.log('✅ GPT-5 Proper Limits Test Success!');
+
     console.log('\n📊 Comprehensive Token Analysis:');
-    console.log('  - Input tokens:', inputTokens.toLocaleString(), '/ 4,000 limit');
-    console.log('  - Output tokens:', outputTokens.toLocaleString(), '/ 128,000 limit');
-    console.log('  - Total processing:', totalTokens.toLocaleString(), 'tokens');
-    console.log('  - Input utilization:', ((inputTokens / 4000) * 100).toFixed(1), '%');
-    console.log('  - Output utilization:', ((outputTokens / 128000) * 100).toFixed(1), '%');
+    console.log(
+      '  - Input tokens:',
+      inputTokens.toLocaleString(),
+      '/ 4,000 limit',
+    );
+    console.log(
+      '  - Output tokens:',
+      outputTokens.toLocaleString(),
+      '/ 128,000 limit',
+    );
+    console.log(
+      '  - Total processing:',
+      totalTokens.toLocaleString(),
+      'tokens',
+    );
+    console.log(
+      '  - Input utilization:',
+      ((inputTokens / 4000) * 100).toFixed(1),
+      '%',
+    );
+    console.log(
+      '  - Output utilization:',
+      ((outputTokens / 128000) * 100).toFixed(1),
+      '%',
+    );
     console.log('  - Processing time:', executionTime.toLocaleString(), 'ms');
-    console.log('  - Tokens per second:', Math.round(outputTokens / (executionTime / 1000)).toLocaleString());
+    console.log(
+      '  - Tokens per second:',
+      Math.round(outputTokens / (executionTime / 1000)).toLocaleString(),
+    );
 
     console.log('\n📏 Response Analysis:');
-    console.log('  - Response length:', content.length.toLocaleString(), 'characters');
-    console.log('  - Estimated pages:', Math.round(content.length / 3000), '(3K chars/page)');
-    console.log('  - Word count (est):', Math.round(content.length / 5).toLocaleString(), 'words');
+    console.log(
+      '  - Response length:',
+      content.length.toLocaleString(),
+      'characters',
+    );
+    console.log(
+      '  - Estimated pages:',
+      Math.round(content.length / 3000),
+      '(3K chars/page)',
+    );
+    console.log(
+      '  - Word count (est):',
+      Math.round(content.length / 5).toLocaleString(),
+      'words',
+    );
     console.log('  - Model used:', response.body.model);
-    
+
     // Quality assessment
     const hasCodeExamples = (content.match(/```/g) || []).length;
-    const hasArchitecture = content.toLowerCase().includes('architecture') || content.toLowerCase().includes('architectural');
-    const hasPerformance = content.toLowerCase().includes('performance') || content.toLowerCase().includes('optimization');
-    const hasScalability = content.toLowerCase().includes('scalability') || content.toLowerCase().includes('scaling');
-    const hasSecurity = content.toLowerCase().includes('security') || content.toLowerCase().includes('reliability');
-    const hasImplementation = content.toLowerCase().includes('implementation') || content.toLowerCase().includes('recommend');
-    
+    const hasArchitecture =
+      content.toLowerCase().includes('architecture') ||
+      content.toLowerCase().includes('architectural');
+    const hasPerformance =
+      content.toLowerCase().includes('performance') ||
+      content.toLowerCase().includes('optimization');
+    const hasScalability =
+      content.toLowerCase().includes('scalability') ||
+      content.toLowerCase().includes('scaling');
+    const hasSecurity =
+      content.toLowerCase().includes('security') ||
+      content.toLowerCase().includes('reliability');
+    const hasImplementation =
+      content.toLowerCase().includes('implementation') ||
+      content.toLowerCase().includes('recommend');
+
     console.log('\n🎯 Content Quality Assessment:');
     console.log('  - ✅ Code examples:', hasCodeExamples, 'blocks');
-    console.log('  - ✅ Architecture analysis:', hasArchitecture ? 'Present' : 'Missing');
-    console.log('  - ✅ Performance analysis:', hasPerformance ? 'Present' : 'Missing'); 
-    console.log('  - ✅ Scalability analysis:', hasScalability ? 'Present' : 'Missing');
-    console.log('  - ✅ Security analysis:', hasSecurity ? 'Present' : 'Missing');
-    console.log('  - ✅ Implementation details:', hasImplementation ? 'Present' : 'Missing');
+    console.log(
+      '  - ✅ Architecture analysis:',
+      hasArchitecture ? 'Present' : 'Missing',
+    );
+    console.log(
+      '  - ✅ Performance analysis:',
+      hasPerformance ? 'Present' : 'Missing',
+    );
+    console.log(
+      '  - ✅ Scalability analysis:',
+      hasScalability ? 'Present' : 'Missing',
+    );
+    console.log(
+      '  - ✅ Security analysis:',
+      hasSecurity ? 'Present' : 'Missing',
+    );
+    console.log(
+      '  - ✅ Implementation details:',
+      hasImplementation ? 'Present' : 'Missing',
+    );
 
     // Show structured preview
     console.log('\n📋 Response Structure:');
-    const sections = content.split('\n').filter(line => 
-      line.match(/^#+\s/) || 
-      line.match(/^\d+\./) ||
-      (line.toUpperCase() === line && line.length > 15 && line.length < 80)
-    ).slice(0, 20);
-    
+    const sections = content
+      .split('\n')
+      .filter(
+        (line) =>
+          line.match(/^#+\s/) ||
+          line.match(/^\d+\./) ||
+          (line.toUpperCase() === line && line.length > 15 && line.length < 80),
+      )
+      .slice(0, 20);
+
     sections.forEach((section, index) => {
-      console.log(`  ${index + 1}. ${section.trim().substring(0, 70)}${section.length > 70 ? '...' : ''}`);
+      console.log(
+        `  ${index + 1}. ${section.trim().substring(0, 70)}${section.length > 70 ? '...' : ''}`,
+      );
     });
 
     // Rate limit status
     console.log('\n📊 API Status:');
     const headers = response.headers;
     if (headers['x-ratelimit-remaining-requests']) {
-      console.log('  - Remaining requests:', headers['x-ratelimit-remaining-requests']);
+      console.log(
+        '  - Remaining requests:',
+        headers['x-ratelimit-remaining-requests'],
+      );
       console.log('  - Request limit:', headers['x-ratelimit-limit-requests']);
-      console.log('  - Remaining tokens:', parseInt(headers['x-ratelimit-remaining-tokens']).toLocaleString());
-      console.log('  - Token limit:', parseInt(headers['x-ratelimit-limit-tokens']).toLocaleString());
+      console.log(
+        '  - Remaining tokens:',
+        parseInt(headers['x-ratelimit-remaining-tokens']).toLocaleString(),
+      );
+      console.log(
+        '  - Token limit:',
+        parseInt(headers['x-ratelimit-limit-tokens']).toLocaleString(),
+      );
     }
 
     console.log('\n🏆 GPT-5 Capabilities Confirmed:');
@@ -208,9 +294,8 @@ Please provide detailed, actionable recommendations with:
     console.log('  - ✅ Total Capacity: 132,000 token processing');
     console.log('  - ✅ Response Quality: Enterprise-grade analysis');
     console.log('  - ✅ Performance: Excellent speed and reliability');
-
   } catch (error) {
-    console.error("❌ GPT-5 proper limits test failed:", error.message);
+    console.error('❌ GPT-5 proper limits test failed:', error.message);
   }
 }
 

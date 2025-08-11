@@ -123,7 +123,7 @@ export class DIContainerBuilder {
    */
   singleton<T>(
     token: import('./types/di-types.ts').DIToken<T>,
-    factory: (container: import('./types/di-types.ts').DIContainer) => T
+    factory: (container: import('./types/di-types.ts').DIContainer) => T,
   ): this {
     this.container.register(token, new SingletonProvider(factory));
     return this;
@@ -137,7 +137,7 @@ export class DIContainerBuilder {
    */
   transient<T>(
     token: import('./types/di-types.ts').DIToken<T>,
-    factory: (container: import('./types/di-types.ts').DIContainer) => T
+    factory: (container: import('./types/di-types.ts').DIContainer) => T,
   ): this {
     this.container.register(token, new TransientProvider(factory));
     return this;
@@ -151,7 +151,7 @@ export class DIContainerBuilder {
    */
   scoped<T>(
     token: import('./types/di-types.ts').DIToken<T>,
-    factory: (container: import('./types/di-types.ts').DIContainer) => T
+    factory: (container: import('./types/di-types.ts').DIContainer) => T,
   ): this {
     this.container.register(token, new ScopedProvider(factory));
     return this;

@@ -31,8 +31,12 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     // Test all the integration points mentioned in the problem statement
 
     // 1. Test Swarm Coordinator Initialization (FIXED)
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
+    const { createPublicSwarmCoordinator } = await import(
+      '../../coordination/public-api.ts'
+    );
+    const { HiveSwarmCoordinator } = await import(
+      '../../coordination/hive-swarm-sync.ts'
+    );
     const { EventBus } = await import('../../core/event-bus.ts');
 
     const eventBus = EventBus.getInstance();
@@ -44,7 +48,9 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     expect(typeof swarmCoordinator.initialize).toBe('function');
 
     // 2. Test Auto-Swarm Factory Configuration (ENHANCED)
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
+    const { AutoSwarmFactory } = await import(
+      '../../coordination/discovery/auto-swarm-factory.ts'
+    );
 
     const testDomains = new Map([
       [
@@ -82,7 +88,8 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     // Dynamic resource constraints (as implemented in discover.ts)
     const calculateResourceConstraints = () => {
       const baseCpuLimit = Math.min(8, Math.max(2, testDomains.size * 2));
-      const baseMemoryLimit = testDomains.size < 3 ? '2GB' : testDomains.size < 6 ? '4GB' : '8GB';
+      const baseMemoryLimit =
+        testDomains.size < 3 ? '2GB' : testDomains.size < 6 ? '4GB' : '8GB';
       const baseMaxAgents = Math.min(10 * testDomains.size, 50);
 
       return {
@@ -92,19 +99,35 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
       };
     };
 
-    const factory = new AutoSwarmFactory(swarmCoordinator, hiveSync, mockMemoryStore, mockAgui, {
-      enableHumanValidation: false,
-      maxSwarmsPerDomain: 1,
-      resourceConstraints: calculateResourceConstraints(),
-    });
+    const factory = new AutoSwarmFactory(
+      swarmCoordinator,
+      hiveSync,
+      mockMemoryStore,
+      mockAgui,
+      {
+        enableHumanValidation: false,
+        maxSwarmsPerDomain: 1,
+        resourceConstraints: calculateResourceConstraints(),
+      },
+    );
 
     // 3. Test Swarm Creation Pipeline (WORKING)
     const events: any[] = [];
-    factory.on('factory:start', (event) => events.push({ type: 'start', ...event }));
-    factory.on('swarm:created', (event) => events.push({ type: 'created', ...event }));
-    factory.on('swarm:initialized', (event) => events.push({ type: 'initialized', ...event }));
-    factory.on('swarm:init-error', (event) => events.push({ type: 'init-error', ...event }));
-    factory.on('factory:complete', (event) => events.push({ type: 'complete', ...event }));
+    factory.on('factory:start', (event) =>
+      events.push({ type: 'start', ...event }),
+    );
+    factory.on('swarm:created', (event) =>
+      events.push({ type: 'created', ...event }),
+    );
+    factory.on('swarm:initialized', (event) =>
+      events.push({ type: 'initialized', ...event }),
+    );
+    factory.on('swarm:init-error', (event) =>
+      events.push({ type: 'init-error', ...event }),
+    );
+    factory.on('factory:complete', (event) =>
+      events.push({ type: 'complete', ...event }),
+    );
 
     const swarmConfigs = await factory.createSwarmsForDomains(testDomains);
 
@@ -120,10 +143,14 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
 
     // ✓ Resource constraints properly enforced
     const totalAgents = swarmConfigs?.reduce(
-      (sum, config) => sum + config?.agents?.reduce((agentSum, agent) => agentSum + agent.count, 0),
-      0
+      (sum, config) =>
+        sum +
+        config?.agents?.reduce((agentSum, agent) => agentSum + agent.count, 0),
+      0,
     );
-    expect(totalAgents).toBeLessThanOrEqual(calculateResourceConstraints().maxTotalAgents);
+    expect(totalAgents).toBeLessThanOrEqual(
+      calculateResourceConstraints().maxTotalAgents,
+    );
 
     // ✓ Event system provides proper creation feedback
     expect(events.some((e) => e.type === 'start')).toBe(true);
@@ -132,25 +159,43 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     expect(events.some((e) => e.type === 'complete')).toBe(true);
 
     // Verify appropriate agent configurations
-    expect(databaseSwarm?.agents.some((a) => a.type === 'data-specialist')).toBe(true);
-    expect(apiSwarm?.agents.some((a) => a.type === 'api-specialist')).toBe(true);
-    expect(swarmConfigs?.every((c) => c.agents.some((a) => a.type === 'coordinator'))).toBe(true);
+    expect(
+      databaseSwarm?.agents.some((a) => a.type === 'data-specialist'),
+    ).toBe(true);
+    expect(apiSwarm?.agents.some((a) => a.type === 'api-specialist')).toBe(
+      true,
+    );
+    expect(
+      swarmConfigs?.every((c) =>
+        c.agents.some((a) => a.type === 'coordinator'),
+      ),
+    ).toBe(true);
 
     // 5. Test Expected Swarm Configuration Examples
     // Database domain: Hierarchical topology with specialized data agents
     expect(databaseSwarm?.topology.type).toBe('hierarchical');
-    expect(databaseSwarm?.agents.some((a) => a.type === 'data-specialist')).toBe(true);
+    expect(
+      databaseSwarm?.agents.some((a) => a.type === 'data-specialist'),
+    ).toBe(true);
 
     // API domain: Star topology with API gateway agent
     expect(apiSwarm?.topology.type).toBe('star');
-    expect(apiSwarm?.agents.some((a) => a.type === 'api-specialist')).toBe(true);
+    expect(apiSwarm?.agents.some((a) => a.type === 'api-specialist')).toBe(
+      true,
+    );
   });
 
   it('should handle error scenarios gracefully', async () => {
     // Test failed swarm creation handling
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
+    const { AutoSwarmFactory } = await import(
+      '../../coordination/discovery/auto-swarm-factory.ts'
+    );
+    const { createPublicSwarmCoordinator } = await import(
+      '../../coordination/public-api.ts'
+    );
+    const { HiveSwarmCoordinator } = await import(
+      '../../coordination/hive-swarm-sync.ts'
+    );
     const { EventBus } = await import('../../core/event-bus.ts');
 
     const eventBus = EventBus.getInstance();
@@ -166,14 +211,20 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
       return originalInitialize.call(swarmCoordinator, config);
     });
 
-    const factory = new AutoSwarmFactory(swarmCoordinator, hiveSync, mockMemoryStore, mockAgui, {
-      enableHumanValidation: false,
-      resourceConstraints: {
-        maxTotalAgents: 20,
-        memoryLimit: '4GB',
-        cpuLimit: 8,
+    const factory = new AutoSwarmFactory(
+      swarmCoordinator,
+      hiveSync,
+      mockMemoryStore,
+      mockAgui,
+      {
+        enableHumanValidation: false,
+        resourceConstraints: {
+          maxTotalAgents: 20,
+          memoryLimit: '4GB',
+          cpuLimit: 8,
+        },
       },
-    });
+    );
 
     const testDomains = new Map([
       [
@@ -222,9 +273,15 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
 
   it('should validate resource constraints properly', async () => {
     // Test resource constraint validation as mentioned in requirements
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
+    const { AutoSwarmFactory } = await import(
+      '../../coordination/discovery/auto-swarm-factory.ts'
+    );
+    const { createPublicSwarmCoordinator } = await import(
+      '../../coordination/public-api.ts'
+    );
+    const { HiveSwarmCoordinator } = await import(
+      '../../coordination/hive-swarm-sync.ts'
+    );
     const { EventBus } = await import('../../core/event-bus.ts');
 
     const eventBus = EventBus.getInstance();
@@ -232,14 +289,20 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     const hiveSync = new HiveSwarmCoordinator(eventBus);
 
     // Create factory with very restrictive constraints
-    const factory = new AutoSwarmFactory(swarmCoordinator, hiveSync, mockMemoryStore, mockAgui, {
-      enableHumanValidation: false,
-      resourceConstraints: {
-        maxTotalAgents: 2, // Very low limit
-        memoryLimit: '1GB',
-        cpuLimit: 1,
+    const factory = new AutoSwarmFactory(
+      swarmCoordinator,
+      hiveSync,
+      mockMemoryStore,
+      mockAgui,
+      {
+        enableHumanValidation: false,
+        resourceConstraints: {
+          maxTotalAgents: 2, // Very low limit
+          memoryLimit: '1GB',
+          cpuLimit: 1,
+        },
       },
-    });
+    );
 
     const largeDomains = new Map([
       [
@@ -275,6 +338,8 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     ]);
 
     // Should throw error due to resource constraints
-    await expect(factory.createSwarmsForDomains(largeDomains)).rejects.toThrow('exceeds limit');
+    await expect(factory.createSwarmsForDomains(largeDomains)).rejects.toThrow(
+      'exceeds limit',
+    );
   });
 });

@@ -67,7 +67,12 @@ describe('Training Convergence - Classical TDD', () => {
       network.setTrainingData(xorData);
 
       // Train until convergence
-      const result = await trainer.trainUntilTarget(network, xorData, 0.01, 3000);
+      const result = await trainer.trainUntilTarget(
+        network,
+        xorData,
+        0.01,
+        3000,
+      );
 
       // Verify convergence
       expect(result?.converged).toBe(true);
@@ -137,12 +142,24 @@ describe('Training Convergence - Classical TDD', () => {
       network1.setTrainingData(xorData);
       network2.setTrainingData(xorData);
 
-      const backpropResult = await backpropTrainer.trainUntilTarget(network1, xorData, 0.05, 2000);
-      const rpropResult = await rpropTrainer.trainUntilTarget(network2, xorData, 0.05, 2000);
+      const backpropResult = await backpropTrainer.trainUntilTarget(
+        network1,
+        xorData,
+        0.05,
+        2000,
+      );
+      const rpropResult = await rpropTrainer.trainUntilTarget(
+        network2,
+        xorData,
+        0.05,
+        2000,
+      );
 
       // RProp should generally converge faster or achieve lower error
       if (backpropResult?.converged && rpropResult?.converged) {
-        expect(rpropResult?.epochs).toBeLessThanOrEqual(backpropResult?.epochs * 1.5);
+        expect(rpropResult?.epochs).toBeLessThanOrEqual(
+          backpropResult?.epochs * 1.5,
+        );
       } else if (rpropResult?.converged) {
         expect(rpropResult?.converged).toBe(true);
       }
@@ -173,8 +190,32 @@ describe('Training Convergence - Classical TDD', () => {
 
       // Linear function: y = 2x + 1
       const linearData: TrainingDataConfig = {
-        inputs: [[0], [0.1], [0.2], [0.3], [0.4], [0.5], [0.6], [0.7], [0.8], [0.9], [1.0]],
-        outputs: [[1], [1.2], [1.4], [1.6], [1.8], [2.0], [2.2], [2.4], [2.6], [2.8], [3.0]],
+        inputs: [
+          [0],
+          [0.1],
+          [0.2],
+          [0.3],
+          [0.4],
+          [0.5],
+          [0.6],
+          [0.7],
+          [0.8],
+          [0.9],
+          [1.0],
+        ],
+        outputs: [
+          [1],
+          [1.2],
+          [1.4],
+          [1.6],
+          [1.8],
+          [2.0],
+          [2.2],
+          [2.4],
+          [2.6],
+          [2.8],
+          [3.0],
+        ],
       };
 
       const network = await createNeuralNetwork(networkConfig);
@@ -182,7 +223,12 @@ describe('Training Convergence - Classical TDD', () => {
 
       network.setTrainingData(linearData);
 
-      const result = await trainer.trainUntilTarget(network, linearData, 0.01, 500);
+      const result = await trainer.trainUntilTarget(
+        network,
+        linearData,
+        0.01,
+        500,
+      );
 
       expect(result?.converged).toBe(true);
       expect(result?.epochs).toBeLessThan(300); // Linear should converge quickly
@@ -241,7 +287,12 @@ describe('Training Convergence - Classical TDD', () => {
 
       network.setTrainingData(sineData);
 
-      const result = await trainer.trainUntilTarget(network, sineData, 0.05, 1000);
+      const result = await trainer.trainUntilTarget(
+        network,
+        sineData,
+        0.05,
+        1000,
+      );
 
       expect(result?.finalError).toBeLessThan(0.1); // Reasonable approximation
 
@@ -324,7 +375,12 @@ describe('Training Convergence - Classical TDD', () => {
 
       network.setTrainingData(classificationData);
 
-      const result = await trainer.trainUntilTarget(network, classificationData, 0.1, 800);
+      const result = await trainer.trainUntilTarget(
+        network,
+        classificationData,
+        0.1,
+        800,
+      );
 
       expect(result?.finalError).toBeLessThan(0.2);
 
@@ -395,12 +451,19 @@ describe('Training Convergence - Classical TDD', () => {
 
         network.setTrainingData(xorData);
 
-        const result = await trainer.trainUntilTarget(network, xorData, 0.05, 1500);
+        const result = await trainer.trainUntilTarget(
+          network,
+          xorData,
+          0.05,
+          1500,
+        );
         results[algorithm] = result;
       }
 
       // At least one algorithm should converge
-      const convergedAlgorithms = Object.keys(results).filter((algo) => results?.[algo]?.converged);
+      const convergedAlgorithms = Object.keys(results).filter(
+        (algo) => results?.[algo]?.converged,
+      );
       expect(convergedAlgorithms.length).toBeGreaterThan(0);
 
       // Verify that converged algorithms achieve target error
@@ -452,7 +515,12 @@ describe('Training Convergence - Classical TDD', () => {
 
         network.setTrainingData(andData);
 
-        const result = await trainer.trainUntilTarget(network, andData, 0.05, 1000);
+        const result = await trainer.trainUntilTarget(
+          network,
+          andData,
+          0.05,
+          1000,
+        );
         results?.push(result?.epochs);
       }
 

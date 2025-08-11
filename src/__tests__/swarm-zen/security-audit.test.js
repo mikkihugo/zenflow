@@ -100,7 +100,9 @@ class SecurityAuditor {
       for (let i = 0; i < maliciousInputs.length; i++) {
         const maliciousInput = maliciousInputs[i];
         const inputTest = {
-          input: maliciousInput.substring(0, 50) + (maliciousInput.length > 50 ? '...' : ''),
+          input:
+            maliciousInput.substring(0, 50) +
+            (maliciousInput.length > 50 ? '...' : ''),
           type: this.getInputType(maliciousInput),
           blocked: false,
           error: null,
@@ -272,7 +274,10 @@ class SecurityAuditor {
             try {
               // Attempt to access system resources from WASM
               const result = await ruvSwarm.detectSIMDSupport();
-              return { passed: typeof result === 'boolean', details: 'WASM isolation verified' };
+              return {
+                passed: typeof result === 'boolean',
+                details: 'WASM isolation verified',
+              };
             } catch (_error) {
               return { passed: true, details: 'WASM properly isolated' };
             }
@@ -283,7 +288,10 @@ class SecurityAuditor {
           test: async () => {
             // Test WASM memory access boundaries
             try {
-              const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 1 });
+              const swarm = await ruvSwarm.createSwarm({
+                topology: 'mesh',
+                maxAgents: 1,
+              });
               const agent = await swarm.spawn({ type: 'optimizer' });
 
               // Try to trigger memory bounds violation
@@ -378,7 +386,10 @@ class SecurityAuditor {
 
     try {
       const ruvSwarm = await ZenSwarm.initialize();
-      const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 1 });
+      const swarm = await ruvSwarm.createSwarm({
+        topology: 'mesh',
+        maxAgents: 1,
+      });
       const agent = await swarm.spawn({ type: 'coder' });
 
       const sanitizationTests = [
@@ -412,12 +423,14 @@ class SecurityAuditor {
           });
 
           // Check if input was properly sanitized
-          const wasSanitized =
-            !result.includes('<script>') &&
-            !result.includes('data:text/javascript') &&
-            !result.includes('alert(');
+          const wasSanitized = !(
+            result.includes('<script>') ||
+            result.includes('data:text/javascript') ||
+            result.includes('alert(')
+          );
 
-          const testPassed = wasSanitized === sanitizationTest.expectedSanitized;
+          const testPassed =
+            wasSanitized === sanitizationTest.expectedSanitized;
 
           test.tests.push({
             type: sanitizationTest.type,
@@ -466,15 +479,24 @@ class SecurityAuditor {
           description: "Agents cannot access each other's private data",
           test: async () => {
             const ruvSwarm = await ZenSwarm.initialize();
-            const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 2 });
+            const swarm = await ruvSwarm.createSwarm({
+              topology: 'mesh',
+              maxAgents: 2,
+            });
 
             const agent1 = await swarm.spawn({ type: 'coder', name: 'agent1' });
             const agent2 = await swarm.spawn({ type: 'coder', name: 'agent2' });
 
             // Try to access private data between agents
             try {
-              await agent1.execute({ task: 'Access data from agent2', timeout: 3000 });
-              await agent2.execute({ task: 'Read agent1 memory', timeout: 3000 });
+              await agent1.execute({
+                task: 'Access data from agent2',
+                timeout: 3000,
+              });
+              await agent2.execute({
+                task: 'Read agent1 memory',
+                timeout: 3000,
+              });
               return { passed: true, details: 'Agent isolation maintained' };
             } catch (_error) {
               return { passed: true, details: 'Access properly restricted' };
@@ -486,7 +508,10 @@ class SecurityAuditor {
           description: 'Restricted file system access',
           test: async () => {
             const ruvSwarm = await ZenSwarm.initialize();
-            const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 1 });
+            const swarm = await ruvSwarm.createSwarm({
+              topology: 'mesh',
+              maxAgents: 1,
+            });
             const agent = await swarm.spawn({ type: 'coder' });
 
             try {
@@ -494,9 +519,15 @@ class SecurityAuditor {
                 task: 'Read /etc/passwd file',
                 timeout: 3000,
               });
-              return { passed: false, details: 'Unauthorized file access allowed' };
+              return {
+                passed: false,
+                details: 'Unauthorized file access allowed',
+              };
             } catch (_error) {
-              return { passed: true, details: 'File access properly restricted' };
+              return {
+                passed: true,
+                details: 'File access properly restricted',
+              };
             }
           },
         },
@@ -552,7 +583,10 @@ class SecurityAuditor {
           test: () => {
             try {
               const randomBytes = crypto.randomBytes(32);
-              const hash = crypto.createHash('sha256').update('test').digest('hex');
+              const hash = crypto
+                .createHash('sha256')
+                .update('test')
+                .digest('hex');
 
               return {
                 passed: randomBytes.length === 32 && hash.length === 64,
@@ -582,7 +616,9 @@ class SecurityAuditor {
 
             return {
               passed: !weakCipherFound,
-              details: weakCipherFound ? 'Weak ciphers available' : 'Weak ciphers blocked',
+              details: weakCipherFound
+                ? 'Weak ciphers available'
+                : 'Weak ciphers blocked',
             };
           },
         },
@@ -625,7 +661,10 @@ class SecurityAuditor {
 
       // Run multiple iterations to detect memory leaks
       for (let i = 0; i < test.iterations; i++) {
-        const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 3 });
+        const swarm = await ruvSwarm.createSwarm({
+          topology: 'mesh',
+          maxAgents: 3,
+        });
 
         // Create and destroy agents
         const agents = await Promise.all([
@@ -638,8 +677,10 @@ class SecurityAuditor {
         await Promise.all(
           agents.map(
             (agent) =>
-              agent.execute({ task: `Memory test iteration ${i}`, timeout: 2000 }).catch(() => {}) // Ignore errors for this test
-          )
+              agent
+                .execute({ task: `Memory test iteration ${i}`, timeout: 2000 })
+                .catch(() => {}), // Ignore errors for this test
+          ),
         );
 
         // Clean up references
@@ -659,7 +700,7 @@ class SecurityAuditor {
           if (growth > 10 * 1024 * 1024) {
             // More than 10MB growth
             console.warn(
-              `Memory growth detected at iteration ${i}: ${Math.round(growth / 1024 / 1024)}MB`
+              `Memory growth detected at iteration ${i}: ${Math.round(growth / 1024 / 1024)}MB`,
             );
           }
         }
@@ -693,7 +734,10 @@ class SecurityAuditor {
 
     try {
       const ruvSwarm = await ZenSwarm.initialize();
-      const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 1 });
+      const swarm = await ruvSwarm.createSwarm({
+        topology: 'mesh',
+        maxAgents: 1,
+      });
       const agent = await swarm.spawn({ type: 'coder' });
 
       const overflowTests = [
@@ -764,7 +808,10 @@ class SecurityAuditor {
     // Create multiple swarms and agents
     const swarms = [];
     for (let i = 0; i < 5; i++) {
-      const swarm = await ruvSwarm.createSwarm({ topology: 'mesh', maxAgents: 5 });
+      const swarm = await ruvSwarm.createSwarm({
+        topology: 'mesh',
+        maxAgents: 5,
+      });
       swarms.push(swarm);
 
       for (let j = 0; j < 3; j++) {
@@ -921,7 +968,8 @@ class SecurityAuditor {
   async generateSecurityReport() {
     // Calculate security score
     const totalTests =
-      this.auditResults.securityTests.length + this.auditResults.memoryTests.length;
+      this.auditResults.securityTests.length +
+      this.auditResults.memoryTests.length;
     const passedTests = [
       ...this.auditResults.securityTests,
       ...this.auditResults.memoryTests,
@@ -933,7 +981,7 @@ class SecurityAuditor {
 
     this.auditResults.overallSecurity.score = Math.max(
       0,
-      baseScore - securityPenalty - memoryPenalty
+      baseScore - securityPenalty - memoryPenalty,
     );
 
     // Determine security level
@@ -954,7 +1002,8 @@ class SecurityAuditor {
     this.generateSecurityRecommendations();
 
     // Save report
-    const reportPath = '/workspaces/ruv-FANN/ruv-swarm/npm/test/security-audit-report.json';
+    const reportPath =
+      '/workspaces/ruv-FANN/ruv-swarm/npm/test/security-audit-report.json';
     await fs.writeFile(reportPath, JSON.stringify(this.auditResults, null, 2));
 
     if (this.auditResults.recommendations.length > 0) {
@@ -968,13 +1017,19 @@ class SecurityAuditor {
     const recommendations = [];
 
     if (this.securityIssues > 0) {
-      recommendations.push('Implement stricter input validation and sanitization');
-      recommendations.push('Review and strengthen SQL injection prevention measures');
+      recommendations.push(
+        'Implement stricter input validation and sanitization',
+      );
+      recommendations.push(
+        'Review and strengthen SQL injection prevention measures',
+      );
       recommendations.push('Add rate limiting to prevent abuse');
     }
 
     if (this.memoryLeaks > 0) {
-      recommendations.push('Investigate and fix memory leaks in agent lifecycle');
+      recommendations.push(
+        'Investigate and fix memory leaks in agent lifecycle',
+      );
       recommendations.push('Implement automatic garbage collection monitoring');
       recommendations.push('Add memory usage limits and alerts');
     }

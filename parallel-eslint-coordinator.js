@@ -17,7 +17,11 @@ const MONITORING_INTERVAL = 5000; // 5 seconds
 const AGENT_SPECIALISTS = {
   jsdoc: {
     name: 'JSDoc Agent',
-    rules: ['jsdoc/require-file-overview', 'jsdoc/check-examples', 'jsdoc/require-description'],
+    rules: [
+      'jsdoc/require-file-overview',
+      'jsdoc/check-examples',
+      'jsdoc/require-description',
+    ],
     color: '\x1b[36m', // Cyan
   },
   typescript: {
@@ -31,7 +35,14 @@ const AGENT_SPECIALISTS = {
   },
   style: {
     name: 'Code Style Agent',
-    rules: ['semi', 'quotes', 'indent', 'comma-dangle', 'no-trailing-spaces', 'eol-last'],
+    rules: [
+      'semi',
+      'quotes',
+      'indent',
+      'comma-dangle',
+      'no-trailing-spaces',
+      'eol-last',
+    ],
     color: '\x1b[32m', // Green
   },
   imports: {
@@ -84,21 +95,25 @@ class SwarmCoordinator {
         {
           encoding: 'utf8',
           timeout: 30000,
-        }
+        },
       );
 
       const results = JSON.parse(eslintOutput);
       const violations = this.parseViolations(results);
       this.totalViolations = violations.length;
 
-      console.log(`📊 Found ${this.totalViolations} violations to distribute across agents`);
+      console.log(
+        `📊 Found ${this.totalViolations} violations to distribute across agents`,
+      );
 
       // Categorize by agent specialization
       const distribution = this.distributeViolations(violations);
 
       Object.entries(distribution).forEach(([agentType, count]) => {
         const agent = AGENT_SPECIALISTS[agentType];
-        console.log(`  ${agent.color}${agent.name}\x1b[0m: ${count} violations`);
+        console.log(
+          `  ${agent.color}${agent.name}\x1b[0m: ${count} violations`,
+        );
       });
 
       return distribution;
@@ -139,7 +154,11 @@ class SwarmCoordinator {
     violations.forEach((violation) => {
       let assigned = false;
       for (const [agentType, config] of Object.entries(AGENT_SPECIALISTS)) {
-        if (config.rules.some((rule) => violation.rule && violation.rule.includes(rule))) {
+        if (
+          config.rules.some(
+            (rule) => violation.rule && violation.rule.includes(rule),
+          )
+        ) {
           distribution[agentType]++;
           assigned = true;
           break;
@@ -163,7 +182,9 @@ class SwarmCoordinator {
       await this.sleep(2000);
     }
 
-    console.log(`\n✅ All ${Object.keys(AGENT_SPECIALISTS).length} specialized agents launched`);
+    console.log(
+      `\n✅ All ${Object.keys(AGENT_SPECIALISTS).length} specialized agents launched`,
+    );
   }
 
   async launchAgent(agentType, config) {
@@ -188,7 +209,7 @@ class SwarmCoordinator {
       {
         stdio: ['pipe', 'pipe', 'pipe'],
         cwd: process.cwd(),
-      }
+      },
     );
 
     // Store agent process
@@ -248,12 +269,16 @@ class SwarmCoordinator {
     });
 
     agentProcess.stderr.on('data', (data) => {
-      console.log(`${config.color}[${config.name} ERROR]\x1b[0m ${data.toString().trim()}`);
+      console.log(
+        `${config.color}[${config.name} ERROR]\x1b[0m ${data.toString().trim()}`,
+      );
     });
 
     agentProcess.on('close', (code) => {
       stats.status = code === 0 ? 'completed' : 'failed';
-      console.log(`${config.color}[${config.name}]\x1b[0m Process completed with code ${code}`);
+      console.log(
+        `${config.color}[${config.name}]\x1b[0m Process completed with code ${code}`,
+      );
     });
   }
 
@@ -267,7 +292,7 @@ class SwarmCoordinator {
     // Stop monitoring when all agents are done
     const checkCompletion = setInterval(() => {
       const allComplete = Array.from(this.agentStats.values()).every((stats) =>
-        ['completed', 'failed'].includes(stats.status)
+        ['completed', 'failed'].includes(stats.status),
       );
 
       if (allComplete) {
@@ -289,7 +314,7 @@ class SwarmCoordinator {
     console.log('🐝 ESLint Violation Swarm - Real-Time Dashboard');
     console.log('='.repeat(60));
     console.log(
-      `⏱️  Elapsed: ${elapsed}s | 📈 Progress: ${progress}% (${this.processedViolations}/${this.totalViolations})`
+      `⏱️  Elapsed: ${elapsed}s | 📈 Progress: ${progress}% (${this.processedViolations}/${this.totalViolations})`,
     );
     console.log('');
 
@@ -299,13 +324,15 @@ class SwarmCoordinator {
       const config = AGENT_SPECIALISTS[agentType];
       const statusIcon = this.getStatusIcon(stats.status);
       const successRate =
-        stats.processed > 0 ? Math.round((stats.fixed / stats.processed) * 100) : 0;
+        stats.processed > 0
+          ? Math.round((stats.fixed / stats.processed) * 100)
+          : 0;
 
       console.log(
         `${config.color}${statusIcon} ${config.name.padEnd(18)}\x1b[0m | ` +
           `Processed: ${stats.processed.toString().padStart(3)} | ` +
           `Fixed: ${stats.fixed.toString().padStart(3)} | ` +
-          `Success: ${successRate}%`
+          `Success: ${successRate}%`,
       );
     }
 
@@ -329,10 +356,12 @@ class SwarmCoordinator {
     const totalTime = Math.round((Date.now() - this.startTime) / 1000);
     const totalFixed = Array.from(this.agentStats.values()).reduce(
       (sum, stats) => sum + stats.fixed,
-      0
+      0,
     );
     const successRate =
-      this.processedViolations > 0 ? Math.round((totalFixed / this.processedViolations) * 100) : 0;
+      this.processedViolations > 0
+        ? Math.round((totalFixed / this.processedViolations) * 100)
+        : 0;
 
     console.log('\n🎉 Swarm Coordination Complete!');
     console.log('='.repeat(60));
@@ -347,7 +376,7 @@ class SwarmCoordinator {
     for (const [agentType, stats] of this.agentStats.entries()) {
       const config = AGENT_SPECIALISTS[agentType];
       console.log(
-        `${config.color}${config.name}\x1b[0m: ${stats.fixed}/${stats.processed} violations fixed`
+        `${config.color}${config.name}\x1b[0m: ${stats.fixed}/${stats.processed} violations fixed`,
       );
     }
   }

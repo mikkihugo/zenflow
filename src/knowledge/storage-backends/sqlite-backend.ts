@@ -42,7 +42,10 @@ export class SQLiteBackend implements FACTStorageBackend {
   private dalFactory: DatabaseProviderFactory;
   private isInitialized = false;
 
-  constructor(config: Partial<SQLiteBackendConfig> = {}, dalFactory?: DatabaseProviderFactory) {
+  constructor(
+    config: Partial<SQLiteBackendConfig> = {},
+    dalFactory?: DatabaseProviderFactory,
+  ) {
     this.config = {
       dbPath: path.join(process.cwd(), '.claude', 'fact-storage.db'),
       tableName: 'fact_knowledge',
@@ -57,7 +60,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       dalFactory ||
       new DatabaseProviderFactory(
         console, // Simple logger for now
-        {} // Minimal config
+        {}, // Minimal config
       );
   }
 
@@ -119,7 +122,7 @@ export class SQLiteBackend implements FACTStorageBackend {
           entry.accessCount,
           entry.lastAccessed,
           entry.timestamp + entry.ttl,
-        ]
+        ],
       );
 
       // Insert into FTS table if enabled
@@ -133,7 +136,7 @@ export class SQLiteBackend implements FACTStorageBackend {
             entry.response,
             entry.metadata.domains?.join(' ') || '',
             entry.metadata.type,
-          ]
+          ],
         );
       }
     } catch (error) {
@@ -150,7 +153,7 @@ export class SQLiteBackend implements FACTStorageBackend {
     try {
       const result = await this.dalAdapter.query(
         `SELECT * FROM ${this.config.tableName} WHERE id = ?`,
-        [id]
+        [id],
       );
       const row = result?.rows?.[0];
 
@@ -218,7 +221,7 @@ export class SQLiteBackend implements FACTStorageBackend {
           const domainConditions = query.domains
             .map(
               () =>
-                `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)`
+                `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)`,
             )
             .join(' OR ');
           conditions.push(`(${domainConditions})`);
@@ -271,14 +274,15 @@ export class SQLiteBackend implements FACTStorageBackend {
     try {
       const result = await this.dalAdapter.execute(
         `DELETE FROM ${this.config.tableName} WHERE id = ?`,
-        [id]
+        [id],
       );
 
       // Delete from FTS table if enabled
       if (this.config.enableFullTextSearch) {
-        await this.dalAdapter.execute(`DELETE FROM ${this.config.tableName}_fts WHERE id = ?`, [
-          id,
-        ]);
+        await this.dalAdapter.execute(
+          `DELETE FROM ${this.config.tableName}_fts WHERE id = ?`,
+          [id],
+        );
       }
 
       return (result?.rowsAffected || 0) > 0;
@@ -297,14 +301,14 @@ export class SQLiteBackend implements FACTStorageBackend {
       const cutoffTime = Date.now() - maxAge;
       const result = await this.dalAdapter.execute(
         `DELETE FROM ${this.config.tableName} WHERE expires_at < ?`,
-        [cutoffTime]
+        [cutoffTime],
       );
 
       // Clean up FTS table if enabled
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
           `DELETE FROM ${this.config.tableName}_fts 
-           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`
+           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`,
         );
       }
 
@@ -326,7 +330,7 @@ export class SQLiteBackend implements FACTStorageBackend {
          COUNT(*) as total_count,
          MIN(timestamp) as oldest_timestamp,
          MAX(timestamp) as newest_timestamp
-         FROM ${this.config.tableName}`
+         FROM ${this.config.tableName}`,
       );
       const stats = result?.rows?.[0];
 
@@ -350,13 +354,16 @@ export class SQLiteBackend implements FACTStorageBackend {
       await this.dalAdapter.execute(`DELETE FROM ${this.config.tableName}`);
 
       if (this.config.enableFullTextSearch) {
-        await this.dalAdapter.execute(`DELETE FROM ${this.config.tableName}_fts`);
+        await this.dalAdapter.execute(
+          `DELETE FROM ${this.config.tableName}_fts`,
+        );
       }
 
       // Reset auto-increment
-      await this.dalAdapter.execute(`DELETE FROM sqlite_sequence WHERE name = ?`, [
-        this.config.tableName,
-      ]);
+      await this.dalAdapter.execute(
+        `DELETE FROM sqlite_sequence WHERE name = ?`,
+        [this.config.tableName],
+      );
     } catch (error) {
       logger.error('Failed to clear FACT storage:', error);
       throw error;
@@ -379,14 +386,14 @@ export class SQLiteBackend implements FACTStorageBackend {
     try {
       const result = await this.dalAdapter.execute(
         `DELETE FROM ${this.config.tableName} WHERE JSON_EXTRACT(metadata, '$.confidence') < ?`,
-        [minQuality]
+        [minQuality],
       );
 
       // Clean up FTS table if enabled
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
           `DELETE FROM ${this.config.tableName}_fts 
-           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`
+           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`,
         );
       }
 
@@ -406,14 +413,14 @@ export class SQLiteBackend implements FACTStorageBackend {
       const cutoffTime = Date.now() - maxAgeMs;
       const result = await this.dalAdapter.execute(
         `DELETE FROM ${this.config.tableName} WHERE timestamp < ?`,
-        [cutoffTime]
+        [cutoffTime],
       );
 
       // Clean up FTS table if enabled
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
           `DELETE FROM ${this.config.tableName}_fts 
-           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`
+           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`,
         );
       }
 
@@ -437,7 +444,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
     try {
       const countResult = await this.dalAdapter.query(
-        `SELECT COUNT(*) as count FROM ${this.config.tableName}`
+        `SELECT COUNT(*) as count FROM ${this.config.tableName}`,
       );
       const totalEntries = countResult?.rows?.[0]?.count || 0;
 
@@ -450,7 +457,7 @@ export class SQLiteBackend implements FACTStorageBackend {
   }
 
   async optimize(
-    strategy: 'aggressive' | 'balanced' | 'conservative' = 'balanced'
+    strategy: 'aggressive' | 'balanced' | 'conservative' = 'balanced',
   ): Promise<{ optimized: boolean; details: string }> {
     if (!this.dalAdapter) {
       throw new Error('SQLite backend not initialized');
@@ -507,7 +514,7 @@ export class SQLiteBackend implements FACTStorageBackend {
          MIN(timestamp) as oldest_timestamp,
          MAX(timestamp) as newest_timestamp,
          AVG(access_count) as avg_access_count
-         FROM ${this.config.tableName}`
+         FROM ${this.config.tableName}`,
       );
       const basicStats = basicStatsResult?.rows?.[0];
 
@@ -517,7 +524,7 @@ export class SQLiteBackend implements FACTStorageBackend {
          FROM ${this.config.tableName}
          GROUP BY JSON_EXTRACT(metadata, '$.domains')
          ORDER BY count DESC
-         LIMIT 10`
+         LIMIT 10`,
       );
       const topDomains =
         domainsResult?.rows

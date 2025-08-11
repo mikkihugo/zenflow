@@ -25,7 +25,7 @@ async function build() {
     } catch (_error) {
       console.error('Error: wasm-pack is not installed.');
       console.error(
-        'Install it with: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh'
+        'Install it with: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh',
       );
       process.exit(1);
     }
@@ -42,13 +42,16 @@ async function build() {
     // Create output directories
     await fs.mkdir(wasmDir, { recursive: true });
     await fs.mkdir(wasmSIMDDir, { recursive: true });
-    execSync(`wasm-pack build --target web --out-dir ${wasmDir} --no-typescript`, {
-      cwd: crateDir,
-      stdio: 'inherit',
-    });
+    execSync(
+      `wasm-pack build --target web --out-dir ${wasmDir} --no-typescript`,
+      {
+        cwd: crateDir,
+        stdio: 'inherit',
+      },
+    );
     execSync(
       `RUSTFLAGS="-C target-feature=+simd128" wasm-pack build --target web --out-dir ${wasmSIMDDir} --no-typescript`,
-      { cwd: crateDir, stdio: 'inherit' }
+      { cwd: crateDir, stdio: 'inherit' },
     );
 
     // Copy SIMD module to main wasm directory
@@ -64,7 +67,9 @@ async function build() {
       for (const file of wasmFiles) {
         if (file.endsWith('.wasm')) {
           const filePath = path.join(wasmDir, file);
-          execSync(`wasm-opt -Oz ${filePath} -o ${filePath}`, { stdio: 'inherit' });
+          execSync(`wasm-opt -Oz ${filePath} -o ${filePath}`, {
+            stdio: 'inherit',
+          });
         }
       }
     } catch (_error) {}

@@ -128,7 +128,10 @@ export class CliCommandAdapter implements CommandExecutorContract {
    * @param args
    * @param options
    */
-  private async handleCreateProject(args: string[], options: any): Promise<CommandResult> {
+  private async handleCreateProject(
+    args: string[],
+    options: any,
+  ): Promise<CommandResult> {
     const projectName = args[0] || 'new-project';
     const projectType = options?.type || 'full-stack';
     const complexity = options?.complexity || 'moderate';
@@ -148,7 +151,9 @@ export class CliCommandAdapter implements CommandExecutorContract {
         autoCodeGeneration: options?.codeGen !== false,
       },
       performance: {
-        targets: options?.targets ? options?.targets?.split(',') : ['speed', 'efficiency'],
+        targets: options?.targets
+          ? options?.targets?.split(',')
+          : ['speed', 'efficiency'],
       },
     };
 
@@ -181,7 +186,10 @@ export class CliCommandAdapter implements CommandExecutorContract {
    * @param args
    * @param _options
    */
-  private async handleOptimizeProject(args: string[], _options: any): Promise<CommandResult> {
+  private async handleOptimizeProject(
+    args: string[],
+    _options: any,
+  ): Promise<CommandResult> {
     const projectPath = args[0] || process.cwd();
     const startTime = Date.now();
 
@@ -212,7 +220,10 @@ export class CliCommandAdapter implements CommandExecutorContract {
    * @param args
    * @param _options
    */
-  private async handleProjectStatus(args: string[], _options: any): Promise<CommandResult> {
+  private async handleProjectStatus(
+    args: string[],
+    _options: any,
+  ): Promise<CommandResult> {
     const projectPath = args[0] || process.cwd();
 
     const analysis = {
@@ -245,7 +256,10 @@ export class CliCommandAdapter implements CommandExecutorContract {
    * @param args
    * @param options
    */
-  private async handleSwarmCommand(args: string[], options: any): Promise<CommandResult> {
+  private async handleSwarmCommand(
+    args: string[],
+    options: any,
+  ): Promise<CommandResult> {
     const action = args[0];
 
     switch (action) {
@@ -267,7 +281,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
           data: {
             swarmId: `swarm-${Date.now()}`,
             topology: options?.topology || 'mesh',
-            agents: parseInt(options?.agents || '5'),
+            agents: Number.parseInt(options?.agents || '5'),
           },
         };
       default:
@@ -284,7 +298,10 @@ export class CliCommandAdapter implements CommandExecutorContract {
    * @param args
    * @param options
    */
-  private async handleGenerateCommand(args: string[], options: any): Promise<CommandResult> {
+  private async handleGenerateCommand(
+    args: string[],
+    options: any,
+  ): Promise<CommandResult> {
     const subCommand = args[0];
 
     switch (subCommand) {
@@ -320,7 +337,10 @@ export class CliCommandAdapter implements CommandExecutorContract {
    * @param _args
    * @param _options
    */
-  private async handleTestCommand(_args: string[], _options: any): Promise<CommandResult> {
+  private async handleTestCommand(
+    _args: string[],
+    _options: any,
+  ): Promise<CommandResult> {
     return {
       success: true,
       message: '✅ Comprehensive testing completed',
@@ -339,7 +359,10 @@ export class CliCommandAdapter implements CommandExecutorContract {
    * @param _args
    * @param _options
    */
-  private async handlePerformanceCommand(_args: string[], _options: any): Promise<CommandResult> {
+  private async handlePerformanceCommand(
+    _args: string[],
+    _options: any,
+  ): Promise<CommandResult> {
     return {
       success: true,
       message: '⚡ Performance analysis completed',

@@ -3,7 +3,7 @@
  *
  * AI autonomous orchestration for swarm execution level with SPARC methodology integration,
  * parallel Feature stream execution, automated testing, and swarm health monitoring.
- * Integrates with existing HiveSwarmCoordinator and SPARCEngineCore.
+ * Integrates with existing CollectiveCubeCoordinator and SPARCEngineCore.
  *
  * ARCHITECTURE:
  * - Feature implementation with SPARC automation
@@ -18,11 +18,17 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type { Agent } from '../agents/agent.ts';
-import type { HiveSwarmCoordinator } from '../swarm/hive-swarm-sync';
-import type { SPARCEngineCore } from '../swarm/sparc';
-import type { SPARCPhase, SPARCProject } from '../swarm/sparc/types/sparc-types.ts';
+import type { CollectiveCubeCoordinator } from '../collective-cube-sync.ts';
+import type { SPARCEngineCore } from '../swarm/sparc/index.js';
+import type {
+  SPARCPhase,
+  SPARCProject,
+} from '../swarm/sparc/types/sparc-types.ts';
 import type {
   AutomationConfig,
   ComplexityLevel,
@@ -114,7 +120,11 @@ export interface SPARCMetrics {
 export interface CrossProjectLearning {
   readonly sourceProject: string;
   readonly targetProject: string;
-  readonly learningType: 'pattern' | 'solution' | 'optimization' | 'error_prevention';
+  readonly learningType:
+    | 'pattern'
+    | 'solution'
+    | 'optimization'
+    | 'error_prevention';
   readonly confidence: number;
   readonly applicability: number;
   readonly transferredKnowledge: KnowledgeTransfer[];
@@ -129,7 +139,7 @@ export interface KnowledgeTransfer {
   readonly type: string;
   readonly source: string;
   readonly target: string;
-  readonly content: any;
+  readonly content: unknown;
   readonly effectiveness: number;
   readonly timestamp: Date;
 }
@@ -181,7 +191,12 @@ export interface AgentPerformance {
  * Swarm bottleneck identification
  */
 export interface SwarmBottleneck {
-  readonly type: 'resource' | 'dependency' | 'quality' | 'integration' | 'knowledge';
+  readonly type:
+    | 'resource'
+    | 'dependency'
+    | 'quality'
+    | 'integration'
+    | 'knowledge';
   readonly location: string;
   readonly severity: 'low' | 'medium' | 'high' | 'critical';
   readonly impact: number;
@@ -195,7 +210,12 @@ export interface SwarmBottleneck {
  * Swarm recommendation
  */
 export interface SwarmRecommendation {
-  readonly type: 'optimization' | 'scaling' | 'quality' | 'automation' | 'learning';
+  readonly type:
+    | 'optimization'
+    | 'scaling'
+    | 'quality'
+    | 'automation'
+    | 'learning';
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
   readonly description: string;
   readonly expectedBenefit: number;
@@ -354,7 +374,7 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
     gatesManager: WorkflowGatesManager,
     sparcEngine: SPARCEngineCore,
     hiveCoordinator: HiveSwarmCoordinator,
-    config: Partial<SwarmExecutionOrchestratorConfig> = {}
+    config: Partial<SwarmExecutionOrchestratorConfig> = {},
   ) {
     super();
 
@@ -420,7 +440,9 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
       this.logger.info('Swarm Execution Orchestrator initialized successfully');
       this.emit('initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize swarm execution orchestrator', { error });
+      this.logger.error('Failed to initialize swarm execution orchestrator', {
+        error,
+      });
       throw error;
     }
   }
@@ -454,7 +476,7 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
     featureTitle: string,
     complexity: ComplexityLevel,
     effort: EffortEstimate,
-    requirements: FeatureRequirements
+    requirements: FeatureRequirements,
   ): Promise<SwarmExecutionItem> {
     const swarmItem: SwarmExecutionItem = {
       id: `feature-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -485,11 +507,17 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
     const executionPlan = await this.createFeatureExecutionPlan(swarmItem);
 
     // Create workflow stream
-    const stream = await this.createSwarmWorkflowStream(swarmItem, executionPlan);
+    const stream = await this.createSwarmWorkflowStream(
+      swarmItem,
+      executionPlan,
+    );
     this.state.activeStreams.set(stream.id, stream);
 
     // Setup SPARC execution context
-    const sparcContext = await this.createSPARCExecutionContext(swarmItem, executionPlan);
+    const sparcContext = await this.createSPARCExecutionContext(
+      swarmItem,
+      executionPlan,
+    );
     this.state.sparcProjects.set(swarmItem.sparcProject!.id, sparcContext);
 
     // Assign agents and resources
@@ -515,7 +543,9 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
       throw new Error(`Swarm execution item not found: ${featureId}`);
     }
 
-    const sparcContext = this.state.sparcProjects.get(swarmItem.sparcProject!.id);
+    const sparcContext = this.state.sparcProjects.get(
+      swarmItem.sparcProject!.id,
+    );
     if (!sparcContext) {
       throw new Error(`SPARC context not found for feature: ${featureId}`);
     }
@@ -566,12 +596,17 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
     const batches = this.chunkArray(featureIds, maxConcurrent);
 
     for (const batch of batches) {
-      const promises = batch.map((featureId) => this.executeFeatureWithSPARC(featureId));
+      const promises = batch.map((featureId) =>
+        this.executeFeatureWithSPARC(featureId),
+      );
 
       try {
         await Promise.allSettled(promises);
       } catch (error) {
-        this.logger.error('Parallel feature execution failed', { batch, error });
+        this.logger.error('Parallel feature execution failed', {
+          batch,
+          error,
+        });
       }
 
       // Brief pause between batches to prevent resource exhaustion
@@ -592,9 +627,9 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
    * Manage parallel SPARC projects
    */
   async manageParallelSPARCProjects(): Promise<void> {
-    const activeSPARCProjects = Array.from(this.state.sparcProjects.values()).filter((project) =>
-      this.isProjectActive(project)
-    );
+    const activeSPARCProjects = Array.from(
+      this.state.sparcProjects.values(),
+    ).filter((project) => this.isProjectActive(project));
 
     // Optimize resource allocation across projects
     await this.optimizeSPARCResourceAllocation(activeSPARCProjects);
@@ -618,18 +653,21 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
    */
   async implementCrossProjectLearning(): Promise<void> {
     const completedProjects = await this.getCompletedSPARCProjects();
-    const activeProjects = Array.from(this.state.sparcProjects.values()).filter((project) =>
-      this.isProjectActive(project)
+    const activeProjects = Array.from(this.state.sparcProjects.values()).filter(
+      (project) => this.isProjectActive(project),
     );
 
     for (const activeProject of activeProjects) {
       // Find similar completed projects for learning
-      const similarProjects = this.findSimilarProjects(activeProject, completedProjects);
+      const similarProjects = this.findSimilarProjects(
+        activeProject,
+        completedProjects,
+      );
 
       for (const similarProject of similarProjects) {
         const learning = await this.generateCrossProjectLearning(
           similarProject.projectId,
-          activeProject.projectId
+          activeProject.projectId,
         );
 
         if (learning.confidence >= 0.7) {
@@ -710,22 +748,32 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
       testResults.testSuites.push(...unitResults);
 
       // Integration tests
-      const integrationResults = await this.executeIntegrationTests(testingPlan.integrationTests);
+      const integrationResults = await this.executeIntegrationTests(
+        testingPlan.integrationTests,
+      );
       testResults.testSuites.push(...integrationResults);
 
       // System tests
-      const systemResults = await this.executeSystemTests(testingPlan.systemTests);
+      const systemResults = await this.executeSystemTests(
+        testingPlan.systemTests,
+      );
       testResults.testSuites.push(...systemResults);
 
       // Performance tests
-      testResults.performance = await this.executePerformanceTests(testingPlan.performanceTests);
+      testResults.performance = await this.executePerformanceTests(
+        testingPlan.performanceTests,
+      );
 
       // Security tests
-      testResults.security = await this.executeSecurityTests(testingPlan.securityTests);
+      testResults.security = await this.executeSecurityTests(
+        testingPlan.securityTests,
+      );
     }
 
     // Calculate overall metrics
-    testResults.overallCoverage = this.calculateOverallCoverage(testResults.testSuites);
+    testResults.overallCoverage = this.calculateOverallCoverage(
+      testResults.testSuites,
+    );
     testResults.passRate = this.calculatePassRate(testResults.testSuites);
     testResults.completedAt = new Date();
 
@@ -744,7 +792,9 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
   /**
    * Implement deployment automation
    */
-  async implementDeploymentAutomation(featureId: string): Promise<DeploymentResults> {
+  async implementDeploymentAutomation(
+    featureId: string,
+  ): Promise<DeploymentResults> {
     const swarmItem = this.state.swarmExecutionItems.get(featureId);
     if (!swarmItem) {
       throw new Error(`Feature not found: ${featureId}`);
@@ -774,7 +824,9 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
         }
       }
 
-      deploymentResults.overallSuccess = deploymentResults.stages.every((stage) => stage.success);
+      deploymentResults.overallSuccess = deploymentResults.stages.every(
+        (stage) => stage.success,
+      );
     }
 
     deploymentResults.completedAt = new Date();
@@ -794,7 +846,7 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
   async implementAutonomousErrorRecovery(): Promise<void> {
     const errorThreshold = Date.now() - this.config.errorRecoveryTimeout;
     const recentErrors = this.state.errorRecoveryLog.filter(
-      (error) => error.timestamp.getTime() > errorThreshold
+      (error) => error.timestamp.getTime() > errorThreshold,
     );
 
     for (const error of recentErrors) {
@@ -890,12 +942,16 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('swarm-execution-orchestrator:state');
+      const persistedState = await this.memory.retrieve(
+        'swarm-execution-orchestrator:state',
+      );
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
-          swarmExecutionItems: new Map(persistedState.swarmExecutionItems || []),
+          swarmExecutionItems: new Map(
+            persistedState.swarmExecutionItems || [],
+          ),
           activeStreams: new Map(persistedState.activeStreams || []),
           sparcProjects: new Map(persistedState.sparcProjects || []),
         };
@@ -910,12 +966,17 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
     try {
       const stateToSerialize = {
         ...this.state,
-        swarmExecutionItems: Array.from(this.state.swarmExecutionItems.entries()),
+        swarmExecutionItems: Array.from(
+          this.state.swarmExecutionItems.entries(),
+        ),
         activeStreams: Array.from(this.state.activeStreams.entries()),
         sparcProjects: Array.from(this.state.sparcProjects.entries()),
       };
 
-      await this.memory.store('swarm-execution-orchestrator:state', stateToSerialize);
+      await this.memory.store(
+        'swarm-execution-orchestrator:state',
+        stateToSerialize,
+      );
     } catch (error) {
       this.logger.error('Failed to persist state', { error });
     }
@@ -958,7 +1019,10 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
     });
 
     this.eventBus.registerHandler('quality-gate-failed', async (event) => {
-      await this.handleQualityGateFailure(event.payload.featureId, event.payload.phase);
+      await this.handleQualityGateFailure(
+        event.payload.featureId,
+        event.payload.phase,
+      );
     });
   }
 
@@ -966,29 +1030,34 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
   private calculateFeaturePriority(
     complexity: ComplexityLevel,
     effort: EffortEstimate,
-    requirements: any
+    requirements: unknown,
   ): SwarmExecutionPriority {
     return SwarmExecutionPriority.NORMAL; // Placeholder
   }
 
-  private async createSPARCProject(title: string, requirements: any): Promise<SPARCProject> {
+  private async createSPARCProject(
+    title: string,
+    requirements: unknown,
+  ): Promise<SPARCProject> {
     return {} as SPARCProject; // Placeholder
   }
 
   private async assignOptimalSwarm(
     complexity: ComplexityLevel,
-    requirements: any
+    requirements: unknown,
   ): Promise<string> {
     return 'swarm-1'; // Placeholder
   }
 
-  private async analyzeDependencies(requirements: any): Promise<SwarmDependency[]> {
+  private async analyzeDependencies(
+    requirements: unknown,
+  ): Promise<SwarmDependency[]> {
     return []; // Placeholder
   }
 
   private estimateSwarmTimeline(
     complexity: ComplexityLevel,
-    effort: EffortEstimate
+    effort: EffortEstimate,
   ): SwarmTimeline {
     const startDate = new Date();
     const endDate = new Date(startDate.getTime() + effort.hours * 3600000);
@@ -1004,12 +1073,12 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
 
   private async createQualityGates(
     complexity: ComplexityLevel,
-    requirements: any
+    requirements: unknown,
   ): Promise<QualityGate[]> {
     return []; // Placeholder
   }
 
-  private createAutomationConfig(requirements: any): AutomationConfig {
+  private createAutomationConfig(requirements: unknown): AutomationConfig {
     return {
       codeGeneration: true,
       testing: true,
@@ -1050,42 +1119,54 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
   private async setupHiveCoordination(): Promise<void> {}
   private async gracefulShutdownActiveStreams(): Promise<void> {}
   private async createFeatureExecutionPlan(
-    item: SwarmExecutionItem
+    item: SwarmExecutionItem,
   ): Promise<FeatureExecutionPlan> {
     return {} as FeatureExecutionPlan;
   }
   private async createSwarmWorkflowStream(
     item: SwarmExecutionItem,
-    plan: FeatureExecutionPlan
+    plan: FeatureExecutionPlan,
   ): Promise<WorkflowStream<SwarmExecutionItem>> {
     return {} as WorkflowStream<SwarmExecutionItem>;
   }
   private async createSPARCExecutionContext(
     item: SwarmExecutionItem,
-    plan: FeatureExecutionPlan
+    plan: FeatureExecutionPlan,
   ): Promise<SPARCExecutionContext> {
     return {} as SPARCExecutionContext;
   }
   private async assignAgentsAndResources(
     featureId: string,
-    resources: FeatureResources
+    resources: FeatureResources,
   ): Promise<void> {}
   private async updateSwarmItemStatus(
     featureId: string,
-    status: SwarmExecutionStatus
+    status: SwarmExecutionStatus,
   ): Promise<void> {}
   private async executeSPARCPhase(
     featureId: string,
     phase: SPARCPhase,
-    context: SPARCExecutionContext
+    context: SPARCExecutionContext,
   ): Promise<void> {}
-  private async checkQualityGates(featureId: string, phase: SPARCPhase): Promise<boolean> {
+  private async checkQualityGates(
+    featureId: string,
+    phase: SPARCPhase,
+  ): Promise<boolean> {
     return true;
   }
-  private async handleQualityGateFailure(featureId: string, phase: SPARCPhase): Promise<void> {}
-  private async applyCrossProjectLearning(featureId: string, phase: SPARCPhase): Promise<void> {}
+  private async handleQualityGateFailure(
+    featureId: string,
+    phase: SPARCPhase,
+  ): Promise<void> {}
+  private async applyCrossProjectLearning(
+    featureId: string,
+    phase: SPARCPhase,
+  ): Promise<void> {}
   private async extractAndShareLearnings(featureId: string): Promise<void> {}
-  private async handleExecutionError(featureId: string, error: any): Promise<void> {}
+  private async handleExecutionError(
+    featureId: string,
+    error: unknown,
+  ): Promise<void> {}
   private async calculateSwarmHealth(): Promise<SwarmHealth> {
     return this.state.swarmHealth;
   }

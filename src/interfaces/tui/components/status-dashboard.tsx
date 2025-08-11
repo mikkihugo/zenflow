@@ -17,16 +17,17 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 }) => {
   const totalAgents = Array.from(state.deploymentStatus.values()).reduce(
     (sum, status) => sum + status.agents.created,
-    0
+    0,
   );
 
   const deployedSwarms = Array.from(state.deploymentStatus.values()).filter(
-    (status) => status.status === 'deployed'
+    (status) => status.status === 'deployed',
   ).length;
 
   const averageConfidence =
     state.domains.length > 0
-      ? state.domains.reduce((sum, domain) => sum + domain.confidence, 0) / state.domains.length
+      ? state.domains.reduce((sum, domain) => sum + domain.confidence, 0) /
+        state.domains.length
       : 0;
 
   const topologyBreakdown = Array.from(state.swarmConfigs.values()).reduce(
@@ -34,16 +35,27 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
       acc[config?.topology] = (acc[config?.topology] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>
+    {} as Record<string, number>,
   );
 
   return (
     <Box flexDirection="column">
       {/* Main Status Header */}
-      <Box borderStyle="double" paddingX={2} paddingY={1} marginBottom={1}>
-        <Box flexDirection="column" width="100%">
+      <Box
+        borderStyle="double"
+        paddingX={2}
+        paddingY={1}
+        marginBottom={1}
+      >
+        <Box
+          flexDirection="column"
+          width="100%"
+        >
           <Box>
-            <Text bold color="green">
+            <Text
+              bold
+              color="green"
+            >
               🎉 DEPLOYMENT COMPLETE
             </Text>
             <Spacer />
@@ -51,7 +63,8 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
           </Box>
           <Box marginTop={1}>
             <Text>
-              Successfully deployed {deployedSwarms} swarms with {totalAgents} total agents
+              Successfully deployed {deployedSwarms} swarms with {totalAgents}{' '}
+              total agents
             </Text>
           </Box>
         </Box>
@@ -59,7 +72,12 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 
       {/* Quick Stats */}
       <Box marginBottom={1}>
-        <Box borderStyle="single" paddingX={1} flexDirection="column" width="50%">
+        <Box
+          borderStyle="single"
+          paddingX={1}
+          flexDirection="column"
+          width="50%"
+        >
           <Text bold>📊 Summary</Text>
           <Box marginTop={0}>
             <Text>• Domains Analyzed: </Text>
@@ -79,7 +97,12 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
           </Box>
         </Box>
 
-        <Box borderStyle="single" paddingX={1} flexDirection="column" width="50%">
+        <Box
+          borderStyle="single"
+          paddingX={1}
+          flexDirection="column"
+          width="50%"
+        >
           <Text bold>🏗️ Topologies</Text>
           {Object.entries(topologyBreakdown).map(([topology, count]) => (
             <Box key={topology}>
@@ -92,35 +115,65 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 
       {/* Detailed Swarm Status */}
       {showDetailed && (
-        <Box flexDirection="column" marginBottom={1}>
-          <Text bold marginBottom={1}>
+        <Box
+          flexDirection="column"
+          marginBottom={1}
+        >
+          <Text
+            bold
+            marginBottom={1}
+          >
             🐝 Active Swarms.
           </Text>
-          {Array.from(state.deploymentStatus.entries()).map(([domain, status]) => (
-            <Box key={domain} borderStyle="single" paddingX={1} marginBottom={0}>
-              <Box flexDirection="column" width="100%">
-                <Box>
-                  <Text bold color="green">
-                    ✅ {domain}
-                  </Text>
-                  <Spacer />
-                  <Text dimColor>{state.swarmConfigs.get(domain)?.topology} topology</Text>
-                </Box>
-                <Box>
-                  <Text>🤖 {status.agents.created} agents active</Text>
-                  <Text dimColor> • </Text>
-                  <Text>💾 {state.swarmConfigs.get(domain)?.resourceLimits.memory}</Text>
-                  <Text dimColor> • </Text>
-                  <Text>⚡ {state.swarmConfigs.get(domain)?.resourceLimits.cpu} cores</Text>
+          {Array.from(state.deploymentStatus.entries()).map(
+            ([domain, status]) => (
+              <Box
+                key={domain}
+                borderStyle="single"
+                paddingX={1}
+                marginBottom={0}
+              >
+                <Box
+                  flexDirection="column"
+                  width="100%"
+                >
+                  <Box>
+                    <Text
+                      bold
+                      color="green"
+                    >
+                      ✅ {domain}
+                    </Text>
+                    <Spacer />
+                    <Text dimColor>
+                      {state.swarmConfigs.get(domain)?.topology} topology
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text>🤖 {status.agents.created} agents active</Text>
+                    <Text dimColor> • </Text>
+                    <Text>
+                      💾 {state.swarmConfigs.get(domain)?.resourceLimits.memory}
+                    </Text>
+                    <Text dimColor> • </Text>
+                    <Text>
+                      ⚡ {state.swarmConfigs.get(domain)?.resourceLimits.cpu}{' '}
+                      cores
+                    </Text>
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-          ))}
+            ),
+          )}
         </Box>
       )}
 
       {/* Next Steps */}
-      <Box borderStyle="single" paddingX={1} flexDirection="column">
+      <Box
+        borderStyle="single"
+        paddingX={1}
+        flexDirection="column"
+      >
         <Text bold>🎯 Next Steps</Text>
         <Box marginTop={0}>
           <Text>• Use </Text>
@@ -146,8 +199,15 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 
       {/* Health Check */}
       <Box marginTop={1}>
-        <Box borderStyle="single" paddingX={1} width="100%">
-          <Text bold color="green">
+        <Box
+          borderStyle="single"
+          paddingX={1}
+          width="100%"
+        >
+          <Text
+            bold
+            color="green"
+          >
             💚 System Health: OPERATIONAL
           </Text>
           <Spacer />

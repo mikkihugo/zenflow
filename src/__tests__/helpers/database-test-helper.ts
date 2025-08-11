@@ -76,7 +76,7 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
 
     // Get all table names
     const tables = await this.query(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+      "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
     );
 
     // Truncate all tables
@@ -97,7 +97,9 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
         return self.execute(sql, params);
       },
 
-      async transaction<T>(callback: (tx: DatabaseConnection) => Promise<T>): Promise<T> {
+      async transaction<T>(
+        callback: (tx: DatabaseConnection) => Promise<T>,
+      ): Promise<T> {
         await self.execute('BEGIN TRANSACTION');
         try {
           const result = await callback(this);
@@ -157,13 +159,16 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
       const migrationName = `migration_${index.toString().padStart(3, '0')}`;
 
       // Check if migration already executed
-      const existing = await this.query('SELECT id FROM migrations WHERE name = ?', [
-        migrationName,
-      ]);
+      const existing = await this.query(
+        'SELECT id FROM migrations WHERE name = ?',
+        [migrationName],
+      );
 
       if (existing.length === 0) {
         await this.execute(migration);
-        await this.execute('INSERT INTO migrations (name) VALUES (?)', [migrationName]);
+        await this.execute('INSERT INTO migrations (name) VALUES (?)', [
+          migrationName,
+        ]);
       }
     }
   }
@@ -263,7 +268,9 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
         return self.execute(sql, params);
       },
 
-      async transaction<T>(callback: (tx: DatabaseConnection) => Promise<T>): Promise<T> {
+      async transaction<T>(
+        callback: (tx: DatabaseConnection) => Promise<T>,
+      ): Promise<T> {
         // Memory database doesn't need transactions for testing
         return callback(this);
       },
@@ -276,10 +283,15 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
 
   async createSchema(schema: string): Promise<void> {
     // Parse basic CREATE TABLE statements
-    const tableMatches = schema.match(/CREATE TABLE(?:\s+IF NOT EXISTS)?\s+(\w+)/gi);
+    const tableMatches = schema.match(
+      /CREATE TABLE(?:\s+IF NOT EXISTS)?\s+(\w+)/gi,
+    );
     if (tableMatches) {
       for (const match of tableMatches) {
-        const tableName = match?.replace(/CREATE TABLE(?:\s+IF NOT EXISTS)?\s+/i, '');
+        const tableName = match?.replace(
+          /CREATE TABLE(?:\s+IF NOT EXISTS)?\s+/i,
+          '',
+        );
         if (!this.storage.has(tableName)) {
           this.storage.set(tableName, new Map());
           this.sequences.set(tableName, 0);
@@ -447,7 +459,11 @@ class MemoryDatabase {
     this.helper.setup();
   }
 
-  all(sql: string, params: any[], callback: (err: any, rows: any[]) => void): void {
+  all(
+    sql: string,
+    params: any[],
+    callback: (err: any, rows: any[]) => void,
+  ): void {
     this.helper
       .getConnection()
       .query(sql, params)

@@ -22,7 +22,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
   id: 'rest-api-template',
   name: 'Enterprise REST API System',
   domain: 'rest-api',
-  description: 'Comprehensive template for REST API systems with enterprise-grade features',
+  description:
+    'Comprehensive template for REST API systems with enterprise-grade features',
   version: '1.0.0',
   metadata: {
     author: 'SPARC REST API Template Generator',
@@ -40,7 +41,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'RESTful Resource Management',
-        description: 'Complete CRUD operations for all resources with RESTful conventions',
+        description:
+          'Complete CRUD operations for all resources with RESTful conventions',
         type: 'core',
         priority: 'HIGH',
         dependencies: ['Resource Controllers', 'Data Validation'],
@@ -54,7 +56,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'Authentication and Authorization',
-        description: 'Secure API access with JWT tokens and role-based access control',
+        description:
+          'Secure API access with JWT tokens and role-based access control',
         type: 'security',
         priority: 'HIGH',
         dependencies: ['JWT Service', 'User Management', 'Role System'],
@@ -81,7 +84,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'Rate Limiting and Throttling',
-        description: 'Intelligent rate limiting to prevent abuse and ensure fair usage',
+        description:
+          'Intelligent rate limiting to prevent abuse and ensure fair usage',
         type: 'performance',
         priority: 'MEDIUM',
         dependencies: ['Rate Limiter', 'User Tracking'],
@@ -95,7 +99,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'API Documentation and Discovery',
-        description: 'Auto-generated API documentation with interactive testing',
+        description:
+          'Auto-generated API documentation with interactive testing',
         type: 'documentation',
         priority: 'MEDIUM',
         dependencies: ['OpenAPI Generator', 'Documentation Server'],
@@ -133,7 +138,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         type: 'technical',
-        description: 'All API endpoints must require authentication except health checks',
+        description:
+          'All API endpoints must require authentication except health checks',
         impact: 'high',
       },
       {
@@ -225,7 +231,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
       mitigationStrategies: [
         {
           riskId: 'api-abuse',
-          strategy: 'Implement comprehensive rate limiting, IP blocking, and request analysis',
+          strategy:
+            'Implement comprehensive rate limiting, IP blocking, and request analysis',
           priority: 'HIGH',
           effort: 'medium',
         },
@@ -237,7 +244,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         },
         {
           riskId: 'breaking-changes',
-          strategy: 'API versioning strategy and backward compatibility testing',
+          strategy:
+            'API versioning strategy and backward compatibility testing',
           priority: 'HIGH',
           effort: 'low',
         },
@@ -272,7 +280,11 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         id: nanoid(),
         requirement: 'All API endpoints respond correctly',
         testMethod: 'automated',
-        criteria: ['HTTP status codes correct', 'Response format valid', 'Performance targets met'],
+        criteria: [
+          'HTTP status codes correct',
+          'Response format valid',
+          'Performance targets met',
+        ],
       },
     ],
   },
@@ -300,17 +312,30 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 3,
             description: 'Business rule validation',
-            pseudocode: 'VALIDATE_BUSINESS_RULES(transformedBody, request.context)',
+            pseudocode:
+              'VALIDATE_BUSINESS_RULES(transformedBody, request.context)',
             complexity: 'O(1)',
           },
         ],
         inputs: [
-          { name: 'request', type: 'object', description: 'HTTP request object' },
+          {
+            name: 'request',
+            type: 'object',
+            description: 'HTTP request object',
+          },
           { name: 'schema', type: 'object', description: 'Validation schema' },
         ],
         outputs: [
-          { name: 'validatedRequest', type: 'object', description: 'Validated request' },
-          { name: 'validationErrors', type: 'array', description: 'Array of validation errors' },
+          {
+            name: 'validatedRequest',
+            type: 'object',
+            description: 'Validated request',
+          },
+          {
+            name: 'validationErrors',
+            type: 'array',
+            description: 'Array of validation errors',
+          },
         ],
         complexity: {
           timeComplexity: 'O(n)',
@@ -333,7 +358,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 2,
             description: 'Get current usage',
-            pseudocode: 'userUsage ← RATE_LIMITER.GET_USAGE(userKey, TIME_WINDOW)',
+            pseudocode:
+              'userUsage ← RATE_LIMITER.GET_USAGE(userKey, TIME_WINDOW)',
             complexity: 'O(1)',
           },
           {
@@ -348,8 +374,16 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           { name: 'user', type: 'object', description: 'User context' },
         ],
         outputs: [
-          { name: 'allowed', type: 'boolean', description: 'Rate limit decision' },
-          { name: 'rateLimitInfo', type: 'object', description: 'Rate limit information' },
+          {
+            name: 'allowed',
+            type: 'boolean',
+            description: 'Rate limit decision',
+          },
+          {
+            name: 'rateLimitInfo',
+            type: 'object',
+            description: 'Rate limit information',
+          },
         ],
         complexity: {
           timeComplexity: 'O(1)',
@@ -383,12 +417,28 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           },
         ],
         inputs: [
-          { name: 'request', type: 'object', description: 'HTTP request with auth header' },
-          { name: 'jwtSecret', type: 'string', description: 'JWT signing secret' },
+          {
+            name: 'request',
+            type: 'object',
+            description: 'HTTP request with auth header',
+          },
+          {
+            name: 'jwtSecret',
+            type: 'string',
+            description: 'JWT signing secret',
+          },
         ],
         outputs: [
-          { name: 'authResult', type: 'object', description: 'Authentication result' },
-          { name: 'userContext', type: 'object', description: 'User context object' },
+          {
+            name: 'authResult',
+            type: 'object',
+            description: 'Authentication result',
+          },
+          {
+            name: 'userContext',
+            type: 'object',
+            description: 'User context object',
+          },
         ],
         complexity: {
           timeComplexity: 'O(1)',
@@ -420,7 +470,9 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         methods: [
           {
             name: 'get',
-            parameters: [{ name: 'key', type: 'string', description: 'Cache key' }],
+            parameters: [
+              { name: 'key', type: 'string', description: 'Cache key' },
+            ],
             returnType: 'any',
             visibility: 'public',
             description: 'Get cached value',
@@ -437,7 +489,11 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           },
         ],
         relationships: [
-          { type: 'uses', target: 'CacheEntry', description: 'Stores cache entry objects' },
+          {
+            type: 'uses',
+            target: 'CacheEntry',
+            description: 'Stores cache entry objects',
+          },
         ],
       },
       {
@@ -460,14 +516,18 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         methods: [
           {
             name: 'increment',
-            parameters: [{ name: 'key', type: 'string', description: 'Counter key' }],
+            parameters: [
+              { name: 'key', type: 'string', description: 'Counter key' },
+            ],
             returnType: 'number',
             visibility: 'public',
             description: 'Increment counter',
           },
           {
             name: 'get',
-            parameters: [{ name: 'key', type: 'string', description: 'Counter key' }],
+            parameters: [
+              { name: 'key', type: 'string', description: 'Counter key' },
+            ],
             returnType: 'number',
             visibility: 'public',
             description: 'Get counter value',
@@ -503,7 +563,11 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
             name: 'register',
             parameters: [
               { name: 'key', type: 'string', description: 'Schema key' },
-              { name: 'schema', type: 'Schema', description: 'Validation schema' },
+              {
+                name: 'schema',
+                type: 'Schema',
+                description: 'Validation schema',
+              },
             ],
             returnType: 'void',
             visibility: 'public',
@@ -511,7 +575,9 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           },
           {
             name: 'lookup',
-            parameters: [{ name: 'key', type: 'string', description: 'Schema key' }],
+            parameters: [
+              { name: 'key', type: 'string', description: 'Schema key' },
+            ],
             returnType: 'Schema',
             visibility: 'public',
             description: 'Lookup schema',
@@ -568,7 +634,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         id: nanoid(),
         name: 'APIGateway',
         type: 'gateway',
-        description: 'Main entry point for all API requests with routing and middleware',
+        description:
+          'Main entry point for all API requests with routing and middleware',
         responsibilities: [
           'Request routing and method handling',
           'Middleware pipeline execution',
@@ -663,7 +730,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         id: nanoid(),
         name: 'APIDocumentationService',
         type: 'service',
-        description: 'Auto-generated API documentation with OpenAPI specification',
+        description:
+          'Auto-generated API documentation with OpenAPI specification',
         responsibilities: [
           'OpenAPI specification generation',
           'Interactive documentation interface',
@@ -703,7 +771,8 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         source: 'api-gateway',
         target: 'rate-limiting-service',
         type: 'uses',
-        description: 'Gateway enforces rate limits through rate limiting service',
+        description:
+          'Gateway enforces rate limits through rate limiting service',
         strength: 'medium',
         protocol: 'synchronous',
       },
@@ -727,7 +796,11 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           'Service aggregation',
           'Security enforcement',
         ],
-        tradeoffs: ['Single point of failure', 'Performance bottleneck', 'Increased latency'],
+        tradeoffs: [
+          'Single point of failure',
+          'Performance bottleneck',
+          'Increased latency',
+        ],
         applicability: [
           'High-traffic APIs',
           'Microservices architecture',
@@ -743,15 +816,36 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           'Separation of concerns',
           'Reusable components',
         ],
-        tradeoffs: ['Processing overhead', 'Complexity in debugging', 'Order dependency'],
-        applicability: ['Request processing', 'Cross-cutting concerns', 'Modular architecture'],
+        tradeoffs: [
+          'Processing overhead',
+          'Complexity in debugging',
+          'Order dependency',
+        ],
+        applicability: [
+          'Request processing',
+          'Cross-cutting concerns',
+          'Modular architecture',
+        ],
       },
       {
         name: 'Token-Based Authentication Pattern',
         description: 'Stateless authentication using JWT tokens',
-        benefits: ['Stateless design', 'Scalability', 'Cross-domain support', 'Mobile-friendly'],
-        tradeoffs: ['Token size overhead', 'Revocation complexity', 'Security considerations'],
-        applicability: ['Stateless systems', 'Distributed authentication', 'Mobile applications'],
+        benefits: [
+          'Stateless design',
+          'Scalability',
+          'Cross-domain support',
+          'Mobile-friendly',
+        ],
+        tradeoffs: [
+          'Token size overhead',
+          'Revocation complexity',
+          'Security considerations',
+        ],
+        applicability: [
+          'Stateless systems',
+          'Distributed authentication',
+          'Mobile applications',
+        ],
       },
     ],
     dataFlow: [
@@ -796,7 +890,11 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         target: 'Horizontal scaling support',
         measurement: 'Load testing with multiple instances',
         priority: 'HIGH',
-        criteria: ['Stateless design', 'Load balancer compatible', 'Database connection pooling'],
+        criteria: [
+          'Stateless design',
+          'Load balancer compatible',
+          'Database connection pooling',
+        ],
       },
     ],
     securityRequirements: [
@@ -837,7 +935,9 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
     };
   },
 
-  customizeSpecification(projectSpec: ProjectSpecification): DetailedSpecification {
+  customizeSpecification(
+    projectSpec: ProjectSpecification,
+  ): DetailedSpecification {
     const customized = { ...this.specification };
     // Enhanced: Add project name and description to specification
     customized.name = projectSpec.name;
@@ -853,7 +953,10 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           type: 'custom',
           priority: 'MEDIUM',
           dependencies: [],
-          testCriteria: [`API supports ${requirement}`, `Successfully implements ${requirement}`],
+          testCriteria: [
+            `API supports ${requirement}`,
+            `Successfully implements ${requirement}`,
+          ],
         });
       }
     }
@@ -875,13 +978,29 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         name: 'EnterpriseAuditLogging',
         purpose: 'Comprehensive audit logging for enterprise compliance',
         inputs: [
-          { name: 'request', type: 'object', description: 'HTTP request object' },
-          { name: 'response', type: 'object', description: 'HTTP response object' },
+          {
+            name: 'request',
+            type: 'object',
+            description: 'HTTP request object',
+          },
+          {
+            name: 'response',
+            type: 'object',
+            description: 'HTTP response object',
+          },
           { name: 'user', type: 'object', description: 'User context object' },
-          { name: 'action', type: 'string', description: 'Action being performed' },
+          {
+            name: 'action',
+            type: 'string',
+            description: 'Action being performed',
+          },
         ],
         outputs: [
-          { name: 'auditLogEntry', type: 'AuditLogEntry', description: 'Created audit log entry' },
+          {
+            name: 'auditLogEntry',
+            type: 'AuditLogEntry',
+            description: 'Created audit log entry',
+          },
         ],
         steps: [
           {

@@ -9,16 +9,21 @@
 interface AgentCapacityProfile {
   agentId: string;
   utilizationHistory: number[];
-  performanceMetrics: any;
+  performanceMetrics: unknown;
   lastUpdate: Date;
 }
 
 export class CapacityPredictor {
-  public async predict(profile: AgentCapacityProfile, timeHorizon: number): Promise<number> {
+  public async predict(
+    profile: AgentCapacityProfile,
+    timeHorizon: number,
+  ): Promise<number> {
     // Simple linear prediction based on recent trends
     const history = profile.utilizationHistory.slice(-20);
     if (history.length < 5) {
-      return profile.utilizationHistory[profile.utilizationHistory.length - 1] || 5;
+      return (
+        profile.utilizationHistory[profile.utilizationHistory.length - 1] || 5
+      );
     }
 
     // Calculate trend
@@ -32,14 +37,21 @@ export class CapacityPredictor {
     return Math.max(1, Math.round(predictedCapacity));
   }
 
-  public async predictDemand(profile: AgentCapacityProfile, _timeHorizon: number): Promise<number> {
+  public async predictDemand(
+    profile: AgentCapacityProfile,
+    _timeHorizon: number,
+  ): Promise<number> {
     // Predict future demand based on historical patterns
     const history = profile.utilizationHistory.slice(-30);
     if (history.length < 10) {
-      return Math.max(1, profile.utilizationHistory[profile.utilizationHistory.length - 1] || 3);
+      return Math.max(
+        1,
+        profile.utilizationHistory[profile.utilizationHistory.length - 1] || 3,
+      );
     }
 
-    const avgDemand = history.reduce((sum, val) => sum + val, 0) / history.length;
+    const avgDemand =
+      history.reduce((sum, val) => sum + val, 0) / history.length;
     const variance = this.calculateVariance(history);
 
     // Use variance to adjust prediction confidence and range
@@ -75,6 +87,8 @@ export class CapacityPredictor {
 
   private calculateVariance(values: number[]): number {
     const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    return values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
+    return (
+      values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length
+    );
   }
 }

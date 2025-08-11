@@ -269,7 +269,11 @@ export class PerformanceOptimizer extends EventEmitter {
     for (const [id, _backend] of this.backends) {
       try {
         // Most backends don't expose cache control, but we can simulate
-        results.push({ backendId: id, oldSize: currentCacheSize, newSize: newCacheSize });
+        results.push({
+          backendId: id,
+          oldSize: currentCacheSize,
+          newSize: newCacheSize,
+        });
       } catch (error) {
         results.push({ backendId: id, error: error.message });
       }
@@ -286,7 +290,11 @@ export class PerformanceOptimizer extends EventEmitter {
     for (const [id, _backend] of this.backends) {
       try {
         // Simulate index rebuild
-        results.push({ backendId: id, status: 'rebuilt', duration: Math.random() * 1000 });
+        results.push({
+          backendId: id,
+          status: 'rebuilt',
+          duration: Math.random() * 1000,
+        });
       } catch (error) {
         results.push({ backendId: id, error: error.message });
       }
@@ -304,7 +312,11 @@ export class PerformanceOptimizer extends EventEmitter {
       try {
         // Simulate compression toggle
         const savings = Math.random() * 0.3 + 0.1; // 10-40% savings
-        results.push({ backendId: id, compressionEnabled: true, memorySavings: savings });
+        results.push({
+          backendId: id,
+          compressionEnabled: true,
+          memorySavings: savings,
+        });
       } catch (error) {
         results.push({ backendId: id, error: error.message });
       }
@@ -342,7 +354,11 @@ export class PerformanceOptimizer extends EventEmitter {
       try {
         // Simulate partition rebalancing
         const partitionCount = Math.floor(Math.random() * 8) + 4; // 4-12 partitions
-        results.push({ backendId: id, partitions: partitionCount, status: 'rebalanced' });
+        results.push({
+          backendId: id,
+          partitions: partitionCount,
+          status: 'rebalanced',
+        });
       } catch (error) {
         results.push({ backendId: id, error: error.message });
       }
@@ -368,9 +384,15 @@ export class PerformanceOptimizer extends EventEmitter {
     if (history.length < 3) return; // Need minimum history
 
     // Analyze trends
-    const latencyTrend = this.calculateTrend(history.map((h) => h.metrics.averageLatency));
-    const errorTrend = this.calculateTrend(history.map((h) => h.metrics.errorRate));
-    const cacheTrend = this.calculateTrend(history.map((h) => h.metrics.cacheHitRate));
+    const latencyTrend = this.calculateTrend(
+      history.map((h) => h.metrics.averageLatency),
+    );
+    const errorTrend = this.calculateTrend(
+      history.map((h) => h.metrics.errorRate),
+    );
+    const cacheTrend = this.calculateTrend(
+      history.map((h) => h.metrics.cacheHitRate),
+    );
 
     // Suggest optimizations based on trends
     if (latencyTrend > 0.1) {
@@ -428,10 +450,18 @@ export class PerformanceOptimizer extends EventEmitter {
       metrics: this.metrics,
       actions: {
         total: this.actions.size,
-        pending: Array.from(this.actions.values()).filter((a) => a.status === 'pending').length,
-        executing: Array.from(this.actions.values()).filter((a) => a.status === 'executing').length,
-        completed: Array.from(this.actions.values()).filter((a) => a.status === 'completed').length,
-        failed: Array.from(this.actions.values()).filter((a) => a.status === 'failed').length,
+        pending: Array.from(this.actions.values()).filter(
+          (a) => a.status === 'pending',
+        ).length,
+        executing: Array.from(this.actions.values()).filter(
+          (a) => a.status === 'executing',
+        ).length,
+        completed: Array.from(this.actions.values()).filter(
+          (a) => a.status === 'completed',
+        ).length,
+        failed: Array.from(this.actions.values()).filter(
+          (a) => a.status === 'failed',
+        ).length,
       },
       backends: this.backends.size,
       historySize: this.optimizationHistory.length,

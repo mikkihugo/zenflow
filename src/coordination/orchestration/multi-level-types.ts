@@ -13,8 +13,14 @@
 
 import type { Domain } from '../../core/domain-boundary-validator.ts';
 import type { BaseEvent } from '../../core/type-safe-event-system.ts';
-import type { WorkflowContext, WorkflowDefinition } from '../../workflows/types.ts';
-import type { SPARCPhase, SPARCProject } from '../swarm/sparc/types/sparc-types.ts';
+import type {
+  WorkflowContext,
+  WorkflowDefinition,
+} from '../../workflows/types.ts';
+import type {
+  SPARCPhase,
+  SPARCProject,
+} from '../swarm/sparc/types/sparc-types.ts';
 import type { Agent, Task } from '../types.ts';
 import type {
   WorkflowGateRequest,
@@ -91,7 +97,13 @@ export interface WorkflowStream<TWorkItem = unknown> {
 /**
  * Stream status
  */
-export type StreamStatus = 'idle' | 'active' | 'blocked' | 'paused' | 'completed' | 'failed';
+export type StreamStatus =
+  | 'idle'
+  | 'active'
+  | 'blocked'
+  | 'paused'
+  | 'completed'
+  | 'failed';
 
 /**
  * Stream performance metrics
@@ -431,7 +443,12 @@ export interface ProgramTimeline {
 export interface ProgramPhase {
   readonly id: string;
   readonly name: string;
-  readonly type: 'analysis' | 'design' | 'implementation' | 'testing' | 'deployment';
+  readonly type:
+    | 'analysis'
+    | 'design'
+    | 'implementation'
+    | 'testing'
+    | 'deployment';
   readonly startDate: Date;
   readonly endDate: Date;
   readonly deliverables: string[];
@@ -1021,7 +1038,9 @@ export interface BottleneckDetectedEvent extends ParallelExecutionEvent {
 }
 
 export interface CrossLevelDependencyEvent extends ParallelExecutionEvent {
-  readonly type: 'cross.level.dependency.resolved' | 'cross.level.dependency.blocked';
+  readonly type:
+    | 'cross.level.dependency.resolved'
+    | 'cross.level.dependency.blocked';
   readonly payload: {
     readonly dependency: CrossLevelDependency;
     readonly impact: string[];
@@ -1156,7 +1175,10 @@ export interface HumanUtilization {
  */
 export interface OptimizationRecommendation {
   readonly id: string;
-  readonly type: 'wip_adjustment' | 'resource_reallocation' | 'process_improvement';
+  readonly type:
+    | 'wip_adjustment'
+    | 'resource_reallocation'
+    | 'process_improvement';
   readonly description: string;
   readonly impact: number; // Expected improvement 0-1
   readonly effort: number; // Implementation effort 0-1

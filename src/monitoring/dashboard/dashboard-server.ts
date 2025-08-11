@@ -11,7 +11,7 @@ import { createServer } from 'node:http';
 import * as path from 'node:path';
 import express from 'express';
 import { Server as SocketIOServer } from 'socket.io';
-import { getConfig } from '../../config';
+import { getConfig } from '../../config/index.js';
 import type { PerformanceInsights } from '../analytics/performance-analyzer.ts';
 import { getCORSOrigins } from '../config/url-builder';
 import type { CompositeMetrics } from '../core/metrics-collector.ts';
@@ -85,10 +85,16 @@ export class DashboardServer extends EventEmitter {
       const corsOrigins = this.config.corsOrigins || getCORSOrigins();
       res.header(
         'Access-Control-Allow-Origin',
-        Array.isArray(corsOrigins) ? corsOrigins.join(',') : corsOrigins
+        Array.isArray(corsOrigins) ? corsOrigins.join(',') : corsOrigins,
       );
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept',
+      );
+      res.header(
+        'Access-Control-Allow-Methods',
+        'GET, POST, PUT, DELETE, OPTIONS',
+      );
       next();
     });
   }
@@ -115,7 +121,10 @@ export class DashboardServer extends EventEmitter {
       });
 
       socket.on('dashboard:request-optimizations', () => {
-        socket.emit('dashboard:optimizations', this.dashboardData.optimizations);
+        socket.emit(
+          'dashboard:optimizations',
+          this.dashboardData.optimizations,
+        );
       });
 
       socket.on('dashboard:clear-alerts', () => {
@@ -185,7 +194,9 @@ export class DashboardServer extends EventEmitter {
     this.app.get('/api/export/:format', (req, res) => {
       const format = req.params.format as 'json' | 'csv';
       if (format !== 'json' && format !== 'csv') {
-        return res.status(400).json({ error: 'Invalid format. Use json or csv.' });
+        return res
+          .status(400)
+          .json({ error: 'Invalid format. Use json or csv.' });
       }
 
       this.handleExportResponse(res, format);
@@ -257,24 +268,35 @@ export class DashboardServer extends EventEmitter {
     this.io.emit('dashboard:insights', insights);
 
     // Create alerts for critical anomalies
-    const criticalAnomalies = insights.anomalies.filter((a) => a.severity === 'critical');
+    const criticalAnomalies = insights.anomalies.filter(
+      (a) => a.severity === 'critical',
+    );
     for (const anomaly of criticalAnomalies) {
-      this.addAlert('error', `Critical anomaly detected: ${anomaly.description}`);
+      this.addAlert(
+        'error',
+        `Critical anomaly detected: ${anomaly.description}`,
+      );
     }
 
     // Create alerts for resource exhaustion predictions
     if (insights.predictions.resourceExhaustion.length > 0) {
       this.addAlert(
         'warning',
-        `Resource exhaustion predicted: ${insights.predictions.resourceExhaustion.join(', ')}`
+        `Resource exhaustion predicted: ${insights.predictions.resourceExhaustion.join(', ')}`,
       );
     }
 
     // Create alerts for low health score
     if (insights.healthScore < 50) {
-      this.addAlert('error', `System health critically low: ${insights.healthScore.toFixed(1)}%`);
+      this.addAlert(
+        'error',
+        `System health critically low: ${insights.healthScore.toFixed(1)}%`,
+      );
     } else if (insights.healthScore < 70) {
-      this.addAlert('warning', `System health below optimal: ${insights.healthScore.toFixed(1)}%`);
+      this.addAlert(
+        'warning',
+        `System health below optimal: ${insights.healthScore.toFixed(1)}%`,
+      );
     }
 
     this.emit('insights:updated', insights);
@@ -291,7 +313,7 @@ export class DashboardServer extends EventEmitter {
 
     // Create alerts for failed optimizations
     const recentFailures = optimizations.filter(
-      (o) => !o.success && Date.now() - o.executionTime < 60000
+      (o) => !o.success && Date.now() - o.executionTime < 60000,
     );
     for (const failure of recentFailures) {
       this.addAlert('warning', `Optimization failed: ${failure.error}`);
@@ -338,10 +360,12 @@ export class DashboardServer extends EventEmitter {
     }
 
     const recentOptimizations = optimizations.filter(
-      (o) => Date.now() - o.executionTime < 3600000 // Last hour
+      (o) => Date.now() - o.executionTime < 3600000, // Last hour
     );
 
-    const successfulOptimizations = recentOptimizations.filter((o) => o.success);
+    const successfulOptimizations = recentOptimizations.filter(
+      (o) => o.success,
+    );
 
     return {
       timestamp: Date.now(),
@@ -359,16 +383,20 @@ export class DashboardServer extends EventEmitter {
       },
       alerts: {
         total: this.dashboardData.alerts.length,
-        critical: this.dashboardData.alerts.filter((a) => a.type === 'error').length,
-        warnings: this.dashboardData.alerts.filter((a) => a.type === 'warning').length,
+        critical: this.dashboardData.alerts.filter((a) => a.type === 'error')
+          .length,
+        warnings: this.dashboardData.alerts.filter((a) => a.type === 'warning')
+          .length,
       },
       optimizations: {
         total: recentOptimizations.length,
         successful: successfulOptimizations.length,
         averageImpact:
           successfulOptimizations.length > 0
-            ? successfulOptimizations.reduce((sum, o) => sum + o.impact.performance, 0) /
-              successfulOptimizations.length
+            ? successfulOptimizations.reduce(
+                (sum, o) => sum + o.impact.performance,
+                0,
+              ) / successfulOptimizations.length
             : 0,
       },
       clients: {
@@ -383,7 +411,10 @@ export class DashboardServer extends EventEmitter {
    * @param socket
    * @param format
    */
-  private async handleExportRequest(socket: any, format: 'json' | 'csv'): Promise<void> {
+  private async handleExportRequest(
+    socket: any,
+    format: 'json' | 'csv',
+  ): Promise<void> {
     try {
       const data = this.generateExportData(format);
       socket.emit('dashboard:export-ready', {
@@ -404,14 +435,23 @@ export class DashboardServer extends EventEmitter {
    * @param res
    * @param format
    */
-  private handleExportResponse(res: express.Response, format: 'json' | 'csv'): void {
+  private handleExportResponse(
+    res: express.Response,
+    format: 'json' | 'csv',
+  ): void {
     try {
       const data = this.generateExportData(format);
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const filename = `dashboard-export-${timestamp}.${format}`;
 
-      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-      res.setHeader('Content-Type', format === 'json' ? 'application/json' : 'text/csv');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${filename}"`,
+      );
+      res.setHeader(
+        'Content-Type',
+        format === 'json' ? 'application/json' : 'text/csv',
+      );
       res.send(data);
     } catch (error) {
       res.status(500).json({
@@ -437,9 +477,8 @@ export class DashboardServer extends EventEmitter {
 
     if (format === 'json') {
       return JSON.stringify(exportData, null, 2);
-    } else {
-      return this.convertToCsv(exportData);
     }
+    return this.convertToCsv(exportData);
   }
 
   /**
@@ -452,7 +491,9 @@ export class DashboardServer extends EventEmitter {
 
     // Summary section
     lines.push('DASHBOARD SUMMARY');
-    lines.push('Timestamp,Health Score,CPU Usage,Memory Usage,Alerts,Optimizations');
+    lines.push(
+      'Timestamp,Health Score,CPU Usage,Memory Usage,Alerts,Optimizations',
+    );
     const summary = data?.summary;
     lines.push(
       [
@@ -462,7 +503,7 @@ export class DashboardServer extends EventEmitter {
         summary.system?.memoryUsage || 0,
         summary.alerts?.total || 0,
         summary.optimizations?.total || 0,
-      ].join(',')
+      ].join(','),
     );
 
     lines.push('');
@@ -477,7 +518,7 @@ export class DashboardServer extends EventEmitter {
           alert.type,
           `"${alert.message.replace(/"/g, '""')}"`,
           new Date(alert.timestamp).toISOString(),
-        ].join(',')
+        ].join(','),
       );
     });
 
@@ -485,7 +526,9 @@ export class DashboardServer extends EventEmitter {
 
     // Optimizations section
     lines.push('OPTIMIZATIONS');
-    lines.push('Action ID,Success,Performance Impact,Efficiency Impact,Execution Time');
+    lines.push(
+      'Action ID,Success,Performance Impact,Efficiency Impact,Execution Time',
+    );
     data?.optimizations.forEach((opt: any) => {
       lines.push(
         [
@@ -494,7 +537,7 @@ export class DashboardServer extends EventEmitter {
           opt.impact?.performance || 0,
           opt.impact?.efficiency || 0,
           opt.executionTime,
-        ].join(',')
+        ].join(','),
       );
     });
 

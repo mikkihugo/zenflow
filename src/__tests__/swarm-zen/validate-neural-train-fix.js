@@ -28,7 +28,10 @@ try {
   await tools.neural_train({ agentId: null, iterations: 15 });
   process.exit(1);
 } catch (error) {
-  if (error.message.includes('agentId is required') && error.message.includes('string')) {
+  if (
+    error.message.includes('agentId is required') &&
+    error.message.includes('string')
+  ) {
   } else {
     process.exit(1);
   }

@@ -66,7 +66,8 @@ export class IntelligenceMCPTools {
       },
       {
         name: 'intelligence_suggest_conversation_improvements',
-        description: 'Get AI-powered suggestions for improving conversation patterns',
+        description:
+          'Get AI-powered suggestions for improving conversation patterns',
         inputSchema: {
           type: 'object',
           properties: {
@@ -85,7 +86,8 @@ export class IntelligenceMCPTools {
       },
       {
         name: 'intelligence_create_adaptive_conversation_pattern',
-        description: 'Create a new conversation pattern based on successful past conversations',
+        description:
+          'Create a new conversation pattern based on successful past conversations',
         inputSchema: {
           type: 'object',
           properties: {
@@ -150,7 +152,7 @@ export class IntelligenceMCPTools {
    * @param name
    * @param args
    */
-  async handleToolCall(name: string, args: any): Promise<any> {
+  async handleToolCall(name: string, args: any): Promise<unknown> {
     // Handle conversation framework tools
     if (name.startsWith('conversation_')) {
       if (!this.conversationTools) {
@@ -181,7 +183,7 @@ export class IntelligenceMCPTools {
     }
   }
 
-  private async getCapabilities(): Promise<any> {
+  private async getCapabilities(): Promise<unknown> {
     const frameworkCapabilities = ConversationFramework.getCapabilities();
     const availablePatterns = ConversationFramework.getAvailablePatterns();
 
@@ -217,7 +219,9 @@ export class IntelligenceMCPTools {
     };
   }
 
-  private async analyzeAgentConversationPatterns(args: any): Promise<any> {
+  private async analyzeAgentConversationPatterns(
+    args: unknown,
+  ): Promise<unknown> {
     const { agentId, timeframe = 'week', includeMetrics = true } = args;
 
     // Simulate conversation pattern analysis
@@ -281,7 +285,9 @@ export class IntelligenceMCPTools {
     return analysis;
   }
 
-  private async suggestConversationImprovements(args: any): Promise<any> {
+  private async suggestConversationImprovements(
+    args: unknown,
+  ): Promise<unknown> {
     const { conversationId, focusArea } = args;
 
     // Simulate AI-powered improvement suggestions
@@ -299,7 +305,8 @@ export class IntelligenceMCPTools {
           {
             priority: 'high',
             category: 'workflow',
-            suggestion: 'Implement time-boxed discussion rounds to prevent over-analysis',
+            suggestion:
+              'Implement time-boxed discussion rounds to prevent over-analysis',
             expectedImpact: 0.25,
             effort: 'low',
           },
@@ -337,7 +344,8 @@ export class IntelligenceMCPTools {
           {
             priority: 'medium',
             category: 'decision-making',
-            suggestion: 'Implement formal consensus checking at key decision points',
+            suggestion:
+              'Implement formal consensus checking at key decision points',
             expectedImpact: 0.15,
             effort: 'medium',
           },
@@ -359,19 +367,29 @@ export class IntelligenceMCPTools {
 
     return {
       ...baseInsights,
-      ...(focusArea ? { [focusArea]: suggestionsByArea[focusArea] } : suggestionsByArea),
+      ...(focusArea
+        ? { [focusArea]: suggestionsByArea[focusArea] }
+        : suggestionsByArea),
       implementationPlan: {
         immediate:
-          suggestionsByArea[focusArea]?.suggestions.filter((s) => s.effort === 'low') || [],
+          suggestionsByArea[focusArea]?.suggestions.filter(
+            (s) => s.effort === 'low',
+          ) || [],
         shortTerm:
-          suggestionsByArea[focusArea]?.suggestions.filter((s) => s.effort === 'medium') || [],
+          suggestionsByArea[focusArea]?.suggestions.filter(
+            (s) => s.effort === 'medium',
+          ) || [],
         longTerm:
-          suggestionsByArea[focusArea]?.suggestions.filter((s) => s.effort === 'high') || [],
+          suggestionsByArea[focusArea]?.suggestions.filter(
+            (s) => s.effort === 'high',
+          ) || [],
       },
     };
   }
 
-  private async createAdaptiveConversationPattern(args: any): Promise<any> {
+  private async createAdaptiveConversationPattern(
+    args: unknown,
+  ): Promise<unknown> {
     const { basedOnConversations, patternName, domain, targetMetrics } = args;
 
     // Simulate learning from successful conversations
@@ -394,19 +412,31 @@ export class IntelligenceMCPTools {
           {
             name: 'facilitator',
             agentTypes: ['coordinator', 'architect'],
-            responsibilities: ['Guide discussion', 'Maintain focus', 'Ensure participation'],
+            responsibilities: [
+              'Guide discussion',
+              'Maintain focus',
+              'Ensure participation',
+            ],
             optimalCount: 1,
           },
           {
             name: 'contributor',
             agentTypes: ['coder', 'analyst', 'specialist'],
-            responsibilities: ['Provide input', 'Ask questions', 'Propose solutions'],
+            responsibilities: [
+              'Provide input',
+              'Ask questions',
+              'Propose solutions',
+            ],
             optimalCount: '3-5',
           },
           {
             name: 'validator',
             agentTypes: ['reviewer', 'tester'],
-            responsibilities: ['Validate proposals', 'Check quality', 'Ensure standards'],
+            responsibilities: [
+              'Validate proposals',
+              'Check quality',
+              'Ensure standards',
+            ],
             optimalCount: '1-2',
           },
         ],
@@ -429,7 +459,11 @@ export class IntelligenceMCPTools {
           {
             phase: 'closure',
             duration: '5-10 minutes',
-            actions: ['Summarize outcomes', 'Assign actions', 'Schedule follow-up'],
+            actions: [
+              'Summarize outcomes',
+              'Assign actions',
+              'Schedule follow-up',
+            ],
           },
         ],
         adaptiveElements: [
@@ -464,8 +498,12 @@ export class IntelligenceMCPTools {
     };
   }
 
-  private async predictConversationOutcomes(args: any): Promise<any> {
-    const { conversationId, predictionHorizon = 30, includeRecommendations = true } = args;
+  private async predictConversationOutcomes(args: unknown): Promise<unknown> {
+    const {
+      conversationId,
+      predictionHorizon = 30,
+      includeRecommendations = true,
+    } = args;
 
     // Simulate AI-powered conversation outcome prediction
     const prediction: any = {

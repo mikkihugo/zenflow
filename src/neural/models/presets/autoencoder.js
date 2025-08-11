@@ -20,7 +20,7 @@ class AutoencoderModel extends NeuralModel {
       dropoutRate: config.dropoutRate || 0.1,
       sparseRegularization: config.sparseRegularization || 0.01,
       denoisingNoise: config.denoisingNoise || 0, // For denoising autoencoder
-      variational: config.variational || false, // For VAE
+      variational: config.variational, // For VAE
       ...config,
     };
 
@@ -68,8 +68,12 @@ class AutoencoderModel extends NeuralModel {
       lastSize = this.config.bottleneckSize;
     } else {
       // Standard autoencoder bottleneck
-      this.encoderWeights.push(this.createWeight([lastSize, this.config.bottleneckSize]));
-      this.encoderBiases.push(new Float32Array(this.config.bottleneckSize).fill(0));
+      this.encoderWeights.push(
+        this.createWeight([lastSize, this.config.bottleneckSize]),
+      );
+      this.encoderBiases.push(
+        new Float32Array(this.config.bottleneckSize).fill(0),
+      );
       lastSize = this.config.bottleneckSize;
     }
 
@@ -81,7 +85,9 @@ class AutoencoderModel extends NeuralModel {
     }
 
     // Output layer (reconstruction)
-    this.decoderWeights.push(this.createWeight([lastSize, this.config.inputSize]));
+    this.decoderWeights.push(
+      this.createWeight([lastSize, this.config.inputSize]),
+    );
     this.decoderBiases.push(new Float32Array(this.config.inputSize).fill(0));
   }
 
@@ -138,7 +144,11 @@ class AutoencoderModel extends NeuralModel {
       }
 
       // Apply dropout if training (except last layer)
-      if (training && this.config.dropoutRate > 0 && i < this.encoderWeights.length - 1) {
+      if (
+        training &&
+        this.config.dropoutRate > 0 &&
+        i < this.encoderWeights.length - 1
+      ) {
         x = this.dropout(x, this.config.dropoutRate);
       }
     }
@@ -146,7 +156,11 @@ class AutoencoderModel extends NeuralModel {
     // Handle variational autoencoder
     if (this.config.variational) {
       const mu = this.dense(x, this.muLayer.weight, this.muLayer.bias);
-      const logVar = this.dense(x, this.logVarLayer.weight, this.logVarLayer.bias);
+      const logVar = this.dense(
+        x,
+        this.logVarLayer.weight,
+        this.logVarLayer.bias,
+      );
 
       // Reparameterization trick
       const latent = training ? this.reparameterize(mu, logVar) : mu;
@@ -269,8 +283,12 @@ class AutoencoderModel extends NeuralModel {
       // Binary cross-entropy for outputs in [0, 1]
       for (let i = 0; i < input.length; i++) {
         const epsilon = 1e-7;
-        const pred = Math.max(epsilon, Math.min(1 - epsilon, output.reconstruction[i]));
-        reconstructionLoss -= input[i] * Math.log(pred) + (1 - input[i]) * Math.log(1 - pred);
+        const pred = Math.max(
+          epsilon,
+          Math.min(1 - epsilon, output.reconstruction[i]),
+        );
+        reconstructionLoss -=
+          input[i] * Math.log(pred) + (1 - input[i]) * Math.log(1 - pred);
       }
     } else {
       // MSE for continuous outputs
@@ -295,8 +313,11 @@ class AutoencoderModel extends NeuralModel {
     let sparsityLoss = 0;
     if (this.config.sparseRegularization > 0) {
       const targetSparsity = 0.05; // Target average activation
-      const latentMean = output.latent.reduce((a, b) => a + b, 0) / output.latent.length;
-      sparsityLoss = this.config.sparseRegularization * Math.abs(latentMean - targetSparsity);
+      const latentMean =
+        output.latent.reduce((a, b) => a + b, 0) / output.latent.length;
+      sparsityLoss =
+        this.config.sparseRegularization *
+        Math.abs(latentMean - targetSparsity);
     }
 
     return {
@@ -334,7 +355,10 @@ class AutoencoderModel extends NeuralModel {
 
       // Process batches
       for (let i = 0; i < shuffled.length; i += batchSize) {
-        const batch = shuffled.slice(i, Math.min(i + batchSize, shuffled.length));
+        const batch = shuffled.slice(
+          i,
+          Math.min(i + batchSize, shuffled.length),
+        );
 
         // Prepare batch input
         const batchInput = {
@@ -347,10 +371,16 @@ class AutoencoderModel extends NeuralModel {
         const output = await this.forward(batchInput.data, true);
 
         // Calculate losses
-        const losses = this.calculateLoss(batchInput.data, output, output.mu, output.logVar);
+        const losses = this.calculateLoss(
+          batchInput.data,
+          output,
+          output.mu,
+          output.logVar,
+        );
 
         // Apply beta weighting for VAE
-        const totalLoss = losses.reconstruction + beta * losses.kl + losses.sparsity;
+        const totalLoss =
+          losses.reconstruction + beta * losses.kl + losses.sparsity;
 
         epochLoss += totalLoss;
         epochReconLoss += losses.reconstruction;
@@ -404,7 +434,12 @@ class AutoencoderModel extends NeuralModel {
       batchInput.data.shape = batchInput.shape;
 
       const output = await this.forward(batchInput.data, false);
-      const losses = this.calculateLoss(batchInput.data, output, output.mu, output.logVar);
+      const losses = this.calculateLoss(
+        batchInput.data,
+        output,
+        output.mu,
+        output.logVar,
+      );
 
       totalLoss += losses.total;
       reconLoss += losses.reconstruction;
@@ -451,7 +486,9 @@ class AutoencoderModel extends NeuralModel {
   // Generate new samples (for VAE)
   async generate(numSamples = 1) {
     if (!this.config.variational) {
-      throw new Error('Generation is only available for variational autoencoders');
+      throw new Error(
+        'Generation is only available for variational autoencoders',
+      );
     }
 
     // Sample from standard normal distribution
@@ -481,7 +518,8 @@ class AutoencoderModel extends NeuralModel {
 
       // Linear interpolation in latent space
       for (let i = 0; i < interpolatedLatent.length; i++) {
-        interpolatedLatent[i] = (1 - alpha) * encoded1.latent[i] + alpha * encoded2.latent[i];
+        interpolatedLatent[i] =
+          (1 - alpha) * encoded1.latent[i] + alpha * encoded2.latent[i];
       }
 
       interpolatedLatent.shape = encoded1.latent.shape;

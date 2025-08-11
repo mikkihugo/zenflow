@@ -46,7 +46,7 @@ export class WebService extends BaseService implements IService {
     const serverConfig = {
       host: config?.server?.host || 'localhost',
       port: config?.server?.port || 3000,
-      ssl: config?.server?.ssl?.enabled || false,
+      ssl: config?.server?.ssl?.enabled,
     };
 
     this.logger.debug(`Web server configuration:`, serverConfig);
@@ -58,7 +58,7 @@ export class WebService extends BaseService implements IService {
     this.initializeRoutes();
 
     this.logger.info(
-      `Web service ${this.name} initialized for ${serverConfig?.host}:${serverConfig?.port}`
+      `Web service ${this.name} initialized for ${serverConfig?.host}:${serverConfig?.port}`,
     );
   }
 
@@ -105,7 +105,7 @@ export class WebService extends BaseService implements IService {
   protected async doHealthCheck(): Promise<boolean> {
     try {
       // Check if server is running
-      if (!this.server || !this.server.started) {
+      if (!(this.server && this.server.started)) {
         return false;
       }
 
@@ -113,7 +113,10 @@ export class WebService extends BaseService implements IService {
       // In real implementation, would make a health check request to the server
       return this.lifecycleStatus === 'running';
     } catch (error) {
-      this.logger.error(`Health check failed for web service ${this.name}:`, error);
+      this.logger.error(
+        `Health check failed for web service ${this.name}:`,
+        error,
+      );
       return false;
     }
   }
@@ -121,7 +124,7 @@ export class WebService extends BaseService implements IService {
   protected async executeOperation<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     this.logger.debug(`Executing web operation: ${operation}`);
 
@@ -136,7 +139,11 @@ export class WebService extends BaseService implements IService {
         return (await this.removeMiddleware(params?.name)) as T;
 
       case 'add-route':
-        return (await this.addRoute(params?.path, params?.method, params?.handler)) as T;
+        return (await this.addRoute(
+          params?.path,
+          params?.method,
+          params?.handler,
+        )) as T;
 
       case 'remove-route':
         return (await this.removeRoute(params?.path, params?.method)) as T;
@@ -165,16 +172,21 @@ export class WebService extends BaseService implements IService {
       name: this.name,
       host: config?.server?.host || 'localhost',
       port: config?.server?.port || 3000,
-      ssl: config?.server?.ssl?.enabled || false,
-      cors: config?.cors?.enabled || false,
-      rateLimit: config?.rateLimit?.enabled || false,
+      ssl: config?.server?.ssl?.enabled,
+      cors: config?.cors?.enabled,
+      rateLimit: config?.rateLimit?.enabled,
       status: this.server?.started ? 'running' : 'stopped',
-      uptime: this.server?.startTime ? Date.now() - this.server.startTime.getTime() : 0,
+      uptime: this.server?.startTime
+        ? Date.now() - this.server.startTime.getTime()
+        : 0,
     };
   }
 
-  private async addMiddleware(name: string, handler: Function): Promise<boolean> {
-    if (!name || !handler) {
+  private async addMiddleware(
+    name: string,
+    handler: Function,
+  ): Promise<boolean> {
+    if (!(name && handler)) {
       throw new Error('Middleware name and handler are required');
     }
 
@@ -200,8 +212,12 @@ export class WebService extends BaseService implements IService {
     return removed;
   }
 
-  private async addRoute(path: string, method: string, handler: Function): Promise<boolean> {
-    if (!path || !method || !handler) {
+  private async addRoute(
+    path: string,
+    method: string,
+    handler: Function,
+  ): Promise<boolean> {
+    if (!(path && method && handler)) {
       throw new Error('Route path, method, and handler are required');
     }
 
@@ -240,10 +256,14 @@ export class WebService extends BaseService implements IService {
       middlewareCount: this.middleware.length,
       requestCount: this.operationCount,
       errorCount: this.errorCount,
-      successRate: this.operationCount > 0 ? (this.successCount / this.operationCount) * 100 : 100,
+      successRate:
+        this.operationCount > 0
+          ? (this.successCount / this.operationCount) * 100
+          : 100,
       averageResponseTime:
         this.latencyMetrics.length > 0
-          ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) / this.latencyMetrics.length
+          ? this.latencyMetrics.reduce((sum, lat) => sum + lat, 0) /
+            this.latencyMetrics.length
           : 0,
     };
   }
@@ -274,12 +294,17 @@ export class WebService extends BaseService implements IService {
       this.middleware.push({ name: 'rate-limit', handler: () => {} });
     }
 
-    this.logger.debug(`Initialized ${this.middleware.length} middleware components`);
+    this.logger.debug(
+      `Initialized ${this.middleware.length} middleware components`,
+    );
   }
 
   private initializeRoutes(): void {
     // Add default health check route
-    this.routes.set('GET:/health', () => ({ status: 'healthy', timestamp: new Date() }));
+    this.routes.set('GET:/health', () => ({
+      status: 'healthy',
+      timestamp: new Date(),
+    }));
 
     // Add default status route
     this.routes.set('GET:/status', () => this.getServerInfo());

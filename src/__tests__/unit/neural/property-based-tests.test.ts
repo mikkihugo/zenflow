@@ -5,8 +5,8 @@
  * neural network model invariants, data processing correctness, and edge case handling.
  */
 
-import { describe, expect, test } from 'vitest';
 import fc from 'fast-check';
+import { describe, expect, test } from 'vitest';
 
 // Import neural network types and functions
 interface NetworkConfig {
@@ -72,7 +72,7 @@ const networkConfig = () =>
         activation: fc.constantFrom('sigmoid', 'relu', 'tanh', 'leaky_relu'),
         steepness: fc.option(fc.float({ min: 0.1, max: 2.0 })),
       }),
-      { minLength: 1, maxLength: 5 }
+      { minLength: 1, maxLength: 5 },
     ),
     outputSize: positiveInt(20),
     outputActivation: fc.constantFrom('sigmoid', 'tanh', 'linear', 'softmax'),
@@ -80,16 +80,26 @@ const networkConfig = () =>
     randomSeed: fc.option(fc.integer({ min: 0, max: 2147483647 })),
   });
 
-const _trainingData = (inputSize: number, outputSize: number, batchSize: number = 10) =>
+const _trainingData = (
+  inputSize: number,
+  outputSize: number,
+  batchSize: number = 10,
+) =>
   fc.record({
-    inputs: fc.array(fc.array(finiteFloat(), { minLength: inputSize, maxLength: inputSize }), {
-      minLength: batchSize,
-      maxLength: batchSize,
-    }),
-    outputs: fc.array(fc.array(finiteFloat(), { minLength: outputSize, maxLength: outputSize }), {
-      minLength: batchSize,
-      maxLength: batchSize,
-    }),
+    inputs: fc.array(
+      fc.array(finiteFloat(), { minLength: inputSize, maxLength: inputSize }),
+      {
+        minLength: batchSize,
+        maxLength: batchSize,
+      },
+    ),
+    outputs: fc.array(
+      fc.array(finiteFloat(), { minLength: outputSize, maxLength: outputSize }),
+      {
+        minLength: batchSize,
+        maxLength: batchSize,
+      },
+    ),
   });
 
 // Helper functions for neural network operations
@@ -101,7 +111,11 @@ class MockNeuralNetwork {
     return new Array(this.config.outputSize).fill(0);
   }
 
-  train(_data: TrainingDataConfig): { converged: boolean; finalError: number; epochs: number } {
+  train(_data: TrainingDataConfig): {
+    converged: boolean;
+    finalError: number;
+    epochs: number;
+  } {
     // Mock training
     return { converged: true, finalError: 0.001, epochs: 100 };
   }
@@ -132,7 +146,8 @@ class MockNeuralNetwork {
 // Data processing helper functions
 function normalizeData(data: number[]): number[] {
   const mean = data?.reduce((sum, x) => sum + x, 0) / data.length;
-  const variance = data?.reduce((sum, x) => sum + (x - mean) ** 2, 0) / data.length;
+  const variance =
+    data?.reduce((sum, x) => sum + (x - mean) ** 2, 0) / data.length;
   const stdDev = Math.sqrt(variance);
 
   if (stdDev === 0) return data?.map(() => 0);
@@ -142,12 +157,16 @@ function normalizeData(data: number[]): number[] {
 function denormalizeData(
   normalizedData: number[],
   originalMean: number,
-  originalStdDev: number
+  originalStdDev: number,
 ): number[] {
   return normalizedData?.map((x) => x * originalStdDev + originalMean);
 }
 
-function createTimeSeriesWindows(data: number[], windowSize: number, step: number = 1): number[][] {
+function createTimeSeriesWindows(
+  data: number[],
+  windowSize: number,
+  step: number = 1,
+): number[][] {
   const windows: number[][] = [];
   for (let i = 0; i <= data.length - windowSize; i += step) {
     windows.push(data?.slice(i, i + windowSize));
@@ -155,7 +174,10 @@ function createTimeSeriesWindows(data: number[], windowSize: number, step: numbe
   return windows;
 }
 
-function handleMissingValues(data: number[], strategy: 'mean' | 'zero' | 'forward_fill'): number[] {
+function handleMissingValues(
+  data: number[],
+  strategy: 'mean' | 'zero' | 'forward_fill',
+): number[] {
   const result = [...data];
   const mean =
     data?.filter((x) => !Number.isNaN(x)).reduce((sum, x) => sum + x, 0) /
@@ -188,7 +210,7 @@ describe('Neural Network Model Invariants', () => {
         const output = network.predict(input);
 
         expect(output).toHaveLength(config?.outputSize);
-      })
+      }),
     );
   });
 
@@ -211,7 +233,7 @@ describe('Neural Network Model Invariants', () => {
         // Memory usage should be reasonable
         expect(info.metrics.memoryUsage).toBeGreaterThan(0);
         expect(info.metrics.memoryUsage).toBeLessThan(1e9); // Less than 1GB
-      })
+      }),
     );
   });
 
@@ -228,8 +250,8 @@ describe('Neural Network Model Invariants', () => {
           // Weights should be in reasonable range for training stability
           const allReasonable = weights.every((w) => Math.abs(w) < 100);
           expect(allReasonable).toBe(true);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -243,14 +265,14 @@ describe('Neural Network Model Invariants', () => {
           .map(() =>
             Array(config?.inputSize)
               .fill(0)
-              .map(() => Math.random() * 2 - 1)
+              .map(() => Math.random() * 2 - 1),
           );
         const outputs = Array(batchSize)
           .fill(0)
           .map(() =>
             Array(config?.outputSize)
               .fill(0)
-              .map(() => Math.random() * 2 - 1)
+              .map(() => Math.random() * 2 - 1),
           );
 
         const network = new MockNeuralNetwork(config);
@@ -261,7 +283,7 @@ describe('Neural Network Model Invariants', () => {
         expect(result?.finalError).toBeGreaterThanOrEqual(0);
         expect(result?.epochs).toBeGreaterThan(0);
         expect(Number.isFinite(result?.finalError)).toBe(true);
-      })
+      }),
     );
   });
 });
@@ -269,47 +291,56 @@ describe('Neural Network Model Invariants', () => {
 describe('Data Processing Invariants', () => {
   test('normalization reversibility', () => {
     fc.assert(
-      fc.property(fc.array(finiteFloat(), { minLength: 10, maxLength: 100 }), (data) => {
-        // Skip if all values are the same (stdDev = 0)
-        const unique = [...new Set(data)];
-        fc.pre(unique.length > 1);
+      fc.property(
+        fc.array(finiteFloat(), { minLength: 10, maxLength: 100 }),
+        (data) => {
+          // Skip if all values are the same (stdDev = 0)
+          const unique = [...new Set(data)];
+          fc.pre(unique.length > 1);
 
-        const mean = data?.reduce((sum, x) => sum + x, 0) / data.length;
-        const variance = data?.reduce((sum, x) => sum + (x - mean) ** 2, 0) / data.length;
-        const stdDev = Math.sqrt(variance);
+          const mean = data?.reduce((sum, x) => sum + x, 0) / data.length;
+          const variance =
+            data?.reduce((sum, x) => sum + (x - mean) ** 2, 0) / data.length;
+          const stdDev = Math.sqrt(variance);
 
-        const normalized = normalizeData(data);
-        const denormalized = denormalizeData(normalized, mean, stdDev);
+          const normalized = normalizeData(data);
+          const denormalized = denormalizeData(normalized, mean, stdDev);
 
-        // Original data should be approximately restored
-        for (let i = 0; i < data.length; i++) {
-          expect(denormalized[i]).toBeCloseTo(data?.[i], 5);
-        }
-      })
+          // Original data should be approximately restored
+          for (let i = 0; i < data.length; i++) {
+            expect(denormalized[i]).toBeCloseTo(data?.[i], 5);
+          }
+        },
+      ),
     );
   });
 
   test('normalized data properties', () => {
     fc.assert(
-      fc.property(fc.array(finiteFloat(), { minLength: 10, maxLength: 100 }), (data) => {
-        const unique = [...new Set(data)];
-        fc.pre(unique.length > 1); // Skip constant arrays
+      fc.property(
+        fc.array(finiteFloat(), { minLength: 10, maxLength: 100 }),
+        (data) => {
+          const unique = [...new Set(data)];
+          fc.pre(unique.length > 1); // Skip constant arrays
 
-        const normalized = normalizeData(data);
+          const normalized = normalizeData(data);
 
-        // Mean should be approximately 0
-        const mean = normalized.reduce((sum, x) => sum + x, 0) / normalized.length;
-        expect(Math.abs(mean)).toBeLessThan(1e-10);
+          // Mean should be approximately 0
+          const mean =
+            normalized.reduce((sum, x) => sum + x, 0) / normalized.length;
+          expect(Math.abs(mean)).toBeLessThan(1e-10);
 
-        // Standard deviation should be approximately 1
-        const variance =
-          normalized.reduce((sum, x) => sum + (x - mean) ** 2, 0) / normalized.length;
-        const stdDev = Math.sqrt(variance);
-        expect(Math.abs(stdDev - 1.0)).toBeLessThan(1e-10);
+          // Standard deviation should be approximately 1
+          const variance =
+            normalized.reduce((sum, x) => sum + (x - mean) ** 2, 0) /
+            normalized.length;
+          const stdDev = Math.sqrt(variance);
+          expect(Math.abs(stdDev - 1.0)).toBeLessThan(1e-10);
 
-        // All values should be finite
-        expect(normalized.every((x) => Number.isFinite(x))).toBe(true);
-      })
+          // All values should be finite
+          expect(normalized.every((x) => Number.isFinite(x))).toBe(true);
+        },
+      ),
     );
   });
 
@@ -330,7 +361,8 @@ describe('Data Processing Invariants', () => {
           });
 
           // Window count should be correct
-          const expectedCount = Math.floor((data.length - windowSize) / step) + 1;
+          const expectedCount =
+            Math.floor((data.length - windowSize) / step) + 1;
           expect(windows.length).toBe(expectedCount);
 
           // Windows should contain correct subsequences
@@ -340,15 +372,18 @@ describe('Data Processing Invariants', () => {
               expect(windows[i]?.[j]).toBe(data?.[startIndex + j]);
             }
           }
-        }
-      )
+        },
+      ),
     );
   });
 
   test('missing value handling consistency', () => {
     fc.assert(
       fc.property(
-        fc.array(fc.oneof(finiteFloat(), fc.constant(NaN)), { minLength: 5, maxLength: 50 }),
+        fc.array(fc.oneof(finiteFloat(), fc.constant(Number.NaN)), {
+          minLength: 5,
+          maxLength: 50,
+        }),
         fc.constantFrom('mean', 'zero', 'forward_fill'),
         (dataWithNaN, strategy) => {
           const result = handleMissingValues(dataWithNaN, strategy);
@@ -368,8 +403,8 @@ describe('Data Processing Invariants', () => {
               expect(result?.[i]).toBe(dataWithNaN?.[i]);
             }
           }
-        }
-      )
+        },
+      ),
     );
   });
 });
@@ -394,7 +429,7 @@ describe('Numerical Stability Properties', () => {
         const relu = Math.max(0, x);
         expect(relu).toBeGreaterThanOrEqual(0);
         expect(Number.isFinite(relu)).toBe(true);
-      })
+      }),
     );
   });
 
@@ -417,8 +452,8 @@ describe('Numerical Stability Properties', () => {
           // Operation properties
           expect(sum).toHaveLength(a.length);
           expect(product).toHaveLength(a.length);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -435,14 +470,18 @@ describe('Numerical Stability Properties', () => {
           expect(gradients.every((g) => Number.isFinite(g))).toBe(true);
 
           // Gradient magnitude should be reasonable
-          const magnitude = Math.sqrt(gradients.reduce((sum, g) => sum + g * g, 0));
+          const magnitude = Math.sqrt(
+            gradients.reduce((sum, g) => sum + g * g, 0),
+          );
           expect(magnitude).toBeLessThan(1000);
 
           // Weight updates should be stable
-          const updatedWeights = weights.map((w, i) => w - learningRate * gradients[i]);
+          const updatedWeights = weights.map(
+            (w, i) => w - learningRate * gradients[i],
+          );
           expect(updatedWeights.every((w) => Number.isFinite(w))).toBe(true);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -456,18 +495,21 @@ describe('Numerical Stability Properties', () => {
 
           // Mean Squared Error
           const mse =
-            predictions.reduce((sum, p, i) => sum + (p - targets?.[i]) ** 2, 0) /
-            predictions.length;
+            predictions.reduce(
+              (sum, p, i) => sum + (p - targets?.[i]) ** 2,
+              0,
+            ) / predictions.length;
 
           expect(mse).toBeGreaterThanOrEqual(0);
           expect(Number.isFinite(mse)).toBe(true);
 
           // MSE should be 0 when predictions equal targets
           const identicalMse =
-            predictions.reduce((sum, p) => sum + (p - p) ** 2, 0) / predictions.length;
+            predictions.reduce((sum, p) => sum + (p - p) ** 2, 0) /
+            predictions.length;
           expect(identicalMse).toBeCloseTo(0, 10);
-        }
-      )
+        },
+      ),
     );
   });
 });
@@ -476,10 +518,18 @@ describe('Edge Case Handling', () => {
   test('extreme input values', () => {
     fc.assert(
       fc.property(
-        fc.array(fc.float({ min: -1e6, max: 1e6, noNaN: true, noDefaultInfinity: true }), {
-          minLength: 1,
-          maxLength: 10,
-        }),
+        fc.array(
+          fc.float({
+            min: -1e6,
+            max: 1e6,
+            noNaN: true,
+            noDefaultInfinity: true,
+          }),
+          {
+            minLength: 1,
+            maxLength: 10,
+          },
+        ),
         (extremeInputs) => {
           // Network should handle extreme values gracefully
           const config: NetworkConfig = {
@@ -495,8 +545,8 @@ describe('Edge Case Handling', () => {
           // Output should be finite and within bounds for sigmoid
           expect(output.every((x) => Number.isFinite(x))).toBe(true);
           expect(output.every((x) => x >= 0 && x <= 1)).toBe(true);
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -519,24 +569,33 @@ describe('Edge Case Handling', () => {
     fc.assert(
       fc.property(
         fc.array(
-          fc.oneof(finiteFloat(), fc.constant(NaN), fc.constant(Infinity), fc.constant(-Infinity)),
-          { minLength: 5, maxLength: 20 }
+          fc.oneof(
+            finiteFloat(),
+            fc.constant(Number.NaN),
+            fc.constant(Number.POSITIVE_INFINITY),
+            fc.constant(Number.NEGATIVE_INFINITY),
+          ),
+          { minLength: 5, maxLength: 20 },
         ),
         (malformedData) => {
           // Data cleaning should handle malformed inputs
-          const cleanedData = malformedData?.map((x) => (Number.isFinite(x) ? x : 0));
+          const cleanedData = malformedData?.map((x) =>
+            Number.isFinite(x) ? x : 0,
+          );
 
           expect(cleanedData?.every((x) => Number.isFinite(x))).toBe(true);
           expect(cleanedData).toHaveLength(malformedData.length);
 
           // Missing value handling should work
-          const withNaN = malformedData?.map((x) => (Number.isFinite(x) ? x : NaN));
+          const withNaN = malformedData?.map((x) =>
+            Number.isFinite(x) ? x : Number.NaN,
+          );
           const handled = handleMissingValues(withNaN, 'zero');
 
           expect(handled.every((x) => Number.isFinite(x))).toBe(true);
           expect(handled.every((x) => !Number.isNaN(x))).toBe(true);
-        }
-      )
+        },
+      ),
     );
   });
 });
@@ -545,7 +604,10 @@ describe('Statistical Properties', () => {
   test('distribution preservation in preprocessing', () => {
     fc.assert(
       fc.property(
-        fc.array(fc.float({ min: -100, max: 100, noNaN: true }), { minLength: 50, maxLength: 200 }),
+        fc.array(fc.float({ min: -100, max: 100, noNaN: true }), {
+          minLength: 50,
+          maxLength: 200,
+        }),
         (data) => {
           const unique = [...new Set(data)];
           fc.pre(unique.length > 10); // Ensure sufficient variance
@@ -560,8 +622,8 @@ describe('Statistical Properties', () => {
               expect(originalOrder).toBe(normalizedOrder);
             }
           }
-        }
-      )
+        },
+      ),
     );
   });
 
@@ -574,7 +636,7 @@ describe('Statistical Properties', () => {
         (baseData, correlation, offset) => {
           // Create correlated data
           const correlatedData = baseData?.map(
-            (x) => correlation * x + offset + (Math.random() - 0.5) * 0.1
+            (x) => correlation * x + offset + (Math.random() - 0.5) * 0.1,
           );
 
           // Normalize both datasets
@@ -583,15 +645,18 @@ describe('Statistical Properties', () => {
 
           // Calculate correlation coefficients
           const originalCorr = calculateCorrelation(baseData, correlatedData);
-          const normalizedCorr = calculateCorrelation(normalizedBase, normalizedCorrelated);
+          const normalizedCorr = calculateCorrelation(
+            normalizedBase,
+            normalizedCorrelated,
+          );
 
           // Normalization should preserve correlation (within tolerance)
           if (Math.abs(originalCorr) > 0.1) {
             // Only test when correlation is significant
             expect(Math.abs(originalCorr - normalizedCorr)).toBeLessThan(0.1);
           }
-        }
-      )
+        },
+      ),
     );
   });
 });

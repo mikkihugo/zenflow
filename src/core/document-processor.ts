@@ -34,7 +34,14 @@ const logger = getLogger('DocumentProcessor');
 /**
  * Document types in the processing workflow.
  */
-export type DocumentType = 'vision' | 'adr' | 'prd' | 'epic' | 'feature' | 'task' | 'spec';
+export type DocumentType =
+  | 'vision'
+  | 'adr'
+  | 'prd'
+  | 'epic'
+  | 'feature'
+  | 'task'
+  | 'spec';
 
 /**
  * Document processing configuration.
@@ -187,7 +194,7 @@ export class DocumentProcessor extends EventEmitter {
   constructor(
     memory: MemorySystem,
     workflowEngine: WorkflowEngine,
-    config: DocumentProcessorConfig = {}
+    config: DocumentProcessorConfig = {},
   ) {
     super();
     this.memory = memory;
@@ -271,7 +278,9 @@ export class DocumentProcessor extends EventEmitter {
       this.setupDocumentWatchers(workspaceId);
     }
 
-    logger.info(`Loaded workspace: ${workspacePath} (${context.activeDocuments.size} documents)`);
+    logger.info(
+      `Loaded workspace: ${workspacePath} (${context.activeDocuments.size} documents)`,
+    );
     this.emit('workspace:loaded', {
       workspaceId,
       path: workspacePath,
@@ -287,7 +296,10 @@ export class DocumentProcessor extends EventEmitter {
    * @param documentPath - Path to the document file.
    * @param workspaceId - Optional workspace ID (uses default if not provided).
    */
-  async processDocument(documentPath: string, workspaceId?: string): Promise<void> {
+  async processDocument(
+    documentPath: string,
+    workspaceId?: string,
+  ): Promise<void> {
     await this.ensureInitialized();
 
     // Find or create workspace
@@ -337,7 +349,7 @@ export class DocumentProcessor extends EventEmitter {
           document as unknown as BaseDocumentEntity,
           {
             workspaceId,
-          } as any
+          } as any,
         );
       }
 
@@ -366,7 +378,7 @@ export class DocumentProcessor extends EventEmitter {
     type: DocumentType,
     title: string,
     content: string,
-    workspaceId?: string
+    workspaceId?: string,
   ): Promise<Document> {
     await this.ensureInitialized();
 
@@ -472,7 +484,10 @@ export class DocumentProcessor extends EventEmitter {
    * @param workspaceId
    * @param document
    */
-  private async processDocumentByType(workspaceId: string, document: Document): Promise<void> {
+  private async processDocumentByType(
+    workspaceId: string,
+    document: Document,
+  ): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
 
     switch (document.type) {
@@ -515,7 +530,12 @@ export class DocumentProcessor extends EventEmitter {
     const dirs = Object.entries(context.workspace);
 
     for (const [type, dirPath] of dirs) {
-      if (dirPath && existsSync(dirPath) && type !== 'root' && type !== 'implementation') {
+      if (
+        dirPath &&
+        existsSync(dirPath) &&
+        type !== 'root' &&
+        type !== 'implementation'
+      ) {
         try {
           const files = await readdir(dirPath);
           for (const file of files) {
@@ -553,11 +573,13 @@ export class DocumentProcessor extends EventEmitter {
    * @param path
    */
   private getDocumentType(path: string): DocumentType {
-    if (path.includes('/01-vision/') || path.includes('/vision/')) return 'vision';
+    if (path.includes('/01-vision/') || path.includes('/vision/'))
+      return 'vision';
     if (path.includes('/02-adrs/') || path.includes('/adrs/')) return 'adr';
     if (path.includes('/03-prds/') || path.includes('/prds/')) return 'prd';
     if (path.includes('/04-epics/') || path.includes('/epics/')) return 'epic';
-    if (path.includes('/05-features/') || path.includes('/features/')) return 'feature';
+    if (path.includes('/05-features/') || path.includes('/features/'))
+      return 'feature';
     if (path.includes('/06-tasks/') || path.includes('/tasks/')) return 'task';
     if (path.includes('/07-specs/') || path.includes('/specs/')) return 'spec';
     return 'task'; // default
@@ -569,7 +591,10 @@ export class DocumentProcessor extends EventEmitter {
    * @param workspace
    * @param type
    */
-  private getDocumentDirectory(workspace: DocumentWorkspace, type: DocumentType): string {
+  private getDocumentDirectory(
+    workspace: DocumentWorkspace,
+    type: DocumentType,
+  ): string {
     switch (type) {
       case 'vision':
         return workspace.vision!;
@@ -604,22 +629,37 @@ export class DocumentProcessor extends EventEmitter {
       // Check first 15 lines
       const trimmedLine = line.trim();
 
-      if (trimmedLine.startsWith('- **Author:**') || trimmedLine.startsWith('Author:')) {
+      if (
+        trimmedLine.startsWith('- **Author:**') ||
+        trimmedLine.startsWith('Author:')
+      ) {
         const author = trimmedLine.split(':')[1]?.trim();
         if (author) metadata.author = author;
       }
-      if (trimmedLine.startsWith('- **Created:**') || trimmedLine.startsWith('Created:')) {
+      if (
+        trimmedLine.startsWith('- **Created:**') ||
+        trimmedLine.startsWith('Created:')
+      ) {
         const dateStr = trimmedLine.split(':')[1]?.trim();
         if (dateStr) metadata.created = new Date(dateStr);
       }
-      if (trimmedLine.startsWith('- **Status:**') || trimmedLine.startsWith('Status:')) {
+      if (
+        trimmedLine.startsWith('- **Status:**') ||
+        trimmedLine.startsWith('Status:')
+      ) {
         const status = trimmedLine.split(':')[1]?.trim();
         if (status) metadata.status = status;
       }
-      if (trimmedLine.startsWith('- **Priority:**') || trimmedLine.startsWith('Priority:')) {
+      if (
+        trimmedLine.startsWith('- **Priority:**') ||
+        trimmedLine.startsWith('Priority:')
+      ) {
         metadata.priority = trimmedLine.split(':')[1]?.trim() as any;
       }
-      if (trimmedLine.startsWith('- **Tags:**') || trimmedLine.startsWith('Tags:')) {
+      if (
+        trimmedLine.startsWith('- **Tags:**') ||
+        trimmedLine.startsWith('Tags:')
+      ) {
         const tagsStr = trimmedLine.split(':')[1]?.trim();
         if (tagsStr) {
           metadata.tags = tagsStr.split(',').map((tag) => tag.trim());
@@ -649,7 +689,11 @@ export class DocumentProcessor extends EventEmitter {
    * @param content
    * @param type
    */
-  private generateDocumentContent(title: string, content: string, type: DocumentType): string {
+  private generateDocumentContent(
+    title: string,
+    content: string,
+    type: DocumentType,
+  ): string {
     const now = new Date().toISOString();
 
     return `# ${title}
@@ -672,13 +716,33 @@ ${content}
    */
   private getSuggestedNextSteps(documentType: DocumentType): string[] {
     const nextSteps = {
-      vision: ['Create PRDs', 'Define stakeholder requirements', 'Conduct stakeholder alignment'],
-      adr: ['Review architectural implications', 'Update related PRDs', 'Validate decisions'],
-      prd: ['Generate epics', 'Create user stories', 'Define acceptance criteria'],
+      vision: [
+        'Create PRDs',
+        'Define stakeholder requirements',
+        'Conduct stakeholder alignment',
+      ],
+      adr: [
+        'Review architectural implications',
+        'Update related PRDs',
+        'Validate decisions',
+      ],
+      prd: [
+        'Generate epics',
+        'Create user stories',
+        'Define acceptance criteria',
+      ],
       epic: ['Break down into features', 'Estimate effort', 'Plan timeline'],
-      feature: ['Create implementation tasks', 'Define test cases', 'Review dependencies'],
+      feature: [
+        'Create implementation tasks',
+        'Define test cases',
+        'Review dependencies',
+      ],
       task: ['Begin implementation', 'Write tests', 'Update documentation'],
-      spec: ['Review technical approach', 'Validate with stakeholders', 'Begin implementation'],
+      spec: [
+        'Review technical approach',
+        'Validate with stakeholders',
+        'Begin implementation',
+      ],
     };
     return nextSteps[documentType] || [];
   }
@@ -690,7 +754,8 @@ ${content}
    */
   private updateStats(document: Document): void {
     this.stats.totalDocuments++;
-    this.stats.byType[document.type] = (this.stats.byType[document.type] || 0) + 1;
+    this.stats.byType[document.type] =
+      (this.stats.byType[document.type] || 0) + 1;
 
     const status = document.metadata?.status || 'unknown';
     this.stats.byStatus[status] = (this.stats.byStatus[status] || 0) + 1;
@@ -732,7 +797,9 @@ ${content}
   private setupDocumentWatchers(workspaceId: string): void {
     // Note: In a real implementation, this would use fs.watch or chokidar
     // For now, we'll just log that watchers would be set up
-    logger.debug(`Document watchers would be set up for workspace: ${workspaceId}`);
+    logger.debug(
+      `Document watchers would be set up for workspace: ${workspaceId}`,
+    );
   }
 
   /**

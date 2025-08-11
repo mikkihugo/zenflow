@@ -40,10 +40,17 @@ async function testMcpServerStartup() {
       child.stderr.on('data', (data) => {
         stderr += data.toString();
         // Check for binary ambiguity error (should not occur)
-        if (data.toString().includes('could not determine which binary to run')) {
+        if (
+          data.toString().includes('could not determine which binary to run')
+        ) {
           clearTimeout(timeout);
           child.kill('SIGTERM');
-          resolve({ success: false, stdout, stderr, error: 'binary_ambiguity' });
+          resolve({
+            success: false,
+            stdout,
+            stderr,
+            error: 'binary_ambiguity',
+          });
         }
       });
 
@@ -75,7 +82,8 @@ async function testMcpServerStartup() {
     const packageJson = JSON.parse(packageContent);
 
     const mcpServerScript = packageJson.scripts['mcp:server'];
-    const expectedScript = 'cd ../crates/ruv-swarm-mcp && cargo run --bin ruv-swarm-mcp-stdio';
+    const expectedScript =
+      'cd ../crates/ruv-swarm-mcp && cargo run --bin ruv-swarm-mcp-stdio';
 
     if (mcpServerScript === expectedScript) {
     } else {

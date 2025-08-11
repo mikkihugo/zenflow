@@ -25,7 +25,10 @@ import type {
   SwarmMetrics,
 } from '../../../coordination/swarm/core/swarm-coordinator.ts';
 import { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator.ts';
-import type { SwarmOptions, SwarmTopology } from '../../../coordination/swarm/core/types.ts';
+import type {
+  SwarmOptions,
+  SwarmTopology,
+} from '../../../coordination/swarm/core/types.ts';
 import type { AgentType } from '../../../types/agent-types.ts';
 import type {
   IService,
@@ -393,17 +396,22 @@ export class CoordinationServiceAdapter implements IService {
       if (this.adapterConfig.sessionService?.enabled) {
         this.logger.debug('Initializing SessionEnabledSwarm integration');
         const swarmOptions: SwarmOptions = {
-          topology: this.adapterConfig.swarmCoordinator?.defaultTopology || 'mesh',
+          topology:
+            this.adapterConfig.swarmCoordinator?.defaultTopology || 'mesh',
           maxAgents: this.adapterConfig.swarmCoordinator?.maxAgents || 50,
         };
 
         const sessionConfig: SessionConfig = {
           autoCheckpoint: true,
-          checkpointInterval: this.adapterConfig.sessionService.checkpointInterval || 300000,
+          checkpointInterval:
+            this.adapterConfig.sessionService.checkpointInterval || 300000,
           maxCheckpoints: this.adapterConfig.sessionService.maxSessions || 100,
         };
 
-        this.sessionEnabledSwarm = new SessionEnabledSwarm(swarmOptions, sessionConfig);
+        this.sessionEnabledSwarm = new SessionEnabledSwarm(
+          swarmOptions,
+          sessionConfig,
+        );
         // TODO: Initialize SessionEnabledSwarm when init method is available
         // await this.sessionEnabledSwarm.init();
 
@@ -411,7 +419,9 @@ export class CoordinationServiceAdapter implements IService {
         if (this.adapterConfig.sessionService.autoRecovery) {
           // TODO: Implement proper SessionRecoveryService initialization
           // This would be properly initialized when the service is available
-          this.logger.debug('Session recovery service would be initialized here');
+          this.logger.debug(
+            'Session recovery service would be initialized here',
+          );
         }
 
         await this.addDependency({
@@ -468,11 +478,16 @@ export class CoordinationServiceAdapter implements IService {
 
       this.lifecycleStatus = 'initialized';
       this.emit('initialized');
-      this.logger.info(`Coordination service adapter initialized successfully: ${this.name}`);
+      this.logger.info(
+        `Coordination service adapter initialized successfully: ${this.name}`,
+      );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
-      this.logger.error(`Failed to initialize coordination service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to initialize coordination service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -494,17 +509,25 @@ export class CoordinationServiceAdapter implements IService {
       // Check dependencies before starting
       const dependenciesOk = await this.checkDependencies();
       if (!dependenciesOk) {
-        throw new ServiceDependencyError(this.name, 'One or more dependencies failed');
+        throw new ServiceDependencyError(
+          this.name,
+          'One or more dependencies failed',
+        );
       }
 
       this.startTime = new Date();
       this.lifecycleStatus = 'running';
       this.emit('started');
-      this.logger.info(`Coordination service adapter started successfully: ${this.name}`);
+      this.logger.info(
+        `Coordination service adapter started successfully: ${this.name}`,
+      );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
-      this.logger.error(`Failed to start coordination service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to start coordination service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -538,11 +561,16 @@ export class CoordinationServiceAdapter implements IService {
 
       this.lifecycleStatus = 'stopped';
       this.emit('stopped');
-      this.logger.info(`Coordination service adapter stopped successfully: ${this.name}`);
+      this.logger.info(
+        `Coordination service adapter stopped successfully: ${this.name}`,
+      );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
-      this.logger.error(`Failed to stop coordination service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to stop coordination service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -577,9 +605,14 @@ export class CoordinationServiceAdapter implements IService {
       this.eventEmitter.removeAllListeners();
 
       this.lifecycleStatus = 'destroyed';
-      this.logger.info(`Coordination service adapter destroyed successfully: ${this.name}`);
+      this.logger.info(
+        `Coordination service adapter destroyed successfully: ${this.name}`,
+      );
     } catch (error) {
-      this.logger.error(`Failed to destroy coordination service adapter ${this.name}:`, error);
+      this.logger.error(
+        `Failed to destroy coordination service adapter ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -589,12 +622,20 @@ export class CoordinationServiceAdapter implements IService {
    */
   async getStatus(): Promise<ServiceStatus> {
     const now = new Date();
-    const uptime = this.startTime ? now.getTime() - this.startTime.getTime() : 0;
-    const errorRate = this.operationCount > 0 ? (this.errorCount / this.operationCount) * 100 : 0;
+    const uptime = this.startTime
+      ? now.getTime() - this.startTime.getTime()
+      : 0;
+    const errorRate =
+      this.operationCount > 0
+        ? (this.errorCount / this.operationCount) * 100
+        : 0;
 
     // Check dependency statuses
     const dependencyStatuses: {
-      [serviceName: string]: { status: 'healthy' | 'unhealthy' | 'unknown'; lastCheck: Date };
+      [serviceName: string]: {
+        status: 'healthy' | 'unhealthy' | 'unknown';
+        lastCheck: Date;
+      };
     } = {};
 
     if (this.daaService && this.adapterConfig.daaService?.enabled) {
@@ -611,7 +652,10 @@ export class CoordinationServiceAdapter implements IService {
       };
     }
 
-    if (this.sessionEnabledSwarm && this.adapterConfig.sessionService?.enabled) {
+    if (
+      this.sessionEnabledSwarm &&
+      this.adapterConfig.sessionService?.enabled
+    ) {
       dependencyStatuses['session-enabled-swarm'] = {
         status: 'healthy', // TODO: Use proper isReady method when available
         lastCheck: now,
@@ -635,9 +679,9 @@ export class CoordinationServiceAdapter implements IService {
         pendingRequests: this.pendingRequests.size,
         activeAgents: this.agentMetrics.size,
         activeSessions: this.sessionMetrics.size,
-        daaServiceEnabled: this.adapterConfig.daaService?.enabled || false,
-        sessionServiceEnabled: this.adapterConfig.sessionService?.enabled || false,
-        swarmCoordinatorEnabled: this.adapterConfig.swarmCoordinator?.enabled || false,
+        daaServiceEnabled: this.adapterConfig.daaService?.enabled,
+        sessionServiceEnabled: this.adapterConfig.sessionService?.enabled,
+        swarmCoordinatorEnabled: this.adapterConfig.swarmCoordinator?.enabled,
       },
     };
   }
@@ -648,23 +692,31 @@ export class CoordinationServiceAdapter implements IService {
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
-    const avgLatency = this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
-    const throughput = recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // ops per second
+    const avgLatency =
+      this.operationCount > 0 ? this.totalLatency / this.operationCount : 0;
+    const throughput =
+      recentMetrics.length > 0 ? recentMetrics.length / 300 : 0; // ops per second
 
     // Calculate percentile latencies from recent metrics
-    const latencies = recentMetrics.map((m) => m.executionTime).sort((a, b) => a - b);
+    const latencies = recentMetrics
+      .map((m) => m.executionTime)
+      .sort((a, b) => a - b);
     const p95Index = Math.floor(latencies.length * 0.95);
     const p99Index = Math.floor(latencies.length * 0.99);
 
     // Calculate coordination-specific metrics
-    const coordinationMetrics = recentMetrics.filter((m) => m.coordinationLatency !== undefined);
+    const coordinationMetrics = recentMetrics.filter(
+      (m) => m.coordinationLatency !== undefined,
+    );
     const avgCoordinationLatency =
       coordinationMetrics.length > 0
-        ? coordinationMetrics.reduce((sum, m) => sum + (m.coordinationLatency || 0), 0) /
-          coordinationMetrics.length
+        ? coordinationMetrics.reduce(
+            (sum, m) => sum + (m.coordinationLatency || 0),
+            0,
+          ) / coordinationMetrics.length
         : 0;
 
     return {
@@ -680,7 +732,8 @@ export class CoordinationServiceAdapter implements IService {
       memoryUsage: {
         used: this.estimateMemoryUsage(),
         total: this.adapterConfig.cache?.maxSize || 500,
-        percentage: (this.cache.size / (this.adapterConfig.cache?.maxSize || 500)) * 100,
+        percentage:
+          (this.cache.size / (this.adapterConfig.cache?.maxSize || 500)) * 100,
       },
       customMetrics: {
         cacheHitRate: this.calculateCacheHitRate(),
@@ -729,7 +782,10 @@ export class CoordinationServiceAdapter implements IService {
       }
 
       // Check SwarmCoordinator if enabled
-      if (this.swarmCoordinator && this.adapterConfig.swarmCoordinator?.enabled) {
+      if (
+        this.swarmCoordinator &&
+        this.adapterConfig.swarmCoordinator?.enabled
+      ) {
         // TODO: Use proper getState method when available
         // if (this.swarmCoordinator.getState() !== 'active') {
         //   this.healthStats.consecutiveFailures++;
@@ -744,7 +800,7 @@ export class CoordinationServiceAdapter implements IService {
         if (this.cache.size > maxSize * 1.2) {
           // 20% overage threshold
           this.logger.warn(
-            `Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`
+            `Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`,
           );
           this.healthStats.consecutiveFailures++;
           this.healthStats.healthCheckFailures++;
@@ -769,7 +825,9 @@ export class CoordinationServiceAdapter implements IService {
    * @param config
    */
   async updateConfig(config: Partial<ServiceConfig>): Promise<void> {
-    this.logger.info(`Updating configuration for coordination service adapter: ${this.name}`);
+    this.logger.info(
+      `Updating configuration for coordination service adapter: ${this.name}`,
+    );
 
     try {
       // Validate the updated configuration
@@ -784,7 +842,10 @@ export class CoordinationServiceAdapter implements IService {
 
       this.logger.info(`Configuration updated successfully for: ${this.name}`);
     } catch (error) {
-      this.logger.error(`Failed to update configuration for ${this.name}:`, error);
+      this.logger.error(
+        `Failed to update configuration for ${this.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -797,8 +858,10 @@ export class CoordinationServiceAdapter implements IService {
   async validateConfig(config: ServiceConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config?.name || !config?.type) {
-        this.logger.error('Configuration missing required fields: name or type');
+      if (!(config?.name && config?.type)) {
+        this.logger.error(
+          'Configuration missing required fields: name or type',
+        );
         return false;
       }
 
@@ -833,7 +896,7 @@ export class CoordinationServiceAdapter implements IService {
         'knowledge-sharing',
         'learning-operations',
         'cognitive-analysis',
-        'performance-metrics'
+        'performance-metrics',
       );
     }
 
@@ -843,7 +906,7 @@ export class CoordinationServiceAdapter implements IService {
         'state-persistence',
         'checkpoint-creation',
         'session-recovery',
-        'cross-session-continuity'
+        'cross-session-continuity',
       );
     }
 
@@ -853,7 +916,7 @@ export class CoordinationServiceAdapter implements IService {
         'task-assignment',
         'agent-orchestration',
         'topology-management',
-        'load-balancing'
+        'load-balancing',
       );
     }
 
@@ -866,7 +929,11 @@ export class CoordinationServiceAdapter implements IService {
     }
 
     if (this.adapterConfig.learning?.enableContinuousLearning) {
-      capabilities.push('continuous-learning', 'adaptation', 'pattern-analysis');
+      capabilities.push(
+        'continuous-learning',
+        'adaptation',
+        'pattern-analysis',
+      );
     }
 
     return capabilities;
@@ -882,27 +949,44 @@ export class CoordinationServiceAdapter implements IService {
   async execute<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    options?: ServiceOperationOptions,
   ): Promise<ServiceOperationResponse<T>> {
     const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
 
-    this.logger.debug(`Executing operation: ${operation}`, { operationId, params });
+    this.logger.debug(`Executing operation: ${operation}`, {
+      operationId,
+      params,
+    });
 
     try {
       // Check if service is ready
       if (!this.isReady()) {
-        throw new ServiceOperationError(this.name, operation, new Error('Service not ready'));
+        throw new ServiceOperationError(
+          this.name,
+          operation,
+          new Error('Service not ready'),
+        );
       }
 
       // Apply timeout if specified
-      const timeout = options?.timeout || this.adapterConfig.performance?.requestTimeout || 30000;
+      const timeout =
+        options?.timeout ||
+        this.adapterConfig.performance?.requestTimeout ||
+        30000;
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new ServiceTimeoutError(this.name, operation, timeout)), timeout);
+        setTimeout(
+          () => reject(new ServiceTimeoutError(this.name, operation, timeout)),
+          timeout,
+        );
       });
 
       // Execute operation with timeout
-      const operationPromise = this.executeOperationInternal<T>(operation, params, options);
+      const operationPromise = this.executeOperationInternal<T>(
+        operation,
+        params,
+        options,
+      );
       const result = await Promise.race([operationPromise, timeoutPromise]);
 
       const duration = Date.now() - startTime;
@@ -922,7 +1006,12 @@ export class CoordinationServiceAdapter implements IService {
       this.successCount++;
       this.totalLatency += duration;
 
-      this.emit('operation', { operationId, operation, success: true, duration });
+      this.emit('operation', {
+        operationId,
+        operation,
+        success: true,
+        duration,
+      });
 
       return {
         success: true,
@@ -948,7 +1037,13 @@ export class CoordinationServiceAdapter implements IService {
       this.errorCount++;
       this.totalLatency += duration;
 
-      this.emit('operation', { operationId, operation, success: false, duration, error });
+      this.emit('operation', {
+        operationId,
+        operation,
+        success: false,
+        duration,
+        error,
+      });
       this.emit('error', error);
 
       this.logger.error(`Operation ${operation} failed:`, error);
@@ -956,7 +1051,10 @@ export class CoordinationServiceAdapter implements IService {
       return {
         success: false,
         error: {
-          code: error instanceof Error && 'code' in error ? (error as any).code : 'OPERATION_ERROR',
+          code:
+            error instanceof Error && 'code' in error
+              ? (error as any).code
+              : 'OPERATION_ERROR',
           message: error.message,
           details: params,
           stack: error.stack,
@@ -1002,7 +1100,9 @@ export class CoordinationServiceAdapter implements IService {
   // ============================================
 
   async addDependency(dependency: ServiceDependencyConfig): Promise<void> {
-    this.logger.debug(`Adding dependency ${dependency.serviceName} for ${this.name}`);
+    this.logger.debug(
+      `Adding dependency ${dependency.serviceName} for ${this.name}`,
+    );
     this.dependencies.set(dependency.serviceName, dependency);
   }
 
@@ -1031,7 +1131,7 @@ export class CoordinationServiceAdapter implements IService {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
             return !config?.required; // Return false only if dependency is required
           }
-        }
+        },
       );
 
       const results = await Promise.all(dependencyChecks);
@@ -1056,13 +1156,16 @@ export class CoordinationServiceAdapter implements IService {
   private async executeOperationInternal<T = any>(
     operation: string,
     params?: any,
-    options?: ServiceOperationOptions
+    options?: ServiceOperationOptions,
   ): Promise<T> {
     // Generate cache key
     const cacheKey = this.generateCacheKey(operation, params);
 
     // Check cache first if enabled
-    if (this.adapterConfig.cache?.enabled && this.isCacheableOperation(operation)) {
+    if (
+      this.adapterConfig.cache?.enabled &&
+      this.isCacheableOperation(operation)
+    ) {
       const cached = this.getFromCache<T>(cacheKey);
       if (cached) {
         this.logger.debug(`Cache hit for operation: ${operation}`);
@@ -1088,7 +1191,11 @@ export class CoordinationServiceAdapter implements IService {
     }
 
     // Execute operation with retry logic
-    const executionPromise = this.executeWithRetry<T>(operation, params, options);
+    const executionPromise = this.executeWithRetry<T>(
+      operation,
+      params,
+      options,
+    );
 
     // Store pending request for deduplication
     if (this.adapterConfig.performance?.enableRequestDeduplication) {
@@ -1103,7 +1210,10 @@ export class CoordinationServiceAdapter implements IService {
       const result = await executionPromise;
 
       // Cache the result if enabled
-      if (this.adapterConfig.cache?.enabled && this.isCacheableOperation(operation)) {
+      if (
+        this.adapterConfig.cache?.enabled &&
+        this.isCacheableOperation(operation)
+      ) {
         this.setInCache(cacheKey, result);
       }
 
@@ -1128,7 +1238,7 @@ export class CoordinationServiceAdapter implements IService {
     operation: string,
     params?: any,
     options?: ServiceOperationOptions,
-    attempt = 1
+    attempt = 1,
   ): Promise<T> {
     try {
       return await this.performOperation<T>(operation, params, options);
@@ -1137,12 +1247,17 @@ export class CoordinationServiceAdapter implements IService {
 
       if (
         shouldRetry &&
-        attempt < (this.adapterConfig.retry?.maxAttempts || this.adapterConfig.retry?.attempts || 3)
+        attempt <
+          (this.adapterConfig.retry?.maxAttempts ||
+            this.adapterConfig.retry?.attempts ||
+            3)
       ) {
-        const delay = (this.adapterConfig.retry?.backoffMultiplier || 2) ** (attempt - 1) * 1000;
+        const delay =
+          (this.adapterConfig.retry?.backoffMultiplier || 2) ** (attempt - 1) *
+          1000;
         this.logger.warn(
           `Operation ${operation} failed (attempt ${attempt}), retrying in ${delay}ms:`,
-          error
+          error,
         );
 
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -1155,7 +1270,12 @@ export class CoordinationServiceAdapter implements IService {
           timestamp: new Date(),
         });
 
-        return await this.executeWithRetry<T>(operation, params, options, attempt + 1);
+        return await this.executeWithRetry<T>(
+          operation,
+          params,
+          options,
+          attempt + 1,
+        );
       }
 
       throw error;
@@ -1173,7 +1293,7 @@ export class CoordinationServiceAdapter implements IService {
   private async performOperation<T = any>(
     operation: string,
     params?: any,
-    _options?: ServiceOperationOptions
+    _options?: ServiceOperationOptions,
   ): Promise<T> {
     switch (operation) {
       // DaaService operations
@@ -1181,7 +1301,10 @@ export class CoordinationServiceAdapter implements IService {
         return (await this.createAgent(params?.config)) as T;
 
       case 'agent-adapt':
-        return (await this.adaptAgent(params?.agentId, params?.adaptation)) as T;
+        return (await this.adaptAgent(
+          params?.agentId,
+          params?.adaptation,
+        )) as T;
 
       case 'agent-learning-status':
         return (await this.getAgentLearningStatus(params?.agentId)) as T;
@@ -1190,7 +1313,10 @@ export class CoordinationServiceAdapter implements IService {
         return (await this.createWorkflow(params?.workflow)) as T;
 
       case 'workflow-execute':
-        return (await this.executeWorkflow(params?.workflowId, params?.params)) as T;
+        return (await this.executeWorkflow(
+          params?.workflowId,
+          params?.params,
+        )) as T;
 
       case 'knowledge-share':
         return (await this.shareKnowledge(params?.knowledge)) as T;
@@ -1199,7 +1325,10 @@ export class CoordinationServiceAdapter implements IService {
         return (await this.analyzeCognitivePatterns(params?.agentId)) as T;
 
       case 'cognitive-set':
-        return (await this.setCognitivePattern(params?.agentId, params?.pattern)) as T;
+        return (await this.setCognitivePattern(
+          params?.agentId,
+          params?.pattern,
+        )) as T;
 
       case 'meta-learning':
         return (await this.performMetaLearning(params)) as T;
@@ -1218,10 +1347,16 @@ export class CoordinationServiceAdapter implements IService {
         return (await this.saveSession(params?.sessionId)) as T;
 
       case 'session-checkpoint':
-        return (await this.createCheckpoint(params?.sessionId, params?.description)) as T;
+        return (await this.createCheckpoint(
+          params?.sessionId,
+          params?.description,
+        )) as T;
 
       case 'session-restore':
-        return (await this.restoreFromCheckpoint(params?.sessionId, params?.checkpointId)) as T;
+        return (await this.restoreFromCheckpoint(
+          params?.sessionId,
+          params?.checkpointId,
+        )) as T;
 
       case 'session-list':
         return (await this.listSessions(params?.filter)) as T;
@@ -1231,7 +1366,10 @@ export class CoordinationServiceAdapter implements IService {
 
       // Swarm coordination operations
       case 'swarm-coordinate':
-        return (await this.coordinateSwarm(params?.agents, params?.topology)) as T;
+        return (await this.coordinateSwarm(
+          params?.agents,
+          params?.topology,
+        )) as T;
 
       case 'swarm-add-agent':
         return (await this.addAgentToSwarm(params?.agent)) as T;
@@ -1271,7 +1409,7 @@ export class CoordinationServiceAdapter implements IService {
         throw new ServiceOperationError(
           this.name,
           operation,
-          new Error(`Unknown operation: ${operation}`)
+          new Error(`Unknown operation: ${operation}`),
         );
     }
   }
@@ -1355,7 +1493,10 @@ export class CoordinationServiceAdapter implements IService {
     return await this.daaService.analyzeCognitivePatterns(agentId);
   }
 
-  private async setCognitivePattern(agentId: string, pattern: any): Promise<any> {
+  private async setCognitivePattern(
+    agentId: string,
+    pattern: any,
+  ): Promise<any> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
@@ -1431,12 +1572,16 @@ export class CoordinationServiceAdapter implements IService {
     }
   }
 
-  private async createCheckpoint(sessionId: string, description?: string): Promise<string> {
+  private async createCheckpoint(
+    sessionId: string,
+    description?: string,
+  ): Promise<string> {
     if (!this.sessionEnabledSwarm) {
       throw new Error('SessionEnabledSwarm not available');
     }
 
-    const checkpointId = await this.sessionEnabledSwarm.createCheckpoint(description);
+    const checkpointId =
+      await this.sessionEnabledSwarm.createCheckpoint(description);
 
     // Update session metrics
     const metrics = this.sessionMetrics.get(sessionId);
@@ -1448,7 +1593,10 @@ export class CoordinationServiceAdapter implements IService {
     return checkpointId;
   }
 
-  private async restoreFromCheckpoint(sessionId: string, checkpointId: string): Promise<void> {
+  private async restoreFromCheckpoint(
+    sessionId: string,
+    checkpointId: string,
+  ): Promise<void> {
     if (!this.sessionEnabledSwarm) {
       throw new Error('SessionEnabledSwarm not available');
     }
@@ -1470,7 +1618,9 @@ export class CoordinationServiceAdapter implements IService {
     return await this.sessionEnabledSwarm.listSessions(filter);
   }
 
-  private async getSessionStats(sessionId?: string): Promise<Record<string, any>> {
+  private async getSessionStats(
+    sessionId?: string,
+  ): Promise<Record<string, any>> {
     if (!this.sessionEnabledSwarm) {
       throw new Error('SessionEnabledSwarm not available');
     }
@@ -1481,7 +1631,10 @@ export class CoordinationServiceAdapter implements IService {
   // SwarmCoordinator Integration Methods
   // ============================================
 
-  private async coordinateSwarm(agents: SwarmAgent[], topology?: SwarmTopology): Promise<any> {
+  private async coordinateSwarm(
+    agents: SwarmAgent[],
+    topology?: SwarmTopology,
+  ): Promise<any> {
     if (!this.swarmCoordinator) {
       throw new Error('SwarmCoordinator not available');
     }
@@ -1489,7 +1642,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   private async addAgentToSwarm(
-    agent: Omit<SwarmAgent, 'performance' | 'connections'>
+    agent: Omit<SwarmAgent, 'performance' | 'connections'>,
   ): Promise<void> {
     if (!this.swarmCoordinator) {
       throw new Error('SwarmCoordinator not available');
@@ -1576,7 +1729,8 @@ export class CoordinationServiceAdapter implements IService {
       operationCount: this.operationCount,
       successCount: this.successCount,
       errorCount: this.errorCount,
-      avgLatency: this.operationCount > 0 ? this.totalLatency / this.operationCount : 0,
+      avgLatency:
+        this.operationCount > 0 ? this.totalLatency / this.operationCount : 0,
       cacheHitRate: this.calculateCacheHitRate(),
       pendingRequests: this.pendingRequests.size,
       activeAgents: this.agentMetrics.size,
@@ -1677,7 +1831,11 @@ export class CoordinationServiceAdapter implements IService {
     this.logger.debug(`Cache cleanup: removed ${toRemove} entries`);
   }
 
-  private shouldRetryOperation(operation: string, error: any, attempt: number): boolean {
+  private shouldRetryOperation(
+    operation: string,
+    error: any,
+    attempt: number,
+  ): boolean {
     if (!this.adapterConfig.retry?.enabled) {
       return false;
     }
@@ -1716,7 +1874,7 @@ export class CoordinationServiceAdapter implements IService {
 
   private calculateCacheHitRate(): number {
     const recentMetrics = this.metrics.filter(
-      (m) => Date.now() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => Date.now() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
     if (recentMetrics.length === 0) {
@@ -1728,10 +1886,9 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   private calculateDeduplicationRate(): number {
-    const deduplicatedRequests = Array.from(this.pendingRequests.values()).reduce(
-      (sum, req) => sum + (req.requestCount - 1),
-      0
-    );
+    const deduplicatedRequests = Array.from(
+      this.pendingRequests.values(),
+    ).reduce((sum, req) => sum + (req.requestCount - 1), 0);
 
     const totalRequests = this.operationCount + deduplicatedRequests;
     return totalRequests > 0 ? (deduplicatedRequests / totalRequests) * 100 : 0;
@@ -1739,7 +1896,7 @@ export class CoordinationServiceAdapter implements IService {
 
   private calculateLearningOperationsRate(): number {
     const recentMetrics = this.metrics.filter(
-      (m) => Date.now() - m.timestamp.getTime() < 300000 // Last 5 minutes
+      (m) => Date.now() - m.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
     if (recentMetrics.length === 0) {
@@ -1750,7 +1907,7 @@ export class CoordinationServiceAdapter implements IService {
       (m) =>
         m.operationName.includes('learning') ||
         m.operationName.includes('cognitive') ||
-        m.operationName.includes('adapt')
+        m.operationName.includes('adapt'),
     ).length;
 
     return (learningOps / recentMetrics.length) * 100;
@@ -1815,17 +1972,18 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   private determineHealthStatus(
-    errorRate: number
+    errorRate: number,
   ): 'healthy' | 'degraded' | 'unhealthy' | 'unknown' {
     if (this.healthStats.consecutiveFailures > 5) {
       return 'unhealthy';
-    } else if (errorRate > 10 || this.healthStats.consecutiveFailures > 2) {
-      return 'degraded';
-    } else if (this.operationCount > 0) {
-      return 'healthy';
-    } else {
-      return 'unknown';
     }
+    if (errorRate > 10 || this.healthStats.consecutiveFailures > 2) {
+      return 'degraded';
+    }
+    if (this.operationCount > 0) {
+      return 'healthy';
+    }
+    return 'unknown';
   }
 
   private startCacheCleanupTimer(): void {
@@ -1854,7 +2012,8 @@ export class CoordinationServiceAdapter implements IService {
 
     setInterval(() => {
       const now = new Date();
-      const maxLifetime = this.adapterConfig.agentManagement?.maxLifetime || 3600000;
+      const maxLifetime =
+        this.adapterConfig.agentManagement?.maxLifetime || 3600000;
 
       // Clean up stale agent metrics
       for (const [agentId, metrics] of this.agentMetrics.entries()) {
@@ -1890,7 +2049,7 @@ export class CoordinationServiceAdapter implements IService {
  * @example
  */
 export function createCoordinationServiceAdapter(
-  config: CoordinationServiceAdapterConfig
+  config: CoordinationServiceAdapterConfig,
 ): CoordinationServiceAdapter {
   return new CoordinationServiceAdapter(config);
 }
@@ -1904,7 +2063,7 @@ export function createCoordinationServiceAdapter(
  */
 export function createDefaultCoordinationServiceAdapterConfig(
   name: string,
-  overrides?: Partial<CoordinationServiceAdapterConfig>
+  overrides?: Partial<CoordinationServiceAdapterConfig>,
 ): CoordinationServiceAdapterConfig {
   return {
     service: {

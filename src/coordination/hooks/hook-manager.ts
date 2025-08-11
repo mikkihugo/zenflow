@@ -63,7 +63,7 @@ export class DefaultHookManager extends EventEmitter {
   async executeHook(
     hookName: string,
     context: any,
-    _timeout?: number
+    _timeout?: number,
   ): Promise<HookExecutionResult> {
     const startTime = Date.now();
     const hookId = `${hookName}-${startTime}`;
@@ -98,7 +98,9 @@ export class DefaultHookManager extends EventEmitter {
       const duration = Date.now() - startTime;
 
       if (this.config.enableLogging) {
-        this.logger.info(`Hook ${hookName} executed successfully in ${duration}ms`);
+        this.logger.info(
+          `Hook ${hookName} executed successfully in ${duration}ms`,
+        );
       }
 
       return {
@@ -110,7 +112,10 @@ export class DefaultHookManager extends EventEmitter {
       const duration = Date.now() - startTime;
 
       if (this.config.enableLogging) {
-        this.logger.error(`Hook ${hookName} failed after ${duration}ms:`, error);
+        this.logger.error(
+          `Hook ${hookName} failed after ${duration}ms:`,
+          error,
+        );
       }
 
       return {
@@ -125,42 +130,42 @@ export class DefaultHookManager extends EventEmitter {
 
   async executeMultipleHooks(
     hooks: Array<{ name: string; context: any }>,
-    options?: { parallel?: boolean; failFast?: boolean }
+    options?: { parallel?: boolean; failFast?: boolean },
   ): Promise<HookExecutionResult[]> {
     const { parallel = false, failFast = false } = options || {};
 
     if (parallel) {
-      const promises = hooks.map(({ name, context }) => this.executeHook(name, context));
+      const promises = hooks.map(({ name, context }) =>
+        this.executeHook(name, context),
+      );
 
       if (failFast) {
         return Promise.all(promises);
-      } else {
-        return Promise.allSettled(promises).then((results) =>
-          results.map((result) =>
-            result?.status === 'fulfilled'
-              ? result?.value
-              : {
-                  success: false,
-                  error: new Error('Hook execution failed'),
-                  duration: 0,
-                }
-          )
-        );
       }
-    } else {
-      const results: HookExecutionResult[] = [];
-
-      for (const { name, context } of hooks) {
-        const result = await this.executeHook(name, context);
-        results.push(result);
-
-        if (failFast && !result?.success) {
-          break;
-        }
-      }
-
-      return results;
+      return Promise.allSettled(promises).then((results) =>
+        results.map((result) =>
+          result?.status === 'fulfilled'
+            ? result?.value
+            : {
+                success: false,
+                error: new Error('Hook execution failed'),
+                duration: 0,
+              },
+        ),
+      );
     }
+    const results: HookExecutionResult[] = [];
+
+    for (const { name, context } of hooks) {
+      const result = await this.executeHook(name, context);
+      results.push(result);
+
+      if (failFast && !result?.success) {
+        break;
+      }
+    }
+
+    return results;
   }
 
   getActiveHooks(): string[] {

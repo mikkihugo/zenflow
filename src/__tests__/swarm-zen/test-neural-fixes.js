@@ -72,12 +72,22 @@ function assertPattern(output, pattern, testName) {
 
 // Test 1: Pattern Parsing Fix Validation
 async function testPatternParsing() {
-  const result1 = await runCommand('npx ruv-swarm neural patterns --pattern all');
+  const result1 = await runCommand(
+    'npx ruv-swarm neural patterns --pattern all',
+  );
 
   if (result1.success) {
     assertContains(result1.stdout, 'All Patterns', 'All patterns header');
-    assertContains(result1.stdout, 'Cognitive Patterns:', 'Cognitive patterns section');
-    assertContains(result1.stdout, 'Neural Model Patterns:', 'Neural model patterns section');
+    assertContains(
+      result1.stdout,
+      'Cognitive Patterns:',
+      'Cognitive patterns section',
+    );
+    assertContains(
+      result1.stdout,
+      'Neural Model Patterns:',
+      'Neural model patterns section',
+    );
 
     // Check all 6 cognitive patterns
     const cognitivePatterns = [
@@ -89,44 +99,82 @@ async function testPatternParsing() {
       'Abstract',
     ];
     for (const pattern of cognitivePatterns) {
-      assertContains(result1.stdout, `${pattern} Pattern:`, `${pattern} pattern presence`);
+      assertContains(
+        result1.stdout,
+        `${pattern} Pattern:`,
+        `${pattern} pattern presence`,
+      );
     }
 
     // Check neural models
     const neuralModels = ['Attention', 'Lstm', 'Transformer'];
     for (const model of neuralModels) {
-      assertContains(result1.stdout, `${model} Model:`, `${model} model presence`);
+      assertContains(
+        result1.stdout,
+        `${model} Model:`,
+        `${model} model presence`,
+      );
     }
   } else {
     testResults.failed.push('All patterns command failed to execute');
   }
-  const result2 = await runCommand('npx ruv-swarm neural patterns --pattern convergent');
+  const result2 = await runCommand(
+    'npx ruv-swarm neural patterns --pattern convergent',
+  );
 
   if (result2.success) {
-    assertContains(result2.stdout, 'Convergent Pattern', 'Convergent pattern header');
-    assertContains(result2.stdout, 'Cognitive Patterns:', 'Cognitive patterns category');
-    assertContains(result2.stdout, 'Focused problem-solving', 'Convergent pattern content');
+    assertContains(
+      result2.stdout,
+      'Convergent Pattern',
+      'Convergent pattern header',
+    );
+    assertContains(
+      result2.stdout,
+      'Cognitive Patterns:',
+      'Cognitive patterns category',
+    );
+    assertContains(
+      result2.stdout,
+      'Focused problem-solving',
+      'Convergent pattern content',
+    );
 
     // Should NOT contain other patterns
-    if (!result2.stdout.includes('Divergent Pattern:')) {
-      testResults.passed.push('Convergent: Correctly excludes other patterns');
+    if (result2.stdout.includes('Divergent Pattern:')) {
+      testResults.failed.push(
+        'Convergent: Incorrectly includes other patterns',
+      );
     } else {
-      testResults.failed.push('Convergent: Incorrectly includes other patterns');
+      testResults.passed.push('Convergent: Correctly excludes other patterns');
     }
   } else {
     testResults.failed.push('Convergent pattern command failed');
   }
-  const result3 = await runCommand('npx ruv-swarm neural patterns --pattern invalid');
+  const result3 = await runCommand(
+    'npx ruv-swarm neural patterns --pattern invalid',
+  );
 
   if (result3.success) {
-    assertContains(result3.stdout, 'Unknown pattern type:', 'Invalid pattern error message');
-    assertContains(result3.stdout, 'Available patterns:', 'Available patterns list');
+    assertContains(
+      result3.stdout,
+      'Unknown pattern type:',
+      'Invalid pattern error message',
+    );
+    assertContains(
+      result3.stdout,
+      'Available patterns:',
+      'Available patterns list',
+    );
     assertContains(
       result3.stdout,
       'Cognitive: convergent, divergent, lateral, systems, critical, abstract',
-      'Cognitive patterns list'
+      'Cognitive patterns list',
     );
-    assertContains(result3.stdout, 'Models: attention, lstm, transformer', 'Model patterns list');
+    assertContains(
+      result3.stdout,
+      'Models: attention, lstm, transformer',
+      'Model patterns list',
+    );
   } else {
     testResults.failed.push('Invalid pattern handling failed');
   }
@@ -134,28 +182,41 @@ async function testPatternParsing() {
 
 // Test 2: Memory Optimization Validation
 async function testMemoryOptimization() {
-  const patterns = ['convergent', 'divergent', 'lateral', 'systems', 'critical', 'abstract'];
+  const patterns = [
+    'convergent',
+    'divergent',
+    'lateral',
+    'systems',
+    'critical',
+    'abstract',
+  ];
   const memoryValues = [];
 
   for (const pattern of patterns) {
-    const result = await runCommand(`npx ruv-swarm neural patterns --pattern ${pattern}`);
+    const result = await runCommand(
+      `npx ruv-swarm neural patterns --pattern ${pattern}`,
+    );
 
     if (result.success) {
       // Extract memory usage
       const memoryMatch = result.stdout.match(/Memory Usage:\s*(\d+)\s*MB/);
       if (memoryMatch) {
-        const memoryUsage = parseInt(memoryMatch[1], 10);
+        const memoryUsage = Number.parseInt(memoryMatch[1], 10);
         memoryValues.push({ pattern, memory: memoryUsage });
 
         // Check if memory is in optimized range (250-300 MB)
         if (memoryUsage >= 250 && memoryUsage <= 300) {
-          testResults.passed.push(`${pattern}: Memory optimized (${memoryUsage} MB)`);
+          testResults.passed.push(
+            `${pattern}: Memory optimized (${memoryUsage} MB)`,
+          );
         } else if (memoryUsage >= 200 && memoryUsage <= 350) {
           testResults.warnings.push(
-            `${pattern}: Memory slightly outside target (${memoryUsage} MB)`
+            `${pattern}: Memory slightly outside target (${memoryUsage} MB)`,
           );
         } else {
-          testResults.failed.push(`${pattern}: Memory not optimized (${memoryUsage} MB)`);
+          testResults.failed.push(
+            `${pattern}: Memory not optimized (${memoryUsage} MB)`,
+          );
         }
       } else {
         testResults.failed.push(`${pattern}: Could not extract memory usage`);
@@ -175,14 +236,18 @@ async function testMemoryOptimization() {
     if (variance < 100) {
       testResults.passed.push(`Memory variance under 100 MB (${variance} MB)`);
     } else {
-      testResults.failed.push(`Memory variance exceeds 100 MB (${variance} MB)`);
+      testResults.failed.push(
+        `Memory variance exceeds 100 MB (${variance} MB)`,
+      );
     }
   }
 }
 
 // Test 3: Persistence Indicators Validation
 async function testPersistenceIndicators() {
-  await runCommand('npx ruv-swarm neural train --model attention --iterations 5');
+  await runCommand(
+    'npx ruv-swarm neural train --model attention --iterations 5',
+  );
   const result = await runCommand('npx ruv-swarm neural status');
 
   if (result.success) {
@@ -190,11 +255,15 @@ async function testPersistenceIndicators() {
     assertPattern(
       result.stdout,
       /Training Sessions:\s*\d+\s*sessions/,
-      'Training sessions display'
+      'Training sessions display',
     );
 
     // Check for saved models count with 📁 indicator
-    assertPattern(result.stdout, /📁\s*\d+\s*saved models/, 'Saved models indicator');
+    assertPattern(
+      result.stdout,
+      /📁\s*\d+\s*saved models/,
+      'Saved models indicator',
+    );
 
     // Check for model status indicators
     assertContains(result.stdout, '✅ Trained', 'Trained indicator');
@@ -209,22 +278,46 @@ async function testPersistenceIndicators() {
     }
 
     if (foundIndicators >= 2) {
-      testResults.passed.push(`Found ${foundIndicators}/3 persistence indicators`);
+      testResults.passed.push(
+        `Found ${foundIndicators}/3 persistence indicators`,
+      );
     } else {
-      testResults.failed.push(`Only found ${foundIndicators}/3 persistence indicators`);
+      testResults.failed.push(
+        `Only found ${foundIndicators}/3 persistence indicators`,
+      );
     }
 
     // Check for session continuity section
     if (result.stdout.includes('Session Continuity:')) {
       testResults.passed.push('Session continuity section present');
-      assertContains(result.stdout, 'Models loaded from previous session:', 'Session loading info');
-      assertContains(result.stdout, 'Persistent memory:', 'Persistent memory info');
+      assertContains(
+        result.stdout,
+        'Models loaded from previous session:',
+        'Session loading info',
+      );
+      assertContains(
+        result.stdout,
+        'Persistent memory:',
+        'Persistent memory info',
+      );
     }
 
     // Check for performance metrics
-    assertContains(result.stdout, 'Performance Metrics:', 'Performance metrics section');
-    assertContains(result.stdout, 'Total Training Time:', 'Training time display');
-    assertContains(result.stdout, 'Average Accuracy:', 'Average accuracy display');
+    assertContains(
+      result.stdout,
+      'Performance Metrics:',
+      'Performance metrics section',
+    );
+    assertContains(
+      result.stdout,
+      'Total Training Time:',
+      'Training time display',
+    );
+    assertContains(
+      result.stdout,
+      'Average Accuracy:',
+      'Average accuracy display',
+    );
     assertContains(result.stdout, 'Best Model:', 'Best model display');
   } else {
     testResults.failed.push('Neural status command failed');
@@ -239,14 +332,16 @@ async function testPatternSwitching() {
   // Switch between patterns multiple times
   for (let i = 0; i < 3; i++) {
     for (const pattern of patterns) {
-      const result = await runCommand(`npx ruv-swarm neural patterns --pattern ${pattern}`);
+      const result = await runCommand(
+        `npx ruv-swarm neural patterns --pattern ${pattern}`,
+      );
       if (result.success) {
         const memoryMatch = result.stdout.match(/Memory Usage:\s*(\d+)\s*MB/);
         if (memoryMatch) {
           memorySamples.push({
             iteration: i,
             pattern,
-            memory: parseInt(memoryMatch[1], 10),
+            memory: Number.parseInt(memoryMatch[1], 10),
           });
         }
       }
@@ -260,17 +355,21 @@ async function testPatternSwitching() {
     for (const pattern of patterns) {
       const samples = memorySamples.filter((s) => s.pattern === pattern);
       if (samples.length > 0) {
-        const avg = samples.reduce((sum, s) => sum + s.memory, 0) / samples.length;
+        const avg =
+          samples.reduce((sum, s) => sum + s.memory, 0) / samples.length;
         const variance =
-          Math.max(...samples.map((s) => s.memory)) - Math.min(...samples.map((s) => s.memory));
+          Math.max(...samples.map((s) => s.memory)) -
+          Math.min(...samples.map((s) => s.memory));
         patternMemoryAvg[pattern] = { avg, variance };
 
         if (variance < 50) {
           testResults.passed.push(
-            `${pattern}: Stable memory across switches (variance: ${variance} MB)`
+            `${pattern}: Stable memory across switches (variance: ${variance} MB)`,
           );
         } else {
-          testResults.warnings.push(`${pattern}: Higher memory variance (${variance} MB)`);
+          testResults.warnings.push(
+            `${pattern}: Higher memory variance (${variance} MB)`,
+          );
         }
       }
     }
@@ -298,7 +397,9 @@ async function runAllTests() {
     // Overall status
     const totalTests = testResults.passed.length + testResults.failed.length;
     const _passRate =
-      totalTests > 0 ? ((testResults.passed.length / totalTests) * 100).toFixed(1) : 0;
+      totalTests > 0
+        ? ((testResults.passed.length / totalTests) * 100).toFixed(1)
+        : 0;
 
     if (testResults.failed.length === 0) {
       process.exit(0);
@@ -306,7 +407,9 @@ async function runAllTests() {
       process.exit(1);
     }
   } catch (error) {
-    console.error(`\n${colors.red}${colors.bold}Fatal Error: ${error.message}${colors.reset}`);
+    console.error(
+      `\n${colors.red}${colors.bold}Fatal Error: ${error.message}${colors.reset}`,
+    );
     process.exit(1);
   }
 }

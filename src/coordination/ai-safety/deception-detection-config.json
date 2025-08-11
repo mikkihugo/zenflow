@@ -99,7 +99,11 @@
     "interventionPhases": {
       "phase1_immediate": {
         "name": "Immediate Detection & Intervention",
-        "patterns": ["sandbagging-claims", "verification-claims", "false-confidence"],
+        "patterns": [
+          "sandbagging-claims",
+          "verification-claims",
+          "false-confidence"
+        ],
         "totalThreshold": 3,
         "estimatedTime": "< 100ms",
         "successRate": "99%",
@@ -113,7 +117,11 @@
         "estimatedTime": "< 500ms",
         "successRate": "95%",
         "interventionLevel": "guided",
-        "actions": ["redirect_task", "require_concrete_output", "escalate_if_persistent"]
+        "actions": [
+          "redirect_task",
+          "require_concrete_output",
+          "escalate_if_persistent"
+        ]
       },
       "phase3_escalation": {
         "name": "Human Escalation",
@@ -122,7 +130,11 @@
         "estimatedTime": "< 1000ms",
         "successRate": "100%",
         "interventionLevel": "human",
-        "actions": ["immediate_human_review", "session_pause", "safety_protocol_activation"]
+        "actions": [
+          "immediate_human_review",
+          "session_pause",
+          "safety_protocol_activation"
+        ]
       }
     },
     "coordinationProtocol": {

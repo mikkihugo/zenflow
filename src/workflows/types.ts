@@ -33,7 +33,13 @@ export interface WorkflowTemplate {
 export interface WorkflowExecution {
   id: string;
   workflowId: string;
-  status: 'queued' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
+  status:
+    | 'queued'
+    | 'running'
+    | 'paused'
+    | 'completed'
+    | 'failed'
+    | 'cancelled';
   startTime: string;
   endTime?: string;
   currentStep: number;

@@ -35,10 +35,14 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
 
     switch (editingField) {
       case 'topology':
-        updates.topology = tempValue as 'mesh' | 'hierarchical' | 'star' | 'ring';
+        updates.topology = tempValue as
+          | 'mesh'
+          | 'hierarchical'
+          | 'star'
+          | 'ring';
         break;
       case 'maxAgents':
-        updates.maxAgents = parseInt(tempValue) || config?.maxAgents;
+        updates.maxAgents = Number.parseInt(tempValue) || config?.maxAgents;
         break;
       case 'memory':
         updates.resourceLimits = {
@@ -49,7 +53,7 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
       case 'cpu':
         updates.resourceLimits = {
           ...config?.resourceLimits,
-          cpu: parseInt(tempValue) || config?.resourceLimits?.cpu,
+          cpu: Number.parseInt(tempValue) || config?.resourceLimits?.cpu,
         };
         break;
       case 'persistence':
@@ -125,15 +129,24 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text bold color="magenta">
+        <Text
+          bold
+          color="magenta"
+        >
           {domain} Swarm Configuration
         </Text>
       </Box>
-      <Box borderStyle="single" paddingX={1} flexDirection="column">
+      <Box
+        borderStyle="single"
+        paddingX={1}
+        flexDirection="column"
+      >
         {/* Topology Configuration */}
         <Box marginBottom={1}>
           <Box width={20}>
-            <Text color={editingField === 'topology' ? 'cyan' : 'yellow'}>[T] Topology:</Text>
+            <Text color={editingField === 'topology' ? 'cyan' : 'yellow'}>
+              [T] Topology:
+            </Text>
           </Box>
           {editingField === 'topology' ? (
             <Box>
@@ -141,7 +154,10 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
               <SelectInput
                 items={[
                   { label: '🕸️  Mesh (High Redundancy)', value: 'mesh' },
-                  { label: '🌳 Hierarchical (Efficient)', value: 'hierarchical' },
+                  {
+                    label: '🌳 Hierarchical (Efficient)',
+                    value: 'hierarchical',
+                  },
                   { label: '⭐ Star (Centralized)', value: 'star' },
                   { label: '🔄 Ring (Balanced)', value: 'ring' },
                 ]}
@@ -156,7 +172,10 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
               <Text>
                 {getTopologyIcon(config?.topology)} {config?.topology}
               </Text>
-              <Text dimColor> - {getTopologyDescription(config?.topology)}</Text>
+              <Text dimColor>
+                {' '}
+                - {getTopologyDescription(config?.topology)}
+              </Text>
             </Box>
           )}
         </Box>
@@ -164,7 +183,9 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
         {/* Max Agents Configuration */}
         <Box marginBottom={1}>
           <Box width={20}>
-            <Text color={editingField === 'maxAgents' ? 'cyan' : 'yellow'}>[A] Max Agents:</Text>
+            <Text color={editingField === 'maxAgents' ? 'cyan' : 'yellow'}>
+              [A] Max Agents:
+            </Text>
           </Box>
           {editingField === 'maxAgents' ? (
             <Box>
@@ -191,7 +212,9 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
         {/* Resource Limits */}
         <Box marginBottom={1}>
           <Box width={20}>
-            <Text color={editingField === 'memory' ? 'cyan' : 'yellow'}>[M] Memory:</Text>
+            <Text color={editingField === 'memory' ? 'cyan' : 'yellow'}>
+              [M] Memory:
+            </Text>
           </Box>
           {editingField === 'memory' ? (
             <Box>
@@ -212,7 +235,9 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
 
         <Box marginBottom={1}>
           <Box width={20}>
-            <Text color={editingField === 'cpu' ? 'cyan' : 'yellow'}>[C] CPU Cores:</Text>
+            <Text color={editingField === 'cpu' ? 'cyan' : 'yellow'}>
+              [C] CPU Cores:
+            </Text>
           </Box>
           {editingField === 'cpu' ? (
             <Box>
@@ -251,7 +276,9 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
         {/* Persistence Configuration */}
         <Box marginBottom={1}>
           <Box width={20}>
-            <Text color={editingField === 'persistence' ? 'cyan' : 'yellow'}>[P] Persistence:</Text>
+            <Text color={editingField === 'persistence' ? 'cyan' : 'yellow'}>
+              [P] Persistence:
+            </Text>
           </Box>
           {editingField === 'persistence' ? (
             <Box>
@@ -273,12 +300,14 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
               <Text>
                 {config.persistence === 'json' && '📄 JSON'}
                 {config.persistence === 'sqlite' && '🗃️  SQLite'}
-                {config.persistence === 'lancedb' && '🚀 LanceDB'} {config?.persistence}
+                {config.persistence === 'lancedb' && '🚀 LanceDB'}{' '}
+                {config?.persistence}
               </Text>
               <Text dimColor>
                 {config.persistence === 'json' && ' - Simple file storage'}
                 {config.persistence === 'sqlite' && ' - Structured database'}
-                {config.persistence === 'lancedb' && ' - Vector database with ML'}
+                {config.persistence === 'lancedb' &&
+                  ' - Vector database with ML'}
               </Text>
             </Box>
           )}

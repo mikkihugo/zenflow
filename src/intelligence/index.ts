@@ -68,7 +68,7 @@ export const IntelligenceUtils = {
         (config?.['learningRate'] || config?.['adaptationRate']) &&
         config?.['patternRecognition'] &&
         config?.['learning'] &&
-        config?.['optimization']
+        config?.['optimization'],
     );
   },
 
@@ -155,15 +155,25 @@ export const IntelligenceUtils = {
     return {
       patternRecognition:
         patternRecognitionModule &&
-        new patternRecognitionModule['PatternRecognitionEngine'](defaultConfig, systemContext),
+        new patternRecognitionModule['PatternRecognitionEngine'](
+          defaultConfig,
+          systemContext,
+        ),
       learningCoordinator:
         learningCoordinatorModule &&
         // TODO: TypeScript error TS2554 - Expected 3 arguments, but got 2. (AI unsure of safe fix - human review needed)
-        new learningCoordinatorModule['LearningCoordinator'](defaultConfig, systemContext),
+        new learningCoordinatorModule['LearningCoordinator'](
+          defaultConfig,
+          systemContext,
+        ),
       performanceOptimizer:
         performanceOptimizerModule &&
-        new performanceOptimizerModule['PerformanceOptimizer'](defaultConfig, systemContext),
-      mlRegistry: mlRegistryModule && new mlRegistryModule.MLModelRegistry(defaultConfig),
+        new performanceOptimizerModule['PerformanceOptimizer'](
+          defaultConfig,
+          systemContext,
+        ),
+      mlRegistry:
+        mlRegistryModule && new mlRegistryModule.MLModelRegistry(defaultConfig),
       behavioralOptimization: behavioralOptimizationModule,
       knowledgeEvolution: knowledgeEvolutionModule,
       config: defaultConfig,
@@ -180,9 +190,15 @@ export const IntelligenceUtils = {
     const { PatternRecognitionEngine } = await import(
       './adaptive-learning/pattern-recognition-engine.ts'
     );
-    const { LearningCoordinator } = await import('./adaptive-learning/learning-coordinator.ts');
-    const { PerformanceOptimizer } = await import('./adaptive-learning/performance-optimizer.ts');
-    const { MLModelRegistry } = await import('./adaptive-learning/ml-integration.ts');
+    const { LearningCoordinator } = await import(
+      './adaptive-learning/learning-coordinator.ts'
+    );
+    const { PerformanceOptimizer } = await import(
+      './adaptive-learning/performance-optimizer.ts'
+    );
+    const { MLModelRegistry } = await import(
+      './adaptive-learning/ml-integration.ts'
+    );
 
     const defaultConfig = {
       patternRecognition: {
@@ -257,7 +273,8 @@ export class IntelligenceFactory {
     const key = `adaptive_learning_${JSON.stringify(config)}`;
 
     if (!IntelligenceFactory.systems.has(key)) {
-      const system = await IntelligenceUtils.createAdaptiveLearningSystem(config);
+      const system =
+        await IntelligenceUtils.createAdaptiveLearningSystem(config);
       IntelligenceFactory.systems.set(key, system);
     }
 

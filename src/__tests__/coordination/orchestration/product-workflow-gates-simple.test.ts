@@ -46,8 +46,24 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
 
   it('should validate gate response interpretation', () => {
     // Test gate response interpretation logic
-    const approvalKeywords = ['yes', 'approve', 'approved', 'accept', 'ok', 'continue', 'proceed'];
-    const rejectionKeywords = ['no', 'reject', 'rejected', 'deny', 'stop', 'cancel', 'abort'];
+    const approvalKeywords = [
+      'yes',
+      'approve',
+      'approved',
+      'accept',
+      'ok',
+      'continue',
+      'proceed',
+    ];
+    const rejectionKeywords = [
+      'no',
+      'reject',
+      'rejected',
+      'deny',
+      'stop',
+      'cancel',
+      'abort',
+    ];
 
     // Function to interpret gate response (mirroring the actual implementation)
     const interpretGateResponse = (response: string): boolean => {
@@ -59,7 +75,9 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
       }
 
       // Check for explicit rejection
-      if (rejectionKeywords.some((keyword) => lowerResponse.includes(keyword))) {
+      if (
+        rejectionKeywords.some((keyword) => lowerResponse.includes(keyword))
+      ) {
         return false;
       }
 
@@ -87,7 +105,13 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
 
   it('should validate workflow state transitions with gates', () => {
     // Test workflow state transitions when gates are involved
-    type WorkflowStatus = 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
+    type WorkflowStatus =
+      | 'pending'
+      | 'running'
+      | 'paused'
+      | 'completed'
+      | 'failed'
+      | 'cancelled';
 
     // Valid transitions with gates
     const validTransitions: Record<WorkflowStatus, WorkflowStatus[]> = {
@@ -111,7 +135,13 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
       question: string;
       businessImpact: 'low' | 'medium' | 'high' | 'critical';
       stakeholders: string[];
-      gateType: 'approval' | 'checkpoint' | 'review' | 'decision' | 'escalation' | 'emergency';
+      gateType:
+        | 'approval'
+        | 'checkpoint'
+        | 'review'
+        | 'decision'
+        | 'escalation'
+        | 'emergency';
     }
 
     const visionAnalysisGate: MockGateConfig = {
@@ -124,18 +154,26 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
     const prdCreationGate: MockGateConfig = {
       question: 'Are the PRDs ready for creation based on the vision analysis?',
       businessImpact: 'high',
-      stakeholders: ['product-manager', 'business-stakeholder', 'technical-lead'],
+      stakeholders: [
+        'product-manager',
+        'business-stakeholder',
+        'technical-lead',
+      ],
       gateType: 'approval',
     };
 
     // Validate structure
     expect(visionAnalysisGate.question).toBeTruthy();
-    expect(['low', 'medium', 'high', 'critical']).toContain(visionAnalysisGate.businessImpact);
+    expect(['low', 'medium', 'high', 'critical']).toContain(
+      visionAnalysisGate.businessImpact,
+    );
     expect(Array.isArray(visionAnalysisGate.stakeholders)).toBe(true);
     expect(visionAnalysisGate.stakeholders.length).toBeGreaterThan(0);
 
     expect(prdCreationGate.question).toBeTruthy();
-    expect(['low', 'medium', 'high', 'critical']).toContain(prdCreationGate.businessImpact);
+    expect(['low', 'medium', 'high', 'critical']).toContain(
+      prdCreationGate.businessImpact,
+    );
     expect(Array.isArray(prdCreationGate.stakeholders)).toBe(true);
     expect(prdCreationGate.stakeholders.length).toBeGreaterThan(0);
   });
@@ -158,7 +196,7 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
     expect(Array.isArray(defaultTimeoutConfig.escalationTimeouts)).toBe(true);
     expect(defaultTimeoutConfig.escalationTimeouts.length).toBeGreaterThan(0);
     expect(defaultTimeoutConfig.maxTotalTimeout).toBeGreaterThan(
-      defaultTimeoutConfig.initialTimeout
+      defaultTimeoutConfig.initialTimeout,
     );
 
     // Validate escalation timeouts are reasonable
@@ -215,8 +253,12 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
 
     expect(mockContext.workflowId).toBeTruthy();
     expect(mockContext.stepName).toBeTruthy();
-    expect(['low', 'medium', 'high', 'critical']).toContain(mockContext.businessImpact);
-    expect(['task', 'feature', 'epic', 'prd', 'portfolio']).toContain(mockContext.decisionScope);
+    expect(['low', 'medium', 'high', 'critical']).toContain(
+      mockContext.businessImpact,
+    );
+    expect(['task', 'feature', 'epic', 'prd', 'portfolio']).toContain(
+      mockContext.decisionScope,
+    );
     expect(Array.isArray(mockContext.stakeholders)).toBe(true);
     expect(mockContext.stakeholders.length).toBeGreaterThan(0);
 

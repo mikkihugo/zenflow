@@ -43,7 +43,12 @@ export interface SwarmConfig {
   enableNeuralAgents?: boolean;
 }
 
-export type SwarmTopology = 'mesh' | 'hierarchical' | 'distributed' | 'centralized' | 'hybrid';
+export type SwarmTopology =
+  | 'mesh'
+  | 'hierarchical'
+  | 'distributed'
+  | 'centralized'
+  | 'hybrid';
 export type SwarmLifecycleState = 'initializing' | 'active' | 'terminated';
 
 // Re-export from main agent types for compatibility
@@ -99,7 +104,12 @@ export interface Task {
 }
 
 export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
-export type TaskStatus = 'pending' | 'assigned' | 'in_progress' | 'completed' | 'failed';
+export type TaskStatus =
+  | 'pending'
+  | 'assigned'
+  | 'in_progress'
+  | 'completed'
+  | 'failed';
 
 export interface SwarmState {
   agents: Map<string, Agent>;

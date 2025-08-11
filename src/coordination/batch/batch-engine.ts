@@ -79,11 +79,15 @@ export class BatchEngine {
    * @param operations.
    * @param operations
    */
-  async executeBatch(operations: BatchOperation[]): Promise<ExtendedBatchExecutionSummary> {
+  async executeBatch(
+    operations: BatchOperation[],
+  ): Promise<ExtendedBatchExecutionSummary> {
     const startTime = Date.now();
 
     if (this.config.trackPerformance) {
-      logger.info(`Starting batch execution of ${operations.length} operations`);
+      logger.info(
+        `Starting batch execution of ${operations.length} operations`,
+      );
     }
 
     // Clear previous state
@@ -106,7 +110,7 @@ export class BatchEngine {
     const summary = this.calculatePerformanceSummary(
       totalExecutionTime,
       operations.length,
-      startTime
+      startTime,
     );
 
     if (this.config.trackPerformance) {
@@ -131,7 +135,7 @@ export class BatchEngine {
       // Start operations up to max concurrency limit
       const operationsToStart = Math.min(
         readyOperations.length,
-        this.config.maxConcurrency - this.activeOperations.size
+        this.config.maxConcurrency - this.activeOperations.size,
       );
 
       const promises: Promise<void>[] = [];
@@ -151,7 +155,9 @@ export class BatchEngine {
         await Promise.race(promises);
       } else if (this.activeOperations.size === 0) {
         // No operations can be started and none are running - likely circular dependency
-        throw new Error('Circular dependency detected or no operations can be executed');
+        throw new Error(
+          'Circular dependency detected or no operations can be executed',
+        );
       } else {
         // Wait for any active operation to complete
         await new Promise((resolve) => setTimeout(resolve, 10));
@@ -205,7 +211,8 @@ export class BatchEngine {
       });
     } catch (error) {
       const endTime = Date.now();
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
 
       logger.warn(`Operation ${operation.id} failed:`, errorMessage);
 
@@ -232,7 +239,9 @@ export class BatchEngine {
 
     return new Promise((resolve, reject) => {
       const timeoutHandle = setTimeout(() => {
-        reject(new Error(`Operation ${operation.id} timed out after ${timeout}ms`));
+        reject(
+          new Error(`Operation ${operation.id} timed out after ${timeout}ms`),
+        );
       }, timeout);
 
       this.performOperation(operation)
@@ -292,9 +301,14 @@ export class BatchEngine {
    *
    * @param operation
    */
-  private async executeFileOperation(operation: BatchOperation): Promise<unknown> {
+  private async executeFileOperation(
+    operation: BatchOperation,
+  ): Promise<unknown> {
     // Will be delegated to FileBatchOperator
-    logger.debug(`Executing file operation: ${operation.operation}`, operation.params);
+    logger.debug(
+      `Executing file operation: ${operation.operation}`,
+      operation.params,
+    );
 
     // Placeholder implementation
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 50));
@@ -311,9 +325,14 @@ export class BatchEngine {
    *
    * @param operation
    */
-  private async executeSwarmOperation(operation: BatchOperation): Promise<unknown> {
+  private async executeSwarmOperation(
+    operation: BatchOperation,
+  ): Promise<unknown> {
     // Will be delegated to SwarmBatchCoordinator
-    logger.debug(`Executing swarm operation: ${operation.operation}`, operation.params);
+    logger.debug(
+      `Executing swarm operation: ${operation.operation}`,
+      operation.params,
+    );
 
     // Placeholder implementation
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 200));
@@ -330,8 +349,13 @@ export class BatchEngine {
    *
    * @param operation
    */
-  private async executeAgentOperation(operation: BatchOperation): Promise<unknown> {
-    logger.debug(`Executing agent operation: ${operation.operation}`, operation.params);
+  private async executeAgentOperation(
+    operation: BatchOperation,
+  ): Promise<unknown> {
+    logger.debug(
+      `Executing agent operation: ${operation.operation}`,
+      operation.params,
+    );
 
     // Placeholder implementation
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 150));
@@ -352,7 +376,7 @@ export class BatchEngine {
   private calculatePerformanceSummary(
     totalExecutionTime: number,
     totalOperations: number,
-    startTime: number
+    startTime: number,
   ): ExtendedBatchExecutionSummary {
     const results = Array.from(this.results.values());
     const successfulOperations = results?.filter((r) => r.success).length;
@@ -364,13 +388,18 @@ export class BatchEngine {
         : 0;
 
     // Calculate theoretical sequential execution time
-    const sequentialTime = results?.reduce((sum, r) => sum + r.executionTime, 0);
+    const sequentialTime = results?.reduce(
+      (sum, r) => sum + r.executionTime,
+      0,
+    );
 
     // Calculate speed improvement (claude-zen claims 2.8-4.4x)
-    const speedImprovement = sequentialTime > 0 ? sequentialTime / totalExecutionTime : 1;
+    const speedImprovement =
+      sequentialTime > 0 ? sequentialTime / totalExecutionTime : 1;
 
     // Calculate actual concurrency achieved
-    const concurrencyAchieved = sequentialTime > 0 ? sequentialTime / totalExecutionTime : 1;
+    const concurrencyAchieved =
+      sequentialTime > 0 ? sequentialTime / totalExecutionTime : 1;
 
     // Estimate token reduction (claude-zen claims 32.3%)
     // This is estimated based on reduced coordination overhead
@@ -443,7 +472,9 @@ export function createBatchOperation(
   type: BatchOperation['type'],
   operation: string,
   params: Record<string, unknown>,
-  options?: Partial<Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>>
+  options?: Partial<
+    Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>
+  >,
 ): BatchOperation {
   const batchOp: BatchOperation = {
     id,
@@ -475,10 +506,12 @@ export function createToolBatch(
     name: string;
     params: Record<string, unknown>;
     dependencies?: string[];
-  }>
+  }>,
 ): BatchOperation[] {
   return tools.map((tool, index) => {
-    const options: Partial<Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>> = {};
+    const options: Partial<
+      Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>
+    > = {};
 
     if (tool.dependencies !== undefined) {
       options.dependencies = tool.dependencies;
@@ -489,7 +522,7 @@ export function createToolBatch(
       'tool',
       tool.name,
       tool.params,
-      options
+      options,
     );
   });
 }

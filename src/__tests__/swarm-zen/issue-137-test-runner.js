@@ -133,7 +133,7 @@ class TestRunner {
             NODE_OPTIONS:
               '--experimental-vm-modules --experimental-wasm-modules --max-old-space-size=4096',
           },
-        }
+        },
       );
 
       let stdout = '';
@@ -174,9 +174,7 @@ class TestRunner {
         this.results.set(testSuite.id, result);
 
         if (result.success) {
-        } else {
-          if (!this.options.verbose && stderr) {
-          }
+        } else if (!this.options.verbose && stderr) {
         }
 
         resolve(result);
@@ -207,10 +205,20 @@ class TestRunner {
     }
 
     return this.testSuites.filter((suite) => {
-      if (this.options.unitOnly && suite.categories.includes('unit')) return true;
-      if (this.options.integrationOnly && suite.categories.includes('integration')) return true;
-      if (this.options.performanceOnly && suite.categories.includes('performance')) return true;
-      if (this.options.chaosOnly && suite.categories.includes('chaos')) return true;
+      if (this.options.unitOnly && suite.categories.includes('unit'))
+        return true;
+      if (
+        this.options.integrationOnly &&
+        suite.categories.includes('integration')
+      )
+        return true;
+      if (
+        this.options.performanceOnly &&
+        suite.categories.includes('performance')
+      )
+        return true;
+      if (this.options.chaosOnly && suite.categories.includes('chaos'))
+        return true;
       return false;
     });
   }
@@ -225,7 +233,7 @@ class TestRunner {
     for (const suite of sortedSuites) {
       const result = await this.runTest(suite);
 
-      if (!result.success && !this.options.ci) {
+      if (!(result.success || this.options.ci)) {
         // In a real implementation, you might want to prompt user
         // For now, continue with all tests
       }
@@ -290,15 +298,15 @@ class TestRunner {
       if (result.stdout) {
         // Simple regex to extract coverage percentages
         const coverageMatch = result.stdout.match(
-          /All files.*?(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)/
+          /All files.*?(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)/,
         );
         if (coverageMatch) {
           coverageInfo.details.push({
             suite: suiteId,
-            statements: parseFloat(coverageMatch[1]),
-            branches: parseFloat(coverageMatch[2]),
-            functions: parseFloat(coverageMatch[3]),
-            lines: parseFloat(coverageMatch[4]),
+            statements: Number.parseFloat(coverageMatch[1]),
+            branches: Number.parseFloat(coverageMatch[2]),
+            functions: Number.parseFloat(coverageMatch[3]),
+            lines: Number.parseFloat(coverageMatch[4]),
           });
         }
       }
@@ -310,11 +318,14 @@ class TestRunner {
         coverageInfo.details.reduce((sum, d) => sum + d.statements, 0) /
         coverageInfo.details.length;
       coverageInfo.branches =
-        coverageInfo.details.reduce((sum, d) => sum + d.branches, 0) / coverageInfo.details.length;
+        coverageInfo.details.reduce((sum, d) => sum + d.branches, 0) /
+        coverageInfo.details.length;
       coverageInfo.functions =
-        coverageInfo.details.reduce((sum, d) => sum + d.functions, 0) / coverageInfo.details.length;
+        coverageInfo.details.reduce((sum, d) => sum + d.functions, 0) /
+        coverageInfo.details.length;
       coverageInfo.lines =
-        coverageInfo.details.reduce((sum, d) => sum + d.lines, 0) / coverageInfo.details.length;
+        coverageInfo.details.reduce((sum, d) => sum + d.lines, 0) /
+        coverageInfo.details.length;
     }
 
     return coverageInfo;
@@ -326,21 +337,29 @@ class TestRunner {
     const failed = results.filter((r) => !r.success);
 
     if (failed.length > 0) {
-      recommendations.push(`${failed.length} test suite(s) failed - review error logs for issues`);
+      recommendations.push(
+        `${failed.length} test suite(s) failed - review error logs for issues`,
+      );
     }
 
     const longRunning = results.filter((r) => r.duration > 300000); // > 5 minutes
     if (longRunning.length > 0) {
-      recommendations.push('Some tests took longer than 5 minutes - consider optimization');
+      recommendations.push(
+        'Some tests took longer than 5 minutes - consider optimization',
+      );
     }
 
     const coverage = this.extractCoverageInfo();
     if (coverage.statements < 90) {
-      recommendations.push('Code coverage below 90% - consider adding more unit tests');
+      recommendations.push(
+        'Code coverage below 90% - consider adding more unit tests',
+      );
     }
 
     if (results.every((r) => r.success)) {
-      recommendations.push('All tests passed! Consider running in different environments');
+      recommendations.push(
+        'All tests passed! Consider running in different environments',
+      );
     }
 
     if (recommendations.length === 0) {
@@ -442,7 +461,7 @@ class TestRunner {
                     ${result.success ? '✅ PASSED' : '❌ FAILED'}
                 </div>
             </div>
-        `
+        `,
           )
           .join('')}
     </div>
@@ -465,10 +484,17 @@ class TestRunner {
 </body>
 </html>`;
 
-    const reportPath = join(__dirname, '..', 'test-reports', 'issue-137-report.html');
+    const reportPath = join(
+      __dirname,
+      '..',
+      'test-reports',
+      'issue-137-report.html',
+    );
 
     try {
-      await fs.mkdir(join(__dirname, '..', 'test-reports'), { recursive: true });
+      await fs.mkdir(join(__dirname, '..', 'test-reports'), {
+        recursive: true,
+      });
       await fs.writeFile(reportPath, htmlReport);
     } catch (error) {
       console.error('Failed to generate HTML report:', error.message);

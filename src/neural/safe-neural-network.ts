@@ -112,7 +112,10 @@ export class SafeNeuralNetwork {
         success: false,
         error: {
           code: 'INITIALIZATION_FAILED',
-          message: error instanceof Error ? error.message : 'Unknown initialization error',
+          message:
+            error instanceof Error
+              ? error.message
+              : 'Unknown initialization error',
           operation: 'initialization',
           details: { config: this.config },
         },
@@ -126,7 +129,10 @@ export class SafeNeuralNetwork {
    * @param data
    * @param options
    */
-  async train(data: TrainingData, options: TrainingOptions): Promise<NeuralResult> {
+  async train(
+    data: TrainingData,
+    options: TrainingOptions,
+  ): Promise<NeuralResult> {
     if (!this.isInitialized) {
       return {
         type: 'error',
@@ -141,7 +147,7 @@ export class SafeNeuralNetwork {
 
     try {
       const startTime = Date.now();
-      let bestError = Infinity;
+      let bestError = Number.POSITIVE_INFINITY;
       let epochsWithoutImprovement = 0;
       let finalError = 0;
       let converged = false;
@@ -194,10 +200,13 @@ export class SafeNeuralNetwork {
       if (data?.validationInputs && data?.validationOutputs) {
         const validationResult = await this.validateNetwork(
           data?.validationInputs,
-          data?.validationOutputs
+          data?.validationOutputs,
         );
         if (isInferenceResult(validationResult)) {
-          accuracy = this.calculateAccuracy(validationResult?.predictions, data?.validationOutputs);
+          accuracy = this.calculateAccuracy(
+            validationResult?.predictions,
+            data?.validationOutputs,
+          );
         }
       }
 
@@ -217,7 +226,8 @@ export class SafeNeuralNetwork {
         success: false,
         error: {
           code: 'TRAINING_FAILED',
-          message: error instanceof Error ? error.message : 'Unknown training error',
+          message:
+            error instanceof Error ? error.message : 'Unknown training error',
           operation: 'training',
           details: { dataSize: data?.inputs.length, options },
         },
@@ -298,7 +308,8 @@ export class SafeNeuralNetwork {
         success: false,
         error: {
           code: 'PREDICTION_FAILED',
-          message: error instanceof Error ? error.message : 'Unknown prediction error',
+          message:
+            error instanceof Error ? error.message : 'Unknown prediction error',
           operation: 'inference',
           details: { inputSize: inputs.length },
         },
@@ -357,7 +368,10 @@ export class SafeNeuralNetwork {
         wasmSuccess: false,
         error: {
           code: 'WASM_LOAD_FAILED',
-          message: error instanceof Error ? error.message : 'Failed to load WASM module',
+          message:
+            error instanceof Error
+              ? error.message
+              : 'Failed to load WASM module',
           wasmStack: error instanceof Error ? error.stack : undefined,
         },
         executionTime: 0,
@@ -365,7 +379,10 @@ export class SafeNeuralNetwork {
     }
   }
 
-  private async trainEpoch(_data: TrainingData, _options: TrainingOptions): Promise<NeuralResult> {
+  private async trainEpoch(
+    _data: TrainingData,
+    _options: TrainingOptions,
+  ): Promise<NeuralResult> {
     try {
       // Mock training epoch - replace with actual backpropagation
       const error = Math.random() * 0.1;
@@ -384,14 +401,18 @@ export class SafeNeuralNetwork {
         success: false,
         error: {
           code: 'EPOCH_TRAINING_FAILED',
-          message: error instanceof Error ? error.message : 'Training epoch failed',
+          message:
+            error instanceof Error ? error.message : 'Training epoch failed',
           operation: 'training',
         },
       } as NeuralError;
     }
   }
 
-  private async validateNetwork(inputs: number[][], _outputs: number[][]): Promise<NeuralResult> {
+  private async validateNetwork(
+    inputs: number[][],
+    _outputs: number[][],
+  ): Promise<NeuralResult> {
     try {
       const predictions: number[] = [];
 
@@ -423,7 +444,9 @@ export class SafeNeuralNetwork {
     }
   }
 
-  private async predictWithWasm(inputs: number[]): Promise<WasmResult<number[]>> {
+  private async predictWithWasm(
+    inputs: number[],
+  ): Promise<WasmResult<number[]>> {
     try {
       const startTime = Date.now();
 
@@ -452,7 +475,8 @@ export class SafeNeuralNetwork {
         wasmSuccess: false,
         error: {
           code: 'WASM_PREDICTION_ERROR',
-          message: error instanceof Error ? error.message : 'WASM prediction failed',
+          message:
+            error instanceof Error ? error.message : 'WASM prediction failed',
         },
         executionTime: 0,
       } as WasmError;
@@ -468,7 +492,10 @@ export class SafeNeuralNetwork {
     return predictions.map((p) => Math.abs(p) * 0.9 + 0.1);
   }
 
-  private calculateAccuracy(predictions: number[], expected: number[][]): number {
+  private calculateAccuracy(
+    predictions: number[],
+    expected: number[][],
+  ): number {
     if (predictions.length !== expected.length) return 0;
 
     let correct = 0;
@@ -506,7 +533,10 @@ export async function safeNeuralUsageExample(): Promise<void> {
   // Initialize with safe result handling
   const initResult = await network.initialize();
   if (isNeuralError(initResult)) {
-    logger.error('❌ Network initialization failed:', initResult?.error?.message);
+    logger.error(
+      '❌ Network initialization failed:',
+      initResult?.error?.message,
+    );
     return;
   }
 
@@ -554,7 +584,7 @@ export async function safeNeuralUsageExample(): Promise<void> {
     } else if (isNeuralError(predictionResult)) {
       logger.error(
         `❌ Prediction failed for input [${input.join(', ')}]:`,
-        predictionResult?.error?.message
+        predictionResult?.error?.message,
       );
     }
   }

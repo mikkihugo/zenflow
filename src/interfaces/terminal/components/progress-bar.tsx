@@ -9,7 +9,7 @@
  */
 
 import { Box, Text } from 'ink';
-import type React from 'react';
+import React from 'react';
 
 export interface ProgressBarProps {
   progress: number; // 0-100
@@ -91,7 +91,9 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   // Calculate display values
   const percentage = Math.round(normalizedProgress);
   const currentValue =
-    current !== undefined ? current : Math.round((normalizedProgress / 100) * (total || 100));
+    current !== undefined
+      ? current
+      : Math.round((normalizedProgress / 100) * (total || 100));
   const totalValue = total || 100;
 
   return (
@@ -114,7 +116,10 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         <Text> </Text>
 
         {showPercentage && (
-          <Text color={color} bold>
+          <Text
+            color={color}
+            bold
+          >
             {percentage}%
           </Text>
         )}
@@ -130,16 +135,33 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 };
 
 // Convenience components for specific use cases.
-export const StandardProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (props) => (
-  <ProgressBar {...props} variant="standard" />
+export const StandardProgressBar: React.FC<
+  Omit<ProgressBarProps, 'variant'>
+> = (props) => (
+  <ProgressBar
+    {...props}
+    variant="standard"
+  />
 );
 
-export const SwarmProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (props) => (
-  <ProgressBar {...props} variant="swarm" color="cyan" />
+export const SwarmProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (
+  props,
+) => (
+  <ProgressBar
+    {...props}
+    variant="swarm"
+    color="cyan"
+  />
 );
 
-export const NeuralProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (props) => (
-  <ProgressBar {...props} variant="neural" color="magenta" />
+export const NeuralProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (
+  props,
+) => (
+  <ProgressBar
+    {...props}
+    variant="neural"
+    color="magenta"
+  />
 );
 
 // Task progress component with predefined styling

@@ -229,7 +229,9 @@ export class BashSafetyValidator implements SafetyValidator {
     };
   }
 
-  async validateFileOperation(operation: FileOperation): Promise<ValidationResult> {
+  async validateFileOperation(
+    operation: FileOperation,
+  ): Promise<ValidationResult> {
     const risks = this.identifyFileRisks(operation);
     const riskLevel = this.assessOverallRisk(risks);
 
@@ -247,7 +249,10 @@ export class BashSafetyValidator implements SafetyValidator {
       allowed: true,
       riskLevel,
       risks,
-      reason: riskLevel === 'LOW' ? 'File operation appears safe' : 'File operation has some risks',
+      reason:
+        riskLevel === 'LOW'
+          ? 'File operation appears safe'
+          : 'File operation has some risks',
       ...(risks.length > 0 && { mitigations: this.generateMitigations(risks) }),
     };
   }
@@ -267,7 +272,7 @@ export class BashSafetyValidator implements SafetyValidator {
       alternatives.push(
         'Use rm with specific files instead of -rf',
         'Use trash command for recoverable deletion',
-        'Use find with -delete for controlled deletion'
+        'Use find with -delete for controlled deletion',
       );
     }
 
@@ -275,7 +280,7 @@ export class BashSafetyValidator implements SafetyValidator {
       alternatives.push(
         'Download script first: curl -O <url>',
         'Review downloaded script before execution',
-        'Use package manager instead if available'
+        'Use package manager instead if available',
       );
     }
 
@@ -283,7 +288,7 @@ export class BashSafetyValidator implements SafetyValidator {
       alternatives.push(
         'Use chmod 755 for executables',
         'Use chmod 644 for regular files',
-        'Set specific user/group permissions'
+        'Set specific user/group permissions',
       );
     }
 
@@ -291,7 +296,7 @@ export class BashSafetyValidator implements SafetyValidator {
       alternatives.push(
         'Use sudo with specific -E variables',
         'Use sudo without environment preservation',
-        'Configure sudoers file for specific permissions'
+        'Configure sudoers file for specific permissions',
       );
     }
 
@@ -321,7 +326,9 @@ export class BashSafetyValidator implements SafetyValidator {
     const risks: SecurityRisk[] = [];
 
     // Check against dangerous patterns
-    for (const { pattern, type, severity, description, mitigation } of this['DANGEROUS_PATTERNS']) {
+    for (const { pattern, type, severity, description, mitigation } of this[
+      'DANGEROUS_PATTERNS'
+    ]) {
       if (pattern.test(command)) {
         risks.push({
           type,
@@ -334,7 +341,9 @@ export class BashSafetyValidator implements SafetyValidator {
     }
 
     // Check for high-risk commands
-    for (const { command: riskCmd, description } of this['HIGH_RISK_COMMANDS']) {
+    for (const { command: riskCmd, description } of this[
+      'HIGH_RISK_COMMANDS'
+    ]) {
       if (command.includes(riskCmd)) {
         risks.push({
           type: 'HIGH_RISK_COMMAND',
@@ -369,7 +378,10 @@ export class BashSafetyValidator implements SafetyValidator {
       if (operation.path.startsWith(suspiciousPath)) {
         risks.push({
           type: 'SENSITIVE_PATH_ACCESS',
-          severity: operation.type === 'write' || operation.type === 'delete' ? 'HIGH' : 'MEDIUM',
+          severity:
+            operation.type === 'write' || operation.type === 'delete'
+              ? 'HIGH'
+              : 'MEDIUM',
           description: `${operation.type} operation on sensitive system path: ${operation.path}`,
           mitigation: 'Verify file operation is authorized and necessary',
         });
@@ -434,12 +446,25 @@ export class BashSafetyValidator implements SafetyValidator {
 
 // File Operation Validator
 export class FileOperationValidator {
-  private readonly RESTRICTED_EXTENSIONS = ['.exe', '.bat', '.cmd', '.com', '.scr', '.pif'];
-  private readonly SENSITIVE_FILENAMES = ['passwd', 'shadow', 'hosts', 'fstab', 'sudoers'];
+  private readonly RESTRICTED_EXTENSIONS = [
+    '.exe',
+    '.bat',
+    '.cmd',
+    '.com',
+    '.scr',
+    '.pif',
+  ];
+  private readonly SENSITIVE_FILENAMES = [
+    'passwd',
+    'shadow',
+    'hosts',
+    'fstab',
+    'sudoers',
+  ];
 
   async validateFileAccess(
     path: string,
-    operation: 'read' | 'write' | 'execute'
+    operation: 'read' | 'write' | 'execute',
   ): Promise<ValidationResult> {
     const risks: SecurityRisk[] = [];
 
@@ -461,7 +486,8 @@ export class FileOperationValidator {
         type: 'SENSITIVE_FILE',
         severity: operation === 'write' ? 'CRITICAL' : 'HIGH',
         description: `Access to sensitive system file: ${filename}`,
-        mitigation: 'Ensure proper authorization and backup before modification',
+        mitigation:
+          'Ensure proper authorization and backup before modification',
       });
     }
 

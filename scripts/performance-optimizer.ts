@@ -87,7 +87,9 @@ class PerformanceOptimizer {
 
       return metrics;
     } catch (error) {
-      metrics.errors.push(error instanceof Error ? error.message : String(error));
+      metrics.errors.push(
+        error instanceof Error ? error.message : String(error),
+      );
       console.error('❌ Optimization failed:', error);
       return metrics;
     }
@@ -105,9 +107,12 @@ class PerformanceOptimizer {
       } catch {
         try {
           if (dep === 'wasm-opt' || dep === 'binaryen') {
-            execSync(`sudo apt-get update && sudo apt-get install -y binaryen`, {
-              stdio: 'inherit',
-            });
+            execSync(
+              `sudo apt-get update && sudo apt-get install -y binaryen`,
+              {
+                stdio: 'inherit',
+              },
+            );
           } else {
             execSync(`npm install -g ${dep}`, { stdio: 'inherit' });
           }
@@ -166,9 +171,11 @@ class PerformanceOptimizer {
       packageJson.scripts = {
         ...packageJson.scripts,
         'build:fast': 'npm run clean && tsc --incremental',
-        'build:parallel': 'concurrently "npm run build:ts" "npm run build:wasm:dev"',
+        'build:parallel':
+          'concurrently "npm run build:ts" "npm run build:wasm:dev"',
         'build:ts': 'tsc --incremental',
-        'build:production': 'npm run clean && npm run build:parallel && npm run optimize:bundle',
+        'build:production':
+          'npm run clean && npm run build:parallel && npm run optimize:bundle',
       };
     }
 
@@ -229,7 +236,10 @@ fi
 echo "✅ Production WASM build complete"
 `;
 
-    writeFileSync(join(wasmPath, 'scripts/build-wasm-optimized.sh'), optimizedBuildScript);
+    writeFileSync(
+      join(wasmPath, 'scripts/build-wasm-optimized.sh'),
+      optimizedBuildScript,
+    );
     execSync(`chmod +x ${join(wasmPath, 'scripts/build-wasm-optimized.sh')}`);
   }
 
@@ -244,12 +254,14 @@ echo "✅ Production WASM build complete"
         await this.runCommand('npm run build:fast');
       }
 
-      const bundleAnalysis = execSync(`du -sh ${distPath}`, { encoding: 'utf8' });
+      const bundleAnalysis = execSync(`du -sh ${distPath}`, {
+        encoding: 'utf8',
+      });
       const sizeMatch = bundleAnalysis.match(/^([0-9.]+)([KMG])/);
 
       if (sizeMatch) {
         const [, size, unit] = sizeMatch;
-        const sizeInMB = this.convertToMB(parseFloat(size), unit);
+        const sizeInMB = this.convertToMB(Number.parseFloat(size), unit);
         return sizeInMB;
       }
 
@@ -304,7 +316,9 @@ echo "✅ Production WASM build complete"
    *
    * @param metrics
    */
-  private async generatePerformanceReport(metrics: PerformanceMetrics): Promise<void> {
+  private async generatePerformanceReport(
+    metrics: PerformanceMetrics,
+  ): Promise<void> {
     const report = `# 🚀 Claude-Zen Performance Report
 
 ## Optimization Results
@@ -401,4 +415,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   optimizer.optimize().catch(console.error);
 }
 
-export { PerformanceOptimizer, type PerformanceMetrics, type OptimizationConfig };
+export {
+  PerformanceOptimizer,
+  type PerformanceMetrics,
+  type OptimizationConfig,
+};

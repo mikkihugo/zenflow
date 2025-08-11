@@ -72,7 +72,13 @@ interface ErrorContext {
 }
 
 interface ErrorClassification {
-  type: 'validation' | 'timeout' | 'resource' | 'internal' | 'network' | 'authentication';
+  type:
+    | 'validation'
+    | 'timeout'
+    | 'resource'
+    | 'internal'
+    | 'network'
+    | 'authentication';
   severity: 'low' | 'medium' | 'high' | 'critical';
   recoverable: boolean;
   retryable: boolean;
@@ -97,7 +103,7 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
     private retryManager = mockRetryManager,
     private logger = mockLogger,
     private metrics = mockMetricsCollector,
-    private alertManager = mockAlertManager
+    private alertManager = mockAlertManager,
   ) {}
 
   async handleError(error: Error, context: ErrorContext): Promise<MCPResponse> {
@@ -136,7 +142,10 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
     }
 
     // Attempt recovery if error is recoverable
-    if (classification.recoverable && context.attemptNumber < recoveryPlan.maxAttempts) {
+    if (
+      classification.recoverable &&
+      context.attemptNumber < recoveryPlan.maxAttempts
+    ) {
       return this.attemptRecovery(error, context, recoveryPlan);
     }
 
@@ -188,7 +197,9 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
       case 'retry':
         return this.retryManager.shouldRetry();
       case 'fallback':
-        return plan.fallbackHandler ? await plan.fallbackHandler().then(() => true) : false;
+        return plan.fallbackHandler
+          ? await plan.fallbackHandler().then(() => true)
+          : false;
       case 'circuit-break':
         this.circuitBreaker.recordFailure();
         return false;
@@ -200,7 +211,7 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
   private async attemptRecovery(
     error: Error,
     context: ErrorContext,
-    plan: RecoveryPlan
+    plan: RecoveryPlan,
   ): Promise<MCPResponse> {
     this.logger.info('Attempting error recovery', {
       strategy: plan.strategy,
@@ -220,10 +231,16 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
       };
     }
 
-    return this.createFinalErrorResponse(error, context, this.classifyError(error));
+    return this.createFinalErrorResponse(
+      error,
+      context,
+      this.classifyError(error),
+    );
   }
 
-  private createCircuitBreakerErrorResponse(context: ErrorContext): MCPResponse {
+  private createCircuitBreakerErrorResponse(
+    context: ErrorContext,
+  ): MCPResponse {
     this.metrics.recordCircuitBreakerTrip();
     return {
       jsonrpc: '2.0',
@@ -242,7 +259,7 @@ class MockMCPErrorHandler implements ErrorHandlerContract {
   private createFinalErrorResponse(
     error: Error,
     context: ErrorContext,
-    classification: ErrorClassification
+    classification: ErrorClassification,
   ): MCPResponse {
     return this.errorHandler.createErrorResponse(context.requestId, {
       code: classification.code,
@@ -263,7 +280,9 @@ describe('MCP Error Scenarios - London TDD', () => {
     describe('User Story: Classify Different Error Types', () => {
       it('should classify validation errors correctly', async () => {
         // Arrange - Mock validation error classification
-        const validationError = new Error('Invalid parameter: name is required');
+        const validationError = new Error(
+          'Invalid parameter: name is required',
+        );
         mockErrorHandler.classifyError.mockReturnValue({
           type: 'validation',
           severity: 'medium',
@@ -279,7 +298,9 @@ describe('MCP Error Scenarios - London TDD', () => {
         const classification = errorHandler.classifyError(validationError);
 
         // Assert - Verify validation error classification
-        expect(mockErrorHandler.classifyError).toHaveBeenCalledWith(validationError);
+        expect(mockErrorHandler.classifyError).toHaveBeenCalledWith(
+          validationError,
+        );
         expect(classification.type).toBe('validation');
         expect(classification.severity).toBe('medium');
         expect(classification.recoverable).toBe(false);
@@ -372,10 +393,15 @@ describe('MCP Error Scenarios - London TDD', () => {
         };
 
         // Act - Handle timeout error
-        const response = await errorHandler.handleError(timeoutError, errorContext);
+        const response = await errorHandler.handleError(
+          timeoutError,
+          errorContext,
+        );
 
         // Assert - Verify retry attempt conversation
-        expect(mockErrorHandler.classifyError).toHaveBeenCalledWith(timeoutError);
+        expect(mockErrorHandler.classifyError).toHaveBeenCalledWith(
+          timeoutError,
+        );
         expect(mockCircuitBreaker.isOpen).toHaveBeenCalled();
         expect(mockLogger.info).toHaveBeenCalledWith(
           'Attempting error recovery',
@@ -383,10 +409,13 @@ describe('MCP Error Scenarios - London TDD', () => {
             strategy: 'retry',
             attempt: 1,
             requestId: 'retry-test-1',
-          })
+          }),
         );
         expect(mockRetryManager.shouldRetry).toHaveBeenCalled();
-        expect(mockMetricsCollector.recordRetry).toHaveBeenCalledWith('tools/call', 1);
+        expect(mockMetricsCollector.recordRetry).toHaveBeenCalledWith(
+          'tools/call',
+          1,
+        );
 
         expect(response?.result).toBeDefined();
         expect(response?.result?.recovered).toBe(true);
@@ -437,7 +466,10 @@ describe('MCP Error Scenarios - London TDD', () => {
         };
 
         // Act - Handle error with max retries exceeded
-        const response = await errorHandler.handleError(persistentError, errorContext);
+        const response = await errorHandler.handleError(
+          persistentError,
+          errorContext,
+        );
 
         // Assert - Verify max retries handling
         expect(mockErrorHandler.createErrorResponse).toHaveBeenCalledWith(
@@ -448,7 +480,7 @@ describe('MCP Error Scenarios - London TDD', () => {
             data: expect.objectContaining({
               attempts: 5,
             }),
-          })
+          }),
         );
         expect(response?.error).toBeDefined();
         expect(response?.error?.data?.attempts).toBe(5);
@@ -460,7 +492,9 @@ describe('MCP Error Scenarios - London TDD', () => {
         // Arrange - Mock circuit breaker open
         const serviceError = new Error('Service unavailable');
         mockCircuitBreaker.isOpen.mockReturnValue(true);
-        mockMetricsCollector.recordCircuitBreakerTrip.mockReturnValue(undefined);
+        mockMetricsCollector.recordCircuitBreakerTrip.mockReturnValue(
+          undefined,
+        );
 
         const errorHandler = new MockMCPErrorHandler();
 
@@ -478,18 +512,28 @@ describe('MCP Error Scenarios - London TDD', () => {
         };
 
         // Act - Handle error with circuit breaker open
-        const response = await errorHandler.handleError(serviceError, errorContext);
+        const response = await errorHandler.handleError(
+          serviceError,
+          errorContext,
+        );
 
         // Assert - Verify circuit breaker fail-fast
         expect(mockCircuitBreaker.isOpen).toHaveBeenCalled();
-        expect(mockLogger.warn).toHaveBeenCalledWith('Circuit breaker is open, failing fast', {
-          requestId: 'circuit-break-1',
-        });
-        expect(mockMetricsCollector.recordCircuitBreakerTrip).toHaveBeenCalled();
+        expect(mockLogger.warn).toHaveBeenCalledWith(
+          'Circuit breaker is open, failing fast',
+          {
+            requestId: 'circuit-break-1',
+          },
+        );
+        expect(
+          mockMetricsCollector.recordCircuitBreakerTrip,
+        ).toHaveBeenCalled();
 
         expect(response?.error).toBeDefined();
         expect(response?.error?.code).toBe(-32000);
-        expect(response?.error?.message).toBe('Service temporarily unavailable');
+        expect(response?.error?.message).toBe(
+          'Service temporarily unavailable',
+        );
         expect(response?.error?.data?.reason).toBe('circuit_breaker_open');
         expect(response?.error?.data?.retryAfter).toBe(30000);
       });
@@ -536,7 +580,10 @@ describe('MCP Error Scenarios - London TDD', () => {
         };
 
         // Act - Handle resource error
-        const response = await errorHandler.handleError(resourceError, errorContext);
+        const response = await errorHandler.handleError(
+          resourceError,
+          errorContext,
+        );
 
         // Assert - Verify circuit breaker failure recording
         expect(mockCircuitBreaker.recordFailure).toHaveBeenCalled();
@@ -590,11 +637,18 @@ describe('MCP Error Scenarios - London TDD', () => {
         };
 
         // Act - Handle critical error
-        const response = await errorHandler.handleError(criticalError, errorContext);
+        const response = await errorHandler.handleError(
+          criticalError,
+          errorContext,
+        );
 
         // Assert - Verify alert sending conversation
-        expect(mockAlertManager.recordErrorOccurrence).toHaveBeenCalledWith('internal');
-        expect(mockAlertManager.isAlertThresholdReached).toHaveBeenCalledWith('internal');
+        expect(mockAlertManager.recordErrorOccurrence).toHaveBeenCalledWith(
+          'internal',
+        );
+        expect(mockAlertManager.isAlertThresholdReached).toHaveBeenCalledWith(
+          'internal',
+        );
         expect(mockAlertManager.sendAlert).toHaveBeenCalledWith({
           type: 'internal',
           severity: 'critical',
@@ -689,7 +743,10 @@ describe('MCP Error Scenarios - London TDD', () => {
         };
 
         // Act - Handle error for response formatting
-        const response = await errorHandler.handleError(standardError, errorContext);
+        const response = await errorHandler.handleError(
+          standardError,
+          errorContext,
+        );
 
         // Assert - Verify JSON-RPC 2.0 error response format
         expect(response?.jsonrpc).toBe('2.0');
@@ -704,7 +761,7 @@ describe('MCP Error Scenarios - London TDD', () => {
             requestId: 'format-test-1',
             method: 'unknown/method',
             attempts: 1,
-          })
+          }),
         );
         expect(response?.result).toBeUndefined(); // Error responses should not have result
       });
@@ -754,7 +811,10 @@ describe('MCP Error Scenarios - London TDD', () => {
       };
 
       // Act - Handle complex error workflow
-      const response = await errorHandler.handleError(workflowError, errorContext);
+      const response = await errorHandler.handleError(
+        workflowError,
+        errorContext,
+      );
 
       // Assert - Verify complete error handling conversation (London School focus)
       expect(mockLogger.error).toHaveBeenCalledWith(
@@ -764,18 +824,27 @@ describe('MCP Error Scenarios - London TDD', () => {
           requestId: 'workflow-1',
           method: 'complex/operation',
           attempt: 2,
-        })
+        }),
       );
-      expect(mockErrorHandler.classifyError).toHaveBeenCalledWith(workflowError);
-      expect(mockMetricsCollector.recordError).toHaveBeenCalledWith('network', 'high');
+      expect(mockErrorHandler.classifyError).toHaveBeenCalledWith(
+        workflowError,
+      );
+      expect(mockMetricsCollector.recordError).toHaveBeenCalledWith(
+        'network',
+        'high',
+      );
       expect(mockCircuitBreaker.isOpen).toHaveBeenCalled();
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Attempting error recovery',
-        expect.objectContaining({ strategy: 'retry' })
+        expect.objectContaining({ strategy: 'retry' }),
       );
       expect(mockRetryManager.shouldRetry).toHaveBeenCalled();
-      expect(mockAlertManager.recordErrorOccurrence).toHaveBeenCalledWith('network');
-      expect(mockAlertManager.isAlertThresholdReached).toHaveBeenCalledWith('network');
+      expect(mockAlertManager.recordErrorOccurrence).toHaveBeenCalledWith(
+        'network',
+      );
+      expect(mockAlertManager.isAlertThresholdReached).toHaveBeenCalledWith(
+        'network',
+      );
       expect(mockAlertManager.sendAlert).toHaveBeenCalled();
       expect(mockErrorHandler.createErrorResponse).toHaveBeenCalled();
 

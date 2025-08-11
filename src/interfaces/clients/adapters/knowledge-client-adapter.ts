@@ -79,7 +79,7 @@ export interface KnowledgeRequest {
   query: string;
   type: 'exact' | 'fuzzy' | 'semantic' | 'vector' | 'hybrid';
   tools?: string[] | undefined;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   options?: KnowledgeQueryOptions | undefined;
 }
 
@@ -101,7 +101,7 @@ export interface KnowledgeResponse {
     url: string;
     relevance: number;
   }>;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -311,7 +311,10 @@ export class KnowledgeClientAdapter
    * @param query
    * @param options
    */
-  async query<R = KnowledgeResponse>(query: string, options?: KnowledgeQueryOptions): Promise<R> {
+  async query<R = KnowledgeResponse>(
+    query: string,
+    options?: KnowledgeQueryOptions,
+  ): Promise<R> {
     const request: KnowledgeRequest = {
       query,
       type: 'semantic',
@@ -331,7 +334,7 @@ export class KnowledgeClientAdapter
    */
   async search<R = KnowledgeResponse>(
     searchTerm: string,
-    options?: KnowledgeSearchOptions
+    options?: KnowledgeSearchOptions,
   ): Promise<R[]> {
     const request: KnowledgeRequest = {
       query: searchTerm,
@@ -389,7 +392,10 @@ export class KnowledgeClientAdapter
    * @param id
    * @param data
    */
-  async updateEntry(id: string, data: Partial<KnowledgeRequest>): Promise<boolean> {
+  async updateEntry(
+    id: string,
+    data: Partial<KnowledgeRequest>,
+  ): Promise<boolean> {
     try {
       const request: KnowledgeRequest = {
         query: `Update entry ${id}: ${JSON.stringify(data)}`,
@@ -438,7 +444,9 @@ export class KnowledgeClientAdapter
       lastUpdated: new Date(),
       categories: {
         'fact-queries': factMetrics.totalQueries,
-        'cached-results': Math.floor(factMetrics.totalQueries * factMetrics.cacheHitRate),
+        'cached-results': Math.floor(
+          factMetrics.totalQueries * factMetrics.cacheHitRate,
+        ),
       },
       averageResponseTime: factMetrics.averageLatency,
       indexHealth: factMetrics.errorRate < 0.1 ? 1.0 : 0.5, // Simple health calculation
@@ -453,14 +461,19 @@ export class KnowledgeClientAdapter
    */
   async semanticSearch<R = KnowledgeResponse>(
     query: string,
-    options?: SemanticSearchOptions
+    options?: SemanticSearchOptions,
   ): Promise<R[]> {
     const request: KnowledgeRequest = {
       query,
       type: 'semantic',
-      tools: options?.vectorSearch ? ['vector_search', 'semantic_analyzer'] : ['semantic_analyzer'],
+      tools: options?.vectorSearch
+        ? ['vector_search', 'semantic_analyzer']
+        : ['semantic_analyzer'],
       options: options || undefined,
-      metadata: { queryType: 'semantic_search', vectorSearch: options?.vectorSearch || undefined },
+      metadata: {
+        queryType: 'semantic_search',
+        vectorSearch: options?.vectorSearch || undefined,
+      },
     };
 
     const response = await this.send<R>(request);
@@ -479,7 +492,9 @@ export class KnowledgeClientAdapter
       pythonPath: config?.factConfig?.pythonPath,
       factRepoPath: config?.factConfig?.factRepoPath || './FACT',
       anthropicApiKey:
-        config?.factConfig?.anthropicApiKey || process.env['ANTHROPIC_API_KEY'] || '',
+        config?.factConfig?.anthropicApiKey ||
+        process.env['ANTHROPIC_API_KEY'] ||
+        '',
       cacheConfig: config?.caching
         ? {
             prefix: config?.caching?.prefix,
@@ -505,7 +520,7 @@ export class KnowledgeClientAdapter
       this.emit('queryCompleted', result);
     });
 
-    this.factIntegration.on('queryError', (error: any) => {
+    this.factIntegration.on('queryError', (error: unknown) => {
       this.emit('queryError', error);
     });
 
@@ -543,8 +558,10 @@ export class KnowledgeClientAdapter
 
     // Update average response time
     const totalResponseTime =
-      this.metrics.averageResponseTime * (this.metrics.totalRequests - 1) + responseTime;
-    this.metrics.averageResponseTime = totalResponseTime / this.metrics.totalRequests;
+      this.metrics.averageResponseTime * (this.metrics.totalRequests - 1) +
+      responseTime;
+    this.metrics.averageResponseTime =
+      totalResponseTime / this.metrics.totalRequests;
 
     this.metrics.lastRequestTime = new Date();
     this.metrics.uptime = Date.now() - this.startTime.getTime();
@@ -572,7 +589,7 @@ export class KnowledgeClientAdapter
    * @param result
    */
   private extractSources(
-    result: FACTResult
+    result: FACTResult,
   ): Array<{ title: string; url: string; relevance: number }> {
     // FACT doesn't provide structured sources, so we'll create a placeholder
     return result?.toolsUsed.map((tool, index) => ({
@@ -591,7 +608,12 @@ export class KnowledgeClientAdapter
  */
 export class KnowledgeClientFactory implements IClientFactory {
   constructor(
-    private logger?: { debug: Function; info: Function; warn: Function; error: Function }
+    private logger?: {
+      debug: Function;
+      info: Function;
+      warn: Function;
+      error: Function;
+    },
   ) {}
 
   /**
@@ -605,7 +627,9 @@ export class KnowledgeClientFactory implements IClientFactory {
 
     // Validate configuration
     if (!this.validateConfig(protocol, config)) {
-      throw new Error(`Invalid configuration for Knowledge client with protocol: ${protocol}`);
+      throw new Error(
+        `Invalid configuration for Knowledge client with protocol: ${protocol}`,
+      );
     }
 
     const knowledgeConfig = config as KnowledgeClientConfig;
@@ -665,7 +689,12 @@ export class KnowledgeClientFactory implements IClientFactory {
       if (!knowledgeConfig?.factConfig?.factRepoPath) {
         return false;
       }
-      if (!knowledgeConfig?.factConfig?.anthropicApiKey && !process.env['ANTHROPIC_API_KEY']) {
+      if (
+        !(
+          knowledgeConfig?.factConfig?.anthropicApiKey ||
+          process.env['ANTHROPIC_API_KEY']
+        )
+      ) {
         return false;
       }
     }
@@ -689,7 +718,7 @@ export class KnowledgeClientFactory implements IClientFactory {
 export async function createFACTClient(
   factRepoPath: string,
   anthropicApiKey?: string,
-  options?: Partial<KnowledgeClientConfig>
+  options?: Partial<KnowledgeClientConfig>,
 ): Promise<KnowledgeClientAdapter> {
   const config: KnowledgeClientConfig = {
     protocol: ProtocolTypes.CUSTOM,
@@ -697,7 +726,8 @@ export async function createFACTClient(
     provider: 'fact',
     factConfig: {
       factRepoPath,
-      anthropicApiKey: anthropicApiKey || process.env['ANTHROPIC_API_KEY'] || '',
+      anthropicApiKey:
+        anthropicApiKey || process.env['ANTHROPIC_API_KEY'] || '',
       pythonPath: 'python3',
     },
     caching: {
@@ -730,10 +760,12 @@ export async function createFACTClient(
  */
 export async function createCustomKnowledgeClient(
   url: string,
-  options?: Partial<KnowledgeClientConfig>
+  options?: Partial<KnowledgeClientConfig>,
 ): Promise<KnowledgeClientAdapter> {
   const config: KnowledgeClientConfig = {
-    protocol: url.startsWith('https') ? ProtocolTypes.HTTPS : ProtocolTypes.HTTP,
+    protocol: url.startsWith('https')
+      ? ProtocolTypes.HTTPS
+      : ProtocolTypes.HTTP,
     url,
     provider: 'custom',
     caching: {
@@ -763,14 +795,14 @@ export const KnowledgeHelpers = {
   async getDocumentation(
     client: KnowledgeClientAdapter,
     framework: string,
-    version?: string
+    version?: string,
   ): Promise<KnowledgeResponse> {
     return await client.query(
       `Get comprehensive documentation for ${framework} ${version ? `version ${version}` : '(latest version)'}`,
       {
         includeMetadata: true,
         filters: { type: 'documentation', framework, version },
-      }
+      },
     );
   },
 
@@ -784,7 +816,7 @@ export const KnowledgeHelpers = {
   async getAPIReference(
     client: KnowledgeClientAdapter,
     api: string,
-    endpoint?: string
+    endpoint?: string,
   ): Promise<KnowledgeResponse> {
     const query = endpoint
       ? `Get detailed API reference for ${api} endpoint: ${endpoint}`
@@ -806,7 +838,7 @@ export const KnowledgeHelpers = {
   async searchCommunity(
     client: KnowledgeClientAdapter,
     topic: string,
-    tags?: string[]
+    tags?: string[],
   ): Promise<KnowledgeResponse[]> {
     const query = `Search developer communities for: ${topic}${tags ? ` tags: ${tags.join(', ')}` : ''}`;
 

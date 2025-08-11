@@ -15,7 +15,11 @@ const logger = getLogger('src-memory-memory-integration');
 
 import type { DALFactory } from '../database/factory.ts';
 import { DIContainer } from '../di/container/di-container.ts';
-import { CORE_TOKENS, DATABASE_TOKENS, MEMORY_TOKENS } from '../di/tokens/core-tokens.ts';
+import {
+  CORE_TOKENS,
+  DATABASE_TOKENS,
+  MEMORY_TOKENS,
+} from '../di/tokens/core-tokens.ts';
 import type { MemoryConfig } from '../memory/interfaces';
 import { MemoryController } from './controllers/memory-controller.ts';
 import { MemoryProviderFactory } from './providers/memory-providers.ts';
@@ -98,7 +102,7 @@ export function registerMemoryProviders(
   container: DIContainer,
   customConfigs?: {
     [key: string]: Partial<MemoryConfig>;
-  }
+  },
 ): void {
   // Register memory provider factory (uses DAL Factory)
   container.register(MEMORY_TOKENS['ProviderFactory'], {
@@ -107,13 +111,16 @@ export function registerMemoryProviders(
       new MemoryProviderFactory(
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
-        container.resolve(DATABASE_TOKENS?.DALFactory) as DALFactory
+        container.resolve(DATABASE_TOKENS?.DALFactory) as DALFactory,
       ),
   });
 
   // Register default memory configurations
-  for (const [name, defaultConfig] of Object.entries(defaultMemoryConfigurations)) {
-    const tokenName = `${name.charAt(0).toUpperCase()}${name.slice(1)}Config` as const;
+  for (const [name, defaultConfig] of Object.entries(
+    defaultMemoryConfigurations,
+  )) {
+    const tokenName =
+      `${name.charAt(0).toUpperCase()}${name.slice(1)}Config` as const;
 
     container.register(MEMORY_TOKENS[tokenName] || MEMORY_TOKENS.Config, {
       type: 'singleton',
@@ -129,9 +136,11 @@ export function registerMemoryProviders(
     type: 'singleton',
     create: (container) =>
       new MemoryController(
-        container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory,
+        container.resolve(
+          MEMORY_TOKENS['ProviderFactory'],
+        ) as MemoryProviderFactory,
         container.resolve(MEMORY_TOKENS.Config) as MemoryConfig,
-        container.resolve(CORE_TOKENS.Logger)
+        container.resolve(CORE_TOKENS.Logger),
       ),
   });
 }
@@ -148,7 +157,9 @@ export async function createMemoryBackends(container: DIContainer): Promise<{
   semantic: any;
   debug: any;
 }> {
-  const factory = container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory;
+  const factory = container.resolve(
+    MEMORY_TOKENS['ProviderFactory'],
+  ) as MemoryProviderFactory;
 
   return {
     cache: factory.createProvider(defaultMemoryConfigurations?.cache),
@@ -181,7 +192,7 @@ export async function initializeMemorySystem(
     enableSessions: true,
     enableSemantic: true,
     enableDebug: true,
-  }
+  },
 ): Promise<{
   controller: any;
   backends: Record<string, any>;
@@ -203,28 +214,36 @@ export async function initializeMemorySystem(
 
   if (options?.['enableCache']) {
     backends.cache = (
-      container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory
+      container.resolve(
+        MEMORY_TOKENS['ProviderFactory'],
+      ) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.cache);
     enabledBackends.push('cache');
   }
 
   if (options?.['enableSessions']) {
     backends.session = (
-      container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory
+      container.resolve(
+        MEMORY_TOKENS['ProviderFactory'],
+      ) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.session);
     enabledBackends.push('session');
   }
 
   if (options?.['enableSemantic']) {
     backends.semantic = (
-      container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory
+      container.resolve(
+        MEMORY_TOKENS['ProviderFactory'],
+      ) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.semantic);
     enabledBackends.push('semantic');
   }
 
   if (options?.['enableDebug']) {
     backends.debug = (
-      container.resolve(MEMORY_TOKENS['ProviderFactory']) as MemoryProviderFactory
+      container.resolve(
+        MEMORY_TOKENS['ProviderFactory'],
+      ) as MemoryProviderFactory
     ).createProvider(defaultMemoryConfigurations?.debug);
     enabledBackends.push('debug');
   }
@@ -234,18 +253,20 @@ export async function initializeMemorySystem(
     Object.entries(backends).map(async ([name, backend]) => {
       const healthy = await backend.health();
       return { name, healthy };
-    })
+    }),
   );
 
   const healthyBackends = healthChecks
     .filter(
-      (result): result is PromiseFulfilledResult<{ name: string; healthy: boolean }> =>
-        result?.status === 'fulfilled' && result?.value?.healthy
+      (
+        result,
+      ): result is PromiseFulfilledResult<{ name: string; healthy: boolean }> =>
+        result?.status === 'fulfilled' && result?.value?.healthy,
     )
     .map((result) => result?.value?.name);
 
   logger.info(
-    `Memory system initialized: ${healthyBackends.length}/${enabledBackends.length} backends healthy`
+    `Memory system initialized: ${healthyBackends.length}/${enabledBackends.length} backends healthy`,
   );
 
   return {
@@ -266,7 +287,7 @@ export async function initializeMemorySystem(
  * @example
  */
 export function createMemoryContainer(
-  customConfigs?: Parameters<typeof registerMemoryProviders>[1]
+  customConfigs?: Parameters<typeof registerMemoryProviders>[1],
 ): DIContainer {
   const container = new DIContainer();
 
@@ -295,15 +316,17 @@ export function createMemoryContainer(
     type: 'singleton',
     create: (container) => {
       const { DALFactory } = require('../database/factory.js');
-      const { DatabaseProviderFactory } = require('../database/providers/database-providers.js');
+      const {
+        DatabaseProviderFactory,
+      } = require('../database/providers/database-providers.js');
 
       return new DALFactory(
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
         new DatabaseProviderFactory(
           container.resolve(CORE_TOKENS.Logger),
-          container.resolve(CORE_TOKENS.Config)
-        )
+          container.resolve(CORE_TOKENS.Config),
+        ),
       );
     },
   });

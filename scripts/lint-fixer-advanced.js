@@ -143,26 +143,29 @@ class AdvancedLintFixer {
     let modified = content;
 
     // Fix incomplete expressions at end of lines
-    modified = modified.replace(/^(\s*)(.*[^;,{}()])\s*$/gm, (match, indent, statement) => {
-      if (
-        statement.trim() &&
-        !statement.includes('//') &&
-        !statement.includes('/*') &&
-        !statement.includes('if') &&
-        !statement.includes('for') &&
-        !statement.includes('while') &&
-        !statement.includes('function') &&
-        !statement.includes('class') &&
-        !statement.includes('import') &&
-        !statement.includes('export') &&
-        !statement.includes('{') &&
-        !statement.includes('}')
-      ) {
-        fixes++;
-        return `${indent}${statement};`;
-      }
-      return match;
-    });
+    modified = modified.replace(
+      /^(\s*)(.*[^;,{}()])\s*$/gm,
+      (match, indent, statement) => {
+        if (
+          statement.trim() &&
+          !statement.includes('//') &&
+          !statement.includes('/*') &&
+          !statement.includes('if') &&
+          !statement.includes('for') &&
+          !statement.includes('while') &&
+          !statement.includes('function') &&
+          !statement.includes('class') &&
+          !statement.includes('import') &&
+          !statement.includes('export') &&
+          !statement.includes('{') &&
+          !statement.includes('}')
+        ) {
+          fixes++;
+          return `${indent}${statement};`;
+        }
+        return match;
+      },
+    );
 
     // Fix incomplete object literals
     modified = modified.replace(/\{\s*$/gm, '{ /* incomplete object */ }');
@@ -184,19 +187,34 @@ class AdvancedLintFixer {
     let modified = content;
 
     // Fix standalone expressions that should be statements
-    modified = modified.replace(/^(\s*)(\w+)\s*$/gm, (match, indent, identifier) => {
-      if (
-        identifier &&
-        !['if', 'for', 'while', 'const', 'let', 'var', 'function', 'class'].includes(identifier)
-      ) {
-        fixes++;
-        return `${indent}// ${identifier}; // Fixed: was standalone identifier`;
-      }
-      return match;
-    });
+    modified = modified.replace(
+      /^(\s*)(\w+)\s*$/gm,
+      (match, indent, identifier) => {
+        if (
+          identifier &&
+          ![
+            'if',
+            'for',
+            'while',
+            'const',
+            'let',
+            'var',
+            'function',
+            'class',
+          ].includes(identifier)
+        ) {
+          fixes++;
+          return `${indent}// ${identifier}; // Fixed: was standalone identifier`;
+        }
+        return match;
+      },
+    );
 
     // Fix incomplete function declarations
-    modified = modified.replace(/^(\s*)function\s*$/gm, '$1function placeholder() {}');
+    modified = modified.replace(
+      /^(\s*)function\s*$/gm,
+      '$1function placeholder() {}',
+    );
 
     this.updateStats('declaration-expected', fixes);
     return modified;
@@ -212,25 +230,28 @@ class AdvancedLintFixer {
     let modified = content;
 
     // Add semicolons to statements that need them
-    modified = modified.replace(/^(\s*)(.*[^;{}])\s*$/gm, (match, indent, statement) => {
-      if (
-        statement.trim() &&
-        !statement.includes('//') &&
-        !statement.includes('/*') &&
-        !statement.includes('{') &&
-        !statement.includes('}') &&
-        (statement.includes('=') ||
-          statement.includes('return') ||
-          statement.includes('const') ||
-          statement.includes('let') ||
-          statement.includes('var') ||
-          statement.match(/^\s*\w+\s*\(/))
-      ) {
-        fixes++;
-        return `${indent}${statement};`;
-      }
-      return match;
-    });
+    modified = modified.replace(
+      /^(\s*)(.*[^;{}])\s*$/gm,
+      (match, indent, statement) => {
+        if (
+          statement.trim() &&
+          !statement.includes('//') &&
+          !statement.includes('/*') &&
+          !statement.includes('{') &&
+          !statement.includes('}') &&
+          (statement.includes('=') ||
+            statement.includes('return') ||
+            statement.includes('const') ||
+            statement.includes('let') ||
+            statement.includes('var') ||
+            statement.match(/^\s*\w+\s*\(/))
+        ) {
+          fixes++;
+          return `${indent}${statement};`;
+        }
+        return match;
+      },
+    );
 
     this.updateStats('semicolon-expected', fixes);
     return modified;
@@ -251,7 +272,7 @@ class AdvancedLintFixer {
       (_match, prop1, indent, prop2) => {
         fixes++;
         return `${prop1},\n${indent}${prop2}`;
-      }
+      },
     );
 
     // Fix missing commas in array literals
@@ -259,16 +280,18 @@ class AdvancedLintFixer {
       /([^,[\n]+)\s*\n(\s*)([^,\]\n]+)/g,
       (match, item1, indent, item2) => {
         if (
-          !item1.includes('{') &&
-          !item1.includes('}') &&
-          !item2.includes('{') &&
-          !item2.includes('}')
+          !(
+            item1.includes('{') ||
+            item1.includes('}') ||
+            item2.includes('{') ||
+            item2.includes('}')
+          )
         ) {
           fixes++;
           return `${item1},\n${indent}${item2}`;
         }
         return match;
-      }
+      },
     );
 
     this.updateStats('comma-expected', fixes);
@@ -291,10 +314,13 @@ class AdvancedLintFixer {
     modified = modified.replace(/\.+/g, '.');
 
     // Fix unexpected colons outside of object literals or type annotations
-    modified = modified.replace(/^(\s*)(\w+)\s*:\s*$/gm, (_match, indent, identifier) => {
-      fixes++;
-      return `${indent}// ${identifier}: // Fixed: unexpected colon`;
-    });
+    modified = modified.replace(
+      /^(\s*)(\w+)\s*:\s*$/gm,
+      (_match, indent, identifier) => {
+        fixes++;
+        return `${indent}// ${identifier}: // Fixed: unexpected colon`;
+      },
+    );
 
     // Fix malformed console statements
     modified = modified.replace(/^\s*console\s*$/gm, 'console.log("");');
@@ -313,27 +339,40 @@ class AdvancedLintFixer {
     let modified = content;
 
     // Fix incomplete import statements
-    modified = modified.replace(/^(\s*)import\s*$/gm, '$1// import statement incomplete');
+    modified = modified.replace(
+      /^(\s*)import\s*$/gm,
+      '$1// import statement incomplete',
+    );
 
     // Fix incomplete export statements
-    modified = modified.replace(/^(\s*)export\s*$/gm, '$1// export statement incomplete');
+    modified = modified.replace(
+      /^(\s*)export\s*$/gm,
+      '$1// export statement incomplete',
+    );
 
     // Fix mixed module syntax in ES modules
-    if (filePath.endsWith('.mjs') || modified.includes('import ') || modified.includes('export ')) {
+    if (
+      filePath.endsWith('.mjs') ||
+      modified.includes('import ') ||
+      modified.includes('export ')
+    ) {
       // Convert require to import
       modified = modified.replace(
         /const\s+(\w+)\s*=\s*require\(['"`]([^'"`]+)['"`]\)/g,
         (_match, varName, moduleName) => {
           fixes++;
           return `import ${varName} from '${moduleName}';`;
-        }
+        },
       );
 
       // Convert module.exports to export
-      modified = modified.replace(/module\.exports\s*=\s*(.*)/g, (_match, exportValue) => {
-        fixes++;
-        return `export default ${exportValue};`;
-      });
+      modified = modified.replace(
+        /module\.exports\s*=\s*(.*)/g,
+        (_match, exportValue) => {
+          fixes++;
+          return `export default ${exportValue};`;
+        },
+      );
     }
 
     this.updateStats('import-export-errors', fixes);
@@ -353,7 +392,10 @@ class AdvancedLintFixer {
     modified = modified.replace(/async\s+\*/g, 'async function*');
 
     // Fix missing function keyword after async
-    modified = modified.replace(/^(\s*)async\s+(\w+)\s*\(/gm, '$1async function $2(');
+    modified = modified.replace(
+      /^(\s*)async\s+(\w+)\s*\(/gm,
+      '$1async function $2(',
+    );
 
     this.updateStats('async-syntax', fixes);
     return modified;
@@ -363,7 +405,7 @@ class AdvancedLintFixer {
    * Fix TypeScript type annotation errors
    */
   fixTypeAnnotations(content, filePath) {
-    if (!filePath.endsWith('.ts') && !filePath.endsWith('.tsx')) {
+    if (!(filePath.endsWith('.ts') || filePath.endsWith('.tsx'))) {
       return content;
     }
 
@@ -373,7 +415,10 @@ class AdvancedLintFixer {
     let modified = content;
 
     // Fix incomplete type annotations
-    modified = modified.replace(/:\s*$/gm, ': any; // Fixed: incomplete type annotation');
+    modified = modified.replace(
+      /:\s*$/gm,
+      ': any; // Fixed: incomplete type annotation',
+    );
 
     this.updateStats('type-annotations', fixes);
     return modified;
@@ -384,7 +429,10 @@ class AdvancedLintFixer {
    */
   updateStats(fixType, count) {
     this.stats.totalFixes += count;
-    this.stats.fixesByType.set(fixType, (this.stats.fixesByType.get(fixType) || 0) + count);
+    this.stats.fixesByType.set(
+      fixType,
+      (this.stats.fixesByType.get(fixType) || 0) + count,
+    );
   }
 
   /**

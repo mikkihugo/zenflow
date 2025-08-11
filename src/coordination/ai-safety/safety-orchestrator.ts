@@ -14,10 +14,14 @@ import {
 
 // Simple console logger to avoid circular dependencies
 const logger = {
-  debug: (message: string, meta?: any) => console.log(`[DEBUG] ${message}`, meta || ''),
-  info: (message: string, meta?: any) => console.log(`[INFO] ${message}`, meta || ''),
-  warn: (message: string, meta?: any) => console.warn(`[WARN] ${message}`, meta || ''),
-  error: (message: string, meta?: any) => console.error(`[ERROR] ${message}`, meta || ''),
+  debug: (message: string, meta?: any) =>
+    console.log(`[DEBUG] ${message}`, meta || ''),
+  info: (message: string, meta?: any) =>
+    console.log(`[INFO] ${message}`, meta || ''),
+  warn: (message: string, meta?: any) =>
+    console.warn(`[WARN] ${message}`, meta || ''),
+  error: (message: string, meta?: any) =>
+    console.error(`[ERROR] ${message}`, meta || ''),
 };
 
 /**
@@ -110,7 +114,9 @@ export class AISafetyOrchestrator extends EventEmitter {
     this.setupConfiguration();
     this.setupEventHandlers();
 
-    logger.info('🛡️ AI Safety Orchestrator initialized with 3-phase coordination');
+    logger.info(
+      '🛡️ AI Safety Orchestrator initialized with 3-phase coordination',
+    );
   }
 
   /**
@@ -123,7 +129,9 @@ export class AISafetyOrchestrator extends EventEmitter {
     }
 
     this.isMonitoring = true;
-    logger.info('🚨 AI Safety monitoring ACTIVE - 3-phase coordination protocol engaged');
+    logger.info(
+      '🚨 AI Safety monitoring ACTIVE - 3-phase coordination protocol engaged',
+    );
 
     // Apply the proven coordination protocol
     await this.orchestrateSafetyMonitoring();
@@ -191,7 +199,9 @@ export class AISafetyOrchestrator extends EventEmitter {
   private async runAutomatedDetection(): Promise<AutomatedDetectionResult> {
     const startTime = Date.now();
 
-    logger.info('⚡ Phase 1: Automated detection - scanning for immediate threats');
+    logger.info(
+      '⚡ Phase 1: Automated detection - scanning for immediate threats',
+    );
 
     // Use existing coordination protocol proven effective
     const detectionResult = {
@@ -224,11 +234,13 @@ export class AISafetyOrchestrator extends EventEmitter {
    * @param phase1Result
    */
   private async runBehavioralAnalysis(
-    phase1Result: AutomatedDetectionResult
+    phase1Result: AutomatedDetectionResult,
   ): Promise<BehavioralAnalysisResult> {
     const startTime = Date.now();
 
-    logger.info('🧠 Phase 2: Behavioral analysis - analyzing patterns and trends');
+    logger.info(
+      '🧠 Phase 2: Behavioral analysis - analyzing patterns and trends',
+    );
 
     const analysisResult = {
       patternsAnalyzed: phase1Result.alertsGenerated,
@@ -261,11 +273,13 @@ export class AISafetyOrchestrator extends EventEmitter {
    */
   private async triggerHumanEscalation(
     phase1: AutomatedDetectionResult,
-    phase2: BehavioralAnalysisResult
+    phase2: BehavioralAnalysisResult,
   ): Promise<HumanEscalationResult> {
     const startTime = Date.now();
 
-    logger.error('🚨 Phase 3: Human escalation TRIGGERED - critical safety event');
+    logger.error(
+      '🚨 Phase 3: Human escalation TRIGGERED - critical safety event',
+    );
 
     const escalationResult = {
       escalationTriggered: true,
@@ -310,17 +324,24 @@ export class AISafetyOrchestrator extends EventEmitter {
    *
    * @param interactionData
    */
-  async analyzeInteraction(interactionData: AIInteractionData): Promise<DeceptionAlert[]> {
+  async analyzeInteraction(
+    interactionData: AIInteractionData,
+  ): Promise<DeceptionAlert[]> {
     this.metrics.totalInteractions++;
 
-    const alerts = await this.deceptionDetector.detectDeception(interactionData);
+    const alerts =
+      await this.deceptionDetector.detectDeception(interactionData);
 
     if (alerts.length > 0) {
       this.metrics.deceptionDetected++;
 
       // Store in intervention history
-      const existing = this.interventionHistory.get(interactionData.agentId) || [];
-      this.interventionHistory.set(interactionData.agentId, [...existing, ...alerts]);
+      const existing =
+        this.interventionHistory.get(interactionData.agentId) || [];
+      this.interventionHistory.set(interactionData.agentId, [
+        ...existing,
+        ...alerts,
+      ]);
 
       // Trigger immediate orchestration if critical
       const criticalAlerts = alerts.filter((a) => a.severity === 'CRITICAL');
@@ -478,7 +499,7 @@ export class AISafetyOrchestrator extends EventEmitter {
         behavioralDeviations: data.totalInterventions,
         guidedInterventions: 0,
         timeMs: 0,
-      }
+      },
     );
 
     this.emit('safety:escalation', data);

@@ -78,12 +78,16 @@ export class PerformanceBenchmarkSuite {
       swarm?: SwarmOptimizer;
       data?: DataOptimizer;
       wasm?: WasmOptimizer;
-    } = {}
+    } = {},
   ) {
-    this.neuralOptimizer = optimizers.neural === undefined ? undefined : optimizers.neural;
-    this.swarmOptimizer = optimizers.swarm === undefined ? undefined : optimizers.swarm;
-    this.dataOptimizer = optimizers.data === undefined ? undefined : optimizers.data;
-    this.wasmOptimizer = optimizers.wasm === undefined ? undefined : optimizers.wasm;
+    this.neuralOptimizer =
+      optimizers.neural === undefined ? undefined : optimizers.neural;
+    this.swarmOptimizer =
+      optimizers.swarm === undefined ? undefined : optimizers.swarm;
+    this.dataOptimizer =
+      optimizers.data === undefined ? undefined : optimizers.data;
+    this.wasmOptimizer =
+      optimizers.wasm === undefined ? undefined : optimizers.wasm;
   }
 
   /**
@@ -154,11 +158,17 @@ export class PerformanceBenchmarkSuite {
         expectedImprovement: 5.0,
         run: async (optimizer: NeuralOptimizer) => {
           const mockNetwork = this.createMockNeuralNetwork();
-          const before = await this.measureNeuralPerformance(mockNetwork, 'training');
+          const before = await this.measureNeuralPerformance(
+            mockNetwork,
+            'training',
+          );
 
           await optimizer.optimizeTrainingSpeed(mockNetwork);
 
-          const after = await this.measureNeuralPerformance(mockNetwork, 'training');
+          const after = await this.measureNeuralPerformance(
+            mockNetwork,
+            'training',
+          );
           const improvement = this.calculateImprovement(before, after);
 
           return {
@@ -205,13 +215,17 @@ export class PerformanceBenchmarkSuite {
         target: NEURAL_PERFORMANCE_TARGETS?.memoryReduction,
         expectedImprovement: 0.6,
         run: async (optimizer: NeuralOptimizer) => {
-          const mockNetworks = [this.createMockNeuralNetwork(), this.createMockNeuralNetwork()];
+          const mockNetworks = [
+            this.createMockNeuralNetwork(),
+            this.createMockNeuralNetwork(),
+          ];
           const before = await this.measureMemoryUsage(mockNetworks);
 
           await optimizer.optimizeMemoryUsage(mockNetworks);
 
           const after = await this.measureMemoryUsage(mockNetworks);
-          const improvement = (before.memoryUsage - after.memoryUsage) / before.memoryUsage;
+          const improvement =
+            (before.memoryUsage - after.memoryUsage) / before.memoryUsage;
 
           return {
             domain: 'neural',
@@ -232,12 +246,18 @@ export class PerformanceBenchmarkSuite {
         expectedImprovement: 0.5,
         run: async (_optimizer: NeuralOptimizer) => {
           const mockNetwork = this.createMockNeuralNetwork();
-          const before = await this.measureNeuralPerformance(mockNetwork, 'inference');
+          const before = await this.measureNeuralPerformance(
+            mockNetwork,
+            'inference',
+          );
 
           // Simulate inference optimization
           await new Promise((resolve) => setTimeout(resolve, 500));
 
-          const after = await this.measureNeuralPerformance(mockNetwork, 'inference');
+          const after = await this.measureNeuralPerformance(
+            mockNetwork,
+            'inference',
+          );
           const improvement = (before.latency - after.latency) / before.latency;
 
           return {
@@ -391,7 +411,8 @@ export class PerformanceBenchmarkSuite {
           await optimizer.implementConnectionPooling(mockConnections);
 
           const after = await this.measureConnectionPerformance();
-          const improvement = (after.throughput - before.throughput) / before.throughput;
+          const improvement =
+            (after.throughput - before.throughput) / before.throughput;
 
           return {
             domain: 'data',
@@ -417,7 +438,8 @@ export class PerformanceBenchmarkSuite {
           await optimizer.addIntelligentCaching(mockCacheLayer);
 
           const after = await this.measureCacheHitRatio();
-          const improvement = (after.throughput - before.throughput) / before.throughput;
+          const improvement =
+            (after.throughput - before.throughput) / before.throughput;
 
           return {
             domain: 'data',
@@ -536,7 +558,7 @@ export class PerformanceBenchmarkSuite {
   private async runBenchmarkSuite(
     domain: string,
     benchmarks: BenchmarkTest[],
-    optimizer: any
+    optimizer: any,
   ): Promise<BenchmarkResult[]> {
     const results: BenchmarkResult[] = [];
 
@@ -582,7 +604,8 @@ export class PerformanceBenchmarkSuite {
 
     if (allResults.length > 0) {
       results.overall.averageImprovement =
-        allResults.reduce((sum, r) => sum + r.improvement, 0) / allResults.length;
+        allResults.reduce((sum, r) => sum + r.improvement, 0) /
+        allResults.length;
     }
   }
 
@@ -592,19 +615,34 @@ export class PerformanceBenchmarkSuite {
    * @param before
    * @param after
    */
-  private calculateImprovement(before: PerformanceMetrics, after: PerformanceMetrics): number {
-    const latencyImprovement = Math.max(0, (before.latency - after.latency) / before.latency);
+  private calculateImprovement(
+    before: PerformanceMetrics,
+    after: PerformanceMetrics,
+  ): number {
+    const latencyImprovement = Math.max(
+      0,
+      (before.latency - after.latency) / before.latency,
+    );
     const throughputImprovement = Math.max(
       0,
-      (after.throughput - before.throughput) / before.throughput
+      (after.throughput - before.throughput) / before.throughput,
     );
     const memoryImprovement = Math.max(
       0,
-      (before.memoryUsage - after.memoryUsage) / before.memoryUsage
+      (before.memoryUsage - after.memoryUsage) / before.memoryUsage,
     );
-    const cpuImprovement = Math.max(0, (before.cpuUsage - after.cpuUsage) / before.cpuUsage);
+    const cpuImprovement = Math.max(
+      0,
+      (before.cpuUsage - after.cpuUsage) / before.cpuUsage,
+    );
 
-    return (latencyImprovement + throughputImprovement + memoryImprovement + cpuImprovement) / 4;
+    return (
+      (latencyImprovement +
+        throughputImprovement +
+        memoryImprovement +
+        cpuImprovement) /
+      4
+    );
   }
 
   /**
@@ -619,7 +657,7 @@ export class PerformanceBenchmarkSuite {
         .map(() =>
           Array(100)
             .fill(0)
-            .map(() => Math.random())
+            .map(() => Math.random()),
         ),
       activationFunction: 'relu',
     };
@@ -727,7 +765,10 @@ export class PerformanceBenchmarkSuite {
    * @param _network
    * @param mode
    */
-  private async measureNeuralPerformance(_network: any, mode: string): Promise<PerformanceMetrics> {
+  private async measureNeuralPerformance(
+    _network: any,
+    mode: string,
+  ): Promise<PerformanceMetrics> {
     const baseLatency = mode === 'training' ? 100 : 10;
     const baseThroughput = mode === 'training' ? 100 : 1000;
 
@@ -741,11 +782,15 @@ export class PerformanceBenchmarkSuite {
     };
   }
 
-  private async measureBatchPerformance(trainer: any): Promise<PerformanceMetrics> {
+  private async measureBatchPerformance(
+    trainer: any,
+  ): Promise<PerformanceMetrics> {
     return this.measureNeuralPerformance(trainer.network, 'training');
   }
 
-  private async measureMemoryUsage(_networks: any[]): Promise<PerformanceMetrics> {
+  private async measureMemoryUsage(
+    _networks: any[],
+  ): Promise<PerformanceMetrics> {
     return {
       latency: 50,
       throughput: 500,
@@ -756,7 +801,9 @@ export class PerformanceBenchmarkSuite {
     };
   }
 
-  private async measureSwarmPerformance(_topology: any): Promise<PerformanceMetrics> {
+  private async measureSwarmPerformance(
+    _topology: any,
+  ): Promise<PerformanceMetrics> {
     return {
       latency: 5 + Math.random() * 10,
       throughput: 1000 + Math.random() * 500,
@@ -778,7 +825,9 @@ export class PerformanceBenchmarkSuite {
     };
   }
 
-  private async measureScalingPerformance(agents: number): Promise<PerformanceMetrics> {
+  private async measureScalingPerformance(
+    agents: number,
+  ): Promise<PerformanceMetrics> {
     return {
       latency: Math.log10(agents) * 2,
       throughput: agents * 0.8,
@@ -789,7 +838,9 @@ export class PerformanceBenchmarkSuite {
     };
   }
 
-  private async measureQueryPerformance(_queries: any[]): Promise<PerformanceMetrics> {
+  private async measureQueryPerformance(
+    _queries: any[],
+  ): Promise<PerformanceMetrics> {
     return {
       latency: 50 + Math.random() * 50,
       throughput: 200 + Math.random() * 300,

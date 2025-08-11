@@ -41,7 +41,8 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'Agent Registration and Discovery',
-        description: 'Dynamic agent registration with capability discovery and health monitoring',
+        description:
+          'Dynamic agent registration with capability discovery and health monitoring',
         type: 'core',
         priority: 'HIGH',
         testCriteria: [
@@ -53,7 +54,8 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'Intelligent Task Distribution',
-        description: 'Distribute tasks based on agent capabilities, load, and performance history',
+        description:
+          'Distribute tasks based on agent capabilities, load, and performance history',
         type: 'core',
         priority: 'HIGH',
         testCriteria: [
@@ -65,7 +67,8 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         title: 'Swarm Health Monitoring',
-        description: 'Comprehensive monitoring of swarm health and coordination efficiency',
+        description:
+          'Comprehensive monitoring of swarm health and coordination efficiency',
         type: 'monitoring',
         priority: 'HIGH',
         testCriteria: [
@@ -133,7 +136,10 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
       {
         id: nanoid(),
         requirement: 'agent-registration',
-        criteria: ['Registration completes within 100ms', 'Capabilities properly indexed'],
+        criteria: [
+          'Registration completes within 100ms',
+          'Capabilities properly indexed',
+        ],
         testMethod: 'automated',
       },
     ],
@@ -150,7 +156,8 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
       mitigationStrategies: [
         {
           riskId: 'network-partition',
-          strategy: 'Implement Byzantine fault tolerance and partition tolerance',
+          strategy:
+            'Implement Byzantine fault tolerance and partition tolerance',
           priority: 'HIGH',
           effort: 'high',
         },
@@ -175,8 +182,16 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
         name: 'AgentRegistration',
         purpose: 'Register new agent with swarm coordination system',
         inputs: [
-          { name: 'agentId', type: 'string', description: 'Unique agent identifier' },
-          { name: 'capabilities', type: 'Capability[]', description: 'Agent capabilities' },
+          {
+            name: 'agentId',
+            type: 'string',
+            description: 'Unique agent identifier',
+          },
+          {
+            name: 'capabilities',
+            type: 'Capability[]',
+            description: 'Agent capabilities',
+          },
         ],
         outputs: [
           {
@@ -228,8 +243,16 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
           {
             name: 'register',
             parameters: [
-              { name: 'agentId', type: 'string', description: 'Unique agent identifier' },
-              { name: 'info', type: 'AgentInfo', description: 'Agent information' },
+              {
+                name: 'agentId',
+                type: 'string',
+                description: 'Unique agent identifier',
+              },
+              {
+                name: 'info',
+                type: 'AgentInfo',
+                description: 'Agent information',
+              },
             ],
             returnType: 'boolean',
             visibility: 'public',
@@ -264,7 +287,11 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
       {
         name: 'SwarmCoordinator',
         type: 'service',
-        responsibilities: ['Agent registration', 'Task distribution', 'Health monitoring'],
+        responsibilities: [
+          'Agent registration',
+          'Task distribution',
+          'Health monitoring',
+        ],
         interfaces: ['ISwarmCoordinator'],
         dependencies: ['AgentRegistry', 'TaskQueue'],
         qualityAttributes: {
@@ -336,7 +363,9 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
     };
   },
 
-  customizeSpecification(projectSpec: ProjectSpecification): DetailedSpecification {
+  customizeSpecification(
+    projectSpec: ProjectSpecification,
+  ): DetailedSpecification {
     const customized = { ...this.specification };
     customized.domain = projectSpec.domain;
 
@@ -402,10 +431,15 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
 
     if (projectSpec.domain !== 'swarm-coordination') {
       warnings.push('Project domain does not match template domain');
-      recommendations.push('Consider using a swarm-coordination specific template');
+      recommendations.push(
+        'Consider using a swarm-coordination specific template',
+      );
     }
 
-    if (projectSpec.complexity === 'simple' && this.metadata.complexity === 'high') {
+    if (
+      projectSpec.complexity === 'simple' &&
+      this.metadata.complexity === 'high'
+    ) {
       warnings.push('Template complexity may be higher than needed');
       recommendations.push('Consider simplifying the architecture');
     }

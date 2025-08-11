@@ -22,7 +22,10 @@ import type {
   TaskDocumentEntity,
 } from '../database/entities/product-entities.ts';
 import type { DocumentManager } from '../database/managers/document-manager.ts';
-import type { SPARCSwarmCoordinator, SPARCTask } from './swarm/core/sparc-swarm-coordinator.ts';
+import type {
+  SPARCSwarmCoordinator,
+  SPARCTask,
+} from './swarm/core/sparc-swarm-coordinator.ts';
 
 const logger = getLogger('DatabaseSPARCBridge');
 
@@ -77,7 +80,7 @@ class DatabaseSPARCBridge extends EventEmitter {
   constructor(
     databaseSystem: DatabaseDrivenSystem,
     documentService: DocumentManager,
-    sparcSwarm: SPARCSwarmCoordinator
+    sparcSwarm: SPARCSwarmCoordinator,
   ) {
     super();
     this.databaseSystem = databaseSystem;
@@ -188,12 +191,14 @@ class DatabaseSPARCBridge extends EventEmitter {
     const completedWork = Array.from(this.completedWork.values());
 
     const successfulCompletions = completedWork.filter(
-      (work) => work.status === 'completed'
+      (work) => work.status === 'completed',
     ).length;
     const averageTime =
       completedWork.length > 0
-        ? completedWork.reduce((sum, work) => sum + work.metrics.totalTimeMs, 0) /
-          completedWork.length
+        ? completedWork.reduce(
+            (sum, work) => sum + work.metrics.totalTimeMs,
+            0,
+          ) / completedWork.length
         : 0;
 
     return {
@@ -203,7 +208,10 @@ class DatabaseSPARCBridge extends EventEmitter {
         totalAssignments: activeAssignments.length + completedWork.length,
         completedAssignments: completedWork.length,
         averageCompletionTime: averageTime,
-        successRate: completedWork.length > 0 ? successfulCompletions / completedWork.length : 0,
+        successRate:
+          completedWork.length > 0
+            ? successfulCompletions / completedWork.length
+            : 0,
       },
     };
   }
@@ -218,11 +226,13 @@ class DatabaseSPARCBridge extends EventEmitter {
 
     // Find the original assignment
     const assignment = Array.from(this.activeAssignments.values()).find(
-      (a) => a.document.id === sparcTask.sourceDocument.id
+      (a) => a.document.id === sparcTask.sourceDocument.id,
     );
 
     if (!assignment) {
-      logger.error(`No assignment found for completed SPARC task: ${sparcTask.id}`);
+      logger.error(
+        `No assignment found for completed SPARC task: ${sparcTask.id}`,
+      );
       return;
     }
 
@@ -255,16 +265,23 @@ class DatabaseSPARCBridge extends EventEmitter {
    */
   private async updateDocumentWithResults(
     assignment: WorkAssignment,
-    result: ImplementationResult
+    result: ImplementationResult,
   ): Promise<void> {
     const document = assignment.document;
 
     // Update document with SPARC implementation details
     const updatedDocument = {
       ...document,
-      status: result?.status === 'completed' ? ('approved' as const) : ('draft' as const),
+      status:
+        result?.status === 'completed'
+          ? ('approved' as const)
+          : ('draft' as const),
       completion_percentage:
-        result?.status === 'completed' ? 100 : result?.status === 'partial' ? 75 : 0,
+        result?.status === 'completed'
+          ? 100
+          : result?.status === 'partial'
+            ? 75
+            : 0,
       workflow_stage: 'sparc-completed',
       // Add SPARC-specific fields
       sparc_implementation: {
@@ -292,13 +309,18 @@ class DatabaseSPARCBridge extends EventEmitter {
    *
    * @param sparcTask
    */
-  private extractArtifacts(sparcTask: SPARCTask): ImplementationResult['artifacts'] {
+  private extractArtifacts(
+    sparcTask: SPARCTask,
+  ): ImplementationResult['artifacts'] {
     const phases = Object.values(sparcTask.phaseProgress);
     return {
-      specification: phases.find((p) => p.phase === 'specification')?.artifacts || [],
+      specification:
+        phases.find((p) => p.phase === 'specification')?.artifacts || [],
       pseudocode: phases.find((p) => p.phase === 'pseudocode')?.artifacts || [],
-      architecture: phases.find((p) => p.phase === 'architecture')?.artifacts || [],
-      implementation: phases.find((p) => p.phase === 'completion')?.artifacts || [],
+      architecture:
+        phases.find((p) => p.phase === 'architecture')?.artifacts || [],
+      implementation:
+        phases.find((p) => p.phase === 'completion')?.artifacts || [],
       tests:
         phases
           .find((p) => p.phase === 'completion')
@@ -315,14 +337,17 @@ class DatabaseSPARCBridge extends EventEmitter {
    *
    * @param sparcTask
    */
-  private calculateMetrics(sparcTask: SPARCTask): ImplementationResult['metrics'] {
+  private calculateMetrics(
+    sparcTask: SPARCTask,
+  ): ImplementationResult['metrics'] {
     const phases = Object.values(sparcTask.phaseProgress);
     const allAgents = phases.flatMap((p) => p.metrics.agentsInvolved);
 
     // Calculate total time
     const startTime = phases[0]?.metrics?.startTime;
     const endTime = phases[phases.length - 1]?.metrics?.endTime;
-    const totalTime = startTime && endTime ? endTime.getTime() - startTime.getTime() : 0;
+    const totalTime =
+      startTime && endTime ? endTime.getTime() - startTime.getTime() : 0;
 
     // Calculate phase times
     const phaseTimes: Record<string, number> = {};
@@ -336,7 +361,8 @@ class DatabaseSPARCBridge extends EventEmitter {
     // Calculate quality score based on validation results
     const validationScores = phases.map((p) => p.validation?.score || 0);
     const qualityScore =
-      validationScores.reduce((sum, score) => sum + score, 0) / (validationScores.length || 1);
+      validationScores.reduce((sum, score) => sum + score, 0) /
+      (validationScores.length || 1);
 
     return {
       totalTimeMs: totalTime,
@@ -374,7 +400,7 @@ ${phases
 - **Artifacts**: ${phase.artifacts?.length || 0}
 - **Quality Score**: ${((phase.validation?.score || 0) * 100).toFixed(1)}%
 - **Iterations**: ${phase.metrics?.iterationsCount || 0}
-`
+`,
   )
   .join('\n')}
 
@@ -401,9 +427,15 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
       const { document } = event;
 
       // Auto-assign Features and Tasks to SPARC swarm if they meet criteria
-      if (document.type === 'feature' && this.shouldAutoAssignToSparc(document)) {
+      if (
+        document.type === 'feature' &&
+        this.shouldAutoAssignToSparc(document)
+      ) {
         await this.assignFeatureToSparcs(document as FeatureDocumentEntity);
-      } else if (document.type === 'task' && this.shouldAutoAssignToSparc(document)) {
+      } else if (
+        document.type === 'task' &&
+        this.shouldAutoAssignToSparc(document)
+      ) {
         await this.assignTaskToSparcs(document as TaskDocumentEntity);
       }
     });
@@ -418,7 +450,9 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
     });
 
     this.sparcSwarm.on('sparc:phase:completed', (event) => {
-      logger.debug(`SPARC phase ${event.phase} completed for ${event.sparcTask.id}`);
+      logger.debug(
+        `SPARC phase ${event.phase} completed for ${event.sparcTask.id}`,
+      );
       this.emit('sparc:phase:update', event);
     });
   }
@@ -454,7 +488,9 @@ This implementation used the SPARC methodology (Specification → Pseudocode →
    *
    * @param priority
    */
-  private mapPriority(priority: string): 'low' | 'medium' | 'high' | 'critical' {
+  private mapPriority(
+    priority: string,
+  ): 'low' | 'medium' | 'high' | 'critical' {
     const mapping: Record<string, 'low' | 'medium' | 'high' | 'critical'> = {
       low: 'low',
       medium: 'medium',

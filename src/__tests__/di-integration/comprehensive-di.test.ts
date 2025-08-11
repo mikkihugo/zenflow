@@ -234,8 +234,8 @@ describe('DI System Comprehensive Integration', () => {
 
     it('should detect circular dependencies', () => {
       // Arrange
-      const TOKEN_A = createToken<any>('ServiceA');
-      const TOKEN_B = createToken<any>('ServiceB');
+      const TOKEN_A = createToken<unknown>('ServiceA');
+      const TOKEN_B = createToken<unknown>('ServiceB');
 
       container.register(TOKEN_A, new SingletonProvider((c) => ({ dep: c.resolve(TOKEN_B) })));
       container.register(TOKEN_B, new SingletonProvider((c) => ({ dep: c.resolve(TOKEN_A) })));

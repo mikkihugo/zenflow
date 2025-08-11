@@ -5,8 +5,14 @@
  * Adds 'safety' mode to main.ts and provides integration hooks.
  */
 
-import type { AIInteractionData, DeceptionAlert } from './ai-deception-detector.ts';
-import { type AISafetyOrchestrator, createAISafetyOrchestrator } from './safety-orchestrator.ts';
+import type {
+  AIInteractionData,
+  DeceptionAlert,
+} from './ai-deception-detector.ts';
+import {
+  type AISafetyOrchestrator,
+  createAISafetyOrchestrator,
+} from './safety-orchestrator.ts';
 
 /**
  * Global safety orchestrator instance.
@@ -66,7 +72,7 @@ export async function initializeAISafetySystem(): Promise<AISafetyOrchestrator> 
 export async function monitorAIInteraction(
   response: string,
   toolCalls: string[],
-  agentId: string = 'unknown'
+  agentId: string = 'unknown',
 ): Promise<DeceptionAlert[]> {
   if (!globalSafetyOrchestrator) {
     await initializeAISafetySystem();

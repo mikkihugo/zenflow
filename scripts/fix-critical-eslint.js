@@ -11,7 +11,9 @@ logger.info('🔧 Fixing Critical ESLint Issues...');
 // 1. Fix console.log issues in scripts (comment them out)
 const scriptsDir = './scripts';
 if (fs.existsSync(scriptsDir)) {
-  const scriptFiles = fs.readdirSync(scriptsDir).filter((f) => f.endsWith('.js'));
+  const scriptFiles = fs
+    .readdirSync(scriptsDir)
+    .filter((f) => f.endsWith('.js'));
 
   scriptFiles.forEach((file) => {
     const filePath = path.join(scriptsDir, file);
@@ -20,7 +22,10 @@ if (fs.existsSync(scriptsDir)) {
     // Comment out console.log statements
     const originalLength = content.length;
     content = content.replace(/^(\s*)console\.log\(/gm, '$1// console.log(');
-    content = content.replace(/^(\s*)console\.error\(/gm, '$1// console.error(');
+    content = content.replace(
+      /^(\s*)console\.error\(/gm,
+      '$1// console.error(',
+    );
 
     if (content.length !== originalLength) {
       fs.writeFileSync(filePath, content);
@@ -101,11 +106,13 @@ if (fs.existsSync(packagePath)) {
 
   // Add development linting and JSDoc scripts
   pkg.scripts = pkg.scripts || {};
-  pkg.scripts['lint:dev'] = 'eslint . --config eslint.config.dev.js --cache --fix';
+  pkg.scripts['lint:dev'] =
+    'eslint . --config eslint.config.dev.js --cache --fix';
   pkg.scripts['lint:strict'] = pkg.scripts['lint'] || 'eslint . --cache --fix';
   pkg.scripts['docs:generate'] =
     'typedoc src --out docs/api --theme default --plugin typedoc-plugin-missing-exports';
-  pkg.scripts['docs:serve'] = 'python3 -m http.server 8080 --directory docs/api';
+  pkg.scripts['docs:serve'] =
+    'python3 -m http.server 8080 --directory docs/api';
   pkg.scripts['gts:init'] = 'gts init -y';
   pkg.scripts['gts:fix'] = 'gts fix';
 
@@ -116,12 +123,16 @@ if (fs.existsSync(packagePath)) {
 logger.info('\n🎯 Google-style ESLint improvements applied!');
 logger.info('\nDevelopment Usage:');
 logger.info('  npm run lint:dev        # Google-style dev linting (warnings)');
-logger.info('  npm run lint:strict     # Full strict linting for CI/production');
+logger.info(
+  '  npm run lint:strict     # Full strict linting for CI/production',
+);
 logger.info('  npm run gts:fix         # Google TypeScript Style auto-fix');
 
 logger.info('\nJSDoc & Documentation:');
 logger.info('  npm run docs:generate   # Auto-generate JSDoc documentation');
-logger.info('  npm run docs:serve      # Serve docs on http://localhost:3000/docs');
+logger.info(
+  '  npm run docs:serve      # Serve docs on http://localhost:3000/docs',
+);
 
 logger.info('\n📊 Expected results:');
 logger.info('  • Google TypeScript Style compliance');

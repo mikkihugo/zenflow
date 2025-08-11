@@ -72,7 +72,12 @@ async function testWasmLoading() {
 async function testWasmMemory() {
   try {
     // Check WASM files exist
-    const wasmPath = path.join(__dirname, '..', 'wasm', 'ruv_swarm_wasm_bg.wasm');
+    const wasmPath = path.join(
+      __dirname,
+      '..',
+      'wasm',
+      'ruv_swarm_wasm_bg.wasm',
+    );
     const wasmStats = await fs.stat(wasmPath);
 
     results.tests.push({
@@ -178,19 +183,19 @@ async function testNoFallback() {
 
     console.warn = originalWarn;
 
-    if (!fallbackDetected) {
-      results.tests.push({
-        name: 'No Fallback Mode',
-        status: 'passed',
-        message: 'WASM loaded without fallback',
-      });
-    } else {
+    if (fallbackDetected) {
       results.tests.push({
         name: 'No Fallback Mode',
         status: 'failed',
         message: 'Fallback mode was triggered',
       });
       results.summary.failed++;
+    } else {
+      results.tests.push({
+        name: 'No Fallback Mode',
+        status: 'passed',
+        message: 'WASM loaded without fallback',
+      });
     }
   } catch (error) {
     results.tests.push({
@@ -206,12 +211,24 @@ async function testNoFallback() {
 async function generateReport() {
   // Calculate summary
   results.summary.total = results.tests.length;
-  results.summary.passed = results.tests.filter((t) => t.status === 'passed').length;
-  results.summary.failed = results.tests.filter((t) => t.status === 'failed').length;
-  results.summary.passRate = ((results.summary.passed / results.summary.total) * 100).toFixed(2);
+  results.summary.passed = results.tests.filter(
+    (t) => t.status === 'passed',
+  ).length;
+  results.summary.failed = results.tests.filter(
+    (t) => t.status === 'failed',
+  ).length;
+  results.summary.passRate = (
+    (results.summary.passed / results.summary.total) *
+    100
+  ).toFixed(2);
 
   // Save results
-  const resultsPath = path.join(__dirname, '..', 'test-results', 'wasm-validation.json');
+  const resultsPath = path.join(
+    __dirname,
+    '..',
+    'test-results',
+    'wasm-validation.json',
+  );
   await fs.mkdir(path.dirname(resultsPath), { recursive: true });
   await fs.writeFile(resultsPath, JSON.stringify(results, null, 2));
 

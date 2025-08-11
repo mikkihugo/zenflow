@@ -86,52 +86,56 @@ pub mod traits;
 
 // Re-export ruv-FANN types for convenience
 pub use ruv_fann::{
-    ActivationFunction, Network, NetworkBuilder, TrainingAlgorithm, TrainingData,
+  ActivationFunction, Network, NetworkBuilder, TrainingAlgorithm, TrainingData,
 };
 
 // Public API re-exports - specific exports to avoid ambiguity
 pub use crate::{
-    config::{
-        SystemConfig, GenericModelConfig, LoggingConfig,
-        PerformanceConfig, ParallelConfig, DataFormat, DebugConfig, FeatureFlags, ConfigManager,
-        ModelConfigBuilder, ConfigMetadata, MemoryConfig, ThreadPoolConfig, IoConfig,
-        ValidationResult as ConfigValidationResult,
-        ValidationError as ConfigValidationError,
-        ValidationWarning as ConfigValidationWarning,
-    },
-    data::{
-        TimeSeriesDataset, DatasetMetadata, TimeSeriesDataFrame, TimeSeriesSchema, SeriesData,
-        PreprocessingConfig, MissingValueStats,
-        ValidationReport as DataValidationReport,
-        ValidationError as DataValidationError,
-        ValidationWarning as DataValidationWarning,
-        ScalingConfig, ScalingMethod as DataScalingMethod,
-        RollingStatistic as DataRollingStatistic,
-    },
-    error::*,
-    integration::{
-        NetworkAdapter, ActivationMapper,
-        ScalingMethod as IntegrationScalingMethod, RollingStatistic as IntegrationRollingStatistic,
-    },
-    traits::*,
+  config::{
+    ConfigManager, ConfigMetadata, DataFormat, DebugConfig, FeatureFlags,
+    GenericModelConfig, IoConfig, LoggingConfig, MemoryConfig,
+    ModelConfigBuilder, ParallelConfig, PerformanceConfig, SystemConfig,
+    ThreadPoolConfig, ValidationError as ConfigValidationError,
+    ValidationResult as ConfigValidationResult,
+    ValidationWarning as ConfigValidationWarning,
+  },
+  data::{
+    DatasetMetadata, MissingValueStats, PreprocessingConfig,
+    RollingStatistic as DataRollingStatistic, ScalingConfig,
+    ScalingMethod as DataScalingMethod, SeriesData, TimeSeriesDataFrame,
+    TimeSeriesDataset, TimeSeriesSchema,
+    ValidationError as DataValidationError,
+    ValidationReport as DataValidationReport,
+    ValidationWarning as DataValidationWarning,
+  },
+  error::*,
+  integration::{
+    ActivationMapper, NetworkAdapter,
+    RollingStatistic as IntegrationRollingStatistic,
+    ScalingMethod as IntegrationScalingMethod,
+  },
+  traits::*,
 };
 
 /// Commonly used types and traits for convenient importing
 pub mod prelude {
-    pub use crate::{
-        config::ModelConfigBuilder,
-        traits::ModelConfig,
-        data::{TimeSeriesDataFrame, TimeSeriesDataset, TimeSeriesDatasetBuilder, TimeSeriesSchema},
-        error::{NeuroDivergentError, NeuroDivergentResult},
-        integration::{NetworkAdapter, TrainingBridge},
-        traits::{BaseModel, ForecastingEngine, ModelState},
-    };
-    
-    // Essential external types
-    pub use chrono::{DateTime, Utc};
-    pub use num_traits::Float;
-    pub use polars::prelude::*;
-    pub use serde::{Deserialize, Serialize};
+  pub use crate::{
+    config::ModelConfigBuilder,
+    data::{
+      TimeSeriesDataFrame, TimeSeriesDataset, TimeSeriesDatasetBuilder,
+      TimeSeriesSchema,
+    },
+    error::{NeuroDivergentError, NeuroDivergentResult},
+    integration::{NetworkAdapter, TrainingBridge},
+    traits::ModelConfig,
+    traits::{BaseModel, ForecastingEngine, ModelState},
+  };
+
+  // Essential external types
+  pub use chrono::{DateTime, Utc};
+  pub use num_traits::Float;
+  pub use polars::prelude::*;
+  pub use serde::{Deserialize, Serialize};
 }
 
 /// Library version information
@@ -145,23 +149,23 @@ pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+  use super::*;
 
-    #[test]
-    fn test_version_info() {
-        assert!(!VERSION.is_empty());
-        assert!(!NAME.is_empty());
-        assert!(!DESCRIPTION.is_empty());
-    }
+  #[test]
+  fn test_version_info() {
+    assert!(!VERSION.is_empty());
+    assert!(!NAME.is_empty());
+    assert!(!DESCRIPTION.is_empty());
+  }
 
-    #[test]
-    fn test_prelude_imports() {
-        // Ensure all prelude imports are accessible
-        use crate::prelude::*;
-        
-        // Test that we can reference the main types
-        let _: Option<TimeSeriesSchema> = None;
-        let _: Option<NeuroDivergentError> = None;
-        let _: Option<ModelConfigBuilder<f64>> = None;
-    }
+  #[test]
+  fn test_prelude_imports() {
+    // Ensure all prelude imports are accessible
+    use crate::prelude::*;
+
+    // Test that we can reference the main types
+    let _: Option<TimeSeriesSchema> = None;
+    let _: Option<NeuroDivergentError> = None;
+    let _: Option<ModelConfigBuilder<f64>> = None;
+  }
 }

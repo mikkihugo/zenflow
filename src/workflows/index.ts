@@ -17,7 +17,10 @@ export type {
   WorkflowStep,
 } from './workflow-engine.ts';
 // Primary exports from unified engine
-export { WorkflowEngine, WorkflowEngine as default } from './workflow-engine.ts';
+export {
+  WorkflowEngine,
+  WorkflowEngine as default,
+} from './workflow-engine.ts';
 
 // Import for factory use
 import { WorkflowEngine } from './workflow-engine.ts';
@@ -57,7 +60,12 @@ export const WorkflowUtils = {
    * @param output
    * @param name
    */
-  createTransformStep: (input: string, transformation: any, output?: string, name?: string) => ({
+  createTransformStep: (
+    input: string,
+    transformation: any,
+    output?: string,
+    name?: string,
+  ) => ({
     type: 'transform',
     name: name || 'Transform Data',
     params: { input, transformation },
@@ -72,7 +80,12 @@ export const WorkflowUtils = {
    * @param elseStep
    * @param name
    */
-  createConditionStep: (condition: string, thenStep: any, elseStep?: any, name?: string) => ({
+  createConditionStep: (
+    condition: string,
+    thenStep: any,
+    elseStep?: any,
+    name?: string,
+  ) => ({
     type: 'condition',
     name: name || 'Conditional Step',
     params: { condition, thenStep, elseStep },
@@ -109,11 +122,13 @@ export const WorkflowUtils = {
    * @param workflow
    */
   validateWorkflow: (workflow: any): boolean => {
-    if (!workflow.name || !workflow.steps || !Array.isArray(workflow.steps)) {
+    if (!(workflow.name && workflow.steps && Array.isArray(workflow.steps))) {
       return false;
     }
 
-    return workflow.steps.every((step: any) => step.type && typeof step.type === 'string');
+    return workflow.steps.every(
+      (step: any) => step.type && typeof step.type === 'string',
+    );
   },
 
   /**
@@ -138,7 +153,10 @@ export class WorkflowFactory {
    * @param config
    * @param instanceKey
    */
-  static getInstance(config: any = {}, instanceKey = 'default'): WorkflowEngine {
+  static getInstance(
+    config: any = {},
+    instanceKey = 'default',
+  ): WorkflowEngine {
     if (!WorkflowFactory.instances.has(instanceKey)) {
       const engine = new WorkflowEngine(config);
       WorkflowFactory.instances.set(instanceKey, engine);

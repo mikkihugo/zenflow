@@ -8,7 +8,7 @@ export interface LogEntry {
   level: 'debug' | 'info' | 'warn' | 'error';
   message: string;
   timestamp: number;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   testName?: string;
   category?: string;
 }
@@ -29,7 +29,7 @@ export class TestLogger {
    * @param message
    * @param context
    */
-  debug(message: string, context?: Record<string, any>): void {
+  debug(message: string, context?: Record<string, unknown>): void {
     this.log('debug', message, context);
   }
 
@@ -39,7 +39,7 @@ export class TestLogger {
    * @param message
    * @param context
    */
-  info(message: string, context?: Record<string, any>): void {
+  info(message: string, context?: Record<string, unknown>): void {
     this.log('info', message, context);
   }
 
@@ -49,7 +49,7 @@ export class TestLogger {
    * @param message
    * @param context
    */
-  warn(message: string, context?: Record<string, any>): void {
+  warn(message: string, context?: Record<string, unknown>): void {
     this.log('warn', message, context);
   }
 
@@ -59,7 +59,7 @@ export class TestLogger {
    * @param message
    * @param context
    */
-  error(message: string, context?: Record<string, any>): void {
+  error(message: string, context?: Record<string, unknown>): void {
     this.log('error', message, context);
   }
 
@@ -71,7 +71,7 @@ export class TestLogger {
    * @param args
    * @param result
    */
-  logInteraction(component: string, method: string, args?: any[], result?: any): void {
+  logInteraction(component: string, method: string, args?: unknown[], result?: any): void {
     this.log('debug', `Interaction: ${component}.${method}`, {
       component,
       method,
@@ -106,7 +106,7 @@ export class TestLogger {
    * @param duration
    * @param context
    */
-  logPerformance(operation: string, duration: number, context?: Record<string, any>): void {
+  logPerformance(operation: string, duration: number, context?: Record<string, unknown>): void {
     this.log('info', `Performance: ${operation} took ${duration}ms`, {
       operation,
       duration,
@@ -197,7 +197,7 @@ export class TestLogger {
     return child;
   }
 
-  private log(level: LogEntry['level'], message: string, context?: Record<string, any>): void {
+  private log(level: LogEntry['level'], message: string, context?: Record<string, unknown>): void {
     const entry: LogEntry = {
       level,
       message,

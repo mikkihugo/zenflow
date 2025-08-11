@@ -67,7 +67,10 @@ class WasmMemoryPool {
       return {
         id: allocation.id,
         offset: freeBlock.offset,
-        ptr: pool.memory.buffer.slice(freeBlock.offset, freeBlock.offset + alignedSize),
+        ptr: pool.memory.buffer.slice(
+          freeBlock.offset,
+          freeBlock.offset + alignedSize,
+        ),
       };
     }
 
@@ -77,7 +80,9 @@ class WasmMemoryPool {
 
     if (newOffset + alignedSize > currentSize) {
       // Need to grow memory
-      const requiredPages = Math.ceil((newOffset + alignedSize - currentSize) / (64 * 1024));
+      const requiredPages = Math.ceil(
+        (newOffset + alignedSize - currentSize) / (64 * 1024),
+      );
       try {
         pool.memory.grow(requiredPages);
       } catch (error) {
@@ -268,7 +273,9 @@ class WasmMemoryPool {
     }
 
     // Sort allocations by offset
-    const allocations = Array.from(pool.allocations.values()).sort((a, b) => a.offset - b.offset);
+    const allocations = Array.from(pool.allocations.values()).sort(
+      (a, b) => a.offset - b.offset,
+    );
 
     let newOffset = 0;
     const moves = [];
@@ -296,7 +303,12 @@ class WasmMemoryPool {
     pool.allocated = newOffset;
     pool.freeBlocks =
       newOffset < pool.memory.buffer.byteLength
-        ? [{ offset: newOffset, size: pool.memory.buffer.byteLength - newOffset }]
+        ? [
+            {
+              offset: newOffset,
+              size: pool.memory.buffer.byteLength - newOffset,
+            },
+          ]
         : [];
   }
 }
@@ -377,7 +389,7 @@ class ProgressiveWasmLoader {
    */
   async processLoadingQueue() {
     for (const priority of Object.keys(this.priorityLevels).sort(
-      (a, b) => this.priorityLevels[a] - this.priorityLevels[b]
+      (a, b) => this.priorityLevels[a] - this.priorityLevels[b],
     )) {
       const queue = this.loadingQueues.get(priority);
       if (!queue || queue.length === 0) {
@@ -429,7 +441,7 @@ class ProgressiveWasmLoader {
       // Allocate memory for module
       const memoryAllocation = this.memoryPool.allocate(
         moduleId,
-        module.size || wasmBytes.byteLength * 2
+        module.size || wasmBytes.byteLength * 2,
       );
 
       module.memoryAllocations.add(memoryAllocation.id);
@@ -524,7 +536,10 @@ class ProgressiveWasmLoader {
     // Load critical modules first
     const criticalModules = Array.from(this.loadedModules.values())
       .filter((m) => m.priority === 'critical' || m.preload)
-      .sort((a, b) => this.priorityLevels[a.priority] - this.priorityLevels[b.priority]);
+      .sort(
+        (a, b) =>
+          this.priorityLevels[a.priority] - this.priorityLevels[b.priority],
+      );
 
     for (const module of criticalModules) {
       await this.loadModule(module.id);
@@ -532,8 +547,11 @@ class ProgressiveWasmLoader {
 
     // Load remaining modules in background
     const remainingModules = Array.from(this.loadedModules.values())
-      .filter((m) => !m.loaded && !m.loading)
-      .sort((a, b) => this.priorityLevels[a.priority] - this.priorityLevels[b.priority]);
+      .filter((m) => !(m.loaded || m.loading))
+      .sort(
+        (a, b) =>
+          this.priorityLevels[a.priority] - this.priorityLevels[b.priority],
+      );
 
     // Load with delay to prevent blocking
     let delay = 0;
@@ -548,7 +566,8 @@ class ProgressiveWasmLoader {
    */
   async loadAllModules() {
     const modules = Array.from(this.loadedModules.values()).sort(
-      (a, b) => this.priorityLevels[a.priority] - this.priorityLevels[b.priority]
+      (a, b) =>
+        this.priorityLevels[a.priority] - this.priorityLevels[b.priority],
     );
 
     await Promise.all(modules.map((m) => this.loadModule(m.id)));
@@ -574,7 +593,7 @@ class ProgressiveWasmLoader {
    */
   unloadModule(moduleId) {
     const module = this.loadedModules.get(moduleId);
-    if (!module || !module.loaded) {
+    if (!(module && module.loaded)) {
       return false;
     }
 
@@ -607,7 +626,8 @@ class ProgressiveWasmLoader {
         loadTime: m.instance?.loadTime || 0,
       })),
       averageLoadTime:
-        loaded.reduce((acc, m) => acc + (m.instance?.loadTime || 0), 0) / loaded.length,
+        loaded.reduce((acc, m) => acc + (m.instance?.loadTime || 0), 0) /
+        loaded.length,
     };
   }
 

@@ -18,7 +18,10 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator.ts';
 import type { SAFeIntegrationConfig, ValueStream } from './index.ts';
 import type { ValueStreamMapper } from './value-stream-mapper.ts';
@@ -158,7 +161,12 @@ export enum AutomationType {
  * Automation trigger
  */
 export interface AutomationTrigger {
-  readonly event: 'stage_start' | 'stage_complete' | 'gate_pass' | 'gate_fail' | 'manual';
+  readonly event:
+    | 'stage_start'
+    | 'stage_complete'
+    | 'gate_pass'
+    | 'gate_fail'
+    | 'manual';
   readonly conditions: string[];
   readonly delay: number; // milliseconds
 }
@@ -167,8 +175,13 @@ export interface AutomationTrigger {
  * Automation action
  */
 export interface AutomationAction {
-  readonly type: 'command' | 'api_call' | 'notification' | 'gate_check' | 'deployment';
-  readonly configuration: any;
+  readonly type:
+    | 'command'
+    | 'api_call'
+    | 'notification'
+    | 'gate_check'
+    | 'deployment';
+  readonly configuration: unknown;
   readonly timeout: number;
   readonly retryOnFailure: boolean;
   readonly rollbackOnFailure: boolean;
@@ -185,7 +198,7 @@ export interface PipelineExecutionContext {
   readonly initiator: string;
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
   readonly environment: 'development' | 'staging' | 'production';
-  readonly metadata: Record<string, any>;
+  readonly metadata: Record<string, unknown>;
   readonly startTime: Date;
   readonly timeoutAt: Date;
 }
@@ -278,12 +291,17 @@ export interface CriterionResult {
 export interface PipelineArtifact {
   readonly id: string;
   readonly name: string;
-  readonly type: 'binary' | 'report' | 'log' | 'configuration' | 'documentation';
+  readonly type:
+    | 'binary'
+    | 'report'
+    | 'log'
+    | 'configuration'
+    | 'documentation';
   readonly location: string;
   readonly size: number; // bytes
   readonly checksum: string;
   readonly createdAt: Date;
-  readonly metadata: Record<string, any>;
+  readonly metadata: Record<string, unknown>;
 }
 
 /**
@@ -366,7 +384,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
     memory: MemorySystem,
     swarmOrchestrator: SwarmExecutionOrchestrator,
     valueStreamMapper: ValueStreamMapper,
-    config: Partial<CDPipelineConfig> = {}
+    config: Partial<CDPipelineConfig> = {},
   ) {
     super();
 
@@ -472,7 +490,8 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
     pipelineTemplates.set('standard', standardPipeline);
 
     // Create microservice pipeline template
-    const microservicePipeline = await this.createMicroservicePipelineFromSPARC();
+    const microservicePipeline =
+      await this.createMicroservicePipelineFromSPARC();
     pipelineTemplates.set('microservice', microservicePipeline);
 
     // Create library pipeline template
@@ -496,7 +515,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
     sparcProjectId: string,
     featureId: string,
     valueStreamId: string,
-    pipelineType: string = 'standard'
+    pipelineType: string = 'standard',
   ): Promise<string> {
     this.logger.info('Starting CD pipeline for SPARC project', {
       sparcProjectId,
@@ -614,7 +633,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   async executeQualityGate(
     gateId: string,
     pipelineId: string,
-    stageId: string
+    stageId: string,
   ): Promise<QualityGateResult> {
     const gate = this.state.qualityGateTemplates.get(gateId);
     if (!gate) {
@@ -643,7 +662,8 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
     // Determine status
     let status: 'pass' | 'fail' | 'warning' = 'pass';
     const criticalFailures = criterionResults.filter(
-      (r) => !r.passed && gate.criteria.find((c) => c.metric === r.metric)?.critical
+      (r) =>
+        !r.passed && gate.criteria.find((c) => c.metric === r.metric)?.critical,
     );
 
     if (criticalFailures.length > 0) {
@@ -658,7 +678,11 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
       score: finalScore,
       criterionResults,
       executionTime: Date.now() - startTime,
-      message: this.generateGateResultMessage(status, finalScore, criticalFailures.length),
+      message: this.generateGateResultMessage(
+        status,
+        finalScore,
+        criticalFailures.length,
+      ),
       recommendations: await this.generateGateRecommendations(criterionResults),
       timestamp: new Date(),
     };
@@ -684,7 +708,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   async executeDeploymentAutomation(
     pipelineId: string,
     environment: string,
-    artifacts: PipelineArtifact[]
+    artifacts: PipelineArtifact[],
   ): Promise<void> {
     this.logger.info('Executing deployment automation', {
       pipelineId,
@@ -712,7 +736,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
         await this.updateValueStreamDeploymentMetrics(
           execution.context.valueStreamId,
           execution,
-          environment
+          environment,
         );
       }
 
@@ -797,8 +821,12 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
           ...persistedState,
           pipelineTemplates: new Map(persistedState.pipelineTemplates || []),
           activePipelines: new Map(persistedState.activePipelines || []),
-          qualityGateTemplates: new Map(persistedState.qualityGateTemplates || []),
-          automationTemplates: new Map(persistedState.automationTemplates || []),
+          qualityGateTemplates: new Map(
+            persistedState.qualityGateTemplates || [],
+          ),
+          automationTemplates: new Map(
+            persistedState.automationTemplates || [],
+          ),
           performanceMetrics: new Map(persistedState.performanceMetrics || []),
         };
         this.logger.info('CD Pipeline Manager state loaded');
@@ -814,8 +842,12 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
         ...this.state,
         pipelineTemplates: Array.from(this.state.pipelineTemplates.entries()),
         activePipelines: Array.from(this.state.activePipelines.entries()),
-        qualityGateTemplates: Array.from(this.state.qualityGateTemplates.entries()),
-        automationTemplates: Array.from(this.state.automationTemplates.entries()),
+        qualityGateTemplates: Array.from(
+          this.state.qualityGateTemplates.entries(),
+        ),
+        automationTemplates: Array.from(
+          this.state.automationTemplates.entries(),
+        ),
         performanceMetrics: Array.from(this.state.performanceMetrics.entries()),
       };
 
@@ -858,9 +890,12 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
       await this.handleSPARCProjectCompletion(event.payload);
     });
 
-    this.eventBus.registerHandler('feature-ready-for-deployment', async (event) => {
-      await this.handleFeatureDeploymentRequest(event.payload);
-    });
+    this.eventBus.registerHandler(
+      'feature-ready-for-deployment',
+      async (event) => {
+        await this.handleFeatureDeploymentRequest(event.payload);
+      },
+    );
   }
 
   // Many placeholder implementations would follow...
@@ -870,7 +905,9 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
     return [];
   }
 
-  private async createMicroservicePipelineFromSPARC(): Promise<CDPipelineStage[]> {
+  private async createMicroservicePipelineFromSPARC(): Promise<
+    CDPipelineStage[]
+  > {
     // Placeholder implementation
     return [];
   }
@@ -898,7 +935,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   // Additional placeholder methods would continue...
   private async executePipelineAsync(
     execution: PipelineExecution,
-    stages: CDPipelineStage[]
+    stages: CDPipelineStage[],
   ): Promise<void> {}
   private async createCodeQualityGate(): Promise<QualityGate> {
     return {} as QualityGate;
@@ -917,52 +954,61 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   }
   private async executeCriterion(
     criterion: QualityGateCriterion,
-    pipelineId: string
+    pipelineId: string,
   ): Promise<CriterionResult> {
     return {} as CriterionResult;
   }
   private generateGateResultMessage(
     status: string,
     score: number,
-    criticalFailures: number
+    criticalFailures: number,
   ): string {
     return '';
   }
-  private async generateGateRecommendations(results: CriterionResult[]): Promise<string[]> {
+  private async generateGateRecommendations(
+    results: CriterionResult[],
+  ): Promise<string[]> {
     return [];
   }
   private async validateDeploymentReadiness(
     artifacts: PipelineArtifact[],
-    environment: string
+    environment: string,
   ): Promise<void> {}
   private async executeDeploymentSteps(
     execution: PipelineExecution,
     environment: string,
-    artifacts: PipelineArtifact[]
+    artifacts: PipelineArtifact[],
   ): Promise<void> {}
   private async verifyDeploymentSuccess(
     execution: PipelineExecution,
-    environment: string
+    environment: string,
   ): Promise<void> {}
   private async updateValueStreamDeploymentMetrics(
     streamId: string,
     execution: PipelineExecution,
-    environment: string
+    environment: string,
   ): Promise<void> {}
-  private async executeRollback(execution: PipelineExecution, environment: string): Promise<void> {}
-  private async calculatePipelineMetrics(execution: PipelineExecution): Promise<PipelineMetrics> {
+  private async executeRollback(
+    execution: PipelineExecution,
+    environment: string,
+  ): Promise<void> {}
+  private async calculatePipelineMetrics(
+    execution: PipelineExecution,
+  ): Promise<PipelineMetrics> {
     return {} as PipelineMetrics;
   }
   private async checkPerformanceAlerts(
     execution: PipelineExecution,
-    metrics: PipelineMetrics
+    metrics: PipelineMetrics,
   ): Promise<void> {}
   private async analyzePipelineTrends(): Promise<void> {}
   private async updateValueStreamPipelineMetrics(): Promise<void> {}
   private async cancelActivePipelines(): Promise<void> {}
   private async cleanupCompletedPipelines(): Promise<void> {}
-  private async handleSPARCProjectCompletion(payload: any): Promise<void> {}
-  private async handleFeatureDeploymentRequest(payload: any): Promise<void> {}
+  private async handleSPARCProjectCompletion(payload: unknown): Promise<void> {}
+  private async handleFeatureDeploymentRequest(
+    payload: unknown,
+  ): Promise<void> {}
 }
 
 // ============================================================================
@@ -1001,7 +1047,7 @@ export interface NotificationRule {
 export interface AutomationCondition {
   readonly field: string;
   readonly operator: string;
-  readonly value: any;
+  readonly value: unknown;
 }
 
 export interface AutomationResult {
@@ -1017,7 +1063,7 @@ export interface PipelineError {
   readonly stage: string;
   readonly type: 'validation' | 'execution' | 'timeout' | 'system';
   readonly message: string;
-  readonly details: any;
+  readonly details: unknown;
   readonly timestamp: Date;
   readonly recoverable: boolean;
 }

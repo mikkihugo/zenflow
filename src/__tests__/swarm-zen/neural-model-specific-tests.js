@@ -63,8 +63,10 @@ class ModelSpecificTests {
 
     this.results.lstm.sequentialMemory = {
       testCount: sequences.length,
-      averageAccuracy: results.reduce((a, b) => a + b.accuracy, 0) / results.length,
-      memoryRetention: results.reduce((a, b) => a + b.memoryRetention, 0) / results.length,
+      averageAccuracy:
+        results.reduce((a, b) => a + b.accuracy, 0) / results.length,
+      memoryRetention:
+        results.reduce((a, b) => a + b.memoryRetention, 0) / results.length,
     };
   }
 
@@ -87,7 +89,7 @@ class ModelSpecificTests {
     this.results.attention.multiHead = {
       configurations: results,
       optimalHeads: results.sort(
-        (a, b) => a.accuracy / a.computeTime - b.accuracy / b.computeTime
+        (a, b) => a.accuracy / a.computeTime - b.accuracy / b.computeTime,
       )[0].heads,
       scalability: 'linear',
     };
@@ -113,7 +115,8 @@ class ModelSpecificTests {
     this.results.transformer.parallelization = {
       batchTests: results,
       maxEfficiency: Math.max(...results.map((r) => r.efficiency)),
-      optimalBatch: results.sort((a, b) => b.throughput - a.throughput)[0].batchSize,
+      optimalBatch: results.sort((a, b) => b.throughput - a.throughput)[0]
+        .batchSize,
     };
   }
 
@@ -244,7 +247,10 @@ class ModelSpecificTests {
     const outputDir = path.join(process.cwd(), '.ruv-swarm', 'neural-tests');
     await fs.mkdir(outputDir, { recursive: true });
 
-    const outputFile = path.join(outputDir, `model-specific-tests-${Date.now()}.json`);
+    const outputFile = path.join(
+      outputDir,
+      `model-specific-tests-${Date.now()}.json`,
+    );
     await fs.writeFile(outputFile, JSON.stringify(report, null, 2));
     this.displaySummary();
   }
@@ -252,12 +258,19 @@ class ModelSpecificTests {
   generateSummary() {
     return {
       lstm: {
-        strengths: ['Sequential memory retention', 'Temporal pattern recognition'],
+        strengths: [
+          'Sequential memory retention',
+          'Temporal pattern recognition',
+        ],
         weaknesses: ['Limited parallelization', 'Memory scaling'],
         bestFor: 'Time-series and sequential data',
       },
       attention: {
-        strengths: ['Multi-head focus', 'High accuracy', 'Flexible attention patterns'],
+        strengths: [
+          'Multi-head focus',
+          'High accuracy',
+          'Flexible attention patterns',
+        ],
         weaknesses: ['Quadratic memory scaling', 'Computational complexity'],
         bestFor: 'Complex pattern recognition with global context',
       },
@@ -267,7 +280,11 @@ class ModelSpecificTests {
         bestFor: 'Large-scale parallel processing tasks',
       },
       feedforward: {
-        strengths: ['Ultra-low latency', 'Constant memory usage', 'Simple implementation'],
+        strengths: [
+          'Ultra-low latency',
+          'Constant memory usage',
+          'Simple implementation',
+        ],
         weaknesses: ['No sequential modeling', 'Limited context awareness'],
         bestFor: 'Real-time inference with resource constraints',
       },

@@ -22,11 +22,11 @@ class BatchingTester {
 
     // Analyze single-error files
     const singleErrorFiles = Array.from(errorsByFile.entries()).filter(
-      ([filePath, fileErrors]) => fileErrors.length === 1
+      ([filePath, fileErrors]) => fileErrors.length === 1,
     );
 
     const multiErrorFiles = Array.from(errorsByFile.entries()).filter(
-      ([filePath, fileErrors]) => fileErrors.length > 1
+      ([filePath, fileErrors]) => fileErrors.length > 1,
     );
 
     // console.log(`📦 BATCHING ANALYSIS:`);
@@ -64,7 +64,9 @@ class BatchingTester {
       // console.log(`   ${errorType}: ${files.length} files → ${batches} batches`);
 
       // Show sample files for this error type
-      const sampleFiles = files.slice(0, 5).map((f) => path.basename(f.filePath));
+      const sampleFiles = files
+        .slice(0, 5)
+        .map((f) => path.basename(f.filePath));
       // console.log(`      Samples: ${sampleFiles.join(', ')}${files.length > 5 ? ', ...' : ''}`);
     }
 
@@ -93,7 +95,10 @@ class BatchingTester {
   }
 
   categorizeErrorType(error) {
-    if (error.code === 'TS2307' || error.message.includes('Cannot find module')) {
+    if (
+      error.code === 'TS2307' ||
+      error.message.includes('Cannot find module')
+    ) {
       return 'Module Resolution';
     }
     if (error.code === 'TS2304' || error.message.includes('Cannot find name')) {
@@ -111,7 +116,8 @@ class BatchingTester {
     }
     if (
       error.code === 'TS2339' ||
-      (error.message.includes('Property') && error.message.includes('does not exist'))
+      (error.message.includes('Property') &&
+        error.message.includes('does not exist'))
     ) {
       return 'Missing Properties';
     }
@@ -138,7 +144,7 @@ class BatchingTester {
           stdio: 'pipe',
           cwd: path.resolve(__dirname, '..'),
           env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=2048' },
-        }
+        },
       );
 
       let stdout = '';
@@ -163,12 +169,14 @@ class BatchingTester {
     const lines = output.split('\n');
 
     for (const line of lines) {
-      const match = line.match(/^(.+\.tsx?)\((\d+),(\d+)\): error (TS\d+): (.+)$/);
+      const match = line.match(
+        /^(.+\.tsx?)\((\d+),(\d+)\): error (TS\d+): (.+)$/,
+      );
       if (match) {
         errors.push({
           file: path.resolve(__dirname, '..', match[1]),
-          line: parseInt(match[2]),
-          column: parseInt(match[3]),
+          line: Number.parseInt(match[2]),
+          column: Number.parseInt(match[3]),
           code: match[4],
           message: match[5],
         });

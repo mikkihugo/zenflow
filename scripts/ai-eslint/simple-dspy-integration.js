@@ -60,7 +60,9 @@ export class SimpleDSPyIntegration {
         this.baseURL = 'https://api.openai.com/v1';
         console.log('   🤖 Using OpenAI with gpt-4o-mini');
       } else {
-        throw new Error('No API key available. Set GITHUB_TOKEN (free) or OPENAI_API_KEY');
+        throw new Error(
+          'No API key available. Set GITHUB_TOKEN (free) or OPENAI_API_KEY',
+        );
       }
 
       // 🧠 Define DSPy Signatures
@@ -69,7 +71,9 @@ export class SimpleDSPyIntegration {
       // Load existing optimizations
       await this.loadOptimizations();
 
-      console.log('🧠 Simple DSPy Integration initialized with real methodology');
+      console.log(
+        '🧠 Simple DSPy Integration initialized with real methodology',
+      );
       this.isInitialized = true;
     } catch (error) {
       console.error('Failed to initialize Simple DSPy:', error.message);
@@ -85,7 +89,8 @@ export class SimpleDSPyIntegration {
     this.signatures.set('analyze_errors', {
       inputs: ['errorMessages', 'fileContent'],
       outputs: ['analysis', 'strategy', 'confidence'],
-      description: 'Analyze TypeScript compilation errors and provide repair strategies',
+      description:
+        'Analyze TypeScript compilation errors and provide repair strategies',
       basePrompt: `You are a TypeScript expert. Analyze the given errors and provide a repair strategy.
 
 Errors: {errorMessages}
@@ -137,7 +142,9 @@ Provide the fix as JSON:
 
       // Extract errors from prompt
       const errors = this.extractErrorsFromPrompt(prompt);
-      console.log(`   🔍 Processing ${errors.length} errors with DSPy methodology`);
+      console.log(
+        `   🔍 Processing ${errors.length} errors with DSPy methodology`,
+      );
 
       // 🧠 Step 1: DSPy Error Analysis (with optimization)
       const analysisResult = await this.executeSignature('analyze_errors', {
@@ -146,9 +153,11 @@ Provide the fix as JSON:
       });
 
       console.log(
-        `   🎯 DSPy Confidence: ${((analysisResult.confidence || 0.7) * 100).toFixed(1)}%`
+        `   🎯 DSPy Confidence: ${((analysisResult.confidence || 0.7) * 100).toFixed(1)}%`,
       );
-      console.log(`   📝 DSPy Strategy: ${(analysisResult.strategy || '').substring(0, 60)}...`);
+      console.log(
+        `   📝 DSPy Strategy: ${(analysisResult.strategy || '').substring(0, 60)}...`,
+      );
 
       // 🧠 Step 2: DSPy Code Generation (with optimization)
       const fixResult = await this.executeSignature('generate_fix', {
@@ -168,7 +177,10 @@ Provide the fix as JSON:
       // 🧠 DSPy Learning: Store successful examples for optimization
       if (success) {
         this.addTrainingExample('analyze_errors', {
-          inputs: { errorMessages: errors.map((e) => e.message).join('\n'), fileContent },
+          inputs: {
+            errorMessages: errors.map((e) => e.message).join('\n'),
+            fileContent,
+          },
           outputs: analysisResult,
           performance: { cost, duration, success: true },
         });
@@ -190,7 +202,7 @@ Provide the fix as JSON:
       this.updateAverageTime(duration);
 
       console.log(
-        `   ✅ DSPy fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(3)})`
+        `   ✅ DSPy fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(3)})`,
       );
 
       // 🧠 Optimize prompts periodically
@@ -278,7 +290,9 @@ Provide the fix as JSON:
       if (examples.length < 3) continue; // Need examples to optimize
 
       const signature = this.signatures.get(signatureName);
-      const successfulExamples = examples.filter((ex) => ex.performance.success);
+      const successfulExamples = examples.filter(
+        (ex) => ex.performance.success,
+      );
 
       if (successfulExamples.length < 2) continue;
 
@@ -297,7 +311,7 @@ Example ${i + 1}:
 Input: ${JSON.stringify(ex.inputs).substring(0, 200)}...
 Output: ${JSON.stringify(ex.outputs).substring(0, 200)}...
 Performance: ${ex.performance.duration}ms, success: ${ex.performance.success}
-`
+`,
   )
   .join('\n')}
 
@@ -311,7 +325,9 @@ Create an optimized prompt that maintains the same JSON output format but improv
           console.log(`   ✨ Optimized prompt for ${signatureName}`);
         }
       } catch (error) {
-        console.warn(`   ⚠️ Failed to optimize ${signatureName}: ${error.message}`);
+        console.warn(
+          `   ⚠️ Failed to optimize ${signatureName}: ${error.message}`,
+        );
       }
     }
 
@@ -379,8 +395,12 @@ Create an optimized prompt that maintains the same JSON output format but improv
 
     // Keep imports and sample of content
     const lines = content.split('\n');
-    const importLines = lines.filter((line) => line.trim().startsWith('import')).slice(0, 5);
-    const otherLines = lines.filter((line) => !line.trim().startsWith('import'));
+    const importLines = lines
+      .filter((line) => line.trim().startsWith('import'))
+      .slice(0, 5);
+    const otherLines = lines.filter(
+      (line) => !line.trim().startsWith('import'),
+    );
 
     let result = importLines.join('\n') + '\n\n';
     const remaining = maxChars - result.length;
@@ -453,7 +473,9 @@ Create an optimized prompt that maintains the same JSON output format but improv
         const data = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
         this.optimizedPrompts = new Map(Object.entries(data.prompts || {}));
         this.examples = new Map(Object.entries(data.examples || {}));
-        console.log(`   📚 Loaded ${this.optimizedPrompts.size} optimized prompts`);
+        console.log(
+          `   📚 Loaded ${this.optimizedPrompts.size} optimized prompts`,
+        );
       }
     } catch (error) {
       console.warn(`Failed to load DSPy optimizations: ${error.message}`);
@@ -471,7 +493,9 @@ Create an optimized prompt that maintains the same JSON output format but improv
         examples: Object.fromEntries(this.examples),
       };
       fs.writeFileSync(cacheFile, JSON.stringify(data, null, 2));
-      console.log(`   💾 Saved ${this.optimizedPrompts.size} DSPy optimizations`);
+      console.log(
+        `   💾 Saved ${this.optimizedPrompts.size} DSPy optimizations`,
+      );
     } catch (error) {
       console.warn(`Failed to save DSPy optimizations: ${error.message}`);
     }
@@ -486,7 +510,7 @@ Create an optimized prompt that maintains the same JSON output format but improv
       optimizedPrompts: this.optimizedPrompts.size,
       trainingExamples: Array.from(this.examples.values()).reduce(
         (sum, examples) => sum + examples.length,
-        0
+        0,
       ),
       successfulFixes: this.successCount,
       optimizationCount: this.optimizationCount,
@@ -507,7 +531,9 @@ Create an optimized prompt that maintains the same JSON output format but improv
     console.log(`   🎯 Successful Fixes: ${stats.successfulFixes}`);
     console.log(`   🔄 Optimizations: ${stats.optimizationCount}`);
     console.log(`   💰 Total Cost: $${stats.totalCost.toFixed(3)}`);
-    console.log(`   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`);
+    console.log(
+      `   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`,
+    );
   }
 
   /**

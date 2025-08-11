@@ -15,15 +15,16 @@ expect.extend({
     const pass = received >= floor && received <= ceiling;
     if (pass) {
       return {
-        message: () => `expected ${received} not to be within range ${floor} - ${ceiling}`,
+        message: () =>
+          `expected ${received} not to be within range ${floor} - ${ceiling}`,
         pass: true,
       };
-    } else {
-      return {
-        message: () => `expected ${received} to be within range ${floor} - ${ceiling}`,
-        pass: false,
-      };
     }
+    return {
+      message: () =>
+        `expected ${received} to be within range ${floor} - ${ceiling}`,
+      pass: false,
+    };
   },
 
   toHaveBeenCalledWithObjectContaining(received: jest.Mock, expected: unknown) {
@@ -32,8 +33,10 @@ expect.extend({
         (arg) =>
           typeof arg === 'object' &&
           arg !== null &&
-          Object.keys(expected).every((key) => key in arg && arg[key] === expected[key])
-      )
+          Object.keys(expected).every(
+            (key) => key in arg && arg[key] === expected[key],
+          ),
+      ),
     );
 
     return {
@@ -93,7 +96,9 @@ globalThis.testUtils = {
     const path = await import('node:path');
     const os = await import('node:os');
 
-    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-zen-test-'));
+    const tempDir = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'claude-zen-test-'),
+    );
     return tempDir;
   },
 
@@ -131,6 +136,6 @@ process.env.CLAUDE_ZEN_TEST_MODE = 'true';
 vi.setConfig({ testTimeout: 30000 });
 
 // Add custom domain matchers
-import { domainMatchers } from '../src/__tests__/helpers/test-utils';
+import { domainMatchers } from '../src/__tests__/helpers/test-utils.js';
 
 expect.extend(domainMatchers);

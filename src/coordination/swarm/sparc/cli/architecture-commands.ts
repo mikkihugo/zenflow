@@ -18,11 +18,14 @@ import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
 import type { IDao } from '../../../database/interfaces';
 import { ArchitectureMCPToolsImpl } from '../mcp/architecture-tools.ts';
 import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine.ts';
-import type { ArchitectureDesign, PseudocodeStructure } from '../types/sparc-types.ts';
+import type {
+  ArchitectureDesign,
+  PseudocodeStructure,
+} from '../types/sparc-types.ts';
 
 // Real database adapter for CLI using existing database infrastructure
 class CLIDatabaseAdapter {
-  private coordinationDao: IDao<any> | null = null;
+  private coordinationDao: IDao<unknown> | null = null;
 
   private async ensureConnection(): Promise<void> {
     if (!this.coordinationDao) {
@@ -30,18 +33,20 @@ class CLIDatabaseAdapter {
         // Use the existing database infrastructure instead of mocking
         this.coordinationDao = await createDao(
           EntityTypes.CoordinationEvent,
-          DatabaseTypes?.Coordination
+          DatabaseTypes?.Coordination,
         );
       } catch (error) {
-        logger.error('⚠️  Failed to connect to database for CLI. CLI operations will be limited.');
+        logger.error(
+          '⚠️  Failed to connect to database for CLI. CLI operations will be limited.',
+        );
         throw new Error(
-          'Database connection required for SPARC CLI operations. Please ensure database is configured.'
+          'Database connection required for SPARC CLI operations. Please ensure database is configured.',
         );
       }
     }
   }
 
-  async execute(sql: string, params?: any[]): Promise<any> {
+  async execute(sql: string, params?: unknown[]): Promise<unknown> {
     await this.ensureConnection();
     if (!this.coordinationDao) {
       throw new Error('Database connection not available');
@@ -57,7 +62,7 @@ class CLIDatabaseAdapter {
     }
   }
 
-  async query(sql: string, params?: any[]): Promise<any> {
+  async query(sql: string, params?: unknown[]): Promise<unknown> {
     await this.ensureConnection();
     if (!this.coordinationDao) {
       throw new Error('Database connection not available');
@@ -119,7 +124,7 @@ export function createArchitectureCLI(): Command {
         // Validate if requested
         if (options?.validate) {
           const validation = await engine.validateArchitecturalConsistency(
-            architecture.systemArchitecture
+            architecture.systemArchitecture,
           );
 
           if (validation.recommendations.length > 0) {
@@ -130,7 +135,10 @@ export function createArchitectureCLI(): Command {
         // Save output
         if (options?.output) {
           const fs = await import('node:fs/promises');
-          await fs.writeFile(options?.output, JSON.stringify(architecture, null, 2));
+          await fs.writeFile(
+            options?.output,
+            JSON.stringify(architecture, null, 2),
+          );
         } else {
           // Display summary
           displayArchitectureSummary(architecture);
@@ -165,7 +173,9 @@ export function createArchitectureCLI(): Command {
 
           if (options?.report && validation.validationResults) {
             validation.validationResults.forEach((result, _i) => {
-              const _status = result?.passed ? chalk.green('✅') : chalk.red('❌');
+              const _status = result?.passed
+                ? chalk.green('✅')
+                : chalk.red('❌');
               if (result?.feedback) {
               }
             });
@@ -203,18 +213,16 @@ export function createArchitectureCLI(): Command {
         const searchCriteria = {
           domain: options?.domain,
           tags: options?.tags ? options?.tags?.split(',') : undefined,
-          minScore: parseFloat(options?.minScore),
-          limit: parseInt(options?.limit),
+          minScore: Number.parseFloat(options?.minScore),
+          limit: Number.parseInt(options?.limit),
         };
 
         const result = await mcpTools.searchArchitectures(searchCriteria);
 
         if (result?.success) {
           if (options?.json) {
-          } else {
-            if (result?.architectures.length > 0) {
-              result?.architectures?.forEach((_arch, _i) => {});
-            }
+          } else if (result?.architectures.length > 0) {
+            result?.architectures?.forEach((_arch, _i) => {});
           }
         } else {
           logger.error(chalk.red('❌ Search failed:'), result?.message);
@@ -231,7 +239,11 @@ export function createArchitectureCLI(): Command {
     .command('export')
     .description('Export architecture in various formats')
     .argument('<architecture-id>', 'Architecture ID to export')
-    .option('-f, --format <format>', 'Export format (json|yaml|mermaid)', 'json')
+    .option(
+      '-f, --format <format>',
+      'Export format (json|yaml|mermaid)',
+      'json',
+    )
     .option('-o, --output <file>', 'Output file (defaults to stdout)')
     .action(async (architectureId, options) => {
       try {
@@ -285,7 +297,10 @@ export function createArchitectureCLI(): Command {
             const _valStats = stats.validationStats;
           }
         } else {
-          logger.error(chalk.red('❌ Failed to get statistics:'), result?.message);
+          logger.error(
+            chalk.red('❌ Failed to get statistics:'),
+            result?.message,
+          );
           process.exit(1);
         }
       } catch (error) {
@@ -309,7 +324,8 @@ function createSamplePseudocode(): PseudocodeStructure {
       {
         id: 'sample-algorithm-1',
         name: 'sampleAlgorithm',
-        purpose: 'Sample algorithm for demonstrating SPARC architecture generation',
+        purpose:
+          'Sample algorithm for demonstrating SPARC architecture generation',
         steps: [
           {
             stepNumber: 1,
@@ -339,8 +355,20 @@ function createSamplePseudocode(): PseudocodeStructure {
           worstCase: 'O(n)',
           bottlenecks: [],
         },
-        inputs: [{ name: 'data', type: 'Array<any>', description: 'Input data array' }],
-        outputs: [{ name: 'result', type: 'ProcessedResult', description: 'Processed output' }],
+        inputs: [
+          {
+            name: 'data',
+            type: 'Array<unknown>',
+            description: 'Input data array',
+          },
+        ],
+        outputs: [
+          {
+            name: 'result',
+            type: 'ProcessedResult',
+            description: 'Processed output',
+          },
+        ],
         optimizations: [],
       },
     ],
@@ -349,17 +377,41 @@ function createSamplePseudocode(): PseudocodeStructure {
         id: 'core-processing-algorithm-1',
         name: 'coreProcessing',
         purpose: 'Core processing algorithm for data transformation',
-        inputs: [{ name: 'data', type: 'Array<any>', description: 'Input data to process' }],
-        outputs: [{ name: 'results', type: 'Array<any>', description: 'Processed results' }],
+        inputs: [
+          {
+            name: 'data',
+            type: 'Array<unknown>',
+            description: 'Input data to process',
+          },
+        ],
+        outputs: [
+          {
+            name: 'results',
+            type: 'Array<unknown>',
+            description: 'Processed results',
+          },
+        ],
         steps: [
           {
             stepNumber: 1,
             description: 'Iterate through data',
             pseudocode: 'FOR each item IN data',
           },
-          { stepNumber: 2, description: 'Process item', pseudocode: 'PROCESS item' },
-          { stepNumber: 3, description: 'Add to results', pseudocode: 'ADD to results' },
-          { stepNumber: 4, description: 'Return results', pseudocode: 'RETURN results' },
+          {
+            stepNumber: 2,
+            description: 'Process item',
+            pseudocode: 'PROCESS item',
+          },
+          {
+            stepNumber: 3,
+            description: 'Add to results',
+            pseudocode: 'ADD to results',
+          },
+          {
+            stepNumber: 4,
+            description: 'Return results',
+            pseudocode: 'RETURN results',
+          },
         ],
         complexity: {
           timeComplexity: 'O(n)',
@@ -376,8 +428,18 @@ function createSamplePseudocode(): PseudocodeStructure {
         name: 'ProcessingQueue',
         type: 'class',
         properties: [
-          { name: 'ordering', type: 'FIFO', visibility: 'public', description: 'FIFO ordering' },
-          { name: 'sizing', type: 'Dynamic', visibility: 'public', description: 'Dynamic sizing' },
+          {
+            name: 'ordering',
+            type: 'FIFO',
+            visibility: 'public',
+            description: 'FIFO ordering',
+          },
+          {
+            name: 'sizing',
+            type: 'Dynamic',
+            visibility: 'public',
+            description: 'Dynamic sizing',
+          },
         ],
         methods: [
           {
@@ -442,7 +504,11 @@ function createSamplePseudocode(): PseudocodeStructure {
       },
     ],
     dependencies: [
-      { type: 'uses', target: 'lodash', description: 'Utility functions for data processing' },
+      {
+        type: 'uses',
+        target: 'lodash',
+        description: 'Utility functions for data processing',
+      },
     ],
     complexityAnalysis: {
       timeComplexity: 'O(n)',
@@ -473,10 +539,14 @@ function displayArchitectureSummary(architecture: ArchitectureDesign): void {
   }
 
   if (architecture.systemArchitecture?.technologyStack?.length) {
-    architecture.systemArchitecture.technologyStack.forEach((_tech, _index) => {});
+    architecture.systemArchitecture.technologyStack.forEach(
+      (_tech, _index) => {},
+    );
   }
 
   if (architecture.systemArchitecture?.architecturalPatterns?.length) {
-    architecture.systemArchitecture.architecturalPatterns.forEach((_pattern, _index) => {});
+    architecture.systemArchitecture.architecturalPatterns.forEach(
+      (_pattern, _index) => {},
+    );
   }
 }

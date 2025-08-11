@@ -18,11 +18,19 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
   describe('🚀 Core Batch Execution - "1 MESSAGE = ALL OPERATIONS"', () => {
     it('should execute multiple operations concurrently', async () => {
       const operations: BatchOperation[] = [
-        createBatchOperation('op1', 'tool', 'swarm_init', { topology: 'mesh', maxAgents: 6 }),
-        createBatchOperation('op2', 'tool', 'agent_spawn', { type: 'researcher' }),
+        createBatchOperation('op1', 'tool', 'swarm_init', {
+          topology: 'mesh',
+          maxAgents: 6,
+        }),
+        createBatchOperation('op2', 'tool', 'agent_spawn', {
+          type: 'researcher',
+        }),
         createBatchOperation('op3', 'tool', 'agent_spawn', { type: 'coder' }),
         createBatchOperation('op4', 'tool', 'agent_spawn', { type: 'analyst' }),
-        createBatchOperation('op5', 'file', 'write', { path: 'app/package.json', content: '{}' }),
+        createBatchOperation('op5', 'file', 'write', {
+          path: 'app/package.json',
+          content: '{}',
+        }),
         createBatchOperation('op6', 'file', 'write', {
           path: 'app/README.md',
           content: '# Project',
@@ -55,7 +63,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           'file',
           'mkdir',
           { path: 'app/src' },
-          { dependencies: ['mkdir'] }
+          { dependencies: ['mkdir'] },
         ),
         createBatchOperation(
           'write-file',
@@ -65,7 +73,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
             path: 'app/src/index.ts',
             content: 'export {};',
           },
-          { dependencies: ['src-mkdir'] }
+          { dependencies: ['src-mkdir'] },
         ),
       ];
 
@@ -80,7 +88,9 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
 
       // Verify dependency order
       const mkdirResult = results?.find((r) => r.operationId === 'mkdir');
-      const srcMkdirResult = results?.find((r) => r.operationId === 'src-mkdir');
+      const srcMkdirResult = results?.find(
+        (r) => r.operationId === 'src-mkdir',
+      );
       const writeResult = results?.find((r) => r.operationId === 'write-file');
 
       expect(mkdirResult?.startTime).toBeLessThan(srcMkdirResult?.startTime!);
@@ -88,10 +98,13 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
     });
 
     it('should respect concurrency limits', async () => {
-      const limitedEngine = new BatchEngine({ maxConcurrency: 2, trackPerformance: true });
+      const limitedEngine = new BatchEngine({
+        maxConcurrency: 2,
+        trackPerformance: true,
+      });
 
       const operations = Array.from({ length: 10 }, (_, i) =>
-        createBatchOperation(`op${i}`, 'tool', 'test', { index: i })
+        createBatchOperation(`op${i}`, 'tool', 'test', { index: i }),
       );
 
       const summary = await limitedEngine.executeBatch(operations);
@@ -113,7 +126,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           createBatchOperation(`swarm${i}`, 'swarm', 'init', {
             topology: 'hierarchical',
             maxAgents: 8,
-          })
+          }),
         );
       }
 
@@ -122,7 +135,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
         operations.push(
           createBatchOperation(`agent${i}`, 'swarm', 'spawn', {
             type: ['researcher', 'coder', 'analyst', 'tester'][i % 4],
-          })
+          }),
         );
       }
 
@@ -132,7 +145,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           createBatchOperation(`file${i}`, 'file', 'write', {
             path: `output/file${i}.txt`,
             content: `Content for file ${i}`,
-          })
+          }),
         );
       }
 
@@ -175,7 +188,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
         createBatchOperation(`perf-test-${i}`, 'tool', 'performance_test', {
           duration: 100, // Simulate 100ms operations
           complexity: 'medium',
-        })
+        }),
       );
 
       // Measure batch execution
@@ -185,14 +198,20 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
 
       // Estimate sequential time (sum of individual execution times)
       const results = batchEngine.getResults();
-      const estimatedSequentialTime = results?.reduce((sum, r) => sum + r.executionTime, 0);
+      const estimatedSequentialTime = results?.reduce(
+        (sum, r) => sum + r.executionTime,
+        0,
+      );
 
       // Verify performance improvement
       const actualSpeedImprovement = estimatedSequentialTime / batchTime;
       expect(actualSpeedImprovement).toBeGreaterThan(2.5);
 
       // Verify summary calculations are accurate
-      expect(batchSummary.speedImprovement).toBeCloseTo(actualSpeedImprovement, 1);
+      expect(batchSummary.speedImprovement).toBeCloseTo(
+        actualSpeedImprovement,
+        1,
+      );
     });
   });
 
@@ -218,11 +237,25 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
 
     it('should handle circular dependencies', async () => {
       const operations: BatchOperation[] = [
-        createBatchOperation('op1', 'tool', 'test', {}, { dependencies: ['op2'] }),
-        createBatchOperation('op2', 'tool', 'test', {}, { dependencies: ['op1'] }),
+        createBatchOperation(
+          'op1',
+          'tool',
+          'test',
+          {},
+          { dependencies: ['op2'] },
+        ),
+        createBatchOperation(
+          'op2',
+          'tool',
+          'test',
+          {},
+          { dependencies: ['op1'] },
+        ),
       ];
 
-      await expect(batchEngine.executeBatch(operations)).rejects.toThrow('Circular dependency');
+      await expect(batchEngine.executeBatch(operations)).rejects.toThrow(
+        'Circular dependency',
+      );
     });
 
     it('should respect timeout settings', async () => {
@@ -230,7 +263,9 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       const shortTimeoutEngine = new BatchEngine({ timeoutMs: 50 });
 
       const operations: BatchOperation[] = [
-        createBatchOperation('quick-test', 'tool', 'operation', { duration: 10 }),
+        createBatchOperation('quick-test', 'tool', 'operation', {
+          duration: 10,
+        }),
       ];
 
       const summary = await shortTimeoutEngine.executeBatch(operations);
@@ -248,7 +283,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
   describe('📊 Performance Monitoring Integration', () => {
     it('should provide detailed execution metrics', async () => {
       const operations = Array.from({ length: 8 }, (_, i) =>
-        createBatchOperation(`metric-test-${i}`, 'tool', 'test', { index: i })
+        createBatchOperation(`metric-test-${i}`, 'tool', 'test', { index: i }),
       );
 
       const summary = await batchEngine.executeBatch(operations);
@@ -272,7 +307,10 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
 
     it('should track individual operation results', async () => {
       const operations: BatchOperation[] = [
-        createBatchOperation('track1', 'file', 'write', { path: 'test1.txt', content: 'test' }),
+        createBatchOperation('track1', 'file', 'write', {
+          path: 'test1.txt',
+          content: 'test',
+        }),
         createBatchOperation('track2', 'tool', 'test', { data: 'example' }),
         createBatchOperation('track3', 'swarm', 'init', { topology: 'mesh' }),
       ];
@@ -294,7 +332,10 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       // Test selective result retrieval
       const specificResults = batchEngine.getResults(['track1', 'track3']);
       expect(specificResults).toHaveLength(2);
-      expect(specificResults?.map((r) => r.operationId)).toEqual(['track1', 'track3']);
+      expect(specificResults?.map((r) => r.operationId)).toEqual([
+        'track1',
+        'track3',
+      ]);
     });
   });
 
@@ -329,11 +370,16 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
         }),
         createBatchOperation('package-json', 'file', 'write', {
           path: 'app/package.json',
-          content: JSON.stringify({ name: 'test-app', version: '1.0.0' }, null, 2),
+          content: JSON.stringify(
+            { name: 'test-app', version: '1.0.0' },
+            null,
+            2,
+          ),
         }),
         createBatchOperation('readme', 'file', 'write', {
           path: 'app/README.md',
-          content: '# Test Application\n\nGenerated by claude-zen batch operations.',
+          content:
+            '# Test Application\n\nGenerated by claude-zen batch operations.',
         }),
       ];
 
@@ -352,7 +398,9 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
     it('should demonstrate why the wrong pattern is inefficient', async () => {
       // Simulate the "wrong pattern" - sequential operations
       const wrongPatternOps: BatchOperation[] = [
-        createBatchOperation('step1', 'tool', 'swarm_init', { topology: 'mesh' }),
+        createBatchOperation('step1', 'tool', 'swarm_init', {
+          topology: 'mesh',
+        }),
       ];
 
       // Execute one at a time (simulating the wrong pattern)
@@ -368,9 +416,15 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
 
       // Now execute the correct pattern (batch)
       const correctPatternOps = [
-        createBatchOperation('batch1', 'tool', 'swarm_init', { topology: 'mesh' }),
-        createBatchOperation('batch2', 'tool', 'agent_spawn', { type: 'researcher' }),
-        createBatchOperation('batch3', 'tool', 'agent_spawn', { type: 'coder' }),
+        createBatchOperation('batch1', 'tool', 'swarm_init', {
+          topology: 'mesh',
+        }),
+        createBatchOperation('batch2', 'tool', 'agent_spawn', {
+          type: 'researcher',
+        }),
+        createBatchOperation('batch3', 'tool', 'agent_spawn', {
+          type: 'coder',
+        }),
       ];
 
       const batchStart = Date.now();

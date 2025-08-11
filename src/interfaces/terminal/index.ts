@@ -12,10 +12,13 @@
 
 export * from './command-execution-engine.ts';
 export { CommandExecutionEngine } from './command-execution-engine.ts';
-export * from './command-execution-renderer';
-export { type CommandExecutionProps, CommandExecutionRenderer } from './command-execution-renderer';
+export * from './command-execution-renderer.js';
+export {
+  type CommandExecutionProps,
+  CommandExecutionRenderer,
+} from './command-execution-renderer.js';
 // Additional specific component exports to resolve conflicts
-export type { SwarmStatus } from './components/header';
+export type { SwarmStatus } from './components/header.js';
 // Components - specific exports to avoid conflicts
 export {
   type BaseComponentProps,
@@ -35,12 +38,11 @@ export {
   type StatusBadgeProps,
   type Theme,
 } from './components/index.ts';
-
-export * from './interactive-terminal-application';
+export * from './interactive-terminal-application.js';
 export {
   InteractiveTerminalApplication,
   type TUIModeProps,
-} from './interactive-terminal-application';
+} from './interactive-terminal-application.js';
 
 // Process orchestrator - specific export to avoid conflicts
 export {
@@ -63,7 +65,11 @@ export {
 } from './screens/index.ts';
 
 // Additional screen type exports to resolve conflicts
-export type { SwarmAgent, SwarmMetrics, SwarmTask } from './screens/swarm-dashboard';
+export type {
+  SwarmAgent,
+  SwarmMetrics,
+  SwarmTask,
+} from './screens/swarm-dashboard.js';
 // State Hooks (React hooks for component state management) - avoid conflicts
 // Note: Re-exporting from state-hooks causes conflicts, import directly when needed
 // Specific exports to avoid conflicts:
@@ -73,11 +79,13 @@ export {
   type UseSwarmStatusReturn,
   useSwarmStatus,
 } from './state-hooks/use-swarm-status.ts';
-
 // Main components (updated for Google standards)
-export * from './terminal-interface-router';
+export * from './terminal-interface-router.js';
 // Re-export key items for convenience (updated names)
-export { TerminalApp, type TerminalAppProps } from './terminal-interface-router';
+export {
+  TerminalApp,
+  type TerminalAppProps,
+} from './terminal-interface-router.js';
 export * from './utils/mock-command-handler.ts';
 
 export {
@@ -135,7 +143,7 @@ export class TerminalInterface {
   async render(): Promise<void> {
     const { render } = await import('ink');
     const React = await import('react');
-    const { TerminalApp } = await import('./terminal-interface-router');
+    const { TerminalApp } = await import('./terminal-interface-router.js');
 
     // Determine mode
     const _mode =
@@ -143,7 +151,9 @@ export class TerminalInterface {
         ? detectMode(process.argv.slice(2), {})
         : (this.config.mode as TerminalMode);
 
-    const commands = process.argv.slice(2).filter((arg) => !arg.startsWith('-'));
+    const commands = process.argv
+      .slice(2)
+      .filter((arg) => !arg.startsWith('-'));
     const flags = this.parseFlags(process.argv.slice(2));
     if (this.config.debug) {
       console.log('Debug mode enabled', { mode: _mode, commands, flags });
@@ -155,7 +165,7 @@ export class TerminalInterface {
         commands,
         flags: { ...flags, ...this.config },
         onExit: (code: number) => process.exit(code),
-      })
+      }),
     );
 
     // Setup graceful shutdown
@@ -220,7 +230,9 @@ export const createTerminalInterface = (config?: TerminalInterfaceConfig) => {
   return new TerminalInterface(config);
 };
 
-export const launchTerminalInterface = async (config?: TerminalInterfaceConfig) => {
+export const launchTerminalInterface = async (
+  config?: TerminalInterfaceConfig,
+) => {
   const terminal = new TerminalInterface(config);
   await terminal.initialize();
   await terminal.render();

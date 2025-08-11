@@ -71,7 +71,10 @@ const mockSessionManager = {
 
 interface RequestHandlerContract {
   handleRequest(request: MCPRequest, context: MCPContext): Promise<MCPResponse>;
-  handleNotification(notification: MCPNotification, context: MCPContext): Promise<void>;
+  handleNotification(
+    notification: MCPNotification,
+    context: MCPContext,
+  ): Promise<void>;
   setRequestTimeout(timeout: number): void;
   getRequestMetrics(): RequestMetrics;
 }
@@ -93,10 +96,16 @@ interface ResponseBuilderContract {
 interface RoutingContract {
   addRoute(method: string, handler: RequestHandler): void;
   routeRequest(request: MCPRequest, context: MCPContext): Promise<MCPResponse>;
-  routeNotification(notification: MCPNotification, context: MCPContext): Promise<void>;
+  routeNotification(
+    notification: MCPNotification,
+    context: MCPContext,
+  ): Promise<void>;
 }
 
-type RequestHandler = (params: unknown, context: MCPContext) => Promise<unknown>;
+type RequestHandler = (
+  params: unknown,
+  context: MCPContext,
+) => Promise<unknown>;
 
 // === MOCK IMPLEMENTATION ===
 
@@ -119,10 +128,13 @@ class MockMCPRequestHandler
     private toolExecutor = mockToolExecutor,
     private logger = mockLogger,
     private metricsCollector = mockMetricsCollector,
-    private sessionManager = mockSessionManager
+    private sessionManager = mockSessionManager,
   ) {}
 
-  async handleRequest(request: MCPRequest, context: MCPContext): Promise<MCPResponse> {
+  async handleRequest(
+    request: MCPRequest,
+    context: MCPContext,
+  ): Promise<MCPResponse> {
     const startTime = Date.now();
     this.logger.info('Handling MCP request', {
       id: request.id,
@@ -174,7 +186,10 @@ class MockMCPRequestHandler
     }
   }
 
-  async handleNotification(notification: MCPNotification, context: MCPContext): Promise<void> {
+  async handleNotification(
+    notification: MCPNotification,
+    context: MCPContext,
+  ): Promise<void> {
     this.logger.debug('Handling MCP notification', {
       method: notification.method,
       sessionId: context.sessionId,
@@ -184,7 +199,9 @@ class MockMCPRequestHandler
 
     try {
       await this.routeNotification(notification, context);
-      this.logger.debug('Notification handled successfully', { method: notification.method });
+      this.logger.debug('Notification handled successfully', {
+        method: notification.method,
+      });
     } catch (error) {
       this.logger.error('Notification handling failed', {
         method: notification.method,
@@ -193,7 +210,10 @@ class MockMCPRequestHandler
     }
   }
 
-  async routeRequest(request: MCPRequest, context: MCPContext): Promise<MCPResponse> {
+  async routeRequest(
+    request: MCPRequest,
+    context: MCPContext,
+  ): Promise<MCPResponse> {
     const handler = this.router.getHandler(request.method);
     if (!handler) {
       throw new Error(`No handler found for method: ${request.method}`);
@@ -212,12 +232,17 @@ class MockMCPRequestHandler
     return this.createSuccessResponse(request.id, result);
   }
 
-  async routeNotification(notification: MCPNotification, context: MCPContext): Promise<void> {
+  async routeNotification(
+    notification: MCPNotification,
+    context: MCPContext,
+  ): Promise<void> {
     const handler = this.router.getHandler(notification.method);
     if (handler) {
       await handler(notification.params, context);
     } else {
-      this.logger.warn('No handler for notification', { method: notification.method });
+      this.logger.warn('No handler for notification', {
+        method: notification.method,
+      });
     }
   }
 
@@ -263,9 +288,11 @@ class MockMCPRequestHandler
     }
 
     // Update rolling average
-    const totalCompleted = this.metrics.successfulRequests + this.metrics.failedRequests;
+    const totalCompleted =
+      this.metrics.successfulRequests + this.metrics.failedRequests;
     this.metrics.averageResponseTime =
-      (this.metrics.averageResponseTime * (totalCompleted - 1) + duration) / totalCompleted;
+      (this.metrics.averageResponseTime * (totalCompleted - 1) + duration) /
+      totalCompleted;
 
     this.metricsCollector.recordLatency(duration);
     if (!success) {
@@ -279,7 +306,10 @@ describe('MCP Request/Response Handling - London TDD', () => {
     describe('User Story: Handle Standard MCP Requests', () => {
       it('should process tools/list request successfully', async () => {
         // Arrange - Mock tools/list handling
-        mockRequestValidator.validate.mockReturnValue({ valid: true, errors: [] });
+        mockRequestValidator.validate.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
         mockRequestRouter.getHandler.mockReturnValue(async () => {
           return {
             tools: [
@@ -329,13 +359,19 @@ describe('MCP Request/Response Handling - London TDD', () => {
           method: 'tools/list',
           sessionId: 'session-123',
         });
-        expect(mockRequestValidator.validate).toHaveBeenCalledWith(toolsListRequest);
+        expect(mockRequestValidator.validate).toHaveBeenCalledWith(
+          toolsListRequest,
+        );
         expect(mockRequestRouter.getHandler).toHaveBeenCalledWith('tools/list');
-        expect(mockSessionManager.updateActivity).toHaveBeenCalledWith('session-123');
-        expect(mockMetricsCollector.recordRequest).toHaveBeenCalledWith('tools/list');
+        expect(mockSessionManager.updateActivity).toHaveBeenCalledWith(
+          'session-123',
+        );
+        expect(mockMetricsCollector.recordRequest).toHaveBeenCalledWith(
+          'tools/list',
+        );
         expect(mockResponseBuilder?.buildSuccessResponse).toHaveBeenCalledWith(
           'tools-1',
-          expect.objectContaining({ tools: expect.any(Array) })
+          expect.objectContaining({ tools: expect.any(Array) }),
         );
 
         expect(response?.jsonrpc).toBe('2.0');
@@ -345,12 +381,20 @@ describe('MCP Request/Response Handling - London TDD', () => {
 
       it('should process tools/call request with proper execution context', async () => {
         // Arrange - Mock tools/call handling
-        mockRequestValidator.validate.mockReturnValue({ valid: true, errors: [] });
-        mockRequestRouter.getHandler.mockReturnValue(async (params, context) => {
-          // Simulate tool execution
-          const toolResult = await mockToolExecutor.execute(params?.name, params?.arguments);
-          return toolResult;
+        mockRequestValidator.validate.mockReturnValue({
+          valid: true,
+          errors: [],
         });
+        mockRequestRouter.getHandler.mockReturnValue(
+          async (params, context) => {
+            // Simulate tool execution
+            const toolResult = await mockToolExecutor.execute(
+              params?.name,
+              params?.arguments,
+            );
+            return toolResult;
+          },
+        );
         mockToolExecutor.execute.mockResolvedValue({
           content: [
             {
@@ -403,7 +447,9 @@ describe('MCP Request/Response Handling - London TDD', () => {
           language: 'typescript',
         });
         expect(response?.result).toBeDefined();
-        expect(response?.result?.content?.[0]?.text).toContain('Analysis complete');
+        expect(response?.result?.content?.[0]?.text).toContain(
+          'Analysis complete',
+        );
       });
     });
 
@@ -442,19 +488,27 @@ describe('MCP Request/Response Handling - London TDD', () => {
         const response = await handler.handleRequest(invalidRequest, context);
 
         // Assert - Verify validation error handling
-        expect(mockRequestValidator.validate).toHaveBeenCalledWith(invalidRequest);
-        expect(mockResponseBuilder?.buildErrorResponse).toHaveBeenCalledWith('invalid-1', {
-          code: -32602,
-          message: 'Invalid params',
-          data: ['Method is required', 'Invalid JSON-RPC format'],
-        });
+        expect(mockRequestValidator.validate).toHaveBeenCalledWith(
+          invalidRequest,
+        );
+        expect(mockResponseBuilder?.buildErrorResponse).toHaveBeenCalledWith(
+          'invalid-1',
+          {
+            code: -32602,
+            message: 'Invalid params',
+            data: ['Method is required', 'Invalid JSON-RPC format'],
+          },
+        );
         expect(response?.error).toBeDefined();
         expect(response?.error?.code).toBe(-32602);
       });
 
       it('should handle method not found errors', async () => {
         // Arrange - Mock method not found
-        mockRequestValidator.validate.mockReturnValue({ valid: true, errors: [] });
+        mockRequestValidator.validate.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
         mockRequestRouter.getHandler.mockReturnValue(null); // No handler found
         mockResponseBuilder?.buildErrorResponse?.mockReturnValue({
           jsonrpc: '2.0',
@@ -481,16 +535,21 @@ describe('MCP Request/Response Handling - London TDD', () => {
         };
 
         // Act - Handle unknown method request
-        const response = await handler.handleRequest(unknownMethodRequest, context);
+        const response = await handler.handleRequest(
+          unknownMethodRequest,
+          context,
+        );
 
         // Assert - Verify method not found handling
-        expect(mockRequestRouter.getHandler).toHaveBeenCalledWith('unknown/method');
+        expect(mockRequestRouter.getHandler).toHaveBeenCalledWith(
+          'unknown/method',
+        );
         expect(mockLogger.error).toHaveBeenCalledWith(
           'Request handling failed',
           expect.objectContaining({
             id: 'not-found-1',
             error: expect.stringContaining('No handler found'),
-          })
+          }),
         );
         expect(response?.error).toBeDefined();
         expect(response?.error?.code).toBe(-32603);
@@ -502,11 +561,16 @@ describe('MCP Request/Response Handling - London TDD', () => {
     describe('User Story: Process MCP Notifications', () => {
       it('should handle notifications without response', async () => {
         // Arrange - Mock notification handling
-        mockRequestRouter.getHandler.mockReturnValue(async (params, context) => {
-          // Simulate notification processing
-          mockLogger.info('Processing notification', { params, sessionId: context.sessionId });
-          return undefined; // Notifications don't return responses
-        });
+        mockRequestRouter.getHandler.mockReturnValue(
+          async (params, context) => {
+            // Simulate notification processing
+            mockLogger.info('Processing notification', {
+              params,
+              sessionId: context.sessionId,
+            });
+            return undefined; // Notifications don't return responses
+          },
+        );
 
         const handler = new MockMCPRequestHandler();
 
@@ -529,15 +593,25 @@ describe('MCP Request/Response Handling - London TDD', () => {
         await handler.handleNotification(logNotification, context);
 
         // Assert - Verify notification processing conversation
-        expect(mockLogger.debug).toHaveBeenCalledWith('Handling MCP notification', {
-          method: 'notifications/message',
-          sessionId: 'session-notification',
-        });
-        expect(mockSessionManager.updateActivity).toHaveBeenCalledWith('session-notification');
-        expect(mockRequestRouter.getHandler).toHaveBeenCalledWith('notifications/message');
-        expect(mockLogger.debug).toHaveBeenCalledWith('Notification handled successfully', {
-          method: 'notifications/message',
-        });
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+          'Handling MCP notification',
+          {
+            method: 'notifications/message',
+            sessionId: 'session-notification',
+          },
+        );
+        expect(mockSessionManager.updateActivity).toHaveBeenCalledWith(
+          'session-notification',
+        );
+        expect(mockRequestRouter.getHandler).toHaveBeenCalledWith(
+          'notifications/message',
+        );
+        expect(mockLogger.debug).toHaveBeenCalledWith(
+          'Notification handled successfully',
+          {
+            method: 'notifications/message',
+          },
+        );
       });
 
       it('should handle notifications for unknown methods gracefully', async () => {
@@ -561,10 +635,15 @@ describe('MCP Request/Response Handling - London TDD', () => {
         await handler.handleNotification(unknownNotification, context);
 
         // Assert - Verify graceful handling of unknown notifications
-        expect(mockRequestRouter.getHandler).toHaveBeenCalledWith('unknown/notification');
-        expect(mockLogger.warn).toHaveBeenCalledWith('No handler for notification', {
-          method: 'unknown/notification',
-        });
+        expect(mockRequestRouter.getHandler).toHaveBeenCalledWith(
+          'unknown/notification',
+        );
+        expect(mockLogger.warn).toHaveBeenCalledWith(
+          'No handler for notification',
+          {
+            method: 'unknown/notification',
+          },
+        );
         // Should not throw error for unknown notifications
       });
     });
@@ -574,7 +653,10 @@ describe('MCP Request/Response Handling - London TDD', () => {
     describe('User Story: Handle Request Timeouts', () => {
       it('should timeout long-running requests', async () => {
         // Arrange - Mock long-running request that times out
-        mockRequestValidator.validate.mockReturnValue({ valid: true, errors: [] });
+        mockRequestValidator.validate.mockReturnValue({
+          valid: true,
+          errors: [],
+        });
         mockRequestRouter.getHandler.mockReturnValue(async () => {
           // Simulate long-running operation that exceeds timeout
           await new Promise((resolve) => setTimeout(resolve, 100)); // Short delay for test
@@ -606,7 +688,10 @@ describe('MCP Request/Response Handling - London TDD', () => {
         };
 
         // Act - Handle request that should timeout
-        const response = await handler.handleRequest(longRunningRequest, context);
+        const response = await handler.handleRequest(
+          longRunningRequest,
+          context,
+        );
 
         // Assert - Verify timeout handling
         expect(mockLogger.error).toHaveBeenCalledWith(
@@ -614,7 +699,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
           expect.objectContaining({
             id: 'timeout-1',
             error: 'Request timeout',
-          })
+          }),
         );
         expect(response?.error).toBeDefined();
         expect(response?.error?.data?.error).toBe('Request timeout');
@@ -639,12 +724,15 @@ describe('MCP Request/Response Handling - London TDD', () => {
         const handler = new MockMCPRequestHandler();
 
         // Act - Build success response
-        const response = handler.createSuccessResponse('success-1', expectedResult);
+        const response = handler.createSuccessResponse(
+          'success-1',
+          expectedResult,
+        );
 
         // Assert - Verify success response construction
         expect(mockResponseBuilder?.buildSuccessResponse).toHaveBeenCalledWith(
           'success-1',
-          expectedResult
+          expectedResult,
         );
         expect(response?.jsonrpc).toBe('2.0');
         expect(response?.id).toBe('success-1');
@@ -672,7 +760,7 @@ describe('MCP Request/Response Handling - London TDD', () => {
         // Assert - Verify error response construction
         expect(mockResponseBuilder?.buildErrorResponse).toHaveBeenCalledWith(
           'error-1',
-          errorDetails
+          errorDetails,
         );
         expect(response?.jsonrpc).toBe('2.0');
         expect(response?.id).toBe('error-1');
@@ -684,7 +772,10 @@ describe('MCP Request/Response Handling - London TDD', () => {
   describe('🧪 London School Patterns - Request Lifecycle', () => {
     it('should demonstrate complete request/response lifecycle', async () => {
       // Arrange - Mock complete request lifecycle
-      mockRequestValidator.validate.mockReturnValue({ valid: true, errors: [] });
+      mockRequestValidator.validate.mockReturnValue({
+        valid: true,
+        errors: [],
+      });
       mockRequestRouter.getHandler.mockReturnValue(async (params, context) => {
         return { processed: true, sessionId: context.sessionId };
       });
@@ -715,20 +806,33 @@ describe('MCP Request/Response Handling - London TDD', () => {
       // Assert - Verify complete lifecycle conversation (London School focus)
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Handling MCP request',
-        expect.objectContaining({ id: 'lifecycle-1', method: 'test/lifecycle' })
+        expect.objectContaining({
+          id: 'lifecycle-1',
+          method: 'test/lifecycle',
+        }),
       );
-      expect(mockMetricsCollector.recordRequest).toHaveBeenCalledWith('test/lifecycle');
-      expect(mockSessionManager.updateActivity).toHaveBeenCalledWith('session-lifecycle');
-      expect(mockRequestValidator.validate).toHaveBeenCalledWith(lifecycleRequest);
-      expect(mockRequestRouter.getHandler).toHaveBeenCalledWith('test/lifecycle');
+      expect(mockMetricsCollector.recordRequest).toHaveBeenCalledWith(
+        'test/lifecycle',
+      );
+      expect(mockSessionManager.updateActivity).toHaveBeenCalledWith(
+        'session-lifecycle',
+      );
+      expect(mockRequestValidator.validate).toHaveBeenCalledWith(
+        lifecycleRequest,
+      );
+      expect(mockRequestRouter.getHandler).toHaveBeenCalledWith(
+        'test/lifecycle',
+      );
       expect(mockResponseBuilder?.buildSuccessResponse).toHaveBeenCalledWith(
         'lifecycle-1',
-        expect.objectContaining({ processed: true })
+        expect.objectContaining({ processed: true }),
       );
-      expect(mockMetricsCollector.recordLatency).toHaveBeenCalledWith(expect.any(Number));
+      expect(mockMetricsCollector.recordLatency).toHaveBeenCalledWith(
+        expect.any(Number),
+      );
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Request completed successfully',
-        expect.objectContaining({ id: 'lifecycle-1' })
+        expect.objectContaining({ id: 'lifecycle-1' }),
       );
 
       expect(response?.result?.processed).toBe(true);

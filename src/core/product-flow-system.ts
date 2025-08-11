@@ -30,7 +30,10 @@ export class ProductFlowSystem extends EventEmitter {
   private documentService: DocumentManager;
   private activeWorkspaces = new Map<string, string>();
 
-  constructor(workflowEngine: ProductWorkflowEngine, documentService: DocumentManager) {
+  constructor(
+    workflowEngine: ProductWorkflowEngine,
+    documentService: DocumentManager,
+  ) {
     super();
     this.workflowEngine = workflowEngine;
     this.documentService = documentService;
@@ -52,15 +55,21 @@ export class ProductFlowSystem extends EventEmitter {
    * @param workspaceId
    * @param docPath
    */
-  async processVisionaryDocument(workspaceId: string, docPath: string): Promise<void> {
+  async processVisionaryDocument(
+    workspaceId: string,
+    docPath: string,
+  ): Promise<void> {
     logger.info(`🚀 Processing visionary document: ${docPath}`);
 
     try {
       // Start complete Product Flow workflow
-      const result = await this.workflowEngine.startProductWorkflow('complete-product-flow', {
-        workspaceId,
-        variables: { visionDocPath: docPath },
-      });
+      const result = await this.workflowEngine.startProductWorkflow(
+        'complete-product-flow',
+        {
+          workspaceId,
+          variables: { visionDocPath: docPath },
+        },
+      );
 
       if (result?.success && result?.workflowId) {
         logger.info(`✅ Product Flow workflow started: ${result?.workflowId}`);
@@ -70,7 +79,10 @@ export class ProductFlowSystem extends EventEmitter {
         });
       }
     } catch (error) {
-      logger.error(`❌ Failed to process visionary document ${docPath}:`, error);
+      logger.error(
+        `❌ Failed to process visionary document ${docPath}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -84,7 +96,9 @@ export class ProductFlowSystem extends EventEmitter {
     const workspaceId = nanoid();
     this.activeWorkspaces.set(workspaceId, workspacePath);
 
-    logger.info(`📁 Loaded Product Flow workspace: ${workspaceId} at ${workspacePath}`);
+    logger.info(
+      `📁 Loaded Product Flow workspace: ${workspaceId} at ${workspacePath}`,
+    );
     return workspaceId;
   }
 
@@ -100,7 +114,8 @@ export class ProductFlowSystem extends EventEmitter {
     sparcIntegration: boolean;
   }> {
     const path = this.activeWorkspaces.get(workspaceId);
-    const activeWorkflows = await this.workflowEngine.getActiveProductWorkflows();
+    const activeWorkflows =
+      await this.workflowEngine.getActiveProductWorkflows();
 
     return {
       workspaceId,

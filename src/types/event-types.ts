@@ -21,11 +21,44 @@ export interface BaseEventPayload {
 }
 
 /**
- * System events.
+ * THE COLLECTIVE Events - Borg-style system coordination.
  *
  * @example
  */
-export interface SystemEvents {
+export interface CollectiveEvents {
+  // Core Collective events
+  'collective:initialized': CollectiveInitializedPayload;
+  'collective:status:report': CollectiveStatusPayload;
+  'collective:shutdown': CollectiveShutdownPayload;
+  'collective:health:updated': CollectiveHealthPayload;
+
+  // Task coordination
+  'collective:task:request': TaskRequestPayload;
+  'collective:task:assigned': TaskAssignmentPayload;
+  'collective:task:completed': TaskCompletionPayload;
+
+  // Cube coordination
+  'ops-cube:status': CubeStatusPayload;
+  'dev-cube:status': CubeStatusPayload;
+  'research-cube:status': CubeStatusPayload;
+
+  // Matron coordination
+  'collective:matron:registered': MatronRegistrationPayload;
+  'ops-cube:matron:shutdown': MatronShutdownPayload;
+  'dev-cube:matron:shutdown': MatronShutdownPayload;
+
+  // Queen coordination
+  'ops-cube:queen:assigned': QueenAssignmentPayload;
+  'dev-cube:queen:assigned': QueenAssignmentPayload;
+  'ops-cube:queen:removed': QueenRemovalPayload;
+  'dev-cube:queen:removed': QueenRemovalPayload;
+
+  // Drone coordination
+  'drone:spawned': DroneSpawnedPayload;
+  'drone:terminated': DroneTerminatedPayload;
+  'drone:status:changed': DroneStatusPayload;
+
+  // Legacy system events (backward compatibility)
   'system:started': SystemStartedPayload;
   'system:stopped': SystemStoppedPayload;
   'system:shutdown': SystemStoppedPayload;
@@ -33,6 +66,95 @@ export interface SystemEvents {
   'system:health:changed': SystemHealthChangedPayload;
   'system:resource-pressure': SystemResourcePressurePayload;
   'resource:pressure': ResourcePressurePayload;
+}
+
+// THE COLLECTIVE Event Payloads
+export interface CollectiveInitializedPayload extends BaseEventPayload {
+  readonly status: string;
+  readonly cubes: number;
+  readonly matrons: number;
+  readonly borgEfficiency: number;
+}
+
+export interface CollectiveStatusPayload extends BaseEventPayload {
+  readonly status: string;
+  readonly activeCubes: number;
+  readonly totalDrones: number;
+  readonly borgEfficiency: number;
+}
+
+export interface CollectiveShutdownPayload extends BaseEventPayload {
+  readonly reason?: string;
+}
+
+export interface CollectiveHealthPayload extends BaseEventPayload {
+  readonly overallStatus: string;
+  readonly borgEfficiency: number;
+  readonly systemLoad: number;
+}
+
+export interface TaskRequestPayload extends BaseEventPayload {
+  readonly taskId: string;
+  readonly type: string;
+  readonly priority: string;
+  readonly requiredCapabilities: string[];
+}
+
+export interface TaskAssignmentPayload extends BaseEventPayload {
+  readonly taskId: string;
+  readonly cubeId: string;
+  readonly matron: string;
+  readonly priority: string;
+}
+
+export interface TaskCompletionPayload extends BaseEventPayload {
+  readonly taskId: string;
+  readonly success: boolean;
+  readonly borgEfficiency: number;
+}
+
+export interface CubeStatusPayload extends BaseEventPayload {
+  readonly cubeId: string;
+  readonly type: string;
+  readonly status: string;
+  readonly borgRating: string;
+}
+
+export interface MatronRegistrationPayload extends BaseEventPayload {
+  readonly matron: string;
+  readonly cube: string;
+  readonly capabilities: string[];
+}
+
+export interface MatronShutdownPayload extends BaseEventPayload {
+  readonly matron: string;
+}
+
+export interface QueenAssignmentPayload extends BaseEventPayload {
+  readonly queenId: string;
+  readonly matron: string;
+}
+
+export interface QueenRemovalPayload extends BaseEventPayload {
+  readonly queenId: string;
+  readonly matron: string;
+}
+
+export interface DroneSpawnedPayload extends BaseEventPayload {
+  readonly droneId: string;
+  readonly type: string;
+  readonly cubeId: string;
+}
+
+export interface DroneTerminatedPayload extends BaseEventPayload {
+  readonly droneId: string;
+  readonly reason: string;
+}
+
+export interface DroneStatusPayload extends BaseEventPayload {
+  readonly droneId: string;
+  readonly status: string;
+  readonly borgEfficiency: number;
 }
 
 export interface SystemStartedPayload extends BaseEventPayload {
@@ -422,7 +544,12 @@ export interface SwarmDisconnectPayload extends BaseEventPayload {
 export interface SwarmFactRequestPayload extends BaseEventPayload {
   readonly requestId: string;
   readonly swarmId: string;
-  readonly factType: 'npm-package' | 'github-repo' | 'api-docs' | 'security-advisory' | 'general';
+  readonly factType:
+    | 'npm-package'
+    | 'github-repo'
+    | 'api-docs'
+    | 'security-advisory'
+    | 'general';
   readonly subject: string;
 }
 
@@ -468,7 +595,12 @@ export interface AgentPerformanceUpdatePayload extends BaseEventPayload {
 
 export interface AgentUnavailablePayload extends BaseEventPayload {
   readonly agentId: string;
-  readonly reason: 'overloaded' | 'error' | 'maintenance' | 'timeout' | 'resource-exhaustion';
+  readonly reason:
+    | 'overloaded'
+    | 'error'
+    | 'maintenance'
+    | 'timeout'
+    | 'resource-exhaustion';
   readonly expectedRecoveryTime?: Date;
   readonly alternativeAgents?: readonly string[];
 }
@@ -493,7 +625,11 @@ export interface AgentTaskFailedPayload extends BaseEventPayload {
   readonly taskType: string;
   readonly error: TaskEventError;
   readonly retryCount: number;
-  readonly failureStage: 'initialization' | 'execution' | 'completion' | 'cleanup';
+  readonly failureStage:
+    | 'initialization'
+    | 'execution'
+    | 'completion'
+    | 'cleanup';
   readonly diagnostics?: Record<string, unknown>;
 }
 
@@ -609,7 +745,12 @@ export interface SwarmCompletedPayload extends BaseEventPayload {
 
 export interface SwarmKnowledgeInjectPayload extends BaseEventPayload {
   readonly swarmId: string;
-  readonly knowledgeType: 'facts' | 'patterns' | 'procedures' | 'constraints' | 'preferences';
+  readonly knowledgeType:
+    | 'facts'
+    | 'patterns'
+    | 'procedures'
+    | 'constraints'
+    | 'preferences';
   readonly knowledge: {
     readonly content: unknown;
     readonly metadata: {
@@ -619,7 +760,11 @@ export interface SwarmKnowledgeInjectPayload extends BaseEventPayload {
       readonly tags: readonly string[];
     };
   };
-  readonly distributionScope: 'all-agents' | 'specific-agents' | 'agent-type' | 'swarm-local';
+  readonly distributionScope:
+    | 'all-agents'
+    | 'specific-agents'
+    | 'agent-type'
+    | 'swarm-local';
   readonly targetAgents?: readonly string[];
   readonly persistenceRequested?: boolean;
 }
@@ -678,7 +823,13 @@ export interface NetworkPartitionPayload extends BaseEventPayload {
 
 // Additional system event payloads
 export interface SystemResourcePressurePayload extends BaseEventPayload {
-  readonly resourceType: 'cpu' | 'memory' | 'disk' | 'network' | 'file-descriptors' | 'connections';
+  readonly resourceType:
+    | 'cpu'
+    | 'memory'
+    | 'disk'
+    | 'network'
+    | 'file-descriptors'
+    | 'connections';
   readonly currentUsage: number;
   readonly threshold: number;
   readonly severity: 'warning' | 'critical' | 'emergency';
@@ -705,11 +856,20 @@ export interface WorkloadDemandChangePayload extends BaseEventPayload {
     | 'scaling-event'
     | 'load-balancing';
   readonly affectedNodes: readonly string[];
-  readonly recommendedAction: 'scale-up' | 'scale-down' | 'redistribute' | 'optimize';
+  readonly recommendedAction:
+    | 'scale-up'
+    | 'scale-down'
+    | 'redistribute'
+    | 'optimize';
 }
 
 export interface LoadSpikePayload extends BaseEventPayload {
-  readonly resourceType: 'cpu' | 'memory' | 'network' | 'connections' | 'requests';
+  readonly resourceType:
+    | 'cpu'
+    | 'memory'
+    | 'network'
+    | 'connections'
+    | 'requests';
   readonly baselineLoad: number;
   readonly currentLoad: number;
   readonly peakLoad: number;
@@ -743,7 +903,12 @@ export interface ResourcePressurePayload extends BaseEventPayload {
 // Node lifecycle event payloads
 export interface NodeJoinedPayload extends BaseEventPayload {
   readonly nodeId: string;
-  readonly nodeType: 'agent' | 'coordinator' | 'storage' | 'compute' | 'load-balancer';
+  readonly nodeType:
+    | 'agent'
+    | 'coordinator'
+    | 'storage'
+    | 'compute'
+    | 'load-balancer';
   readonly capabilities: readonly string[];
   readonly resources: {
     readonly cpu: number;
@@ -762,8 +927,18 @@ export interface NodeJoinedPayload extends BaseEventPayload {
 
 export interface NodeLeftPayload extends BaseEventPayload {
   readonly nodeId: string;
-  readonly nodeType: 'agent' | 'coordinator' | 'storage' | 'compute' | 'load-balancer';
-  readonly leaveReason: 'shutdown' | 'scaling-down' | 'failure' | 'maintenance' | 'eviction';
+  readonly nodeType:
+    | 'agent'
+    | 'coordinator'
+    | 'storage'
+    | 'compute'
+    | 'load-balancer';
+  readonly leaveReason:
+    | 'shutdown'
+    | 'scaling-down'
+    | 'failure'
+    | 'maintenance'
+    | 'eviction';
   readonly gracefulShutdown: boolean;
   readonly connectionDuration: number;
   readonly tasksRelocated: number;
@@ -890,7 +1065,10 @@ export interface SwarmSyncBroadcastPayload extends BaseEventPayload {
   readonly sourceSwarmId?: string; // Source swarm identifier for sync operations
   readonly syncId: string;
   readonly syncType: 'state' | 'config' | 'knowledge' | 'health';
-  readonly broadcastScope: 'all-agents' | 'specific-agents' | 'coordinator-only';
+  readonly broadcastScope:
+    | 'all-agents'
+    | 'specific-agents'
+    | 'coordinator-only';
   readonly targetAgents?: readonly string[];
   readonly payload?: {
     // Made optional since some usages don't include this
@@ -1054,10 +1232,12 @@ export type EventMap = SystemEvents &
  * Event listener types.
  */
 export type EventListener<T extends keyof EventMap> = (
-  payload: EventMap[T]
+  payload: EventMap[T],
 ) => void | Promise<void>;
 
-export type EventListenerAny = (payload: BaseEventPayload) => void | Promise<void>;
+export type EventListenerAny = (
+  payload: BaseEventPayload,
+) => void | Promise<void>;
 
 /**
  * Event middleware function.
@@ -1065,7 +1245,7 @@ export type EventListenerAny = (payload: BaseEventPayload) => void | Promise<voi
 export type EventMiddleware<T extends keyof EventMap = keyof EventMap> = (
   event: T,
   payload: EventMap[T],
-  next: () => void | Promise<void>
+  next: () => void | Promise<void>,
 ) => void | Promise<void>;
 
 /**
@@ -1114,7 +1294,12 @@ export interface StepEventResult {
   readonly [key: string]: unknown;
 }
 
-export type AgentType = 'researcher' | 'coder' | 'analyst' | 'tester' | 'coordinator';
+export type AgentType =
+  | 'researcher'
+  | 'coder'
+  | 'analyst'
+  | 'tester'
+  | 'coordinator';
 export type AgentStatus = 'idle' | 'busy' | 'error' | 'offline';
 export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star';
 
@@ -1128,7 +1313,11 @@ export interface TaskEventError {
   readonly details?: unknown;
 }
 
-export type NeuralNetworkType = 'feedforward' | 'convolutional' | 'recurrent' | 'transformer';
+export type NeuralNetworkType =
+  | 'feedforward'
+  | 'convolutional'
+  | 'recurrent'
+  | 'transformer';
 
 export interface NeuralEventError {
   readonly code: string;

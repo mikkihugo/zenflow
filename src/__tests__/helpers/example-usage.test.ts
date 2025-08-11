@@ -49,7 +49,7 @@ describe('Test Helper Utilities - Example Usage', () => {
             private logger: any
           ) {}
 
-          async createUser(userData: any) {
+          async createUser(userData: unknown) {
             this.logger.info('Creating user', userData);
             const user = await this.database.save('users', userData);
             await this.emailService.sendWelcomeEmail(user.email);
@@ -118,8 +118,8 @@ describe('Test Helper Utilities - Example Usage', () => {
         }
 
         interface UserRepository {
-          findByEmail(email: string): Promise<any>;
-          save(user: any): Promise<any>;
+          findByEmail(email: string): Promise<unknown>;
+          save(user: unknown): Promise<unknown>;
         }
 
         class EmailService {
@@ -260,14 +260,14 @@ describe('Test Helper Utilities - Example Usage', () => {
       // Test data generation
       const testData = testDataFactory?.createPerformanceData(1000);
 
-      function linearSearch(arr: any[], target: any): number {
+      function linearSearch(arr: unknown[], target: any): number {
         for (let i = 0; i < arr.length; i++) {
           if (arr[i]?.id === target) return i;
         }
         return -1;
       }
 
-      function binarySearch(arr: any[], target: any): number {
+      function binarySearch(arr: unknown[], target: any): number {
         let left = 0;
         let right = arr.length - 1;
 

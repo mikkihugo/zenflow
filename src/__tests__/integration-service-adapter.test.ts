@@ -13,7 +13,9 @@ const mockArchitectureDesign: ArchitectureDesign = {
   id: 'test-arch-001',
   systemArchitecture: {
     technologyStack: [{ category: 'web', name: 'React', version: '18.0.0' }],
-    architecturalPatterns: [{ name: 'MVC', description: 'Model-View-Controller pattern' }],
+    architecturalPatterns: [
+      { name: 'MVC', description: 'Model-View-Controller pattern' },
+    ],
   },
   components: [
     {
@@ -35,7 +37,9 @@ const mockArchitectureDesign: ArchitectureDesign = {
 
 const mockValidation: ArchitecturalValidation = {
   overallScore: 85,
-  validationResults: [{ component: 'User Service', score: 85, passed: true, issues: [] }],
+  validationResults: [
+    { component: 'User Service', score: 85, passed: true, issues: [] },
+  ],
   recommendations: ['Consider adding caching layer'],
   approved: true,
 };
@@ -56,11 +60,11 @@ const mockAPIResponse = {
 // ============================================
 
 function createTestAdapter(
-  overrides: Partial<IntegrationServiceAdapterConfig> = {}
+  overrides: Partial<IntegrationServiceAdapterConfig> = {},
 ): IntegrationServiceAdapter {
   const config = createDefaultIntegrationServiceAdapterConfig(
     'test-integration-adapter',
-    overrides
+    overrides,
   );
   return createIntegrationServiceAdapter(config);
 }
@@ -614,7 +618,11 @@ describe('IntegrationServiceAdapter - TDD London (Interactions)', () => {
 
     it('should handle timeout errors gracefully', async () => {
       // TDD London: Test timeout handling
-      const result = await adapter.execute('slow-operation', {}, { timeout: 100 });
+      const result = await adapter.execute(
+        'slow-operation',
+        {},
+        { timeout: 100 },
+      );
 
       expect(result?.success).toBe(false);
       expect(result?.error?.code).toBe('OPERATION_ERROR');
@@ -680,24 +688,27 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
   describe('Configuration Validation (Classical)', () => {
     it('should validate correct configuration and return true', async () => {
       // Classical TDD: Test actual validation logic
-      const validConfig = createDefaultIntegrationServiceAdapterConfig('valid-service', {
-        architectureStorage: {
-          enabled: true,
-          databaseType: 'postgresql',
-          autoInitialize: true,
+      const validConfig = createDefaultIntegrationServiceAdapterConfig(
+        'valid-service',
+        {
+          architectureStorage: {
+            enabled: true,
+            databaseType: 'postgresql',
+            autoInitialize: true,
+          },
+          safeAPI: {
+            enabled: true,
+            baseURL: 'https://api.example.com',
+            timeout: 30000,
+            retries: 3,
+          },
+          protocolManagement: {
+            enabled: true,
+            supportedProtocols: ['http', 'websocket'],
+            defaultProtocol: 'http',
+          },
         },
-        safeAPI: {
-          enabled: true,
-          baseURL: 'https://api.example.com',
-          timeout: 30000,
-          retries: 3,
-        },
-        protocolManagement: {
-          enabled: true,
-          supportedProtocols: ['http', 'websocket'],
-          defaultProtocol: 'http',
-        },
-      });
+      );
 
       const testAdapter = createIntegrationServiceAdapter(validConfig);
       const isValid = await testAdapter.validateConfig(validConfig);
@@ -708,21 +719,24 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
 
     it('should reject invalid configuration and return false', async () => {
       // Classical TDD: Test actual validation failure
-      const invalidConfig = createDefaultIntegrationServiceAdapterConfig('invalid-service', {
-        safeAPI: {
-          enabled: true,
-          timeout: -1000, // Invalid negative timeout
-          retries: -5, // Invalid negative retries
-        },
-        protocolManagement: {
-          enabled: true,
-          supportedProtocols: [], // Invalid empty protocols array
-          connectionPooling: {
+      const invalidConfig = createDefaultIntegrationServiceAdapterConfig(
+        'invalid-service',
+        {
+          safeAPI: {
             enabled: true,
-            maxConnections: 0, // Invalid zero max connections
+            timeout: -1000, // Invalid negative timeout
+            retries: -5, // Invalid negative retries
+          },
+          protocolManagement: {
+            enabled: true,
+            supportedProtocols: [], // Invalid empty protocols array
+            connectionPooling: {
+              enabled: true,
+              maxConnections: 0, // Invalid zero max connections
+            },
           },
         },
-      });
+      );
 
       const testAdapter = createIntegrationServiceAdapter(invalidConfig);
       const isValid = await testAdapter.validateConfig(invalidConfig);
@@ -760,7 +774,9 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
             performance: { latency: 100, throughput: 500 },
           },
         ],
-        qualityAttributes: [{ name: 'Scalability', value: 'High', priority: 1 }],
+        qualityAttributes: [
+          { name: 'Scalability', value: 'High', priority: 1 },
+        ],
         securityRequirements: [
           {
             name: 'Authentication',
@@ -778,7 +794,8 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       };
 
       // Use the actual transformation logic
-      const sanitized = IntegrationServiceUtils.sanitizeArchitectureData(architecture);
+      const sanitized =
+        IntegrationServiceUtils.sanitizeArchitectureData(architecture);
 
       expect(sanitized.id).toBe('arch-transform-test');
       expect(sanitized.systemArchitecture.technologyStack).toHaveLength(2);
@@ -800,7 +817,9 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         scalabilityRequirements: [],
       };
 
-      const sanitized = IntegrationServiceUtils.sanitizeArchitectureData(architectureWithoutId);
+      const sanitized = IntegrationServiceUtils.sanitizeArchitectureData(
+        architectureWithoutId,
+      );
 
       expect(sanitized.id).toBeDefined();
       expect(sanitized.id).toMatch(/^arch_\d+_[a-z0-9]+$/);
@@ -823,7 +842,7 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       };
 
       const sanitized = IntegrationServiceUtils.sanitizeArchitectureData(
-        architectureWithSensitiveData
+        architectureWithSensitiveData,
       );
 
       expect(sanitized.metadata.internalNotes).toBeUndefined();
@@ -835,26 +854,44 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
   describe('Utility Functions (Classical)', () => {
     it('should validate API endpoints correctly', () => {
       // Classical TDD: Test endpoint validation logic
-      expect(IntegrationServiceUtils.validateEndpoint('https://api.example.com')).toBe(true);
-      expect(IntegrationServiceUtils.validateEndpoint('http://localhost:3000')).toBe(true);
-      expect(IntegrationServiceUtils.validateEndpoint('ftp://file.server.com')).toBe(true);
+      expect(
+        IntegrationServiceUtils.validateEndpoint('https://api.example.com'),
+      ).toBe(true);
+      expect(
+        IntegrationServiceUtils.validateEndpoint('http://localhost:3000'),
+      ).toBe(true);
+      expect(
+        IntegrationServiceUtils.validateEndpoint('ftp://file.server.com'),
+      ).toBe(true);
 
-      expect(IntegrationServiceUtils.validateEndpoint('invalid-url')).toBe(false);
+      expect(IntegrationServiceUtils.validateEndpoint('invalid-url')).toBe(
+        false,
+      );
       expect(IntegrationServiceUtils.validateEndpoint('')).toBe(false);
-      expect(IntegrationServiceUtils.validateEndpoint('://missing-protocol')).toBe(false);
+      expect(
+        IntegrationServiceUtils.validateEndpoint('://missing-protocol'),
+      ).toBe(false);
     });
 
     it('should validate protocol names correctly', () => {
       // Classical TDD: Test protocol validation logic
       expect(IntegrationServiceUtils.validateProtocolName('http')).toBe(true);
       expect(IntegrationServiceUtils.validateProtocolName('HTTPS')).toBe(true);
-      expect(IntegrationServiceUtils.validateProtocolName('websocket')).toBe(true);
-      expect(IntegrationServiceUtils.validateProtocolName('mcp-http')).toBe(true);
-      expect(IntegrationServiceUtils.validateProtocolName('mcp-stdio')).toBe(true);
+      expect(IntegrationServiceUtils.validateProtocolName('websocket')).toBe(
+        true,
+      );
+      expect(IntegrationServiceUtils.validateProtocolName('mcp-http')).toBe(
+        true,
+      );
+      expect(IntegrationServiceUtils.validateProtocolName('mcp-stdio')).toBe(
+        true,
+      );
       expect(IntegrationServiceUtils.validateProtocolName('tcp')).toBe(true);
       expect(IntegrationServiceUtils.validateProtocolName('udp')).toBe(true);
 
-      expect(IntegrationServiceUtils.validateProtocolName('invalid-protocol')).toBe(false);
+      expect(
+        IntegrationServiceUtils.validateProtocolName('invalid-protocol'),
+      ).toBe(false);
       expect(IntegrationServiceUtils.validateProtocolName('smtp')).toBe(false);
       expect(IntegrationServiceUtils.validateProtocolName('')).toBe(false);
     });
@@ -864,10 +901,26 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       const baseDelay = 1000;
       const maxDelay = 10000;
 
-      const delay1 = IntegrationServiceUtils.calculateRetryDelay(1, baseDelay, maxDelay);
-      const delay2 = IntegrationServiceUtils.calculateRetryDelay(2, baseDelay, maxDelay);
-      const delay3 = IntegrationServiceUtils.calculateRetryDelay(3, baseDelay, maxDelay);
-      const delay10 = IntegrationServiceUtils.calculateRetryDelay(10, baseDelay, maxDelay);
+      const delay1 = IntegrationServiceUtils.calculateRetryDelay(
+        1,
+        baseDelay,
+        maxDelay,
+      );
+      const delay2 = IntegrationServiceUtils.calculateRetryDelay(
+        2,
+        baseDelay,
+        maxDelay,
+      );
+      const delay3 = IntegrationServiceUtils.calculateRetryDelay(
+        3,
+        baseDelay,
+        maxDelay,
+      );
+      const delay10 = IntegrationServiceUtils.calculateRetryDelay(
+        10,
+        baseDelay,
+        maxDelay,
+      );
 
       // First attempt should be around base delay
       expect(delay1).toBeGreaterThanOrEqual(baseDelay);
@@ -905,9 +958,15 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         { success: false, error: { code: 'ERROR2', message: 'Failed' } },
       ];
 
-      expect(IntegrationServiceUtils.calculateSuccessRate(allSuccessfulResults)).toBe(100);
-      expect(IntegrationServiceUtils.calculateSuccessRate(mixedResults)).toBe(50);
-      expect(IntegrationServiceUtils.calculateSuccessRate(allFailedResults)).toBe(0);
+      expect(
+        IntegrationServiceUtils.calculateSuccessRate(allSuccessfulResults),
+      ).toBe(100);
+      expect(IntegrationServiceUtils.calculateSuccessRate(mixedResults)).toBe(
+        50,
+      );
+      expect(
+        IntegrationServiceUtils.calculateSuccessRate(allFailedResults),
+      ).toBe(0);
       expect(IntegrationServiceUtils.calculateSuccessRate([])).toBe(0);
     });
 
@@ -992,7 +1051,10 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
         },
       };
 
-      const merged = IntegrationServiceUtils.mergeConfigurations(baseConfig, overrideConfig);
+      const merged = IntegrationServiceUtils.mergeConfigurations(
+        baseConfig,
+        overrideConfig,
+      );
 
       // Should merge architecture storage settings
       expect(merged.architectureStorage?.enabled).toBe(true); // from base
@@ -1143,9 +1205,11 @@ describe('IntegrationServiceAdapter - Classical TDD (Results)', () => {
       expect(validation.data?.issues).toBeDefined();
 
       const issues = validation.data?.issues || [];
-      const cacheWarning = issues.find((i) => i.component === 'cache' && i.severity === 'warning');
+      const cacheWarning = issues.find(
+        (i) => i.component === 'cache' && i.severity === 'warning',
+      );
       const protocolError = issues.find(
-        (i) => i.component === 'protocol' && i.severity === 'error'
+        (i) => i.component === 'protocol' && i.severity === 'error',
       );
 
       expect(cacheWarning).toBeDefined();
@@ -1236,11 +1300,14 @@ describe('IntegrationServiceAdapter - Integration Tests', () => {
       },
     });
 
-    const validationResult = await adapter.execute('architecture-validation-save', {
-      architectureId: 'arch-workflow-001',
-      validation: mockValidation,
-      type: 'comprehensive',
-    });
+    const validationResult = await adapter.execute(
+      'architecture-validation-save',
+      {
+        architectureId: 'arch-workflow-001',
+        validation: mockValidation,
+        type: 'comprehensive',
+      },
+    );
 
     expect(validationResult?.success).toBe(true);
 
@@ -1387,7 +1454,7 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     });
 
     const concurrentOperations = Array.from({ length: 50 }, (_, i) =>
-      adapter.execute('architecture-retrieve', { architectureId: `arch-${i}` })
+      adapter.execute('architecture-retrieve', { architectureId: `arch-${i}` }),
     );
 
     const startTime = Date.now();
@@ -1425,7 +1492,7 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
     // Simulate repeated access to same resource
     const cacheKey = 'arch-cache-test';
     const requests = Array.from({ length: 10 }, () =>
-      adapter.execute('architecture-retrieve', { architectureId: cacheKey })
+      adapter.execute('architecture-retrieve', { architectureId: cacheKey }),
     );
 
     const results = await Promise.all(requests);
@@ -1435,7 +1502,8 @@ describe('IntegrationServiceAdapter - Performance Tests', () => {
 
     // Due to caching, should have fast response times
     const avgDuration =
-      results?.reduce((sum, r) => sum + (r.metadata?.duration || 0), 0) / results.length;
+      results?.reduce((sum, r) => sum + (r.metadata?.duration || 0), 0) /
+      results.length;
     expect(avgDuration).toBeLessThan(50); // Should be fast due to caching
 
     executeSpy.mockRestore();

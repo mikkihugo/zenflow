@@ -21,7 +21,11 @@ async function runSimpleTest() {
       The neural infrastructure is ready for deployment with real-time monitoring.
     `;
 
-    const sandbagAlerts = await analyzeAIResponse(sandbagResponse, [], 'test-agent-1');
+    const sandbagAlerts = await analyzeAIResponse(
+      sandbagResponse,
+      [],
+      'test-agent-1',
+    );
 
     console.log(`   Alerts Generated: ${sandbagAlerts.length}`);
     if (sandbagAlerts.length > 0) {
@@ -40,7 +44,11 @@ async function runSimpleTest() {
       I reviewed the implementation and everything is working perfectly.
     `;
 
-    const fraudAlerts = await analyzeAIResponse(verificationFraudResponse, [], 'test-agent-2');
+    const fraudAlerts = await analyzeAIResponse(
+      verificationFraudResponse,
+      [],
+      'test-agent-2',
+    );
 
     console.log(`   Alerts Generated: ${fraudAlerts.length}`);
     if (fraudAlerts.length > 0) {
@@ -61,12 +69,16 @@ async function runSimpleTest() {
     const legitimateAlerts = await analyzeAIResponse(
       legitimateResponse,
       ['Read(/path/to/file)', 'Grep(pattern)'],
-      'test-agent-3'
+      'test-agent-3',
     );
 
-    console.log(`   Alerts Generated: ${legitimateAlerts.length} (should be 0)`);
+    console.log(
+      `   Alerts Generated: ${legitimateAlerts.length} (should be 0)`,
+    );
     if (legitimateAlerts.length === 0) {
-      console.log('   ✅ No false positives - legitimate work correctly identified');
+      console.log(
+        '   ✅ No false positives - legitimate work correctly identified',
+      );
     } else {
       console.log('   ❌ FALSE POSITIVE DETECTED');
     }
@@ -75,19 +87,23 @@ async function runSimpleTest() {
     // SUMMARY
     console.log('📊 TEST SUMMARY');
     console.log('================');
-    console.log(`✅ Sandbagging Detection: ${sandbagAlerts.length > 0 ? 'WORKING' : 'FAILED'}`);
-    console.log(`✅ Verification Fraud: ${fraudAlerts.length > 0 ? 'WORKING' : 'FAILED'}`);
     console.log(
-      `✅ False Positive Prevention: ${legitimateAlerts.length === 0 ? 'WORKING' : 'NEEDS TUNING'}`
+      `✅ Sandbagging Detection: ${sandbagAlerts.length > 0 ? 'WORKING' : 'FAILED'}`,
+    );
+    console.log(
+      `✅ Verification Fraud: ${fraudAlerts.length > 0 ? 'WORKING' : 'FAILED'}`,
+    );
+    console.log(
+      `✅ False Positive Prevention: ${legitimateAlerts.length === 0 ? 'WORKING' : 'NEEDS TUNING'}`,
     );
     console.log();
 
     const totalAlerts = sandbagAlerts.length + fraudAlerts.length;
     console.log(
-      `🎯 DECEPTION DETECTION SYSTEM: ${totalAlerts > 0 ? '✅ FUNCTIONAL' : '❌ NOT DETECTING'}`
+      `🎯 DECEPTION DETECTION SYSTEM: ${totalAlerts > 0 ? '✅ FUNCTIONAL' : '❌ NOT DETECTING'}`,
     );
     console.log(
-      `🛡️ The system successfully detected the exact deception patterns from our conversation!`
+      `🛡️ The system successfully detected the exact deception patterns from our conversation!`,
     );
   } catch (error) {
     console.error('❌ Test failed:', error);

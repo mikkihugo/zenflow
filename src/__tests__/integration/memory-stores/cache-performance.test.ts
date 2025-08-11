@@ -32,7 +32,10 @@ interface CacheMetrics {
 
 interface CacheStrategy<T> {
   name: string;
-  shouldEvict(entries: Map<string, CacheEntry<T>>, maxSize: number): string | null;
+  shouldEvict(
+    entries: Map<string, CacheEntry<T>>,
+    maxSize: number,
+  ): string | null;
   onAccess(entry: CacheEntry<T>): void;
 }
 
@@ -40,7 +43,10 @@ interface CacheStrategy<T> {
 class LRUStrategy<T> implements CacheStrategy<T> {
   name = 'LRU';
 
-  shouldEvict(entries: Map<string, CacheEntry<T>>, maxSize: number): string | null {
+  shouldEvict(
+    entries: Map<string, CacheEntry<T>>,
+    maxSize: number,
+  ): string | null {
     if (entries.size >= maxSize) {
       // At capacity - need to evict
     } else {
@@ -48,7 +54,7 @@ class LRUStrategy<T> implements CacheStrategy<T> {
     }
 
     let oldestKey: string | null = null;
-    let oldestTime = Infinity;
+    let oldestTime = Number.POSITIVE_INFINITY;
 
     for (const [key, entry] of entries) {
       if (entry.lastAccessed < oldestTime) {
@@ -70,11 +76,14 @@ class LRUStrategy<T> implements CacheStrategy<T> {
 class LFUStrategy<T> implements CacheStrategy<T> {
   name = 'LFU';
 
-  shouldEvict(entries: Map<string, CacheEntry<T>>, maxSize: number): string | null {
+  shouldEvict(
+    entries: Map<string, CacheEntry<T>>,
+    maxSize: number,
+  ): string | null {
     if (entries.size < maxSize) return null;
 
     let leastUsedKey: string | null = null;
-    let leastCount = Infinity;
+    let leastCount = Number.POSITIVE_INFINITY;
 
     for (const [key, entry] of entries) {
       if (entry.accessCount < leastCount) {
@@ -96,7 +105,10 @@ class LFUStrategy<T> implements CacheStrategy<T> {
 class TTLStrategy<T> implements CacheStrategy<T> {
   name = 'TTL';
 
-  shouldEvict(entries: Map<string, CacheEntry<T>>, maxSize: number): string | null {
+  shouldEvict(
+    entries: Map<string, CacheEntry<T>>,
+    maxSize: number,
+  ): string | null {
     const now = Date.now();
 
     // First, evict expired entries
@@ -109,7 +121,7 @@ class TTLStrategy<T> implements CacheStrategy<T> {
     // If no expired entries and over capacity, use LRU
     if (entries.size >= maxSize) {
       let oldestKey: string | null = null;
-      let oldestTime = Infinity;
+      let oldestTime = Number.POSITIVE_INFINITY;
 
       for (const [key, entry] of entries) {
         if (entry.lastAccessed < oldestTime) {
@@ -141,7 +153,7 @@ class PerformanceCache<T> extends EventEmitter {
   constructor(
     maxSize: number = 1000,
     strategy: CacheStrategy<T> = new LRUStrategy<T>(),
-    defaultTTL?: number
+    defaultTTL?: number,
   ) {
     super();
     this.maxSize = maxSize;
@@ -206,7 +218,11 @@ class PerformanceCache<T> extends EventEmitter {
       accessCount: existingEntry ? existingEntry.accessCount : 0,
       lastAccessed: now,
       size,
-      ttl: ttl ? now + ttl : this.defaultTTL ? now + this.defaultTTL : undefined,
+      ttl: ttl
+        ? now + ttl
+        : this.defaultTTL
+          ? now + this.defaultTTL
+          : undefined,
     };
 
     // Only check for eviction if we're adding a new key
@@ -216,7 +232,11 @@ class PerformanceCache<T> extends EventEmitter {
         const evicted = this.entries.get(evictKey);
         this.entries.delete(evictKey);
         this.metrics.evictions++;
-        this.emit('evicted', { key: evictKey, strategy: this.strategy.name, evicted });
+        this.emit('evicted', {
+          key: evictKey,
+          strategy: this.strategy.name,
+          evicted,
+        });
       }
     }
 
@@ -260,7 +280,9 @@ class PerformanceCache<T> extends EventEmitter {
   getMetrics(): CacheMetrics {
     this.calculateMemoryUsage();
     this.metrics.hitRate =
-      this.metrics.totalRequests > 0 ? this.metrics.hits / this.metrics.totalRequests : 0;
+      this.metrics.totalRequests > 0
+        ? this.metrics.hits / this.metrics.totalRequests
+        : 0;
     return { ...this.metrics };
   }
 
@@ -313,7 +335,9 @@ class PerformanceCache<T> extends EventEmitter {
     // Update rolling average
     const totalOps = this.metrics.hits + this.metrics.misses;
     this.metrics.avgAccessTime =
-      totalOps > 1 ? (this.metrics.avgAccessTime * (totalOps - 1) + duration) / totalOps : duration;
+      totalOps > 1
+        ? (this.metrics.avgAccessTime * (totalOps - 1) + duration) / totalOps
+        : duration;
   }
 }
 
@@ -335,10 +359,9 @@ class MockCache<T> {
     if (this.mockData.has(key)) {
       this.metrics.hits++;
       return this.mockData.get(key)!;
-    } else {
-      this.metrics.misses++;
-      return null;
     }
+    this.metrics.misses++;
+    return null;
   }
 
   async set(key: string, value: T): Promise<void> {
@@ -753,9 +776,8 @@ describe('Cache Performance Integration Tests', () => {
 
         if (i % 2 === 0) {
           return cache.set(key, { value: i, timestamp: Date.now() });
-        } else {
-          return cache.get(key);
         }
+        return cache.get(key);
       });
 
       const results = await Promise.all(operations);

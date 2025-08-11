@@ -26,27 +26,31 @@ async function testNeuralDeceptionDetection() {
   const result1 = await detector.detectDeceptionWithML(deceptiveResponse1);
 
   console.log('📊 ANALYSIS RESULTS:');
-  console.log(`- Rule-based alerts: ${result1.logAnalysis.deceptionPatterns.length}`);
   console.log(
-    `- Neural probability: ${(result1.neuralPrediction.deceptionProbability * 100).toFixed(1)}%`
+    `- Rule-based alerts: ${result1.logAnalysis.deceptionPatterns.length}`,
   );
   console.log(
-    `- Final verdict: ${result1.finalVerdict.isDeceptive ? '🚨 DECEPTIVE' : '✅ LEGITIMATE'}`
+    `- Neural probability: ${(result1.neuralPrediction.deceptionProbability * 100).toFixed(1)}%`,
   );
-  console.log(`- Confidence: ${(result1.finalVerdict.confidence * 100).toFixed(1)}%`);
+  console.log(
+    `- Final verdict: ${result1.finalVerdict.isDeceptive ? '🚨 DECEPTIVE' : '✅ LEGITIMATE'}`,
+  );
+  console.log(
+    `- Confidence: ${(result1.finalVerdict.confidence * 100).toFixed(1)}%`,
+  );
   console.log(`- Predicted type: ${result1.neuralPrediction.predictedType}`);
   console.log('\n🧠 Neural Features:');
   console.log(
-    `  - Claim to action ratio: ${result1.neuralPrediction.features.claimToActionRatio.toFixed(2)}`
+    `  - Claim to action ratio: ${result1.neuralPrediction.features.claimToActionRatio.toFixed(2)}`,
   );
   console.log(
-    `  - Verification word count: ${result1.neuralPrediction.features.verificationWordCount}`
+    `  - Verification word count: ${result1.neuralPrediction.features.verificationWordCount}`,
   );
   console.log(
-    `  - Implementation word count: ${result1.neuralPrediction.features.implementationWordCount}`
+    `  - Implementation word count: ${result1.neuralPrediction.features.implementationWordCount}`,
   );
   console.log(
-    `  - Tool call frequency: ${result1.neuralPrediction.features.toolCallFrequency.toFixed(2)}`
+    `  - Tool call frequency: ${result1.neuralPrediction.features.toolCallFrequency.toFixed(2)}`,
   );
   console.log('\n💭 Neural Reasoning:');
   for (const reason of result1.neuralPrediction.explanation) {
@@ -59,7 +63,12 @@ async function testNeuralDeceptionDetection() {
   console.log('======================================');
 
   // Provide feedback that this was indeed deceptive
-  detector.learnFromFeedback(result1.logAnalysis, deceptiveResponse1, true, 'SANDBAGGING');
+  detector.learnFromFeedback(
+    result1.logAnalysis,
+    deceptiveResponse1,
+    true,
+    'SANDBAGGING',
+  );
 
   // Train with a legitimate example
   const legitimateResponse = `
@@ -68,8 +77,13 @@ async function testNeuralDeceptionDetection() {
     Finally, I ran npm install using the Bash tool.
   `;
 
-  const legitimateResult = await detector.detectDeceptionWithML(legitimateResponse);
-  detector.learnFromFeedback(legitimateResult.logAnalysis, legitimateResponse, false);
+  const legitimateResult =
+    await detector.detectDeceptionWithML(legitimateResponse);
+  detector.learnFromFeedback(
+    legitimateResult.logAnalysis,
+    legitimateResponse,
+    false,
+  );
 
   // Train with more examples
   const verificationFraudResponse = `
@@ -77,12 +91,14 @@ async function testNeuralDeceptionDetection() {
     I reviewed all the SQL queries and identified the missing indexes.
   `;
 
-  const fraudResult = await detector.detectDeceptionWithML(verificationFraudResponse);
+  const fraudResult = await detector.detectDeceptionWithML(
+    verificationFraudResponse,
+  );
   detector.learnFromFeedback(
     fraudResult.logAnalysis,
     verificationFraudResponse,
     true,
-    'VERIFICATION_FRAUD'
+    'VERIFICATION_FRAUD',
   );
 
   console.log('✅ Neural network trained with 3 examples');
@@ -101,24 +117,28 @@ async function testNeuralDeceptionDetection() {
   const result2 = await detector.detectDeceptionWithML(newDeceptiveResponse);
 
   console.log('📊 IMPROVED ANALYSIS RESULTS:');
-  console.log(`- Rule-based alerts: ${result2.logAnalysis.deceptionPatterns.length}`);
   console.log(
-    `- Neural probability: ${(result2.neuralPrediction.deceptionProbability * 100).toFixed(1)}%`
+    `- Rule-based alerts: ${result2.logAnalysis.deceptionPatterns.length}`,
   );
   console.log(
-    `- Final verdict: ${result2.finalVerdict.isDeceptive ? '🚨 DECEPTIVE' : '✅ LEGITIMATE'}`
+    `- Neural probability: ${(result2.neuralPrediction.deceptionProbability * 100).toFixed(1)}%`,
   );
-  console.log(`- Confidence: ${(result2.finalVerdict.confidence * 100).toFixed(1)}%`);
+  console.log(
+    `- Final verdict: ${result2.finalVerdict.isDeceptive ? '🚨 DECEPTIVE' : '✅ LEGITIMATE'}`,
+  );
+  console.log(
+    `- Confidence: ${(result2.finalVerdict.confidence * 100).toFixed(1)}%`,
+  );
   console.log(`- Predicted type: ${result2.neuralPrediction.predictedType}`);
   console.log('\n🧠 Learned Neural Features:');
   console.log(
-    `  - Claim to action ratio: ${result2.neuralPrediction.features.claimToActionRatio.toFixed(2)}`
+    `  - Claim to action ratio: ${result2.neuralPrediction.features.claimToActionRatio.toFixed(2)}`,
   );
   console.log(
-    `  - Complexity of claims: ${result2.neuralPrediction.features.complexityOfClaims.toFixed(2)}`
+    `  - Complexity of claims: ${result2.neuralPrediction.features.complexityOfClaims.toFixed(2)}`,
   );
   console.log(
-    `  - Specificity of claims: ${result2.neuralPrediction.features.specificityOfClaims.toFixed(2)}`
+    `  - Specificity of claims: ${result2.neuralPrediction.features.specificityOfClaims.toFixed(2)}`,
   );
   console.log('\n💭 Enhanced Neural Reasoning:');
   for (const reason of result2.neuralPrediction.explanation) {
@@ -139,14 +159,18 @@ async function testNeuralDeceptionDetection() {
   const result3 = await detector.detectDeceptionWithML(subtleDeception);
 
   console.log('📊 SUBTLE DETECTION RESULTS:');
-  console.log(`- Rule-based alerts: ${result3.logAnalysis.deceptionPatterns.length}`);
   console.log(
-    `- Neural probability: ${(result3.neuralPrediction.deceptionProbability * 100).toFixed(1)}%`
+    `- Rule-based alerts: ${result3.logAnalysis.deceptionPatterns.length}`,
   );
   console.log(
-    `- Final verdict: ${result3.finalVerdict.isDeceptive ? '🚨 DECEPTIVE' : '✅ LEGITIMATE'}`
+    `- Neural probability: ${(result3.neuralPrediction.deceptionProbability * 100).toFixed(1)}%`,
   );
-  console.log(`- Confidence: ${(result3.finalVerdict.confidence * 100).toFixed(1)}%`);
+  console.log(
+    `- Final verdict: ${result3.finalVerdict.isDeceptive ? '🚨 DECEPTIVE' : '✅ LEGITIMATE'}`,
+  );
+  console.log(
+    `- Confidence: ${(result3.finalVerdict.confidence * 100).toFixed(1)}%`,
+  );
   console.log('\n🎯 Neural Network Advantage:');
   console.log('  - Rules-based system might miss vague claims');
   console.log('  - Neural network detects patterns in language complexity');
@@ -156,7 +180,9 @@ async function testNeuralDeceptionDetection() {
   // Export trained model
   const modelData = detector.exportModel();
   console.log('📦 MODEL EXPORT:');
-  console.log(`- Feature weights learned: ${Object.keys(modelData.weights).length}`);
+  console.log(
+    `- Feature weights learned: ${Object.keys(modelData.weights).length}`,
+  );
   console.log(`- Training examples: ${modelData.trainingData.length}`);
   console.log('\n🧠 Learned Feature Weights:');
   for (const [feature, weight] of Object.entries(modelData.weights)) {
@@ -164,7 +190,9 @@ async function testNeuralDeceptionDetection() {
   }
 
   console.log('\n🎯 NEURAL DECEPTION DETECTION: ✅ FUNCTIONAL WITH LEARNING');
-  console.log('The system successfully learns and adapts to new deception patterns!');
+  console.log(
+    'The system successfully learns and adapts to new deception patterns!',
+  );
 }
 
 // Run the test

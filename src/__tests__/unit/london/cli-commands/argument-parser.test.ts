@@ -278,8 +278,14 @@ describe('ArgumentParser - TDD London', () => {
 
     it('should register multiple commands without conflicts', () => {
       // Arrange
-      const cmd1: CommandDefinition = { name: 'start', description: 'Start service' };
-      const cmd2: CommandDefinition = { name: 'stop', description: 'Stop service' };
+      const cmd1: CommandDefinition = {
+        name: 'start',
+        description: 'Start service',
+      };
+      const cmd2: CommandDefinition = {
+        name: 'stop',
+        description: 'Stop service',
+      };
 
       // Act
       parser.addCommand(cmd1);
@@ -419,7 +425,9 @@ describe('ArgumentParser - TDD London', () => {
 
       // Assert - verify warning behavior
       expect(result?.valid).toBe(true);
-      expect(result?.warnings).toContain('Flag --old-flag is deprecated, use --new-flag instead');
+      expect(result?.warnings).toContain(
+        'Flag --old-flag is deprecated, use --new-flag instead',
+      );
     });
   });
 
@@ -511,7 +519,11 @@ describe('ArgumentParser - TDD London', () => {
 
     it('should handle special characters in arguments', () => {
       // Arrange
-      const args = ['deploy', '--message', 'Deploy v1.0.0 with "quotes" and spaces'];
+      const args = [
+        'deploy',
+        '--message',
+        'Deploy v1.0.0 with "quotes" and spaces',
+      ];
       const expectedResult: ParseResult = {
         command: 'deploy',
         args: [],
@@ -527,7 +539,9 @@ describe('ArgumentParser - TDD London', () => {
       const result = parser.parse(args);
 
       // Assert - verify special character handling
-      expect(result?.flags?.message).toBe('Deploy v1.0.0 with "quotes" and spaces');
+      expect(result?.flags?.message).toBe(
+        'Deploy v1.0.0 with "quotes" and spaces',
+      );
     });
 
     it('should handle variadic arguments', () => {

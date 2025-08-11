@@ -5,7 +5,11 @@
  */
 
 import { VALIDATION_RULES } from './defaults.ts';
-import type { ConfigValidationResult, SystemConfiguration, ValidationResult } from './types.ts';
+import type {
+  ConfigValidationResult,
+  SystemConfiguration,
+  ValidationResult,
+} from './types.ts';
 
 /**
  * Configuration validator.
@@ -51,7 +55,10 @@ export class ConfigValidator {
    * @param config
    * @param errors
    */
-  private validateStructure(config: SystemConfiguration, errors: string[]): void {
+  private validateStructure(
+    config: SystemConfiguration,
+    errors: string[],
+  ): void {
     const requiredSections = [
       'core',
       'interfaces',
@@ -108,7 +115,11 @@ export class ConfigValidator {
    * @param errors
    * @param warnings
    */
-  private validateRules(config: SystemConfiguration, errors: string[], warnings: string[]): void {
+  private validateRules(
+    config: SystemConfiguration,
+    errors: string[],
+    warnings: string[],
+  ): void {
     for (const [path, rule] of Object.entries(VALIDATION_RULES)) {
       const value = this.getNestedValue(config as any, path);
 
@@ -142,7 +153,9 @@ export class ConfigValidator {
       // Enum validation
       if ('enum' in rule && rule.enum && Array.isArray(rule.enum)) {
         if (!rule.enum.includes(value as never)) {
-          errors.push(`${path} must be one of: ${rule.enum.join(', ')}, got ${value}`);
+          errors.push(
+            `${path} must be one of: ${rule.enum.join(', ')}, got ${value}`,
+          );
         }
       }
 
@@ -168,10 +181,13 @@ export class ConfigValidator {
   private validateDependencies(
     config: SystemConfiguration,
     errors: string[],
-    warnings: string[]
+    warnings: string[],
   ): void {
     // Web interface dependencies
-    if (config?.interfaces?.web?.enableHttps && !config?.interfaces?.web?.corsOrigins) {
+    if (
+      config?.interfaces?.web?.enableHttps &&
+      !config?.interfaces?.web?.corsOrigins
+    ) {
       warnings.push('HTTPS enabled but no CORS origins configured');
     }
 
@@ -181,7 +197,10 @@ export class ConfigValidator {
     }
 
     // Database dependencies
-    if (config?.storage?.memory?.backend === 'lancedb' && !config?.storage?.database?.lancedb) {
+    if (
+      config?.storage?.memory?.backend === 'lancedb' &&
+      !config?.storage?.database?.lancedb
+    ) {
       errors.push('LanceDB backend selected but lancedb configuration missing');
     }
 
@@ -194,13 +213,21 @@ export class ConfigValidator {
     }
 
     // Security dependencies
-    if (!config?.core?.security?.enableSandbox && config?.core?.security?.allowShellAccess) {
+    if (
+      !config?.core?.security?.enableSandbox &&
+      config?.core?.security?.allowShellAccess
+    ) {
       warnings.push('Shell access enabled without sandbox - security risk');
     }
 
     // Performance dependencies
-    if (config?.core?.performance?.enableProfiling && !config?.core?.performance?.enableMetrics) {
-      warnings.push('Profiling enabled without metrics - limited functionality');
+    if (
+      config?.core?.performance?.enableProfiling &&
+      !config?.core?.performance?.enableMetrics
+    ) {
+      warnings.push(
+        'Profiling enabled without metrics - limited functionality',
+      );
     }
   }
 
@@ -214,27 +241,39 @@ export class ConfigValidator {
   private validateConstraints(
     config: SystemConfiguration,
     errors: string[],
-    warnings: string[]
+    warnings: string[],
   ): void {
     // Port conflicts
-    const ports = [config?.interfaces?.web?.port, config?.interfaces?.mcp?.http?.port].filter(
-      Boolean
-    );
+    const ports = [
+      config?.interfaces?.web?.port,
+      config?.interfaces?.mcp?.http?.port,
+    ].filter(Boolean);
 
     const uniquePorts = new Set(ports);
     if (ports.length !== uniquePorts.size) {
-      errors.push('Port conflicts detected - multiple services cannot use the same port');
+      errors.push(
+        'Port conflicts detected - multiple services cannot use the same port',
+      );
     }
 
     // Memory constraints
-    if (config?.storage?.memory?.maxMemorySize && config?.storage?.memory?.cacheSize) {
-      if (config?.storage?.memory?.cacheSize > config?.storage?.memory?.maxMemorySize) {
+    if (
+      config?.storage?.memory?.maxMemorySize &&
+      config?.storage?.memory?.cacheSize
+    ) {
+      if (
+        config?.storage?.memory?.cacheSize >
+        config?.storage?.memory?.maxMemorySize
+      ) {
         errors.push('Cache size cannot be larger than max memory size');
       }
     }
 
     // Agent constraints
-    if (config?.coordination?.maxAgents && config?.coordination?.maxAgents > 1000) {
+    if (
+      config?.coordination?.maxAgents &&
+      config?.coordination?.maxAgents > 1000
+    ) {
       warnings.push('Very high agent count may impact performance');
     }
 
@@ -265,7 +304,9 @@ export class ConfigValidator {
 
     for (const dir of directories) {
       if (dir.includes('..')) {
-        warnings.push(`Directory path contains '..' - potential security risk: ${dir}`);
+        warnings.push(
+          `Directory path contains '..' - potential security risk: ${dir}`,
+        );
       }
     }
   }
@@ -286,13 +327,16 @@ export class ConfigValidator {
    * @param _config
    * @param section
    */
-  validateSection(_config: SystemConfiguration, section: string): ConfigValidationResult {
+  validateSection(
+    _config: SystemConfiguration,
+    section: string,
+  ): ConfigValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
 
     // Get rules for this section
     const sectionRules = Object.entries(VALIDATION_RULES).filter(([path]) =>
-      path.startsWith(`${section}.`)
+      path.startsWith(`${section}.`),
     );
 
     for (const [_path, _rule] of sectionRules) {
@@ -322,7 +366,10 @@ export class ConfigValidator {
     const failsafeApplied: string[] = [];
 
     // Check security issues
-    if (!config?.core?.security?.enableSandbox && config?.core?.security?.allowShellAccess) {
+    if (
+      !config?.core?.security?.enableSandbox &&
+      config?.core?.security?.allowShellAccess
+    ) {
       securityIssues.push('Shell access enabled without sandbox protection');
     }
 
@@ -343,12 +390,17 @@ export class ConfigValidator {
     }
 
     // Check performance warnings
-    if (config?.coordination?.maxAgents && config?.coordination?.maxAgents > 1000) {
+    if (
+      config?.coordination?.maxAgents &&
+      config?.coordination?.maxAgents > 1000
+    ) {
       performanceWarnings.push('High agent count may impact performance');
     }
 
     if (config?.core?.logger?.level === 'debug') {
-      performanceWarnings.push('Debug logging enabled - may impact performance');
+      performanceWarnings.push(
+        'Debug logging enabled - may impact performance',
+      );
     }
 
     // Check production readiness
@@ -393,7 +445,9 @@ export class ConfigValidator {
 
     // Calculate health scores
     const structureScore =
-      result?.errors.length === 0 ? 100 : Math.max(0, 100 - result?.errors.length * 10);
+      result?.errors.length === 0
+        ? 100
+        : Math.max(0, 100 - result?.errors.length * 10);
     const securityScore =
       result?.securityIssues.length === 0
         ? 100
@@ -404,7 +458,8 @@ export class ConfigValidator {
         : Math.max(0, 100 - result?.performanceWarnings.length * 5);
     const productionScore = result?.productionReady ? 100 : 50;
 
-    const overallScore = (structureScore + securityScore + performanceScore + productionScore) / 4;
+    const overallScore =
+      (structureScore + securityScore + performanceScore + productionScore) / 4;
 
     // Generate recommendations
     if (result?.errors.length > 0) {
@@ -420,7 +475,12 @@ export class ConfigValidator {
       recommendations.push('Review performance configuration for optimization');
     }
 
-    const status = overallScore >= 90 ? 'healthy' : overallScore >= 70 ? 'warning' : 'critical';
+    const status =
+      overallScore >= 90
+        ? 'healthy'
+        : overallScore >= 70
+          ? 'warning'
+          : 'critical';
 
     return {
       status,

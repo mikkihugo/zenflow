@@ -29,7 +29,11 @@ const createMockWebSocket = () => ({
   onerror: vi.fn(),
 });
 
-const createMockHttpResponse = (data: any, ok: boolean = true, status: number = 200) => ({
+const createMockHttpResponse = (
+  data: unknown,
+  ok: boolean = true,
+  status: number = 200,
+) => ({
   ok,
   status,
   json: vi.fn().mockResolvedValue(data),
@@ -135,15 +139,26 @@ describe('Adapter Pattern Implementation', () => {
       it('should transform MCP messages to HTTP endpoints correctly', () => {
         const testCases = [
           { messageType: 'swarm_init', expectedEndpoint: '/tools/swarm_init' },
-          { messageType: 'agent_spawn', expectedEndpoint: '/tools/agent_spawn' },
-          { messageType: 'task_orchestrate', expectedEndpoint: '/tools/task_orchestrate' },
+          {
+            messageType: 'agent_spawn',
+            expectedEndpoint: '/tools/agent_spawn',
+          },
+          {
+            messageType: 'task_orchestrate',
+            expectedEndpoint: '/tools/task_orchestrate',
+          },
           { messageType: 'ping', expectedEndpoint: '/health' },
           { messageType: 'capabilities', expectedEndpoint: '/capabilities' },
-          { messageType: 'unknown_command', expectedEndpoint: '/tools/unknown' },
+          {
+            messageType: 'unknown_command',
+            expectedEndpoint: '/tools/unknown',
+          },
         ];
 
         testCases.forEach(({ messageType, expectedEndpoint }) => {
-          const endpoint = (mcpAdapter as any).mapMessageTypeToEndpoint(messageType);
+          const endpoint = (mcpAdapter as any).mapMessageTypeToEndpoint(
+            messageType,
+          );
           expect(endpoint).toBe(expectedEndpoint);
         });
       });
@@ -246,10 +261,15 @@ describe('Adapter Pattern Implementation', () => {
         const backoffMultiplier = 2;
 
         const calculateDelay = (attempt: number) => {
-          return Math.min(baseDelay * backoffMultiplier ** (attempt - 1), 30000);
+          return Math.min(
+            baseDelay * backoffMultiplier ** (attempt - 1),
+            30000,
+          );
         };
 
-        const delays = Array.from({ length: maxAttempts }, (_, i) => calculateDelay(i + 1));
+        const delays = Array.from({ length: maxAttempts }, (_, i) =>
+          calculateDelay(i + 1),
+        );
 
         expect(delays).toEqual([1000, 2000, 4000, 8000, 16000]);
         expect(delays[0]).toBe(1000);
@@ -318,12 +338,17 @@ describe('Adapter Pattern Implementation', () => {
           { messageType: 'agent_spawn', expectedEndpoint: '/agents' },
           { messageType: 'task_orchestrate', expectedEndpoint: '/tasks' },
           { messageType: 'system_status', expectedEndpoint: '/status' },
-          { messageType: 'document_process', expectedEndpoint: '/documents/process' },
+          {
+            messageType: 'document_process',
+            expectedEndpoint: '/documents/process',
+          },
           { messageType: 'unknown_operation', expectedEndpoint: '/unknown' },
         ];
 
         testCases.forEach(({ messageType, expectedEndpoint }) => {
-          const endpoint = (restAdapter as any).mapMessageTypeToEndpoint(messageType);
+          const endpoint = (restAdapter as any).mapMessageTypeToEndpoint(
+            messageType,
+          );
           expect(endpoint).toBe(expectedEndpoint);
         });
       });
@@ -361,7 +386,11 @@ describe('Adapter Pattern Implementation', () => {
           { type: 'ping', complexity: 'low', expectedTimeout: 5000 },
           { type: 'swarm_init', complexity: 'medium', expectedTimeout: 30000 },
           { type: 'neural_train', complexity: 'high', expectedTimeout: 300000 },
-          { type: 'batch_process', complexity: 'critical', expectedTimeout: 600000 },
+          {
+            type: 'batch_process',
+            complexity: 'critical',
+            expectedTimeout: 600000,
+          },
         ];
 
         const calculateTimeout = (complexity: string) => {
@@ -406,7 +435,9 @@ describe('Adapter Pattern Implementation', () => {
           },
         };
 
-        const legacyFormat = (legacyAdapter as any).transformToLegacyFormat(modernMessage);
+        const legacyFormat = (legacyAdapter as any).transformToLegacyFormat(
+          modernMessage,
+        );
 
         expect(legacyFormat).toEqual({
           action: 'data_process',
@@ -432,7 +463,9 @@ describe('Adapter Pattern Implementation', () => {
           message: 'Processing completed successfully',
         };
 
-        const modernFormat = (legacyAdapter as any).transformFromLegacyFormat(legacyResponse);
+        const modernFormat = (legacyAdapter as any).transformFromLegacyFormat(
+          legacyResponse,
+        );
 
         expect(modernFormat).toEqual({
           result: {
@@ -510,8 +543,14 @@ describe('Adapter Pattern Implementation', () => {
             const conn = connectionPool.availableConnections.pop();
             connectionPool.busyConnections.push(conn);
             return conn;
-          } else if (connectionPool.activeConnections < connectionPool.maxConnections) {
-            const newConn = { id: `conn-${connectionPool.activeConnections}`, inUse: true };
+          }
+          if (
+            connectionPool.activeConnections < connectionPool.maxConnections
+          ) {
+            const newConn = {
+              id: `conn-${connectionPool.activeConnections}`,
+              inUse: true,
+            };
             connectionPool.activeConnections++;
             connectionPool.busyConnections.push(newConn);
             return newConn;
@@ -519,7 +558,7 @@ describe('Adapter Pattern Implementation', () => {
           return null; // Pool exhausted
         };
 
-        const releaseConnection = (conn: any) => {
+        const releaseConnection = (conn: unknown) => {
           const index = connectionPool.busyConnections.indexOf(conn);
           if (index > -1) {
             connectionPool.busyConnections.splice(index, 1);
@@ -547,7 +586,8 @@ describe('Adapter Pattern Implementation', () => {
 
       it('should implement adaptive retry strategies', () => {
         const retryStrategies = {
-          exponential: (attempt: number) => Math.min(1000 * 2 ** (attempt - 1), 30000),
+          exponential: (attempt: number) =>
+            Math.min(1000 * 2 ** (attempt - 1), 30000),
           linear: (attempt: number) => Math.min(1000 * attempt, 10000),
           fixed: () => 5000,
           fibonacci: (attempt: number) => {
@@ -559,7 +599,9 @@ describe('Adapter Pattern Implementation', () => {
           },
         };
 
-        const exponentialDelays = [1, 2, 3, 4, 5].map(retryStrategies.exponential);
+        const exponentialDelays = [1, 2, 3, 4, 5].map(
+          retryStrategies.exponential,
+        );
         const linearDelays = [1, 2, 3, 4, 5].map(retryStrategies.linear);
         const fibonacciDelays = [1, 2, 3, 4, 5].map(retryStrategies.fibonacci);
 
@@ -607,7 +649,12 @@ describe('Adapter Pattern Implementation', () => {
           async connect() {}
           async disconnect() {}
           async send() {
-            return { id: '', requestId: '', timestamp: new Date(), success: true };
+            return {
+              id: '',
+              requestId: '',
+              timestamp: new Date(),
+              success: true,
+            };
           }
           subscribe() {}
           unsubscribe() {}
@@ -712,26 +759,28 @@ describe('Adapter Pattern Implementation', () => {
       });
 
       it('should broadcast messages to multiple adapters', async () => {
-        const adapters = ['broadcast-1', 'broadcast-2', 'broadcast-3'].map((name, index) => ({
-          name,
-          mock: {
-            connect: vi.fn().mockResolvedValue(undefined),
-            disconnect: vi.fn(),
-            send: vi.fn().mockResolvedValue({
-              id: `resp-${index}`,
-              requestId: 'broadcast-msg',
-              timestamp: new Date(),
-              success: true,
-              data: { handler: name },
-            }),
-            subscribe: vi.fn(),
-            unsubscribe: vi.fn(),
-            isConnected: vi.fn().mockReturnValue(true),
-            getProtocolName: vi.fn().mockReturnValue(name),
-            getCapabilities: vi.fn().mockReturnValue([]),
-            healthCheck: vi.fn(),
-          },
-        }));
+        const adapters = ['broadcast-1', 'broadcast-2', 'broadcast-3'].map(
+          (name, index) => ({
+            name,
+            mock: {
+              connect: vi.fn().mockResolvedValue(undefined),
+              disconnect: vi.fn(),
+              send: vi.fn().mockResolvedValue({
+                id: `resp-${index}`,
+                requestId: 'broadcast-msg',
+                timestamp: new Date(),
+                success: true,
+                data: { handler: name },
+              }),
+              subscribe: vi.fn(),
+              unsubscribe: vi.fn(),
+              isConnected: vi.fn().mockReturnValue(true),
+              getProtocolName: vi.fn().mockReturnValue(name),
+              getCapabilities: vi.fn().mockReturnValue([]),
+              healthCheck: vi.fn(),
+            },
+          }),
+        );
 
         // Register and add all adapters
         for (const { name, mock } of adapters) {
@@ -908,7 +957,8 @@ describe('Adapter Pattern Implementation', () => {
           host: 'localhost',
         });
 
-        const healthCheckResults: Array<{ name: string; healthy: boolean }> = [];
+        const healthCheckResults: Array<{ name: string; healthy: boolean }> =
+          [];
 
         protocolManager.on('protocol:health', (result) => {
           healthCheckResults?.push(result);
@@ -917,10 +967,14 @@ describe('Adapter Pattern Implementation', () => {
         await protocolManager.healthCheckAll();
 
         expect(healthCheckResults).toHaveLength(2);
-        expect(healthCheckResults?.find((r) => r.name === 'healthy-protocol')?.healthy).toBe(true);
-        expect(healthCheckResults?.find((r) => r.name === 'unhealthy-protocol')?.healthy).toBe(
-          false
-        );
+        expect(
+          healthCheckResults?.find((r) => r.name === 'healthy-protocol')
+            ?.healthy,
+        ).toBe(true);
+        expect(
+          healthCheckResults?.find((r) => r.name === 'unhealthy-protocol')
+            ?.healthy,
+        ).toBe(false);
       });
 
       it('should shutdown all adapters cleanly', async () => {
@@ -972,7 +1026,9 @@ describe('Adapter Pattern Implementation', () => {
             timeout: 30000,
           };
 
-          mockFetch.mockResolvedValueOnce(createMockHttpResponse({ capabilities: ['tools'] }));
+          mockFetch.mockResolvedValueOnce(
+            createMockHttpResponse({ capabilities: ['tools'] }),
+          );
 
           await mcpAdapter.connect(config);
 
@@ -988,8 +1044,12 @@ describe('Adapter Pattern Implementation', () => {
           };
 
           mockFetch
-            .mockResolvedValueOnce(createMockHttpResponse({ capabilities: ['tools'] })) // connect
-            .mockResolvedValueOnce(createMockHttpResponse({ result: 'success' })); // send
+            .mockResolvedValueOnce(
+              createMockHttpResponse({ capabilities: ['tools'] }),
+            ) // connect
+            .mockResolvedValueOnce(
+              createMockHttpResponse({ result: 'success' }),
+            ); // send
 
           await mcpAdapter.connect(config);
 
@@ -1036,17 +1096,23 @@ describe('Adapter Pattern Implementation', () => {
           };
 
           // Simulate spawn event
-          mockProcess.on.mockImplementation((event: string, callback: Function) => {
-            if (event === 'spawn') {
-              setTimeout(callback, 10);
-            }
-          });
+          mockProcess.on.mockImplementation(
+            (event: string, callback: Function) => {
+              if (event === 'spawn') {
+                setTimeout(callback, 10);
+              }
+            },
+          );
 
           await mcpAdapter.connect(config);
 
-          expect(mockSpawn).toHaveBeenCalledWith('npx', ['claude-zen', 'swarm', 'mcp', 'start'], {
-            stdio: ['pipe', 'pipe', 'pipe'],
-          });
+          expect(mockSpawn).toHaveBeenCalledWith(
+            'npx',
+            ['claude-zen', 'swarm', 'mcp', 'start'],
+            {
+              stdio: ['pipe', 'pipe', 'pipe'],
+            },
+          );
           expect(mcpAdapter.isConnected()).toBe(true);
         });
 
@@ -1056,9 +1122,11 @@ describe('Adapter Pattern Implementation', () => {
             host: 'localhost',
           };
 
-          mockProcess.on.mockImplementation((event: string, callback: Function) => {
-            if (event === 'spawn') setTimeout(callback, 10);
-          });
+          mockProcess.on.mockImplementation(
+            (event: string, callback: Function) => {
+              if (event === 'spawn') setTimeout(callback, 10);
+            },
+          );
 
           await mcpAdapter.connect(config);
 
@@ -1071,18 +1139,20 @@ describe('Adapter Pattern Implementation', () => {
           };
 
           // Mock response handling
-          mockProcess.stdout.once.mockImplementation((event: string, callback: Function) => {
-            if (event === 'data') {
-              setTimeout(
-                () =>
-                  callback({
-                    id: 'stdio-test',
-                    result: { agentId: 'agent-001' },
-                  }),
-                10
-              );
-            }
-          });
+          mockProcess.stdout.once.mockImplementation(
+            (event: string, callback: Function) => {
+              if (event === 'data') {
+                setTimeout(
+                  () =>
+                    callback({
+                      id: 'stdio-test',
+                      result: { agentId: 'agent-001' },
+                    }),
+                  10,
+                );
+              }
+            },
+          );
 
           const responsePromise = mcpAdapter.send(message);
 
@@ -1094,7 +1164,7 @@ describe('Adapter Pattern Implementation', () => {
           };
 
           expect(mockProcess.stdin.write).toHaveBeenCalledWith(
-            `${JSON.stringify(expectedMessage)}\n`
+            `${JSON.stringify(expectedMessage)}\n`,
           );
 
           await responsePromise;
@@ -1128,7 +1198,9 @@ describe('Adapter Pattern Implementation', () => {
 
           await connectPromise;
 
-          expect(mockWebSocketConstructor).toHaveBeenCalledWith('ws://localhost:3456/ws');
+          expect(mockWebSocketConstructor).toHaveBeenCalledWith(
+            'ws://localhost:3456/ws',
+          );
           expect(wsAdapter.isConnected()).toBe(true);
         });
 
@@ -1172,7 +1244,7 @@ describe('Adapter Pattern Implementation', () => {
             JSON.stringify({
               ...message,
               expectResponse: true,
-            })
+            }),
           );
           expect(response?.success).toBe(true);
         });
@@ -1218,7 +1290,9 @@ describe('Adapter Pattern Implementation', () => {
             path: '/v1',
           };
 
-          mockFetch.mockResolvedValueOnce(createMockHttpResponse({ status: 'healthy' }));
+          mockFetch.mockResolvedValueOnce(
+            createMockHttpResponse({ status: 'healthy' }),
+          );
 
           await restAdapter.connect(config);
 
@@ -1229,7 +1303,7 @@ describe('Adapter Pattern Implementation', () => {
               headers: expect.objectContaining({
                 'Content-Type': 'application/json',
               }),
-            })
+            }),
           );
           expect(restAdapter.isConnected()).toBe(true);
         });
@@ -1242,8 +1316,12 @@ describe('Adapter Pattern Implementation', () => {
           };
 
           mockFetch
-            .mockResolvedValueOnce(createMockHttpResponse({ status: 'healthy' })) // connect
-            .mockResolvedValueOnce(createMockHttpResponse({ swarmId: 'rest-swarm-001' })); // send
+            .mockResolvedValueOnce(
+              createMockHttpResponse({ status: 'healthy' }),
+            ) // connect
+            .mockResolvedValueOnce(
+              createMockHttpResponse({ swarmId: 'rest-swarm-001' }),
+            ); // send
 
           await restAdapter.connect(config);
 
@@ -1265,7 +1343,7 @@ describe('Adapter Pattern Implementation', () => {
                 'Content-Type': 'application/json',
               }),
               body: JSON.stringify({ topology: 'ring', agentCount: 4 }),
-            })
+            }),
           );
           expect(response?.success).toBe(true);
           expect(response?.data?.swarmId).toBe('rest-swarm-001');
@@ -1286,7 +1364,9 @@ describe('Adapter Pattern Implementation', () => {
         port: 8080,
       };
 
-      await expect(restAdapter.connect(config)).rejects.toThrow('REST API connection failed');
+      await expect(restAdapter.connect(config)).rejects.toThrow(
+        'REST API connection failed',
+      );
     });
 
     it('should implement circuit breaker pattern for failing adapters', async () => {
@@ -1306,10 +1386,14 @@ describe('Adapter Pattern Implementation', () => {
 
       AdapterFactory.registerAdapter('circuit-test', () => failingAdapter);
 
-      await protocolManager.addProtocol('circuit-breaker-test', 'circuit-test', {
-        protocol: 'circuit-test',
-        host: 'localhost',
-      });
+      await protocolManager.addProtocol(
+        'circuit-breaker-test',
+        'circuit-test',
+        {
+          protocol: 'circuit-test',
+          host: 'localhost',
+        },
+      );
 
       const testMessage: ProtocolMessage = {
         id: 'circuit-test',
@@ -1322,7 +1406,10 @@ describe('Adapter Pattern Implementation', () => {
       // Multiple failures should trigger circuit breaker
       for (let i = 0; i < 5; i++) {
         try {
-          await protocolManager.sendMessage(testMessage, 'circuit-breaker-test');
+          await protocolManager.sendMessage(
+            testMessage,
+            'circuit-breaker-test',
+          );
         } catch (_error) {
           // Expected failures
         }

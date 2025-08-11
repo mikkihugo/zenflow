@@ -22,9 +22,15 @@ describe('CLI Discover Auto-Swarm Integration', () => {
 
   it('should be able to create auto-swarm infrastructure for CLI integration', async () => {
     // Test the exact imports and setup used in discover.ts
-    const { AutoSwarmFactory } = await import('../../coordination/discovery/auto-swarm-factory.ts');
-    const { HiveSwarmCoordinator } = await import('../../coordination/hive-swarm-sync.ts');
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
+    const { AutoSwarmFactory } = await import(
+      '../../coordination/discovery/auto-swarm-factory.ts'
+    );
+    const { HiveSwarmCoordinator } = await import(
+      '../../coordination/hive-swarm-sync.ts'
+    );
+    const { createPublicSwarmCoordinator } = await import(
+      '../../coordination/public-api.ts'
+    );
     const { EventBus } = await import('../../core/event-bus.ts');
 
     // Calculate resource constraints (same logic as discover.ts)
@@ -49,14 +55,20 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     };
 
     const calculateResourceConstraints = () => {
-      const baseCpuLimit = Math.min(8, Math.max(2, mockConfidenceResult?.domains.size * 2));
+      const baseCpuLimit = Math.min(
+        8,
+        Math.max(2, mockConfidenceResult?.domains.size * 2),
+      );
       const baseMemoryLimit =
         mockConfidenceResult?.domains.size < 3
           ? '2GB'
           : mockConfidenceResult?.domains.size < 6
             ? '4GB'
             : '8GB';
-      const baseMaxAgents = Math.min(10 * mockConfidenceResult?.domains.size, 50);
+      const baseMaxAgents = Math.min(
+        10 * mockConfidenceResult?.domains.size,
+        50,
+      );
 
       return {
         maxTotalAgents: baseMaxAgents,
@@ -79,18 +91,28 @@ describe('CLI Discover Auto-Swarm Integration', () => {
         enableHumanValidation: false, // Skip validation for test
         maxSwarmsPerDomain: 1,
         resourceConstraints: calculateResourceConstraints(),
-      }
+      },
     );
 
     // Track events (same as discover.ts)
     const events: any[] = [];
-    swarmFactory.on('factory:start', (event) => events.push({ type: 'start', ...event }));
-    swarmFactory.on('swarm:created', (event) => events.push({ type: 'created', ...event }));
-    swarmFactory.on('swarm:initialized', (event) => events.push({ type: 'initialized', ...event }));
-    swarmFactory.on('factory:complete', (event) => events.push({ type: 'complete', ...event }));
+    swarmFactory.on('factory:start', (event) =>
+      events.push({ type: 'start', ...event }),
+    );
+    swarmFactory.on('swarm:created', (event) =>
+      events.push({ type: 'created', ...event }),
+    );
+    swarmFactory.on('swarm:initialized', (event) =>
+      events.push({ type: 'initialized', ...event }),
+    );
+    swarmFactory.on('factory:complete', (event) =>
+      events.push({ type: 'complete', ...event }),
+    );
 
     // Create swarms for domains
-    const swarmConfigs = await swarmFactory.createSwarmsForDomains(mockConfidenceResult?.domains);
+    const swarmConfigs = await swarmFactory.createSwarmsForDomains(
+      mockConfidenceResult?.domains,
+    );
 
     // Verify results
     expect(swarmConfigs).toHaveLength(1);
@@ -110,7 +132,9 @@ describe('CLI Discover Auto-Swarm Integration', () => {
   });
 
   it('should handle deployment verification', async () => {
-    const { createPublicSwarmCoordinator } = await import('../../coordination/public-api.ts');
+    const { createPublicSwarmCoordinator } = await import(
+      '../../coordination/public-api.ts'
+    );
 
     // Test deployment verification logic
     const swarmCoordinator = await createPublicSwarmCoordinator();

@@ -48,7 +48,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
       await mcpTools.initialize(mockZenSwarm);
 
       await expect(mcpTools.swarm_init({ topology: 'mesh' })).rejects.toThrow(
-        /Level 4.*Level 3.*Level 2.*Level 1/
+        /Level 4.*Level 3.*Level 2.*Level 1/,
       );
     });
 
@@ -62,7 +62,9 @@ describe('Error Handling and Recovery Edge Cases', () => {
         () => Promise.reject(new Error('Permission error')),
       ];
 
-      const results = await Promise.allSettled(failingOperations.map((op) => op()));
+      const results = await Promise.allSettled(
+        failingOperations.map((op) => op()),
+      );
 
       results.forEach((result) => {
         if (result.status === 'rejected') {
@@ -258,14 +260,16 @@ describe('Error Handling and Recovery Edge Cases', () => {
 
       // First 3 failures should succeed in failing
       for (let i = 0; i < 3; i++) {
-        await expect(circuitBreaker.execute(flakyOperation)).rejects.toThrow(/Operation failed/);
+        await expect(circuitBreaker.execute(flakyOperation)).rejects.toThrow(
+          /Operation failed/,
+        );
       }
 
       expect(circuitBreaker.state).toBe('OPEN');
 
       // Next attempts should fail immediately due to circuit breaker
       await expect(circuitBreaker.execute(flakyOperation)).rejects.toThrow(
-        /Circuit breaker is OPEN/
+        /Circuit breaker is OPEN/,
       );
 
       // Wait for timeout and try again
@@ -316,18 +320,18 @@ describe('Error Handling and Recovery Edge Cases', () => {
         } catch (_error) {
           // Cleanup all resources, even if some cleanups fail
           const cleanupPromises = acquired.map((resource) =>
-            resource.cleanup().catch((err) => ({ error: err.message }))
+            resource.cleanup().catch((err) => ({ error: err.message })),
           );
 
           const cleanupResults = await Promise.allSettled(cleanupPromises);
 
           // Count successful cleanups
           const successfulCleanups = cleanupResults.filter(
-            (result) => result.status === 'fulfilled' && !result.value?.error
+            (result) => result.status === 'fulfilled' && !result.value?.error,
           ).length;
 
           throw new Error(
-            `Operation failed. Cleaned up ${successfulCleanups}/${acquired.length} resources`
+            `Operation failed. Cleaned up ${successfulCleanups}/${acquired.length} resources`,
           );
         }
       };
@@ -356,7 +360,7 @@ describe('Error Handling and Recovery Edge Cases', () => {
             child.cleanup().catch((error) => {
               cleanupLog.push(`Child cleanup failed: ${error.message}`);
               return { error };
-            })
+            }),
           );
 
           await Promise.all(childCleanupPromises);
@@ -387,7 +391,9 @@ describe('Error Handling and Recovery Edge Cases', () => {
       expect(cleanupLog).toContain('Cleaning up root');
       expect(cleanupLog).toContain('Cleaning up branch-1');
       expect(cleanupLog).toContain('Cleaning up leaf-1');
-      expect(cleanupLog).toContain('Child cleanup failed: Failed to cleanup leaf-2-fail');
+      expect(cleanupLog).toContain(
+        'Child cleanup failed: Failed to cleanup leaf-2-fail',
+      );
     });
   });
 
@@ -402,7 +408,10 @@ describe('Error Handling and Recovery Edge Cases', () => {
 
       const asyncOperation1 = async () => {
         await new Promise((resolve) => setImmediate(resolve));
-        throw createContextualError({ operation: 'async-1', step: 'validation' });
+        throw createContextualError({
+          operation: 'async-1',
+          step: 'validation',
+        });
       };
 
       const asyncOperation2 = async () => {
@@ -432,7 +441,9 @@ describe('Error Handling and Recovery Edge Cases', () => {
       } catch (error) {
         expect(error.message).toContain('Final: Wrapped: Base error');
         expect(error.context.operation).toBe('async-3');
-        expect(error.errorChain[0].originalError.context.operation).toBe('async-1');
+        expect(error.errorChain[0].originalError.context.operation).toBe(
+          'async-1',
+        );
       }
     });
 
@@ -507,7 +518,9 @@ describe('Error Handling and Recovery Edge Cases', () => {
       // Cancel after 100ms
       setTimeout(() => controller.abort(), 100);
 
-      await expect(longRunningOperation(signal)).rejects.toThrow('Operation was cancelled');
+      await expect(longRunningOperation(signal)).rejects.toThrow(
+        'Operation was cancelled',
+      );
     });
 
     it('should handle timeout with resource cleanup', async () => {
@@ -544,7 +557,9 @@ describe('Error Handling and Recovery Edge Cases', () => {
         }
       };
 
-      await expect(operationWithResources(200)).rejects.toThrow('Operation timeout');
+      await expect(operationWithResources(200)).rejects.toThrow(
+        'Operation timeout',
+      );
 
       // Check that resources were cleaned up
       const acquiredResources = resources.filter((r) => r.acquired);
@@ -586,7 +601,9 @@ describe('Error Handling and Recovery Edge Cases', () => {
               }
 
               const delay = strategy(attempt);
-              await new Promise((resolve) => setTimeout(resolve, Math.min(delay, 1000)));
+              await new Promise((resolve) =>
+                setTimeout(resolve, Math.min(delay, 1000)),
+              );
             }
           }
         };

@@ -51,7 +51,8 @@ class MockToLondonConverter {
             conversions.push({
               type: 'inline-mock-method',
               line: index + 1,
-              suggestion: 'Move to mock class with proper typing and helper methods',
+              suggestion:
+                'Move to mock class with proper typing and helper methods',
             });
           }
         }
@@ -65,7 +66,8 @@ class MockToLondonConverter {
           conversions.push({
             type: 'manual-expectation',
             line: index + 1,
-            suggestion: 'Use expectXxxCalled() helper method from TDD London mock',
+            suggestion:
+              'Use expectXxxCalled() helper method from TDD London mock',
           });
         }
       });
@@ -145,7 +147,11 @@ export class ${className} {
       const fullPath = path.join(dir, item);
       const stat = fs.statSync(fullPath);
 
-      if (stat.isDirectory() && !item.startsWith('.') && item !== 'node_modules') {
+      if (
+        stat.isDirectory() &&
+        !item.startsWith('.') &&
+        item !== 'node_modules'
+      ) {
         this.scanDirectory(fullPath);
       } else if (
         item.endsWith('.test.js') ||
@@ -213,7 +219,10 @@ export class ${className} {
     // console.log('🔍 Scanning for mock patterns that need TDD London conversion...');
 
     // Scan test directories
-    const testDirs = [path.join(REPO_ROOT, 'src/__tests__'), path.join(REPO_ROOT, 'tests')];
+    const testDirs = [
+      path.join(REPO_ROOT, 'src/__tests__'),
+      path.join(REPO_ROOT, 'tests'),
+    ];
 
     testDirs.forEach((dir) => {
       if (fs.existsSync(dir)) {

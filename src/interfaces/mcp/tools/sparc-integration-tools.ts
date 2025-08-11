@@ -11,7 +11,9 @@
 import type { DocumentService } from '../services/document-service';
 import type { MCPTool } from '../types.ts';
 
-export function createSPARCIntegrationTools(_documentService: DocumentService): MCPTool[] {
+export function createSPARCIntegrationTools(
+  _documentService: DocumentService,
+): MCPTool[] {
   return [
     {
       name: 'sparc_create_project',
@@ -44,12 +46,22 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
             enum: ['simple', 'moderate', 'complex', 'enterprise'],
             default: 'moderate',
           },
-          requirements: { type: 'array', items: { type: 'string' }, default: [] },
+          requirements: {
+            type: 'array',
+            items: { type: 'string' },
+            default: [],
+          },
         },
         required: ['name', 'domain', 'description'],
       },
       handler: async (params: any) => {
-        const { name, domain, description, complexity = 'moderate', requirements = [] } = params;
+        const {
+          name,
+          domain,
+          description,
+          complexity = 'moderate',
+          requirements = [],
+        } = params;
 
         const projectId = `sparc_${Date.now()}`;
 
@@ -98,7 +110,13 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
           projectId: { type: 'string' },
           phase: {
             type: 'string',
-            enum: ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'],
+            enum: [
+              'specification',
+              'pseudocode',
+              'architecture',
+              'refinement',
+              'completion',
+            ],
           },
           input: { type: 'object', default: {} },
         },
@@ -168,10 +186,16 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
               completion: 'not_started',
             },
             progressPercentage: 50,
-            estimatedCompletion: new Date(Date.now() + 86400000 * 3).toISOString(),
+            estimatedCompletion: new Date(
+              Date.now() + 86400000 * 3,
+            ).toISOString(),
             details: includeDetails
               ? {
-                  artifacts: ['spec.md', 'pseudocode.md', 'architecture-draft.md'],
+                  artifacts: [
+                    'spec.md',
+                    'pseudocode.md',
+                    'architecture-draft.md',
+                  ],
                   lastUpdate: new Date().toISOString(),
                   quality: {
                     score: 0.85,
@@ -225,7 +249,12 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
               id: { type: 'string' },
               domain: {
                 type: 'string',
-                enum: ['swarm-coordination', 'neural-networks', 'memory-systems', 'general'],
+                enum: [
+                  'swarm-coordination',
+                  'neural-networks',
+                  'memory-systems',
+                  'general',
+                ],
               },
               functionalRequirements: {
                 type: 'array',
@@ -254,7 +283,11 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
                   mitigationStrategies: { type: 'array', default: [] },
                   overallRisk: { type: 'string', default: 'LOW' },
                 },
-                default: { risks: [], mitigationStrategies: [], overallRisk: 'LOW' },
+                default: {
+                  risks: [],
+                  mitigationStrategies: [],
+                  overallRisk: 'LOW',
+                },
               },
               successMetrics: { type: 'array', default: [] },
             },
@@ -284,7 +317,8 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
           const engine = new PseudocodePhaseEngine();
 
           // Generate complete pseudocode structure
-          const pseudocodeStructure = await engine.generatePseudocode(specification);
+          const pseudocodeStructure =
+            await engine.generatePseudocode(specification);
 
           const result = {
             success: true,
@@ -299,21 +333,28 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
                 outputs: alg.outputs,
                 steps: alg.steps,
                 complexity: alg.complexity,
-                optimizations: options?.includeOptimizations ? alg.optimizations : [],
+                optimizations: options?.includeOptimizations
+                  ? alg.optimizations
+                  : [],
               })),
               dataStructures: pseudocodeStructure.dataStructures,
               controlFlows: pseudocodeStructure.controlFlows,
-              optimizations: options?.includeOptimizations ? pseudocodeStructure.optimizations : [],
+              optimizations: options?.includeOptimizations
+                ? pseudocodeStructure.optimizations
+                : [],
               complexityAnalysis: options?.includeComplexityAnalysis
                 ? pseudocodeStructure.complexityAnalysis
                 : undefined,
               summary: {
                 algorithmsGenerated: pseudocodeStructure.algorithms.length,
-                dataStructuresGenerated: pseudocodeStructure.dataStructures.length,
+                dataStructuresGenerated:
+                  pseudocodeStructure.dataStructures.length,
                 controlFlowsGenerated: pseudocodeStructure.controlFlows.length,
-                optimizationsIdentified: pseudocodeStructure.optimizations.length,
+                optimizationsIdentified:
+                  pseudocodeStructure.optimizations.length,
                 overallComplexity:
-                  pseudocodeStructure.complexityAnalysis?.timeComplexity || 'Unknown',
+                  pseudocodeStructure.complexityAnalysis?.timeComplexity ||
+                  'Unknown',
               },
               generatedAt: new Date().toISOString(),
             },
@@ -386,7 +427,8 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
           const engine = new PseudocodePhaseEngine();
 
           // Validate the pseudocode structure
-          const validation = await engine.validatePseudocode(pseudocodeStructure);
+          const validation =
+            await engine.validatePseudocode(pseudocodeStructure);
 
           return {
             success: true,
@@ -462,7 +504,12 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
               id: { type: 'string' },
               domain: {
                 type: 'string',
-                enum: ['swarm-coordination', 'neural-networks', 'memory-systems', 'general'],
+                enum: [
+                  'swarm-coordination',
+                  'neural-networks',
+                  'memory-systems',
+                  'general',
+                ],
               },
               functionalRequirements: {
                 type: 'array',
@@ -496,7 +543,8 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
           const engine = new PseudocodePhaseEngine();
 
           // Generate algorithms only
-          const algorithms = await engine.generateAlgorithmPseudocode(specification);
+          const algorithms =
+            await engine.generateAlgorithmPseudocode(specification);
 
           return {
             success: true,
@@ -529,7 +577,7 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
                 domains: [specification.domain],
                 totalOptimizations: algorithms.reduce(
                   (sum: number, alg: any) => sum + alg.optimizations.length,
-                  0
+                  0,
                 ),
               },
               generatedAt: new Date().toISOString(),
@@ -551,9 +599,17 @@ export function createSPARCIntegrationTools(_documentService: DocumentService): 
 }
 
 function getNextPhase(currentPhase: string): string | null {
-  const phases = ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'];
+  const phases = [
+    'specification',
+    'pseudocode',
+    'architecture',
+    'refinement',
+    'completion',
+  ];
   const currentIndex = phases.indexOf(currentPhase);
-  return currentIndex >= 0 && currentIndex < phases.length - 1 ? phases[currentIndex + 1] : null;
+  return currentIndex >= 0 && currentIndex < phases.length - 1
+    ? phases[currentIndex + 1]
+    : null;
 }
 
 export default createSPARCIntegrationTools;

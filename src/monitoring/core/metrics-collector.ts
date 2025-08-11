@@ -149,7 +149,7 @@ export class MetricsCollector extends EventEmitter {
     options: {
       collectionInterval?: number;
       maxHistorySize?: number;
-    } = {}
+    } = {},
   ) {
     super();
     this.collectionInterval = options?.collectionInterval || 1000;
@@ -381,13 +381,20 @@ export class MetricsCollector extends EventEmitter {
       timestamp: Date.now(),
       tools,
       performance: {
-        totalInvocations: Object.values(tools).reduce((sum, tool) => sum + tool.invocations, 0),
+        totalInvocations: Object.values(tools).reduce(
+          (sum, tool) => sum + tool.invocations,
+          0,
+        ),
         overallSuccessRate:
-          Object.values(tools).reduce((sum, tool) => sum + tool.successRate, 0) /
-          Object.keys(tools).length,
+          Object.values(tools).reduce(
+            (sum, tool) => sum + tool.successRate,
+            0,
+          ) / Object.keys(tools).length,
         averageResponseTime:
-          Object.values(tools).reduce((sum, tool) => sum + tool.averageLatency, 0) /
-          Object.keys(tools).length,
+          Object.values(tools).reduce(
+            (sum, tool) => sum + tool.averageLatency,
+            0,
+          ) / Object.keys(tools).length,
         timeoutRate: this.getRandomMetric(0.02, 0.08),
       },
     };
@@ -424,7 +431,10 @@ export class MetricsCollector extends EventEmitter {
     if (this.lastIoStats) {
       return {
         readBytes: Math.max(0, current?.readBytes - this.lastIoStats.readBytes),
-        writeBytes: Math.max(0, current?.writeBytes - this.lastIoStats.writeBytes),
+        writeBytes: Math.max(
+          0,
+          current?.writeBytes - this.lastIoStats.writeBytes,
+        ),
         readOps: Math.max(0, current?.readOps - this.lastIoStats.readOps),
         writeOps: Math.max(0, current?.writeOps - this.lastIoStats.writeOps),
       };
@@ -467,14 +477,18 @@ export class MetricsCollector extends EventEmitter {
    * @param timeRange.start
    * @param timeRange.end
    */
-  public getHistory(timeRange?: { start: number; end: number }): CompositeMetrics[] {
+  public getHistory(timeRange?: {
+    start: number;
+    end: number;
+  }): CompositeMetrics[] {
     if (!timeRange) {
       return [...this.metricsHistory];
     }
 
     return this.metricsHistory.filter(
       (metrics) =>
-        metrics.system.timestamp >= timeRange.start && metrics.system.timestamp <= timeRange.end
+        metrics.system.timestamp >= timeRange.start &&
+        metrics.system.timestamp <= timeRange.end,
     );
   }
 
@@ -503,7 +517,10 @@ export class MetricsCollector extends EventEmitter {
    * @param filePath
    * @param format
    */
-  public async exportMetrics(filePath: string, format: 'json' | 'csv' = 'json'): Promise<void> {
+  public async exportMetrics(
+    filePath: string,
+    format: 'json' | 'csv' = 'json',
+  ): Promise<void> {
     const data = this.getHistory();
 
     if (format === 'json') {

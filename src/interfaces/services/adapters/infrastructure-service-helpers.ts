@@ -48,7 +48,7 @@ export async function quickCreateInfrastructureService(
     enableResourceTracking?: boolean;
     enableHealthMonitoring?: boolean;
     autoStart?: boolean;
-  } = {}
+  } = {},
 ): Promise<InfrastructureServiceAdapter> {
   logger.debug('Quick creating infrastructure service', { name, options });
 
@@ -99,9 +99,12 @@ export async function createFacadeOnlyInfrastructureService(
     mockServices?: boolean;
     enableBatchOperations?: boolean;
     systemStatusInterval?: number;
-  } = {}
+  } = {},
 ): Promise<InfrastructureServiceAdapter> {
-  logger.debug('Creating facade-only infrastructure service', { name, facadeOptions });
+  logger.debug('Creating facade-only infrastructure service', {
+    name,
+    facadeOptions,
+  });
 
   const config = createDefaultInfrastructureServiceAdapterConfig(name, {
     facade: {
@@ -142,9 +145,12 @@ export async function createPatternIntegrationOnlyService(
     configProfile?: 'default' | 'production' | 'development';
     maxAgents?: number;
     enableAutoOptimization?: boolean;
-  } = {}
+  } = {},
 ): Promise<InfrastructureServiceAdapter> {
-  logger.debug('Creating pattern integration only service', { name, patternOptions });
+  logger.debug('Creating pattern integration only service', {
+    name,
+    patternOptions,
+  });
 
   const config = createDefaultInfrastructureServiceAdapterConfig(name, {
     facade: { enabled: false },
@@ -188,9 +194,12 @@ export async function createProductionInfrastructureService(
     enableCircuitBreaker?: boolean;
     enablePredictiveMonitoring?: boolean;
     configEncryption?: boolean;
-  } = {}
+  } = {},
 ): Promise<InfrastructureServiceAdapter> {
-  logger.debug('Creating production infrastructure service', { name, productionOptions });
+  logger.debug('Creating production infrastructure service', {
+    name,
+    productionOptions,
+  });
 
   const config = createDefaultInfrastructureServiceAdapterConfig(name, {
     facade: {
@@ -231,7 +240,8 @@ export async function createProductionInfrastructureService(
       enableAdvancedChecks: true,
       enableServiceDependencyTracking: true,
       enablePerformanceAlerts: true,
-      enablePredictiveMonitoring: productionOptions?.enablePredictiveMonitoring !== false,
+      enablePredictiveMonitoring:
+        productionOptions?.enablePredictiveMonitoring !== false,
       performanceThresholds: {
         responseTime: 500, // Stricter thresholds for production
         errorRate: 0.01,
@@ -262,9 +272,12 @@ export async function createProductionInfrastructureService(
 export async function initializeProjectWithRetries(
   service: InfrastructureServiceAdapter,
   projectConfig: any,
-  maxRetries: number = 3
+  maxRetries: number = 3,
 ): Promise<any> {
-  logger.debug('Initializing project with retries', { projectConfig, maxRetries });
+  logger.debug('Initializing project with retries', {
+    projectConfig,
+    maxRetries,
+  });
 
   let lastError: Error | undefined;
 
@@ -290,7 +303,9 @@ export async function initializeProjectWithRetries(
     }
   }
 
-  throw lastError || new Error('Project initialization failed after all retries');
+  throw (
+    lastError || new Error('Project initialization failed after all retries')
+  );
 }
 
 /**
@@ -315,9 +330,12 @@ export async function processDocumentEnhanced(
     priority?: 'low' | 'medium' | 'high' | 'critical';
     timeout?: number;
     swarmId?: string;
-  } = {}
+  } = {},
 ): Promise<any> {
-  logger.debug('Processing document with enhanced options', { documentPath, options });
+  logger.debug('Processing document with enhanced options', {
+    documentPath,
+    options,
+  });
 
   const operationOptions: ServiceOperationOptions = {
     timeout: options?.timeout || 120000, // 2 minute default for document processing
@@ -331,7 +349,7 @@ export async function processDocumentEnhanced(
         documentPath,
         options,
       },
-      operationOptions
+      operationOptions,
     );
 
     if (result?.success) {
@@ -340,9 +358,8 @@ export async function processDocumentEnhanced(
         processingTime: result?.metadata?.duration,
       });
       return result?.data;
-    } else {
-      throw new Error(result?.error?.message || 'Document processing failed');
     }
+    throw new Error(result?.error?.message || 'Document processing failed');
   } catch (error) {
     logger.error('Enhanced document processing failed:', error);
     throw error;
@@ -360,7 +377,11 @@ export async function processDocumentEnhanced(
 export async function executeBatchWithProgress(
   service: InfrastructureServiceAdapter,
   operations: Array<{ type: string; params: any }>,
-  onProgress?: (completed: number, total: number, currentOperation: string) => void
+  onProgress?: (
+    completed: number,
+    total: number,
+    currentOperation: string,
+  ) => void,
 ): Promise<any[]> {
   logger.debug('Executing batch operations with progress tracking', {
     operationCount: operations.length,
@@ -381,7 +402,7 @@ export async function executeBatchWithProgress(
       { operations },
       {
         timeout: operations.length * 30000, // 30 seconds per operation
-      }
+      },
     );
 
     if (result?.success) {
@@ -390,9 +411,8 @@ export async function executeBatchWithProgress(
         duration: result?.metadata?.duration,
       });
       return result?.data;
-    } else {
-      throw new Error(result?.error?.message || 'Batch execution failed');
     }
+    throw new Error(result?.error?.message || 'Batch execution failed');
   } catch (error) {
     logger.error('Batch execution with progress failed:', error);
     throw error;
@@ -408,7 +428,7 @@ export async function executeBatchWithProgress(
  */
 export async function getSystemStatusCached(
   service: InfrastructureServiceAdapter,
-  cacheTTL: number = 30000 // 30 seconds
+  cacheTTL: number = 30000, // 30 seconds
 ): Promise<any> {
   const _cacheKey = `system-status-${service.name}`;
 
@@ -422,15 +442,14 @@ export async function getSystemStatusCached(
       {},
       {
         timeout: 15000, // 15 second timeout for status check
-      }
+      },
     );
 
     if (result?.success) {
       logger.debug('System status retrieved successfully');
       return result?.data;
-    } else {
-      throw new Error(result?.error?.message || 'System status check failed');
     }
+    throw new Error(result?.error?.message || 'System status check failed');
   } catch (error) {
     logger.error('Cached system status retrieval failed:', error);
     throw error;
@@ -459,14 +478,18 @@ export async function initializeOptimizedSwarm(
     agentCount?: number;
     capabilities?: string[];
     enableAutoOptimization?: boolean;
-  }
+  },
 ): Promise<any> {
   logger.debug('Initializing optimized swarm', { swarmConfig });
 
   const optimizedConfig = {
     topology: swarmConfig?.topology || 'hierarchical',
     agentCount: swarmConfig?.agentCount || 5,
-    capabilities: swarmConfig?.capabilities || ['coordination', 'processing', 'analysis'],
+    capabilities: swarmConfig?.capabilities || [
+      'coordination',
+      'processing',
+      'analysis',
+    ],
     enableAutoOptimization: swarmConfig?.enableAutoOptimization !== false,
     resourceLimits: {
       cpu: 0.8,
@@ -488,9 +511,8 @@ export async function initializeOptimizedSwarm(
         agentCount: optimizedConfig?.agentCount,
       });
       return result?.data;
-    } else {
-      throw new Error(result?.error?.message || 'Swarm initialization failed');
     }
+    throw new Error(result?.error?.message || 'Swarm initialization failed');
   } catch (error) {
     logger.error('Optimized swarm initialization failed:', error);
     throw error;
@@ -510,7 +532,7 @@ export async function coordinateSwarmWithMonitoring(
   service: InfrastructureServiceAdapter,
   swarmId: string,
   operation: string,
-  monitoringCallback?: (metrics: any) => void
+  monitoringCallback?: (metrics: any) => void,
 ): Promise<any> {
   logger.debug('Coordinating swarm with monitoring', { swarmId, operation });
 
@@ -519,7 +541,9 @@ export async function coordinateSwarmWithMonitoring(
     if (monitoringCallback) {
       const monitoringInterval = setInterval(async () => {
         try {
-          const metricsResult = await service.execute('swarm-status', { swarmId });
+          const metricsResult = await service.execute('swarm-status', {
+            swarmId,
+          });
           if (metricsResult?.success) {
             monitoringCallback(metricsResult?.data);
           }
@@ -540,7 +564,7 @@ export async function coordinateSwarmWithMonitoring(
       },
       {
         timeout: 120000, // 2 minute timeout for coordination
-      }
+      },
     );
 
     if (result?.success) {
@@ -550,9 +574,8 @@ export async function coordinateSwarmWithMonitoring(
         duration: result?.metadata?.duration,
       });
       return result?.data;
-    } else {
-      throw new Error(result?.error?.message || 'Swarm coordination failed');
     }
+    throw new Error(result?.error?.message || 'Swarm coordination failed');
   } catch (error) {
     logger.error('Swarm coordination with monitoring failed:', error);
     throw error;
@@ -570,7 +593,7 @@ export async function coordinateSwarmWithMonitoring(
  * @example
  */
 export async function optimizeResourcesComprehensive(
-  service: InfrastructureServiceAdapter
+  service: InfrastructureServiceAdapter,
 ): Promise<{
   optimizations: string[];
   resourcesSaved: any;
@@ -593,7 +616,9 @@ export async function optimizeResourcesComprehensive(
 
     // Generate performance report for recommendations
     const reportResult = await service.execute('performance-report');
-    const recommendations = reportResult?.success ? reportResult?.data?.recommendations || [] : [];
+    const recommendations = reportResult?.success
+      ? reportResult?.data?.recommendations || []
+      : [];
 
     const result = {
       optimizations: [
@@ -637,7 +662,11 @@ export async function monitorResourcesWithAlerts(
     network?: number;
     storage?: number;
   } = {},
-  alertCallback?: (alert: { type: string; value: number; threshold: number }) => void
+  alertCallback?: (alert: {
+    type: string;
+    value: number;
+    threshold: number;
+  }) => void,
 ): Promise<NodeJS.Timeout> {
   logger.debug('Starting resource monitoring with alerts', { thresholds });
 
@@ -689,7 +718,7 @@ export async function monitorResourcesWithAlerts(
 export async function updateConfigurationSafely(
   service: InfrastructureServiceAdapter,
   newConfig: Partial<InfrastructureServiceAdapterConfig>,
-  validateFirst: boolean = true
+  validateFirst: boolean = true,
 ): Promise<{ success: boolean; rollbackAvailable: boolean; version?: string }> {
   logger.debug('Updating configuration safely', { validateFirst });
 
@@ -697,7 +726,7 @@ export async function updateConfigurationSafely(
     // Validate configuration first if requested
     if (validateFirst) {
       const validateResult = await service.execute('config-validate');
-      if (!validateResult?.success || !validateResult?.data?.valid) {
+      if (!(validateResult?.success && validateResult?.data?.valid)) {
         throw new Error('Configuration validation failed');
       }
     }
@@ -711,7 +740,8 @@ export async function updateConfigurationSafely(
 
     // Verify the update was successful
     const newValidateResult = await service.execute('config-validate');
-    const isValid = newValidateResult?.success && newValidateResult?.data?.valid;
+    const isValid =
+      newValidateResult?.success && newValidateResult?.data?.valid;
 
     logger.info('Configuration updated safely', {
       success: isValid,
@@ -741,7 +771,7 @@ export async function updateConfigurationSafely(
  */
 export async function rollbackConfiguration(
   service: InfrastructureServiceAdapter,
-  version?: string
+  version?: string,
 ): Promise<{ success: boolean; rolledBackTo: string }> {
   logger.debug('Rolling back configuration', { version });
 
@@ -751,14 +781,17 @@ export async function rollbackConfiguration(
       const versionsResult = await service.execute('config-version');
       if (versionsResult?.success && versionsResult?.data?.length > 1) {
         // Use the second-to-last version (last is current)
-        version = versionsResult?.data?.[versionsResult?.data.length - 2]?.version;
+        version =
+          versionsResult?.data?.[versionsResult?.data.length - 2]?.version;
       } else {
         throw new Error('No previous configuration version available');
       }
     }
 
     // Perform the rollback
-    const rollbackResult = await service.execute('config-rollback', { version });
+    const rollbackResult = await service.execute('config-rollback', {
+      version,
+    });
 
     if (rollbackResult?.success) {
       logger.info('Configuration rolled back successfully', {
@@ -768,9 +801,8 @@ export async function rollbackConfiguration(
         success: true,
         rolledBackTo: version,
       };
-    } else {
-      throw new Error(rollbackResult?.error?.message || 'Rollback failed');
     }
+    throw new Error(rollbackResult?.error?.message || 'Rollback failed');
   } catch (error) {
     logger.error('Configuration rollback failed:', error);
     return {
@@ -791,7 +823,7 @@ export async function rollbackConfiguration(
  * @example
  */
 export async function performComprehensiveHealthCheck(
-  service: InfrastructureServiceAdapter
+  service: InfrastructureServiceAdapter,
 ): Promise<{
   overall: boolean;
   details: {
@@ -821,9 +853,11 @@ export async function performComprehensiveHealthCheck(
     // Analyze health components
     const details = {
       service: basicHealth,
-      dependencies: healthResult?.data?.details?.dependencies === 0 || true, // Simplified
+      dependencies: true, // Simplified
       resources: stats.resourceTracking?.currentUtilization
-        ? Object.values(stats.resourceTracking.currentUtilization).every((v: any) => v < 0.9)
+        ? Object.values(stats.resourceTracking.currentUtilization).every(
+            (v: any) => v < 0.9,
+          )
         : true,
       performance: report.summary?.successRate > 95,
     };
@@ -879,7 +913,7 @@ export async function performComprehensiveHealthCheck(
 export async function createInfrastructureServiceWithBestPractices(
   name: string,
   environment: 'development' | 'staging' | 'production' = 'development',
-  customOptions?: CreateServiceOptions
+  customOptions?: CreateServiceOptions,
 ): Promise<InfrastructureServiceAdapter> {
   logger.debug('Creating infrastructure service with best practices', {
     name,
@@ -956,7 +990,7 @@ export async function createInfrastructureServiceWithBestPractices(
 export async function waitForServiceReady(
   service: InfrastructureServiceAdapter,
   timeout: number = 30000,
-  checkInterval: number = 1000
+  checkInterval: number = 1000,
 ): Promise<boolean> {
   logger.debug('Waiting for service to be ready', { timeout, checkInterval });
 
@@ -1005,9 +1039,14 @@ export async function executeWithRetries<T>(
     baseDelay?: number;
     maxDelay?: number;
     timeout?: number;
-  } = {}
+  } = {},
 ): Promise<T> {
-  const { maxRetries = 3, baseDelay = 1000, maxDelay = 10000, timeout = 30000 } = options;
+  const {
+    maxRetries = 3,
+    baseDelay = 1000,
+    maxDelay = 10000,
+    timeout = 30000,
+  } = options;
 
   logger.debug('Executing operation with retries', {
     operation,
@@ -1023,12 +1062,13 @@ export async function executeWithRetries<T>(
 
       if (result?.success) {
         if (attempt > 1) {
-          logger.info(`Operation succeeded on attempt ${attempt}`, { operation });
+          logger.info(`Operation succeeded on attempt ${attempt}`, {
+            operation,
+          });
         }
         return result?.data;
-      } else {
-        throw new Error(result?.error?.message || 'Operation failed');
       }
+      throw new Error(result?.error?.message || 'Operation failed');
     } catch (error) {
       lastError = error as Error;
       logger.warn(`Operation attempt ${attempt} failed:`, error);
@@ -1041,7 +1081,10 @@ export async function executeWithRetries<T>(
     }
   }
 
-  throw lastError || new Error(`Operation ${operation} failed after ${maxRetries} attempts`);
+  throw (
+    lastError ||
+    new Error(`Operation ${operation} failed after ${maxRetries} attempts`)
+  );
 }
 
 /**
@@ -1055,7 +1098,7 @@ export async function executeWithRetries<T>(
 export async function batchExecuteWithConcurrency<T>(
   service: InfrastructureServiceAdapter,
   operations: Array<{ operation: string; params?: any }>,
-  maxConcurrency: number = 5
+  maxConcurrency: number = 5,
 ): Promise<Array<{ success: boolean; data?: T; error?: Error }>> {
   logger.debug('Batch executing operations with concurrency control', {
     operationCount: operations.length,

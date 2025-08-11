@@ -22,8 +22,16 @@ const logger = getLogger('coordination-swarm-core-session-manager');
 
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { IDao, SessionCoordinationDao, SessionEntity } from '../../../database';
-import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
+import type {
+  IDao,
+  SessionCoordinationDao,
+  SessionEntity,
+} from '../../../database/index.js';
+import {
+  createDao,
+  DatabaseTypes,
+  EntityTypes,
+} from '../../../database/index.js';
 import type { SwarmOptions, SwarmState } from './types.ts';
 import { generateId } from './utils.ts';
 
@@ -60,7 +68,12 @@ export interface SessionConfig {
   encryptionKey?: string;
 }
 
-export type SessionStatus = 'active' | 'paused' | 'hibernated' | 'terminated' | 'corrupted';
+export type SessionStatus =
+  | 'active'
+  | 'paused'
+  | 'hibernated'
+  | 'terminated'
+  | 'corrupted';
 
 export interface SessionRecoveryOptions {
   targetCheckpoint?: string;
@@ -80,7 +93,10 @@ export class SessionManager extends EventEmitter {
   private checkpointTimers: Map<string, NodeJS.Timeout>;
   private initialized: boolean = false;
 
-  constructor(coordinationDao: SessionCoordinationDao, config: SessionConfig = {}) {
+  constructor(
+    coordinationDao: SessionCoordinationDao,
+    config: SessionConfig = {},
+  ) {
     super();
 
     this.coordinationDao = coordinationDao;
@@ -88,15 +104,26 @@ export class SessionManager extends EventEmitter {
     this.checkpointTimers = new Map();
 
     this.config = {
-      autoCheckpoint: config.autoCheckpoint === undefined ? true : config?.autoCheckpoint,
+      autoCheckpoint:
+        config.autoCheckpoint === undefined ? true : config?.autoCheckpoint,
       checkpointInterval:
-        config.checkpointInterval === undefined ? 300000 : config?.checkpointInterval, // 5 minutes
-      maxCheckpoints: config.maxCheckpoints === undefined ? 10 : config?.maxCheckpoints,
+        config.checkpointInterval === undefined
+          ? 300000
+          : config?.checkpointInterval, // 5 minutes
+      maxCheckpoints:
+        config.maxCheckpoints === undefined ? 10 : config?.maxCheckpoints,
       compressionEnabled:
-        config.compressionEnabled === undefined ? true : config?.compressionEnabled,
-      encryptionEnabled: config.encryptionEnabled === undefined ? false : config?.encryptionEnabled,
+        config.compressionEnabled === undefined
+          ? true
+          : config?.compressionEnabled,
+      encryptionEnabled:
+        config.encryptionEnabled === undefined
+          ? false
+          : config?.encryptionEnabled,
       encryptionKey:
-        config.encryptionKey === undefined ? this.generateEncryptionKey() : config?.encryptionKey,
+        config.encryptionKey === undefined
+          ? this.generateEncryptionKey()
+          : config?.encryptionKey,
     };
   }
 
@@ -108,7 +135,7 @@ export class SessionManager extends EventEmitter {
       // Create a coordination DAO with proper interface
       const dao = await createDao<SessionEntity>(
         EntityTypes.CoordinationEvent,
-        DatabaseTypes?.Coordination
+        DatabaseTypes?.Coordination,
       );
 
       // Type assertion with proper coordination methods
@@ -119,18 +146,23 @@ export class SessionManager extends EventEmitter {
           const customQuery = {
             type: 'sql' as const,
             query: sql,
-            parameters: params ? Object.fromEntries(params.map((p, i) => [i.toString(), p])) : {},
+            parameters: params
+              ? Object.fromEntries(params.map((p, i) => [i.toString(), p]))
+              : {},
           };
-          const result = await dao.executeCustomQuery<{ affectedRows?: number; insertId?: number }>(
-            customQuery
-          );
+          const result = await dao.executeCustomQuery<{
+            affectedRows?: number;
+            insertId?: number;
+          }>(customQuery);
           return result || { affectedRows: 0 };
         },
         query: async (sql: string, params?: unknown[]) => {
           const customQuery = {
             type: 'sql' as const,
             query: sql,
-            parameters: params ? Object.fromEntries(params.map((p, i) => [i.toString(), p])) : {},
+            parameters: params
+              ? Object.fromEntries(params.map((p, i) => [i.toString(), p]))
+              : {},
           };
           const result = await dao.executeCustomQuery<any[]>(customQuery);
           return Array.isArray(result) ? result : [];
@@ -191,7 +223,7 @@ export class SessionManager extends EventEmitter {
       this.emit('manager:initialized');
     } catch (error) {
       throw new Error(
-        `Failed to initialize SessionManager: ${error instanceof Error ? error.message : String(error)}`
+        `Failed to initialize SessionManager: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -206,7 +238,7 @@ export class SessionManager extends EventEmitter {
   async createSession(
     name: string,
     swarmOptions: SwarmOptions,
-    initialState?: Partial<SwarmState>
+    initialState?: Partial<SwarmState>,
   ): Promise<string> {
     await this.ensureInitialized();
 
@@ -258,7 +290,7 @@ export class SessionManager extends EventEmitter {
         now.toISOString(),
         now.toISOString(),
         sessionState.version,
-      ]
+      ],
     );
 
     // Add to active sessions
@@ -291,7 +323,9 @@ export class SessionManager extends EventEmitter {
 
     // Load from database
     const dao = await this.getDao();
-    const sessions = await dao.query('SELECT * FROM sessions WHERE id = ?', [sessionId]);
+    const sessions = await dao.query('SELECT * FROM sessions WHERE id = ?', [
+      sessionId,
+    ]);
 
     if (sessions.length === 0) {
       throw new Error(`Session ${sessionId} not found`);
@@ -335,7 +369,10 @@ export class SessionManager extends EventEmitter {
    * @param sessionId
    * @param state
    */
-  async saveSession(sessionId: string, state?: Partial<SwarmState>): Promise<void> {
+  async saveSession(
+    sessionId: string,
+    state?: Partial<SwarmState>,
+  ): Promise<void> {
     await this.ensureInitialized();
 
     const session = this.activeSessions.get(sessionId);
@@ -357,7 +394,11 @@ export class SessionManager extends EventEmitter {
       SET swarm_state = ?, last_accessed_at = ?
       WHERE id = ?
     `,
-      [this.serializeData(session.swarmState), session.lastAccessedAt.toISOString(), sessionId]
+      [
+        this.serializeData(session.swarmState),
+        session.lastAccessedAt.toISOString(),
+        sessionId,
+      ],
     );
 
     this.emit('session:saved', { sessionId });
@@ -373,7 +414,7 @@ export class SessionManager extends EventEmitter {
   async createCheckpoint(
     sessionId: string,
     description: string = 'Auto checkpoint',
-    metadata: Record<string, any> = {}
+    metadata: Record<string, any> = {},
   ): Promise<string> {
     await this.ensureInitialized();
 
@@ -412,7 +453,7 @@ export class SessionManager extends EventEmitter {
         stateData,
         description,
         this.serializeData(metadata),
-      ]
+      ],
     );
 
     // Add to session checkpoints
@@ -430,7 +471,7 @@ export class SessionManager extends EventEmitter {
       `
       UPDATE sessions SET last_checkpoint_at = ? WHERE id = ?
     `,
-      [now.toISOString(), sessionId]
+      [now.toISOString(), sessionId],
     );
 
     this.emit('checkpoint:created', { sessionId, checkpointId, description });
@@ -447,7 +488,7 @@ export class SessionManager extends EventEmitter {
   async restoreFromCheckpoint(
     sessionId: string,
     checkpointId: string,
-    options: SessionRecoveryOptions = {}
+    options: SessionRecoveryOptions = {},
   ): Promise<void> {
     await this.ensureInitialized();
 
@@ -460,7 +501,7 @@ export class SessionManager extends EventEmitter {
     const dao = await this.getDao();
     const checkpoints = await dao.query(
       'SELECT * FROM session_checkpoints WHERE id = ? AND session_id = ?',
-      [checkpointId, sessionId]
+      [checkpointId, sessionId],
     );
 
     if (checkpoints.length === 0) {
@@ -516,11 +557,10 @@ export class SessionManager extends EventEmitter {
 
     // Update in database
     const dao = await this.getDao();
-    await dao.execute('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
-      'paused',
-      session.lastAccessedAt.toISOString(),
-      sessionId,
-    ]);
+    await dao.execute(
+      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
+      ['paused', session.lastAccessedAt.toISOString(), sessionId],
+    );
 
     this.emit('session:paused', { sessionId });
   }
@@ -548,11 +588,10 @@ export class SessionManager extends EventEmitter {
 
     // Update in database
     const dao = await this.getDao();
-    await dao.execute('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
-      'active',
-      session.lastAccessedAt.toISOString(),
-      sessionId,
-    ]);
+    await dao.execute(
+      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
+      ['active', session.lastAccessedAt.toISOString(), sessionId],
+    );
 
     this.emit('session:resumed', { sessionId });
   }
@@ -581,11 +620,10 @@ export class SessionManager extends EventEmitter {
 
     // Update in database
     const dao = await this.getDao();
-    await dao.execute('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
-      'hibernated',
-      session.lastAccessedAt.toISOString(),
-      sessionId,
-    ]);
+    await dao.execute(
+      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
+      ['hibernated', session.lastAccessedAt.toISOString(), sessionId],
+    );
 
     // Remove from active sessions
     this.activeSessions.delete(sessionId);
@@ -599,7 +637,10 @@ export class SessionManager extends EventEmitter {
    * @param sessionId
    * @param cleanup
    */
-  async terminateSession(sessionId: string, cleanup: boolean = false): Promise<void> {
+  async terminateSession(
+    sessionId: string,
+    cleanup: boolean = false,
+  ): Promise<void> {
     await this.ensureInitialized();
 
     const session = this.activeSessions.get(sessionId);
@@ -611,15 +652,17 @@ export class SessionManager extends EventEmitter {
 
     // Update in database
     const dao = await this.getDao();
-    await dao.execute('UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?', [
-      'terminated',
-      new Date().toISOString(),
-      sessionId,
-    ]);
+    await dao.execute(
+      'UPDATE sessions SET status = ?, last_accessed_at = ? WHERE id = ?',
+      ['terminated', new Date().toISOString(), sessionId],
+    );
 
     if (cleanup) {
       // Delete all checkpoints
-      await dao.execute('DELETE FROM session_checkpoints WHERE session_id = ?', [sessionId]);
+      await dao.execute(
+        'DELETE FROM session_checkpoints WHERE session_id = ?',
+        [sessionId],
+      );
 
       // Delete session record
       await dao.execute('DELETE FROM sessions WHERE id = ?', [sessionId]);
@@ -695,7 +738,7 @@ export class SessionManager extends EventEmitter {
         metadata: this.deserializeData(sessionData?.metadata),
         checkpoints: [], // Load on demand
         version: sessionData?.version,
-      })
+      }),
     );
   }
 
@@ -724,10 +767,10 @@ export class SessionManager extends EventEmitter {
         checkpointCount: session.checkpoints.length,
         version: session.version,
       };
-    } else {
-      // Global stats
-      const dao = await this.getDao();
-      const stats = await dao.query(`
+    }
+    // Global stats
+    const dao = await this.getDao();
+    const stats = await dao.query(`
         SELECT 
           status,
           COUNT(*) as count,
@@ -736,22 +779,25 @@ export class SessionManager extends EventEmitter {
         GROUP BY status
       `);
 
-      const totalSessions = await dao.query('SELECT COUNT(*) as total FROM sessions');
-      const totalCheckpoints = await dao.query('SELECT COUNT(*) as total FROM session_checkpoints');
+    const totalSessions = await dao.query(
+      'SELECT COUNT(*) as total FROM sessions',
+    );
+    const totalCheckpoints = await dao.query(
+      'SELECT COUNT(*) as total FROM session_checkpoints',
+    );
 
-      return {
-        totalSessions: totalSessions[0]?.total,
-        totalCheckpoints: totalCheckpoints[0]?.total,
-        activeSessions: this.activeSessions.size,
-        statusBreakdown: stats.reduce((acc: any, stat: any) => {
-          acc[stat.status] = {
-            count: stat.count,
-            avgDaysSinceAccess: stat.avg_days_since_access,
-          };
-          return acc;
-        }, {}),
-      };
-    }
+    return {
+      totalSessions: totalSessions[0]?.total,
+      totalCheckpoints: totalCheckpoints[0]?.total,
+      activeSessions: this.activeSessions.size,
+      statusBreakdown: stats.reduce((acc: any, stat: any) => {
+        acc[stat.status] = {
+          count: stat.count,
+          avgDaysSinceAccess: stat.avg_days_since_access,
+        };
+        return acc;
+      }, {}),
+    };
   }
 
   /**
@@ -791,22 +837,24 @@ export class SessionManager extends EventEmitter {
     `);
 
     // Create indexes
-    await dao.execute('CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)');
     await dao.execute(
-      'CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed_at)'
+      'CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)',
     );
     await dao.execute(
-      'CREATE INDEX IF NOT EXISTS idx_checkpoints_session ON session_checkpoints(session_id)'
+      'CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed_at)',
     );
     await dao.execute(
-      'CREATE INDEX IF NOT EXISTS idx_checkpoints_timestamp ON session_checkpoints(timestamp)'
+      'CREATE INDEX IF NOT EXISTS idx_checkpoints_session ON session_checkpoints(session_id)',
+    );
+    await dao.execute(
+      'CREATE INDEX IF NOT EXISTS idx_checkpoints_timestamp ON session_checkpoints(timestamp)',
     );
   }
 
   private async restoreActiveSessions(): Promise<void> {
     const dao = await this.getDao();
     const activeSessions = await dao.query(
-      "SELECT * FROM sessions WHERE status IN ('active', 'paused')"
+      "SELECT * FROM sessions WHERE status IN ('active', 'paused')",
     );
 
     for (const sessionData of activeSessions) {
@@ -835,11 +883,13 @@ export class SessionManager extends EventEmitter {
     }
   }
 
-  private async loadSessionCheckpoints(sessionId: string): Promise<SessionCheckpoint[]> {
+  private async loadSessionCheckpoints(
+    sessionId: string,
+  ): Promise<SessionCheckpoint[]> {
     const dao = await this.getDao();
     const checkpoints = await dao.query(
       'SELECT * FROM session_checkpoints WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?',
-      [sessionId, this.config.maxCheckpoints]
+      [sessionId, this.config.maxCheckpoints],
     );
 
     return checkpoints.map((cp: any) => ({
@@ -863,7 +913,9 @@ export class SessionManager extends EventEmitter {
 
   private async deleteCheckpoint(checkpointId: string): Promise<void> {
     const dao = await this.getDao();
-    await dao.execute('DELETE FROM session_checkpoints WHERE id = ?', [checkpointId]);
+    await dao.execute('DELETE FROM session_checkpoints WHERE id = ?', [
+      checkpointId,
+    ]);
   }
 
   private startAutoCheckpoint(sessionId: string): void {
@@ -929,7 +981,10 @@ export class SessionManager extends EventEmitter {
         try {
           await this.createCheckpoint(sessionId, 'Shutdown checkpoint');
         } catch (error) {
-          logger.error(`Failed to create shutdown checkpoint for session ${sessionId}:`, error);
+          logger.error(
+            `Failed to create shutdown checkpoint for session ${sessionId}:`,
+            error,
+          );
         }
       }
     }

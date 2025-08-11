@@ -18,7 +18,10 @@ import type { Logger } from '../../config/logging-config.ts';
 import { getLogger } from '../../config/logging-config.ts';
 import type { MemorySystem } from '../../core/memory-system.ts';
 import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
-import { createEvent, EventPriority } from '../../core/type-safe-event-system.ts';
+import {
+  createEvent,
+  EventPriority,
+} from '../../core/type-safe-event-system.ts';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates.ts';
 import { WorkflowHumanGateType } from '../orchestration/workflow-gates.ts';
 import type { ArchitectureRunwayManager } from './architecture-runway-manager.ts';
@@ -378,8 +381,8 @@ export interface ErrorCondition {
 export interface InterfaceContract {
   readonly version: string;
   readonly specification: string;
-  readonly schema: any;
-  readonly examples: any[];
+  readonly schema: unknown;
+  readonly examples: unknown[];
   readonly tests: ContractTest[];
 }
 
@@ -390,7 +393,7 @@ export interface ContractTest {
   readonly name: string;
   readonly description: string;
   readonly scenario: string;
-  readonly expected: any;
+  readonly expected: unknown;
   readonly validation: string;
 }
 
@@ -429,7 +432,7 @@ export interface InterfaceSecurity {
  */
 export interface AuthenticationSpec {
   readonly method: 'oauth2' | 'jwt' | 'api_key' | 'basic' | 'certificate';
-  readonly configuration: any;
+  readonly configuration: unknown;
   readonly scope: string[];
   readonly expiration: string;
 }
@@ -460,7 +463,11 @@ export interface AuthorizationPolicy {
  * Rate limiting specification
  */
 export interface RateLimitingSpec {
-  readonly strategy: 'fixed_window' | 'sliding_window' | 'token_bucket' | 'leaky_bucket';
+  readonly strategy:
+    | 'fixed_window'
+    | 'sliding_window'
+    | 'token_bucket'
+    | 'leaky_bucket';
   readonly limits: RateLimit[];
   readonly scope: 'global' | 'per_user' | 'per_ip' | 'per_api_key';
   readonly actions: RateLimitAction[];
@@ -691,7 +698,11 @@ export interface BackupSpec {
  * Disaster recovery specification
  */
 export interface DisasterRecoverySpec {
-  readonly strategy: 'backup_restore' | 'pilot_light' | 'warm_standby' | 'hot_standby';
+  readonly strategy:
+    | 'backup_restore'
+    | 'pilot_light'
+    | 'warm_standby'
+    | 'hot_standby';
   readonly location: string;
   readonly automation: boolean;
   readonly testing: string;
@@ -753,7 +764,11 @@ export interface ErrorBudgetSpec {
  * Component security
  */
 export interface ComponentSecurity {
-  readonly classification: 'public' | 'internal' | 'confidential' | 'restricted';
+  readonly classification:
+    | 'public'
+    | 'internal'
+    | 'confidential'
+    | 'restricted';
   readonly threats: ThreatModel[];
   readonly controls: SecurityControl[];
   readonly compliance: string[];
@@ -958,8 +973,13 @@ export interface SystemDependency {
  * Fallback strategy
  */
 export interface FallbackStrategy {
-  readonly strategy: 'cache' | 'default' | 'alternative' | 'queue' | 'circuit_breaker';
-  readonly configuration: any;
+  readonly strategy:
+    | 'cache'
+    | 'default'
+    | 'alternative'
+    | 'queue'
+    | 'circuit_breaker';
+  readonly configuration: unknown;
   readonly timeout: string;
   readonly recovery: string;
 }
@@ -1047,7 +1067,12 @@ export interface TechnicalCapability {
 export interface CrossCuttingConcern {
   readonly name: string;
   readonly description: string;
-  readonly category: 'security' | 'logging' | 'monitoring' | 'caching' | 'configuration';
+  readonly category:
+    | 'security'
+    | 'logging'
+    | 'monitoring'
+    | 'caching'
+    | 'configuration';
   readonly implementation: string;
   readonly systems: string[];
   readonly standards: string[];
@@ -1171,7 +1196,12 @@ export interface SystemSolutionArchState {
  */
 export interface ArchitectureReview {
   readonly id: string;
-  readonly type: 'system' | 'solution' | 'integration' | 'security' | 'performance';
+  readonly type:
+    | 'system'
+    | 'solution'
+    | 'integration'
+    | 'security'
+    | 'performance';
   readonly subjectId: string; // System or Solution ID
   readonly reviewDate: Date;
   readonly reviewers: ArchitectureReviewer[];
@@ -1281,7 +1311,11 @@ export interface ComplianceReport {
 export interface ComplianceAssessment {
   readonly standard: string;
   readonly requirement: string;
-  readonly status: 'compliant' | 'non_compliant' | 'partially_compliant' | 'not_applicable';
+  readonly status:
+    | 'compliant'
+    | 'non_compliant'
+    | 'partially_compliant'
+    | 'not_applicable';
   readonly score: number; // 0-100
   readonly evidence: string[];
   readonly gaps: string[];
@@ -1406,7 +1440,7 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
     runwayManager: ArchitectureRunwayManager,
     piManager: ProgramIncrementManager,
     valueStreamMapper: ValueStreamMapper,
-    config: Partial<SystemSolutionArchConfig> = {}
+    config: Partial<SystemSolutionArchConfig> = {},
   ) {
     super();
 
@@ -1466,10 +1500,15 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
       // Register event handlers
       this.registerEventHandlers();
 
-      this.logger.info('System and Solution Architecture Manager initialized successfully');
+      this.logger.info(
+        'System and Solution Architecture Manager initialized successfully',
+      );
       this.emit('initialized');
     } catch (error) {
-      this.logger.error('Failed to initialize System and Solution Architecture Manager', { error });
+      this.logger.error(
+        'Failed to initialize System and Solution Architecture Manager',
+        { error },
+      );
       throw error;
     }
   }
@@ -1487,7 +1526,9 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
     await this.persistState();
     this.removeAllListeners();
 
-    this.logger.info('System and Solution Architecture Manager shutdown complete');
+    this.logger.info(
+      'System and Solution Architecture Manager shutdown complete',
+    );
   }
 
   // ============================================================================
@@ -1499,7 +1540,7 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
    */
   async createSystemDesign(
     solutionId: string,
-    systemData: Partial<SystemDesign>
+    systemData: Partial<SystemDesign>,
   ): Promise<SystemDesign> {
     this.logger.info('Creating system design', {
       solutionId,
@@ -1516,18 +1557,22 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
       status: SystemDesignStatus.DRAFT,
       architect: systemData.architect || 'system',
       stakeholders: systemData.stakeholders || [],
-      businessContext: systemData.businessContext || this.createDefaultBusinessContext(),
+      businessContext:
+        systemData.businessContext || this.createDefaultBusinessContext(),
       architecturalDrivers: systemData.architecturalDrivers || [],
       qualityAttributes: systemData.qualityAttributes || [],
       constraints: systemData.constraints || [],
       components: systemData.components || [],
       interfaces: systemData.interfaces || [],
       dependencies: systemData.dependencies || [],
-      deployment: systemData.deployment || this.createDefaultDeploymentArchitecture(),
+      deployment:
+        systemData.deployment || this.createDefaultDeploymentArchitecture(),
       security: systemData.security || this.createDefaultSecurityArchitecture(),
       data: systemData.data || this.createDefaultDataArchitecture(),
-      integration: systemData.integration || this.createDefaultIntegrationArchitecture(),
-      governance: systemData.governance || this.createDefaultGovernanceFramework(),
+      integration:
+        systemData.integration || this.createDefaultIntegrationArchitecture(),
+      governance:
+        systemData.governance || this.createDefaultGovernanceFramework(),
       createdAt: new Date(),
       lastUpdated: new Date(),
     };
@@ -1550,12 +1595,14 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
   /**
    * Coordinate system-level design across multiple systems
    */
-  async coordinateSystemDesigns(solutionId: string): Promise<SystemDesignCoordination> {
+  async coordinateSystemDesigns(
+    solutionId: string,
+  ): Promise<SystemDesignCoordination> {
     this.logger.info('Coordinating system designs', { solutionId });
 
     // Get all systems for the solution
     const systemDesigns = Array.from(this.state.systemDesigns.values()).filter(
-      (system) => system.solutionId === solutionId
+      (system) => system.solutionId === solutionId,
     );
 
     // Analyze system interactions and dependencies
@@ -1568,11 +1615,12 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
     const recommendations = await this.generateCoordinationRecommendations(
       systemDesigns,
       interactions,
-      conflicts
+      conflicts,
     );
 
     // Assess overall architectural consistency
-    const consistencyAssessment = await this.assessArchitecturalConsistency(systemDesigns);
+    const consistencyAssessment =
+      await this.assessArchitecturalConsistency(systemDesigns);
 
     const coordination: SystemDesignCoordination = {
       solutionId,
@@ -1609,7 +1657,7 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
    */
   async createSolutionArchitectWorkflow(
     solutionId: string,
-    workflowType: 'design' | 'review' | 'approval' | 'governance'
+    workflowType: 'design' | 'review' | 'approval' | 'governance',
   ): Promise<SolutionArchitectWorkflow> {
     this.logger.info('Creating solution architect workflow', {
       solutionId,
@@ -1622,10 +1670,16 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
       type: workflowType,
       status: 'initiated',
       steps: await this.generateWorkflowSteps(workflowType),
-      participants: await this.identifyWorkflowParticipants(solutionId, workflowType),
+      participants: await this.identifyWorkflowParticipants(
+        solutionId,
+        workflowType,
+      ),
       deliverables: await this.defineWorkflowDeliverables(workflowType),
       timeline: await this.estimateWorkflowTimeline(workflowType),
-      dependencies: await this.identifyWorkflowDependencies(solutionId, workflowType),
+      dependencies: await this.identifyWorkflowDependencies(
+        solutionId,
+        workflowType,
+      ),
       gates: await this.defineWorkflowGates(workflowType),
       createdAt: new Date(),
       lastUpdated: new Date(),
@@ -1674,7 +1728,10 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
       this.logger.info('Solution architect workflow completed', { workflowId });
       this.emit('solution-architect-workflow-completed', { workflowId });
     } catch (error) {
-      this.logger.error('Solution architect workflow failed', { workflowId, error });
+      this.logger.error('Solution architect workflow failed', {
+        workflowId,
+        error,
+      });
       await this.failWorkflow(workflowId, error.message);
       throw error;
     }
@@ -1690,7 +1747,7 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
   async createArchitectureReviewGate(
     subjectId: string,
     subjectType: 'system' | 'solution',
-    reviewType: 'design' | 'implementation' | 'security' | 'performance'
+    reviewType: 'design' | 'implementation' | 'security' | 'performance',
   ): Promise<ArchitectureReview> {
     this.logger.info('Creating architecture review gate', {
       subjectId,
@@ -1731,7 +1788,9 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
   /**
    * Execute architecture review with AGUI
    */
-  async executeArchitectureReview(reviewId: string): Promise<ArchitectureReview> {
+  async executeArchitectureReview(
+    reviewId: string,
+  ): Promise<ArchitectureReview> {
     const review = this.state.architectureReviews.get(reviewId);
     if (!review) {
       throw new Error(`Architecture review not found: ${reviewId}`);
@@ -1753,7 +1812,7 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
         const criterionResult = await this.evaluateReviewCriterion(
           review.subjectId,
           criterion,
-          review.reviewers
+          review.reviewers,
         );
 
         if (criterionResult.findings.length > 0) {
@@ -1771,7 +1830,10 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
       const outcome = this.determineReviewOutcome(decisions, findings);
 
       // Generate follow-up actions
-      const followUp = await this.generateFollowUpActions(findings, recommendations);
+      const followUp = await this.generateFollowUpActions(
+        findings,
+        recommendations,
+      );
 
       const completedReview: ArchitectureReview = {
         ...updatedReview,
@@ -1856,11 +1918,21 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
 
     // Assess compliance for each standard
     for (const standard of standards) {
-      const assessment = await this.assessStandardCompliance(systemDesign, standard);
+      const assessment = await this.assessStandardCompliance(
+        systemDesign,
+        standard,
+      );
       assessments.push(assessment);
 
-      if (assessment.status === 'non_compliant' || assessment.status === 'partially_compliant') {
-        const violation = await this.createComplianceViolation(systemDesign, standard, assessment);
+      if (
+        assessment.status === 'non_compliant' ||
+        assessment.status === 'partially_compliant'
+      ) {
+        const violation = await this.createComplianceViolation(
+          systemDesign,
+          standard,
+          assessment,
+        );
         violations.push(violation);
 
         const risk = await this.assessComplianceRisk(violation);
@@ -1892,7 +1964,9 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
     this.state.complianceReports.set(complianceReport.id, complianceReport);
 
     // Create alerts for critical violations
-    const criticalViolations = violations.filter((v) => v.severity === 'critical');
+    const criticalViolations = violations.filter(
+      (v) => v.severity === 'critical',
+    );
     if (criticalViolations.length > 0) {
       await this.createComplianceAlert(complianceReport, criticalViolations);
     }
@@ -1926,19 +2000,25 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('system-solution-arch:state');
+      const persistedState = await this.memory.retrieve(
+        'system-solution-arch:state',
+      );
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
           solutionDesigns: new Map(persistedState.solutionDesigns || []),
           systemDesigns: new Map(persistedState.systemDesigns || []),
-          architectureReviews: new Map(persistedState.architectureReviews || []),
+          architectureReviews: new Map(
+            persistedState.architectureReviews || [],
+          ),
           complianceReports: new Map(persistedState.complianceReports || []),
           designApprovals: new Map(persistedState.designApprovals || []),
           capabilityMaps: new Map(persistedState.capabilityMaps || []),
         };
-        this.logger.info('System and Solution Architecture Manager state loaded');
+        this.logger.info(
+          'System and Solution Architecture Manager state loaded',
+        );
       }
     } catch (error) {
       this.logger.warn('Failed to load persisted state', { error });
@@ -1951,7 +2031,9 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
         ...this.state,
         solutionDesigns: Array.from(this.state.solutionDesigns.entries()),
         systemDesigns: Array.from(this.state.systemDesigns.entries()),
-        architectureReviews: Array.from(this.state.architectureReviews.entries()),
+        architectureReviews: Array.from(
+          this.state.architectureReviews.entries(),
+        ),
         complianceReports: Array.from(this.state.complianceReports.entries()),
         designApprovals: Array.from(this.state.designApprovals.entries()),
         capabilityMaps: Array.from(this.state.capabilityMaps.entries()),
@@ -1988,9 +2070,12 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
       await this.handleSystemDesignUpdate(event.payload.systemId);
     });
 
-    this.eventBus.registerHandler('compliance-threshold-exceeded', async (event) => {
-      await this.handleComplianceThresholdExceeded(event.payload);
-    });
+    this.eventBus.registerHandler(
+      'compliance-threshold-exceeded',
+      async (event) => {
+        await this.handleComplianceThresholdExceeded(event.payload);
+      },
+    );
   }
 
   // Many placeholder implementations would follow...
@@ -2023,33 +2108,42 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
   private createDefaultGovernanceFramework(): any {
     return {};
   }
-  private async createSystemDesignReviewGate(design: SystemDesign): Promise<void> {}
-  private async analyzeSystemInteractions(systems: SystemDesign[]): Promise<any[]> {
+  private async createSystemDesignReviewGate(
+    design: SystemDesign,
+  ): Promise<void> {}
+  private async analyzeSystemInteractions(
+    systems: SystemDesign[],
+  ): Promise<any[]> {
     return [];
   }
-  private async identifyDesignConflicts(systems: SystemDesign[]): Promise<any[]> {
+  private async identifyDesignConflicts(
+    systems: SystemDesign[],
+  ): Promise<any[]> {
     return [];
   }
   private async generateCoordinationRecommendations(
     systems: SystemDesign[],
-    interactions: any[],
-    conflicts: any[]
+    interactions: unknown[],
+    conflicts: unknown[],
   ): Promise<string[]> {
     return [];
   }
   private async assessArchitecturalConsistency(
-    systems: SystemDesign[]
+    systems: SystemDesign[],
   ): Promise<{ score: number; status: string }> {
     return { score: 100, status: 'consistent' };
   }
   private async createCoordinationApprovalGate(
-    coordination: any,
-    conflicts: any[]
+    coordination: unknown,
+    conflicts: unknown[],
   ): Promise<void> {}
   private async generateWorkflowSteps(type: string): Promise<any[]> {
     return [];
   }
-  private async identifyWorkflowParticipants(solutionId: string, type: string): Promise<string[]> {
+  private async identifyWorkflowParticipants(
+    solutionId: string,
+    type: string,
+  ): Promise<string[]> {
     return [];
   }
   private async defineWorkflowDeliverables(type: string): Promise<string[]> {
@@ -2058,55 +2152,79 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
   private async estimateWorkflowTimeline(type: string): Promise<string> {
     return '2 weeks';
   }
-  private async identifyWorkflowDependencies(solutionId: string, type: string): Promise<string[]> {
+  private async identifyWorkflowDependencies(
+    solutionId: string,
+    type: string,
+  ): Promise<string[]> {
     return [];
   }
   private async defineWorkflowGates(type: string): Promise<any[]> {
     return [];
   }
-  private async executeWorkflowStep(workflowId: string, step: any): Promise<void> {}
-  private async getWorkflowById(workflowId: string): Promise<any> {
+  private async executeWorkflowStep(
+    workflowId: string,
+    step: unknown,
+  ): Promise<void> {}
+  private async getWorkflowById(workflowId: string): Promise<unknown> {
     return null;
   }
-  private async executeWorkflowGate(workflowId: string, step: any): Promise<{ approved: boolean }> {
+  private async executeWorkflowGate(
+    workflowId: string,
+    step: unknown,
+  ): Promise<{ approved: boolean }> {
     return { approved: true };
   }
   private async completeWorkflow(workflowId: string): Promise<void> {}
-  private async failWorkflow(workflowId: string, reason: string): Promise<void> {}
+  private async failWorkflow(
+    workflowId: string,
+    reason: string,
+  ): Promise<void> {}
   private async assignReviewers(
     subjectType: string,
-    reviewType: string
+    reviewType: string,
   ): Promise<ArchitectureReviewer[]> {
     return [];
   }
-  private async getReviewCriteria(reviewType: string): Promise<ReviewCriterion[]> {
+  private async getReviewCriteria(
+    reviewType: string,
+  ): Promise<ReviewCriterion[]> {
     return [];
   }
-  private async createReviewProcessGate(review: ArchitectureReview): Promise<void> {}
+  private async createReviewProcessGate(
+    review: ArchitectureReview,
+  ): Promise<void> {}
   private async evaluateReviewCriterion(
     subjectId: string,
     criterion: ReviewCriterion,
-    reviewers: ArchitectureReviewer[]
-  ): Promise<any> {
+    reviewers: ArchitectureReviewer[],
+  ): Promise<unknown> {
     return {
       findings: [],
       recommendations: [],
-      decision: { criterion: '', decision: 'accept', rationale: '', conditions: [], reviewer: '' },
+      decision: {
+        criterion: '',
+        decision: 'accept',
+        rationale: '',
+        conditions: [],
+        reviewer: '',
+      },
     };
   }
   private determineReviewOutcome(
     decisions: ReviewDecision[],
-    findings: ReviewFinding[]
+    findings: ReviewFinding[],
   ): 'approved' | 'conditional' | 'rejected' | 'deferred' {
     return 'approved';
   }
   private async generateFollowUpActions(
     findings: ReviewFinding[],
-    recommendations: ReviewRecommendation[]
+    recommendations: ReviewRecommendation[],
   ): Promise<FollowUpAction[]> {
     return [];
   }
-  private async createArchitectureApprovalGate(review: ArchitectureReview): Promise<void> {}
+  private async createArchitectureApprovalGate(
+    review: ArchitectureReview,
+  ): Promise<void> {}
   private async monitorSystemCompliance(): Promise<void> {}
   private async monitorSolutionCompliance(): Promise<void> {}
   private async generateComplianceReports(): Promise<void> {}
@@ -2116,35 +2234,41 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
   }
   private async assessStandardCompliance(
     design: SystemDesign,
-    standard: any
+    standard: unknown,
   ): Promise<ComplianceAssessment> {
     return {} as ComplianceAssessment;
   }
   private async createComplianceViolation(
     design: SystemDesign,
-    standard: any,
-    assessment: ComplianceAssessment
+    standard: unknown,
+    assessment: ComplianceAssessment,
   ): Promise<ComplianceViolation> {
     return {} as ComplianceViolation;
   }
-  private async assessComplianceRisk(violation: ComplianceViolation): Promise<ComplianceRisk> {
+  private async assessComplianceRisk(
+    violation: ComplianceViolation,
+  ): Promise<ComplianceRisk> {
     return {} as ComplianceRisk;
   }
-  private calculateComplianceScore(assessments: ComplianceAssessment[]): number {
+  private calculateComplianceScore(
+    assessments: ComplianceAssessment[],
+  ): number {
     return 100;
   }
   private async generateRemediationPlans(
-    violations: ComplianceViolation[]
+    violations: ComplianceViolation[],
   ): Promise<RemediationPlan[]> {
     return [];
   }
   private async createComplianceAlert(
     report: ComplianceReport,
-    violations: ComplianceViolation[]
+    violations: ComplianceViolation[],
   ): Promise<void> {}
   private async performScheduledReviews(): Promise<void> {}
   private async handleSystemDesignUpdate(systemId: string): Promise<void> {}
-  private async handleComplianceThresholdExceeded(payload: any): Promise<void> {}
+  private async handleComplianceThresholdExceeded(
+    payload: unknown,
+  ): Promise<void> {}
 }
 
 // ============================================================================
@@ -2154,8 +2278,8 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
 export interface SystemDesignCoordination {
   readonly solutionId: string;
   readonly systemCount: number;
-  readonly interactions: any[];
-  readonly conflicts: any[];
+  readonly interactions: unknown[];
+  readonly conflicts: unknown[];
   readonly recommendations: string[];
   readonly consistencyScore: number;
   readonly coordinationStatus: string;
@@ -2166,13 +2290,18 @@ export interface SolutionArchitectWorkflow {
   readonly id: string;
   readonly solutionId: string;
   readonly type: 'design' | 'review' | 'approval' | 'governance';
-  readonly status: 'initiated' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
-  readonly steps: any[];
+  readonly status:
+    | 'initiated'
+    | 'in_progress'
+    | 'completed'
+    | 'failed'
+    | 'cancelled';
+  readonly steps: unknown[];
   readonly participants: string[];
   readonly deliverables: string[];
   readonly timeline: string;
   readonly dependencies: string[];
-  readonly gates: any[];
+  readonly gates: unknown[];
   readonly createdAt: Date;
   readonly lastUpdated: Date;
 }

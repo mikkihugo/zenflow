@@ -96,7 +96,8 @@ describe('Cross-Browser WASM Compatibility', () => {
 
         const wasmSupported = await page.evaluate(() => {
           return (
-            typeof WebAssembly !== 'undefined' && typeof WebAssembly.instantiate === 'function'
+            typeof WebAssembly !== 'undefined' &&
+            typeof WebAssembly.instantiate === 'function'
           );
         });
 
@@ -171,7 +172,10 @@ describe('Cross-Browser WASM Compatibility', () => {
           try {
             // Check if SharedArrayBuffer is available
             if (typeof SharedArrayBuffer === 'undefined') {
-              return { available: false, reason: 'SharedArrayBuffer not defined' };
+              return {
+                available: false,
+                reason: 'SharedArrayBuffer not defined',
+              };
             }
 
             // Try to create one
@@ -386,7 +390,7 @@ describe('Cross-Browser WASM Compatibility', () => {
             matB,
             matrixSize,
             matrixSize,
-            matrixSize
+            matrixSize,
           );
           benchmarks.matrixOps = performance.now() - matrixStart;
 
@@ -514,7 +518,9 @@ describe('Cross-Browser WASM Compatibility', () => {
             };
           `;
 
-          const blob = new Blob([workerScript], { type: 'application/javascript' });
+          const blob = new Blob([workerScript], {
+            type: 'application/javascript',
+          });
           const worker = new Worker(URL.createObjectURL(blob));
 
           const result = await new Promise((resolve) => {

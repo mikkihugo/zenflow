@@ -55,7 +55,9 @@ export interface UseConfigReturn {
   error?: Error;
   updateConfig: (updates: Partial<TerminalConfig>) => Promise<void>;
   updateUIConfig: (updates: Partial<TerminalConfig['ui']>) => Promise<void>;
-  updateSwarmConfig: (updates: Partial<TerminalConfig['swarmConfig']>) => Promise<void>;
+  updateSwarmConfig: (
+    updates: Partial<TerminalConfig['swarmConfig']>,
+  ) => Promise<void>;
   resetConfig: () => Promise<void>;
 }
 
@@ -89,7 +91,8 @@ export const useConfig = (): UseConfigReturn => {
 
       logger.debug('Terminal configuration loaded successfully');
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to load configuration');
+      const error =
+        err instanceof Error ? err : new Error('Failed to load configuration');
       logger.error('Failed to load terminal configuration:', error);
       setError(error);
       setConfig(defaultConfig); // Fallback to default
@@ -98,35 +101,37 @@ export const useConfig = (): UseConfigReturn => {
     }
   };
 
-  const loadConfigFromFile = async (): Promise<Partial<TerminalConfig> | null> => {
-    try {
-      // Try different config locations
-      const configPaths = [
-        './.claude/terminal-config.json',
-        './config/terminal.json',
-        `${process.env['HOME']}/.claude-zen/terminal-config.json`,
-      ];
+  const loadConfigFromFile =
+    async (): Promise<Partial<TerminalConfig> | null> => {
+      try {
+        // Try different config locations
+        const configPaths = [
+          './.claude/terminal-config.json',
+          './config/terminal.json',
+          `${process.env['HOME']}/.claude-zen/terminal-config.json`,
+        ];
 
-      for (const configPath of configPaths) {
-        try {
-          const fs = await import('node:fs/promises');
-          const configData = await fs.readFile(configPath, 'utf-8');
-          const parsedConfig = JSON.parse(configData);
+        for (const configPath of configPaths) {
+          try {
+            const fs = await import('node:fs/promises');
+            const configData = await fs.readFile(configPath, 'utf-8');
+            const parsedConfig = JSON.parse(configData);
 
-          if (parsedConfig?.terminal) {
-            return parsedConfig?.terminal;
-          } else if (parsedConfig?.theme || parsedConfig?.swarmConfig) {
-            return parsedConfig;
-          }
-        } catch (_err) {}
+            if (parsedConfig?.terminal) {
+              return parsedConfig?.terminal;
+            }
+            if (parsedConfig?.theme || parsedConfig?.swarmConfig) {
+              return parsedConfig;
+            }
+          } catch (_err) {}
+        }
+
+        return null;
+      } catch (err) {
+        logger.warn('Could not load terminal config from file:', err);
+        return null;
       }
-
-      return null;
-    } catch (err) {
-      logger.warn('Could not load terminal config from file:', err);
-      return null;
-    }
-  };
+    };
 
   const saveConfigToFile = async (newConfig: TerminalConfig) => {
     try {
@@ -159,7 +164,10 @@ export const useConfig = (): UseConfigReturn => {
       await saveConfigToFile(newConfig);
       logger.debug('Terminal configuration updated:', updates);
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to update configuration');
+      const error =
+        err instanceof Error
+          ? err
+          : new Error('Failed to update configuration');
       logger.error('Failed to update terminal configuration:', error);
       setError(error);
       throw error;
@@ -172,7 +180,9 @@ export const useConfig = (): UseConfigReturn => {
     });
   };
 
-  const updateSwarmConfig = async (updates: Partial<TerminalConfig['swarmConfig']>) => {
+  const updateSwarmConfig = async (
+    updates: Partial<TerminalConfig['swarmConfig']>,
+  ) => {
     await updateConfig({
       swarmConfig: { ...config?.swarmConfig, ...updates },
     });
@@ -184,7 +194,8 @@ export const useConfig = (): UseConfigReturn => {
       await saveConfigToFile(defaultConfig);
       logger.debug('Terminal configuration reset to defaults');
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to reset configuration');
+      const error =
+        err instanceof Error ? err : new Error('Failed to reset configuration');
       logger.error('Failed to reset terminal configuration:', error);
       setError(error);
       throw error;

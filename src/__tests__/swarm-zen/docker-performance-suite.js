@@ -87,7 +87,7 @@ async function benchmarkSwarmCreation() {
       const swarm = new ZenSwarm({ maxAgents: 64 });
       return swarm;
     },
-    100
+    100,
   );
 }
 
@@ -130,7 +130,7 @@ async function benchmarkNeuralOperations() {
       const target = new Float32Array(64).fill(0.8);
       await agent.neuralNetwork.train(input, target);
     },
-    100
+    100,
   );
 
   await benchmark('Pattern Recognition', async () => {
@@ -144,7 +144,11 @@ async function benchmarkMemoryOperations() {
 
   await benchmark('Memory Store', () => {
     const key = `key-${Date.now()}`;
-    const value = { data: 'test', timestamp: Date.now(), array: new Array(100).fill(0) };
+    const value = {
+      data: 'test',
+      timestamp: Date.now(),
+      array: new Array(100).fill(0),
+    };
     swarm.memory.store(key, value);
   });
 
@@ -178,7 +182,7 @@ async function benchmarkTaskOrchestration() {
         priority: 'high',
       });
     },
-    100
+    100,
   );
 
   await benchmark(
@@ -191,7 +195,7 @@ async function benchmarkTaskOrchestration() {
         priority: 'critical',
       });
     },
-    10
+    10,
   );
 }
 
@@ -212,10 +216,18 @@ async function generatePerformanceReport() {
   // Calculate aggregate statistics
   const aggregateStats = {
     totalBenchmarks: results.benchmarks.length,
-    avgMeanTime: results.benchmarks.reduce((sum, b) => sum + b.mean, 0) / results.benchmarks.length,
-    avgP95Time: results.benchmarks.reduce((sum, b) => sum + b.p95, 0) / results.benchmarks.length,
-    fastestOperation: results.benchmarks.reduce((min, b) => (b.mean < min.mean ? b : min)),
-    slowestOperation: results.benchmarks.reduce((max, b) => (b.mean > max.mean ? b : max)),
+    avgMeanTime:
+      results.benchmarks.reduce((sum, b) => sum + b.mean, 0) /
+      results.benchmarks.length,
+    avgP95Time:
+      results.benchmarks.reduce((sum, b) => sum + b.p95, 0) /
+      results.benchmarks.length,
+    fastestOperation: results.benchmarks.reduce((min, b) =>
+      b.mean < min.mean ? b : min,
+    ),
+    slowestOperation: results.benchmarks.reduce((max, b) =>
+      b.mean > max.mean ? b : max,
+    ),
   };
 
   results.summary = aggregateStats;
@@ -238,7 +250,12 @@ async function generatePerformanceReport() {
   results.summary.performanceGrade = grade;
 
   // Save results
-  const resultsPath = path.join(__dirname, '..', 'test-results', 'performance-benchmarks.json');
+  const resultsPath = path.join(
+    __dirname,
+    '..',
+    'test-results',
+    'performance-benchmarks.json',
+  );
   await fs.mkdir(path.dirname(resultsPath), { recursive: true });
   await fs.writeFile(resultsPath, JSON.stringify(results, null, 2));
 }

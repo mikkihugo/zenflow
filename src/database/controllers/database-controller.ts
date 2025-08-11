@@ -29,7 +29,7 @@ export interface QueryRequest {
   /** SQL query to execute */
   sql: string;
   /** Parameters for parameterized queries */
-  params?: any[];
+  params?: unknown[];
   /** Additional query options */
   options?: {
     /** Query timeout in milliseconds */
@@ -52,7 +52,7 @@ export interface CommandRequest {
   /** SQL command to execute */
   sql: string;
   /** Parameters for parameterized commands */
-  params?: any[];
+  params?: unknown[];
   /** Additional command options */
   options?: {
     /** Command timeout in milliseconds */
@@ -77,7 +77,7 @@ export interface BatchRequest {
     /** SQL statement */
     sql: string;
     /** Parameters */
-    params?: any[];
+    params?: unknown[];
   }>;
   /** Whether to execute in a transaction */
   useTransaction?: boolean;
@@ -94,7 +94,7 @@ export interface DatabaseResponse {
   /** Whether the operation was successful */
   success: boolean;
   /** Response data (varies by operation) */
-  data?: any;
+  data?: unknown;
   /** Error message if operation failed */
   error?: string;
   /** Operation metadata and statistics */
@@ -161,7 +161,7 @@ export interface GraphQueryRequest {
   /** Cypher query to execute */
   cypher: string;
   /** Parameters for parameterized queries */
-  params?: any[];
+  params?: unknown[];
   /** Additional query options */
   options?: {
     /** Query timeout in milliseconds */
@@ -186,7 +186,7 @@ export interface GraphBatchRequest {
     /** Cypher query */
     cypher: string;
     /** Parameters */
-    params?: any[];
+    params?: unknown[];
   }>;
   /** Whether to continue on error */
   continueOnError?: boolean;
@@ -205,7 +205,7 @@ export interface VectorSearchRequest {
   /** Maximum number of results to return */
   limit?: number;
   /** Filter criteria for metadata */
-  filter?: Record<string, any>;
+  filter?: Record<string, unknown>;
   /** Distance metric to use */
   metric?: 'cosine' | 'euclidean' | 'dot';
 }
@@ -220,7 +220,7 @@ export interface VectorAddRequest {
   vectors: Array<{
     id: string | number;
     vector: number[];
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   }>;
   /** Table name to insert into */
   table?: string;
@@ -246,20 +246,20 @@ export interface VectorIndexRequest {
 interface TransactionQueryResult {
   type: 'query';
   sql: string;
-  params?: any[];
+  params?: unknown[];
   success: boolean;
   rowCount?: number;
-  data?: any;
+  data?: unknown;
   error?: string;
 }
 
 interface TransactionExecuteResult {
   type: 'execute';
   sql: string;
-  params?: any[];
+  params?: unknown[];
   success: boolean;
   affectedRows?: number;
-  insertId?: any;
+  insertId?: unknown;
   error?: string;
 }
 
@@ -284,22 +284,22 @@ interface MigrationResult {
 // Graph result types
 interface GraphQueryResult {
   cypher: string;
-  params?: any[];
+  params?: unknown[];
   success: boolean;
   nodeCount?: number;
   relationshipCount?: number;
   data?: {
     nodes: Array<{
-      id: any;
+  id?: unknown;
       labels: string[];
-      properties: Record<string, any>;
+      properties: Record<string, unknown>;
     }>;
     relationships: Array<{
-      id: any;
+  id?: unknown;
       type: string;
-      startNodeId: any;
-      endNodeId: any;
-      properties: Record<string, any>;
+  startNodeId?: unknown;
+  endNodeId?: unknown;
+      properties: Record<string, unknown>;
     }>;
   };
   error?: string;
@@ -1030,7 +1030,7 @@ export class DatabaseController {
           port: this._config.port,
           database: this._config.database,
           poolConfig: this._config.pool,
-          sslEnabled: this._config.ssl?.enabled || false,
+          sslEnabled: this._config.ssl?.enabled,
         },
       };
 
@@ -1118,7 +1118,7 @@ export class DatabaseController {
    *
    * @param sql
    */
-  private async getExecutionPlan(sql: string): Promise<any> {
+  private async getExecutionPlan(sql: string): Promise<unknown> {
     try {
       // Implementation would vary by database type
       switch (this._config.type) {
@@ -1587,7 +1587,7 @@ export class DatabaseController {
    * @param schema
    * @param _schema
    */
-  private extractNodeTypes(_schema: any): string[] {
+  private extractNodeTypes(_schema: unknown): string[] {
     // This would be implemented based on the actual schema structure
     // For now, return a default set for Kuzu
     return ['Person', 'Organization', 'Location', 'Event'];
@@ -1599,7 +1599,7 @@ export class DatabaseController {
    * @param schema
    * @param _schema
    */
-  private extractRelationshipTypes(_schema: any): string[] {
+  private extractRelationshipTypes(_schema: unknown): string[] {
     // This would be implemented based on the actual schema structure
     // For now, return a default set for Kuzu
     return ['KNOWS', 'WORKS_FOR', 'LOCATED_IN', 'PARTICIPATED_IN'];
@@ -1649,7 +1649,7 @@ export class DatabaseController {
           adapter: 'lancedb',
         },
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
 
@@ -1714,7 +1714,7 @@ export class DatabaseController {
           adapter: 'lancedb',
         },
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
 
@@ -1795,7 +1795,7 @@ export class DatabaseController {
           adapter: 'lancedb',
         },
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
 
@@ -1863,7 +1863,7 @@ export class DatabaseController {
           adapter: 'lancedb',
         },
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
 

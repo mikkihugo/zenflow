@@ -56,9 +56,12 @@ export class TestDataFactory {
    * @param count
    * @param baseData
    */
-  createUsers(count: number, baseData: Partial<UserTestData> = {}): UserTestData[] {
+  createUsers(
+    count: number,
+    baseData: Partial<UserTestData> = {},
+  ): UserTestData[] {
     return Array.from({ length: count }, (_, index) =>
-      this.createUser({ ...baseData, id: `user-${index + 1}` })
+      this.createUser({ ...baseData, id: `user-${index + 1}` }),
     );
   }
 
@@ -69,7 +72,12 @@ export class TestDataFactory {
    */
   createProject(overrides: Partial<ProjectTestData> = {}): ProjectTestData {
     const name = this.generateProjectName();
-    const type = this.randomChoice(['typescript', 'javascript', 'python', 'rust'] as const);
+    const type = this.randomChoice([
+      'typescript',
+      'javascript',
+      'python',
+      'rust',
+    ] as const);
 
     return {
       name,
@@ -88,7 +96,12 @@ export class TestDataFactory {
    */
   createSwarm(overrides: Partial<SwarmTestData> = {}): SwarmTestData {
     const id = this.generateId();
-    const topology = this.randomChoice(['mesh', 'hierarchical', 'ring', 'star'] as const);
+    const topology = this.randomChoice([
+      'mesh',
+      'hierarchical',
+      'ring',
+      'star',
+    ] as const);
     const agentCount = this.randomInt(3, 8);
 
     return {
@@ -122,7 +135,12 @@ export class TestDataFactory {
       id: this.generateId(),
       type,
       capabilities: this.generateCapabilities(type),
-      state: this.randomChoice(['idle', 'working', 'error', 'completed'] as const),
+      state: this.randomChoice([
+        'idle',
+        'working',
+        'error',
+        'completed',
+      ] as const),
       ...overrides,
     };
   }
@@ -133,9 +151,12 @@ export class TestDataFactory {
    * @param count
    * @param baseData
    */
-  createAgents(count: number, baseData: Partial<AgentTestData> = {}): AgentTestData[] {
+  createAgents(
+    count: number,
+    baseData: Partial<AgentTestData> = {},
+  ): AgentTestData[] {
     return Array.from({ length: count }, (_, index) =>
-      this.createAgent({ ...baseData, id: `agent-${index + 1}` })
+      this.createAgent({ ...baseData, id: `agent-${index + 1}` }),
     );
   }
 
@@ -196,7 +217,7 @@ export class TestDataFactory {
   createFileSystemStructure() {
     return {
       'src/': {
-        'index.ts': 'export * from \'./lib\'',
+        'index.ts': "export * from './lib'",
         'lib/': {
           'core.ts': this.generateCode('typescript'),
           'utils.ts': this.generateCode('typescript'),
@@ -221,7 +242,7 @@ export class TestDataFactory {
           },
         },
         null,
-        2
+        2,
       ),
     };
   }
@@ -261,7 +282,16 @@ export class TestDataFactory {
   }
 
   private generateName(): string {
-    const firstNames = ['Alice', 'Bob', 'Carol', 'David', 'Eve', 'Frank', 'Grace', 'Henry'];
+    const firstNames = [
+      'Alice',
+      'Bob',
+      'Carol',
+      'David',
+      'Eve',
+      'Frank',
+      'Grace',
+      'Henry',
+    ];
     const lastNames = [
       'Smith',
       'Johnson',
@@ -283,7 +313,14 @@ export class TestDataFactory {
   }
 
   private generateProjectName(): string {
-    const adjectives = ['awesome', 'amazing', 'brilliant', 'creative', 'dynamic', 'elegant'];
+    const adjectives = [
+      'awesome',
+      'amazing',
+      'brilliant',
+      'creative',
+      'dynamic',
+      'elegant',
+    ];
     const nouns = ['project', 'app', 'service', 'tool', 'platform', 'system'];
 
     return `${this.randomChoice(adjectives)}-${this.randomChoice(nouns)}`;
@@ -335,14 +372,27 @@ export class TestDataFactory {
       coder: ['code-generation', 'refactoring', 'testing'],
       analyst: ['data-analysis', 'pattern-recognition', 'reporting'],
       tester: ['test-generation', 'quality-assurance', 'bug-detection'],
-      coordinator: ['task-management', 'workflow-optimization', 'team-coordination'],
+      coordinator: [
+        'task-management',
+        'workflow-optimization',
+        'team-coordination',
+      ],
     };
 
     return capabilities[type];
   }
 
   private generateText(length: number = 50): string {
-    const words = ['lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit'];
+    const words = [
+      'lorem',
+      'ipsum',
+      'dolor',
+      'sit',
+      'amet',
+      'consectetur',
+      'adipiscing',
+      'elit',
+    ];
     const result = [];
 
     for (let i = 0; i < length; i++) {
@@ -352,7 +402,9 @@ export class TestDataFactory {
     return result.join(' ');
   }
 
-  private generateCode(language: 'typescript' | 'javascript' | 'python' | 'rust'): string {
+  private generateCode(
+    language: 'typescript' | 'javascript' | 'python' | 'rust',
+  ): string {
     const templates = {
       typescript: `
 export function testFunction(input: string): string {

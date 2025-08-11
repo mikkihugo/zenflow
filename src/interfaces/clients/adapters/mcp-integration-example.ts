@@ -33,7 +33,11 @@ class ExternalMCPClient {
     return {};
   }
 
-  async executeTool(serverName: string, toolName: string, parameters: any): Promise<any> {
+  async executeTool(
+    serverName: string,
+    toolName: string,
+    parameters: any,
+  ): Promise<any> {
     return { success: true, result: null };
   }
 
@@ -88,7 +92,10 @@ export class MCPIntegrationManager {
     for (const [serverName, serverStatus] of Object.entries(legacyServers)) {
       try {
         // Create UACL configuration from legacy server
-        const uaclConfig = this.createUACLConfigFromLegacyServer(serverName, serverStatus);
+        const uaclConfig = this.createUACLConfigFromLegacyServer(
+          serverName,
+          serverStatus,
+        );
 
         // Create UACL client
         const uaclClient = await this.uaclFactory.create(uaclConfig);
@@ -105,7 +112,10 @@ export class MCPIntegrationManager {
    * @param serverName
    * @param serverStatus
    */
-  private createUACLConfigFromLegacyServer(serverName: string, serverStatus: any): MCPClientConfig {
+  private createUACLConfigFromLegacyServer(
+    serverName: string,
+    serverStatus: any,
+  ): MCPClientConfig {
     // Determine protocol based on server type
     const _protocol = serverStatus.type === 'http' ? 'http' : 'stdio';
 
@@ -166,7 +176,11 @@ export class MCPIntegrationManager {
           });
         } else {
           // Use legacy client
-          result = await this.legacyClient.executeTool(serverName, toolName, parameters);
+          result = await this.legacyClient.executeTool(
+            serverName,
+            toolName,
+            parameters,
+          );
 
           this.eventEmitter.emit('tool-executed', {
             serverName,
@@ -199,7 +213,7 @@ export class MCPIntegrationManager {
 
     this.eventEmitter.on('tool-error', (data) => {
       logger.error(
-        `❌ Tool error: ${data?.toolName} on ${data?.serverName} (${data?.source}): ${data?.error}`
+        `❌ Tool error: ${data?.toolName} on ${data?.serverName} (${data?.source}): ${data?.error}`,
       );
     });
   }
@@ -214,7 +228,7 @@ export class MCPIntegrationManager {
   async executeToolWithFailover(
     serverName: string,
     toolName: string,
-    parameters: any
+    parameters: any,
   ): Promise<any> {
     // Try UACL first (preferred)
     if (this.uaclClients.has(serverName)) {
@@ -228,13 +242,19 @@ export class MCPIntegrationManager {
           metadata: result?.metadata,
         };
       } catch (_error) {
-        logger.warn(`⚠️  UACL execution failed for ${toolName}, falling back to legacy...`);
+        logger.warn(
+          `⚠️  UACL execution failed for ${toolName}, falling back to legacy...`,
+        );
       }
     }
 
     // Fallback to legacy
     try {
-      const result = await this.legacyClient.executeTool(serverName, toolName, parameters);
+      const result = await this.legacyClient.executeTool(
+        serverName,
+        toolName,
+        parameters,
+      );
       return {
         success: result?.success,
         source: 'Legacy',
@@ -242,7 +262,9 @@ export class MCPIntegrationManager {
         error: result?.error,
       };
     } catch (error) {
-      throw new Error(`Both UACL and Legacy execution failed: ${(error as Error).message}`);
+      throw new Error(
+        `Both UACL and Legacy execution failed: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -269,13 +291,16 @@ export class MCPIntegrationManager {
         uacl: this.uaclClients.size,
       },
       healthyServers: {
-        legacy: Object.values(legacyStatus).filter((s: any) => s.connected).length,
-        uacl: Array.from(uaclHealth.values()).filter((h) => h.status === 'healthy').length,
+        legacy: Object.values(legacyStatus).filter((s: any) => s.connected)
+          .length,
+        uacl: Array.from(uaclHealth.values()).filter(
+          (h) => h.status === 'healthy',
+        ).length,
       },
       totalTools: {
         legacy: Object.values(legacyTools).reduce(
           (sum: number, tools: string[]) => sum + tools.length,
-          0
+          0,
         ),
         uacl: this.uaclClients.size * 2, // Estimate based on typical tool count
       },
@@ -283,7 +308,10 @@ export class MCPIntegrationManager {
 
     return {
       legacy: { status: legacyStatus, tools: legacyTools },
-      uacl: { health: Object.fromEntries(uaclHealth), metrics: Object.fromEntries(uaclMetrics) },
+      uacl: {
+        health: Object.fromEntries(uaclHealth),
+        metrics: Object.fromEntries(uaclMetrics),
+      },
       comparison,
     };
   }
@@ -300,7 +328,7 @@ export class MCPIntegrationManager {
     serverName: string,
     toolName: string,
     parameters: any,
-    iterations = 5
+    iterations = 5,
   ): Promise<{
     legacy: { averageTime: number; successRate: number };
     uacl: { averageTime: number; successRate: number };
@@ -335,7 +363,8 @@ export class MCPIntegrationManager {
     }
 
     // Calculate results
-    const legacyAvg = legacyTimes.reduce((a, b) => a + b, 0) / legacyTimes.length;
+    const legacyAvg =
+      legacyTimes.reduce((a, b) => a + b, 0) / legacyTimes.length;
     const uaclAvg = uaclTimes.reduce((a, b) => a + b, 0) / uaclTimes.length;
     const legacySuccessRate = legacySuccesses / iterations;
     const uaclSuccessRate = uaclSuccesses / iterations;
@@ -369,7 +398,8 @@ export class MCPIntegrationManager {
     delayBetweenBatches: number;
     rollbackOnFailure: boolean;
   }): Promise<void> {
-    const { servers, batchSize, delayBetweenBatches, rollbackOnFailure } = migrationConfig;
+    const { servers, batchSize, delayBetweenBatches, rollbackOnFailure } =
+      migrationConfig;
     const batches: string[][] = [];
 
     // Create batches
@@ -384,13 +414,17 @@ export class MCPIntegrationManager {
         for (const serverName of batch) {
           try {
             // Create UACL client
-            const legacyStatus = this.legacyClient.getServerStatus()[serverName];
+            const legacyStatus =
+              this.legacyClient.getServerStatus()[serverName];
             if (!legacyStatus) {
               logger.warn(`⚠️  Server ${serverName} not found in legacy system`);
               continue;
             }
 
-            const uaclConfig = this.createUACLConfigFromLegacyServer(serverName, legacyStatus);
+            const uaclConfig = this.createUACLConfigFromLegacyServer(
+              serverName,
+              legacyStatus,
+            );
             const uaclClient = await this.uaclFactory.create(uaclConfig);
 
             // Test the new client
@@ -407,7 +441,9 @@ export class MCPIntegrationManager {
             logger.error(`❌ Failed to migrate ${serverName}:`, error);
 
             if (rollbackOnFailure) {
-              for (const rolledBackServer of migratedServers.slice(-batch.length)) {
+              for (const rolledBackServer of migratedServers.slice(
+                -batch.length,
+              )) {
                 await this.uaclFactory.remove(rolledBackServer);
                 this.uaclClients.delete(rolledBackServer);
               }
@@ -418,7 +454,9 @@ export class MCPIntegrationManager {
 
         // Delay between batches
         if (batchIndex < batches.length - 1) {
-          await new Promise((resolve) => setTimeout(resolve, delayBetweenBatches));
+          await new Promise((resolve) =>
+            setTimeout(resolve, delayBetweenBatches),
+          );
         }
       }
     } catch (error) {
@@ -473,16 +511,20 @@ export async function demonstrateMCPIntegration(): Promise<void> {
     const _status = await manager.getSystemStatus();
 
     // Execute tool with failover
-    const _result = await manager.executeToolWithFailover('context7', 'research_analysis', {
-      query: 'UACL architecture benefits',
-    });
+    const _result = await manager.executeToolWithFailover(
+      'context7',
+      'research_analysis',
+      {
+        query: 'UACL architecture benefits',
+      },
+    );
 
     // Performance comparison
     const _comparison = await manager.performanceComparison(
       'context7',
       'research_analysis',
       { query: 'performance test' },
-      3
+      3,
     );
 
     // Gradual migration example

@@ -64,28 +64,46 @@ describe('Error Handling System', () => {
 
   describe('Custom Error Classes', () => {
     test('ValidationError should include field and value information', () => {
-      const error = new ValidationError('Invalid value', 'testField', 'badValue', 'string');
+      const error = new ValidationError(
+        'Invalid value',
+        'testField',
+        'badValue',
+        'string',
+      );
 
       expect(error.name).toBe('ValidationError');
       expect(error.code).toBe('VALIDATION_ERROR');
       expect(error.field).toBe('testField');
       expect(error.value).toBe('badValue');
       expect(error.expectedType).toBe('string');
-      expect(error.getSuggestions()).toContain("Check the 'testField' parameter");
+      expect(error.getSuggestions()).toContain(
+        "Check the 'testField' parameter",
+      );
     });
 
     test('SwarmError should include swarm context', () => {
-      const error = new SwarmError('Swarm not found', 'test-swarm-id', 'initialization');
+      const error = new SwarmError(
+        'Swarm not found',
+        'test-swarm-id',
+        'initialization',
+      );
 
       expect(error.name).toBe('SwarmError');
       expect(error.code).toBe('SWARM_ERROR');
       expect(error.swarmId).toBe('test-swarm-id');
       expect(error.operation).toBe('initialization');
-      expect(error.getSuggestions()).toContain('Verify the swarm ID is correct');
+      expect(error.getSuggestions()).toContain(
+        'Verify the swarm ID is correct',
+      );
     });
 
     test('AgentError should include agent context', () => {
-      const error = new AgentError('Agent not found', 'test-agent-id', 'researcher', 'spawn');
+      const error = new AgentError(
+        'Agent not found',
+        'test-agent-id',
+        'researcher',
+        'spawn',
+      );
 
       expect(error.name).toBe('AgentError');
       expect(error.code).toBe('AGENT_ERROR');
@@ -95,18 +113,30 @@ describe('Error Handling System', () => {
     });
 
     test('TaskError should include task context', () => {
-      const error = new TaskError('Task timeout', 'test-task-id', 'analysis', 'execution');
+      const error = new TaskError(
+        'Task timeout',
+        'test-task-id',
+        'analysis',
+        'execution',
+      );
 
       expect(error.name).toBe('TaskError');
       expect(error.code).toBe('TASK_ERROR');
       expect(error.taskId).toBe('test-task-id');
       expect(error.taskType).toBe('analysis');
       expect(error.operation).toBe('execution');
-      expect(error.getSuggestions()).toContain('Increase task timeout duration');
+      expect(error.getSuggestions()).toContain(
+        'Increase task timeout duration',
+      );
     });
 
     test('NeuralError should include neural network context', () => {
-      const error = new NeuralError('Training failed', 'test-nn-id', 'training', 'lstm');
+      const error = new NeuralError(
+        'Training failed',
+        'test-nn-id',
+        'training',
+        'lstm',
+      );
 
       expect(error.name).toBe('NeuralError');
       expect(error.code).toBe('NEURAL_ERROR');
@@ -116,23 +146,33 @@ describe('Error Handling System', () => {
     });
 
     test('WasmError should include module context', () => {
-      const error = new WasmError('Module not loaded', 'core', 'initialization');
+      const error = new WasmError(
+        'Module not loaded',
+        'core',
+        'initialization',
+      );
 
       expect(error.name).toBe('WasmError');
       expect(error.code).toBe('WASM_ERROR');
       expect(error.module).toBe('core');
       expect(error.operation).toBe('initialization');
-      expect(error.getSuggestions()).toContain('Check WASM module availability');
+      expect(error.getSuggestions()).toContain(
+        'Check WASM module availability',
+      );
     });
   });
 
   describe('ErrorFactory', () => {
     test('should create appropriate error types', () => {
-      const validationError = ErrorFactory.createError('validation', 'Invalid input', {
-        field: 'test',
-        value: 'bad',
-        expectedType: 'number',
-      });
+      const validationError = ErrorFactory.createError(
+        'validation',
+        'Invalid input',
+        {
+          field: 'test',
+          value: 'bad',
+          expectedType: 'number',
+        },
+      );
       expect(validationError).toBeInstanceOf(ValidationError);
 
       const swarmError = ErrorFactory.createError('swarm', 'Swarm failed', {
@@ -211,7 +251,10 @@ describe('Validation System', () => {
     test('should apply default values for missing parameters', () => {
       const minimalParams = {};
 
-      const result = ValidationUtils.validateParams(minimalParams, 'swarm_init');
+      const result = ValidationUtils.validateParams(
+        minimalParams,
+        'swarm_init',
+      );
       expect(result.topology).toBe('mesh');
       expect(result.maxAgents).toBe(5);
       expect(result.strategy).toBe('balanced');
@@ -258,7 +301,10 @@ describe('Validation System', () => {
         modelType: 'feedforward',
       };
 
-      const result = ValidationUtils.validateParams(validParams, 'neural_train');
+      const result = ValidationUtils.validateParams(
+        validParams,
+        'neural_train',
+      );
       expect(result.agentId).toBe('test-agent-123');
       expect(result.iterations).toBe(50);
       expect(result.learningRate).toBe(0.01);
@@ -296,12 +342,20 @@ describe('Enhanced MCP Tools Error Handling', () => {
 
   describe('Error Handler', () => {
     test('should handle and log errors properly', () => {
-      const originalError = new ValidationError('Test validation error', 'testField');
+      const originalError = new ValidationError(
+        'Test validation error',
+        'testField',
+      );
 
       // Capture console output
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
 
-      const handledError = mcpTools.handleError(originalError, 'swarm_init', 'test_operation', {});
+      const handledError = mcpTools.handleError(
+        originalError,
+        'swarm_init',
+        'test_operation',
+        {},
+      );
 
       expect(handledError).toBeInstanceOf(ValidationError);
       expect(mcpTools.errorLog).toHaveLength(1);
@@ -390,7 +444,9 @@ describe('Enhanced MCP Tools Error Handling', () => {
   describe('Integration with MCP Tools', () => {
     test('swarm_init should use enhanced error handling', async () => {
       // Mock to throw an error
-      mockZenSwarm.createSwarm = vi.fn().mockRejectedValue(new Error('WASM module not loaded'));
+      mockZenSwarm.createSwarm = vi
+        .fn()
+        .mockRejectedValue(new Error('WASM module not loaded'));
 
       await expect(mcpTools.swarm_init({})).rejects.toThrow();
 
@@ -405,7 +461,9 @@ describe('Enhanced MCP Tools Error Handling', () => {
         maxAgents: 'not-a-number',
       };
 
-      await expect(mcpTools.swarm_init(invalidParams)).rejects.toThrow(ValidationError);
+      await expect(mcpTools.swarm_init(invalidParams)).rejects.toThrow(
+        ValidationError,
+      );
     });
 
     test('agent_spawn should use enhanced error handling', async () => {
@@ -414,15 +472,21 @@ describe('Enhanced MCP Tools Error Handling', () => {
         id: 'test-swarm',
         agents: new Map(),
         maxAgents: 5,
-        spawn: vi.fn().mockRejectedValue(new Error('Neural network initialization failed')),
+        spawn: vi
+          .fn()
+          .mockRejectedValue(new Error('Neural network initialization failed')),
       });
 
       await mcpTools.swarm_init({});
 
-      await expect(mcpTools.agent_spawn({ type: 'researcher' })).rejects.toThrow();
+      await expect(
+        mcpTools.agent_spawn({ type: 'researcher' }),
+      ).rejects.toThrow();
 
       // Check that error was logged with proper context
-      const agentError = mcpTools.errorLog.find((log) => log.tool === 'agent_spawn');
+      const agentError = mcpTools.errorLog.find(
+        (log) => log.tool === 'agent_spawn',
+      );
       expect(agentError).toBeDefined();
       expect(agentError.error.message).toContain('Neural network error');
     });

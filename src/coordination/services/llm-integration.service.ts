@@ -1,10 +1,10 @@
 /**
  * @fileoverview LLM Integration Service for Claude Code and Gemini CLI
- * 
+ *
  * This service provides a unified interface for integrating with local LLM CLIs
  * (Claude Code and Gemini) instead of requiring external API keys. It handles
  * automatic fallback between providers and manages file operation permissions.
- * 
+ *
  * Key Features:
  * - Automatic fallback from Claude Code to Gemini CLI to GPT-5 to GitHub Copilot
  * - Intelligent rate limit detection and cooldown management (1-hour default)
@@ -13,18 +13,18 @@
  * - Context-aware prompt generation
  * - Session management and continuity
  * - Error handling and retry logic with graceful degradation
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0-alpha.43
  * @since 2024-01-01
- * 
+ *
  * @example Basic Usage
  * ```typescript
  * const llmService = new LLMIntegrationService({
  *   projectPath: process.cwd(),
  *   preferredProvider: 'claude-code'
  * });
- * 
+ *
  * const result = await llmService.analyze({
  *   task: 'typescript-error-analysis',
  *   context: { files: ['src/neural/gnn.js'], errors: [...] },
@@ -33,14 +33,19 @@
  * ```
  */
 
+import { AzureKeyCredential } from '@azure/core-auth';
+import ModelClient, { isUnexpected } from '@azure-rest/ai-inference';
 import { spawn } from 'child_process';
+import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
-import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-import { AzureKeyCredential } from "@azure/core-auth";
-import { CopilotApiProvider } from './providers/copilot-api-provider.js';
-import { LLM_PROVIDER_CONFIG, ROUTING_STRATEGY, getOptimalProvider } from '../../config/llm-providers.config.js';
+// import { CopilotApiProvider } from './providers/copilot-api-provider.js';
+// import { GeminiHandler } from './providers/gemini-handler.js';
+import {
+  getOptimalProvider,
+  LLM_PROVIDER_CONFIG,
+  ROUTING_STRATEGY,
+} from '../../config/llm-providers.config.js';
 
 const execAsync = promisify(spawn);
 
@@ -50,8 +55,14 @@ const execAsync = promisify(spawn);
 export interface LLMIntegrationConfig {
   /** Project root path for file operations */
   projectPath: string;
-  /** Preferred LLM provider ('claude-code' | 'gemini' | 'github-models' | 'copilot') */
-  preferredProvider?: 'claude-code' | 'gemini' | 'github-models' | 'copilot';
+  /** Preferred LLM provider ('claude-code' | 'gemini' | 'gemini-direct' | 'gemini-pro' | 'github-models' | 'copilot') */
+  preferredProvider?:
+    | 'claude-code'
+    | 'gemini'
+    | 'gemini-direct'
+    | 'gemini-pro'
+    | 'github-models'
+    | 'copilot';
   /** Enable debug logging */
   debug?: boolean;
   /** Session ID for conversation continuity */
@@ -75,14 +86,18 @@ export interface LLMIntegrationConfig {
  */
 export interface AnalysisRequest {
   /** Type of analysis task */
-  task: 'domain-analysis' | 'typescript-error-analysis' | 'code-review' | 'custom';
+  task:
+    | 'domain-analysis'
+    | 'typescript-error-analysis'
+    | 'code-review'
+    | 'custom';
   /** Analysis context data */
   context: {
     files?: string[];
-    errors?: any[];
-    domains?: any[];
-    dependencies?: any;
-    customData?: any;
+    errors?: unknown[];
+    domains?: unknown[];
+    dependencies?: unknown;
+    customData?: unknown;
   };
   /** Custom prompt text */
   prompt?: string;
@@ -106,9 +121,15 @@ export interface AnalysisResult {
   /** Whether analysis was successful */
   success: boolean;
   /** Analysis results data */
-  data: any;
+  data: unknown;
   /** Which provider was used */
-  provider: 'claude-code' | 'gemini' | 'github-models' | 'copilot';
+  provider:
+    | 'claude-code'
+    | 'gemini'
+    | 'gemini-direct'
+    | 'gemini-pro'
+    | 'github-models'
+    | 'copilot';
   /** Execution time in milliseconds */
   executionTime: number;
   /** Any error that occurred */
@@ -119,21 +140,21 @@ export interface AnalysisResult {
 
 /**
  * LLM Integration Service providing unified access to Claude Code, Gemini CLI, and GitHub Models.
- * 
+ *
  * This service abstracts away the differences between multiple LLM providers,
  * providing a consistent interface for AI-powered analysis tasks. It automatically
  * handles fallback between providers and manages the necessary permissions for
  * file operations.
- * 
+ *
  * **Available Providers:**
  * - **Claude Code**: Best for codebase-aware tasks, uses existing session context (with --output-format json)
  * - **GitHub Models API**: Primary choice - Azure AI inference REST API, GPT-5 fully free, reliable JSON responses
  * - **Gemini CLI**: Fallback option with comprehensive file inclusion (with rate limit tracking)
  * - **GitHub Copilot**: Direct API integration for GitHub Copilot models (uses GitHub token automatically)
- * 
+ *
  * **Security Note**: This service uses permission bypass flags which should only
  * be used in controlled environments. Always review generated files before use.
- * 
+ *
  * @class LLMIntegrationService
  */
 export class LLMIntegrationService {
@@ -141,132 +162,138 @@ export class LLMIntegrationService {
   private sessionId: string;
   private rateLimitTracker: Map<string, number> = new Map(); // Track rate limit timestamps
   private copilotProvider: CopilotApiProvider | null = null;
+  private geminiHandler: GeminiHandler | null = null;
 
   // Predefined JSON schemas for structured output
   private static readonly JSON_SCHEMAS = {
     'domain-analysis': {
-      name: "Domain_Analysis_Schema",
-      description: "Analyzes software domain relationships and cohesion scores",
+      name: 'Domain_Analysis_Schema',
+      description: 'Analyzes software domain relationships and cohesion scores',
       strict: true,
       schema: {
-        type: "object",
+        type: 'object',
         properties: {
           domainAnalysis: {
-            type: "object",
+            type: 'object',
             properties: {
               enhancedRelationships: {
-                type: "array",
+                type: 'array',
                 items: {
-                  type: "object",
+                  type: 'object',
                   properties: {
-                    from: { type: "string" },
-                    to: { type: "string" },
-                    strength: { type: "number", minimum: 0, maximum: 1 },
-                    type: { type: "string" },
-                    reasoning: { type: "string" }
+                    from: { type: 'string' },
+                    to: { type: 'string' },
+                    strength: { type: 'number', minimum: 0, maximum: 1 },
+                    type: { type: 'string' },
+                    reasoning: { type: 'string' },
                   },
-                  required: ["from", "to", "strength", "type", "reasoning"]
-                }
+                  required: ['from', 'to', 'strength', 'type', 'reasoning'],
+                },
               },
               cohesionScores: {
-                type: "array",
+                type: 'array',
                 items: {
-                  type: "object",
+                  type: 'object',
                   properties: {
-                    domain: { type: "string" },
-                    score: { type: "number", minimum: 0, maximum: 1 },
-                    factors: { type: "array", items: { type: "string" } }
+                    domain: { type: 'string' },
+                    score: { type: 'number', minimum: 0, maximum: 1 },
+                    factors: { type: 'array', items: { type: 'string' } },
                   },
-                  required: ["domain", "score", "factors"]
-                }
+                  required: ['domain', 'score', 'factors'],
+                },
               },
               crossDomainInsights: {
-                type: "array",
+                type: 'array',
                 items: {
-                  type: "object",
+                  type: 'object',
                   properties: {
-                    insight: { type: "string" },
-                    impact: { type: "string", enum: ["high", "medium", "low"] },
-                    recommendation: { type: "string" }
+                    insight: { type: 'string' },
+                    impact: { type: 'string', enum: ['high', 'medium', 'low'] },
+                    recommendation: { type: 'string' },
                   },
-                  required: ["insight", "impact", "recommendation"]
-                }
-              }
+                  required: ['insight', 'impact', 'recommendation'],
+                },
+              },
             },
-            required: ["enhancedRelationships", "cohesionScores", "crossDomainInsights"]
+            required: [
+              'enhancedRelationships',
+              'cohesionScores',
+              'crossDomainInsights',
+            ],
           },
           architectureRecommendations: {
-            type: "array",
+            type: 'array',
             items: {
-              type: "object",
+              type: 'object',
               properties: {
-                area: { type: "string" },
-                recommendation: { type: "string" },
-                priority: { type: "string", enum: ["high", "medium", "low"] }
+                area: { type: 'string' },
+                recommendation: { type: 'string' },
+                priority: { type: 'string', enum: ['high', 'medium', 'low'] },
               },
-              required: ["area", "recommendation", "priority"]
-            }
+              required: ['area', 'recommendation', 'priority'],
+            },
           },
-          summary: { type: "string" }
+          summary: { type: 'string' },
         },
-        required: ["domainAnalysis", "architectureRecommendations", "summary"]
-      }
+        required: ['domainAnalysis', 'architectureRecommendations', 'summary'],
+      },
     },
     'typescript-error-analysis': {
-      name: "TypeScript_Error_Analysis_Schema",
-      description: "Analyzes and provides fixes for TypeScript compilation errors",
+      name: 'TypeScript_Error_Analysis_Schema',
+      description:
+        'Analyzes and provides fixes for TypeScript compilation errors',
       strict: true,
       schema: {
-        type: "object",
+        type: 'object',
         properties: {
           errorAnalysis: {
-            type: "array",
+            type: 'array',
             items: {
-              type: "object",
+              type: 'object',
               properties: {
-                file: { type: "string" },
-                error: { type: "string" },
-                rootCause: { type: "string" },
-                severity: { type: "string", enum: ["high", "medium", "low"] },
+                file: { type: 'string' },
+                error: { type: 'string' },
+                rootCause: { type: 'string' },
+                severity: { type: 'string', enum: ['high', 'medium', 'low'] },
                 fix: {
-                  type: "object",
+                  type: 'object',
                   properties: {
-                    description: { type: "string" },
-                    code: { type: "string" },
-                    imports: { type: "array", items: { type: "string" } },
-                    explanation: { type: "string" }
+                    description: { type: 'string' },
+                    code: { type: 'string' },
+                    imports: { type: 'array', items: { type: 'string' } },
+                    explanation: { type: 'string' },
                   },
-                  required: ["description", "code", "explanation"]
-                }
+                  required: ['description', 'code', 'explanation'],
+                },
               },
-              required: ["file", "error", "rootCause", "severity", "fix"]
-            }
+              required: ['file', 'error', 'rootCause', 'severity', 'fix'],
+            },
           },
           preventionStrategies: {
-            type: "array",
+            type: 'array',
             items: {
-              type: "object",
+              type: 'object',
               properties: {
-                strategy: { type: "string" },
-                implementation: { type: "string" },
-                benefit: { type: "string" }
+                strategy: { type: 'string' },
+                implementation: { type: 'string' },
+                benefit: { type: 'string' },
               },
-              required: ["strategy", "implementation", "benefit"]
-            }
+              required: ['strategy', 'implementation', 'benefit'],
+            },
           },
-          summary: { type: "string" }
+          summary: { type: 'string' },
         },
-        required: ["errorAnalysis", "preventionStrategies", "summary"]
-      }
-    }
+        required: ['errorAnalysis', 'preventionStrategies', 'summary'],
+      },
+    },
   };
 
   /**
    * Creates a new LLM Integration Service.
-   * 
+   *
    * @constructor
    * @param {LLMIntegrationConfig} config - Service configuration
-   * 
+   *
    * @example Claude Code
    * ```typescript
    * const service = new LLMIntegrationService({
@@ -276,7 +303,7 @@ export class LLMIntegrationService {
    *   model: 'sonnet'
    * });
    * ```
-   * 
+   *
    * @example GitHub Models API (Free GPT-5 via Azure AI Inference)
    * ```typescript
    * const service = new LLMIntegrationService({
@@ -299,29 +326,54 @@ export class LLMIntegrationService {
       maxTokens: defaultProvider === 'github-models' ? 128000 : 200000, // 128K tokens maximum for GPT-5
       rateLimitCooldown: 60 * 60 * 1000, // Default 1 hour cooldown for rate limits
       githubToken: process.env.GITHUB_TOKEN, // Default to environment variable
-      ...config
+      ...config,
     };
     this.sessionId = config.sessionId || uuidv4();
-    
+
     // Initialize Copilot provider if GitHub token is available
     if (this.config.githubToken) {
       try {
         this.copilotProvider = new CopilotApiProvider({
           githubToken: this.config.githubToken,
           accountType: 'enterprise', // User specified enterprise account
-          verbose: this.config.debug
+          verbose: this.config.debug,
         });
       } catch (error) {
         if (this.config.debug) {
-          console.log('⚠️ Copilot provider initialization failed:', error.message);
+          console.log(
+            '⚠️ Copilot provider initialization failed:',
+            error.message,
+          );
         }
+      }
+    }
+
+    // Initialize Gemini Direct handler (Flash model - main workhorse)
+    try {
+      this.geminiHandler = new GeminiHandler({
+        modelId: this.config.model?.includes('gemini')
+          ? this.config.model
+          : 'gemini-2.5-flash',
+        temperature: this.config.temperature,
+        maxTokens: this.config.maxTokens,
+        enableJson: false, // We handle JSON parsing ourselves
+      });
+
+      if (this.config.debug) {
+        console.log(
+          '✅ Gemini handler initialized (Flash model for regular tasks)',
+        );
+      }
+    } catch (error) {
+      if (this.config.debug) {
+        console.log('⚠️ Gemini handler initialization failed:', error.message);
       }
     }
   }
 
   /**
    * Gets the default model for each provider using centralized config.
-   * 
+   *
    * @private
    * @param {string} provider - Provider name
    * @returns {string} Default model
@@ -333,16 +385,16 @@ export class LLMIntegrationService {
 
   /**
    * Performs analysis using the best available LLM provider.
-   * 
+   *
    * This method automatically selects the appropriate LLM provider and handles
    * fallback if the preferred provider is unavailable. It constructs appropriate
    * prompts based on the analysis task and manages file operation permissions.
-   * 
+   *
    * @async
    * @method analyze
    * @param {AnalysisRequest} request - Analysis configuration and context
    * @returns {Promise<AnalysisResult>} Analysis results
-   * 
+   *
    * @example Domain Analysis
    * ```typescript
    * const result = await service.analyze({
@@ -355,11 +407,11 @@ export class LLMIntegrationService {
    *   outputPath: 'src/coordination/enhanced-domains.json'
    * });
    * ```
-   * 
+   *
    * @example TypeScript Error Analysis
    * ```typescript
    * const result = await service.analyze({
-   *   task: 'typescript-error-analysis', 
+   *   task: 'typescript-error-analysis',
    *   context: {
    *     files: ['src/neural/gnn.js'],
    *     errors: compilationErrors
@@ -373,13 +425,15 @@ export class LLMIntegrationService {
 
     try {
       // Smart routing: Get optimal providers based on context and requirements
-      const contextLength = (request.prompt || this.buildPrompt(request)).length;
+      const contextLength = (request.prompt || this.buildPrompt(request))
+        .length;
       const optimalProviders = getOptimalProvider({
         contentLength: contextLength,
-        requiresFileOps: request.requiresFileOperations || false,
-        requiresCodebaseAware: request.task === 'domain-analysis' || request.task === 'code-review',
+        requiresFileOps: request.requiresFileOperations,
+        requiresCodebaseAware:
+          request.task === 'domain-analysis' || request.task === 'code-review',
         requiresStructuredOutput: true, // We always want structured output
-        taskType: request.task === 'custom' ? 'custom' : 'analysis'
+        taskType: request.task === 'custom' ? 'custom' : 'analysis',
       });
 
       if (this.config.debug) {
@@ -390,26 +444,31 @@ export class LLMIntegrationService {
       }
 
       // Try optimal providers in order, respecting user preference if it's optimal
-      const providersToTry = this.config.preferredProvider && 
-                           optimalProviders.includes(this.config.preferredProvider) 
-        ? [this.config.preferredProvider, ...optimalProviders.filter(p => p !== this.config.preferredProvider)]
-        : optimalProviders;
+      const providersToTry =
+        this.config.preferredProvider &&
+        optimalProviders.includes(this.config.preferredProvider)
+          ? [
+              this.config.preferredProvider,
+              ...optimalProviders.filter(
+                (p) => p !== this.config.preferredProvider,
+              ),
+            ]
+          : optimalProviders;
 
       // Try each provider in optimal order
       for (const provider of providersToTry) {
         try {
           let result;
-          
+
           switch (provider) {
             case 'claude-code':
               result = await this.analyzeWithClaudeCode(request);
               break;
             case 'github-models':
-              if (!this.isInCooldown('github-models')) {
-                result = await this.analyzeWithGitHubModelsAPI(request);
-              } else {
+              if (this.isInCooldown('github-models')) {
                 continue; // Skip if in cooldown
               }
+              result = await this.analyzeWithGitHubModelsAPI(request);
               break;
             case 'copilot':
               if (this.copilotProvider) {
@@ -418,22 +477,39 @@ export class LLMIntegrationService {
                 continue; // Skip if not available
               }
               break;
+            case 'gemini-direct':
+              if (this.geminiHandler && !this.isInCooldown('gemini-direct')) {
+                result = await this.analyzeWithGeminiDirect(request);
+              } else {
+                continue; // Skip if not available or in cooldown
+              }
+              break;
+            case 'gemini-pro':
+              if (this.geminiHandler && !this.isInCooldown('gemini-direct')) {
+                // Use Pro model for complex reasoning tasks
+                result = await this.analyzeWithGeminiPro(request);
+              } else {
+                continue; // Skip if not available or in cooldown
+              }
+              break;
             case 'gemini':
               result = await this.analyzeWithGemini(request);
               break;
             default:
               continue;
           }
-          
+
           return {
             ...result,
             provider: provider as any,
-            executionTime: Date.now() - startTime
+            executionTime: Date.now() - startTime,
           };
-          
         } catch (error) {
           if (this.config.debug) {
-            console.log(`⚠️ ${provider} failed, trying next provider:`, error.message);
+            console.log(
+              `⚠️ ${provider} failed, trying next provider:`,
+              error.message,
+            );
           }
           // Continue to next provider
         }
@@ -441,7 +517,9 @@ export class LLMIntegrationService {
 
       // Fallback to legacy provider selection if smart routing fails
       if (this.config.debug) {
-        console.log('🔄 Smart routing exhausted, falling back to legacy selection');
+        console.log(
+          '🔄 Smart routing exhausted, falling back to legacy selection',
+        );
       }
 
       // Legacy fallback logic
@@ -451,11 +529,14 @@ export class LLMIntegrationService {
           return {
             ...result,
             provider: 'claude-code',
-            executionTime: Date.now() - startTime
+            executionTime: Date.now() - startTime,
           };
         } catch (error) {
           if (this.config.debug) {
-            console.log('Claude Code unavailable, falling back to Gemini:', error);
+            console.log(
+              'Claude Code unavailable, falling back to Gemini:',
+              error,
+            );
           }
           // Fall through to Gemini
         }
@@ -469,16 +550,21 @@ export class LLMIntegrationService {
             return {
               ...result,
               provider: 'github-models',
-              executionTime: Date.now() - startTime
+              executionTime: Date.now() - startTime,
             };
           } catch (error) {
             if (this.config.debug) {
-              console.log('GitHub Models API unavailable, falling back to next provider:', error);
+              console.log(
+                'GitHub Models API unavailable, falling back to next provider:',
+                error,
+              );
             }
             // Fall through to next provider
           }
         } else if (this.config.debug) {
-          console.log(`GitHub Models API in cooldown for ${this.getCooldownRemaining('github-models')} minutes`);
+          console.log(
+            `GitHub Models API in cooldown for ${this.getCooldownRemaining('github-models')} minutes`,
+          );
         }
       }
 
@@ -489,11 +575,14 @@ export class LLMIntegrationService {
           return {
             ...result,
             provider: 'copilot',
-            executionTime: Date.now() - startTime
+            executionTime: Date.now() - startTime,
           };
         } catch (error) {
           if (this.config.debug) {
-            console.log('GitHub Copilot API unavailable, falling back to Gemini:', error);
+            console.log(
+              'GitHub Copilot API unavailable, falling back to Gemini:',
+              error,
+            );
           }
           // Fall through to Gemini
         }
@@ -505,17 +594,18 @@ export class LLMIntegrationService {
         return {
           ...result,
           provider: 'gemini',
-          executionTime: Date.now() - startTime
+          executionTime: Date.now() - startTime,
         };
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+
         // If Gemini is in cooldown, try alternative providers as fallback
         if (errorMessage.includes('cooldown')) {
           if (this.config.debug) {
             console.log('Gemini in cooldown, trying fallback providers');
           }
-          
+
           // Try Copilot first if available
           if (this.copilotProvider) {
             try {
@@ -526,78 +616,89 @@ export class LLMIntegrationService {
               return {
                 ...result,
                 provider: 'copilot',
-                executionTime: Date.now() - startTime
+                executionTime: Date.now() - startTime,
               };
             } catch (copilotError) {
               if (this.config.debug) {
-                console.log('Copilot fallback failed, trying GPT-5:', copilotError);
+                console.log(
+                  'Copilot fallback failed, trying GPT-5:',
+                  copilotError,
+                );
               }
             }
           }
-          
+
           // Finally try GitHub Models GPT-5
-          if (!this.isInCooldown('github-models')) {
-            try {
-              // Use GPT-5 as ultimate fallback (fully free, no rate limits)
-              const originalProvider = this.config.preferredProvider;
-              const originalModel = this.config.model;
-              
-              this.config.preferredProvider = 'github-models';
-              this.config.model = 'openai/gpt-5';
-              
-              const result = await this.analyzeWithGitHubModelsAPI(request);
-              
-              // Restore config
-              this.config.preferredProvider = originalProvider;
-              this.config.model = originalModel;
-              
-              return {
-                ...result,
-                provider: 'github-models',
-                executionTime: Date.now() - startTime
-              };
-            } catch (gpt5Error) {
-              // If even GPT-5 fails, we're out of options
-              throw new Error(`All providers failed. Gemini: ${errorMessage}, GPT-5: ${gpt5Error}`);
-            }
-          } else {
-            throw new Error(`All providers in cooldown. Gemini: ${this.getCooldownRemaining('gemini')}min, GitHub Models: ${this.getCooldownRemaining('github-models')}min`);
+          if (this.isInCooldown('github-models')) {
+            throw new Error(
+              `All providers in cooldown. Gemini: ${this.getCooldownRemaining('gemini')}min, GitHub Models: ${this.getCooldownRemaining('github-models')}min`,
+            );
+          }
+          try {
+            // Use GPT-5 as ultimate fallback (fully free, no rate limits)
+            const originalProvider = this.config.preferredProvider;
+            const originalModel = this.config.model;
+
+            this.config.preferredProvider = 'github-models';
+            this.config.model = 'openai/gpt-5';
+
+            const result = await this.analyzeWithGitHubModelsAPI(request);
+
+            // Restore config
+            this.config.preferredProvider = originalProvider;
+            this.config.model = originalModel;
+
+            return {
+              ...result,
+              provider: 'github-models',
+              executionTime: Date.now() - startTime,
+            };
+          } catch (gpt5Error) {
+            // If even GPT-5 fails, we're out of options
+            throw new Error(
+              `All providers failed. Gemini: ${errorMessage}, GPT-5: ${gpt5Error}`,
+            );
           }
         }
-        
+
         // Re-throw non-cooldown errors
         throw error;
       }
-
     } catch (error) {
       return {
         success: false,
         data: null,
         provider: this.config.preferredProvider || 'claude-code',
         executionTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
 
   /**
    * Analyzes using Claude Code CLI with proper permissions.
-   * 
+   *
    * @private
    * @param {AnalysisRequest} request - Analysis request
    * @returns {Promise<Partial<AnalysisResult>>} Analysis results
    */
-  private async analyzeWithClaudeCode(request: AnalysisRequest): Promise<Partial<AnalysisResult>> {
+  private async analyzeWithClaudeCode(
+    request: AnalysisRequest,
+  ): Promise<Partial<AnalysisResult>> {
     const prompt = `${this.buildPrompt(request)}
 
 IMPORTANT: Respond with valid JSON format only. Do not include markdown code blocks or explanations outside the JSON.`;
-    
+
     const args = [
-      '--print',                                   // Print response and exit (non-interactive)
-      '--output-format', 'json',                   // JSON output format (works with --print)
-      '--model', this.config.model || 'sonnet',    // Model selection
-      '--add-dir', this.config.projectPath,        // Project access
-      '--session-id', this.sessionId               // Session continuity
+      '--print', // Print response and exit (non-interactive)
+      '--output-format',
+      'json', // JSON output format (works with --print)
+      '--model',
+      this.config.model || 'sonnet', // Model selection
+      '--add-dir',
+      this.config.projectPath, // Project access
+      '--session-id',
+      this.sessionId, // Session continuity
     ];
 
     // Add dangerous permissions for file operations
@@ -614,32 +715,35 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
     args.push(prompt);
 
     const result = await this.executeCommand('claude', args);
-    
+
     let parsedData;
     try {
       parsedData = JSON.parse(result.stdout);
     } catch (jsonError) {
       // Try to extract JSON from markdown code blocks or mixed content
-      const jsonMatch = result.stdout.match(/```json\n([\s\S]*?)\n```/) || 
-                       result.stdout.match(/```\n([\s\S]*?)\n```/) ||
-                       result.stdout.match(/\{[\s\S]*\}/);
-      
+      const jsonMatch =
+        result.stdout.match(/```json\n([\s\S]*?)\n```/) ||
+        result.stdout.match(/```\n([\s\S]*?)\n```/) ||
+        result.stdout.match(/\{[\s\S]*\}/);
+
       if (jsonMatch) {
         try {
           parsedData = JSON.parse(jsonMatch[1] || jsonMatch[0]);
         } catch {
           if (this.config.debug) {
-            console.warn('Claude Code returned non-JSON response, falling back to text');
+            console.warn(
+              'Claude Code returned non-JSON response, falling back to text',
+            );
           }
-          parsedData = { 
+          parsedData = {
             rawResponse: result.stdout,
-            note: "Response was not in requested JSON format" 
+            note: 'Response was not in requested JSON format',
           };
         }
       } else {
-        parsedData = { 
+        parsedData = {
           rawResponse: result.stdout,
-          note: "Response was not in requested JSON format" 
+          note: 'Response was not in requested JSON format',
         };
       }
     }
@@ -647,24 +751,28 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
     return {
       success: result.exitCode === 0,
       data: parsedData,
-      outputFile: request.outputPath
+      outputFile: request.outputPath,
     };
   }
 
   /**
    * Analyzes using GitHub Models via direct Azure AI inference API (PRIMARY METHOD).
-   * 
-   * This is the primary method for GitHub Models access, using the reliable Azure AI 
+   *
+   * This is the primary method for GitHub Models access, using the reliable Azure AI
    * inference REST API instead of CLI tools. Provides consistent JSON responses,
    * better error handling, and proper rate limit detection.
-   * 
+   *
    * @private
    * @param {AnalysisRequest} request - Analysis request
    * @returns {Promise<Partial<AnalysisResult>>} Analysis results
    */
-  private async analyzeWithGitHubModelsAPI(request: AnalysisRequest): Promise<Partial<AnalysisResult>> {
+  private async analyzeWithGitHubModelsAPI(
+    request: AnalysisRequest,
+  ): Promise<Partial<AnalysisResult>> {
     if (!this.config.githubToken) {
-      throw new Error('GitHub token required for GitHub Models API access. Set GITHUB_TOKEN environment variable.');
+      throw new Error(
+        'GitHub token required for GitHub Models API access. Set GITHUB_TOKEN environment variable.',
+      );
     }
 
     const systemPrompt = this.buildSystemPrompt(request);
@@ -672,16 +780,16 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
     const model = this.config.model || 'openai/gpt-5';
 
     const client = ModelClient(
-      "https://models.github.ai/inference",
-      new AzureKeyCredential(this.config.githubToken)
+      'https://models.github.ai/inference',
+      new AzureKeyCredential(this.config.githubToken),
     );
 
     try {
       // Build request body with optional structured output
       const requestBody: any = {
         messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt }
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
         ],
         model: model,
         // Note: GPT-5 only supports default temperature (1) and has 4K input limit
@@ -692,11 +800,16 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
       // Add structured output - use provided schema or default for task type
       // Note: JSON schema structured output requires API version 2024-08-01-preview or later
       // Currently falls back to prompt-based JSON requests
-      const jsonSchema = request.jsonSchema || LLMIntegrationService.JSON_SCHEMAS[request.task];
+      const jsonSchema =
+        request.jsonSchema || LLMIntegrationService.JSON_SCHEMAS[request.task];
       if (jsonSchema && this.config.debug) {
-        console.log('JSON schema available for task:', jsonSchema.name, '- using prompt-based JSON instead');
+        console.log(
+          'JSON schema available for task:',
+          jsonSchema.name,
+          '- using prompt-based JSON instead',
+        );
       }
-      
+
       // TODO: Enable when GitHub Models supports 2024-08-01-preview API version
       // if (jsonSchema) {
       //   requestBody.response_format = {
@@ -710,12 +823,14 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
       //   };
       // }
 
-      const response = await client.path("/chat/completions").post({
-        body: requestBody
+      const response = await client.path('/chat/completions').post({
+        body: requestBody,
       });
 
       if (isUnexpected(response)) {
-        throw new Error(`GitHub Models API error: ${JSON.stringify(response.body.error)}`);
+        throw new Error(
+          `GitHub Models API error: ${JSON.stringify(response.body.error)}`,
+        );
       }
 
       const content = response.body.choices[0]?.message?.content;
@@ -729,26 +844,29 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
         parsedData = JSON.parse(content);
       } catch (jsonError) {
         // Try to extract JSON from markdown code blocks or mixed content
-        const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || 
-                         content.match(/```\n([\s\S]*?)\n```/) ||
-                         content.match(/\{[\s\S]*\}/);
-        
+        const jsonMatch =
+          content.match(/```json\n([\s\S]*?)\n```/) ||
+          content.match(/```\n([\s\S]*?)\n```/) ||
+          content.match(/\{[\s\S]*\}/);
+
         if (jsonMatch) {
           try {
             parsedData = JSON.parse(jsonMatch[1] || jsonMatch[0]);
           } catch {
             if (this.config.debug) {
-              console.warn('GitHub Models returned non-JSON response despite request');
+              console.warn(
+                'GitHub Models returned non-JSON response despite request',
+              );
             }
-            parsedData = { 
+            parsedData = {
               rawResponse: content,
-              note: "Response was not in requested JSON format" 
+              note: 'Response was not in requested JSON format',
             };
           }
         } else {
-          parsedData = { 
+          parsedData = {
             rawResponse: content,
-            note: "Response was not in requested JSON format" 
+            note: 'Response was not in requested JSON format',
           };
         }
       }
@@ -756,52 +874,59 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
       return {
         success: true,
         data: parsedData,
-        outputFile: request.outputPath
+        outputFile: request.outputPath,
       };
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
       // Check for rate limit errors
-      if (errorMessage.includes('429') || errorMessage.includes('rate limit') || 
-          errorMessage.includes('quota') || errorMessage.includes('too many requests')) {
-        
+      if (
+        errorMessage.includes('429') ||
+        errorMessage.includes('rate limit') ||
+        errorMessage.includes('quota') ||
+        errorMessage.includes('too many requests')
+      ) {
         // Set rate limit tracking for GitHub Models
         this.rateLimitTracker.set('github-models', Date.now());
-        
+
         if (this.config.debug) {
           console.log('GitHub Models rate limit detected');
         }
-        
+
         throw new Error('GitHub Models quota exceeded. Try again later.');
       }
-      
+
       throw error;
     }
   }
 
   /**
    * Analyzes using GitHub Copilot API directly.
-   * 
+   *
    * Copilot has enterprise-level rate limits and uses GPT-4+ models.
    * Best for larger contexts and complex analysis tasks.
-   * 
+   *
    * @private
    * @param {AnalysisRequest} request - Analysis request
    * @returns {Promise<Partial<AnalysisResult>>} Analysis results
    * @throws {Error} If Copilot authentication or API call fails
    */
-  private async analyzeWithCopilot(request: AnalysisRequest): Promise<Partial<AnalysisResult>> {
+  private async analyzeWithCopilot(
+    request: AnalysisRequest,
+  ): Promise<Partial<AnalysisResult>> {
     if (!this.copilotProvider) {
-      throw new Error('Copilot provider not initialized. Requires GitHub token.');
+      throw new Error(
+        'Copilot provider not initialized. Requires GitHub token.',
+      );
     }
 
     const systemPrompt = this.buildSystemPrompt(request);
     const userPrompt = request.prompt || this.buildPrompt(request);
-    
+
     const messages = [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt }
+      { role: 'user', content: userPrompt },
     ];
 
     if (this.config.debug) {
@@ -816,7 +941,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
         messages,
         model: this.config.model || 'gpt-4.1',
         max_tokens: this.config.maxTokens || 16000, // Updated for 200K context enterprise limits
-        temperature: this.config.temperature || 0.1
+        temperature: this.config.temperature || 0.1,
       });
 
       const content = response.choices?.[0]?.message?.content;
@@ -828,13 +953,15 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
       let parsedData: any = content;
       try {
         // Try to extract JSON if it's in a code block or mixed content
-        const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || 
-                         content.match(/\{[\s\S]*\}/) || 
-                         [null, content];
-        
+        const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/) ||
+          content.match(/\{[\s\S]*\}/) || [null, content];
+
         if (jsonMatch && jsonMatch[1]) {
           parsedData = JSON.parse(jsonMatch[1].trim());
-        } else if (content.trim().startsWith('{') && content.trim().endsWith('}')) {
+        } else if (
+          content.trim().startsWith('{') &&
+          content.trim().endsWith('}')
+        ) {
           parsedData = JSON.parse(content.trim());
         }
       } catch (parseError) {
@@ -852,61 +979,74 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
 
       return {
         success: true,
-        data: parsedData
+        data: parsedData,
       };
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
       if (this.config.debug) {
         console.error('❌ Copilot API error:', errorMessage);
       }
-      
+
       // Check for authentication or quota errors
       if (errorMessage.includes('401') || errorMessage.includes('403')) {
-        throw new Error('Copilot authentication failed. Check GitHub token permissions.');
+        throw new Error(
+          'Copilot authentication failed. Check GitHub token permissions.',
+        );
       }
-      
+
       if (errorMessage.includes('429') || errorMessage.includes('rate limit')) {
-        throw new Error('Copilot rate limit exceeded. Enterprise account should have high limits.');
+        throw new Error(
+          'Copilot rate limit exceeded. Enterprise account should have high limits.',
+        );
       }
-      
+
       throw error;
     }
   }
 
   /**
    * Analyzes using Gemini CLI with YOLO mode and intelligent rate limit handling.
-   * 
+   *
    * Implements smart cooldown periods to avoid hitting rate limits repeatedly.
-   * If Gemini returns a rate limit error, we store the timestamp and avoid 
+   * If Gemini returns a rate limit error, we store the timestamp and avoid
    * retrying for the configured cooldown period (default: 1 hour).
-   * 
+   *
    * @private
    * @param {AnalysisRequest} request - Analysis request
    * @returns {Promise<Partial<AnalysisResult>>} Analysis results
    * @throws {Error} If still in cooldown period after rate limit
    */
-  private async analyzeWithGemini(request: AnalysisRequest): Promise<Partial<AnalysisResult>> {
+  private async analyzeWithGemini(
+    request: AnalysisRequest,
+  ): Promise<Partial<AnalysisResult>> {
     // Check if we're in cooldown period
     const rateLimitKey = 'gemini';
     const lastRateLimit = this.rateLimitTracker.get(rateLimitKey);
-    const cooldownPeriod = this.config.rateLimitCooldown || (60 * 60 * 1000); // 1 hour default
+    const cooldownPeriod = this.config.rateLimitCooldown || 60 * 60 * 1000; // 1 hour default
 
-    if (lastRateLimit && (Date.now() - lastRateLimit) < cooldownPeriod) {
-      const remainingTime = Math.ceil((cooldownPeriod - (Date.now() - lastRateLimit)) / (60 * 1000));
-      throw new Error(`Gemini in rate limit cooldown. Try again in ${remainingTime} minutes.`);
+    if (lastRateLimit && Date.now() - lastRateLimit < cooldownPeriod) {
+      const remainingTime = Math.ceil(
+        (cooldownPeriod - (Date.now() - lastRateLimit)) / (60 * 1000),
+      );
+      throw new Error(
+        `Gemini in rate limit cooldown. Try again in ${remainingTime} minutes.`,
+      );
     }
 
     const prompt = `${this.buildPrompt(request)}
 
 CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, or any text outside the JSON structure.`;
-    
+
     const args = [
-      '-p', prompt,                               // Prompt text
-      '-m', this.config.model || 'gemini-pro',   // Model selection
-      '--all-files',                             // Include all files in context
-      '--include-directories', this.config.projectPath // Project access
+      '-p',
+      prompt, // Prompt text
+      '-m',
+      this.config.model || 'gemini-pro', // Model selection
+      '--all-files', // Include all files in context
+      '--include-directories',
+      this.config.projectPath, // Project access
     ];
 
     // Add YOLO mode for file operations
@@ -921,7 +1061,7 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
 
     try {
       const result = await this.executeCommand('gemini', args);
-      
+
       // Clear rate limit tracker on successful request
       if (result.exitCode === 0) {
         this.rateLimitTracker.delete(rateLimitKey);
@@ -933,10 +1073,11 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
         parsedData = JSON.parse(result.stdout);
       } catch (jsonError) {
         // Try to extract JSON from markdown code blocks or mixed content
-        const jsonMatch = result.stdout.match(/```json\n([\s\S]*?)\n```/) || 
-                         result.stdout.match(/```\n([\s\S]*?)\n```/) ||
-                         result.stdout.match(/\{[\s\S]*\}/);
-        
+        const jsonMatch =
+          result.stdout.match(/```json\n([\s\S]*?)\n```/) ||
+          result.stdout.match(/```\n([\s\S]*?)\n```/) ||
+          result.stdout.match(/\{[\s\S]*\}/);
+
         if (jsonMatch) {
           try {
             parsedData = JSON.parse(jsonMatch[1] || jsonMatch[0]);
@@ -944,48 +1085,304 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
             if (this.config.debug) {
               console.warn('Gemini returned non-JSON response despite request');
             }
-            parsedData = { 
+            parsedData = {
               rawResponse: result.stdout,
-              note: "Response was not in requested JSON format" 
+              note: 'Response was not in requested JSON format',
             };
           }
         } else {
-          parsedData = { 
+          parsedData = {
             rawResponse: result.stdout,
-            note: "Response was not in requested JSON format" 
+            note: 'Response was not in requested JSON format',
           };
         }
       }
-      
+
       return {
         success: result.exitCode === 0,
         data: parsedData,
-        outputFile: request.outputPath
+        outputFile: request.outputPath,
       };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
       // Detect rate limit errors and set cooldown
-      if (errorMessage.includes('quota') || errorMessage.includes('rate limit') || 
-          errorMessage.includes('429') || errorMessage.includes('too many requests')) {
-        
+      if (
+        errorMessage.includes('quota') ||
+        errorMessage.includes('rate limit') ||
+        errorMessage.includes('429') ||
+        errorMessage.includes('too many requests')
+      ) {
         this.rateLimitTracker.set(rateLimitKey, Date.now());
-        
+
         if (this.config.debug) {
-          console.log(`Gemini rate limit detected, setting ${cooldownPeriod / (60 * 1000)} minute cooldown`);
+          console.log(
+            `Gemini rate limit detected, setting ${cooldownPeriod / (60 * 1000)} minute cooldown`,
+          );
         }
-        
-        throw new Error(`Gemini quota exceeded. Cooldown active for ${cooldownPeriod / (60 * 1000)} minutes.`);
+
+        throw new Error(
+          `Gemini quota exceeded. Cooldown active for ${cooldownPeriod / (60 * 1000)} minutes.`,
+        );
       }
-      
+
       // Re-throw non-rate-limit errors
       throw error;
     }
   }
 
   /**
+   * Analyzes using Gemini Direct API with streaming support.
+   *
+   * Uses the GeminiHandler with OAuth authentication and real-time streaming.
+   * Best for small/fast calls with 2.5 Flash or heavy lifting with 2.5 Pro.
+   *
+   * @private
+   * @param {AnalysisRequest} request - Analysis request
+   * @returns {Promise<Partial<AnalysisResult>>} Analysis results
+   * @throws {Error} If Gemini Direct API fails or rate limits hit
+   */
+  private async analyzeWithGeminiDirect(
+    request: AnalysisRequest,
+  ): Promise<Partial<AnalysisResult>> {
+    if (!this.geminiHandler) {
+      throw new Error('Gemini Direct handler not initialized');
+    }
+
+    const systemPrompt = this.buildSystemPrompt(request);
+    const userPrompt = request.prompt || this.buildPrompt(request);
+
+    const messages = [{ role: 'user' as const, content: userPrompt }];
+
+    if (this.config.debug) {
+      console.log('🔮 Using Gemini Direct API...');
+      console.log('  - Model:', this.geminiHandler.getModel().id);
+      console.log('  - Using OAuth:', '~/.gemini/oauth_creds.json');
+      console.log('  - Context size:', userPrompt.length, 'characters');
+      console.log('  - Streaming:', true);
+    }
+
+    try {
+      const stream = this.geminiHandler.createMessage(systemPrompt, messages);
+      let fullResponse = '';
+      let usage = { inputTokens: 0, outputTokens: 0 };
+
+      // Collect streamed response
+      for await (const chunk of stream) {
+        if (chunk.type === 'text') {
+          fullResponse += chunk.text;
+
+          if (this.config.debug && chunk.text) {
+            process.stdout.write(chunk.text); // Show real-time streaming
+          }
+        } else if (chunk.type === 'usage') {
+          usage = {
+            inputTokens: chunk.inputTokens,
+            outputTokens: chunk.outputTokens,
+          };
+        }
+      }
+
+      if (this.config.debug) {
+        console.log('\n✅ Gemini Direct streaming complete!');
+        console.log(`  - Response length: ${fullResponse.length} characters`);
+        console.log(
+          `  - Token usage: ${usage.inputTokens} in, ${usage.outputTokens} out`,
+        );
+      }
+
+      // Parse JSON response with fallback handling
+      let parsedData;
+      try {
+        parsedData = JSON.parse(fullResponse);
+      } catch (jsonError) {
+        // Try to extract JSON from markdown code blocks or mixed content
+        const jsonMatch =
+          fullResponse.match(/```json\n([\s\S]*?)\n```/) ||
+          fullResponse.match(/```\n([\s\S]*?)\n```/) ||
+          fullResponse.match(/\{[\s\S]*\}/);
+
+        if (jsonMatch) {
+          try {
+            parsedData = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+          } catch {
+            if (this.config.debug) {
+              console.warn(
+                'Gemini Direct returned non-JSON response despite request',
+              );
+            }
+            parsedData = {
+              rawResponse: fullResponse,
+              note: 'Response was not in requested JSON format',
+            };
+          }
+        } else {
+          parsedData = {
+            rawResponse: fullResponse,
+            note: 'Response was not in requested JSON format',
+          };
+        }
+      }
+
+      // Clear rate limit tracker on successful request
+      this.rateLimitTracker.delete('gemini-direct');
+
+      return {
+        success: true,
+        data: parsedData,
+        outputFile: request.outputPath,
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      if (this.config.debug) {
+        console.error('❌ Gemini Direct API error:', errorMessage);
+      }
+
+      // Check for rate limit errors and set cooldown
+      if (
+        errorMessage.includes('quota') ||
+        errorMessage.includes('rate limit') ||
+        errorMessage.includes('429') ||
+        errorMessage.includes('too many requests')
+      ) {
+        this.rateLimitTracker.set('gemini-direct', Date.now());
+
+        if (this.config.debug) {
+          console.log(
+            'Gemini Direct rate limit detected, setting 30 minute cooldown',
+          );
+        }
+
+        throw new Error(
+          'Gemini Direct quota exceeded. Cooldown active for 30 minutes.',
+        );
+      }
+
+      // Handle authentication errors
+      if (
+        errorMessage.includes('authentication') ||
+        errorMessage.includes('API_KEY_INVALID')
+      ) {
+        throw new Error(
+          'Gemini Direct authentication failed. Check OAuth credentials or API key.',
+        );
+      }
+
+      throw error;
+    }
+  }
+
+  /**
+   * Analyzes using Gemini 2.5 Pro for complex reasoning tasks.
+   *
+   * Same as GeminiDirect but uses Pro model specifically for high complexity.
+   *
+   * @private
+   * @param {AnalysisRequest} request - Analysis request
+   * @returns {Promise<Partial<AnalysisResult>>} Analysis results
+   * @throws {Error} If Gemini Pro API fails
+   */
+  private async analyzeWithGeminiPro(
+    request: AnalysisRequest,
+  ): Promise<Partial<AnalysisResult>> {
+    if (!this.geminiHandler) {
+      throw new Error('Gemini handler not initialized');
+    }
+
+    // Create Pro-specific handler for complex reasoning
+    const proHandler = new GeminiHandler({
+      modelId: 'gemini-2.5-pro', // Force Pro model
+      temperature: this.config.temperature || 0.1,
+      maxTokens: this.config.maxTokens,
+      enableJson: false,
+    });
+
+    const systemPrompt = this.buildSystemPrompt(request);
+    const userPrompt = request.prompt || this.buildPrompt(request);
+
+    const messages = [{ role: 'user' as const, content: userPrompt }];
+
+    if (this.config.debug) {
+      console.log('🔮 Using Gemini 2.5 Pro (Complex Reasoning)...');
+      console.log('  - Model: gemini-2.5-pro');
+      console.log('  - Use case: High complexity tasks');
+      console.log('  - Context size:', userPrompt.length, 'characters');
+    }
+
+    try {
+      const stream = proHandler.createMessage(systemPrompt, messages);
+      let fullResponse = '';
+      let usage = { inputTokens: 0, outputTokens: 0 };
+
+      // Collect streamed response
+      for await (const chunk of stream) {
+        if (chunk.type === 'text') {
+          fullResponse += chunk.text;
+
+          if (this.config.debug && chunk.text) {
+            process.stdout.write(chunk.text);
+          }
+        } else if (chunk.type === 'usage') {
+          usage = {
+            inputTokens: chunk.inputTokens,
+            outputTokens: chunk.outputTokens,
+          };
+        }
+      }
+
+      if (this.config.debug) {
+        console.log('\n✅ Gemini Pro complex reasoning complete!');
+        console.log(
+          `  - Token usage: ${usage.inputTokens} in, ${usage.outputTokens} out`,
+        );
+      }
+
+      // Parse JSON response
+      let parsedData;
+      try {
+        parsedData = JSON.parse(fullResponse);
+      } catch (jsonError) {
+        const jsonMatch =
+          fullResponse.match(/```json\n([\s\S]*?)\n```/) ||
+          fullResponse.match(/\{[\s\S]*\}/);
+
+        if (jsonMatch) {
+          try {
+            parsedData = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+          } catch {
+            parsedData = {
+              rawResponse: fullResponse,
+              note: 'Non-JSON response',
+            };
+          }
+        } else {
+          parsedData = { rawResponse: fullResponse, note: 'Non-JSON response' };
+        }
+      }
+
+      return {
+        success: true,
+        data: parsedData,
+        outputFile: request.outputPath,
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      if (this.config.debug) {
+        console.error('❌ Gemini Pro error:', errorMessage);
+      }
+
+      throw error;
+    }
+  }
+
+  /**
    * Builds system prompts for providers that support them (like GitHub Models).
-   * 
+   *
    * @private
    * @param {AnalysisRequest} request - Analysis request
    * @returns {string} System prompt
@@ -1018,7 +1415,7 @@ Provide detailed, actionable insights with specific code examples in the JSON st
 
   /**
    * Builds appropriate prompts based on analysis task type.
-   * 
+   *
    * @private
    * @param {AnalysisRequest} request - Analysis request
    * @returns {string} Constructed prompt
@@ -1029,10 +1426,12 @@ Provide detailed, actionable insights with specific code examples in the JSON st
     }
 
     const baseContext = `Project: ${path.basename(this.config.projectPath)}\n`;
-    
+
     switch (request.task) {
       case 'domain-analysis':
-        return baseContext + `
+        return (
+          baseContext +
+          `
 Analyze the following domain relationships using your GNN-Kuzu integration expertise:
 
 Domains: ${JSON.stringify(request.context.domains, null, 2)}
@@ -1061,10 +1460,13 @@ RESPOND IN JSON FORMAT:
 }
 
 ${request.outputPath ? `Write results to: ${request.outputPath}` : ''}
-`;
+`
+        );
 
       case 'typescript-error-analysis':
-        return baseContext + `
+        return (
+          baseContext +
+          `
 Analyze and fix the following TypeScript errors in the GNN-Kuzu integration system:
 
 Files: ${request.context.files?.join(', ')}
@@ -1098,10 +1500,13 @@ RESPOND IN JSON FORMAT:
 }
 
 ${request.requiresFileOperations ? 'Apply fixes directly to the files after providing the JSON analysis.' : ''}
-`;
+`
+        );
 
       case 'code-review':
-        return baseContext + `
+        return (
+          baseContext +
+          `
 Perform a comprehensive code review of the GNN-Kuzu integration components:
 
 Files: ${request.context.files?.join(', ')}
@@ -1135,10 +1540,13 @@ RESPOND IN JSON FORMAT:
   ],
   "summary": "overall assessment and next steps"
 }
-`;
+`
+        );
 
       default:
-        return baseContext + `
+        return (
+          baseContext +
+          `
 Perform custom analysis task: ${request.task}
 
 Context: ${JSON.stringify(request.context, null, 2)}
@@ -1156,27 +1564,31 @@ RESPOND IN JSON FORMAT:
   "nextSteps": ["step 1", "step 2", "step 3"],
   "summary": "concise summary of analysis and key takeaways"
 }
-`;
+`
+        );
     }
   }
 
   /**
    * Executes a command with proper error handling.
-   * 
+   *
    * @private
    * @param {string} command - Command to execute
    * @param {string[]} args - Command arguments
    * @returns {Promise<{stdout: string, stderr: string, exitCode: number}>} Command result
    */
-  private async executeCommand(command: string, args: string[]): Promise<{
+  private async executeCommand(
+    command: string,
+    args: string[],
+  ): Promise<{
     stdout: string;
-    stderr: string; 
+    stderr: string;
     exitCode: number;
   }> {
     return new Promise((resolve, reject) => {
       const child = spawn(command, args, {
         cwd: this.config.projectPath,
-        env: process.env
+        env: process.env,
       });
 
       let stdout = '';
@@ -1194,7 +1606,7 @@ RESPOND IN JSON FORMAT:
         resolve({
           stdout,
           stderr,
-          exitCode: code || 0
+          exitCode: code || 0,
         });
       });
 
@@ -1212,7 +1624,7 @@ RESPOND IN JSON FORMAT:
 
   /**
    * Creates a new session for conversation continuity.
-   * 
+   *
    * @method createSession
    * @returns {string} New session ID
    */
@@ -1223,7 +1635,7 @@ RESPOND IN JSON FORMAT:
 
   /**
    * Gets current session ID.
-   * 
+   *
    * @method getSessionId
    * @returns {string} Current session ID
    */
@@ -1233,7 +1645,7 @@ RESPOND IN JSON FORMAT:
 
   /**
    * Updates service configuration.
-   * 
+   *
    * @method updateConfig
    * @param {Partial<LLMIntegrationConfig>} updates - Configuration updates
    */
@@ -1243,7 +1655,7 @@ RESPOND IN JSON FORMAT:
 
   /**
    * Checks if a provider is currently in rate limit cooldown.
-   * 
+   *
    * @method isInCooldown
    * @param {string} provider - Provider name ('gemini', etc.)
    * @returns {boolean} True if provider is in cooldown
@@ -1252,13 +1664,13 @@ RESPOND IN JSON FORMAT:
     const lastRateLimit = this.rateLimitTracker.get(provider);
     if (!lastRateLimit) return false;
 
-    const cooldownPeriod = this.config.rateLimitCooldown || (60 * 60 * 1000);
-    return (Date.now() - lastRateLimit) < cooldownPeriod;
+    const cooldownPeriod = this.config.rateLimitCooldown || 60 * 60 * 1000;
+    return Date.now() - lastRateLimit < cooldownPeriod;
   }
 
   /**
    * Gets remaining cooldown time for a provider in minutes.
-   * 
+   *
    * @method getCooldownRemaining
    * @param {string} provider - Provider name ('gemini', etc.)
    * @returns {number} Remaining cooldown time in minutes, or 0 if not in cooldown
@@ -1267,15 +1679,15 @@ RESPOND IN JSON FORMAT:
     const lastRateLimit = this.rateLimitTracker.get(provider);
     if (!lastRateLimit) return 0;
 
-    const cooldownPeriod = this.config.rateLimitCooldown || (60 * 60 * 1000);
+    const cooldownPeriod = this.config.rateLimitCooldown || 60 * 60 * 1000;
     const remaining = cooldownPeriod - (Date.now() - lastRateLimit);
-    
+
     return remaining > 0 ? Math.ceil(remaining / (60 * 1000)) : 0;
   }
 
   /**
    * Manually clears cooldown for a provider (use with caution).
-   * 
+   *
    * @method clearCooldown
    * @param {string} provider - Provider name ('gemini', etc.)
    */
@@ -1285,18 +1697,18 @@ RESPOND IN JSON FORMAT:
 
   /**
    * Intelligently selects the best LLM provider based on task requirements and rate limits.
-   * 
+   *
    * **Strategy (Optimized for Rate Limits & Performance):**
    * - **GitHub Models API (GPT-5)**: Primary choice - Azure AI inference, fully free, reliable JSON responses
    * - **Claude Code**: File operations, codebase-aware tasks, complex editing
    * - **Gemini**: Fallback option with intelligent 1-hour cooldown management
    * - **Auto-fallback**: If Gemini hits rate limits, automatically uses GPT-5 API
    * - **o1/DeepSeek/Grok**: Avoided due to severe rate limits
-   * 
+   *
    * @method analyzeSmart
    * @param {AnalysisRequest} request - Analysis request
    * @returns {Promise<AnalysisResult>} Analysis results with optimal provider
-   * 
+   *
    * @example Smart Analysis Selection
    * ```typescript
    * // This will use GPT-5 for general analysis
@@ -1305,7 +1717,7 @@ RESPOND IN JSON FORMAT:
    *   context: { domains, dependencies },
    *   requiresFileOperations: false  // No file ops = GPT-5
    * });
-   * 
+   *
    * // This will use Claude Code for file editing task
    * const codeFixing = await service.analyzeSmart({
    *   task: 'typescript-error-analysis',
@@ -1339,19 +1751,19 @@ RESPOND IN JSON FORMAT:
 
   /**
    * Optional A/B testing method - use sparingly due to rate limits.
-   * 
+   *
    * Since GPT-5 is fully free and performs excellently, A/B testing should only
    * be used in rare cases where you need to compare different approaches.
-   * All other models have rate limits, so this method should be avoided in 
+   * All other models have rate limits, so this method should be avoided in
    * production workflows.
-   * 
+   *
    * **Recommendation**: Use `analyzeSmart()` instead, which uses GPT-5 for analysis.
-   * 
+   *
    * @async
    * @method analyzeArchitectureAB
-   * @param {AnalysisRequest} request - Architecture analysis request  
+   * @param {AnalysisRequest} request - Architecture analysis request
    * @returns {Promise<{gpt5: AnalysisResult, comparison: AnalysisResult, recommendation: string}>} A/B test results
-   * 
+   *
    * @deprecated Use analyzeSmart() instead - GPT-5 is fully free and excellent for all tasks
    */
   async analyzeArchitectureAB(request: AnalysisRequest): Promise<{
@@ -1369,7 +1781,7 @@ RESPOND IN JSON FORMAT:
       this.config.maxTokens = 4000; // API limit
       const gpt5Result = await this.analyzeWithGitHubModelsAPI({
         ...request,
-        prompt: `[GPT-5 API Analysis] ${request.prompt || this.buildPrompt(request)}`
+        prompt: `[GPT-5 API Analysis] ${request.prompt || this.buildPrompt(request)}`,
       });
 
       // Run analysis with Codestral (for coding comparison) via API
@@ -1377,21 +1789,28 @@ RESPOND IN JSON FORMAT:
       this.config.maxTokens = 4000; // API limit
       const codestralResult = await this.analyzeWithGitHubModelsAPI({
         ...request,
-        prompt: `[Codestral API Analysis] ${request.prompt || this.buildPrompt(request)}`
+        prompt: `[Codestral API Analysis] ${request.prompt || this.buildPrompt(request)}`,
       });
 
       // Generate recommendation based on results and rate limits
       let recommendation = '';
       if (gpt5Result.success && codestralResult.success) {
-        if (request.task?.includes('code') || request.task?.includes('typescript')) {
-          recommendation = 'Codestral specialized for coding but GPT-5 preferred due to no rate limits';
+        if (
+          request.task?.includes('code') ||
+          request.task?.includes('typescript')
+        ) {
+          recommendation =
+            'Codestral specialized for coding but GPT-5 preferred due to no rate limits';
         } else {
-          recommendation = 'GPT-5 preferred - fully free with excellent analysis capabilities';
+          recommendation =
+            'GPT-5 preferred - fully free with excellent analysis capabilities';
         }
       } else if (gpt5Result.success) {
-        recommendation = 'GPT-5 succeeded while Codestral failed - stick with GPT-5';
+        recommendation =
+          'GPT-5 succeeded while Codestral failed - stick with GPT-5';
       } else if (codestralResult.success) {
-        recommendation = 'Codestral succeeded while GPT-5 failed - unusual, investigate';
+        recommendation =
+          'Codestral succeeded while GPT-5 failed - unusual, investigate';
       } else {
         recommendation = 'Both models failed - check network or API status';
       }
@@ -1399,9 +1818,9 @@ RESPOND IN JSON FORMAT:
       return {
         gpt5: gpt5Result,
         comparison: codestralResult,
-        recommendation: 'Recommendation: Use GPT-5 exclusively - it is fully free and excellent for all tasks'
+        recommendation:
+          'Recommendation: Use GPT-5 exclusively - it is fully free and excellent for all tasks',
       };
-
     } finally {
       // Restore original configuration
       this.config.preferredProvider = originalProvider;

@@ -36,7 +36,10 @@ const makeRes = (): Res => {
 const makeNext = (): NextFunction => vi.fn();
 
 // Helper to run the middleware synchronously if it supports callback-next semantics
-const runMiddleware = async (req: Req, res: Res): Promise<{ next: jest.Mock; res: Res }> => {
+const runMiddleware = async (
+  req: Req,
+  res: Res,
+): Promise<{ next: jest.Mock; res: Res }> => {
   const next = makeNext();
   // @ts-ignore next signature depends on impl; adapt if using (err?) => void
   await authMiddleware(req as any, res as any, next);
@@ -104,7 +107,9 @@ describe('HTTP Auth Middleware - Allow/Deny Matrix', () => {
       if (req.user) {
         // user object can exist but must not contain tokens
         const userStr = JSON.stringify(req.user);
-        expect(userStr).not.toMatch(/VALID\.TOKEN|EXPIRED\.TOKEN|key_valid_123|key_invalid/i);
+        expect(userStr).not.toMatch(
+          /VALID\.TOKEN|EXPIRED\.TOKEN|key_valid_123|key_invalid/i,
+        );
       }
     } else {
       // Expect short-circuit deny: either res.statusCode set and response ended, or next(err)
@@ -132,14 +137,19 @@ describe('HTTP Auth Middleware - Allow/Deny Matrix', () => {
   });
 
   it('does not mutate headers beyond normalization', async () => {
-    const headers = { Authorization: 'Bearer VALID.TOKEN', 'X-API-KEY': 'key_valid_123' } as any;
+    const headers = {
+      Authorization: 'Bearer VALID.TOKEN',
+      'X-API-KEY': 'key_valid_123',
+    } as any;
     const req = makeReq(headers);
     const res = makeRes();
 
     await runMiddleware(req, res);
 
     // Normalization is allowed (e.g., lower-case copy), but original keys should remain readable
-    expect(req.headers.authorization ?? req.headers['Authorization']).toBeDefined();
+    expect(
+      req.headers.authorization ?? req.headers['Authorization'],
+    ).toBeDefined();
     expect(req.headers['x-api-key'] ?? req.headers['X-API-KEY']).toBeDefined();
   });
 });

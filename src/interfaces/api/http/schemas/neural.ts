@@ -24,7 +24,14 @@ export interface NeuralLayer {
     | 'dropout'
     | 'batch_norm';
   readonly size: number;
-  readonly activation: 'relu' | 'sigmoid' | 'tanh' | 'softmax' | 'linear' | 'leaky_relu' | 'gelu';
+  readonly activation:
+    | 'relu'
+    | 'sigmoid'
+    | 'tanh'
+    | 'softmax'
+    | 'linear'
+    | 'leaky_relu'
+    | 'gelu';
   readonly dropout?: number; // 0-1, for dropout layers
   readonly kernelSize?: readonly [number, number]; // For convolutional layers
   readonly stride?: readonly [number, number]; // For convolutional/pooling layers
@@ -36,7 +43,10 @@ export interface NeuralLayer {
  *
  * @example
  */
-export interface NeuralNetwork extends EntityFields, TimestampFields, ResourceState {
+export interface NeuralNetwork
+  extends EntityFields,
+    TimestampFields,
+    ResourceState {
   readonly type:
     | 'feedforward'
     | 'convolutional'
@@ -235,7 +245,15 @@ export const NeuralSchemas = {
     properties: {
       type: {
         type: 'string',
-        enum: ['input', 'hidden', 'output', 'convolutional', 'pooling', 'dropout', 'batch_norm'],
+        enum: [
+          'input',
+          'hidden',
+          'output',
+          'convolutional',
+          'pooling',
+          'dropout',
+          'batch_norm',
+        ],
         description: 'Layer type',
       },
       size: {
@@ -245,7 +263,15 @@ export const NeuralSchemas = {
       },
       activation: {
         type: 'string',
-        enum: ['relu', 'sigmoid', 'tanh', 'softmax', 'linear', 'leaky_relu', 'gelu'],
+        enum: [
+          'relu',
+          'sigmoid',
+          'tanh',
+          'softmax',
+          'linear',
+          'leaky_relu',
+          'gelu',
+        ],
         description: 'Activation function',
       },
       dropout: {
@@ -287,7 +313,14 @@ export const NeuralSchemas = {
       },
       type: {
         type: 'string',
-        enum: ['feedforward', 'convolutional', 'recurrent', 'transformer', 'autoencoder', 'gan'],
+        enum: [
+          'feedforward',
+          'convolutional',
+          'recurrent',
+          'transformer',
+          'autoencoder',
+          'gan',
+        ],
         description: 'Neural network architecture type',
       },
       name: {
@@ -346,7 +379,13 @@ export const NeuralSchemas = {
 
   TrainingConfig: {
     type: 'object',
-    required: ['epochs', 'batchSize', 'learningRate', 'optimizer', 'lossFunction'],
+    required: [
+      'epochs',
+      'batchSize',
+      'learningRate',
+      'optimizer',
+      'lossFunction',
+    ],
     properties: {
       epochs: {
         type: 'integer',
@@ -444,7 +483,15 @@ export const NeuralSchemas = {
 
   TrainingJob: {
     type: 'object',
-    required: ['id', 'networkId', 'status', 'progress', 'totalEpochs', 'config', 'created'],
+    required: [
+      'id',
+      'networkId',
+      'status',
+      'progress',
+      'totalEpochs',
+      'config',
+      'created',
+    ],
     properties: {
       id: {
         type: 'string',

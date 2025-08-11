@@ -11,7 +11,7 @@ const logger = getLogger('coordination-swarm-core-logger');
  */
 
 import { randomUUID } from 'node:crypto';
-import { config } from '../../../config';
+import { config } from '../../../config/index.js';
 
 interface LoggerOptions {
   name?: string;
@@ -20,7 +20,7 @@ interface LoggerOptions {
   enableFile?: boolean;
   formatJson?: boolean;
   logDir?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export class Logger {
@@ -30,7 +30,7 @@ export class Logger {
   public enableFile: boolean;
   public formatJson: boolean;
   public logDir: string;
-  public metadata: Record<string, any>;
+  public metadata: Record<string, unknown>;
   public correlationId: string | null;
   public operations: Map<string, any>;
 
@@ -42,10 +42,17 @@ export class Logger {
     this.name = options?.name || 'ruv-swarm';
     this.level = options?.level || loggerConfig?.level.toUpperCase();
     this.enableStderr =
-      options.enableStderr === undefined ? loggerConfig?.console : options?.enableStderr;
-    this.enableFile = options.enableFile === undefined ? !!loggerConfig?.file : options?.enableFile;
+      options.enableStderr === undefined
+        ? loggerConfig?.console
+        : options?.enableStderr;
+    this.enableFile =
+      options.enableFile === undefined
+        ? !!loggerConfig?.file
+        : options?.enableFile;
     this.formatJson =
-      options.formatJson === undefined ? loggerConfig?.structured : options?.formatJson;
+      options.formatJson === undefined
+        ? loggerConfig?.structured
+        : options?.formatJson;
     this.logDir = options?.logDir || './logs';
     this.metadata = options?.metadata || {};
     this.correlationId = null;
@@ -61,7 +68,7 @@ export class Logger {
     return this.correlationId;
   }
 
-  _log(level: string, message: string, data: Record<string, any> = {}) {
+  _log(level: string, message: string, data: Record<string, unknown> = {}) {
     const timestamp = new Date().toISOString();
     const prefix = this.correlationId ? `[${this.correlationId}] ` : '';
 
@@ -86,39 +93,43 @@ export class Logger {
     }
   }
 
-  info(message: string, data: Record<string, any> = {}) {
+  info(message: string, data: Record<string, unknown> = {}) {
     this._log('INFO', message, data);
   }
 
-  warn(message: string, data: Record<string, any> = {}) {
+  warn(message: string, data: Record<string, unknown> = {}) {
     this._log('WARN', message, data);
   }
 
-  error(message: string, data: Record<string, any> = {}) {
+  error(message: string, data: Record<string, unknown> = {}) {
     this._log('ERROR', message, data);
   }
 
-  debug(message: string, data: Record<string, any> = {}) {
+  debug(message: string, data: Record<string, unknown> = {}) {
     const centralConfig = config?.getAll();
-    const enableDebug = this.level === 'DEBUG' || centralConfig?.environment?.enableDebugEndpoints;
+    const enableDebug =
+      this.level === 'DEBUG' ||
+      centralConfig?.environment?.enableDebugEndpoints;
     if (enableDebug) {
       this._log('DEBUG', message, data);
     }
   }
 
-  trace(message: string, data: Record<string, any> = {}) {
+  trace(message: string, data: Record<string, unknown> = {}) {
     const centralConfig = config?.getAll();
-    const enableTrace = this.level === 'TRACE' || centralConfig?.environment?.enableDebugEndpoints;
+    const enableTrace =
+      this.level === 'TRACE' ||
+      centralConfig?.environment?.enableDebugEndpoints;
     if (enableTrace) {
       this._log('TRACE', message, data);
     }
   }
 
-  success(message: string, data: Record<string, any> = {}) {
+  success(message: string, data: Record<string, unknown> = {}) {
     this._log('SUCCESS', message, data);
   }
 
-  fatal(message: string, data: Record<string, any> = {}) {
+  fatal(message: string, data: Record<string, unknown> = {}) {
     this._log('FATAL', message, data);
   }
 
@@ -132,21 +143,32 @@ export class Logger {
     return operationId;
   }
 
-  endOperation(operationId: string, success: boolean = true, data: Record<string, any> = {}) {
+  endOperation(
+    operationId: string,
+    success: boolean = true,
+    data: Record<string, unknown> = {},
+  ) {
     const operation = this.operations.get(operationId);
     if (operation) {
       const duration = Date.now() - operation.startTime;
-      this.debug(`Operation ${success ? 'completed' : 'failed'}: ${operation.name}`, {
-        operationId,
-        duration,
-        success,
-        ...data,
-      });
+      this.debug(
+        `Operation ${success ? 'completed' : 'failed'}: ${operation.name}`,
+        {
+          operationId,
+          duration,
+          success,
+          ...data,
+        },
+      );
       this.operations.delete(operationId);
     }
   }
 
-  logConnection(event: string, sessionId: string, data: Record<string, any> = {}) {
+  logConnection(
+    event: string,
+    sessionId: string,
+    data: Record<string, unknown> = {},
+  ) {
     this.info(`Connection ${event}`, {
       sessionId,
       event,
@@ -154,7 +176,11 @@ export class Logger {
     });
   }
 
-  logMcp(direction: string, method: string, data: Record<string, any> = {}) {
+  logMcp(
+    direction: string,
+    method: string,
+    data: Record<string, unknown> = {},
+  ) {
     this.debug(`MCP ${direction}: ${method}`, {
       direction,
       method,

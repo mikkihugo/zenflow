@@ -42,11 +42,14 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
    */
   async similaritySearch(
     queryVector: number[],
-    options?: VectorSearchOptions
+    options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[]> {
-    this.logger.debug(`Performing similarity search with ${queryVector.length}D vector`, {
-      options,
-    });
+    this.logger.debug(
+      `Performing similarity search with ${queryVector.length}D vector`,
+      {
+        options,
+      },
+    );
 
     try {
       // Validate vector dimensions
@@ -60,7 +63,10 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
       };
 
       // Use the vector adapter for similarity search
-      const vectorResult = await this.vectorAdapter.vectorSearch(queryVector, searchOptions?.limit);
+      const vectorResult = await this.vectorAdapter.vectorSearch(
+        queryVector,
+        searchOptions?.limit,
+      );
 
       // Convert results to VectorSearchResult format
       const results: VectorSearchResult<T>[] = vectorResult?.matches
@@ -72,12 +78,14 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
           vector: match?.vector,
         }));
 
-      this.logger.debug(`Similarity search completed: ${results.length} results`);
+      this.logger.debug(
+        `Similarity search completed: ${results.length} results`,
+      );
       return results;
     } catch (error) {
       this.logger.error(`Similarity search failed: ${error}`);
       throw new Error(
-        `Similarity search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Similarity search failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -146,7 +154,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
     } catch (error) {
       this.logger.error(`Create index failed: ${error}`);
       throw new Error(
-        `Create index failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Create index failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -173,7 +181,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
     } catch (error) {
       this.logger.error(`Get vector stats failed: ${error}`);
       throw new Error(
-        `Get vector stats failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Get vector stats failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -199,7 +207,10 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
       const vectorIds = allVectors.map((entity: any) => entity.id);
 
       // Simple k-means-like clustering (simplified)
-      const clusters = this.performSimpleClustering(vectorIds, clusterOptions?.numClusters);
+      const clusters = this.performSimpleClustering(
+        vectorIds,
+        clusterOptions?.numClusters,
+      );
 
       const result: ClusterResult = {
         clusters,
@@ -209,12 +220,14 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
         },
       };
 
-      this.logger.debug(`Clustering completed: ${result?.clusters.length} clusters`);
+      this.logger.debug(
+        `Clustering completed: ${result?.clusters.length} clusters`,
+      );
       return result;
     } catch (error) {
       this.logger.error(`Clustering failed: ${error}`);
       throw new Error(
-        `Clustering failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Clustering failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -231,7 +244,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
    */
   async findSimilarToEntity(
     entityId: string | number,
-    options?: VectorSearchOptions
+    options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[]> {
     this.logger.debug(`Finding entities similar to: ${entityId}`);
 
@@ -253,7 +266,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
     } catch (error) {
       this.logger.error(`Find similar to entity failed: ${error}`);
       throw new Error(
-        `Find similar to entity failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Find similar to entity failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -264,7 +277,10 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
    * @param entityId
    * @param newVector
    */
-  async updateVector(entityId: string | number, newVector: number[]): Promise<T> {
+  async updateVector(
+    entityId: string | number,
+    newVector: number[],
+  ): Promise<T> {
     this.logger.debug(`Updating vector for entity: ${entityId}`);
 
     try {
@@ -285,7 +301,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
     } catch (error) {
       this.logger.error(`Update vector failed: ${error}`);
       throw new Error(
-        `Update vector failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Update vector failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -298,10 +314,10 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
    */
   async batchSimilaritySearch(
     queryVectors: number[][],
-    options?: VectorSearchOptions
+    options?: VectorSearchOptions,
   ): Promise<VectorSearchResult<T>[][]> {
     this.logger.debug(
-      `Performing batch similarity search with ${queryVectors.length} query vectors`
+      `Performing batch similarity search with ${queryVectors.length} query vectors`,
     );
 
     try {
@@ -309,18 +325,20 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
 
       // Execute searches in parallel
       const searchPromises = queryVectors.map((queryVector) =>
-        this.similaritySearch(queryVector, options)
+        this.similaritySearch(queryVector, options),
       );
 
       const batchResults = await Promise.all(searchPromises);
       results?.push(...batchResults);
 
-      this.logger.debug(`Batch similarity search completed: ${results.length} result sets`);
+      this.logger.debug(
+        `Batch similarity search completed: ${results.length} result sets`,
+      );
       return results;
     } catch (error) {
       this.logger.error(`Batch similarity search failed: ${error}`);
       throw new Error(
-        `Batch similarity search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Batch similarity search failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
@@ -361,13 +379,18 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
    *
    * @param customQuery
    */
-  override async executeCustomQuery<R = any>(customQuery: CustomQuery): Promise<R> {
+  override async executeCustomQuery<R = any>(
+    customQuery: CustomQuery,
+  ): Promise<R> {
     if (customQuery.type === 'vector') {
       // Handle vector-specific queries
       const query = customQuery.query as any;
 
       if (query.operation === 'similarity_search') {
-        const results = await this.similaritySearch(query.vector, query.options);
+        const results = await this.similaritySearch(
+          query.vector,
+          query.options,
+        );
         return results as R;
       }
 
@@ -400,7 +423,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
     const expectedDimension = this.getVectorDimension();
     if (expectedDimension && vector.length !== expectedDimension) {
       throw new Error(
-        `Vector dimension mismatch: expected ${expectedDimension}, got ${vector.length}`
+        `Vector dimension mismatch: expected ${expectedDimension}, got ${vector.length}`,
       );
     }
   }
@@ -423,7 +446,10 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
     return entityObj.vector || null;
   }
 
-  private performSimpleClustering(vectorIds: any[], numClusters: number): any[] {
+  private performSimpleClustering(
+    vectorIds: any[],
+    numClusters: number,
+  ): any[] {
     // Simplified clustering implementation
     const clusters: any[] = [];
     const idsPerCluster = Math.ceil(vectorIds.length / numClusters);

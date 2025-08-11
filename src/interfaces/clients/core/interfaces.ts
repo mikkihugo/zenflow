@@ -444,7 +444,10 @@ export interface IClient {
    * @fires retry On retry attempts
    * @fires error On request failures
    */
-  get<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>>;
+  get<T = any>(
+    endpoint: string,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>>;
 
   /**
    * Perform POST request.
@@ -456,7 +459,11 @@ export interface IClient {
    * @returns {Promise<ClientResponse<T>>} Response with typed data.
    * @throws {Error} If request fails after retries.
    */
-  post<T = any>(endpoint: string, data?: any, options?: RequestOptions): Promise<ClientResponse<T>>;
+  post<T = any>(
+    endpoint: string,
+    data?: any,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>>;
 
   /**
    * Perform PUT request.
@@ -468,7 +475,11 @@ export interface IClient {
    * @returns {Promise<ClientResponse<T>>} Response with typed data.
    * @throws {Error} If request fails after retries.
    */
-  put<T = any>(endpoint: string, data?: any, options?: RequestOptions): Promise<ClientResponse<T>>;
+  put<T = any>(
+    endpoint: string,
+    data?: any,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>>;
 
   /**
    * Perform DELETE request.
@@ -479,7 +490,10 @@ export interface IClient {
    * @returns {Promise<ClientResponse<T>>} Response with typed data.
    * @throws {Error} If request fails after retries.
    */
-  delete<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>>;
+  delete<T = any>(
+    endpoint: string,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>>;
 
   /**
    * Update client configuration.
@@ -497,7 +511,10 @@ export interface IClient {
    * @param {Function} handler - Event handler function.
    * @description Register listeners for client lifecycle and operational events.
    */
-  on(event: 'connect' | 'disconnect' | 'error' | 'retry', handler: (...args: any[]) => void): void;
+  on(
+    event: 'connect' | 'disconnect' | 'error' | 'retry',
+    handler: (...args: any[]) => void,
+  ): void;
 
   /**
    * Remove event handler.
@@ -549,8 +566,13 @@ export interface IClientFactory<TConfig extends ClientConfig = ClientConfig> {
  */
 export interface IClientRegistry {
   // Factory registration
-  registerFactory<T extends ClientConfig>(type: string, factory: IClientFactory<T>): void;
-  getFactory<T extends ClientConfig>(type: string): IClientFactory<T> | undefined;
+  registerFactory<T extends ClientConfig>(
+    type: string,
+    factory: IClientFactory<T>,
+  ): void;
+  getFactory<T extends ClientConfig>(
+    type: string,
+  ): IClientFactory<T> | undefined;
   listFactoryTypes(): string[];
 
   // Client management across all factories
@@ -573,7 +595,7 @@ export class ClientError extends Error {
     message: string,
     public readonly code: string,
     public readonly client: string,
-    public readonly cause?: Error
+    public readonly cause?: Error,
   ) {
     super(message);
     this.name = 'ClientError';
@@ -582,21 +604,36 @@ export class ClientError extends Error {
 
 export class ConnectionError extends ClientError {
   constructor(client: string, cause?: Error) {
-    super(`Connection failed for client: ${client}`, 'CONNECTION_ERROR', client, cause);
+    super(
+      `Connection failed for client: ${client}`,
+      'CONNECTION_ERROR',
+      client,
+      cause,
+    );
     this.name = 'ConnectionError';
   }
 }
 
 export class AuthenticationError extends ClientError {
   constructor(client: string, cause?: Error) {
-    super(`Authentication failed for client: ${client}`, 'AUTH_ERROR', client, cause);
+    super(
+      `Authentication failed for client: ${client}`,
+      'AUTH_ERROR',
+      client,
+      cause,
+    );
     this.name = 'AuthenticationError';
   }
 }
 
 export class TimeoutError extends ClientError {
   constructor(client: string, timeout: number, cause?: Error) {
-    super(`Request timeout (${timeout}ms) for client: ${client}`, 'TIMEOUT_ERROR', client, cause);
+    super(
+      `Request timeout (${timeout}ms) for client: ${client}`,
+      'TIMEOUT_ERROR',
+      client,
+      cause,
+    );
     this.name = 'TimeoutError';
   }
 }
@@ -607,7 +644,7 @@ export class RetryExhaustedError extends ClientError {
       `Retry exhausted (${attempts} attempts) for client: ${client}`,
       'RETRY_EXHAUSTED',
       client,
-      cause
+      cause,
     );
     this.name = 'RetryExhaustedError';
   }

@@ -11,7 +11,10 @@ export interface DeploymentProgressProps {
   status: DeploymentStatus;
 }
 
-export const DeploymentProgress: React.FC<DeploymentProgressProps> = ({ domain, status }) => {
+export const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
+  domain,
+  status,
+}) => {
   const getStatusIcon = (status: DeploymentStatus['status']) => {
     switch (status.status) {
       case 'pending':
@@ -47,11 +50,17 @@ export const DeploymentProgress: React.FC<DeploymentProgressProps> = ({ domain, 
   };
 
   return (
-    <Box flexDirection="column" marginBottom={1}>
+    <Box
+      flexDirection="column"
+      marginBottom={1}
+    >
       {/* Header with domain name and status */}
       <Box marginBottom={0}>
         <Box width={3}>{getStatusIcon(status)}</Box>
-        <Text bold color={getStatusColor(status.status)}>
+        <Text
+          bold
+          color={getStatusColor(status.status)}
+        >
           {formatDomain(domain)}
         </Text>
         <Text dimColor> ({status.status})</Text>
@@ -64,7 +73,10 @@ export const DeploymentProgress: React.FC<DeploymentProgressProps> = ({ domain, 
 
       {/* Progress bar (only show during deployment) */}
       {status.status === 'deploying' && (
-        <Box marginLeft={3} marginBottom={0}>
+        <Box
+          marginLeft={3}
+          marginBottom={0}
+        >
           <ProgressBar
             current={status.progress}
             total={100}
@@ -96,7 +108,9 @@ export const DeploymentProgress: React.FC<DeploymentProgressProps> = ({ domain, 
       {/* Success details (when deployed) */}
       {status.status === 'deployed' && (
         <Box marginLeft={3}>
-          <Text color="green">🎉 Swarm operational with {status.agents.created} active agents</Text>
+          <Text color="green">
+            🎉 Swarm operational with {status.agents.created} active agents
+          </Text>
         </Box>
       )}
 

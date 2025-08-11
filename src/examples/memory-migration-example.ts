@@ -2,7 +2,7 @@
  * @file Memory-migration-example implementation.
  */
 
-import type { SessionMemoryStore } from '../memory';
+import type { SessionMemoryStore } from '../memory/index.js';
 import {
   extractErrorMessage,
   isMemoryError,
@@ -72,14 +72,19 @@ class SafeMemoryService {
   async getUserProfile(userId: string): Promise<MemoryResult<UserProfile>> {
     try {
       // Assume we have an enhanced store that returns MemoryResult
-      const result = await this.retrieveWithResult<UserProfile>('user-profiles', userId);
+      const result = await this.retrieveWithResult<UserProfile>(
+        'user-profiles',
+        userId,
+      );
 
       // ✅ Type-safe access using type guards
       if (isMemorySuccess(result)) {
         return result; // Returns the full success result
-      } else if (isMemoryNotFound(result)) {
+      }
+      if (isMemoryNotFound(result)) {
         return result; // Returns the not-found result
-      } else if (isMemoryError(result)) {
+      }
+      if (isMemoryError(result)) {
         return result; // Returns the error result
       }
 
@@ -104,26 +109,41 @@ class SafeMemoryService {
    * @param userId
    * @param sessionData
    */
-  async cacheUserSession(userId: string, sessionData: UserSession): Promise<MemoryResult<void>> {
+  async cacheUserSession(
+    userId: string,
+    sessionData: UserSession,
+  ): Promise<MemoryResult<void>> {
     try {
-      const result = await this.storeWithResult('user-sessions', userId, sessionData);
+      const result = await this.storeWithResult(
+        'user-sessions',
+        userId,
+        sessionData,
+      );
 
       if (isMemorySuccess(result)) {
         return result;
-      } else if (isMemoryError(result)) {
-        console.error(`❌ Failed to cache session for ${userId}:`, result?.error?.message);
+      }
+      if (isMemoryError(result)) {
+        console.error(
+          `❌ Failed to cache session for ${userId}:`,
+          result?.error?.message,
+        );
         return result;
       }
 
       throw new Error('Unexpected result type');
     } catch (error) {
-      console.error(`❌ Unexpected error caching session for ${userId}:`, error);
+      console.error(
+        `❌ Unexpected error caching session for ${userId}:`,
+        error,
+      );
 
       return {
         found: false,
         error: {
           code: 'CACHE_FAILED',
-          message: error instanceof Error ? error.message : 'Unknown caching error',
+          message:
+            error instanceof Error ? error.message : 'Unknown caching error',
           key: `user-sessions:${userId}`,
         },
       } as MemoryError;
@@ -151,13 +171,15 @@ class SafeMemoryService {
         preferences: result?.data?.preferences || null,
         settings: result?.data?.settings || null,
       };
-    } else if (isMemoryNotFound(result)) {
+    }
+    if (isMemoryNotFound(result)) {
       // ✅ Handle not found case gracefully
       return {
         preferences: null,
         settings: null,
       };
-    } else if (isMemoryError(result)) {
+    }
+    if (isMemoryError(result)) {
       // ✅ Handle errors with user-friendly messages
       return {
         preferences: null,
@@ -200,7 +222,10 @@ class SafeMemoryService {
     }
 
     // Get session with error handling
-    const sessionResult = await this.retrieveWithResult<UserSession>('user-sessions', userId);
+    const sessionResult = await this.retrieveWithResult<UserSession>(
+      'user-sessions',
+      userId,
+    );
     if (isMemorySuccess(sessionResult)) {
       session = sessionResult?.data;
     } else {
@@ -245,7 +270,10 @@ class SafeMemoryService {
           data: {
             profile: userData?.profile,
             session: userData?.session,
-            error: userData?.errors.length > 0 ? userData?.errors?.join('; ') : undefined,
+            error:
+              userData?.errors.length > 0
+                ? userData?.errors?.join('; ')
+                : undefined,
           },
         };
       } catch (error) {
@@ -279,7 +307,10 @@ class SafeMemoryService {
    * @param namespace
    * @param key
    */
-  private async retrieveWithResult<T>(namespace: string, key: string): Promise<MemoryResult<T>> {
+  private async retrieveWithResult<T>(
+    namespace: string,
+    key: string,
+  ): Promise<MemoryResult<T>> {
     try {
       const data = await this.store.retrieve(namespace, key);
 
@@ -303,7 +334,8 @@ class SafeMemoryService {
         found: false,
         error: {
           code: 'RETRIEVE_ERROR',
-          message: error instanceof Error ? error.message : 'Unknown retrieval error',
+          message:
+            error instanceof Error ? error.message : 'Unknown retrieval error',
           key: `${namespace}:${key}`,
         },
       } as MemoryError;
@@ -320,7 +352,7 @@ class SafeMemoryService {
   private async storeWithResult<T>(
     namespace: string,
     key: string,
-    data: T
+    data: T,
   ): Promise<MemoryResult<void>> {
     try {
       await this.store.store(namespace, key, data);
@@ -337,7 +369,8 @@ class SafeMemoryService {
         found: false,
         error: {
           code: 'STORE_ERROR',
-          message: error instanceof Error ? error.message : 'Unknown storage error',
+          message:
+            error instanceof Error ? error.message : 'Unknown storage error',
           key: `${namespace}:${key}`,
         },
       } as MemoryError;

@@ -80,7 +80,13 @@ describe('CLAUDE.md CLI Protection Integration', () => {
 
   describe('Basic Protection Behavior', () => {
     test('should create CLAUDE.md when it does not exist', async () => {
-      const result = await runCLI(['init', 'mesh', '5', '--claude', '--no-interactive']);
+      const result = await runCLI([
+        'init',
+        'mesh',
+        '5',
+        '--claude',
+        '--no-interactive',
+      ]);
 
       expect(result.success).toBe(true);
       expect(result.stdout).toContain('Swarm initialized');
@@ -103,11 +109,19 @@ describe('CLAUDE.md CLI Protection Integration', () => {
       const claudePath = path.join(testDir, 'CLAUDE.md');
       await fs.writeFile(claudePath, 'existing content');
 
-      const result = await runCLI(['init', 'mesh', '5', '--claude', '--no-interactive']);
+      const result = await runCLI([
+        'init',
+        'mesh',
+        '5',
+        '--claude',
+        '--no-interactive',
+      ]);
 
       expect(result.success).toBe(false);
       expect(result.stderr).toContain('already exists');
-      expect(result.stderr).toContain('Use --force to overwrite or --merge to combine');
+      expect(result.stderr).toContain(
+        'Use --force to overwrite or --merge to combine',
+      );
     });
 
     test('should overwrite with --force flag', async () => {
@@ -116,7 +130,14 @@ describe('CLAUDE.md CLI Protection Integration', () => {
       const originalContent = 'original content that should be replaced';
       await fs.writeFile(claudePath, originalContent);
 
-      const result = await runCLI(['init', 'mesh', '5', '--claude', '--force', '--no-interactive']);
+      const result = await runCLI([
+        'init',
+        'mesh',
+        '5',
+        '--claude',
+        '--force',
+        '--no-interactive',
+      ]);
 
       expect(result.success).toBe(true);
       expect(result.stdout).toContain('Backing up existing CLAUDE.md');
@@ -125,14 +146,21 @@ describe('CLAUDE.md CLI Protection Integration', () => {
       // Check original file was overwritten
       const newContent = await fs.readFile(claudePath, 'utf8');
       expect(newContent).toContain('Claude Code Configuration for ruv-swarm');
-      expect(newContent).not.toContain('original content that should be replaced');
+      expect(newContent).not.toContain(
+        'original content that should be replaced',
+      );
 
       // Check backup was created
       const files = await fs.readdir(testDir);
-      const backupFiles = files.filter((f) => f.startsWith('CLAUDE.md.backup.'));
+      const backupFiles = files.filter((f) =>
+        f.startsWith('CLAUDE.md.backup.'),
+      );
       expect(backupFiles.length).toBeGreaterThan(0);
 
-      const backupContent = await fs.readFile(path.join(testDir, backupFiles[0]), 'utf8');
+      const backupContent = await fs.readFile(
+        path.join(testDir, backupFiles[0]),
+        'utf8',
+      );
       expect(backupContent).toBe(originalContent);
     });
 
@@ -150,22 +178,35 @@ This is important project information that should be preserved.
 
       await fs.writeFile(claudePath, originalContent);
 
-      const result = await runCLI(['init', 'mesh', '5', '--claude', '--merge', '--no-interactive']);
+      const result = await runCLI([
+        'init',
+        'mesh',
+        '5',
+        '--claude',
+        '--merge',
+        '--no-interactive',
+      ]);
 
       expect(result.success).toBe(true);
       expect(result.stdout).toContain('Merging ruv-swarm configuration');
-      expect(result.stdout).toContain('Configuration merged with existing files');
+      expect(result.stdout).toContain(
+        'Configuration merged with existing files',
+      );
 
       // Check merged content
       const mergedContent = await fs.readFile(claudePath, 'utf8');
       expect(mergedContent).toContain('My Project Configuration');
       expect(mergedContent).toContain('important project information');
       expect(mergedContent).toContain('Setup Instructions');
-      expect(mergedContent).toContain('Claude Code Configuration for ruv-swarm');
+      expect(mergedContent).toContain(
+        'Claude Code Configuration for ruv-swarm',
+      );
 
       // Check backup was created
       const files = await fs.readdir(testDir);
-      const backupFiles = files.filter((f) => f.startsWith('CLAUDE.md.backup.'));
+      const backupFiles = files.filter((f) =>
+        f.startsWith('CLAUDE.md.backup.'),
+      );
       expect(backupFiles.length).toBeGreaterThan(0);
     });
   });
@@ -178,9 +219,13 @@ This is important project information that should be preserved.
       expect(result.stdout).toContain('--force');
       expect(result.stdout).toContain('--merge');
       expect(result.stdout).toContain('--no-interactive');
-      expect(result.stdout).toContain('Overwrite existing CLAUDE.md (creates backup)');
+      expect(result.stdout).toContain(
+        'Overwrite existing CLAUDE.md (creates backup)',
+      );
       expect(result.stdout).toContain('Merge with existing CLAUDE.md content');
-      expect(result.stdout).toContain('Skip interactive prompts (fail on conflicts)');
+      expect(result.stdout).toContain(
+        'Skip interactive prompts (fail on conflicts)',
+      );
     });
 
     test('should show examples with different flags', async () => {
@@ -190,7 +235,9 @@ This is important project information that should be preserved.
       expect(result.stdout).toContain('ruv-swarm init mesh 5 --claude');
       expect(result.stdout).toContain('ruv-swarm init mesh 5 --claude --force');
       expect(result.stdout).toContain('ruv-swarm init mesh 5 --claude --merge');
-      expect(result.stdout).toContain('ruv-swarm init mesh 5 --claude --no-interactive');
+      expect(result.stdout).toContain(
+        'ruv-swarm init mesh 5 --claude --no-interactive',
+      );
     });
   });
 
@@ -202,9 +249,12 @@ This is important project information that should be preserved.
       await fs.chmod(readOnlyDir, 0o444); // Read-only
 
       try {
-        const result = await runCLI(['init', 'mesh', '5', '--claude', '--no-interactive'], {
-          cwd: readOnlyDir,
-        });
+        const result = await runCLI(
+          ['init', 'mesh', '5', '--claude', '--no-interactive'],
+          {
+            cwd: readOnlyDir,
+          },
+        );
 
         expect(result.success).toBe(false);
         expect(result.stderr).toContain('Error');
@@ -241,7 +291,14 @@ This is important project information that should be preserved.
       // Run init with force multiple times
       for (let i = 2; i <= 8; i++) {
         await fs.writeFile(claudePath, `version ${i}`);
-        await runCLI(['init', 'mesh', '5', '--claude', '--force', '--no-interactive']);
+        await runCLI([
+          'init',
+          'mesh',
+          '5',
+          '--claude',
+          '--force',
+          '--no-interactive',
+        ]);
 
         // Add small delay to ensure different timestamps
         await new Promise((resolve) => setTimeout(resolve, 10));
@@ -249,7 +306,9 @@ This is important project information that should be preserved.
 
       // Check that only 5 backups remain
       const files = await fs.readdir(testDir);
-      const backupFiles = files.filter((f) => f.startsWith('CLAUDE.md.backup.'));
+      const backupFiles = files.filter((f) =>
+        f.startsWith('CLAUDE.md.backup.'),
+      );
       expect(backupFiles.length).toBeLessThanOrEqual(5);
     });
   });
@@ -274,7 +333,14 @@ This project uses lion for multi-agent coordination.`;
 
       await fs.writeFile(claudePath, lionContent);
 
-      const result = await runCLI(['init', 'mesh', '5', '--claude', '--merge', '--no-interactive']);
+      const result = await runCLI([
+        'init',
+        'mesh',
+        '5',
+        '--claude',
+        '--merge',
+        '--no-interactive',
+      ]);
 
       expect(result.success).toBe(true);
 
@@ -286,15 +352,21 @@ This project uses lion for multi-agent coordination.`;
       expect(mergedContent).toContain('Multi-Hat Hierarchy');
 
       // Should add ruv-swarm content
-      expect(mergedContent).toContain('Claude Code Configuration for ruv-swarm');
+      expect(mergedContent).toContain(
+        'Claude Code Configuration for ruv-swarm',
+      );
       expect(mergedContent).toContain('BATCH EVERYTHING');
-      expect(mergedContent).toContain('ruv-swarm coordinates, Claude Code creates');
+      expect(mergedContent).toContain(
+        'ruv-swarm coordinates, Claude Code creates',
+      );
     });
 
     test('should handle complex existing project structure', async () => {
       // Create complex project structure
       await fs.mkdir(path.join(testDir, '.claude'), { recursive: true });
-      await fs.mkdir(path.join(testDir, '.claude', 'commands'), { recursive: true });
+      await fs.mkdir(path.join(testDir, '.claude', 'commands'), {
+        recursive: true,
+      });
 
       const claudePath = path.join(testDir, 'CLAUDE.md');
       const complexContent = `# My Complex Project
@@ -322,7 +394,14 @@ Some old configuration that might conflict.`;
 
       await fs.writeFile(claudePath, complexContent);
 
-      const result = await runCLI(['init', 'mesh', '5', '--claude', '--merge', '--no-interactive']);
+      const result = await runCLI([
+        'init',
+        'mesh',
+        '5',
+        '--claude',
+        '--merge',
+        '--no-interactive',
+      ]);
 
       expect(result.success).toBe(true);
 
@@ -338,7 +417,9 @@ Some old configuration that might conflict.`;
       expect(mergedContent).toContain('Never deploy to production on Fridays!');
 
       // Should add ruv-swarm without disrupting structure
-      expect(mergedContent).toContain('Claude Code Configuration for ruv-swarm');
+      expect(mergedContent).toContain(
+        'Claude Code Configuration for ruv-swarm',
+      );
 
       // Check that content is properly separated
       const sections = mergedContent.split('\n---\n');

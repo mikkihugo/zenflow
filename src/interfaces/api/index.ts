@@ -12,7 +12,7 @@
  * @file Api module exports.
  */
 
-import { getWebDashboardURL } from '../config/url-builder';
+import { getWebDashboardURL } from '../../config/defaults.js';
 
 // HTTP API (REST/GraphQL - consolidated from src/api/)
 export * from './http/index.ts';
@@ -58,7 +58,9 @@ export const APIUtils = {
    *
    * @param response
    */
-  parseResponse: (response: any): { success: boolean; data?: any; error?: string } => {
+  parseResponse: (
+    response: any,
+  ): { success: boolean; data?: any; error?: string } => {
     if (response && typeof response === 'object') {
       if (response?.error) {
         return { success: false, error: response?.error };
@@ -94,7 +96,10 @@ export class APIClientFactory {
    * @param url
    * @param instanceKey
    */
-  static getWebSocketClient(url: string, instanceKey = 'default'): WebSocketClient {
+  static getWebSocketClient(
+    url: string,
+    instanceKey = 'default',
+  ): WebSocketClient {
     const key = `ws:${instanceKey}`;
 
     if (!APIClientFactory.instances.has(key)) {

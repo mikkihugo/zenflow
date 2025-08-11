@@ -122,9 +122,13 @@ export class NeuralCoordinationProtocol {
       activeNodes: nodes?.filter((n) => n.status === 'active').length,
       totalMessages: this.messages.length,
       avgMessagesPerNode:
-        nodes.length > 0 ? nodes?.reduce((sum, n) => sum + n.messageCount, 0) / nodes.length : 0,
+        nodes.length > 0
+          ? nodes?.reduce((sum, n) => sum + n.messageCount, 0) / nodes.length
+          : 0,
       lastActivity:
-        this.messages.length > 0 ? this.messages[this.messages.length - 1]?.timestamp : null,
+        this.messages.length > 0
+          ? this.messages[this.messages.length - 1]?.timestamp
+          : null,
     };
   }
 
@@ -286,7 +290,10 @@ export class NeuralCoordinationProtocol {
     const nodes = Array.from(this.nodes.values());
     if (nodes.length === 0) return 0;
 
-    const total = nodes?.reduce((sum, node) => sum + (node?.messageCount || 0), 0);
+    const total = nodes?.reduce(
+      (sum, node) => sum + (node?.messageCount || 0),
+      0,
+    );
     return total / nodes.length;
   }
 }

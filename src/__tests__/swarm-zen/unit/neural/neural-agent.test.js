@@ -67,7 +67,10 @@ describe('NeuralNetwork Tests', () => {
 
   describe('Activation Functions', () => {
     it('should compute sigmoid activation', () => {
-      const nn = new NeuralNetwork({ ...config, activationFunction: 'sigmoid' });
+      const nn = new NeuralNetwork({
+        ...config,
+        activationFunction: 'sigmoid',
+      });
       const result = nn._activation(0);
       assert.strictEqual(result, 0.5);
 
@@ -317,10 +320,17 @@ describe('NeuralAgent Tests', () => {
   describe('Performance Calculation', () => {
     it('should calculate performance metrics', () => {
       const task = { id: 'task-123' };
-      const result = { success: true, metrics: { linesOfCode: 50, testsPass: 0.9 } };
+      const result = {
+        success: true,
+        metrics: { linesOfCode: 50, testsPass: 0.9 },
+      };
       const executionTime = 30000; // 30 seconds
 
-      const performance = neuralAgent._calculatePerformance(task, result, executionTime);
+      const performance = neuralAgent._calculatePerformance(
+        task,
+        result,
+        executionTime,
+      );
       assert(performance);
       assert(performance.speed > 0 && performance.speed <= 1);
       assert.strictEqual(performance.accuracy, 0.9);
@@ -332,7 +342,11 @@ describe('NeuralAgent Tests', () => {
       const result = { success: false };
       const executionTime = 5000;
 
-      const performance = neuralAgent._calculatePerformance(task, result, executionTime);
+      const performance = neuralAgent._calculatePerformance(
+        task,
+        result,
+        executionTime,
+      );
       assert.strictEqual(performance.accuracy, 0.2);
     });
   });
@@ -357,7 +371,10 @@ describe('NeuralAgent Tests', () => {
     });
 
     it('should find similar tasks', () => {
-      const newTask = { description: 'Research deep learning', priority: 'high' };
+      const newTask = {
+        description: 'Research deep learning',
+        priority: 'high',
+      };
       const similar = neuralAgent._findSimilarTasks(newTask);
 
       assert(similar.length > 0);
@@ -457,15 +474,33 @@ describe('NeuralAgent Tests', () => {
     it('should load neural state', () => {
       const savedState = {
         neuralNetwork: neuralAgent.neuralNetwork.save(),
-        cognitiveState: { attention: 0.8, fatigue: 0.2, confidence: 0.7, exploration: 0.3 },
-        performanceMetrics: { accuracy: 0.9, speed: 0.8, creativity: 0.7, efficiency: 0.85 },
-        learningHistory: [{ timestamp: Date.now(), task: 'old-task', performance: 0.75 }],
+        cognitiveState: {
+          attention: 0.8,
+          fatigue: 0.2,
+          confidence: 0.7,
+          exploration: 0.3,
+        },
+        performanceMetrics: {
+          accuracy: 0.9,
+          speed: 0.8,
+          creativity: 0.7,
+          efficiency: 0.85,
+        },
+        learningHistory: [
+          { timestamp: Date.now(), task: 'old-task', performance: 0.75 },
+        ],
         taskHistory: [],
       };
 
       neuralAgent.loadNeuralState(savedState);
-      assert.deepStrictEqual(neuralAgent.cognitiveState, savedState.cognitiveState);
-      assert.deepStrictEqual(neuralAgent.performanceMetrics, savedState.performanceMetrics);
+      assert.deepStrictEqual(
+        neuralAgent.cognitiveState,
+        savedState.cognitiveState,
+      );
+      assert.deepStrictEqual(
+        neuralAgent.performanceMetrics,
+        savedState.performanceMetrics,
+      );
       assert.strictEqual(neuralAgent.learningHistory.length, 1);
     });
   });
@@ -516,7 +551,10 @@ describe('NeuralAgent Tests', () => {
 describe('NeuralAgentFactory Tests', () => {
   it('should create neural agent for valid agent type', () => {
     const mockAgent = new MockAgent();
-    const neuralAgent = NeuralAgentFactory.createNeuralAgent(mockAgent, 'researcher');
+    const neuralAgent = NeuralAgentFactory.createNeuralAgent(
+      mockAgent,
+      'researcher',
+    );
     assert(neuralAgent instanceof NeuralAgent);
     assert.strictEqual(neuralAgent.agentType, 'researcher');
   });
@@ -546,14 +584,16 @@ describe('NeuralAgentFactory Tests', () => {
 
 describe('Cognitive Profiles Tests', () => {
   it('should have valid profiles for all agent types', () => {
-    Object.entries(AGENT_COGNITIVE_PROFILES).forEach(([_agentType, profile]) => {
-      assert(profile.primary);
-      assert(profile.secondary);
-      assert(typeof profile.learningRate === 'number');
-      assert(typeof profile.momentum === 'number');
-      assert(Array.isArray(profile.networkLayers));
-      assert(profile.activationFunction);
-    });
+    Object.entries(AGENT_COGNITIVE_PROFILES).forEach(
+      ([_agentType, profile]) => {
+        assert(profile.primary);
+        assert(profile.secondary);
+        assert(typeof profile.learningRate === 'number');
+        assert(typeof profile.momentum === 'number');
+        assert(Array.isArray(profile.networkLayers));
+        assert(profile.activationFunction);
+      },
+    );
   });
 
   it('should have valid cognitive patterns', () => {

@@ -16,7 +16,14 @@ import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  jest,
+  test,
+} from '@jest/globals';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -124,7 +131,7 @@ describe('Integration & Advanced Features Coverage', () => {
         expect(result.modules.remote.success).toBe(true);
         expect(result.modules.core.manualSetup).toBe(true);
         expect(result.modules.core.instructions).toContain(
-          'Run: claude mcp add ruv-swarm npx ruv-swarm mcp start'
+          'Run: claude mcp add ruv-swarm npx ruv-swarm mcp start',
         );
       });
 
@@ -135,9 +142,15 @@ describe('Integration & Advanced Features Coverage', () => {
         });
 
         // Mock successful core initialization
-        orchestrator.docs.generateAll = vi.fn().mockResolvedValue({ success: true });
-        orchestrator.remote.createAll = vi.fn().mockResolvedValue({ success: true });
-        orchestrator.core.initialize = vi.fn().mockResolvedValue({ success: true });
+        orchestrator.docs.generateAll = vi
+          .fn()
+          .mockResolvedValue({ success: true });
+        orchestrator.remote.createAll = vi
+          .fn()
+          .mockResolvedValue({ success: true });
+        orchestrator.core.initialize = vi
+          .fn()
+          .mockResolvedValue({ success: true });
 
         const result = await orchestrator.setupIntegration();
 
@@ -152,9 +165,15 @@ describe('Integration & Advanced Features Coverage', () => {
           autoSetup: true,
         });
 
-        orchestrator.docs.generateAll = vi.fn().mockResolvedValue({ success: true });
-        orchestrator.remote.createAll = vi.fn().mockResolvedValue({ success: true });
-        orchestrator.core.initialize = vi.fn().mockRejectedValue(new Error('Core setup failed'));
+        orchestrator.docs.generateAll = vi
+          .fn()
+          .mockResolvedValue({ success: true });
+        orchestrator.remote.createAll = vi
+          .fn()
+          .mockResolvedValue({ success: true });
+        orchestrator.core.initialize = vi
+          .fn()
+          .mockRejectedValue(new Error('Core setup failed'));
 
         const result = await orchestrator.setupIntegration();
 
@@ -168,12 +187,16 @@ describe('Integration & Advanced Features Coverage', () => {
         const orchestrator = new ClaudeIntegrationOrchestrator();
         const mockResult = { response: 'test response' };
 
-        orchestrator.core.invokeClaudeWithPrompt = vi.fn().mockResolvedValue(mockResult);
+        orchestrator.core.invokeClaudeWithPrompt = vi
+          .fn()
+          .mockResolvedValue(mockResult);
 
         const result = await orchestrator.invokeClaudeWithPrompt('test prompt');
 
         expect(result).toEqual(mockResult);
-        expect(orchestrator.core.invokeClaudeWithPrompt).toHaveBeenCalledWith('test prompt');
+        expect(orchestrator.core.invokeClaudeWithPrompt).toHaveBeenCalledWith(
+          'test prompt',
+        );
       });
 
       test('should check status', async () => {
@@ -210,7 +233,9 @@ describe('Integration & Advanced Features Coverage', () => {
 
         fs.rm.mockRejectedValue(new Error('Permission denied'));
 
-        await expect(orchestrator.cleanup()).rejects.toThrow('Permission denied');
+        await expect(orchestrator.cleanup()).rejects.toThrow(
+          'Permission denied',
+        );
       });
     });
 
@@ -249,9 +274,13 @@ describe('Integration & Advanced Features Coverage', () => {
             .invokeClaudeWithSwarm,
         }));
 
-        const result = await invokeClaudeWithSwarm('test prompt', { option: 'test' });
+        const result = await invokeClaudeWithSwarm('test prompt', {
+          option: 'test',
+        });
 
-        expect(mockOrchestrator.invokeClaudeWithPrompt).toHaveBeenCalledWith('test prompt');
+        expect(mockOrchestrator.invokeClaudeWithPrompt).toHaveBeenCalledWith(
+          'test prompt',
+        );
         expect(result).toEqual(mockResult);
       });
     });
@@ -428,7 +457,11 @@ describe('Integration & Advanced Features Coverage', () => {
               operations: [],
               agents: new Map(),
               learnings: [],
-              metrics: { tokensSaved: 0, tasksCompleted: 0, patternsImproved: 0 },
+              metrics: {
+                tokensSaved: 0,
+                tasksCompleted: 0,
+                patternsImproved: 0,
+              },
             };
           }
 
@@ -514,7 +547,9 @@ describe('Integration & Advanced Features Coverage', () => {
           const result = await hooks.preSearchHook({ pattern: 'test-pattern' });
           expect(result).toBeDefined();
         } else {
-          const result = await hooks.handleHook('pre-search', { pattern: 'test-pattern' });
+          const result = await hooks.handleHook('pre-search', {
+            pattern: 'test-pattern',
+          });
           expect(result.continue).toBe(true);
         }
       });
@@ -561,7 +596,9 @@ describe('Integration & Advanced Features Coverage', () => {
           const result = await hooks.sessionEndHook({ generateSummary: true });
           expect(result).toBeDefined();
         } else {
-          const result = await hooks.handleHook('session-end', { generateSummary: true });
+          const result = await hooks.handleHook('session-end', {
+            generateSummary: true,
+          });
           expect(result.continue).toBe(true);
         }
       });
@@ -584,8 +621,12 @@ describe('Integration & Advanced Features Coverage', () => {
       vi.doMock('better-sqlite3', () => vi.fn(() => mockDb));
 
       try {
-        const hookModule = await import('../src/github-coordinator/claude-hooks.js');
-        const coordModule = await import('../src/github-coordinator/gh-cli-coordinator.js');
+        const hookModule = await import(
+          '../src/github-coordinator/claude-hooks.js'
+        );
+        const coordModule = await import(
+          '../src/github-coordinator/gh-cli-coordinator.js'
+        );
         ClaudeGitHubHooks = hookModule.ClaudeGitHubHooks;
         GHCoordinator = coordModule.default || coordModule.GHCoordinator;
       } catch (_error) {
@@ -689,11 +730,13 @@ describe('Integration & Advanced Features Coverage', () => {
       test('should handle pre-task with no matching issue', async () => {
         const hooks = new ClaudeGitHubHooks();
 
-        hooks.coordinator.getAvailableTasks = jest
-          .fn()
-          .mockResolvedValue([
-            { number: 456, title: 'Unrelated task', body: 'Different functionality' },
-          ]);
+        hooks.coordinator.getAvailableTasks = jest.fn().mockResolvedValue([
+          {
+            number: 456,
+            title: 'Unrelated task',
+            body: 'Different functionality',
+          },
+        ]);
 
         const result = await hooks.preTask('specific implementation');
 
@@ -704,7 +747,9 @@ describe('Integration & Advanced Features Coverage', () => {
       test('should handle pre-task errors', async () => {
         const hooks = new ClaudeGitHubHooks();
 
-        hooks.coordinator.getAvailableTasks = vi.fn().mockRejectedValue(new Error('API error'));
+        hooks.coordinator.getAvailableTasks = vi
+          .fn()
+          .mockRejectedValue(new Error('API error'));
 
         const result = await hooks.preTask('test task');
 
@@ -721,7 +766,7 @@ describe('Integration & Advanced Features Coverage', () => {
         expect(hooks.coordinator.updateTaskProgress).toHaveBeenCalledWith(
           hooks.swarmId,
           123,
-          expect.stringContaining('file.js')
+          expect.stringContaining('file.js'),
         );
       });
 
@@ -755,7 +800,10 @@ describe('Integration & Advanced Features Coverage', () => {
 
         await hooks.postTask('task-1', { completed: false });
 
-        expect(hooks.coordinator.releaseTask).toHaveBeenCalledWith(hooks.swarmId, 123);
+        expect(hooks.coordinator.releaseTask).toHaveBeenCalledWith(
+          hooks.swarmId,
+          123,
+        );
         expect(hooks.activeTask).toBeNull();
       });
 
@@ -823,9 +871,19 @@ describe('Integration & Advanced Features Coverage', () => {
         execSync.mockReturnValue(
           JSON.stringify([
             { number: 1, title: 'Task 1', labels: [], assignees: [] },
-            { number: 2, title: 'Task 2', labels: [{ name: 'swarm-123' }], assignees: [] },
-            { number: 3, title: 'Task 3', labels: [], assignees: [{ login: 'user' }] },
-          ])
+            {
+              number: 2,
+              title: 'Task 2',
+              labels: [{ name: 'swarm-123' }],
+              assignees: [],
+            },
+            {
+              number: 3,
+              title: 'Task 3',
+              labels: [],
+              assignees: [{ login: 'user' }],
+            },
+          ]),
         );
 
         const tasks = await coordinator.getAvailableTasks();
@@ -842,7 +900,7 @@ describe('Integration & Advanced Features Coverage', () => {
         expect(success).toBe(true);
         expect(execSync).toHaveBeenCalledWith(
           expect.stringContaining('gh issue edit 456'),
-          expect.any(Object)
+          expect.any(Object),
         );
       });
 
@@ -866,19 +924,23 @@ describe('Integration & Advanced Features Coverage', () => {
         expect(success).toBe(true);
         expect(execSync).toHaveBeenCalledWith(
           expect.stringContaining('gh issue edit 456'),
-          expect.any(Object)
+          expect.any(Object),
         );
       });
 
       test('should update task progress', async () => {
         const coordinator = new GHCoordinator({ owner: 'test', repo: 'test' });
 
-        const success = await coordinator.updateTaskProgress('swarm-123', 456, 'Progress update');
+        const success = await coordinator.updateTaskProgress(
+          'swarm-123',
+          456,
+          'Progress update',
+        );
 
         expect(success).toBe(true);
         expect(execSync).toHaveBeenCalledWith(
           expect.stringContaining('gh issue comment 456'),
-          expect.any(Object)
+          expect.any(Object),
         );
       });
 
@@ -890,7 +952,7 @@ describe('Integration & Advanced Features Coverage', () => {
             { number: 1, title: 'Task 1', labels: [{ name: 'swarm-123' }] },
             { number: 2, title: 'Task 2', labels: [{ name: 'swarm-456' }] },
             { number: 3, title: 'Task 3', labels: [] },
-          ])
+          ]),
         );
 
         const status = await coordinator.getCoordinationStatus();
@@ -923,7 +985,8 @@ describe('Integration & Advanced Features Coverage', () => {
     beforeEach(async () => {
       try {
         const module = await import('../src/cognitive-pattern-evolution.js');
-        CognitivePatternEvolution = module.default || module.CognitivePatternEvolution;
+        CognitivePatternEvolution =
+          module.default || module.CognitivePatternEvolution;
       } catch (_error) {
         // Create comprehensive mock
         CognitivePatternEvolution = class {
@@ -992,7 +1055,7 @@ describe('Integration & Advanced Features Coverage', () => {
       const result = await evolution.evolvePattern(
         'agent-1',
         { taskType: 'analysis', complexity: 0.7 },
-        { success: true, performance: 0.9 }
+        { success: true, performance: 0.9 },
       );
 
       expect(result.success).toBe(true);
@@ -1003,10 +1066,13 @@ describe('Integration & Advanced Features Coverage', () => {
     test('should handle cross-agent learning', async () => {
       const evolution = new CognitivePatternEvolution();
 
-      const result = await evolution.crossAgentLearning(['agent-1', 'agent-2', 'agent-3'], {
-        domain: 'problem-solving',
-        experience: 'shared-task',
-      });
+      const result = await evolution.crossAgentLearning(
+        ['agent-1', 'agent-2', 'agent-3'],
+        {
+          domain: 'problem-solving',
+          experience: 'shared-task',
+        },
+      );
 
       expect(result.success).toBe(true);
       expect(result.transferredPatterns).toBe(3);
@@ -1069,7 +1135,12 @@ describe('Integration & Advanced Features Coverage', () => {
             });
           }
 
-          async adaptToDomain(_agentId, _sourceDomain, _targetDomain, _strategy) {
+          async adaptToDomain(
+            _agentId,
+            _sourceDomain,
+            _targetDomain,
+            _strategy,
+          ) {
             return {
               success: true,
               adaptationScore: 0.85,
@@ -1116,7 +1187,7 @@ describe('Integration & Advanced Features Coverage', () => {
         'agent-1',
         'source-domain',
         'target-domain',
-        'maml'
+        'maml',
       );
 
       expect(result.success).toBe(true);
@@ -1132,7 +1203,10 @@ describe('Integration & Advanced Features Coverage', () => {
         { task: 'task2', performance: 0.9, strategy: 'prototypical' },
       ];
 
-      const result = await framework.metaLearnFromExperiences(experiences, 'maml');
+      const result = await framework.metaLearnFromExperiences(
+        experiences,
+        'maml',
+      );
 
       expect(result.success).toBe(true);
       expect(result.learnedStrategy).toBe('maml');
@@ -1176,7 +1250,8 @@ describe('Integration & Advanced Features Coverage', () => {
     beforeEach(async () => {
       try {
         const module = await import('../src/neural-coordination-protocol.js');
-        NeuralCoordinationProtocol = module.default || module.NeuralCoordinationProtocol;
+        NeuralCoordinationProtocol =
+          module.default || module.NeuralCoordinationProtocol;
       } catch (_error) {
         NeuralCoordinationProtocol = class {
           constructor() {
@@ -1267,7 +1342,7 @@ describe('Integration & Advanced Features Coverage', () => {
       const result = await protocol.coordinateAgents(
         ['agent-1', 'agent-2', 'agent-3'],
         'hierarchical',
-        'collaborative-task'
+        'collaborative-task',
       );
 
       expect(result.success).toBe(true);
@@ -1284,7 +1359,11 @@ describe('Integration & Advanced Features Coverage', () => {
         { id: 'proposal-2', value: 'option-b' },
       ];
 
-      const result = await protocol.establishConsensus('session-123', proposals, 'voting');
+      const result = await protocol.establishConsensus(
+        'session-123',
+        proposals,
+        'voting',
+      );
 
       expect(result.success).toBe(true);
       expect(result.consensusReached).toBe(true);
@@ -1353,7 +1432,9 @@ describe('Integration & Advanced Features Coverage', () => {
           getPool(moduleId, requiredSize) {
             if (!this.pools.has(moduleId)) {
               const memory = new WebAssembly.Memory({
-                initial: Math.ceil((requiredSize || this.initialSize) / (64 * 1024)),
+                initial: Math.ceil(
+                  (requiredSize || this.initialSize) / (64 * 1024),
+                ),
                 maximum: Math.ceil(this.maxMemory / (64 * 1024)),
               });
               this.pools.set(moduleId, {
@@ -1374,7 +1455,7 @@ describe('Integration & Advanced Features Coverage', () => {
             // Ensure pool has sufficient capacity
             if (pool.used + size > pool.capacity) {
               throw new Error(
-                `Pool ${moduleId} insufficient capacity: ${pool.used + size} > ${pool.capacity}`
+                `Pool ${moduleId} insufficient capacity: ${pool.used + size} > ${pool.capacity}`,
               );
             }
 
@@ -1532,11 +1613,13 @@ describe('Integration & Advanced Features Coverage', () => {
   describe('Integration Test Scenarios', () => {
     test('should integrate Claude hooks with GitHub coordinator', async () => {
       const mockCoordinator = {
-        getAvailableTasks: jest
-          .fn()
-          .mockResolvedValue([
-            { number: 123, title: 'Integration test', body: 'Test integration' },
-          ]),
+        getAvailableTasks: jest.fn().mockResolvedValue([
+          {
+            number: 123,
+            title: 'Integration test',
+            body: 'Test integration',
+          },
+        ]),
         claimTask: vi.fn().mockResolvedValue(true),
         updateTaskProgress: vi.fn().mockResolvedValue(true),
         config: { owner: 'test', repo: 'test', labelPrefix: 'swarm-' },
@@ -1553,7 +1636,7 @@ describe('Integration & Advanced Features Coverage', () => {
       const updateResult = await mockCoordinator.updateTaskProgress(
         swarmId,
         123,
-        'Integration test progress'
+        'Integration test progress',
       );
       expect(updateResult).toBe(true);
     });
@@ -1580,19 +1663,21 @@ describe('Integration & Advanced Features Coverage', () => {
       const evolutionResult = await mockEvolution.evolvePattern(
         'agent-1',
         { domain: 'source' },
-        { performance: 0.9 }
+        { performance: 0.9 },
       );
 
       const adaptationResult = await mockMetaLearning.adaptToDomain(
         'agent-1',
         'source-domain',
         'target-domain',
-        evolutionResult.newPattern
+        evolutionResult.newPattern,
       );
 
       expect(evolutionResult.success).toBe(true);
       expect(adaptationResult.success).toBe(true);
-      expect(adaptationResult.transferredKnowledge).toContain('pattern-knowledge');
+      expect(adaptationResult.transferredKnowledge).toContain(
+        'pattern-knowledge',
+      );
     });
 
     test('should coordinate neural agents with WASM memory optimization', async () => {
@@ -1619,7 +1704,7 @@ describe('Integration & Advanced Features Coverage', () => {
       const coordinationResult = await mockCoordination.coordinateAgents(
         ['agent-1', 'agent-2'],
         'peer_to_peer',
-        'memory-intensive-task'
+        'memory-intensive-task',
       );
 
       expect(allocation.id).toBeDefined();
@@ -1637,7 +1722,9 @@ describe('Integration & Advanced Features Coverage', () => {
 
       // Mock file system error
       fs.mkdir.mockRejectedValue(new Error('Permission denied'));
-      orchestrator.docs.generateAll = vi.fn().mockRejectedValue(new Error('FS error'));
+      orchestrator.docs.generateAll = vi
+        .fn()
+        .mockRejectedValue(new Error('FS error'));
 
       await expect(orchestrator.setupIntegration()).rejects.toThrow();
     });
@@ -1654,7 +1741,7 @@ describe('Integration & Advanced Features Coverage', () => {
       };
 
       await expect(mockCoordinator.getAvailableTasks()).rejects.toThrow(
-        'GitHub API rate limit exceeded'
+        'GitHub API rate limit exceeded',
       );
     });
 
@@ -1674,16 +1761,16 @@ describe('Integration & Advanced Features Coverage', () => {
     test('should handle invalid patterns in cognitive evolution', async () => {
       const mockEvolution = {
         evolvePattern: async (_agentId, context, feedback) => {
-          if (!context || !feedback) {
+          if (!(context && feedback)) {
             throw new Error('Invalid context or feedback');
           }
           return { success: true };
         },
       };
 
-      await expect(mockEvolution.evolvePattern('agent-1', null, null)).rejects.toThrow(
-        'Invalid context or feedback'
-      );
+      await expect(
+        mockEvolution.evolvePattern('agent-1', null, null),
+      ).rejects.toThrow('Invalid context or feedback');
     });
 
     test('should handle coordination protocol failures', async () => {
@@ -1699,13 +1786,13 @@ describe('Integration & Advanced Features Coverage', () => {
         },
       };
 
-      await expect(mockProtocol.coordinateAgents([], 'hierarchical')).rejects.toThrow(
-        'No agents provided for coordination'
-      );
+      await expect(
+        mockProtocol.coordinateAgents([], 'hierarchical'),
+      ).rejects.toThrow('No agents provided for coordination');
 
-      await expect(mockProtocol.coordinateAgents(['agent-1'], null)).rejects.toThrow(
-        'No coordination strategy specified'
-      );
+      await expect(
+        mockProtocol.coordinateAgents(['agent-1'], null),
+      ).rejects.toThrow('No coordination strategy specified');
     });
   });
 });

@@ -46,7 +46,9 @@ export class GeminiAIIntegration {
       this.geminiLogger = createClaudeCLILogger(); // For gemini operations
       this.initialized = true;
 
-      this.logger.info('Gemini AI Integration initialized with structured logging');
+      this.logger.info(
+        'Gemini AI Integration initialized with structured logging',
+      );
     } catch (error) {
       console.error('Failed to initialize logging:', error.message);
       // Fallback to console logging
@@ -66,8 +68,12 @@ export class GeminiAIIntegration {
   async fixViolations(violations, options = {}) {
     await this.initializeLogging();
 
-    this.logger.info(`🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`);
-    console.log(`🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`);
+    this.logger.info(
+      `🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`,
+    );
+    console.log(
+      `🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`,
+    );
 
     // Log operation start with structured data
     if (this.logger && this.initialized) {
@@ -76,25 +82,34 @@ export class GeminiAIIntegration {
         options,
       });
     }
-    console.log(`   🔧 Starting violation fixing - ${violations.length} total violations`);
+    console.log(
+      `   🔧 Starting violation fixing - ${violations.length} total violations`,
+    );
     console.log(`   ⚙️  Options:`, options);
 
     const { maxFixes = 50, dryRun = false } = options;
-    const prioritizedViolations = this.prioritizeViolations(violations).slice(0, maxFixes);
+    const prioritizedViolations = this.prioritizeViolations(violations).slice(
+      0,
+      maxFixes,
+    );
 
     // Group violations by file for efficient batching
     const violationsByFile = this.groupViolationsByFile(prioritizedViolations);
 
     console.log(
-      `🎯 Processing ${prioritizedViolations.length} violations across ${violationsByFile.size} files...`
+      `🎯 Processing ${prioritizedViolations.length} violations across ${violationsByFile.size} files...`,
     );
 
     let fileIndex = 0;
     for (const [filePath, fileViolations] of violationsByFile.entries()) {
       fileIndex++;
       const progress = ((fileIndex / violationsByFile.size) * 100).toFixed(1);
-      console.log(`\n📝 Fixing file ${fileIndex}/${violationsByFile.size} (${progress}%)`);
-      console.log(`   📁 File: ${path.basename(filePath)} (${fileViolations.length} violations)`);
+      console.log(
+        `\n📝 Fixing file ${fileIndex}/${violationsByFile.size} (${progress}%)`,
+      );
+      console.log(
+        `   📁 File: ${path.basename(filePath)} (${fileViolations.length} violations)`,
+      );
 
       try {
         // Log detailed error analysis with structured data
@@ -103,24 +118,30 @@ export class GeminiAIIntegration {
             this.logger,
             filePath,
             fileViolations,
-            this.categorizeViolations(fileViolations)
+            this.categorizeViolations(fileViolations),
           );
         }
         console.log(
-          `   📊 Analysis: ${fileViolations.length} violations in ${path.basename(filePath)}`
+          `   📊 Analysis: ${fileViolations.length} violations in ${path.basename(filePath)}`,
         );
 
-        const fixed = await this.fixFileViolations(filePath, fileViolations, dryRun);
+        const fixed = await this.fixFileViolations(
+          filePath,
+          fileViolations,
+          dryRun,
+        );
         if (fixed) {
           this.fixedCount += fileViolations.length;
-          console.log(`   ✅ Fixed ${fileViolations.length} violations successfully`);
+          console.log(
+            `   ✅ Fixed ${fileViolations.length} violations successfully`,
+          );
           this.logger.info(
             `Fixed ${fileViolations.length} violations in ${path.basename(filePath)}`,
             {
               filePath,
               violationCount: fileViolations.length,
               violationTypes: fileViolations.map((v) => v.rule),
-            }
+            },
           );
         } else {
           this.skippedCount += fileViolations.length;
@@ -139,7 +160,11 @@ export class GeminiAIIntegration {
           violationTypes: fileViolations.map((v) => v.rule),
         });
 
-        const todoMarked = this.markAsTodo(filePath, fileViolations, error.message);
+        const todoMarked = this.markAsTodo(
+          filePath,
+          fileViolations,
+          error.message,
+        );
         if (todoMarked) {
           this.todoCount += fileViolations.length;
           console.log(`   📝 TODO: ${error.message}`);
@@ -165,7 +190,11 @@ export class GeminiAIIntegration {
 
     // Log completion results with structured data
     if (this.logger && this.initialized) {
-      logClaudeOperation(this.logger, 'gemini_fix_violations_complete', results);
+      logClaudeOperation(
+        this.logger,
+        'gemini_fix_violations_complete',
+        results,
+      );
     }
     console.log(`   🎊 Completion results:`, results);
 
@@ -196,7 +225,7 @@ export class GeminiAIIntegration {
     const relativePath = path.relative(REPO_ROOT, filePath);
 
     console.log(
-      `   📝 Fixing ${violations.length} violations: ${violations.map((v) => v.rule).join(', ')}`
+      `   📝 Fixing ${violations.length} violations: ${violations.map((v) => v.rule).join(', ')}`,
     );
     console.log(`   📁 File: ${relativePath}`);
 
@@ -206,7 +235,9 @@ export class GeminiAIIntegration {
 
     try {
       if (dryRun) {
-        console.log(`   🔍 DRY RUN: Would call Gemini CLI to fix ${violations.length} violations`);
+        console.log(
+          `   🔍 DRY RUN: Would call Gemini CLI to fix ${violations.length} violations`,
+        );
         return false;
       }
 
@@ -220,7 +251,9 @@ export class GeminiAIIntegration {
       if (fileWasModified) {
         const updatedContent = fs.readFileSync(filePath, 'utf8');
         if (updatedContent !== originalContent) {
-          console.log(`   🔄 Gemini fixed the file (${updatedContent.length} chars)`);
+          console.log(
+            `   🔄 Gemini fixed the file (${updatedContent.length} chars)`,
+          );
           console.log(`   💾 File updated by Gemini`);
           return true;
         }
@@ -265,7 +298,9 @@ export class GeminiAIIntegration {
       if (fileWasModified) {
         const updatedContent = fs.readFileSync(violation.file, 'utf8');
         if (updatedContent !== originalContent) {
-          console.log(`   🔄 Gemini fixed the file (${updatedContent.length} chars)`);
+          console.log(
+            `   🔄 Gemini fixed the file (${updatedContent.length} chars)`,
+          );
           console.log(`   💾 File updated by Gemini`);
           return true;
         }
@@ -306,7 +341,9 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
         fullInstruction: instruction,
       });
     }
-    console.log(`   🔧 Starting Gemini CLI with prompt length: ${prompt.length} chars`);
+    console.log(
+      `   🔧 Starting Gemini CLI with prompt length: ${prompt.length} chars`,
+    );
 
     return new Promise((resolve, reject) => {
       const gemini = spawn(
@@ -325,7 +362,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
             ...process.env,
             GOOGLE_CLOUD_PROJECT: 'singularity-460212', // From existing script
           },
-        }
+        },
       );
 
       // Ensure logs directory exists for any remaining file operations
@@ -346,7 +383,9 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
           timeoutMinutes: 5, // Fixed 5 minute timeout for Gemini
         });
       }
-      console.log(`   📊 Gemini CLI session started: ${sessionId} for ${fileName}`);
+      console.log(
+        `   📊 Gemini CLI session started: ${sessionId} for ${fileName}`,
+      );
 
       let stdout = '';
       let stderr = '';
@@ -380,10 +419,14 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
             rawContent: chunk.trim(),
           });
         }
-        console.log(`   📥 Gemini stdout: ${chunk.length} chars received (session: ${sessionId})`);
+        console.log(
+          `   📥 Gemini stdout: ${chunk.length} chars received (session: ${sessionId})`,
+        );
 
         if (chunk.length > 50) {
-          console.log(`   🧠 Gemini: Working... (${chunk.length} chars received)`);
+          console.log(
+            `   🧠 Gemini: Working... (${chunk.length} chars received)`,
+          );
         }
       });
 
@@ -435,7 +478,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
 
         if (stdout.length > 0) {
           console.log(
-            `   📤 Gemini output: "${stdout.slice(0, 200)}${stdout.length > 200 ? '...' : ''}"`
+            `   📤 Gemini output: "${stdout.slice(0, 200)}${stdout.length > 200 ? '...' : ''}"`,
           );
         }
 
@@ -454,7 +497,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
           });
         }
         console.log(
-          `   🏁 Gemini CLI session completed - Session: ${sessionId}, Exit code: ${code}`
+          `   🏁 Gemini CLI session completed - Session: ${sessionId}, Exit code: ${code}`,
         );
 
         if (code === 0) {
@@ -519,11 +562,14 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
         'Add proper JSDoc @param descriptions that are complete sentences.',
       'jsdoc/require-returns-description':
         'Add a proper JSDoc @returns description ending with a period.',
-      'jsdoc/require-example': 'Add a JSDoc @example section showing practical usage.',
+      'jsdoc/require-example':
+        'Add a JSDoc @example section showing practical usage.',
       '@typescript-eslint/no-explicit-any':
         'Replace the "any" type with a more specific TypeScript type.',
-      'prefer-const': 'Change "let" to "const" since the variable is never reassigned.',
-      'no-var': 'Replace "var" with "const" or "let" following modern ES6+ practices.',
+      'prefer-const':
+        'Change "let" to "const" since the variable is never reassigned.',
+      'no-var':
+        'Replace "var" with "const" or "let" following modern ES6+ practices.',
     };
 
     return specificFixes[violation.rule];
@@ -579,7 +625,11 @@ Read the file, apply the fix, and write it back.`;
   extractCodeFromJSONResponse(response) {
     try {
       const jsonResponse = JSON.parse(response);
-      let code = jsonResponse.content || jsonResponse.message || jsonResponse.text || response;
+      let code =
+        jsonResponse.content ||
+        jsonResponse.message ||
+        jsonResponse.text ||
+        response;
 
       // Remove markdown code blocks
       code = code.replace(/```[\w]*\n?/g, '');

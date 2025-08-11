@@ -5,9 +5,17 @@
  * that enables zero-manual-initialization swarm creation.
  */
 
-import { describe, it, expect, beforeEach, vi, type MockedFunction, type Mocked } from 'vitest'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mocked,
+  type MockedFunction,
+  vi,
+} from 'vitest'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import type { CollectiveCubeCoordinator } from '../../../coordination/collective-cube-sync.ts';
 import { AutoSwarmFactory } from '../../../coordination/discovery/auto-swarm-factory.ts';
-import type { HiveSwarmCoordinator } from '../../../coordination/hive-swarm-sync.ts';
 import type { SwarmCoordinator } from '../../../coordination/swarm/core/swarm-coordinator.ts';
 import type { AGUIInterface } from '../../../interfaces/agui/agui-adapter.ts';
 import type { SessionMemoryStore } from '../../../memory/memory.ts';
@@ -15,7 +23,7 @@ import type { SessionMemoryStore } from '../../../memory/memory.ts';
 describe('AutoSwarmFactory', () => {
   let factory: AutoSwarmFactory;
   let mockSwarmCoordinator: Mocked<SwarmCoordinator>;
-  let mockHiveSync: Mocked<HiveSwarmCoordinator>;
+  let mockCollectiveSync: Mocked<CollectiveCubeCoordinator>;
   let mockMemoryStore: Mocked<SessionMemoryStore>;
   let mockAgui: Mocked<AGUIInterface>;
 
@@ -27,7 +35,7 @@ describe('AutoSwarmFactory', () => {
       emit: vi.fn(),
     } as any;
 
-    mockHiveSync = {
+    mockCollectiveSync = {
       registerSwarm: vi.fn().mockResolvedValue(undefined),
       on: vi.fn(),
       emit: vi.fn(),
@@ -49,17 +57,23 @@ describe('AutoSwarmFactory', () => {
     } as any;
 
     // Create factory instance
-    factory = new AutoSwarmFactory(mockSwarmCoordinator, mockHiveSync, mockMemoryStore, mockAgui, {
-      enableHumanValidation: false, // Disable for most tests
-      defaultPersistenceBackend: 'sqlite',
-      maxSwarmsPerDomain: 3,
-      performanceMode: 'balanced',
-      resourceConstraints: {
-        maxTotalAgents: 50,
-        memoryLimit: '2GB',
-        cpuLimit: 8,
+    factory = new AutoSwarmFactory(
+      mockSwarmCoordinator,
+      mockCollectiveSync,
+      mockMemoryStore,
+      mockAgui,
+      {
+        enableHumanValidation: false, // Disable for most tests
+        defaultPersistenceBackend: 'sqlite',
+        maxSwarmsPerDomain: 3,
+        performanceMode: 'balanced',
+        resourceConstraints: {
+          maxTotalAgents: 50,
+          memoryLimit: '2GB',
+          cpuLimit: 8,
+        },
       },
-    });
+    );
   });
 
   afterEach(() => {
@@ -117,15 +131,21 @@ describe('AutoSwarmFactory', () => {
 
       // Verify swarm initialization was called
       expect(mockSwarmCoordinator.initialize).toHaveBeenCalledTimes(2);
-      expect(mockHiveSync.registerSwarm).toHaveBeenCalledTimes(2);
+      expect(mockCollectiveSync.registerSwarm).toHaveBeenCalledTimes(2);
       expect(mockMemoryStore.store).toHaveBeenCalledTimes(2);
     });
 
     it('should emit factory events during processing', async () => {
       const events: any[] = [];
-      factory.on('factory:start', (event) => events.push({ type: 'start', ...event }));
-      factory.on('factory:complete', (event) => events.push({ type: 'complete', ...event }));
-      factory.on('swarm:created', (event) => events.push({ type: 'swarm-created', ...event }));
+      factory.on('factory:start', (event) =>
+        events.push({ type: 'start', ...event }),
+      );
+      factory.on('factory:complete', (event) =>
+        events.push({ type: 'complete', ...event }),
+      );
+      factory.on('swarm:created', (event) =>
+        events.push({ type: 'swarm-created', ...event }),
+      );
 
       const confidentDomains = new Map([
         [
@@ -307,7 +327,9 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      const tsSpecialist = config?.agents?.find((a) => a.type === 'typescript-specialist');
+      const tsSpecialist = config?.agents?.find(
+        (a) => a.type === 'typescript-specialist',
+      );
       expect(tsSpecialist).toBeDefined();
       expect(tsSpecialist?.count).toBeGreaterThan(0);
       expect(tsSpecialist?.capabilities).toContain('type-checking');
@@ -329,7 +351,9 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      const apiSpecialist = config?.agents?.find((a) => a.type === 'api-specialist');
+      const apiSpecialist = config?.agents?.find(
+        (a) => a.type === 'api-specialist',
+      );
       expect(apiSpecialist).toBeDefined();
       expect(apiSpecialist?.capabilities).toContain('api-design');
       expect(apiSpecialist?.capabilities).toContain('endpoint-testing');
@@ -351,7 +375,9 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      const dataSpecialist = config?.agents?.find((a) => a.type === 'data-specialist');
+      const dataSpecialist = config?.agents?.find(
+        (a) => a.type === 'data-specialist',
+      );
       expect(dataSpecialist).toBeDefined();
       expect(dataSpecialist?.capabilities).toContain('schema-design');
       expect(dataSpecialist?.capabilities).toContain('query-optimization');
@@ -373,7 +399,9 @@ describe('AutoSwarmFactory', () => {
 
       const config = await factory.createSwarmForDomain(domain);
 
-      const aiSpecialist = config?.agents?.find((a) => a.type === 'ai-specialist');
+      const aiSpecialist = config?.agents?.find(
+        (a) => a.type === 'ai-specialist',
+      );
       expect(aiSpecialist).toBeDefined();
       expect(aiSpecialist?.capabilities).toContain('pattern-recognition');
       expect(aiSpecialist?.capabilities).toContain('complexity-analysis');
@@ -470,7 +498,7 @@ describe('AutoSwarmFactory', () => {
       // Create factory with low agent limit
       const restrictedFactory = new AutoSwarmFactory(
         mockSwarmCoordinator,
-        mockHiveSync,
+        mockCollectiveSync,
         mockMemoryStore,
         mockAgui,
         {
@@ -479,7 +507,7 @@ describe('AutoSwarmFactory', () => {
             memoryLimit: '1GB',
             cpuLimit: 4,
           },
-        }
+        },
       );
 
       const confidentDomains = new Map([
@@ -515,9 +543,9 @@ describe('AutoSwarmFactory', () => {
         ],
       ]);
 
-      await expect(restrictedFactory.createSwarmsForDomains(confidentDomains)).rejects.toThrow(
-        'exceeds limit'
-      );
+      await expect(
+        restrictedFactory.createSwarmsForDomains(confidentDomains),
+      ).rejects.toThrow('exceeds limit');
     });
 
     it('should respect max agents per swarm', async () => {
@@ -538,7 +566,10 @@ describe('AutoSwarmFactory', () => {
 
       // Should not exceed reasonable limits even for massive domains
       expect(config?.maxAgents).toBeLessThanOrEqual(20);
-      const totalAgents = config?.agents?.reduce((sum, agent) => sum + agent.count, 0);
+      const totalAgents = config?.agents?.reduce(
+        (sum, agent) => sum + agent.count,
+        0,
+      );
       expect(totalAgents).toBeLessThanOrEqual(config?.maxAgents);
     });
   });
@@ -547,10 +578,10 @@ describe('AutoSwarmFactory', () => {
     it('should request human validation when enabled', async () => {
       const validatingFactory = new AutoSwarmFactory(
         mockSwarmCoordinator,
-        mockHiveSync,
+        mockCollectiveSync,
         mockMemoryStore,
         mockAgui,
-        { enableHumanValidation: true }
+        { enableHumanValidation: true },
       );
 
       const confidentDomains = new Map([
@@ -577,17 +608,17 @@ describe('AutoSwarmFactory', () => {
         expect.objectContaining({
           id: 'swarm_factory_validation',
           question: expect.stringContaining('Auto-Swarm Factory will create'),
-        })
+        }),
       );
     });
 
     it('should handle human cancellation', async () => {
       const validatingFactory = new AutoSwarmFactory(
         mockSwarmCoordinator,
-        mockHiveSync,
+        mockCollectiveSync,
         mockMemoryStore,
         mockAgui,
-        { enableHumanValidation: true }
+        { enableHumanValidation: true },
       );
 
       mockAgui.askQuestion.mockResolvedValue('3'); // Cancel
@@ -610,9 +641,9 @@ describe('AutoSwarmFactory', () => {
         ],
       ]);
 
-      await expect(validatingFactory.createSwarmsForDomains(confidentDomains)).rejects.toThrow(
-        'cancelled by user'
-      );
+      await expect(
+        validatingFactory.createSwarmsForDomains(confidentDomains),
+      ).rejects.toThrow('cancelled by user');
     });
   });
 
@@ -671,13 +702,13 @@ describe('AutoSwarmFactory', () => {
 
       // Complex domain should have higher latency expectations
       expect(complexConfig?.performance?.expectedLatency).toBeGreaterThan(
-        simpleConfig?.performance?.expectedLatency
+        simpleConfig?.performance?.expectedLatency,
       );
 
       // Complex domain should have more resource allocation
-      expect(complexConfig?.performance?.resourceLimits?.cpu).toBeGreaterThanOrEqual(
-        simpleConfig?.performance?.resourceLimits?.cpu
-      );
+      expect(
+        complexConfig?.performance?.resourceLimits?.cpu,
+      ).toBeGreaterThanOrEqual(simpleConfig?.performance?.resourceLimits?.cpu);
     });
   });
 

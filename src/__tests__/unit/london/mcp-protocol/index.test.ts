@@ -107,7 +107,9 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
 
       // Verify interaction testing patterns
       expect(interactionPatterns).toContain('Mock collaborator behavior');
-      expect(interactionPatterns).toContain('Verify method calls and parameters');
+      expect(interactionPatterns).toContain(
+        'Verify method calls and parameters',
+      );
       expect(interactionPatterns).toContain('Test component communication');
     });
 
@@ -172,9 +174,15 @@ describe('🎯 MCP Protocol Compliance - London TDD Test Suite', () => {
       ];
 
       // Verify test organization structure
-      expect(testOrganization).toContain('Acceptance Tests - Core functionality');
-      expect(testOrganization).toContain('Contract Verification - Component integration');
-      expect(testOrganization).toContain('London School Patterns - Interaction focus');
+      expect(testOrganization).toContain(
+        'Acceptance Tests - Core functionality',
+      );
+      expect(testOrganization).toContain(
+        'Contract Verification - Component integration',
+      );
+      expect(testOrganization).toContain(
+        'London School Patterns - Interaction focus',
+      );
     });
 
     it('should follow consistent naming conventions', () => {

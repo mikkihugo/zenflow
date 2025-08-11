@@ -13,7 +13,7 @@
  * - AGUI integration performance
  */
 
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { Domain } from '../../core/domain-boundary-validator.ts';
 import {
   type BaseEvent,
@@ -73,8 +73,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
           'performance.test',
           Domain.CORE,
           {},
-          { tags: [`batch-${Math.floor(i / 100)}`, `event-${i}`] }
-        )
+          { tags: [`batch-${Math.floor(i / 100)}`, `event-${i}`] },
+        ),
       );
 
       // Emit events in batch
@@ -121,7 +121,12 @@ describe('TypeSafeEventBus Performance Tests', () => {
 
       // Create and emit events
       const events = Array.from({ length: eventCount }, (_, i) =>
-        createEvent<BaseEvent>('multi-handler.test', Domain.CORE, {}, { tags: [`test-${i}`] })
+        createEvent<BaseEvent>(
+          'multi-handler.test',
+          Domain.CORE,
+          {},
+          { tags: [`test-${i}`] },
+        ),
       );
 
       const results = await eventBus.emitEventBatch(events);
@@ -131,7 +136,9 @@ describe('TypeSafeEventBus Performance Tests', () => {
 
       // Performance assertions
       expect(results.every((r) => r.success)).toBe(true);
-      expect(results.every((r) => r.handlerResults.length === handlerCount)).toBe(true);
+      expect(
+        results.every((r) => r.handlerResults.length === handlerCount),
+      ).toBe(true);
 
       // Each handler should have been called for each event
       mockHandlers.forEach((handler) => {
@@ -161,21 +168,26 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const startTime = Date.now();
 
       // Create concurrent event sources
-      const sourcePromises = Array.from({ length: concurrentSources }, async (_, sourceIndex) => {
-        const events = Array.from({ length: eventsPerSource }, (_, eventIndex) =>
-          createEvent<BaseEvent>(
-            'concurrent.test',
-            Domain.CORE,
-            {},
-            {
-              source: `source-${sourceIndex}`,
-              tags: [`source-${sourceIndex}`, `event-${eventIndex}`],
-            }
-          )
-        );
+      const sourcePromises = Array.from(
+        { length: concurrentSources },
+        async (_, sourceIndex) => {
+          const events = Array.from(
+            { length: eventsPerSource },
+            (_, eventIndex) =>
+              createEvent<BaseEvent>(
+                'concurrent.test',
+                Domain.CORE,
+                {},
+                {
+                  source: `source-${sourceIndex}`,
+                  tags: [`source-${sourceIndex}`, `event-${eventIndex}`],
+                },
+              ),
+          );
 
-        return eventBus.emitEventBatch(events, { maxConcurrency: 50 });
-      });
+          return eventBus.emitEventBatch(events, { maxConcurrency: 50 });
+        },
+      );
 
       const allResults = await Promise.all(sourcePromises);
       const endTime = Date.now();
@@ -215,13 +227,17 @@ describe('TypeSafeEventBus Performance Tests', () => {
       // Process events in chunks to simulate real-world usage
       const chunkSize = 1000;
       for (let i = 0; i < eventCount; i += chunkSize) {
-        const chunk = Array.from({ length: Math.min(chunkSize, eventCount - i) }, (_, j) =>
-          createEvent<BaseEvent>(
-            'memory.test',
-            Domain.CORE,
-            { data: `test-data-${i + j}` }, // Add some data to test memory usage
-            { tags: [`chunk-${Math.floor(i / chunkSize)}`, `event-${i + j}`] }
-          )
+        const chunk = Array.from(
+          { length: Math.min(chunkSize, eventCount - i) },
+          (_, j) =>
+            createEvent<BaseEvent>(
+              'memory.test',
+              Domain.CORE,
+              { data: `test-data-${i + j}` }, // Add some data to test memory usage
+              {
+                tags: [`chunk-${Math.floor(i / chunkSize)}`, `event-${i + j}`],
+              },
+            ),
         );
 
         await eventBus.emitEventBatch(chunk);
@@ -277,8 +293,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
             eventType,
             Domain.CORE,
             { value: i % 100 }, // Repeated data patterns
-            { correlationId: createCorrelationId() }
-          )
+            { correlationId: createCorrelationId() },
+          ),
         );
       }
 
@@ -310,7 +326,12 @@ describe('TypeSafeEventBus Performance Tests', () => {
   describe('Domain Boundary Validation Performance', () => {
     test('should maintain performance with domain validation enabled', async () => {
       const eventCount = 5000;
-      const domains = [Domain.CORE, Domain.COORDINATION, Domain.WORKFLOWS, Domain.NEURAL];
+      const domains = [
+        Domain.CORE,
+        Domain.COORDINATION,
+        Domain.WORKFLOWS,
+        Domain.NEURAL,
+      ];
       const mockHandler = vi.fn();
 
       // Register handler for all domains
@@ -326,8 +347,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
           'validation.test',
           domains[i % domains.length],
           { index: i },
-          { correlationId: createCorrelationId() }
-        )
+          { correlationId: createCorrelationId() },
+        ),
       );
 
       const results = await eventBus.emitEventBatch(events);
@@ -362,13 +383,18 @@ describe('TypeSafeEventBus Performance Tests', () => {
           'cross.domain.test',
           Domain.WORKFLOWS,
           { routingIndex: i },
-          { correlationId: createCorrelationId() }
+          { correlationId: createCorrelationId() },
         );
 
         const fromDomain = i % 2 === 0 ? Domain.CORE : Domain.COORDINATION;
         const toDomain = Domain.WORKFLOWS;
 
-        return eventBus.routeCrossDomainEvent(event, fromDomain, toDomain, `routing_test_${i}`);
+        return eventBus.routeCrossDomainEvent(
+          event,
+          fromDomain,
+          toDomain,
+          `routing_test_${i}`,
+        );
       });
 
       const results = await Promise.all(routingPromises);
@@ -399,16 +425,22 @@ describe('TypeSafeEventBus Performance Tests', () => {
         await new Promise((resolve) => setTimeout(resolve, slowHandlerDelay));
       });
 
-      eventBus.registerHandler('mixed.speed.test', fastHandler, { priority: 2 });
-      eventBus.registerHandler('mixed.speed.test', slowHandler, { priority: 1 });
+      eventBus.registerHandler('mixed.speed.test', fastHandler, {
+        priority: 2,
+      });
+      eventBus.registerHandler('mixed.speed.test', slowHandler, {
+        priority: 1,
+      });
 
       const startTime = Date.now();
 
       const events = Array.from({ length: eventCount }, (_, i) =>
-        createEvent<BaseEvent>('mixed.speed.test', Domain.CORE, { index: i })
+        createEvent<BaseEvent>('mixed.speed.test', Domain.CORE, { index: i }),
       );
 
-      const results = await eventBus.emitEventBatch(events, { maxConcurrency: 10 });
+      const results = await eventBus.emitEventBatch(events, {
+        maxConcurrency: 10,
+      });
       const endTime = Date.now();
       const duration = endTime - startTime;
 
@@ -447,7 +479,9 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const startTime = Date.now();
 
       const events = Array.from({ length: eventCount }, (_, i) =>
-        createEvent<BaseEvent>('error.resilience.test', Domain.CORE, { index: i })
+        createEvent<BaseEvent>('error.resilience.test', Domain.CORE, {
+          index: i,
+        }),
       );
 
       const results = await eventBus.emitEventBatch(events);
@@ -461,8 +495,9 @@ describe('TypeSafeEventBus Performance Tests', () => {
 
       // Count actual errors in handler results
       const totalHandlerErrors = results.reduce(
-        (sum, result) => sum + result.handlerResults.filter((hr) => !hr.success).length,
-        0
+        (sum, result) =>
+          sum + result.handlerResults.filter((hr) => !hr.success).length,
+        0,
       );
 
       const actualErrorRate = totalHandlerErrors / (eventCount * 2); // 2 handlers per event
@@ -505,7 +540,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
                 priority: EventPriority.NORMAL,
                 timeout: 30000,
               },
-            })
+            }),
           );
         } else {
           events.push(
@@ -516,7 +551,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
                 requiredApproval: true,
                 context: { test: true, index: i },
               },
-            })
+            }),
           );
         }
       }
@@ -559,9 +594,13 @@ describe('TypeSafeEventBus Performance Tests', () => {
 
       // Emit events at regular intervals
       const emissionInterval = setInterval(async () => {
-        const event = createEvent<BaseEvent>('metrics.monitoring', Domain.CORE, {
-          timestamp: Date.now(),
-        });
+        const event = createEvent<BaseEvent>(
+          'metrics.monitoring',
+          Domain.CORE,
+          {
+            timestamp: Date.now(),
+          },
+        );
 
         await eventBus.emitEvent(event);
         eventsEmitted++;
@@ -631,8 +670,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
             'stability.test',
             Domain.CORE,
             { phase, index: i },
-            { tags: [`phase-${phase}`, `event-${i}`] }
-          )
+            { tags: [`phase-${phase}`, `event-${i}`] },
+          ),
         );
 
         await eventBus.emitEventBatch(events);
@@ -663,8 +702,10 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const avgEventsPerSecond =
         phaseResults.reduce((sum, p) => sum + p.eventsPerSecond, 0) / phases;
       const eventsPerSecondVariance =
-        phaseResults.reduce((sum, p) => sum + (p.eventsPerSecond - avgEventsPerSecond) ** 2, 0) /
-        phases;
+        phaseResults.reduce(
+          (sum, p) => sum + (p.eventsPerSecond - avgEventsPerSecond) ** 2,
+          0,
+        ) / phases;
       const eventsPerSecondStdDev = Math.sqrt(eventsPerSecondVariance);
       const coefficientOfVariation = eventsPerSecondStdDev / avgEventsPerSecond;
 
@@ -712,12 +753,17 @@ describe('Event System Stress Tests', () => {
 
       for (let batch = 0; batch < batches; batch++) {
         const batchStartIndex = batch * batchSize;
-        const batchEndIndex = Math.min(batchStartIndex + batchSize, extremeEventCount);
-        const batchEvents = Array.from({ length: batchEndIndex - batchStartIndex }, (_, i) =>
-          createEvent<BaseEvent>('stress.test', Domain.CORE, {
-            batchIndex: batch,
-            eventIndex: batchStartIndex + i,
-          })
+        const batchEndIndex = Math.min(
+          batchStartIndex + batchSize,
+          extremeEventCount,
+        );
+        const batchEvents = Array.from(
+          { length: batchEndIndex - batchStartIndex },
+          (_, i) =>
+            createEvent<BaseEvent>('stress.test', Domain.CORE, {
+              batchIndex: batch,
+              eventIndex: batchStartIndex + i,
+            }),
         );
 
         await eventBus.emitEventBatch(batchEvents);

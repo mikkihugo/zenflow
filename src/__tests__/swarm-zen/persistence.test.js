@@ -212,7 +212,9 @@ class SwarmPersistence {
             INSERT OR REPLACE INTO memory (key, value, ttl_seconds, expires_at)
             VALUES (?, ?, ?, ?)
         `;
-    const expiresAt = ttlSeconds ? new Date(Date.now() + ttlSeconds * 1000).toISOString() : null;
+    const expiresAt = ttlSeconds
+      ? new Date(Date.now() + ttlSeconds * 1000).toISOString()
+      : null;
     return this.run(sql, [key, JSON.stringify(value), ttlSeconds, expiresAt]);
   }
 
@@ -266,7 +268,8 @@ class SwarmPersistence {
   }
 
   async getNeuralWeights(agentId) {
-    const sql = 'SELECT * FROM neural_weights WHERE agent_id = ? ORDER BY layer_index';
+    const sql =
+      'SELECT * FROM neural_weights WHERE agent_id = ? ORDER BY layer_index';
     return this.all(sql, [agentId]);
   }
 
@@ -276,7 +279,12 @@ class SwarmPersistence {
             INSERT INTO metrics (metric_type, agent_id, value, metadata)
             VALUES (?, ?, ?, ?)
         `;
-    return this.run(sql, [metricType, agentId, value, metadata ? JSON.stringify(metadata) : null]);
+    return this.run(sql, [
+      metricType,
+      agentId,
+      value,
+      metadata ? JSON.stringify(metadata) : null,
+    ]);
   }
 
   async getMetrics(metricType, since = null, agentId = null) {
@@ -417,12 +425,18 @@ async function runPersistenceTests() {
 
       // Update to in_progress
       await db.updateTaskStatus(task.id, 'in_progress');
-      let retrieved = await db.get('SELECT * FROM tasks WHERE id = ?', [task.id]);
+      let retrieved = await db.get('SELECT * FROM tasks WHERE id = ?', [
+        task.id,
+      ]);
       assert.strictEqual(retrieved.status, 'in_progress');
       assert(retrieved.started_at);
 
       // Complete task
-      await db.updateTaskStatus(task.id, 'completed', 'Successfully implemented');
+      await db.updateTaskStatus(
+        task.id,
+        'completed',
+        'Successfully implemented',
+      );
       retrieved = await db.get('SELECT * FROM tasks WHERE id = ?', [task.id]);
       assert.strictEqual(retrieved.status, 'completed');
       assert(retrieved.completed_at);
@@ -521,7 +535,7 @@ async function runPersistenceTests() {
 
       const allMetrics = await db.all(
         'SELECT DISTINCT metric_type FROM metrics WHERE agent_id = ?',
-        [agentId]
+        [agentId],
       );
       assert.strictEqual(allMetrics.length, 3);
     });
@@ -537,7 +551,7 @@ async function runPersistenceTests() {
             id: uuidv4(),
             name: `concurrent-agent-${i}`,
             agent_type: 'coder',
-          })
+          }),
         );
       }
 
@@ -604,11 +618,10 @@ async function runPersistenceTests() {
     await test('Expired Memory Cleanup', async () => {
       // Create some expired entries
       for (let i = 0; i < 5; i++) {
-        await db.run('INSERT INTO memory (key, value, expires_at) VALUES (?, ?, ?)', [
-          `expired_${i}`,
-          '{}',
-          new Date(Date.now() - 1000).toISOString(),
-        ]);
+        await db.run(
+          'INSERT INTO memory (key, value, expires_at) VALUES (?, ?, ?)',
+          [`expired_${i}`, '{}', new Date(Date.now() - 1000).toISOString()],
+        );
       }
 
       // Create valid entries
@@ -637,7 +650,7 @@ async function runPersistenceTests() {
             name: `perf-agent-${i}`,
             agent_type: ['researcher', 'coder', 'analyst'][i % 3],
             capabilities: { index: i },
-          })
+          }),
         );
       }
 
@@ -646,7 +659,10 @@ async function runPersistenceTests() {
 
       // Query performance
       const queryStart = Date.now();
-      const _coders = await db.all('SELECT * FROM agents WHERE agent_type = ?', ['coder']);
+      const _coders = await db.all(
+        'SELECT * FROM agents WHERE agent_type = ?',
+        ['coder'],
+      );
       const queryTime = Date.now() - queryStart;
 
       assert(insertTime < 5000); // Should complete within 5 seconds

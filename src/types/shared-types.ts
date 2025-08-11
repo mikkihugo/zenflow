@@ -46,8 +46,19 @@ export interface SwarmConfig {
 // ============================================
 
 export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star';
-export type SwarmStatus = 'initializing' | 'active' | 'paused' | 'stopped' | 'error';
-export type AgentStatus = 'initializing' | 'idle' | 'busy' | 'error' | 'offline' | 'terminated';
+export type SwarmStatus =
+  | 'initializing'
+  | 'active'
+  | 'paused'
+  | 'stopped'
+  | 'error';
+export type AgentStatus =
+  | 'initializing'
+  | 'idle'
+  | 'busy'
+  | 'error'
+  | 'offline'
+  | 'terminated';
 export type AgentType =
   | 'researcher'
   | 'coder'
@@ -181,7 +192,12 @@ export interface Task {
   completedAt?: Date; // Legacy compatibility
 }
 
-export type TaskStatus = 'pending' | 'active' | 'completed' | 'failed' | 'cancelled';
+export type TaskStatus =
+  | 'pending'
+  | 'active'
+  | 'completed'
+  | 'failed'
+  | 'cancelled';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 // ============================================
@@ -209,7 +225,12 @@ export type NeuralModelType =
   | 'gru'
   | 'autoencoder';
 
-export type ModelStatus = 'untrained' | 'training' | 'trained' | 'deployed' | 'deprecated';
+export type ModelStatus =
+  | 'untrained'
+  | 'training'
+  | 'trained'
+  | 'deployed'
+  | 'deprecated';
 
 export interface ModelMetadata {
   layers: number;
@@ -253,7 +274,8 @@ export type DeepPartial<T> = {
 
 export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
-export type OptionalFields<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type OptionalFields<T, K extends keyof T> = Omit<T, K> &
+  Partial<Pick<T, K>>;
 
 // ============================================
 // Provider Interfaces (for dependency injection)

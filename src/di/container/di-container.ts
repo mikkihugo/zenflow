@@ -18,7 +18,11 @@ import type {
   DIContainer as IDIContainer,
   Provider,
 } from '../types/di-types.ts';
-import { CircularDependencyError, DIError, ServiceNotFoundError } from '../types/di-types.ts';
+import {
+  CircularDependencyError,
+  DIError,
+  ServiceNotFoundError,
+} from '../types/di-types.ts';
 
 export class DIContainer implements IDIContainer {
   private readonly providers = new Map<symbol, Provider<any>>();
@@ -29,7 +33,8 @@ export class DIContainer implements IDIContainer {
 
   constructor(options: DIContainerOptions = {}) {
     this.options = {
-      enableCircularDependencyDetection: options?.enableCircularDependencyDetection ?? true,
+      enableCircularDependencyDetection:
+        options?.enableCircularDependencyDetection ?? true,
       maxResolutionDepth: options?.maxResolutionDepth ?? 50,
       enablePerformanceMetrics: options?.enablePerformanceMetrics ?? false,
       autoRegisterByConvention: options?.autoRegisterByConvention ?? false,
@@ -71,7 +76,10 @@ export class DIContainer implements IDIContainer {
       if (error instanceof DIError) {
         throw error;
       }
-      throw new DIError(`Failed to resolve service '${token.name}': ${error}`, 'RESOLUTION_FAILED');
+      throw new DIError(
+        `Failed to resolve service '${token.name}': ${error}`,
+        'RESOLUTION_FAILED',
+      );
     }
   }
 
@@ -140,14 +148,16 @@ export class DIContainer implements IDIContainer {
     // Check circular dependency
     if (this.options.enableCircularDependencyDetection) {
       if (this.resolutionStack.includes(token.symbol)) {
-        const chain = this.resolutionStack.map((s) => s.toString()).concat(token.name);
+        const chain = this.resolutionStack
+          .map((s) => s.toString())
+          .concat(token.name);
         throw new CircularDependencyError(chain);
       }
 
       if (this.resolutionStack.length >= this.options.maxResolutionDepth) {
         throw new DIError(
           `Maximum resolution depth exceeded (${this.options.maxResolutionDepth})`,
-          'MAX_DEPTH_EXCEEDED'
+          'MAX_DEPTH_EXCEEDED',
         );
       }
     }
@@ -170,7 +180,7 @@ export class DIContainer implements IDIContainer {
         default:
           throw new DIError(
             `Unknown provider type: ${(provider as any).type}`,
-            'UNKNOWN_PROVIDER_TYPE'
+            'UNKNOWN_PROVIDER_TYPE',
           );
       }
     } finally {

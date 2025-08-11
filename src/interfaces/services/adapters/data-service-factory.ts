@@ -78,7 +78,9 @@ export interface DataServiceFactoryConfig {
  *
  * @example
  */
-export class DataServiceFactory implements IServiceFactory<DataServiceAdapterConfig> {
+export class DataServiceFactory
+  implements IServiceFactory<DataServiceAdapterConfig>
+{
   private services = new Map<string, DataServiceAdapter>();
   private logger: Logger;
   private eventEmitter = new EventEmitter();
@@ -140,7 +142,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       if (!isValid) {
         throw new ServiceConfigurationError(
           config?.name,
-          'Invalid data service adapter configuration'
+          'Invalid data service adapter configuration',
         );
       }
 
@@ -148,7 +150,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       if (this.services.has(config?.name)) {
         throw new ServiceInitializationError(
           config?.name,
-          new Error('Service with this name already exists')
+          new Error('Service with this name already exists'),
         );
       }
 
@@ -170,10 +172,15 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       // Emit creation event
       this.eventEmitter.emit('service-created', config?.name, adapter);
 
-      this.logger.info(`Data service adapter created successfully: ${config?.name}`);
+      this.logger.info(
+        `Data service adapter created successfully: ${config?.name}`,
+      );
       return adapter as unknown as IService;
     } catch (error) {
-      this.logger.error(`Failed to create data service adapter ${config?.name}:`, error);
+      this.logger.error(
+        `Failed to create data service adapter ${config?.name}:`,
+        error,
+      );
       throw error instanceof ServiceError
         ? error
         : new ServiceInitializationError(config?.name, error as Error);
@@ -185,7 +192,9 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
    *
    * @param configs
    */
-  async createMultiple(configs: DataServiceAdapterConfig[]): Promise<IService[]> {
+  async createMultiple(
+    configs: DataServiceAdapterConfig[],
+  ): Promise<IService[]> {
     this.logger.info(`Creating ${configs.length} data service adapters`);
 
     const creationPromises = configs.map((config) => this.create(config));
@@ -199,13 +208,18 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
         services.push(result?.value);
       } else {
         const config = configs?.[index];
-        errors.push(new ServiceInitializationError(config?.name || 'unknown', result?.reason));
+        errors.push(
+          new ServiceInitializationError(
+            config?.name || 'unknown',
+            result?.reason,
+          ),
+        );
       }
     });
 
     if (errors.length > 0) {
       this.logger.warn(
-        `${errors.length} out of ${configs.length} data service adapters failed to create`
+        `${errors.length} out of ${configs.length} data service adapters failed to create`,
       );
       // Log errors but don't throw - return successful services
       errors.forEach((error) => this.logger.error(error.message));
@@ -266,7 +280,10 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       this.logger.info(`Data service adapter removed successfully: ${name}`);
       return true;
     } catch (error) {
-      this.logger.error(`Failed to remove data service adapter ${name}:`, error);
+      this.logger.error(
+        `Failed to remove data service adapter ${name}:`,
+        error,
+      );
       throw new ServiceOperationError(name, 'remove', error as Error);
     }
   }
@@ -299,7 +316,10 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
         await service.start();
         this.logger.debug(`Started data service adapter: ${service.name}`);
       } catch (error) {
-        this.logger.error(`Failed to start data service adapter ${service.name}:`, error);
+        this.logger.error(
+          `Failed to start data service adapter ${service.name}:`,
+          error,
+        );
         throw error;
       }
     });
@@ -320,7 +340,10 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
         await service.stop();
         this.logger.debug(`Stopped data service adapter: ${service.name}`);
       } catch (error) {
-        this.logger.error(`Failed to stop data service adapter ${service.name}:`, error);
+        this.logger.error(
+          `Failed to stop data service adapter ${service.name}:`,
+          error,
+        );
       }
     });
 
@@ -342,7 +365,10 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
         const status = await service.getStatus();
         results?.set(service.name, status);
       } catch (error) {
-        this.logger.error(`Health check failed for data service adapter ${service.name}:`, error);
+        this.logger.error(
+          `Health check failed for data service adapter ${service.name}:`,
+          error,
+        );
         results?.set(service.name, {
           name: service.name,
           type: service.type,
@@ -374,7 +400,10 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
         const metrics = await service.getMetrics();
         results?.set(service.name, metrics);
       } catch (error) {
-        this.logger.error(`Failed to get metrics for data service adapter ${service.name}:`, error);
+        this.logger.error(
+          `Failed to get metrics for data service adapter ${service.name}:`,
+          error,
+        );
       }
     });
 
@@ -400,7 +429,10 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
         try {
           await service.destroy();
         } catch (error) {
-          this.logger.error(`Failed to destroy data service adapter ${service.name}:`, error);
+          this.logger.error(
+            `Failed to destroy data service adapter ${service.name}:`,
+            error,
+          );
         }
       });
 
@@ -443,8 +475,10 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
   async validateConfig(config: DataServiceAdapterConfig): Promise<boolean> {
     try {
       // Basic validation
-      if (!config?.name || !config?.type) {
-        this.logger.error('Configuration missing required fields: name or type');
+      if (!(config?.name && config?.type)) {
+        this.logger.error(
+          'Configuration missing required fields: name or type',
+        );
         return false;
       }
 
@@ -471,13 +505,18 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
           config?.documentData?.databaseType &&
           !validDbTypes.includes(config?.documentData?.databaseType)
         ) {
-          this.logger.error(`Invalid database type: ${config?.documentData?.databaseType}`);
+          this.logger.error(
+            `Invalid database type: ${config?.documentData?.databaseType}`,
+          );
           return false;
         }
       }
 
       // Validate performance configuration
-      if (config?.performance?.maxConcurrency && config?.performance?.maxConcurrency < 1) {
+      if (
+        config?.performance?.maxConcurrency &&
+        config?.performance?.maxConcurrency < 1
+      ) {
         this.logger.error('Max concurrency must be at least 1');
         return false;
       }
@@ -519,7 +558,10 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
           type: 'object',
           properties: {
             enabled: { type: 'boolean', default: true },
-            databaseType: { type: 'string', enum: ['postgresql', 'sqlite', 'mysql'] },
+            databaseType: {
+              type: 'string',
+              enum: ['postgresql', 'sqlite', 'mysql'],
+            },
             autoInitialize: { type: 'boolean', default: true },
             searchIndexing: { type: 'boolean', default: true },
           },
@@ -568,7 +610,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
    */
   async createWebDataAdapter(
     name: string,
-    config?: Partial<DataServiceAdapterConfig>
+    config?: Partial<DataServiceAdapterConfig>,
   ): Promise<DataServiceAdapter> {
     const webDataConfig = createDefaultDataServiceAdapterConfig(name, {
       type: ServiceType.WEB_DATA,
@@ -584,7 +626,9 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       ...config,
     });
 
-    const adapter = (await this.create(webDataConfig)) as unknown as DataServiceAdapter;
+    const adapter = (await this.create(
+      webDataConfig,
+    )) as unknown as DataServiceAdapter;
     this.logger.info(`Created web data adapter: ${name}`);
     return adapter;
   }
@@ -599,7 +643,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
   async createDocumentAdapter(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    config?: Partial<DataServiceAdapterConfig>
+    config?: Partial<DataServiceAdapterConfig>,
   ): Promise<DataServiceAdapter> {
     const documentConfig = createDefaultDataServiceAdapterConfig(name, {
       type: ServiceType.DOCUMENT,
@@ -615,7 +659,9 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       ...config,
     });
 
-    const adapter = (await this.create(documentConfig)) as unknown as DataServiceAdapter;
+    const adapter = (await this.create(
+      documentConfig,
+    )) as unknown as DataServiceAdapter;
     this.logger.info(`Created document adapter: ${name} (${databaseType})`);
     return adapter;
   }
@@ -630,7 +676,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
   async createUnifiedDataAdapter(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    config?: Partial<DataServiceAdapterConfig>
+    config?: Partial<DataServiceAdapterConfig>,
   ): Promise<DataServiceAdapter> {
     const unifiedConfig = createDefaultDataServiceAdapterConfig(name, {
       type: ServiceType.DATA,
@@ -662,7 +708,9 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
       ...config,
     });
 
-    const adapter = (await this.create(unifiedConfig)) as unknown as DataServiceAdapter;
+    const adapter = (await this.create(
+      unifiedConfig,
+    )) as unknown as DataServiceAdapter;
     this.logger.info(`Created unified data adapter: ${name} (${databaseType})`);
     return adapter;
   }
@@ -703,7 +751,9 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
   // Private Helper Methods
   // ============================================
 
-  private mergeWithDefaults(config: DataServiceAdapterConfig): DataServiceAdapterConfig {
+  private mergeWithDefaults(
+    config: DataServiceAdapterConfig,
+  ): DataServiceAdapterConfig {
     return {
       ...config,
       webData: {
@@ -764,7 +814,7 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
 
           if (unhealthyServices.length > 0) {
             this.logger.warn(
-              `Unhealthy data service adapters detected: ${unhealthyServices.join(', ')}`
+              `Unhealthy data service adapters detected: ${unhealthyServices.join(', ')}`,
             );
             this.eventEmitter.emit('health-alert', unhealthyServices);
           }
@@ -790,7 +840,9 @@ export class DataServiceFactory implements IServiceFactory<DataServiceAdapterCon
             .map(([name, _]) => name);
 
           if (slowServices.length > 0) {
-            this.logger.warn(`Slow data service adapters detected: ${slowServices.join(', ')}`);
+            this.logger.warn(
+              `Slow data service adapters detected: ${slowServices.join(', ')}`,
+            );
             this.eventEmitter.emit('performance-alert', slowServices);
           }
         } catch (error) {

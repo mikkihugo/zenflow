@@ -8,7 +8,10 @@
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import type { AgentId, DetailedAgentType as AgentType } from '../../types';
+import type {
+  AgentId,
+  DetailedAgentType as AgentType,
+} from '../../types/index.js';
 
 /**
  * Conversation message types for structured agent communication.
@@ -101,7 +104,13 @@ export interface ConversationContext {
 }
 
 export interface ConversationOutcome {
-  type: 'decision' | 'solution' | 'plan' | 'code' | 'analysis' | 'recommendation';
+  type:
+    | 'decision'
+    | 'solution'
+    | 'plan'
+    | 'code'
+    | 'analysis'
+    | 'recommendation';
   content: any;
   confidence: number;
   contributors: AgentId[];
@@ -160,13 +169,22 @@ export interface StepTrigger {
 }
 
 export interface StepAction {
-  type: 'send_message' | 'request_input' | 'make_decision' | 'summarize' | 'escalate';
+  type:
+    | 'send_message'
+    | 'request_input'
+    | 'make_decision'
+    | 'summarize'
+    | 'escalate';
   params: any;
   agent?: string; // role name
 }
 
 export interface PatternConstraint {
-  type: 'time_limit' | 'message_limit' | 'participant_limit' | 'quality_threshold';
+  type:
+    | 'time_limit'
+    | 'message_limit'
+    | 'participant_limit'
+    | 'quality_threshold';
   value: any;
 }
 
@@ -180,9 +198,17 @@ export interface ConversationOrchestrator {
   joinConversation(conversationId: string, agent: AgentId): Promise<void>;
   leaveConversation(conversationId: string, agent: AgentId): Promise<void>;
   sendMessage(message: ConversationMessage): Promise<void>;
-  moderateConversation(conversationId: string, action: ModerationAction): Promise<void>;
-  getConversationHistory(conversationId: string): Promise<ConversationMessage[]>;
-  terminateConversation(conversationId: string, reason?: string): Promise<ConversationOutcome[]>;
+  moderateConversation(
+    conversationId: string,
+    action: ModerationAction,
+  ): Promise<void>;
+  getConversationHistory(
+    conversationId: string,
+  ): Promise<ConversationMessage[]>;
+  terminateConversation(
+    conversationId: string,
+    reason?: string,
+  ): Promise<ConversationOutcome[]>;
 }
 
 export interface ConversationConfig {
@@ -197,7 +223,14 @@ export interface ConversationConfig {
 }
 
 export interface ModerationAction {
-  type: 'mute' | 'unmute' | 'warn' | 'remove' | 'change_role' | 'pause' | 'resume';
+  type:
+    | 'mute'
+    | 'unmute'
+    | 'warn'
+    | 'remove'
+    | 'change_role'
+    | 'pause'
+    | 'resume';
   target: AgentId;
   reason: string;
   duration?: number;
@@ -248,7 +281,10 @@ export interface ConversationMemory {
   storeConversation(session: ConversationSession): Promise<void>;
   getConversation(id: string): Promise<ConversationSession | null>;
   searchConversations(query: ConversationQuery): Promise<ConversationSession[]>;
-  updateConversation(id: string, updates: Partial<ConversationSession>): Promise<void>;
+  updateConversation(
+    id: string,
+    updates: Partial<ConversationSession>,
+  ): Promise<void>;
   deleteConversation(id: string): Promise<void>;
   getAgentConversationHistory(agentId: string): Promise<ConversationSession[]>;
 }

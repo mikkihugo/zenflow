@@ -63,9 +63,15 @@ class MCPProtocolIntegrationTestSuite {
       };
 
       // Validate required fields
-      assert(mcpMessage.jsonrpc === '2.0', 'Should have correct JSON-RPC version');
+      assert(
+        mcpMessage.jsonrpc === '2.0',
+        'Should have correct JSON-RPC version',
+      );
       assert(typeof mcpMessage.method === 'string', 'Should have method field');
-      assert(typeof mcpMessage.params === 'object', 'Should have params object');
+      assert(
+        typeof mcpMessage.params === 'object',
+        'Should have params object',
+      );
       assert(typeof mcpMessage.id !== 'undefined', 'Should have request ID');
 
       this.results.coverage.protocol++;
@@ -85,9 +91,18 @@ class MCPProtocolIntegrationTestSuite {
         id: 1,
       };
 
-      assert(mcpResponse.jsonrpc === '2.0', 'Response should have correct JSON-RPC version');
-      assert(typeof mcpResponse.result === 'object', 'Should have result object');
-      assert(Array.isArray(mcpResponse.result.content), 'Should have content array');
+      assert(
+        mcpResponse.jsonrpc === '2.0',
+        'Response should have correct JSON-RPC version',
+      );
+      assert(
+        typeof mcpResponse.result === 'object',
+        'Should have result object',
+      );
+      assert(
+        Array.isArray(mcpResponse.result.content),
+        'Should have content array',
+      );
 
       this.results.coverage.protocol++;
     });
@@ -107,11 +122,20 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         mcpErrorResponse.jsonrpc === '2.0',
-        'Error response should have correct JSON-RPC version'
+        'Error response should have correct JSON-RPC version',
       );
-      assert(typeof mcpErrorResponse.error === 'object', 'Should have error object');
-      assert(typeof mcpErrorResponse.error.code === 'number', 'Error should have numeric code');
-      assert(typeof mcpErrorResponse.error.message === 'string', 'Error should have message');
+      assert(
+        typeof mcpErrorResponse.error === 'object',
+        'Should have error object',
+      );
+      assert(
+        typeof mcpErrorResponse.error.code === 'number',
+        'Error should have numeric code',
+      );
+      assert(
+        typeof mcpErrorResponse.error.message === 'string',
+        'Error should have message',
+      );
 
       this.results.coverage.protocol++;
     });
@@ -124,8 +148,14 @@ class MCPProtocolIntegrationTestSuite {
         id: 2,
       };
 
-      assert(toolListRequest.method === 'tools/list', 'Should request tool list');
-      assert(typeof toolListRequest.params === 'object', 'Should have params object');
+      assert(
+        toolListRequest.method === 'tools/list',
+        'Should request tool list',
+      );
+      assert(
+        typeof toolListRequest.params === 'object',
+        'Should have params object',
+      );
 
       this.results.coverage.protocol++;
     });
@@ -133,37 +163,46 @@ class MCPProtocolIntegrationTestSuite {
 
   // Test MCP Communication
   async testMCPCommunication() {
-    await this.runTest('Communication - JSON-RPC request/response cycle', async () => {
-      // Simulate a complete request/response cycle
-      const request = {
-        jsonrpc: '2.0',
-        method: 'tools/call',
-        params: {
-          name: 'swarm_status',
-          arguments: { verbose: false },
-        },
-        id: 3,
-      };
+    await this.runTest(
+      'Communication - JSON-RPC request/response cycle',
+      async () => {
+        // Simulate a complete request/response cycle
+        const request = {
+          jsonrpc: '2.0',
+          method: 'tools/call',
+          params: {
+            name: 'swarm_status',
+            arguments: { verbose: false },
+          },
+          id: 3,
+        };
 
-      // Simulate processing
-      const response = {
-        jsonrpc: '2.0',
-        result: {
-          content: [
-            {
-              type: 'text',
-              text: JSON.stringify({ status: 'active', agents: 0 }),
-            },
-          ],
-        },
-        id: request.id,
-      };
+        // Simulate processing
+        const response = {
+          jsonrpc: '2.0',
+          result: {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify({ status: 'active', agents: 0 }),
+              },
+            ],
+          },
+          id: request.id,
+        };
 
-      assert(response.id === request.id, 'Response ID should match request ID');
-      assert(response.result.content[0].type === 'text', 'Should return text content');
+        assert(
+          response.id === request.id,
+          'Response ID should match request ID',
+        );
+        assert(
+          response.result.content[0].type === 'text',
+          'Should return text content',
+        );
 
-      this.results.coverage.communication++;
-    });
+        this.results.coverage.communication++;
+      },
+    );
 
     await this.runTest('Communication - Batch request handling', async () => {
       const batchRequest = [
@@ -198,7 +237,7 @@ class MCPProtocolIntegrationTestSuite {
       assert(Array.isArray(batchResponse), 'Should handle batch requests');
       assert(
         batchResponse.length === batchRequest.length,
-        'Should return same number of responses'
+        'Should return same number of responses',
       );
 
       this.results.coverage.communication++;
@@ -217,7 +256,10 @@ class MCPProtocolIntegrationTestSuite {
 
       // Notifications don't have ID and don't expect responses
       assert(notification.id === undefined, 'Notifications should not have ID');
-      assert(notification.method.startsWith('notifications/'), 'Should be notification method');
+      assert(
+        notification.method.startsWith('notifications/'),
+        'Should be notification method',
+      );
 
       this.results.coverage.communication++;
     });
@@ -225,40 +267,46 @@ class MCPProtocolIntegrationTestSuite {
 
   // Test MCP Serialization
   async testMCPSerialization() {
-    await this.runTest('Serialization - JSON serialization/deserialization', async () => {
-      const originalMessage = {
-        jsonrpc: '2.0',
-        method: 'tools/call',
-        params: {
-          name: 'agent_spawn',
-          arguments: {
-            type: 'researcher',
-            capabilities: ['search', 'analyze', 'summarize'],
-            config: {
-              timeout: 30000,
-              retries: 3,
-              priority: 'high',
+    await this.runTest(
+      'Serialization - JSON serialization/deserialization',
+      async () => {
+        const originalMessage = {
+          jsonrpc: '2.0',
+          method: 'tools/call',
+          params: {
+            name: 'agent_spawn',
+            arguments: {
+              type: 'researcher',
+              capabilities: ['search', 'analyze', 'summarize'],
+              config: {
+                timeout: 30000,
+                retries: 3,
+                priority: 'high',
+              },
             },
           },
-        },
-        id: 6,
-      };
+          id: 6,
+        };
 
-      const serialized = JSON.stringify(originalMessage);
-      const deserialized = JSON.parse(serialized);
+        const serialized = JSON.stringify(originalMessage);
+        const deserialized = JSON.parse(serialized);
 
-      assert(
-        JSON.stringify(deserialized) === JSON.stringify(originalMessage),
-        'Should preserve message integrity'
-      );
-      assert(deserialized.params.arguments.capabilities.length === 3, 'Should preserve array data');
-      assert(
-        deserialized.params.arguments.config.timeout === 30000,
-        'Should preserve nested objects'
-      );
+        assert(
+          JSON.stringify(deserialized) === JSON.stringify(originalMessage),
+          'Should preserve message integrity',
+        );
+        assert(
+          deserialized.params.arguments.capabilities.length === 3,
+          'Should preserve array data',
+        );
+        assert(
+          deserialized.params.arguments.config.timeout === 30000,
+          'Should preserve nested objects',
+        );
 
-      this.results.coverage.serialization++;
-    });
+        this.results.coverage.serialization++;
+      },
+    );
 
     await this.runTest('Serialization - Binary data handling', async () => {
       const binaryData = Buffer.from('Hello, World!', 'utf8');
@@ -279,72 +327,87 @@ class MCPProtocolIntegrationTestSuite {
 
       const serialized = JSON.stringify(messageWithBinary);
       const deserialized = JSON.parse(serialized);
-      const recoveredBinary = Buffer.from(deserialized.params.arguments.data, 'base64');
+      const recoveredBinary = Buffer.from(
+        deserialized.params.arguments.data,
+        'base64',
+      );
 
       assert(
         recoveredBinary.toString('utf8') === 'Hello, World!',
-        'Should handle binary data correctly'
+        'Should handle binary data correctly',
       );
 
       this.results.coverage.serialization++;
     });
 
-    await this.runTest('Serialization - Unicode and special characters', async () => {
-      const unicodeMessage = {
-        jsonrpc: '2.0',
-        method: 'tools/call',
-        params: {
-          name: 'process_text',
-          arguments: {
-            text: 'Hello 🌍! Café naïve résumé 中文 中文 🚀',
-            emoji: '🚀🌍💻🤖',
-            math: 'π ≠ 3.14159...',
-            quotes: '"Smart quotes" and ‘single quotes’',
+    await this.runTest(
+      'Serialization - Unicode and special characters',
+      async () => {
+        const unicodeMessage = {
+          jsonrpc: '2.0',
+          method: 'tools/call',
+          params: {
+            name: 'process_text',
+            arguments: {
+              text: 'Hello 🌍! Café naïve résumé 中文 中文 🚀',
+              emoji: '🚀🌍💻🤖',
+              math: 'π ≠ 3.14159...',
+              quotes: '"Smart quotes" and ‘single quotes’',
+            },
           },
-        },
-        id: 8,
-      };
+          id: 8,
+        };
 
-      const serialized = JSON.stringify(unicodeMessage);
-      const deserialized = JSON.parse(serialized);
+        const serialized = JSON.stringify(unicodeMessage);
+        const deserialized = JSON.parse(serialized);
 
-      assert(deserialized.params.arguments.text.includes('🌍'), 'Should preserve emoji');
-      assert(
-        deserialized.params.arguments.text.includes('中文'),
-        'Should preserve Chinese characters'
-      );
-      assert(
-        deserialized.params.arguments.math.includes('π'),
-        'Should preserve mathematical symbols'
-      );
+        assert(
+          deserialized.params.arguments.text.includes('🌍'),
+          'Should preserve emoji',
+        );
+        assert(
+          deserialized.params.arguments.text.includes('中文'),
+          'Should preserve Chinese characters',
+        );
+        assert(
+          deserialized.params.arguments.math.includes('π'),
+          'Should preserve mathematical symbols',
+        );
 
-      this.results.coverage.serialization++;
-    });
+        this.results.coverage.serialization++;
+      },
+    );
   }
 
   // Test MCP Error Handling
   async testMCPErrorHandling() {
-    await this.runTest('Error Handling - Invalid JSON-RPC version', async () => {
-      const _invalidRequest = {
-        jsonrpc: '1.0', // Invalid version
-        method: 'tools/call',
-        params: { name: 'test' },
-        id: 9,
-      };
+    await this.runTest(
+      'Error Handling - Invalid JSON-RPC version',
+      async () => {
+        const _invalidRequest = {
+          jsonrpc: '1.0', // Invalid version
+          method: 'tools/call',
+          params: { name: 'test' },
+          id: 9,
+        };
 
-      const errorResponse = {
-        jsonrpc: '2.0',
-        error: {
-          code: -32600,
-          message: 'Invalid Request',
-          data: 'Unsupported JSON-RPC version',
-        },
-        id: 9,
-      };
+        const errorResponse = {
+          jsonrpc: '2.0',
+          error: {
+            code: -32600,
+            message: 'Invalid Request',
+            data: 'Unsupported JSON-RPC version',
+          },
+          id: 9,
+        };
 
-      assert(errorResponse.error.code === -32600, 'Should return Invalid Request error');
-      this.results.coverage.errorHandling++;
-    });
+        assert(
+          errorResponse.error.code === -32600,
+          'Should return Invalid Request error',
+        );
+        this.results.coverage.errorHandling++;
+      },
+    );
 
     await this.runTest('Error Handling - Method not found', async () => {
       const _unknownMethodRequest = {
@@ -364,7 +427,10 @@ class MCPProtocolIntegrationTestSuite {
         id: 10,
       };
 
-      assert(errorResponse.error.code === -32601, 'Should return Method not found error');
+      assert(
+        errorResponse.error.code === -32601,
+        'Should return Method not found error',
+      );
       this.results.coverage.errorHandling++;
     });
 
@@ -389,12 +455,16 @@ class MCPProtocolIntegrationTestSuite {
         id: 11,
       };
 
-      assert(errorResponse.error.code === -32602, 'Should return Invalid params error');
+      assert(
+        errorResponse.error.code === -32602,
+        'Should return Invalid params error',
+      );
       this.results.coverage.errorHandling++;
     });
 
     await this.runTest('Error Handling - Parse error', async () => {
-      const malformedJSON = '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"test"},';
+      const malformedJSON =
+        '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"test"},';
 
       try {
         JSON.parse(malformedJSON);
@@ -410,7 +480,10 @@ class MCPProtocolIntegrationTestSuite {
           id: null,
         };
 
-        assert(parseErrorResponse.error.code === -32700, 'Should return Parse error');
+        assert(
+          parseErrorResponse.error.code === -32700,
+          'Should return Parse error',
+        );
       }
 
       this.results.coverage.errorHandling++;
@@ -445,48 +518,62 @@ class MCPProtocolIntegrationTestSuite {
 
       const processingTime = endTime - startTime;
 
-      assert(deserialized.params.arguments.data.length === 10000, 'Should handle large arrays');
-      assert(processingTime < 1000, 'Should process large payloads efficiently'); // Less than 1 second
+      assert(
+        deserialized.params.arguments.data.length === 10000,
+        'Should handle large arrays',
+      );
+      assert(
+        processingTime < 1000,
+        'Should process large payloads efficiently',
+      ); // Less than 1 second
 
       this.results.coverage.performance++;
     });
 
-    await this.runTest('Performance - Concurrent request simulation', async () => {
-      const createRequest = (id) => ({
-        jsonrpc: '2.0',
-        method: 'tools/call',
-        params: {
-          name: 'agent_metrics',
-          arguments: { metric: 'all' },
-        },
-        id,
-      });
+    await this.runTest(
+      'Performance - Concurrent request simulation',
+      async () => {
+        const createRequest = (id) => ({
+          jsonrpc: '2.0',
+          method: 'tools/call',
+          params: {
+            name: 'agent_metrics',
+            arguments: { metric: 'all' },
+          },
+          id,
+        });
 
-      const startTime = performance.now();
+        const startTime = performance.now();
 
-      // Simulate 100 concurrent requests
-      const requests = Array.from({ length: 100 }, (_, i) => createRequest(i + 13));
-      const responses = requests.map((req) => ({
-        jsonrpc: '2.0',
-        result: {
-          content: [
-            {
-              type: 'text',
-              text: JSON.stringify({ metrics: { cpu: Math.random() * 100 } }),
-            },
-          ],
-        },
-        id: req.id,
-      }));
+        // Simulate 100 concurrent requests
+        const requests = Array.from({ length: 100 }, (_, i) =>
+          createRequest(i + 13),
+        );
+        const responses = requests.map((req) => ({
+          jsonrpc: '2.0',
+          result: {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify({ metrics: { cpu: Math.random() * 100 } }),
+              },
+            ],
+          },
+          id: req.id,
+        }));
 
-      const endTime = performance.now();
-      const processingTime = endTime - startTime;
+        const endTime = performance.now();
+        const processingTime = endTime - startTime;
 
-      assert(responses.length === 100, 'Should handle concurrent requests');
-      assert(processingTime < 500, 'Should process concurrent requests efficiently');
+        assert(responses.length === 100, 'Should handle concurrent requests');
+        assert(
+          processingTime < 500,
+          'Should process concurrent requests efficiently',
+        );
 
-      this.results.coverage.performance++;
-    });
+        this.results.coverage.performance++;
+      },
+    );
 
     await this.runTest('Performance - Memory usage monitoring', async () => {
       const initialMemory = process.memoryUsage();
@@ -553,17 +640,32 @@ class MCPProtocolIntegrationTestSuite {
       const sanitizedArgs = {
         topology: maliciousRequest.params.arguments.topology.replace(
           /<script[^>]*>.*?<\/script>/gi,
-          ''
+          '',
         ),
         config: {
-          command: maliciousRequest.params.arguments.config.command.replace(/[;&|`$()]/g, ''),
-          sql: maliciousRequest.params.arguments.config.sql.replace(/['";<>]/g, ''),
+          command: maliciousRequest.params.arguments.config.command.replace(
+            /[;&|`$()]/g,
+            '',
+          ),
+          sql: maliciousRequest.params.arguments.config.sql.replace(
+            /['";<>]/g,
+            '',
+          ),
         },
       };
 
-      assert(!sanitizedArgs.topology.includes('<script>'), 'Should sanitize XSS attempts');
-      assert(!sanitizedArgs.config.command.includes('rm -rf'), 'Should sanitize command injection');
-      assert(!sanitizedArgs.config.sql.includes('DROP TABLE'), 'Should sanitize SQL injection');
+      assert(
+        !sanitizedArgs.topology.includes('<script>'),
+        'Should sanitize XSS attempts',
+      );
+      assert(
+        !sanitizedArgs.config.command.includes('rm -rf'),
+        'Should sanitize command injection',
+      );
+      assert(
+        !sanitizedArgs.config.sql.includes('DROP TABLE'),
+        'Should sanitize SQL injection',
+      );
 
       this.results.coverage.security++;
     });
@@ -597,7 +699,10 @@ class MCPProtocolIntegrationTestSuite {
           id: 117,
         };
 
-        assert(errorResponse.error.code === -32000, 'Should reject oversized requests');
+        assert(
+          errorResponse.error.code === -32000,
+          'Should reject oversized requests',
+        );
       }
 
       this.results.coverage.security++;
@@ -632,7 +737,10 @@ class MCPProtocolIntegrationTestSuite {
           id: 118,
         };
 
-        assert(errorResponse.error.code === -32601, 'Should reject non-whitelisted methods');
+        assert(
+          errorResponse.error.code === -32601,
+          'Should reject non-whitelisted methods',
+        );
       }
 
       this.results.coverage.security++;
@@ -641,59 +749,65 @@ class MCPProtocolIntegrationTestSuite {
 
   // Test MCP Compatibility
   async testMCPCompatibility() {
-    await this.runTest('Compatibility - Different JSON-RPC clients', async () => {
-      // Test compatibility with various client formats
-      const clientFormats = [
-        {
-          name: 'Standard client',
-          request: {
-            jsonrpc: '2.0',
-            method: 'tools/call',
-            params: { name: 'test', arguments: {} },
-            id: 119,
+    await this.runTest(
+      'Compatibility - Different JSON-RPC clients',
+      async () => {
+        // Test compatibility with various client formats
+        const clientFormats = [
+          {
+            name: 'Standard client',
+            request: {
+              jsonrpc: '2.0',
+              method: 'tools/call',
+              params: { name: 'test', arguments: {} },
+              id: 119,
+            },
           },
-        },
-        {
-          name: 'Client with extra fields',
-          request: {
-            jsonrpc: '2.0',
-            method: 'tools/call',
-            params: { name: 'test', arguments: {} },
-            id: 120,
-            timestamp: Date.now(),
-            client: 'test-client',
+          {
+            name: 'Client with extra fields',
+            request: {
+              jsonrpc: '2.0',
+              method: 'tools/call',
+              params: { name: 'test', arguments: {} },
+              id: 120,
+              timestamp: Date.now(),
+              client: 'test-client',
+            },
           },
-        },
-        {
-          name: 'Client with string ID',
-          request: {
-            jsonrpc: '2.0',
-            method: 'tools/call',
-            params: { name: 'test', arguments: {} },
-            id: 'string-id-121',
+          {
+            name: 'Client with string ID',
+            request: {
+              jsonrpc: '2.0',
+              method: 'tools/call',
+              params: { name: 'test', arguments: {} },
+              id: 'string-id-121',
+            },
           },
-        },
-      ];
+        ];
 
-      for (const format of clientFormats) {
-        const response = {
-          jsonrpc: '2.0',
-          result: {
-            content: [
-              {
-                type: 'text',
-                text: 'Test response',
-              },
-            ],
-          },
-          id: format.request.id,
-        };
+        for (const format of clientFormats) {
+          const response = {
+            jsonrpc: '2.0',
+            result: {
+              content: [
+                {
+                  type: 'text',
+                  text: 'Test response',
+                },
+              ],
+            },
+            id: format.request.id,
+          };
 
-        assert(response.id === format.request.id, `Should handle ${format.name}`);
-      }
+          assert(
+            response.id === format.request.id,
+            `Should handle ${format.name}`,
+          );
+        }
 
-      this.results.coverage.compatibility++;
-    });
+        this.results.coverage.compatibility++;
+      },
+    );
 
     await this.runTest('Compatibility - Content type variations', async () => {
       const contentTypes = [
@@ -730,7 +844,7 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           response.result.content[0].type === content.type,
-          `Should handle ${content.type} content`
+          `Should handle ${content.type} content`,
         );
       }
 
@@ -739,8 +853,14 @@ class MCPProtocolIntegrationTestSuite {
   }
 
   generateReport() {
-    const passRate = ((this.results.passed / this.results.totalTests) * 100).toFixed(1);
-    const totalCoverage = Object.values(this.results.coverage).reduce((a, b) => a + b, 0);
+    const passRate = (
+      (this.results.passed / this.results.totalTests) *
+      100
+    ).toFixed(1);
+    const totalCoverage = Object.values(this.results.coverage).reduce(
+      (a, b) => a + b,
+      0,
+    );
 
     const report = {
       timestamp: new Date().toISOString(),
@@ -764,7 +884,9 @@ class MCPProtocolIntegrationTestSuite {
     const coverage = this.results.coverage;
 
     if (this.results.failed > 0) {
-      recommendations.push('Fix failing MCP protocol tests to ensure compliance');
+      recommendations.push(
+        'Fix failing MCP protocol tests to ensure compliance',
+      );
     }
 
     if (coverage.protocol < 4) {
@@ -796,7 +918,9 @@ class MCPProtocolIntegrationTestSuite {
     }
 
     if (recommendations.length === 0) {
-      recommendations.push('Excellent MCP protocol coverage! Consider adding stress tests.');
+      recommendations.push(
+        'Excellent MCP protocol coverage! Consider adding stress tests.',
+      );
     }
 
     return recommendations;
@@ -820,7 +944,10 @@ class MCPProtocolIntegrationTestSuite {
     report.recommendations.forEach((_rec) => {});
 
     // Save report to file
-    const reportPath = path.join(__dirname, '../test-reports/mcp-protocol-test-report.json');
+    const reportPath = path.join(
+      __dirname,
+      '../test-reports/mcp-protocol-test-report.json',
+    );
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
 

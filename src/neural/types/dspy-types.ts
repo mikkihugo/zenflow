@@ -1,46 +1,46 @@
 /**
  * @fileoverview DSPy Types and Configurations - Comprehensive Neural Framework Integration
- * 
+ *
  * This module provides complete TypeScript type definitions, configuration constants,
  * error handling classes, and validation utilities for DSPy framework integration
  * within Claude Code Zen's neural intelligence system.
- * 
+ *
  * ## Module Organization
- * 
+ *
  * ### Core Interface Definitions
  * - **DSPyConfig**: Language model configuration with defaults and validation
  * - **DSPyExample**: Training example structure with metadata support
  * - **DSPyExecutionResult**: Comprehensive execution results with metrics
  * - **DSPyProgram**: Neural program interface with execution capabilities
  * - **DSPyWrapper**: Main wrapper interface for all DSPy operations
- * 
+ *
  * ### Configuration and Limits
  * - **DEFAULT_DSPY_CONFIG**: Production-ready default configuration
  * - **DEFAULT_OPTIMIZATION_CONFIG**: Optimal settings for neural program training
  * - **DSPY_LIMITS**: System constraints and safety limits
- * 
+ *
  * ### Error Handling System
  * - **DSPyBaseError**: Base class with context and error codes
  * - **DSPyAPIError**: API communication and integration errors
  * - **DSPyConfigurationError**: Configuration validation errors
  * - **DSPyExecutionError**: Program execution and runtime errors
  * - **DSPyOptimizationError**: Training and optimization failures
- * 
+ *
  * ### Type Safety and Validation
  * - **Type Guards**: Runtime type checking for all interfaces
  * - **Validation Functions**: Input sanitization and constraint checking
  * - **Utility Functions**: Configuration normalization and error creation
- * 
+ *
  * ## Integration with Claude Code Zen
- * 
+ *
  * These types power all DSPy integrations across the system:
  * - **DSPy Wrapper** (`dspy-wrapper.ts`): Core neural program execution
  * - **Swarm Coordinator** (`dspy-swarm-coordinator.ts`): Multi-agent coordination
  * - **MCP Tools** (`dspy-swarm-mcp-tools.ts`): Intelligent MCP server tools
  * - **Integration Manager** (`dspy-integration-manager.ts`): Unified coordination
- * 
+ *
  * ## Production Configuration
- * 
+ *
  * The default configuration is optimized for production use:
  * ```typescript
  * const config: DSPyConfig = {
@@ -52,7 +52,7 @@
  *   enableLogging: true                     // Comprehensive monitoring
  * };
  * ```
- * 
+ *
  * @example
  * ```typescript
  * import {
@@ -63,21 +63,21 @@
  *   isDSPyConfig,
  *   validateDSPyConfig
  * } from './dspy-types';
- * 
+ *
  * // Type-safe configuration
  * const config: DSPyConfig = {
  *   ...DEFAULT_DSPY_CONFIG,
  *   model: 'claude-3-5-sonnet-20241022',
  *   temperature: 0.1
  * };
- * 
+ *
  * // Runtime validation
  * if (isDSPyConfig(userConfig)) {
  *   const validated = validateDSPyConfig(userConfig);
  *   // Safe to use validated config
  * }
  * ```
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0-alpha.73
  * @since 1.0.0
@@ -91,25 +91,25 @@
 
 /**
  * Configuration interface for DSPy language model setup and neural program execution.
- * 
+ *
  * This interface defines all configuration options for connecting to and configuring
  * DSPy neural programs. It supports multiple language models, execution parameters,
  * and operational settings for production deployments.
- * 
+ *
  * ## Model Support
- * 
+ *
  * Supports various language models including:
  * - **Claude Models**: claude-3-5-sonnet-20241022, claude-3-haiku (recommended)
  * - **OpenAI Models**: gpt-4, gpt-3.5-turbo, gpt-4o-mini
  * - **Custom Models**: Any compatible API endpoint
- * 
+ *
  * ## Configuration Categories
- * 
+ *
  * - **Model Settings**: model, temperature, maxTokens for neural program behavior
  * - **Authentication**: apiKey, baseURL for custom endpoints and authentication
  * - **Performance**: timeout, retryCount for reliability and fault tolerance
  * - **Debugging**: enableLogging for comprehensive monitoring and troubleshooting
- * 
+ *
  * @example
  * ```typescript
  * // Production configuration for Claude Code Zen
@@ -121,7 +121,7 @@
  *   retryCount: 3,           // Fault tolerance
  *   enableLogging: true      // Full monitoring
  * };
- * 
+ *
  * // Development configuration
  * const devConfig: DSPyConfig = {
  *   model: 'gpt-4o-mini',     // Cost-effective for development
@@ -145,27 +145,27 @@ export interface DSPyConfig {
 
 /**
  * Training example structure for DSPy neural program optimization.
- * 
+ *
  * Training examples are the foundation of DSPy's learning system. Each example
  * represents an input-output pair that neural programs learn from during optimization.
  * High-quality examples with proper metadata lead to better program performance.
- * 
+ *
  * ## Example Quality Guidelines
- * 
+ *
  * - **Input Diversity**: Cover various scenarios and edge cases
  * - **Output Consistency**: Maintain consistent format and quality
  * - **Metadata Richness**: Include source, quality scores, and relevant tags
  * - **Balanced Dataset**: Ensure examples represent real-world usage patterns
- * 
+ *
  * ## Quality Scoring
- * 
+ *
  * Quality scores (0-1) help optimization algorithms prioritize examples:
  * - **1.0**: Perfect examples with ideal inputs and outputs
  * - **0.8-0.9**: High-quality examples with minor imperfections
  * - **0.6-0.7**: Good examples with some issues or edge cases
  * - **0.4-0.5**: Acceptable examples with notable limitations
  * - **Below 0.4**: Poor examples that may hurt training
- * 
+ *
  * @example
  * ```typescript
  * // High-quality code generation example
@@ -200,26 +200,26 @@ export interface DSPyExample {
 
 /**
  * Comprehensive result from DSPy neural program execution.
- * 
+ *
  * This interface captures all information from a neural program execution,
  * including success status, results, performance metrics, and error details.
  * Essential for monitoring, debugging, and learning from program executions.
- * 
+ *
  * ## Result Structure
- * 
+ *
  * - **Success Status**: Boolean indicating execution success or failure
  * - **Result Data**: Actual output from the neural program
  * - **Execution Metadata**: Performance metrics, timing, and model information
  * - **Error Information**: Detailed error context when execution fails
- * 
+ *
  * ## Metadata Fields
- * 
+ *
  * - **executionTime**: Duration in milliseconds for performance monitoring
  * - **confidence**: Program's confidence in the result (0-1 scale)
  * - **timestamp**: Execution time for debugging and audit trails
  * - **model**: Model used for execution tracking and optimization
  * - **tokensUsed**: Token consumption for cost tracking and optimization
- * 
+ *
  * @example
  * ```typescript
  * // Successful code generation result
@@ -238,7 +238,7 @@ export interface DSPyExample {
  *     tokensUsed: 1847
  *   }
  * };
- * 
+ *
  * // Failed execution with error details
  * const errorResult: DSPyExecutionResult = {
  *   success: false,
@@ -339,9 +339,15 @@ export interface DSPyProgramMetadata {
 export interface DSPyWrapper {
   configure(config: DSPyConfig): Promise<void>;
   createProgram(signature: string, description: string): Promise<DSPyProgram>;
-  execute(program: DSPyProgram, input: Record<string, any>): Promise<DSPyExecutionResult>;
+  execute(
+    program: DSPyProgram,
+    input: Record<string, any>,
+  ): Promise<DSPyExecutionResult>;
   addExamples(program: DSPyProgram, examples: DSPyExample[]): Promise<void>;
-  optimize(program: DSPyProgram, config?: DSPyOptimizationConfig): Promise<DSPyOptimizationResult>;
+  optimize(
+    program: DSPyProgram,
+    config?: DSPyOptimizationConfig,
+  ): Promise<DSPyOptimizationResult>;
   getConfig(): DSPyConfig | null;
   healthCheck(): Promise<boolean>;
   getStats(): any;
@@ -354,31 +360,31 @@ export interface DSPyWrapper {
 
 /**
  * Production-ready default DSPy configuration optimized for Claude Code Zen.
- * 
+ *
  * This configuration provides optimal defaults for neural program execution
  * across all Claude Code Zen systems. Values are chosen based on extensive
  * testing and production usage patterns.
- * 
+ *
  * ## Configuration Rationale
- * 
+ *
  * - **Model**: gpt-3.5-turbo for cost-effective operations with good performance
  * - **Temperature**: 0.7 for balanced creativity and consistency
  * - **Max Tokens**: 1000 for efficient processing while allowing comprehensive responses
  * - **Timeout**: 30 seconds for reliable execution without excessive waiting
  * - **Retry Count**: 3 attempts for fault tolerance against transient failures
  * - **Logging**: Enabled for comprehensive monitoring and debugging
- * 
+ *
  * ## Model Parameters
- * 
+ *
  * - **top_p**: 0.9 for high-quality token selection
  * - **frequency_penalty**: 0 to avoid repetition issues
  * - **presence_penalty**: 0 for natural language generation
- * 
+ *
  * @example
  * ```typescript
  * // Use defaults directly
  * const wrapper = await createDSPyWrapper(DEFAULT_DSPY_CONFIG);
- * 
+ *
  * // Override specific settings
  * const customConfig = {
  *   ...DEFAULT_DSPY_CONFIG,
@@ -403,38 +409,38 @@ const DEFAULT_DSPY_CONFIG: DSPyConfig = {
 
 /**
  * Optimal configuration for DSPy neural program training and optimization.
- * 
+ *
  * This configuration is tuned for effective learning across different types of
  * neural programs. Settings balance training effectiveness with computational
  * efficiency for production deployments.
- * 
+ *
  * ## Optimization Strategy: Bootstrap
- * 
+ *
  * Bootstrap is chosen as the default strategy because:
  * - **Reliability**: Consistent results across different program types
  * - **Efficiency**: Good performance with moderate computational requirements
  * - **Versatility**: Works well for both simple and complex programs
  * - **Proven**: Extensively tested in production environments
- * 
+ *
  * ## Parameter Explanation
- * 
+ *
  * - **maxIterations**: 10 iterations provide good improvement without overfitting
  * - **evaluationMetric**: Accuracy is the most important metric for most use cases
  * - **validationSplit**: 20% reserved for validation prevents overfitting
  * - **earlyStoppingPatience**: Stop if no improvement for 3 iterations
- * 
+ *
  * ## Bootstrap-Specific Parameters
- * 
+ *
  * - **bootstrapSamples**: 4 samples per iteration for stable learning
  * - **candidatePrograms**: 16 candidates provide good exploration
  * - **maxBootstrappedDemos**: 4 demos prevent overfitting to examples
  * - **maxLabeledDemos**: 16 labeled examples for comprehensive learning
- * 
+ *
  * @example
  * ```typescript
  * // Use default optimization
  * const result = await wrapper.optimize(program, DEFAULT_OPTIMIZATION_CONFIG);
- * 
+ *
  * // Custom optimization for complex programs
  * const advancedConfig = {
  *   ...DEFAULT_OPTIMIZATION_CONFIG,
@@ -460,38 +466,38 @@ const DEFAULT_OPTIMIZATION_CONFIG: DSPyOptimizationConfig = {
 
 /**
  * System limits and constraints for safe and efficient DSPy operations.
- * 
+ *
  * These limits protect system resources, prevent abuse, and ensure reliable
  * operation across all Claude Code Zen DSPy integrations. Limits are based
  * on production experience and system capacity analysis.
- * 
+ *
  * ## Resource Limits
- * 
+ *
  * - **MAX_PROGRAMS_PER_WRAPPER**: Prevents memory exhaustion from too many programs
  * - **MAX_EXAMPLES**: Limits training data size to prevent memory issues
  * - **MAX_CONCURRENT_EXECUTIONS**: Prevents system overload from parallel execution
- * 
+ *
  * ## Data Size Limits
- * 
+ *
  * - **MAX_INPUT_SIZE**: Prevents oversized inputs that could cause timeouts
  * - **MAX_OUTPUT_SIZE**: Limits output size to prevent memory issues
  * - **MAX_SIGNATURE_LENGTH**: Ensures signature strings remain manageable
  * - **MAX_DESCRIPTION_LENGTH**: Prevents extremely long program descriptions
- * 
+ *
  * ## Optimization Limits
- * 
+ *
  * - **MIN_OPTIMIZATION_EXAMPLES**: Minimum examples needed for meaningful optimization
  * - **MAX_OPTIMIZATION_ITERATIONS**: Prevents infinite optimization loops
  * - **DEFAULT_TIMEOUT_MS**: Standard timeout for all operations
- * 
+ *
  * ## Safety and Performance
- * 
+ *
  * These limits ensure:
  * - **System Stability**: Prevent resource exhaustion and system crashes
  * - **Performance**: Maintain responsive system behavior under load
  * - **Cost Control**: Limit expensive operations and API calls
  * - **User Experience**: Ensure reasonable response times
- * 
+ *
  * @example
  * ```typescript
  * // Check against limits before processing
@@ -500,7 +506,7 @@ const DEFAULT_OPTIMIZATION_CONFIG: DSPyOptimizationConfig = {
  *     `Too many examples: ${examples.length} > ${DSPY_LIMITS.MAX_EXAMPLES}`
  *   );
  * }
- * 
+ *
  * // Validate signature length
  * if (!validateSignature(signature)) {
  *   throw new DSPyConfigurationError('Invalid signature format');
@@ -604,7 +610,8 @@ function isDSPyConfig(obj: any): obj is DSPyConfig {
   return (
     obj &&
     typeof obj === 'object' &&
-    (obj['model'] === undefined || (typeof obj['model'] === 'string' && obj['model'].length > 0)) &&
+    (obj['model'] === undefined ||
+      (typeof obj['model'] === 'string' && obj['model'].length > 0)) &&
     (obj['temperature'] === undefined ||
       (typeof obj['temperature'] === 'number' &&
         obj['temperature'] >= 0 &&
@@ -614,11 +621,14 @@ function isDSPyConfig(obj: any): obj is DSPyConfig {
     (obj['apiKey'] === undefined || typeof obj['apiKey'] === 'string') &&
     (obj['baseURL'] === undefined || typeof obj['baseURL'] === 'string') &&
     (obj['modelParams'] === undefined ||
-      (typeof obj['modelParams'] === 'object' && obj['modelParams'] !== null)) &&
-    (obj['timeout'] === undefined || (typeof obj['timeout'] === 'number' && obj['timeout'] > 0)) &&
+      (typeof obj['modelParams'] === 'object' &&
+        obj['modelParams'] !== null)) &&
+    (obj['timeout'] === undefined ||
+      (typeof obj['timeout'] === 'number' && obj['timeout'] > 0)) &&
     (obj['retryCount'] === undefined ||
       (typeof obj['retryCount'] === 'number' && obj['retryCount'] >= 0)) &&
-    (obj['enableLogging'] === undefined || typeof obj['enableLogging'] === 'boolean')
+    (obj['enableLogging'] === undefined ||
+      typeof obj['enableLogging'] === 'boolean')
   );
 }
 
@@ -675,15 +685,18 @@ function isDSPyOptimizationConfig(obj: any): obj is DSPyOptimizationConfig {
     obj['maxIterations'] > 0 &&
     (obj['minExamples'] === undefined ||
       (typeof obj['minExamples'] === 'number' && obj['minExamples'] > 0)) &&
-    (obj['evaluationMetric'] === undefined || typeof obj['evaluationMetric'] === 'string') &&
+    (obj['evaluationMetric'] === undefined ||
+      typeof obj['evaluationMetric'] === 'string') &&
     (obj['validationSplit'] === undefined ||
       (typeof obj['validationSplit'] === 'number' &&
         obj['validationSplit'] > 0 &&
         obj['validationSplit'] < 1)) &&
     (obj['earlyStoppingPatience'] === undefined ||
-      (typeof obj['earlyStoppingPatience'] === 'number' && obj['earlyStoppingPatience'] > 0)) &&
+      (typeof obj['earlyStoppingPatience'] === 'number' &&
+        obj['earlyStoppingPatience'] > 0)) &&
     (obj['strategyParams'] === undefined ||
-      (typeof obj['strategyParams'] === 'object' && obj['strategyParams'] !== null))
+      (typeof obj['strategyParams'] === 'object' &&
+        obj['strategyParams'] !== null))
   );
 }
 
@@ -705,9 +718,12 @@ function validateDSPyConfig(config: Partial<DSPyConfig>): DSPyConfig {
   const normalized = { ...DEFAULT_DSPY_CONFIG, ...config };
 
   if (!isDSPyConfig(normalized)) {
-    throw new DSPyConfigurationError('Invalid configuration after normalization', {
-      config: normalized,
-    });
+    throw new DSPyConfigurationError(
+      'Invalid configuration after normalization',
+      {
+        config: normalized,
+      },
+    );
   }
 
   return normalized;
@@ -746,7 +762,7 @@ function validateSignature(signature: string): boolean {
 function createValidationError(
   field: string,
   value: any,
-  expected: string
+  expected: string,
 ): DSPyConfigurationError {
   return new DSPyConfigurationError(`Invalid ${field}: expected ${expected}`, {
     field,
@@ -765,7 +781,10 @@ function sanitizeInput(input: Record<string, any>): Record<string, any> {
   const sanitized: Record<string, any> = {};
 
   for (const [key, value] of Object.entries(input)) {
-    if (typeof value === 'string' && value.length > DSPY_LIMITS['MAX_INPUT_SIZE']) {
+    if (
+      typeof value === 'string' &&
+      value.length > DSPY_LIMITS['MAX_INPUT_SIZE']
+    ) {
       sanitized[key] = value.substring(0, DSPY_LIMITS['MAX_INPUT_SIZE']);
     } else {
       sanitized[key] = value;

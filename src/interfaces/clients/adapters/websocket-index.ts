@@ -115,7 +115,7 @@ export async function createOptimalWebSocketClient(
       enabled: boolean;
       size?: number;
     };
-  }
+  },
 ): Promise<import('../core/interfaces.ts').IClient> {
   const factory = new WebSocketClientFactory();
 
@@ -127,7 +127,10 @@ export async function createOptimalWebSocketClient(
       name: `${config?.name || 'ws'}-${url.split('://')[1]?.replace(/[:.]/g, '-')}`,
     }));
 
-    return factory.createLoadBalanced(configs, options?.loadBalancing?.strategy);
+    return factory.createLoadBalanced(
+      configs,
+      options?.loadBalancing?.strategy,
+    );
   }
 
   // Handle failover
@@ -146,7 +149,10 @@ export async function createOptimalWebSocketClient(
 
   // Handle connection pooling
   if (options?.pooling?.enabled) {
-    const pooledClients = await factory.createPooled(config, options?.pooling.size);
+    const pooledClients = await factory.createPooled(
+      config,
+      options?.pooling.size,
+    );
     return new LoadBalancedWebSocketClient(pooledClients, 'round-robin');
   }
 
@@ -177,7 +183,7 @@ export async function createSimpleWebSocketClient(
     reconnect?: boolean;
     heartbeat?: boolean;
     useEnhanced?: boolean;
-  }
+  },
 ): Promise<import('../core/interfaces.ts').IClient> {
   const config: WebSocketClientConfig = {
     name: `simple-ws-${Date.now()}`,
@@ -202,7 +208,9 @@ export async function createSimpleWebSocketClient(
     },
   };
 
-  return createOptimalWebSocketClient(config, { useEnhanced: options?.useEnhanced });
+  return createOptimalWebSocketClient(config, {
+    useEnhanced: options?.useEnhanced,
+  });
 }
 
 /**
@@ -365,7 +373,7 @@ export class WebSocketHealthMonitor {
   addClient(
     name: string,
     client: import('../core/interfaces.ts').IClient,
-    checkInterval: number = 60000
+    checkInterval: number = 60000,
   ): void {
     this.clients.set(name, client);
 
@@ -374,7 +382,10 @@ export class WebSocketHealthMonitor {
         const status = await client.healthCheck();
 
         if (status.status === 'unhealthy') {
-          logger.warn(`WebSocket client ${name} is unhealthy:`, status.metadata);
+          logger.warn(
+            `WebSocket client ${name} is unhealthy:`,
+            status.metadata,
+          );
         }
       } catch (error) {
         logger.error(`WebSocket health check failed for ${name}:`, error);
@@ -401,7 +412,9 @@ export class WebSocketHealthMonitor {
   /**
    * Get health status for all monitored clients.
    */
-  async getHealthStatus(): Promise<Map<string, import('../core/interfaces.ts').ClientStatus>> {
+  async getHealthStatus(): Promise<
+    Map<string, import('../core/interfaces.ts').ClientStatus>
+  > {
     const results = new Map();
 
     for (const [name, client] of this.clients) {
@@ -416,7 +429,9 @@ export class WebSocketHealthMonitor {
           responseTime: -1,
           errorRate: 1,
           uptime: 0,
-          metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+          metadata: {
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
         });
       }
     }

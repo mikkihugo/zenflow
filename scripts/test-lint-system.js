@@ -10,13 +10,20 @@
  * Tests the entire lint correction system before deployment
  */
 
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { join } from 'node:path';
 
 class LintSystemTester {
   constructor() {
     this.testResults = new Map();
-    this.memoryKey = 'swarm-lint-fix/hierarchy/level2/specialists/fixer/testing';
+    this.memoryKey =
+      'swarm-lint-fix/hierarchy/level2/specialists/fixer/testing';
     this.testDir = './test-lint-samples';
 
     this.setupTestEnvironment();
@@ -207,7 +214,8 @@ export class TestClass {
     this.logMemory('testing-advanced-lint-fixer', { phase: 'advanced-fixes' });
 
     try {
-      const AdvancedLintFixer = (await import('./lint-fixer-advanced.js')).default;
+      const AdvancedLintFixer = (await import('./lint-fixer-advanced.js'))
+        .default;
       const fixer = new AdvancedLintFixer();
 
       // Override the getErrorFiles method to use our test files
@@ -232,7 +240,9 @@ export class TestClass {
         timestamp: new Date().toISOString(),
       });
 
-      this.logMemory('advanced-lint-fixer-test-failed', { error: error.message });
+      this.logMemory('advanced-lint-fixer-test-failed', {
+        error: error.message,
+      });
       throw error;
     }
   }
@@ -241,10 +251,14 @@ export class TestClass {
    * Test coordination protocol
    */
   async testCoordinationProtocol() {
-    this.logMemory('testing-coordination-protocol', { phase: 'worker-coordination' });
+    this.logMemory('testing-coordination-protocol', {
+      phase: 'worker-coordination',
+    });
 
     try {
-      const LintCoordinationProtocol = (await import('./lint-coordination-protocol.js')).default;
+      const LintCoordinationProtocol = (
+        await import('./lint-coordination-protocol.js')
+      ).default;
       const protocol = new LintCoordinationProtocol();
 
       // Create a mock ESLint output for testing
@@ -265,7 +279,7 @@ export class TestClass {
         workersGenerated: results.taskDistribution.size,
         totalTasks: Array.from(results.taskDistribution.values()).reduce(
           (sum, tasks) => sum + tasks.length,
-          0
+          0,
         ),
       });
 
@@ -277,7 +291,9 @@ export class TestClass {
         timestamp: new Date().toISOString(),
       });
 
-      this.logMemory('coordination-protocol-test-failed', { error: error.message });
+      this.logMemory('coordination-protocol-test-failed', {
+        error: error.message,
+      });
       throw error;
     }
   }
@@ -296,11 +312,26 @@ export class TestClass {
     // Simulate errors for each test file
     const errorSimulations = {
       'unterminated-comment.js': [
-        { line: 1, col: 1, message: 'Unterminated comment', type: 'unterminated-comment' },
+        {
+          line: 1,
+          col: 1,
+          message: 'Unterminated comment',
+          type: 'unterminated-comment',
+        },
       ],
       'missing-semicolons.js': [
-        { line: 2, col: 20, message: 'Missing semicolon', type: 'semicolon-expected' },
-        { line: 3, col: 15, message: 'Missing semicolon', type: 'semicolon-expected' },
+        {
+          line: 2,
+          col: 20,
+          message: 'Missing semicolon',
+          type: 'semicolon-expected',
+        },
+        {
+          line: 3,
+          col: 15,
+          message: 'Missing semicolon',
+          type: 'semicolon-expected',
+        },
       ],
       'missing-brackets.js': [
         {
@@ -309,15 +340,40 @@ export class TestClass {
           message: 'Missing closing parenthesis',
           type: 'missing-closing-brackets',
         },
-        { line: 7, col: 25, message: 'Missing closing bracket', type: 'missing-closing-brackets' },
+        {
+          line: 7,
+          col: 25,
+          message: 'Missing closing bracket',
+          type: 'missing-closing-brackets',
+        },
       ],
       'typescript-errors.ts': [
-        { line: 4, col: 7, message: 'Expression expected', type: 'expression-expected' },
-        { line: 7, col: 35, message: 'Declaration expected', type: 'declaration-expected' },
+        {
+          line: 4,
+          col: 7,
+          message: 'Expression expected',
+          type: 'expression-expected',
+        },
+        {
+          line: 7,
+          col: 35,
+          message: 'Declaration expected',
+          type: 'declaration-expected',
+        },
       ],
       'import-errors.mjs': [
-        { line: 1, col: 7, message: 'Expression expected', type: 'import-export-errors' },
-        { line: 3, col: 7, message: 'Expression expected', type: 'import-export-errors' },
+        {
+          line: 1,
+          col: 7,
+          message: 'Expression expected',
+          type: 'import-export-errors',
+        },
+        {
+          line: 3,
+          col: 7,
+          message: 'Expression expected',
+          type: 'import-export-errors',
+        },
       ],
     };
 
@@ -327,7 +383,10 @@ export class TestClass {
 
       for (const error of errors) {
         mockErrors.totalErrors++;
-        mockErrors.errorTypes.set(error.type, (mockErrors.errorTypes.get(error.type) || 0) + 1);
+        mockErrors.errorTypes.set(
+          error.type,
+          (mockErrors.errorTypes.get(error.type) || 0) + 1,
+        );
       }
     }
 
@@ -446,11 +505,17 @@ export class TestClass {
   identifyRemainingSyntaxIssues(content) {
     const issues = [];
 
-    if ((content.match(/\/\*/g) || []).length !== (content.match(/\*\//g) || []).length) {
+    if (
+      (content.match(/\/\*/g) || []).length !==
+      (content.match(/\*\//g) || []).length
+    ) {
       issues.push('unbalanced-comments');
     }
 
-    if ((content.match(/\{/g) || []).length !== (content.match(/\}/g) || []).length) {
+    if (
+      (content.match(/\{/g) || []).length !==
+      (content.match(/\}/g) || []).length
+    ) {
       issues.push('unbalanced-braces');
     }
 
@@ -487,12 +552,18 @@ export class TestClass {
 
     // Add recommendations
     if (report.summary.failed > 0) {
-      report.recommendations.push('Some tests failed - review error logs and fix issues');
+      report.recommendations.push(
+        'Some tests failed - review error logs and fix issues',
+      );
     }
 
     if (report.summary.passed === report.summary.totalTests) {
-      report.recommendations.push('All tests passed - system ready for deployment');
-      report.recommendations.push('Consider running on actual codebase for production validation');
+      report.recommendations.push(
+        'All tests passed - system ready for deployment',
+      );
+      report.recommendations.push(
+        'Consider running on actual codebase for production validation',
+      );
     }
 
     return report;

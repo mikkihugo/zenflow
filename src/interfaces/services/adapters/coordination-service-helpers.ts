@@ -38,7 +38,7 @@ export async function createIntelligentAgent(
     capabilities?: string[];
     specialization?: string;
     learningEnabled?: boolean;
-  }
+  },
 ): Promise<any> {
   const logger = getLogger('CoordinationHelpers:Agent');
 
@@ -46,7 +46,8 @@ export async function createIntelligentAgent(
 
   const enhancedConfig = {
     type: config?.type,
-    capabilities: config?.capabilities || getDefaultCapabilitiesForType(config?.type),
+    capabilities:
+      config?.capabilities || getDefaultCapabilitiesForType(config?.type),
     specialization: config?.specialization || config?.type,
     learningEnabled: config?.learningEnabled ?? true,
     metadata: {
@@ -57,7 +58,9 @@ export async function createIntelligentAgent(
   };
 
   try {
-    const result = await adapter.execute('agent-create', { config: enhancedConfig });
+    const result = await adapter.execute('agent-create', {
+      config: enhancedConfig,
+    });
 
     if (result?.success && config?.learningEnabled) {
       // Initialize learning patterns for the new agent
@@ -101,13 +104,15 @@ export async function createAgentBatch(
   options?: {
     maxConcurrency?: number;
     staggerDelay?: number;
-  }
+  },
 ): Promise<any[]> {
   const logger = getLogger('CoordinationHelpers:AgentBatch');
   const maxConcurrency = options?.maxConcurrency || 5;
   const staggerDelay = options?.staggerDelay || 100;
 
-  logger.info(`Creating batch of ${configs.length} agents with concurrency: ${maxConcurrency}`);
+  logger.info(
+    `Creating batch of ${configs.length} agents with concurrency: ${maxConcurrency}`,
+  );
 
   const results: any[] = [];
 
@@ -118,7 +123,9 @@ export async function createAgentBatch(
     const batchPromises = batch.map(async (config, index) => {
       // Stagger requests slightly to avoid thundering herd
       if (index > 0 && staggerDelay > 0) {
-        await new Promise((resolve) => setTimeout(resolve, index * staggerDelay));
+        await new Promise((resolve) =>
+          setTimeout(resolve, index * staggerDelay),
+        );
       }
 
       return createIntelligentAgent(adapter, config);
@@ -131,7 +138,9 @@ export async function createAgentBatch(
         if (result?.status === 'fulfilled') {
           results.push(result?.value);
         } else {
-          logger.error(`Failed to create agent ${i + index}: ${result?.reason}`);
+          logger.error(
+            `Failed to create agent ${i + index}: ${result?.reason}`,
+          );
           results.push(null);
         }
       });
@@ -147,7 +156,9 @@ export async function createAgentBatch(
   }
 
   const successCount = results.filter((r) => r !== null).length;
-  logger.info(`Agent batch creation completed: ${successCount}/${configs.length} successful`);
+  logger.info(
+    `Agent batch creation completed: ${successCount}/${configs.length} successful`,
+  );
 
   return results;
 }
@@ -161,7 +172,7 @@ export async function createAgentBatch(
  */
 export async function optimizeAgentPerformance(
   adapter: CoordinationServiceAdapter,
-  agentIds?: string[]
+  agentIds?: string[],
 ): Promise<{
   optimized: number;
   recommendations: Array<{
@@ -218,16 +229,20 @@ export async function optimizeAgentPerformance(
         try {
           await issue.autoFix(adapter, metrics.agentId);
           optimized++;
-          logger.info(`Auto-optimized agent ${metrics.agentId}: ${issue.problem}`);
+          logger.info(
+            `Auto-optimized agent ${metrics.agentId}: ${issue.problem}`,
+          );
         } catch (error) {
-          logger.warn(`Failed to auto-optimize agent ${metrics.agentId}: ${error}`);
+          logger.warn(
+            `Failed to auto-optimize agent ${metrics.agentId}: ${error}`,
+          );
         }
       }
     }
   }
 
   logger.info(
-    `Agent optimization completed: ${optimized} agents optimized, ${recommendations.length} recommendations`
+    `Agent optimization completed: ${optimized} agents optimized, ${recommendations.length} recommendations`,
   );
 
   return { optimized, recommendations };
@@ -255,7 +270,7 @@ export async function createManagedSession(
     autoCheckpoint?: boolean;
     checkpointInterval?: number;
     maxDuration?: number;
-  }
+  },
 ): Promise<{
   sessionId: string;
   monitoringId: string;
@@ -267,7 +282,9 @@ export async function createManagedSession(
   // Create the session
   const sessionResult = await adapter.execute('session-create', { name });
   if (!sessionResult?.success) {
-    throw new Error(`Failed to create session: ${sessionResult?.error?.message}`);
+    throw new Error(
+      `Failed to create session: ${sessionResult?.error?.message}`,
+    );
   }
 
   const sessionId = sessionResult?.data as string;
@@ -285,7 +302,9 @@ export async function createManagedSession(
         });
         logger.debug(`Auto-checkpoint created for session: ${sessionId}`);
       } catch (error) {
-        logger.warn(`Auto-checkpoint failed for session ${sessionId}: ${error}`);
+        logger.warn(
+          `Auto-checkpoint failed for session ${sessionId}: ${error}`,
+        );
       }
     }, interval);
 
@@ -297,20 +316,26 @@ export async function createManagedSession(
   if (options?.maxDuration) {
     setTimeout(async () => {
       try {
-        logger.info(`Session ${sessionId} reached max duration, creating final checkpoint`);
+        logger.info(
+          `Session ${sessionId} reached max duration, creating final checkpoint`,
+        );
         await adapter.execute('session-checkpoint', {
           sessionId,
           description: 'Final checkpoint before expiration',
         });
 
         // Clean up timers
-        const checkpointTimer = (global as any)[`checkpoint-timer-${sessionId}`];
+        const checkpointTimer = (global as any)[
+          `checkpoint-timer-${sessionId}`
+        ];
         if (checkpointTimer) {
           clearInterval(checkpointTimer);
           delete (global as any)[`checkpoint-timer-${sessionId}`];
         }
       } catch (error) {
-        logger.error(`Failed to create final checkpoint for session ${sessionId}: ${error}`);
+        logger.error(
+          `Failed to create final checkpoint for session ${sessionId}: ${error}`,
+        );
       }
     }, options?.maxDuration);
   }
@@ -327,7 +352,7 @@ export async function createManagedSession(
  */
 export async function monitorSessionHealth(
   adapter: CoordinationServiceAdapter,
-  sessionIds?: string[]
+  sessionIds?: string[],
 ): Promise<{
   healthy: string[];
   unhealthy: string[];
@@ -370,14 +395,18 @@ export async function monitorSessionHealth(
           unhealthy.push(sessionId);
 
           // Attempt recovery
-          logger.info(`Attempting recovery for unhealthy session: ${sessionId}`);
+          logger.info(
+            `Attempting recovery for unhealthy session: ${sessionId}`,
+          );
           try {
             await adapter.execute('session-save', { sessionId });
             recovered.push(sessionId);
             logger.info(`Successfully recovered session: ${sessionId}`);
           } catch (recoveryError) {
             failed.push(sessionId);
-            logger.error(`Failed to recover session ${sessionId}: ${recoveryError}`);
+            logger.error(
+              `Failed to recover session ${sessionId}: ${recoveryError}`,
+            );
           }
         }
       } else {
@@ -392,7 +421,7 @@ export async function monitorSessionHealth(
   }
 
   logger.info(
-    `Session health check: ${healthy.length} healthy, ${unhealthy.length} unhealthy, ${recovered.length} recovered, ${failed.length} failed`
+    `Session health check: ${healthy.length} healthy, ${unhealthy.length} unhealthy, ${recovered.length} recovered, ${failed.length} failed`,
   );
 
   return { healthy, unhealthy, recovered, failed };
@@ -420,7 +449,7 @@ export async function coordinateIntelligentSwarm(
     targetLatency?: number;
     minSuccessRate?: number;
     adaptiveTopology?: boolean;
-  }
+  },
 ): Promise<{
   coordination: any;
   topology: SwarmTopology;
@@ -438,7 +467,11 @@ export async function coordinateIntelligentSwarm(
   logger.info(`Coordinating intelligent swarm with ${agents.length} agents`);
 
   let bestTopology: SwarmTopology = 'mesh';
-  let bestPerformance = { latency: Infinity, successRate: 0, throughput: 0 };
+  let bestPerformance = {
+    latency: Number.POSITIVE_INFINITY,
+    successRate: 0,
+    throughput: 0,
+  };
   let bestCoordination: any;
 
   // Try different topologies if adaptive mode is enabled
@@ -460,7 +493,9 @@ export async function coordinateIntelligentSwarm(
         const performance = {
           latency: coordination.averageLatency,
           successRate: coordination.successRate,
-          throughput: coordination.agentsCoordinated / (coordination.averageLatency / 1000),
+          throughput:
+            coordination.agentsCoordinated /
+            (coordination.averageLatency / 1000),
         };
 
         // Check if this topology meets our requirements and is better
@@ -476,7 +511,7 @@ export async function coordinateIntelligentSwarm(
           bestCoordination = coordination;
 
           logger.info(
-            `Found better topology ${topology}: latency=${performance.latency}ms, success=${performance.successRate}`
+            `Found better topology ${topology}: latency=${performance.latency}ms, success=${performance.successRate}`,
           );
         }
       }
@@ -487,7 +522,9 @@ export async function coordinateIntelligentSwarm(
 
   // If no topology met requirements, use the best we found
   if (!bestCoordination) {
-    logger.warn('No topology met performance requirements, using mesh as fallback');
+    logger.warn(
+      'No topology met performance requirements, using mesh as fallback',
+    );
     const coordinationResult = await adapter.execute('swarm-coordinate', {
       agents,
       topology: 'mesh',
@@ -499,14 +536,18 @@ export async function coordinateIntelligentSwarm(
       bestPerformance = {
         latency: bestCoordination.averageLatency,
         successRate: bestCoordination.successRate,
-        throughput: bestCoordination.agentsCoordinated / (bestCoordination.averageLatency / 1000),
+        throughput:
+          bestCoordination.agentsCoordinated /
+          (bestCoordination.averageLatency / 1000),
       };
     } else {
       throw new Error('Failed to coordinate swarm with any topology');
     }
   }
 
-  logger.info(`Intelligent swarm coordination completed with topology: ${bestTopology}`);
+  logger.info(
+    `Intelligent swarm coordination completed with topology: ${bestTopology}`,
+  );
 
   return {
     coordination: bestCoordination,
@@ -537,7 +578,7 @@ export async function distributeSwarmTasks(
   options?: {
     strategy?: 'round-robin' | 'least-loaded' | 'capability-match';
     maxTasksPerAgent?: number;
-  }
+  },
 ): Promise<{
   assignments: Array<{
     taskId: string;
@@ -563,7 +604,7 @@ export async function distributeSwarmTasks(
 
   const agents = agentsResult?.data as SwarmAgent[];
   const availableAgents = agents.filter(
-    (agent) => agent.status === 'idle' || agent.status === 'busy'
+    (agent) => agent.status === 'idle' || agent.status === 'busy',
   );
 
   if (availableAgents.length === 0) {
@@ -596,22 +637,32 @@ export async function distributeSwarmTasks(
           availableAgents,
           task,
           agentTaskCounts,
-          maxTasksPerAgent
+          maxTasksPerAgent,
         );
         break;
 
       case 'least-loaded':
-        selectedAgent = findLeastLoadedAgent(availableAgents, agentTaskCounts, maxTasksPerAgent);
+        selectedAgent = findLeastLoadedAgent(
+          availableAgents,
+          agentTaskCounts,
+          maxTasksPerAgent,
+        );
         break;
 
       case 'round-robin':
-        selectedAgent = findRoundRobinAgent(availableAgents, agentTaskCounts, maxTasksPerAgent);
+        selectedAgent = findRoundRobinAgent(
+          availableAgents,
+          agentTaskCounts,
+          maxTasksPerAgent,
+        );
         break;
     }
 
     if (selectedAgent) {
       try {
-        const assignResult = await adapter.execute('swarm-assign-task', { task });
+        const assignResult = await adapter.execute('swarm-assign-task', {
+          task,
+        });
 
         if (assignResult?.success && selectedAgent?.id) {
           agentTaskCounts[selectedAgent.id]++;
@@ -628,7 +679,9 @@ export async function distributeSwarmTasks(
           logger.debug(`Assigned task ${task.id} to agent ${selectedAgent.id}`);
         } else {
           unassigned.push(task.id);
-          logger.warn(`Failed to assign task ${task.id}: ${assignResult?.error?.message}`);
+          logger.warn(
+            `Failed to assign task ${task.id}: ${assignResult?.error?.message}`,
+          );
         }
       } catch (error) {
         unassigned.push(task.id);
@@ -641,7 +694,7 @@ export async function distributeSwarmTasks(
   }
 
   logger.info(
-    `Task distribution completed: ${assignments.length} assigned, ${unassigned.length} unassigned`
+    `Task distribution completed: ${assignments.length} assigned, ${unassigned.length} unassigned`,
   );
 
   return {
@@ -665,7 +718,7 @@ export async function distributeSwarmTasks(
  */
 export async function analyzeCoordinationPerformance(
   adapter: CoordinationServiceAdapter,
-  _timeWindow?: number // milliseconds
+  _timeWindow?: number, // milliseconds
 ): Promise<{
   overall: {
     score: number;
@@ -703,15 +756,21 @@ export async function analyzeCoordinationPerformance(
 
   // Get agent metrics
   const agentMetricsResult = await adapter.execute('agent-metrics');
-  const agentMetrics = agentMetricsResult?.success ? agentMetricsResult?.data : [];
+  const agentMetrics = agentMetricsResult?.success
+    ? agentMetricsResult?.data
+    : [];
 
   // Get session metrics
   const sessionMetricsResult = await adapter.execute('session-metrics');
-  const sessionMetrics = sessionMetricsResult?.success ? sessionMetricsResult?.data : [];
+  const sessionMetrics = sessionMetricsResult?.success
+    ? sessionMetricsResult?.data
+    : [];
 
   // Get swarm metrics
   const swarmMetricsResult = await adapter.execute('swarm-metrics');
-  const swarmMetrics = swarmMetricsResult?.success ? swarmMetricsResult?.data : null;
+  const swarmMetrics = swarmMetricsResult?.success
+    ? swarmMetricsResult?.data
+    : null;
 
   // Analyze overall performance
   const overall = analyzeOverallPerformance(metricsResult, statusResult);
@@ -726,7 +785,7 @@ export async function analyzeCoordinationPerformance(
   const coordination = analyzeCoordinationMetrics(swarmMetrics);
 
   logger.info(
-    `Performance analysis completed: Overall grade ${overall.grade}, ${agents.active}/${agents.total} agents active`
+    `Performance analysis completed: Overall grade ${overall.grade}, ${agents.active}/${agents.total} agents active`,
   );
 
   return {
@@ -745,8 +804,18 @@ function getDefaultCapabilitiesForType(type: AgentType): string[] {
   const capabilityMap: Record<string, string[]> = {
     researcher: ['search', 'analysis', 'documentation', 'data-gathering'],
     coder: ['programming', 'debugging', 'testing', 'code-review'],
-    analyst: ['data-analysis', 'pattern-recognition', 'reporting', 'visualization'],
-    coordinator: ['task-management', 'scheduling', 'communication', 'monitoring'],
+    analyst: [
+      'data-analysis',
+      'pattern-recognition',
+      'reporting',
+      'visualization',
+    ],
+    coordinator: [
+      'task-management',
+      'scheduling',
+      'communication',
+      'monitoring',
+    ],
     tester: ['testing', 'validation', 'quality-assurance', 'bug-detection'],
     architect: ['system-design', 'architecture', 'planning', 'documentation'],
   };
@@ -764,20 +833,28 @@ function getDefaultCognitivePattern(type: AgentType): any {
     architect: { focus: 'design', creativity: 0.9, precision: 0.8 },
   };
 
-  return patternMap[type] || { focus: 'general', creativity: 0.5, precision: 0.7 };
+  return (
+    patternMap[type] || { focus: 'general', creativity: 0.5, precision: 0.7 }
+  );
 }
 
 function analyzeAgentPerformance(metrics: any): Array<{
   problem: string;
   solution: string;
   priority: 'low' | 'medium' | 'high';
-  autoFix?: (adapter: CoordinationServiceAdapter, agentId: string) => Promise<void>;
+  autoFix?: (
+    adapter: CoordinationServiceAdapter,
+    agentId: string,
+  ) => Promise<void>;
 }> {
   const issues: Array<{
     problem: string;
     solution: string;
     priority: 'low' | 'medium' | 'high';
-    autoFix?: (adapter: CoordinationServiceAdapter, agentId: string) => Promise<void>;
+    autoFix?: (
+      adapter: CoordinationServiceAdapter,
+      agentId: string,
+    ) => Promise<void>;
   }> = [];
 
   // High error rate
@@ -813,7 +890,10 @@ function analyzeAgentPerformance(metrics: any): Array<{
       autoFix: async (adapter, agentId) => {
         await adapter.execute('cognitive-set', {
           agentId,
-          pattern: { ...getDefaultCognitivePattern(metrics.type), learningRate: 0.2 },
+          pattern: {
+            ...getDefaultCognitivePattern(metrics.type),
+            learningRate: 0.2,
+          },
         });
       },
     });
@@ -854,12 +934,12 @@ function findBestCapabilityMatch(
   agents: SwarmAgent[],
   task: any,
   taskCounts: { [agentId: string]: number },
-  maxTasks: number
+  maxTasks: number,
 ): SwarmAgent | null {
   const suitableAgents = agents.filter((agent) => {
     if (!agent.id) return false;
     const hasCapabilities = task.requirements.every((req: string) =>
-      agent.capabilities.includes(req)
+      agent.capabilities.includes(req),
     );
     const withinLimit = taskCounts[agent.id] < maxTasks;
     return hasCapabilities && withinLimit;
@@ -869,7 +949,7 @@ function findBestCapabilityMatch(
 
   // Return agent with best performance and lowest current load
   return suitableAgents.reduce((best, current) => {
-    if (!best.id || !current.id) return best;
+    if (!(best.id && current.id)) return best;
     const bestScore = calculateAgentScore(best) - taskCounts[best.id];
     const currentScore = calculateAgentScore(current) - taskCounts[current.id];
     return currentScore > bestScore ? current : best;
@@ -879,13 +959,15 @@ function findBestCapabilityMatch(
 function findLeastLoadedAgent(
   agents: SwarmAgent[],
   taskCounts: { [agentId: string]: number },
-  maxTasks: number
+  maxTasks: number,
 ): SwarmAgent | null {
-  const availableAgents = agents.filter((agent) => agent.id && taskCounts[agent.id] < maxTasks);
+  const availableAgents = agents.filter(
+    (agent) => agent.id && taskCounts[agent.id] < maxTasks,
+  );
   if (availableAgents.length === 0) return null;
 
   return availableAgents.reduce((least, current) => {
-    if (!least.id || !current.id) return least;
+    if (!(least.id && current.id)) return least;
     return taskCounts[current.id] < taskCounts[least.id] ? current : least;
   });
 }
@@ -893,15 +975,23 @@ function findLeastLoadedAgent(
 function findRoundRobinAgent(
   agents: SwarmAgent[],
   taskCounts: { [agentId: string]: number },
-  maxTasks: number
+  maxTasks: number,
 ): SwarmAgent | null {
-  const availableAgents = agents.filter((agent) => agent.id && taskCounts[agent.id] < maxTasks);
+  const availableAgents = agents.filter(
+    (agent) => agent.id && taskCounts[agent.id] < maxTasks,
+  );
   if (availableAgents.length === 0) return null;
 
   // Simple round-robin: return first agent with minimum task count
-  const taskCounts_ = availableAgents.map((agent) => (agent.id ? taskCounts[agent.id] : 0));
+  const taskCounts_ = availableAgents.map((agent) =>
+    agent.id ? taskCounts[agent.id] : 0,
+  );
   const minTasks = Math.min(...taskCounts_);
-  return availableAgents.find((agent) => agent.id && taskCounts[agent.id] === minTasks) || null;
+  return (
+    availableAgents.find(
+      (agent) => agent.id && taskCounts[agent.id] === minTasks,
+    ) || null
+  );
 }
 
 function calculateAgentScore(agent: SwarmAgent): number {
@@ -914,7 +1004,7 @@ function calculateAgentScore(agent: SwarmAgent): number {
 
 function analyzeOverallPerformance(
   metrics: any,
-  status: any
+  status: any,
 ): {
   score: number;
   grade: 'A' | 'B' | 'C' | 'D' | 'F';
@@ -936,7 +1026,9 @@ function analyzeOverallPerformance(
   if (metrics.averageLatency > 1000) {
     score -= 15;
     issues.push('High average latency');
-    recommendations.push('Optimize coordination algorithms or increase resources');
+    recommendations.push(
+      'Optimize coordination algorithms or increase resources',
+    );
   }
 
   // Check health
@@ -972,7 +1064,10 @@ function analyzeAgentPerformanceMetrics(agentMetrics: any[]): {
 
   const avgPerformance =
     total > 0
-      ? agentMetrics.reduce((sum, m) => sum + (1 - m.errorRate) * m.learningProgress, 0) / total
+      ? agentMetrics.reduce(
+          (sum, m) => sum + (1 - m.errorRate) * m.learningProgress,
+          0,
+        ) / total
       : 0;
 
   const sortedByPerformance = [...agentMetrics].sort((a, b) => {
@@ -981,10 +1076,20 @@ function analyzeAgentPerformanceMetrics(agentMetrics: any[]): {
     return scoreB - scoreA;
   });
 
-  const topPerformers = sortedByPerformance.slice(0, Math.min(5, total)).map((m) => m.agentId);
-  const underperformers = sortedByPerformance.slice(-Math.min(5, total)).map((m) => m.agentId);
+  const topPerformers = sortedByPerformance
+    .slice(0, Math.min(5, total))
+    .map((m) => m.agentId);
+  const underperformers = sortedByPerformance
+    .slice(-Math.min(5, total))
+    .map((m) => m.agentId);
 
-  return { total, active, averagePerformance: avgPerformance, topPerformers, underperformers };
+  return {
+    total,
+    active,
+    averagePerformance: avgPerformance,
+    topPerformers,
+    underperformers,
+  };
 }
 
 function analyzeSessionPerformanceMetrics(sessionMetrics: any[]): {
@@ -996,13 +1101,20 @@ function analyzeSessionPerformanceMetrics(sessionMetrics: any[]): {
   const total = sessionMetrics.length;
   const healthy = sessionMetrics.filter((m) => assessSessionHealth(m)).length;
 
-  const avgUptime = total > 0 ? sessionMetrics.reduce((sum, m) => sum + m.uptime, 0) / total : 0;
+  const avgUptime =
+    total > 0
+      ? sessionMetrics.reduce((sum, m) => sum + m.uptime, 0) / total
+      : 0;
 
-  const totalAttempts = sessionMetrics.reduce((sum, m) => sum + m.recoveryAttempts, 0);
+  const totalAttempts = sessionMetrics.reduce(
+    (sum, m) => sum + m.recoveryAttempts,
+    0,
+  );
   const successfulRecoveries = sessionMetrics.filter(
-    (m) => m.recoveryAttempts > 0 && assessSessionHealth(m)
+    (m) => m.recoveryAttempts > 0 && assessSessionHealth(m),
   ).length;
-  const recoveryRate = totalAttempts > 0 ? successfulRecoveries / totalAttempts : 1;
+  const recoveryRate =
+    totalAttempts > 0 ? successfulRecoveries / totalAttempts : 1;
 
   return { total, healthy, avgUptime, recoveryRate };
 }

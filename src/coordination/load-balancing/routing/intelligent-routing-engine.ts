@@ -8,7 +8,13 @@
 
 import type { CapacityManager, RoutingEngine } from '../interfaces.ts';
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer.ts';
-import type { Agent, NetworkTopology, QoSRequirement, RoutingResult, Task } from '../types.ts';
+import type {
+  Agent,
+  NetworkTopology,
+  QoSRequirement,
+  RoutingResult,
+  Task,
+} from '../types.ts';
 import { FailoverManager } from './failover-manager.ts';
 import { TaskAgentMatcher } from './task-agent-matcher.ts';
 
@@ -69,7 +75,10 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     failoverThreshold: 0.8,
     adaptiveRoutingEnabled: true,
     geographicAwareRouting: true,
-    loadBalancingStrategy: 'intelligent' as 'round_robin' | 'least_connections' | 'intelligent',
+    loadBalancingStrategy: 'intelligent' as
+      | 'round_robin'
+      | 'least_connections'
+      | 'intelligent',
   };
 
   constructor(capacityManager: CapacityManager) {
@@ -109,7 +118,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
       const candidates = await this.taskAgentMatcher.findCandidates(
         task,
         availableAgents,
-        this.capacityManager
+        this.capacityManager,
       );
 
       if (candidates.length === 0) {
@@ -206,8 +215,10 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     avgRouteReliability: number;
   } {
     const avgReliability =
-      Array.from(this.routingTable.values()).reduce((sum, route) => sum + route.reliability, 0) /
-      this.routingTable.size;
+      Array.from(this.routingTable.values()).reduce(
+        (sum, route) => sum + route.reliability,
+        0,
+      ) / this.routingTable.size;
 
     return {
       ...this.routingMetrics,
@@ -303,7 +314,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     // Find optimal paths using network topology
     const optimalPaths = await this.networkOptimizer.selectOptimalPath(
       'source', // Would be actual source location
-      agent.id
+      agent.id,
     );
 
     for (const path of optimalPaths) {
@@ -330,7 +341,10 @@ export class IntelligentRoutingEngine implements RoutingEngine {
    * @param task
    * @param candidates
    */
-  private async makeRoutingDecision(task: Task, candidates: Agent[]): Promise<RoutingDecision> {
+  private async makeRoutingDecision(
+    task: Task,
+    candidates: Agent[],
+  ): Promise<RoutingDecision> {
     const routingOptions = [];
 
     for (const candidate of candidates) {
@@ -338,7 +352,11 @@ export class IntelligentRoutingEngine implements RoutingEngine {
       if (!routingEntry) continue;
 
       // Calculate routing score for each candidate
-      const score = await this.calculateRoutingScore(task, candidate, routingEntry);
+      const score = await this.calculateRoutingScore(
+        task,
+        candidate,
+        routingEntry,
+      );
 
       routingOptions.push({
         agent: candidate,
@@ -378,7 +396,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   private async calculateRoutingScore(
     task: Task,
     agent: Agent,
-    routingEntry: RoutingTable
+    routingEntry: RoutingTable,
   ): Promise<number> {
     const weights = this.config.qosWeights;
 
@@ -389,14 +407,18 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     const reliabilityScore = routingEntry.reliability;
 
     // Bandwidth score (simplified)
-    const bandwidthScore = Math.min(1, this.calculateAverageBandwidth(routingEntry) / 1000);
+    const bandwidthScore = Math.min(
+      1,
+      this.calculateAverageBandwidth(routingEntry) / 1000,
+    );
 
     // QoS score based on task requirements
     const qosScore = await this.calculateQoSScore(task, routingEntry);
 
     // Capacity score
     const capacity = await this.capacityManager.getCapacity(agent.id);
-    const capacityScore = capacity.availableCapacity / capacity.maxConcurrentTasks;
+    const capacityScore =
+      capacity.availableCapacity / capacity.maxConcurrentTasks;
 
     return (
       latencyScore * weights.latency +
@@ -488,7 +510,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
     for (const [agentId, routingEntry] of this.routingTable) {
       const updatedRoutes = routingEntry.routes.filter(
-        (route) => !route.path.includes(failedAgentId)
+        (route) => !route.path.includes(failedAgentId),
       );
 
       if (updatedRoutes.length !== routingEntry.routes.length) {
@@ -513,7 +535,10 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
     // Use network optimizer to find better paths
     for (const [agentId, routingEntry] of this.routingTable) {
-      const optimizedPaths = await this.networkOptimizer.selectOptimalPath('source', agentId);
+      const optimizedPaths = await this.networkOptimizer.selectOptimalPath(
+        'source',
+        agentId,
+      );
 
       // Update routes with optimized paths
       const optimizedRoutes = await Promise.all(
@@ -524,7 +549,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
           reliability: this.calculatePathReliability(path),
           qosLevel: 1,
           path,
-        }))
+        })),
       );
 
       // Merge with existing routes
@@ -544,7 +569,8 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
       // Update using exponential moving average
       const alpha = 0.2;
-      routingEntry.reliability = (1 - alpha) * routingEntry.reliability + alpha * newReliability;
+      routingEntry.reliability =
+        (1 - alpha) * routingEntry.reliability + alpha * newReliability;
     }
   }
 
@@ -586,7 +612,10 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     );
   }
 
-  private async calculateQoSScore(_task: Task, _routingEntry: RoutingTable): Promise<number> {
+  private async calculateQoSScore(
+    _task: Task,
+    _routingEntry: RoutingTable,
+  ): Promise<number> {
     // Calculate QoS score based on task requirements
     // This would consider task priority, SLA requirements, etc.
     return 0.8 + Math.random() * 0.2;
@@ -596,7 +625,9 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     // Calculate confidence in routing decision
     const reliabilityFactor = routingEntry.reliability;
     const routeCountFactor = Math.min(1, routingEntry.routes.length / 3);
-    const freshnessFactory = this.calculateFreshnessFactor(routingEntry.lastUpdate);
+    const freshnessFactory = this.calculateFreshnessFactor(
+      routingEntry.lastUpdate,
+    );
 
     return (reliabilityFactor + routeCountFactor + freshnessFactory) / 3;
   }
@@ -609,7 +640,10 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   }
 
   private calculateExpectedQuality(decision: RoutingDecision): number {
-    return decision.confidence * 0.8 + (decision.qosGuarantees.availability || 0.9) * 0.2;
+    return (
+      decision.confidence * 0.8 +
+      (decision.qosGuarantees.availability || 0.9) * 0.2
+    );
   }
 
   private calculateQoSGuarantees(route: RouteEntry): QoSRequirement {
@@ -637,7 +671,11 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     return baseReliability ** path.length;
   }
 
-  private calculateQoSLevel(latency: number, bandwidth: number, reliability: number): number {
+  private calculateQoSLevel(
+    latency: number,
+    bandwidth: number,
+    reliability: number,
+  ): number {
     // Calculate QoS level from 1-5
     const latencyScore = Math.max(0, 1 - latency / 1000);
     const bandwidthScore = Math.min(1, bandwidth / 5000);

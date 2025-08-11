@@ -299,13 +299,12 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     // Choose strategy based on swarm characteristics
     if (avgPerformance < 0.5) {
       return 'supervised'; // Guided learning for poor performance
-    } else if (hasSpecializations && learningProgress > 0.7) {
+    }if (hasSpecializations && learningProgress > 0.7) {
       return 'reinforcement'; // Advanced learning for specialized agents
-    } else if (learningProgress > 0.5) {
+    }if (learningProgress > 0.5) {
       return 'unsupervised'; // Exploration for moderate performers
-    } else {
-      return 'online'; // Continuous adaptation
     }
+      return 'online'; // Continuous adaptation
   }
 
   private async executeLearning(

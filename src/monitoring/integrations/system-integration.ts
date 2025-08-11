@@ -11,7 +11,10 @@ import {
   PerformanceAnalyzer,
   type PerformanceInsights,
 } from '../analytics/performance-analyzer.ts';
-import { type CompositeMetrics, MetricsCollector } from '../core/metrics-collector.ts';
+import {
+  type CompositeMetrics,
+  MetricsCollector,
+} from '../core/metrics-collector.ts';
 import { DashboardServer } from '../dashboard/dashboard-server.ts';
 import {
   OptimizationEngine,
@@ -31,7 +34,11 @@ export interface SystemHooks {
   onFactCacheHit?: (key: string, latency: number) => void;
   onFactCacheMiss?: (key: string) => void;
   onFactQuery?: (query: string, duration: number, success: boolean) => void;
-  onFactStorage?: (operation: 'store' | 'retrieve', size: number, duration: number) => void;
+  onFactStorage?: (
+    operation: 'store' | 'retrieve',
+    size: number,
+    duration: number,
+  ) => void;
 
   // RAG system hooks
   onRagVectorQuery?: (query: any, latency: number, results: number) => void;
@@ -43,7 +50,11 @@ export interface SystemHooks {
   onSwarmAgentTerminate?: (agentId: string, reason: string) => void;
   onSwarmConsensus?: (proposal: any, duration: number, result: boolean) => void;
   onSwarmTaskAssign?: (taskId: string, agentId: string) => void;
-  onSwarmTaskComplete?: (taskId: string, duration: number, success: boolean) => void;
+  onSwarmTaskComplete?: (
+    taskId: string,
+    duration: number,
+    success: boolean,
+  ) => void;
 
   // MCP tool hooks
   onMcpToolInvoke?: (toolName: string, parameters: any) => void;
@@ -51,7 +62,7 @@ export interface SystemHooks {
     toolName: string,
     duration: number,
     success: boolean,
-    error?: string
+    error?: string,
   ) => void;
   onMcpToolTimeout?: (toolName: string, duration: number) => void;
 }
@@ -131,18 +142,24 @@ export class SystemIntegration extends EventEmitter {
    */
   private setupEventHandlers(): void {
     // Metrics collector events
-    this.metricsCollector.on('metrics:collected', (metrics: CompositeMetrics) => {
-      this.handleMetricsCollected(metrics);
-    });
+    this.metricsCollector.on(
+      'metrics:collected',
+      (metrics: CompositeMetrics) => {
+        this.handleMetricsCollected(metrics);
+      },
+    );
 
     this.metricsCollector.on('metrics:error', (error: Error) => {
       this.log('error', 'Metrics collection error:', error);
     });
 
     // Performance analyzer events
-    this.performanceAnalyzer.on('insights:generated', (insights: PerformanceInsights) => {
-      this.handleInsightsGenerated(insights);
-    });
+    this.performanceAnalyzer.on(
+      'insights:generated',
+      (insights: PerformanceInsights) => {
+        this.handleInsightsGenerated(insights);
+      },
+    );
 
     this.performanceAnalyzer.on('baselines:updated', () => {
       this.log('info', 'Performance baselines updated');
@@ -153,14 +170,23 @@ export class SystemIntegration extends EventEmitter {
       this.log('info', `Optimization action started: ${action.id}`);
     });
 
-    this.optimizationEngine.on('action:completed', (result: OptimizationResult) => {
-      this.handleOptimizationCompleted(result);
-    });
+    this.optimizationEngine.on(
+      'action:completed',
+      (result: OptimizationResult) => {
+        this.handleOptimizationCompleted(result);
+      },
+    );
 
-    this.optimizationEngine.on('action:failed', (result: OptimizationResult) => {
-      this.log('warn', `Optimization failed: ${result?.actionId} - ${result?.error}`);
-      this.dashboardServer.updateOptimizations([result]);
-    });
+    this.optimizationEngine.on(
+      'action:failed',
+      (result: OptimizationResult) => {
+        this.log(
+          'warn',
+          `Optimization failed: ${result?.actionId} - ${result?.error}`,
+        );
+        this.dashboardServer.updateOptimizations([result]);
+      },
+    );
 
     // Dashboard server events
     this.dashboardServer.on('client:connected', (clientId: string) => {
@@ -187,7 +213,11 @@ export class SystemIntegration extends EventEmitter {
       this.emit('fact:cache-miss', { key });
     };
 
-    this.hooks.onFactQuery = (query: string, duration: number, success: boolean) => {
+    this.hooks.onFactQuery = (
+      query: string,
+      duration: number,
+      success: boolean,
+    ) => {
       this.factMetrics.totalQueries++;
       this.factMetrics.queryTimes.push(duration);
       if (!success) this.factMetrics.errorCount++;
@@ -197,20 +227,28 @@ export class SystemIntegration extends EventEmitter {
         this.factMetrics.queryTimes.shift();
       }
 
-      this.emit('fact:query', { query: query.substring(0, 100), duration, success });
+      this.emit('fact:query', {
+        query: query.substring(0, 100),
+        duration,
+        success,
+      });
     };
 
     this.hooks.onFactStorage = (
       operation: 'store' | 'retrieve',
       size: number,
-      duration: number
+      duration: number,
     ) => {
       this.factMetrics.storageOperations++;
       this.emit('fact:storage', { operation, size, duration });
     };
 
     // RAG system hooks
-    this.hooks.onRagVectorQuery = (query: any, latency: number, results: number) => {
+    this.hooks.onRagVectorQuery = (
+      query: any,
+      latency: number,
+      results: number,
+    ) => {
       this.ragMetrics.vectorQueries++;
       this.ragMetrics.queryLatencies.push(latency);
 
@@ -221,7 +259,11 @@ export class SystemIntegration extends EventEmitter {
       this.emit('rag:vector-query', { query, latency, results });
     };
 
-    this.hooks.onRagEmbedding = (text: string, duration: number, dimensions: number) => {
+    this.hooks.onRagEmbedding = (
+      text: string,
+      duration: number,
+      dimensions: number,
+    ) => {
       this.ragMetrics.embeddingOperations++;
       this.ragMetrics.embeddingLatencies.push(duration);
 
@@ -229,10 +271,18 @@ export class SystemIntegration extends EventEmitter {
         this.ragMetrics.embeddingLatencies.shift();
       }
 
-      this.emit('rag:embedding', { text: text.substring(0, 50), duration, dimensions });
+      this.emit('rag:embedding', {
+        text: text.substring(0, 50),
+        duration,
+        dimensions,
+      });
     };
 
-    this.hooks.onRagRetrieval = (query: string, chunks: number, relevance: number) => {
+    this.hooks.onRagRetrieval = (
+      query: string,
+      chunks: number,
+      relevance: number,
+    ) => {
       this.ragMetrics.retrievalOperations++;
       this.ragMetrics.relevanceScores.push(relevance);
 
@@ -240,7 +290,11 @@ export class SystemIntegration extends EventEmitter {
         this.ragMetrics.relevanceScores.shift();
       }
 
-      this.emit('rag:retrieval', { query: query.substring(0, 100), chunks, relevance });
+      this.emit('rag:retrieval', {
+        query: query.substring(0, 100),
+        chunks,
+        relevance,
+      });
     };
 
     // Swarm coordination hooks
@@ -254,7 +308,11 @@ export class SystemIntegration extends EventEmitter {
       this.emit('swarm:agent-terminate', { agentId, reason });
     };
 
-    this.hooks.onSwarmConsensus = (proposal: any, duration: number, result: boolean) => {
+    this.hooks.onSwarmConsensus = (
+      proposal: any,
+      duration: number,
+      result: boolean,
+    ) => {
       this.swarmMetrics.consensusOperations++;
       this.swarmMetrics.consensusTimes.push(duration);
 
@@ -270,7 +328,11 @@ export class SystemIntegration extends EventEmitter {
       this.emit('swarm:task-assign', { taskId, agentId });
     };
 
-    this.hooks.onSwarmTaskComplete = (taskId: string, duration: number, success: boolean) => {
+    this.hooks.onSwarmTaskComplete = (
+      taskId: string,
+      duration: number,
+      success: boolean,
+    ) => {
       if (success) {
         this.swarmMetrics.taskCompletions++;
       } else {
@@ -290,7 +352,7 @@ export class SystemIntegration extends EventEmitter {
       toolName: string,
       duration: number,
       success: boolean,
-      error?: string
+      error?: string,
     ) => {
       if (success) {
         const count = this.mcpMetrics.toolSuccesses.get(toolName) || 0;
@@ -422,7 +484,7 @@ export class SystemIntegration extends EventEmitter {
   private handleOptimizationCompleted(result: OptimizationResult): void {
     this.log(
       'info',
-      `Optimization completed: ${result?.actionId} (${result?.success ? 'success' : 'failed'})`
+      `Optimization completed: ${result?.actionId} (${result?.success ? 'success' : 'failed'})`,
     );
 
     if (result?.success) {
@@ -443,23 +505,29 @@ export class SystemIntegration extends EventEmitter {
     // Enhance FACT metrics
     if (this.factMetrics.queryTimes.length > 0) {
       const avgQueryTime =
-        this.factMetrics.queryTimes.reduce((a, b) => a + b, 0) / this.factMetrics.queryTimes.length;
+        this.factMetrics.queryTimes.reduce((a, b) => a + b, 0) /
+        this.factMetrics.queryTimes.length;
       const hitRate =
-        this.factMetrics.cacheHits / (this.factMetrics.cacheHits + this.factMetrics.cacheMisses);
-      const errorRate = this.factMetrics.errorCount / this.factMetrics.totalQueries;
+        this.factMetrics.cacheHits /
+        (this.factMetrics.cacheHits + this.factMetrics.cacheMisses);
+      const errorRate =
+        this.factMetrics.errorCount / this.factMetrics.totalQueries;
 
       metrics.fact = {
         ...metrics.fact,
         cache: {
           ...metrics.fact.cache,
           hitRate: Number.isNaN(hitRate) ? metrics.fact.cache.hitRate : hitRate,
-          totalRequests: this.factMetrics.cacheHits + this.factMetrics.cacheMisses,
+          totalRequests:
+            this.factMetrics.cacheHits + this.factMetrics.cacheMisses,
         },
         queries: {
           ...metrics.fact.queries,
           averageQueryTime: avgQueryTime,
           totalQueries: this.factMetrics.totalQueries,
-          errorRate: Number.isNaN(errorRate) ? metrics.fact.queries.errorRate : errorRate,
+          errorRate: Number.isNaN(errorRate)
+            ? metrics.fact.queries.errorRate
+            : errorRate,
         },
       };
     }
@@ -502,8 +570,10 @@ export class SystemIntegration extends EventEmitter {
       const avgConsensusTime =
         this.swarmMetrics.consensusTimes.reduce((a, b) => a + b, 0) /
         this.swarmMetrics.consensusTimes.length;
-      const totalTasks = this.swarmMetrics.taskCompletions + this.swarmMetrics.taskFailures;
-      const avgTaskTime = totalTasks > 0 ? 5000 : metrics.swarm.tasks.averageTaskTime; // Simplified
+      const totalTasks =
+        this.swarmMetrics.taskCompletions + this.swarmMetrics.taskFailures;
+      const avgTaskTime =
+        totalTasks > 0 ? 5000 : metrics.swarm.tasks.averageTaskTime; // Simplified
 
       metrics.swarm = {
         ...metrics.swarm,
@@ -528,7 +598,9 @@ export class SystemIntegration extends EventEmitter {
       const latencies = this.mcpMetrics.toolLatencies.get(toolName) || [];
       const errors = this.mcpMetrics.toolErrors.get(toolName) || [];
       const avgLatency =
-        latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0;
+        latencies.length > 0
+          ? latencies.reduce((a, b) => a + b, 0) / latencies.length
+          : 0;
       const successRate = invocations > 0 ? successes / invocations : 0;
 
       const errorTypes: any = {};
@@ -545,18 +617,21 @@ export class SystemIntegration extends EventEmitter {
       };
     }
 
-    const totalInvocations = Array.from(this.mcpMetrics.toolInvocations.values()).reduce(
-      (a, b) => a + b,
-      0
-    );
-    const totalSuccesses = Array.from(this.mcpMetrics.toolSuccesses.values()).reduce(
-      (a, b) => a + b,
-      0
-    );
-    const overallSuccessRate = totalInvocations > 0 ? totalSuccesses / totalInvocations : 0;
-    const allLatencies = Array.from(this.mcpMetrics.toolLatencies.values()).flat();
+    const totalInvocations = Array.from(
+      this.mcpMetrics.toolInvocations.values(),
+    ).reduce((a, b) => a + b, 0);
+    const totalSuccesses = Array.from(
+      this.mcpMetrics.toolSuccesses.values(),
+    ).reduce((a, b) => a + b, 0);
+    const overallSuccessRate =
+      totalInvocations > 0 ? totalSuccesses / totalInvocations : 0;
+    const allLatencies = Array.from(
+      this.mcpMetrics.toolLatencies.values(),
+    ).flat();
     const avgResponseTime =
-      allLatencies.length > 0 ? allLatencies.reduce((a, b) => a + b, 0) / allLatencies.length : 0;
+      allLatencies.length > 0
+        ? allLatencies.reduce((a, b) => a + b, 0) / allLatencies.length
+        : 0;
 
     metrics.mcp = {
       ...metrics.mcp,
@@ -565,7 +640,8 @@ export class SystemIntegration extends EventEmitter {
         totalInvocations,
         overallSuccessRate,
         averageResponseTime: avgResponseTime,
-        timeoutRate: this.mcpMetrics.timeoutCount / Math.max(totalInvocations, 1),
+        timeoutRate:
+          this.mcpMetrics.timeoutCount / Math.max(totalInvocations, 1),
       },
     };
 
@@ -579,36 +655,46 @@ export class SystemIntegration extends EventEmitter {
    */
   private generateAlerts(insights: PerformanceInsights): void {
     // Critical anomalies
-    const criticalAnomalies = insights.anomalies.filter((a) => a.severity === 'critical');
+    const criticalAnomalies = insights.anomalies.filter(
+      (a) => a.severity === 'critical',
+    );
     for (const anomaly of criticalAnomalies) {
-      this.dashboardServer.addAlert('error', `Critical anomaly: ${anomaly.description}`);
+      this.dashboardServer.addAlert(
+        'error',
+        `Critical anomaly: ${anomaly.description}`,
+      );
     }
 
     // Resource exhaustion predictions
     if (insights.predictions.resourceExhaustion.length > 0) {
       const resources = insights.predictions.resourceExhaustion.join(', ');
-      this.dashboardServer.addAlert('warning', `Resource exhaustion predicted: ${resources}`);
+      this.dashboardServer.addAlert(
+        'warning',
+        `Resource exhaustion predicted: ${resources}`,
+      );
     }
 
     // Low health score
     if (insights.healthScore < 50) {
       this.dashboardServer.addAlert(
         'error',
-        `System health critical: ${insights.healthScore.toFixed(1)}%`
+        `System health critical: ${insights.healthScore.toFixed(1)}%`,
       );
     } else if (insights.healthScore < 70) {
       this.dashboardServer.addAlert(
         'warning',
-        `System health low: ${insights.healthScore.toFixed(1)}%`
+        `System health low: ${insights.healthScore.toFixed(1)}%`,
       );
     }
 
     // Bottlenecks with high impact
-    const highImpactBottlenecks = insights.bottlenecks.filter((b) => b.impact > 0.7);
+    const highImpactBottlenecks = insights.bottlenecks.filter(
+      (b) => b.impact > 0.7,
+    );
     for (const bottleneck of highImpactBottlenecks) {
       this.dashboardServer.addAlert(
         'warning',
-        `Performance bottleneck: ${bottleneck.component} ${bottleneck.metric}`
+        `Performance bottleneck: ${bottleneck.component} ${bottleneck.metric}`,
       );
     }
   }
@@ -651,7 +737,8 @@ export class SystemIntegration extends EventEmitter {
       statistics: {
         totalMetricsCollected: this.metricsCollector.getHistory().length,
         totalInsightsGenerated: 0, // Would track this in real implementation
-        totalOptimizationsRun: this.optimizationEngine.getOptimizationStats().totalActions,
+        totalOptimizationsRun:
+          this.optimizationEngine.getOptimizationStats().totalActions,
         dashboardClients: dashboardStatus.connectedClients,
       },
     };
@@ -707,7 +794,11 @@ export class SystemIntegration extends EventEmitter {
    * @param _message
    * @param {...any} _args
    */
-  private log(level: 'error' | 'warn' | 'info' | 'debug', _message: string, ..._args: any[]): void {
+  private log(
+    level: 'error' | 'warn' | 'info' | 'debug',
+    _message: string,
+    ..._args: any[]
+  ): void {
     const levels = { error: 0, warn: 1, info: 2, debug: 3 };
     const configLevels = { error: 0, warn: 1, info: 2, debug: 3 };
 

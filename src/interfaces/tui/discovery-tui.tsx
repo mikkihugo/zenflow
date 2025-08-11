@@ -96,7 +96,11 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
       setState((prev) => ({
         ...prev,
         phase: 'analyzing',
-        progress: { current: 1, total: 5, message: 'Analyzing project structure...' },
+        progress: {
+          current: 1,
+          total: 5,
+          message: 'Analyzing project structure...',
+        },
       }));
 
       // Simulate analysis phases with real backend integration points
@@ -174,12 +178,16 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
       setState((prev) => ({
         ...prev,
         phase: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
       }));
     }
   }, [simulateAnalysisPhase]);
 
-  const simulateAnalysisPhase = async (message: string, step: number): Promise<void> => {
+  const simulateAnalysisPhase = async (
+    message: string,
+    step: number,
+  ): Promise<void> => {
     setState((prev) => ({
       ...prev,
       progress: { current: step, total: 5, message },
@@ -189,59 +197,72 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
     await new Promise((resolve) => setTimeout(resolve, 1500));
   };
 
-  const handleDomainSelection = useCallback((domain: string, selected: boolean) => {
-    setState((prev) => {
-      const newSelected = new Set(prev.selectedDomains);
-      const newConfigs = new Map(prev.swarmConfigs);
+  const handleDomainSelection = useCallback(
+    (domain: string, selected: boolean) => {
+      setState((prev) => {
+        const newSelected = new Set(prev.selectedDomains);
+        const newConfigs = new Map(prev.swarmConfigs);
 
-      if (selected) {
-        newSelected?.add(domain);
-        // Set default config for newly selected domain
-        const domainData = prev.domains.find((d) => d.name === domain);
-        if (domainData) {
-          newConfigs?.set(domain, {
-            topology: domainData?.suggestedTopology,
-            maxAgents: domainData?.estimatedAgents,
-            resourceLimits: {
-              memory: domainData?.estimatedComplexity === 'extreme' ? '2GB' : '1GB',
-              cpu: Math.min(domainData?.estimatedAgents, 4),
-            },
-            enableAutoScaling: true,
-            persistence: domainData?.technologies?.includes('postgresql') ? 'sqlite' : 'json',
-          });
+        if (selected) {
+          newSelected?.add(domain);
+          // Set default config for newly selected domain
+          const domainData = prev.domains.find((d) => d.name === domain);
+          if (domainData) {
+            newConfigs?.set(domain, {
+              topology: domainData?.suggestedTopology,
+              maxAgents: domainData?.estimatedAgents,
+              resourceLimits: {
+                memory:
+                  domainData?.estimatedComplexity === 'extreme' ? '2GB' : '1GB',
+                cpu: Math.min(domainData?.estimatedAgents, 4),
+              },
+              enableAutoScaling: true,
+              persistence: domainData?.technologies?.includes('postgresql')
+                ? 'sqlite'
+                : 'json',
+            });
+          }
+        } else {
+          newSelected?.delete(domain);
+          newConfigs?.delete(domain);
         }
-      } else {
-        newSelected?.delete(domain);
-        newConfigs?.delete(domain);
-      }
 
-      return {
-        ...prev,
-        selectedDomains: newSelected,
-        swarmConfigs: newConfigs,
-      };
-    });
-  }, []);
+        return {
+          ...prev,
+          selectedDomains: newSelected,
+          swarmConfigs: newConfigs,
+        };
+      });
+    },
+    [],
+  );
 
-  const handleConfigChange = useCallback((domain: string, config: Partial<SwarmConfig>) => {
-    setState((prev) => {
-      const newConfigs = new Map(prev.swarmConfigs);
-      const currentConfig = newConfigs?.get(domain);
-      if (currentConfig) {
-        newConfigs?.set(domain, { ...currentConfig, ...config });
-      }
-      return {
-        ...prev,
-        swarmConfigs: newConfigs,
-      };
-    });
-  }, []);
+  const handleConfigChange = useCallback(
+    (domain: string, config: Partial<SwarmConfig>) => {
+      setState((prev) => {
+        const newConfigs = new Map(prev.swarmConfigs);
+        const currentConfig = newConfigs?.get(domain);
+        if (currentConfig) {
+          newConfigs?.set(domain, { ...currentConfig, ...config });
+        }
+        return {
+          ...prev,
+          swarmConfigs: newConfigs,
+        };
+      });
+    },
+    [],
+  );
 
   const handleDeploy = useCallback(async () => {
     setState((prev) => ({
       ...prev,
       phase: 'deploying',
-      progress: { current: 0, total: prev.selectedDomains.size, message: 'Starting deployment...' },
+      progress: {
+        current: 0,
+        total: prev.selectedDomains.size,
+        message: 'Starting deployment...',
+      },
     }));
 
     // Initialize deployment status for all selected domains
@@ -288,7 +309,14 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
       onComplete?.(state);
       exit();
     }, 3000);
-  }, [state.selectedDomains, state.swarmConfigs, onComplete, exit, deployDomain, state]);
+  }, [
+    state.selectedDomains,
+    state.swarmConfigs,
+    onComplete,
+    exit,
+    deployDomain,
+    state,
+  ]);
 
   const deployDomain = async (domain: string): Promise<void> => {
     const config = state.swarmConfigs.get(domain);
@@ -303,7 +331,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
           progress: 0,
           message: 'Initializing swarm infrastructure...',
           agents: { created: 0, total: config?.maxAgents },
-        })
+        }),
       ),
     }));
 
@@ -326,10 +354,12 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
             progress: ((i + 1) / phases.length) * 100,
             message: phases[i],
             agents: {
-              created: Math.floor(((i + 1) / phases.length) * config?.maxAgents),
+              created: Math.floor(
+                ((i + 1) / phases.length) * config?.maxAgents,
+              ),
               total: config?.maxAgents,
             },
-          })
+          }),
         ),
       }));
 
@@ -345,7 +375,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
           progress: 100,
           message: 'Swarm operational',
           agents: { created: config?.maxAgents, total: config?.maxAgents },
-        })
+        }),
       ),
     }));
   };
@@ -360,7 +390,9 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
           <ReviewPhase
             state={state}
             onDomainSelection={handleDomainSelection}
-            onProceedToConfig={() => setState((prev) => ({ ...prev, phase: 'configuring' }))}
+            onProceedToConfig={() =>
+              setState((prev) => ({ ...prev, phase: 'configuring' }))
+            }
           />
         );
       case 'configuring':
@@ -384,7 +416,10 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
   };
 
   return (
-    <Box flexDirection="column" padding={1}>
+    <Box
+      flexDirection="column"
+      padding={1}
+    >
       <Header />
       {renderContent()}
     </Box>
@@ -394,8 +429,14 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
 // Header component
 const Header: React.FC = () => (
   <Box marginBottom={1}>
-    <Box borderStyle="double" padding={1}>
-      <Text bold color="cyan">
+    <Box
+      borderStyle="double"
+      padding={1}
+    >
+      <Text
+        bold
+        color="cyan"
+      >
         🧠 CLAUDE-ZEN INTERACTIVE DISCOVERY
       </Text>
       <Spacer />
@@ -416,10 +457,16 @@ const AnalysisPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
       <Text> {state.progress.message}</Text>
     </Box>
 
-    <ProgressBar current={state.progress.current} total={state.progress.total} showPercentage />
+    <ProgressBar
+      current={state.progress.current}
+      total={state.progress.total}
+      showPercentage
+    />
 
     <Box marginTop={1}>
-      <Text dimColor>This may take a few moments depending on project size...</Text>
+      <Text dimColor>
+        This may take a few moments depending on project size...
+      </Text>
     </Box>
   </Box>
 );
@@ -455,7 +502,10 @@ const ReviewPhase: React.FC<{
         </Text>
       </Box>
 
-      <Box flexDirection="column" marginBottom={1}>
+      <Box
+        flexDirection="column"
+        marginBottom={1}
+      >
         {state.domains.map((domain, index) => (
           <DomainCard
             key={domain.name}
@@ -518,7 +568,9 @@ const ConfigurationPhase: React.FC<{
         <SwarmConfigPanel
           domain={currentDomain}
           config={config}
-          onConfigChange={(newConfig) => onConfigChange(currentDomain, newConfig)}
+          onConfigChange={(newConfig) =>
+            onConfigChange(currentDomain, newConfig)
+          }
         />
       )}
 
@@ -547,7 +599,11 @@ const DeploymentPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
 
     <Box flexDirection="column">
       {Array.from(state.deploymentStatus.entries()).map(([domain, status]) => (
-        <DeploymentProgress key={domain} domain={domain} status={status} />
+        <DeploymentProgress
+          key={domain}
+          domain={domain}
+          status={status}
+        />
       ))}
     </Box>
   </Box>
@@ -555,9 +611,15 @@ const DeploymentPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
 
 // Completion Phase Component
 const CompletionPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
-  <Box flexDirection="column" alignItems="center">
+  <Box
+    flexDirection="column"
+    alignItems="center"
+  >
     <Box marginBottom={1}>
-      <Text bold color="green">
+      <Text
+        bold
+        color="green"
+      >
         🎉 Deployment Complete!
       </Text>
     </Box>
@@ -567,7 +629,7 @@ const CompletionPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
         Successfully deployed {state.selectedDomains.size} swarms with{' '}
         {Array.from(state.deploymentStatus.values()).reduce(
           (sum, status) => sum + status.agents.created,
-          0
+          0,
         )}{' '}
         total agents.
       </Text>
@@ -583,7 +645,10 @@ const CompletionPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
 const ErrorPhase: React.FC<{ error: string }> = ({ error }) => (
   <Box flexDirection="column">
     <Box marginBottom={1}>
-      <Text bold color="red">
+      <Text
+        bold
+        color="red"
+      >
         ❌ Error
       </Text>
     </Box>

@@ -21,7 +21,8 @@ export interface BaseDocumentEntity {
   type: DocumentType;
   title: string;
   content: string;
-  status: 'draft' | 'review' | 'approved' | 'archived';
+  summary?: string; // Add summary property
+  status: 'draft' | 'review' | 'approved' | 'archived' | 'in_progress' | 'todo';
   priority: 'low' | 'medium' | 'high' | 'critical';
   author?: string;
   tags: string[];
@@ -119,7 +120,12 @@ export interface PRDDocumentEntity extends BaseDocumentEntity {
 
   non_functional_requirements: Array<{
     id: string;
-    type: 'performance' | 'security' | 'usability' | 'reliability' | 'scalability';
+    type:
+      | 'performance'
+      | 'security'
+      | 'usability'
+      | 'reliability'
+      | 'scalability';
     description: string;
     metrics: string;
   }>;
@@ -206,7 +212,12 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
   task_ids: string[]; // Task document IDs
 
   // Implementation tracking
-  implementation_status: 'not_started' | 'in_progress' | 'code_complete' | 'testing' | 'done';
+  implementation_status:
+    | 'not_started'
+    | 'in_progress'
+    | 'code_complete'
+    | 'testing'
+    | 'done';
   test_coverage_percentage?: number;
 
   // SPARC METHODOLOGY INTEGRATION
@@ -265,7 +276,12 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
   type: 'task';
 
   // Task-specific fields
-  task_type: 'development' | 'testing' | 'documentation' | 'deployment' | 'research';
+  task_type:
+    | 'development'
+    | 'testing'
+    | 'documentation'
+    | 'deployment'
+    | 'research';
   estimated_hours: number;
   actual_hours?: number;
 
@@ -301,7 +317,12 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
     }>;
   };
 
-  completion_status: 'todo' | 'in_progress' | 'code_review' | 'testing' | 'done';
+  completion_status:
+    | 'todo'
+    | 'in_progress'
+    | 'code_review'
+    | 'testing'
+    | 'done';
 
   // SPARC METHODOLOGY INTEGRATION
   sparc_implementation_details?: {
@@ -355,7 +376,13 @@ export interface DocumentRelationshipEntity {
   id: string;
   source_document_id: string;
   target_document_id: string;
-  relationship_type: 'generates' | 'implements' | 'depends_on' | 'relates_to' | 'supersedes';
+  relationship_type:
+    | 'generates'
+    | 'implements'
+    | 'depends_on'
+    | 'relates_to'
+    | 'supersedes';
+  strength?: number; // Add missing strength property for semantic relationships
   created_at: Date;
   metadata?: Record<string, any>;
 }
@@ -445,7 +472,12 @@ export interface ProjectEntity {
         | 'interfaces'
         | 'general';
       complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
-      current_phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
+      current_phase:
+        | 'specification'
+        | 'pseudocode'
+        | 'architecture'
+        | 'refinement'
+        | 'completion';
       progress_percentage: number;
       created_at: Date;
       updated_at: Date;
@@ -738,26 +770,38 @@ export const DATABASE_SCHEMAS = {
  * @param doc
  * @example
  */
-export function isVisionDocument(doc: BaseDocumentEntity): doc is VisionDocumentEntity {
+export function isVisionDocument(
+  doc: BaseDocumentEntity,
+): doc is VisionDocumentEntity {
   return doc.type === 'vision';
 }
 
-export function isADRDocument(doc: BaseDocumentEntity): doc is ADRDocumentEntity {
+export function isADRDocument(
+  doc: BaseDocumentEntity,
+): doc is ADRDocumentEntity {
   return doc.type === 'adr';
 }
 
-export function isPRDDocument(doc: BaseDocumentEntity): doc is PRDDocumentEntity {
+export function isPRDDocument(
+  doc: BaseDocumentEntity,
+): doc is PRDDocumentEntity {
   return doc.type === 'prd';
 }
 
-export function isEpicDocument(doc: BaseDocumentEntity): doc is EpicDocumentEntity {
+export function isEpicDocument(
+  doc: BaseDocumentEntity,
+): doc is EpicDocumentEntity {
   return doc.type === 'epic';
 }
 
-export function isFeatureDocument(doc: BaseDocumentEntity): doc is FeatureDocumentEntity {
+export function isFeatureDocument(
+  doc: BaseDocumentEntity,
+): doc is FeatureDocumentEntity {
   return doc.type === 'feature';
 }
 
-export function isTaskDocument(doc: BaseDocumentEntity): doc is TaskDocumentEntity {
+export function isTaskDocument(
+  doc: BaseDocumentEntity,
+): doc is TaskDocumentEntity {
   return doc.type === 'task';
 }

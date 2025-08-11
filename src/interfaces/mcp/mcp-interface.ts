@@ -154,7 +154,9 @@ export class MCPInterface extends EventEmitter {
 
     this.retryCount++;
     this.reconnectTimer = setTimeout(() => {
-      logger.info(`Attempting to reconnect (${this.retryCount}/${this.config.maxRetries})...`);
+      logger.info(
+        `Attempting to reconnect (${this.retryCount}/${this.config.maxRetries})...`,
+      );
       this.connect().catch(() => this.handleReconnect());
     }, this.config.reconnectInterval);
   }

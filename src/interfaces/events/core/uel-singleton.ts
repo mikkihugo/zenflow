@@ -36,7 +36,9 @@ export class UEL {
   }
 
   async initialize(config?: {
-    logger?: Console | { debug: Function; info: Function; warn: Function; error: Function };
+    logger?:
+      | Console
+      | { debug: Function; info: Function; warn: Function; error: Function };
     config?: Record<string, unknown>;
     autoRegisterFactories?: boolean;
     enableValidation?: boolean;
@@ -53,9 +55,13 @@ export class UEL {
     const { EventRegistry } = await import('../registry.ts');
     const { UELValidationFramework } = await import('../validation.ts');
     const { CompatibilityFactory } = await import('../compatibility.ts');
-    const { DIContainer } = await import('../../../di/container/di-container.ts');
+    const { DIContainer } = await import(
+      '../../../di/container/di-container.ts'
+    );
     const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens.ts');
-    const { SingletonProvider } = await import('../../../di/providers/singleton-provider.ts');
+    const { SingletonProvider } = await import(
+      '../../../di/providers/singleton-provider.ts'
+    );
 
     const container = new DIContainer();
 
@@ -83,14 +89,17 @@ export class UEL {
             return key in configData;
           },
         };
-      })
+      }),
     );
 
     // Initialize components with proper DI
     this.factory = new UELFactory(logger as any, config?.config as any);
     this.registry = new UELRegistry(logger as any);
     // EventManager uses DI, create manually
-    this.eventManager = new (EventManager as any)(logger, config?.config as any);
+    this.eventManager = new (EventManager as any)(
+      logger,
+      config?.config as any,
+    );
     this.eventRegistry = new EventRegistry(logger as any);
 
     // Initialize validation framework if enabled
@@ -103,8 +112,14 @@ export class UEL {
       this.compatibilityFactory = CompatibilityFactory.getInstance();
       // Basic initialization - some factories may not have initialize method
       try {
-        if (this.compatibilityFactory && 'initialize' in this.compatibilityFactory) {
-          await (this.compatibilityFactory as any).initialize(this.eventManager, logger);
+        if (
+          this.compatibilityFactory &&
+          'initialize' in this.compatibilityFactory
+        ) {
+          await (this.compatibilityFactory as any).initialize(
+            this.eventManager,
+            logger,
+          );
         }
       } catch (error) {
         logger.warn('Failed to initialize compatibility factory:', error);
@@ -121,7 +136,7 @@ export class UEL {
         this.eventRegistry?.initialize({
           autoRegisterDefaults: config?.autoRegisterFactories !== false,
         }),
-      ].filter(Boolean)
+      ].filter(Boolean),
     );
 
     this.initialized = true;
@@ -139,7 +154,10 @@ export class UEL {
     return this.eventManager;
   }
 
-  async createSystemEventManager(name: string, config?: Partial<EventManagerConfig>): Promise<any> {
+  async createSystemEventManager(
+    name: string,
+    config?: Partial<EventManagerConfig>,
+  ): Promise<any> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -177,7 +195,7 @@ export class UEL {
 
   async createCoordinationEventManager(
     name: string,
-    config?: Partial<EventManagerConfig>
+    config?: Partial<EventManagerConfig>,
   ): Promise<any> {
     if (!this.initialized) {
       await this.initialize();
@@ -187,7 +205,7 @@ export class UEL {
 
   async createCommunicationEventManager(
     name: string,
-    config?: Partial<EventManagerConfig>
+    config?: Partial<EventManagerConfig>,
   ): Promise<any> {
     if (!this.initialized) {
       await this.initialize();
@@ -197,7 +215,7 @@ export class UEL {
 
   async createMonitoringEventManager(
     name: string,
-    config?: Partial<EventManagerConfig>
+    config?: Partial<EventManagerConfig>,
   ): Promise<any> {
     if (!this.initialized) {
       await this.initialize();
@@ -207,7 +225,7 @@ export class UEL {
 
   async createInterfaceEventManager(
     name: string,
-    config?: Partial<EventManagerConfig>
+    config?: Partial<EventManagerConfig>,
   ): Promise<any> {
     if (!this.initialized) {
       await this.initialize();
@@ -234,16 +252,18 @@ export class UEL {
     try {
       const healthData = await (this.eventManager as any).performHealthCheck();
       // Convert to expected format
-      const healthStatus = Object.entries(healthData).map(([name, data]: [string, any]) => ({
-        name,
-        status: data.healthy ? 'healthy' : 'unhealthy',
-        subscriptions: 0,
-        queueSize: 0,
-        errorRate: 0,
-        uptime: 0,
-        lastCheck: new Date(),
-        metadata: data.details || {},
-      }));
+      const healthStatus = Object.entries(healthData).map(
+        ([name, data]: [string, any]) => ({
+          name,
+          status: data.healthy ? 'healthy' : 'unhealthy',
+          subscriptions: 0,
+          queueSize: 0,
+          errorRate: 0,
+          uptime: 0,
+          lastCheck: new Date(),
+          metadata: data.details || {},
+        }),
+      );
       return healthStatus;
     } catch (error) {
       return [
@@ -262,9 +282,14 @@ export class UEL {
   }
 
   async migrateEventEmitter(
-    emitter: { on: Function; off?: Function; emit: Function; listeners?: Function },
+    emitter: {
+      on: Function;
+      off?: Function;
+      emit: Function;
+      listeners?: Function;
+    },
     _name: string,
-    _type: string
+    _type: string,
   ): Promise<any> {
     if (!this.compatibilityFactory) {
       return null;
@@ -281,7 +306,10 @@ export class UEL {
     const eventNames = emitter.listeners ? Object.keys(emitter) : [];
     eventNames.forEach((eventName) => {
       if (typeof emitter[eventName as keyof typeof emitter] === 'function') {
-        compatibleEmitter.on(eventName, emitter[eventName as keyof typeof emitter] as any);
+        compatibleEmitter.on(
+          eventName,
+          emitter[eventName as keyof typeof emitter] as any,
+        );
       }
     });
 
@@ -300,12 +328,18 @@ export class UEL {
     enableUEL?: boolean;
     uelConfig?: any;
   }): Promise<any> {
-    const { UELEnhancedApplicationCoordinator } = await import('../system-integrations.ts');
+    const { UELEnhancedApplicationCoordinator } = await import(
+      '../system-integrations.ts'
+    );
     return new UELEnhancedApplicationCoordinator(config);
   }
 
-  async createEnhancedObserverSystem(config?: { enableUEL?: boolean }): Promise<any> {
-    const { UELEnhancedObserverSystem } = await import('../system-integrations.ts');
+  async createEnhancedObserverSystem(config?: {
+    enableUEL?: boolean;
+  }): Promise<any> {
+    const { UELEnhancedObserverSystem } = await import(
+      '../system-integrations.ts'
+    );
     return new UELEnhancedObserverSystem(config);
   }
 
@@ -318,7 +352,9 @@ export class UEL {
     // Simplified implementation - return basic recommendations
     const recommendations: string[] = [];
     Object.keys(systems).forEach((name) => {
-      recommendations.push(`Consider migrating ${name} to UEL for better event management`);
+      recommendations.push(
+        `Consider migrating ${name} to UEL for better event management`,
+      );
     });
     return { migrationRecommendations: recommendations };
   }

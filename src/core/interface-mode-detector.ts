@@ -162,7 +162,7 @@ export class InterfaceModeDetector {
         return { valid: true };
 
       case 'tui':
-        if (!process.stdin || !process.stdin.isTTY) {
+        if (!(process.stdin && process.stdin.isTTY)) {
           return {
             valid: false,
             reason: 'TUI mode requires an interactive terminal',

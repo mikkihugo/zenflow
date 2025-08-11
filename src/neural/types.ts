@@ -9,7 +9,13 @@
 export interface NeuralModelConfig {
   readonly id: string;
   readonly name: string;
-  readonly type: 'feedforward' | 'recurrent' | 'transformer' | 'cnn' | 'lstm' | 'gru';
+  readonly type:
+    | 'feedforward'
+    | 'recurrent'
+    | 'transformer'
+    | 'cnn'
+    | 'lstm'
+    | 'gru';
   readonly layers: readonly NeuralLayerConfig[];
   readonly optimizer: OptimizerConfig;
   readonly loss: LossConfig;
@@ -22,7 +28,13 @@ export interface NeuralModelConfig {
 }
 
 export interface NeuralLayerConfig {
-  readonly type: 'dense' | 'conv2d' | 'lstm' | 'gru' | 'attention' | 'embedding';
+  readonly type:
+    | 'dense'
+    | 'conv2d'
+    | 'lstm'
+    | 'gru'
+    | 'attention'
+    | 'embedding';
   readonly units?: number;
   readonly activation?: ActivationFunction;
   readonly inputShape?: readonly number[];
@@ -170,7 +182,11 @@ export interface TrainingOptions {
 }
 
 export interface TrainingCallback {
-  readonly type: 'early_stopping' | 'model_checkpoint' | 'reduce_lr' | 'tensorboard';
+  readonly type:
+    | 'early_stopping'
+    | 'model_checkpoint'
+    | 'reduce_lr'
+    | 'tensorboard';
   readonly config: Record<string, unknown>;
 }
 
@@ -291,7 +307,11 @@ export interface MetaLearningPerformance {
 export interface NeuralCoordinationProtocol {
   readonly protocolId: string;
   readonly participantAgents: readonly string[];
-  readonly coordinationType: 'consensus' | 'federated' | 'hierarchical' | 'swarm';
+  readonly coordinationType:
+    | 'consensus'
+    | 'federated'
+    | 'hierarchical'
+    | 'swarm';
   readonly communicationPattern: 'broadcast' | 'peer_to_peer' | 'tree' | 'ring';
   readonly syncFrequency: number;
   readonly convergenceThreshold: number;
@@ -300,7 +320,10 @@ export interface NeuralCoordinationProtocol {
 
 export interface NeuralPrivacyConfig {
   readonly enabled: boolean;
-  readonly technique: 'differential_privacy' | 'homomorphic' | 'secure_aggregation';
+  readonly technique:
+    | 'differential_privacy'
+    | 'homomorphic'
+    | 'secure_aggregation';
   readonly privacyBudget?: number;
   readonly noiseLevel?: number;
   readonly encryptionKey?: string;
@@ -367,7 +390,7 @@ export class NeuralError extends Error {
   constructor(
     message: string,
     public readonly code?: string,
-    public readonly networkId?: string
+    public readonly networkId?: string,
   ) {
     super(message);
     this.name = 'NeuralError';
@@ -378,7 +401,7 @@ export class TrainingError extends NeuralError {
   constructor(
     message: string,
     public readonly epoch?: number,
-    public readonly loss?: number
+    public readonly loss?: number,
   ) {
     super(message, 'TRAINING_ERROR');
     this.name = 'TrainingError';
@@ -388,7 +411,7 @@ export class TrainingError extends NeuralError {
 export class ModelError extends NeuralError {
   constructor(
     message: string,
-    public readonly modelConfig?: Partial<NeuralModelConfig>
+    public readonly modelConfig?: Partial<NeuralModelConfig>,
   ) {
     super(message, 'MODEL_ERROR');
     this.name = 'ModelError';
@@ -398,7 +421,7 @@ export class ModelError extends NeuralError {
 export class CognitivePatternError extends NeuralError {
   constructor(
     message: string,
-    public readonly patternType?: CognitivePatternType
+    public readonly patternType?: CognitivePatternType,
   ) {
     super(message, 'COGNITIVE_PATTERN_ERROR');
     this.name = 'CognitivePatternError';
@@ -434,16 +457,16 @@ export interface NeuralUtilities {
   lossFunction(
     type: LossConfig['type'],
     predictions: readonly number[],
-    targets: readonly number[]
+    targets: readonly number[],
   ): number;
   optimizerStep(
     type: OptimizerConfig['type'],
     gradients: readonly number[],
-    config: OptimizerConfig
+    config: OptimizerConfig,
   ): readonly number[];
   normalizeData(data: readonly number[][]): readonly number[][];
   splitTrainValidation(
     data: TrainingData,
-    split: number
+    split: number,
   ): { train: TrainingData; validation: TrainingData };
 }

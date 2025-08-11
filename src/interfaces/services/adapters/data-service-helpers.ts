@@ -172,18 +172,20 @@ export class DataServiceHelper {
    *
    * @param useCache
    */
-  async getSystemStatus(useCache = true): Promise<DataOperationResult<SystemStatusData>> {
+  async getSystemStatus(
+    useCache = true,
+  ): Promise<DataOperationResult<SystemStatusData>> {
     const startTime = Date.now();
 
     try {
       const response = await this.adapter.execute<SystemStatusData>(
         'system-status',
         {},
-        { trackMetrics: true }
+        { trackMetrics: true },
       );
 
       return {
-        success: response?.success || false,
+        success: response?.success,
         data: response?.data,
         error: response?.error?.message,
         metadata: {
@@ -299,7 +301,7 @@ export class DataServiceHelper {
     try {
       const response = await this.adapter.execute<SwarmData[]>('swarms');
 
-      if (!response?.success || !response?.data) {
+      if (!(response?.success && response?.data)) {
         return {
           success: false,
           error: response?.error?.message,
@@ -313,8 +315,10 @@ export class DataServiceHelper {
       if (filters) {
         swarms = swarms.filter((swarm) => {
           if (filters.status && swarm.status !== filters.status) return false;
-          if (filters.minAgents && swarm.agents < filters.minAgents) return false;
-          if (filters.maxAgents && swarm.agents > filters.maxAgents) return false;
+          if (filters.minAgents && swarm.agents < filters.minAgents)
+            return false;
+          if (filters.maxAgents && swarm.agents > filters.maxAgents)
+            return false;
           if (filters.createdAfter && swarm.createdAt) {
             const createdDate = new Date(swarm.createdAt);
             if (createdDate < filters.createdAfter) return false;
@@ -329,7 +333,11 @@ export class DataServiceHelper {
         metadata: this.createMetadata('get-swarms', startTime),
       };
     } catch (error) {
-      return this.createErrorResult<SwarmData[]>('get-swarms', startTime, error as Error);
+      return this.createErrorResult<SwarmData[]>(
+        'get-swarms',
+        startTime,
+        error as Error,
+      );
     }
   }
 
@@ -361,10 +369,13 @@ export class DataServiceHelper {
         };
       }
 
-      const response = await this.adapter.execute<SwarmData>('create-swarm', config);
+      const response = await this.adapter.execute<SwarmData>(
+        'create-swarm',
+        config,
+      );
 
       return {
-        success: response?.success || false,
+        success: response?.success,
         data: response?.data,
         error: response?.error?.message,
         metadata: this.createMetadata('create-swarm', startTime),
@@ -399,7 +410,7 @@ export class DataServiceHelper {
         this.adapter.execute<TaskData[]>('tasks'),
       ]);
 
-      if (!swarmsResponse?.success || !tasksResponse?.success) {
+      if (!(swarmsResponse?.success && tasksResponse?.success)) {
         return {
           success: false,
           error: 'Failed to fetch swarm or task data',
@@ -414,15 +425,21 @@ export class DataServiceHelper {
         totalSwarms: swarms.length,
         activeSwarms: swarms.filter((s) => s.status === 'active').length,
         averageAgents:
-          swarms.length > 0 ? swarms.reduce((sum, s) => sum + s.agents, 0) / swarms.length : 0,
+          swarms.length > 0
+            ? swarms.reduce((sum, s) => sum + s.agents, 0) / swarms.length
+            : 0,
         averageProgress:
-          swarms.length > 0 ? swarms.reduce((sum, s) => sum + s.progress, 0) / swarms.length : 0,
+          swarms.length > 0
+            ? swarms.reduce((sum, s) => sum + s.progress, 0) / swarms.length
+            : 0,
         statusDistribution: this.calculateDistribution(swarms, 'status'),
         performanceMetrics: {
           totalTasks: tasks.length,
           completionRate:
             tasks.length > 0
-              ? (tasks.filter((t) => t.status === 'completed').length / tasks.length) * 100
+              ? (tasks.filter((t) => t.status === 'completed').length /
+                  tasks.length) *
+                100
               : 0,
           averageTaskTime: 1800000, // Mock: 30 minutes average
         },
@@ -458,13 +475,15 @@ export class DataServiceHelper {
    *
    * @param options
    */
-  async getTasks(options?: EnhancedSearchOptions): Promise<DataOperationResult<TaskData[]>> {
+  async getTasks(
+    options?: EnhancedSearchOptions,
+  ): Promise<DataOperationResult<TaskData[]>> {
     const startTime = Date.now();
 
     try {
       const response = await this.adapter.execute<TaskData[]>('tasks');
 
-      if (!response?.success || !response?.data) {
+      if (!(response?.success && response?.data)) {
         return {
           success: false,
           error: response?.error?.message,
@@ -486,7 +505,11 @@ export class DataServiceHelper {
 
       // Apply sorting
       if (options?.sort) {
-        tasks = this.sortData(tasks, options?.sort?.field, options?.sort?.direction);
+        tasks = this.sortData(
+          tasks,
+          options?.sort?.field,
+          options?.sort?.direction,
+        );
       }
 
       // Apply pagination
@@ -501,7 +524,11 @@ export class DataServiceHelper {
         metadata: this.createMetadata('get-tasks', startTime),
       };
     } catch (error) {
-      return this.createErrorResult<TaskData[]>('get-tasks', startTime, error as Error);
+      return this.createErrorResult<TaskData[]>(
+        'get-tasks',
+        startTime,
+        error as Error,
+      );
     }
   }
 
@@ -537,10 +564,13 @@ export class DataServiceHelper {
         };
       }
 
-      const response = await this.adapter.execute<TaskData>('create-task', config);
+      const response = await this.adapter.execute<TaskData>(
+        'create-task',
+        config,
+      );
 
       return {
-        success: response?.success || false,
+        success: response?.success,
         data: response?.data,
         error: response?.error?.message,
         metadata: this.createMetadata('create-task', startTime),
@@ -573,7 +603,7 @@ export class DataServiceHelper {
       projectId?: string;
       limit?: number;
       includeContent?: boolean;
-    }
+    },
   ): Promise<
     DataOperationResult<{
       documents: T[];
@@ -597,10 +627,12 @@ export class DataServiceHelper {
         includeContent: options?.includeContent !== false,
       };
 
-      const response = await this.adapter.execute('document-search', { searchOptions });
+      const response = await this.adapter.execute('document-search', {
+        searchOptions,
+      });
 
       return {
-        success: response?.success || false,
+        success: response?.success,
         data: response?.data,
         error: response?.error?.message,
         metadata: this.createMetadata('search-documents', startTime),
@@ -629,7 +661,7 @@ export class DataServiceHelper {
       documentId?: string;
       document?: Record<string, unknown>;
       updates?: Record<string, unknown>;
-    }>
+    }>,
   ): Promise<
     DataOperationResult<{
       successful: number;
@@ -645,29 +677,32 @@ export class DataServiceHelper {
           try {
             switch (op.action) {
               case 'create':
-                return await this.adapter.execute('document-create', { document: op.document });
+                return await this.adapter.execute('document-create', {
+                  document: op.document,
+                });
               case 'update':
                 return await this.adapter.execute('document-update', {
                   id: op.documentId,
                   updates: op.updates,
                 });
               case 'delete':
-                return await this.adapter.execute('document-delete', { id: op.documentId });
+                return await this.adapter.execute('document-delete', {
+                  id: op.documentId,
+                });
               default:
                 throw new Error(`Unknown action: ${op.action}`);
             }
           } catch (error) {
             return { success: false, error: (error as Error).message };
           }
-        })
+        }),
       );
 
       const processedResults = results.map((result) => {
         if (result?.status === 'fulfilled') {
           return result?.value;
-        } else {
-          return { success: false, error: result?.reason?.message };
         }
+        return { success: false, error: result?.reason?.message };
       });
 
       const successful = processedResults?.filter((r) => r.success).length;
@@ -700,7 +735,9 @@ export class DataServiceHelper {
    *
    * @param config
    */
-  async executeBatch(config: BatchOperationConfig): Promise<DataOperationResult<unknown[]>> {
+  async executeBatch(
+    config: BatchOperationConfig,
+  ): Promise<DataOperationResult<unknown[]>> {
     const startTime = Date.now();
     const concurrency = config?.concurrency || 5;
 
@@ -714,7 +751,11 @@ export class DataServiceHelper {
 
         const batchPromises = batch.map(async (op, index) => {
           try {
-            const response = await this.adapter.execute(op.operation, op.params, op.options);
+            const response = await this.adapter.execute(
+              op.operation,
+              op.params,
+              op.options,
+            );
             return { index: i + index, result: response };
           } catch (error) {
             const errorMsg = `Operation ${op.operation} failed: ${(error as Error).message}`;
@@ -724,7 +765,10 @@ export class DataServiceHelper {
               throw new Error(errorMsg);
             }
 
-            return { index: i + index, result: { success: false, error: errorMsg } };
+            return {
+              index: i + index,
+              result: { success: false, error: errorMsg },
+            };
           }
         });
 
@@ -746,7 +790,11 @@ export class DataServiceHelper {
         metadata: this.createMetadata('batch-operations', startTime),
       } as DataOperationResult<unknown[]>;
     } catch (error) {
-      return this.createErrorResult<unknown[]>('batch-operations', startTime, error as Error);
+      return this.createErrorResult<unknown[]>(
+        'batch-operations',
+        startTime,
+        error as Error,
+      );
     }
   }
 
@@ -768,14 +816,22 @@ export class DataServiceHelper {
         case 'filter':
           if (typeof step.config['predicate'] === 'function') {
             result = result?.filter(
-              step.config['predicate'] as (value: T, index: number, array: T[]) => boolean
+              step.config['predicate'] as (
+                value: T,
+                index: number,
+                array: T[],
+              ) => boolean,
             );
           }
           break;
         case 'map':
           if (typeof step.config['mapper'] === 'function') {
             result = result?.map(
-              step.config['mapper'] as (value: T, index: number, array: T[]) => T
+              step.config['mapper'] as (
+                value: T,
+                index: number,
+                array: T[],
+              ) => T,
             );
           }
           break;
@@ -787,7 +843,7 @@ export class DataServiceHelper {
             result = this.sortData(
               result,
               step.config['field'],
-              step.config['direction'] as 'asc' | 'desc'
+              step.config['direction'] as 'asc' | 'desc',
             );
           }
           break;
@@ -795,14 +851,20 @@ export class DataServiceHelper {
           if (typeof step.config['field'] === 'string') {
             result = this.groupData(
               result as Record<string, unknown>[],
-              step.config['field']
+              step.config['field'],
             ) as T[];
           }
           break;
         case 'validate':
-          if (typeof step.config['schema'] === 'object' && step.config['schema'] !== null) {
+          if (
+            typeof step.config['schema'] === 'object' &&
+            step.config['schema'] !== null
+          ) {
             result = result?.filter((item) =>
-              this.validateItem(item, step.config['schema'] as Record<string, unknown>)
+              this.validateItem(
+                item,
+                step.config['schema'] as Record<string, unknown>,
+              ),
             );
           }
           break;
@@ -820,26 +882,37 @@ export class DataServiceHelper {
    * @param data
    * @param options
    */
-  aggregateData(data: unknown[], options: DataAggregationOptions): Record<string, unknown> {
+  aggregateData(
+    data: unknown[],
+    options: DataAggregationOptions,
+  ): Record<string, unknown> {
     let processedResult = data as Record<string, unknown>[];
 
     // Group by fields if specified
     if (options?.groupBy) {
-      const groupFields = Array.isArray(options?.groupBy) ? options?.groupBy : [options?.groupBy];
-      processedResult = this.groupByMultipleFields(processedResult, groupFields);
+      const groupFields = Array.isArray(options?.groupBy)
+        ? options?.groupBy
+        : [options?.groupBy];
+      processedResult = this.groupByMultipleFields(
+        processedResult,
+        groupFields,
+      );
     }
 
     // Apply aggregations
     if (options?.aggregations) {
-      processedResult = this.applyAggregations(processedResult, options?.aggregations);
+      processedResult = this.applyAggregations(
+        processedResult,
+        options?.aggregations,
+      );
     }
 
     // Apply having filters
     if (options?.having) {
-      processedResult = this.applyFilters(processedResult, options?.having) as Record<
-        string,
-        unknown
-      >[];
+      processedResult = this.applyFilters(
+        processedResult,
+        options?.having,
+      ) as Record<string, unknown>[];
     }
 
     return processedResult as unknown as Record<string, unknown>;
@@ -851,7 +924,10 @@ export class DataServiceHelper {
    * @param data
    * @param format
    */
-  exportData(data: Record<string, unknown>[], format: 'json' | 'csv' | 'xml' = 'json'): string {
+  exportData(
+    data: Record<string, unknown>[],
+    format: 'json' | 'csv' | 'xml' = 'json',
+  ): string {
     switch (format) {
       case 'json':
         return JSON.stringify(data, null, 2);
@@ -868,7 +944,9 @@ export class DataServiceHelper {
   // Validation Methods
   // ============================================
 
-  private validateSwarmConfig(config: Record<string, unknown>): DataValidationResult {
+  private validateSwarmConfig(
+    config: Record<string, unknown>,
+  ): DataValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
 
@@ -878,14 +956,14 @@ export class DataServiceHelper {
 
     if (
       config['agents'] !== undefined &&
-      (typeof config['agents'] !== 'number' || (config['agents']) < 1)
+      (typeof config['agents'] !== 'number' || config['agents'] < 1)
     ) {
       errors.push('Agent count must be a positive number');
     }
 
     if (
       config['timeout'] !== undefined &&
-      (typeof config['timeout'] !== 'number' || (config['timeout']) < 1000)
+      (typeof config['timeout'] !== 'number' || config['timeout'] < 1000)
     ) {
       errors.push('Timeout must be at least 1000ms');
     }
@@ -902,7 +980,9 @@ export class DataServiceHelper {
     };
   }
 
-  private validateTaskConfig(config: Record<string, unknown>): DataValidationResult {
+  private validateTaskConfig(
+    config: Record<string, unknown>,
+  ): DataValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
 
@@ -910,7 +990,10 @@ export class DataServiceHelper {
       errors.push('Task title is required and must be a string');
     }
 
-    if (config['priority'] && !['low', 'medium', 'high'].includes(config['priority'] as string)) {
+    if (
+      config['priority'] &&
+      !['low', 'medium', 'high'].includes(config['priority'] as string)
+    ) {
       errors.push('Priority must be low, medium, or high');
     }
 
@@ -930,7 +1013,10 @@ export class DataServiceHelper {
     };
   }
 
-  private validateItem(item: unknown, _schema: Record<string, unknown>): boolean {
+  private validateItem(
+    item: unknown,
+    _schema: Record<string, unknown>,
+  ): boolean {
     // Simple validation - in production, use a proper schema validator like Joi or Yup
     try {
       return typeof item === 'object' && item !== null;
@@ -956,7 +1042,7 @@ export class DataServiceHelper {
   private createErrorResult<T = unknown>(
     operation: string,
     startTime: number,
-    error: Error
+    error: Error,
   ): DataOperationResult<T> {
     return {
       success: false,
@@ -971,23 +1057,32 @@ export class DataServiceHelper {
     };
   }
 
-  private applyFilters(data: unknown[], filters: Record<string, unknown>): unknown[] {
+  private applyFilters(
+    data: unknown[],
+    filters: Record<string, unknown>,
+  ): unknown[] {
     return data.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
         const typedItem = item as Record<string, unknown>;
         if (Array.isArray(value)) {
           return value.includes(typedItem[key]);
-        } else if (typeof value === 'object' && value !== null) {
+        }
+        if (typeof value === 'object' && value !== null) {
           const rangeValue = value as { min?: number; max?: number };
           // Handle range filters, etc.
-          if (rangeValue.min !== undefined && (typedItem[key] as number) < rangeValue.min)
+          if (
+            rangeValue.min !== undefined &&
+            (typedItem[key] as number) < rangeValue.min
+          )
             return false;
-          if (rangeValue.max !== undefined && (typedItem[key] as number) > rangeValue.max)
+          if (
+            rangeValue.max !== undefined &&
+            (typedItem[key] as number) > rangeValue.max
+          )
             return false;
           return true;
-        } else {
-          return typedItem[key] === value;
         }
+        return typedItem[key] === value;
       });
     });
   }
@@ -997,11 +1092,17 @@ export class DataServiceHelper {
     return tasks.filter(
       (task) =>
         task.title.toLowerCase().includes(lowercaseQuery) ||
-        task.assignedAgents.some((agent) => agent.toLowerCase().includes(lowercaseQuery))
+        task.assignedAgents.some((agent) =>
+          agent.toLowerCase().includes(lowercaseQuery),
+        ),
     );
   }
 
-  private sortData(data: any[], field: string, direction: 'asc' | 'desc'): any[] {
+  private sortData(
+    data: any[],
+    field: string,
+    direction: 'asc' | 'desc',
+  ): any[] {
     return [...data].sort((a, b) => {
       const aVal = a[field];
       const bVal = b[field];
@@ -1014,7 +1115,7 @@ export class DataServiceHelper {
 
   private groupData(
     data: Record<string, unknown>[],
-    field: string
+    field: string,
   ): Array<Record<string, unknown>> {
     const groups = data.reduce(
       (acc, item) => {
@@ -1023,7 +1124,7 @@ export class DataServiceHelper {
         (acc[key] as Record<string, unknown>[]).push(item);
         return acc;
       },
-      {} as Record<string, Record<string, unknown>[]>
+      {} as Record<string, Record<string, unknown>[]>,
     );
 
     return Object.entries(groups).map(([key, items]) => ({
@@ -1035,7 +1136,7 @@ export class DataServiceHelper {
 
   private groupByMultipleFields(
     data: Record<string, unknown>[],
-    fields: string[]
+    fields: string[],
   ): Array<Record<string, unknown>> {
     const groups = data.reduce(
       (acc, item) => {
@@ -1044,13 +1145,16 @@ export class DataServiceHelper {
         (acc[key] as Record<string, unknown>[]).push(item);
         return acc;
       },
-      {} as Record<string, Record<string, unknown>[]>
+      {} as Record<string, Record<string, unknown>[]>,
     );
 
     return Object.entries(groups).map(([key, items]) => {
       const groupKeys = key.split('|');
       const typedItems = items as Record<string, unknown>[];
-      const groupData: Record<string, unknown> = { items: typedItems, count: typedItems.length };
+      const groupData: Record<string, unknown> = {
+        items: typedItems,
+        count: typedItems.length,
+      };
       fields.forEach((field, index) => {
         groupData[field] = groupKeys[index];
       });
@@ -1060,7 +1164,7 @@ export class DataServiceHelper {
 
   private applyAggregations(
     data: Array<Record<string, unknown>>,
-    aggregations: Array<{ field: string; operation: string; alias?: string }>
+    aggregations: Array<{ field: string; operation: string; alias?: string }>,
   ): Array<Record<string, unknown>> {
     return data.map((group) => {
       const aggregated = { ...group };
@@ -1077,12 +1181,16 @@ export class DataServiceHelper {
             aggregated[alias] = values.length;
             break;
           case 'sum':
-            aggregated[alias] = values.reduce((sum: number, val: number) => sum + val, 0);
+            aggregated[alias] = values.reduce(
+              (sum: number, val: number) => sum + val,
+              0,
+            );
             break;
           case 'avg':
             aggregated[alias] =
               values.length > 0
-                ? values.reduce((sum: number, val: number) => sum + val, 0) / values.length
+                ? values.reduce((sum: number, val: number) => sum + val, 0) /
+                  values.length
                 : 0;
             break;
           case 'min':
@@ -1100,7 +1208,7 @@ export class DataServiceHelper {
 
   private calculateDistribution(
     data: Record<string, unknown>[],
-    field: string
+    field: string,
   ): Record<string, number> {
     return data.reduce(
       (acc: Record<string, number>, item) => {
@@ -1108,7 +1216,7 @@ export class DataServiceHelper {
         acc[value] = (acc[value] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
   }
 
@@ -1123,12 +1231,15 @@ export class DataServiceHelper {
           .map((header) => {
             const value = row[header];
             // Escape commas and quotes in CSV
-            if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+            if (
+              typeof value === 'string' &&
+              (value.includes(',') || value.includes('"'))
+            ) {
               return `"${value.replace(/"/g, '""')}"`;
             }
             return String(value || '');
           })
-          .join(',')
+          .join(','),
       ),
     ];
 
@@ -1155,7 +1266,9 @@ export class DataServiceHelper {
  * @param adapter
  * @example
  */
-export function createDataServiceHelper(adapter: DataServiceAdapter): DataServiceHelper {
+export function createDataServiceHelper(
+  adapter: DataServiceAdapter,
+): DataServiceHelper {
   return new DataServiceHelper(adapter);
 }
 
@@ -1171,7 +1284,7 @@ export const DataServiceUtils = {
    */
   validateConfiguration(
     config: Record<string, unknown>,
-    schema: { required?: string[] }
+    schema: { required?: string[] },
   ): DataValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -1203,9 +1316,10 @@ export const DataServiceUtils = {
   generateCacheKey(
     operation: string,
     params: Record<string, unknown> = {},
-    prefix = 'data:'
+    prefix = 'data:',
   ): string {
-    const paramString = Object.keys(params).length > 0 ? JSON.stringify(params) : '';
+    const paramString =
+      Object.keys(params).length > 0 ? JSON.stringify(params) : '';
     const hash = Buffer.from(paramString).toString('base64').slice(0, 16);
     return `${prefix}${operation}:${hash}`;
   },
@@ -1251,7 +1365,7 @@ export const DataServiceUtils = {
           if (!target[key]) target[key] = {};
           this.deepMerge(
             target[key] as Record<string, unknown>,
-            source[key] as Record<string, unknown>
+            source[key] as Record<string, unknown>,
           );
         } else {
           target[key] = source[key];
@@ -1282,7 +1396,9 @@ export const DataServiceUtils = {
       const keyRequests = requests.get(key)!;
 
       // Remove old requests outside the window
-      const validRequests = keyRequests.filter((timestamp) => timestamp > windowStart);
+      const validRequests = keyRequests.filter(
+        (timestamp) => timestamp > windowStart,
+      );
       requests.set(key, validRequests);
 
       if (validRequests.length >= maxRequests) {

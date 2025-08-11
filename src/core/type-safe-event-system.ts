@@ -20,7 +20,11 @@ import { EventEmitter } from 'events';
 import type { Logger } from '../config/logging-config.ts';
 import { getLogger } from '../config/logging-config.ts';
 import type { Agent, Task } from '../coordination/types.ts';
-import type { WorkflowContext, WorkflowDefinition, WorkflowEvent } from '../workflows/types.ts';
+import type {
+  WorkflowContext,
+  WorkflowDefinition,
+  WorkflowEvent,
+} from '../workflows/types.ts';
 import {
   ContractViolationError,
   Domain,
@@ -530,7 +534,9 @@ const BaseEventSchema: TypeSchema<BaseEvent> = {
         priority: {
           type: 'number',
           required: false,
-          enum: Object.values(EventPriority).filter((v) => typeof v === 'number'),
+          enum: Object.values(EventPriority).filter(
+            (v) => typeof v === 'number',
+          ),
         },
         tags: {
           type: 'array',
@@ -622,7 +628,9 @@ export const EventSchemas = {
           priority: {
             type: 'number',
             required: true,
-            enum: Object.values(EventPriority).filter((v) => typeof v === 'number'),
+            enum: Object.values(EventPriority).filter(
+              (v) => typeof v === 'number',
+            ),
           },
           timeout: { type: 'number', required: false },
         },
@@ -640,7 +648,7 @@ export const EventSchemas = {
  */
 export type EventHandler<TEvent extends BaseEvent = BaseEvent> = (
   event: TEvent,
-  context: EventHandlerContext
+  context: EventHandlerContext,
 ) => Promise<void> | void;
 
 /**
@@ -706,7 +714,10 @@ export interface EventSystemConfig {
  */
 export class TypeSafeEventBus extends EventEmitter implements IEventBus {
   private readonly logger: Logger;
-  private readonly domainValidators = new Map<Domain, DomainBoundaryValidator>();
+  private readonly domainValidators = new Map<
+    Domain,
+    DomainBoundaryValidator
+  >();
   private readonly eventHandlers = new Map<string, TypedEventHandler[]>();
   private readonly eventHistory: BaseEvent[] = [];
   private readonly processingStats = new Map<string, number[]>();
@@ -720,7 +731,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
   constructor(
     config: EventSystemConfig = {},
-    private readonly systemDomainValidator?: DomainBoundaryValidator
+    private readonly systemDomainValidator?: DomainBoundaryValidator,
   ) {
     super();
     this.setMaxListeners(0); // Unlimited listeners
@@ -767,7 +778,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
       timeout?: number;
       priority?: EventPriority;
       correlationId?: string;
-    } = {}
+    } = {},
   ): Promise<EventProcessingResult> {
     const startTime = Date.now();
     const eventId = event.id || this.generateEventId();
@@ -782,15 +793,21 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
         metadata: {
           ...event.metadata,
           correlationId:
-            options.correlationId || event.metadata?.correlationId || this.generateCorrelationId(),
-          priority: options.priority ?? event.metadata?.priority ?? EventPriority.NORMAL,
+            options.correlationId ||
+            event.metadata?.correlationId ||
+            this.generateCorrelationId(),
+          priority:
+            options.priority ??
+            event.metadata?.priority ??
+            EventPriority.NORMAL,
           source: event.metadata?.source || 'type-safe-event-bus',
         },
       };
 
       // Domain boundary validation
       if (this.config.domainValidation && !options.skipValidation) {
-        const validationResult = await this.validateEventAtDomainBoundary(enhancedEvent);
+        const validationResult =
+          await this.validateEventAtDomainBoundary(enhancedEvent);
         if (!validationResult.success) {
           throw new DomainValidationError(
             `Event validation failed: ${validationResult.error?.message}`,
@@ -799,7 +816,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
             'emitEvent',
             [],
             event,
-            event.type
+            event.type,
           );
         }
       }
@@ -843,8 +860,11 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           startTime: new Date(startTime),
           endTime: new Date(),
           handlerCount: processingResult.handlerResults.length,
-          successCount: processingResult.handlerResults.filter((r) => r.success).length,
-          failureCount: processingResult.handlerResults.filter((r) => !r.success).length,
+          successCount: processingResult.handlerResults.filter((r) => r.success)
+            .length,
+          failureCount: processingResult.handlerResults.filter(
+            (r) => !r.success,
+          ).length,
           totalProcessingTime: Date.now() - startTime,
           validationTime: processingResult.validationTime || 0,
         },
@@ -893,7 +913,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
       skipValidation?: boolean;
       timeout?: number;
       maxConcurrency?: number;
-    } = {}
+    } = {},
   ): Promise<EventProcessingResult[]> {
     const startTime = Date.now();
     const maxConcurrency = options.maxConcurrency ?? this.config.maxConcurrency;
@@ -909,7 +929,9 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     for (let i = 0; i < events.length; i += this.config.batchSize) {
       const batch = events.slice(i, i + this.config.batchSize);
 
-      const batchPromises = batch.map((event) => this.emitEvent(event, options));
+      const batchPromises = batch.map((event) =>
+        this.emitEvent(event, options),
+      );
 
       const batchResults = await Promise.allSettled(batchPromises);
 
@@ -921,7 +943,9 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
             success: false,
             processingTime: Date.now() - startTime,
             error:
-              result.reason instanceof Error ? result.reason : new Error(String(result.reason)),
+              result.reason instanceof Error
+                ? result.reason
+                : new Error(String(result.reason)),
             handlerResults: [],
             metadata: {
               eventId: 'batch-failed',
@@ -959,7 +983,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     eventType: string,
     handler: EventHandler<TEvent>,
     config: EventHandlerConfig = {},
-    schema?: TypeSchema<TEvent>
+    schema?: TypeSchema<TEvent>,
   ): string {
     const handlerId = this.generateHandlerId();
 
@@ -988,7 +1012,9 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     handlers.push(typedHandler);
 
     // Sort by priority (higher priority first)
-    handlers.sort((a, b) => (b.config.priority ?? 0) - (a.config.priority ?? 0));
+    handlers.sort(
+      (a, b) => (b.config.priority ?? 0) - (a.config.priority ?? 0),
+    );
 
     this.logger.debug('Event handler registered', {
       handlerId,
@@ -1009,10 +1035,10 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
       handler: EventHandler<any>;
       config?: EventHandlerConfig;
       schema?: TypeSchema<any>;
-    }>
+    }>,
   ): string[] {
     return registrations.map((reg) =>
-      this.registerHandler(reg.eventType, reg.handler, reg.config, reg.schema)
+      this.registerHandler(reg.eventType, reg.handler, reg.config, reg.schema),
     );
   }
 
@@ -1022,7 +1048,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
   public registerDomainHandler<TEvent extends BaseEvent>(
     domain: Domain,
     handler: EventHandler<TEvent>,
-    config: EventHandlerConfig = {}
+    config: EventHandlerConfig = {},
   ): string {
     return this.registerHandler(`domain:${domain}`, handler, config);
   }
@@ -1032,7 +1058,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
    */
   public registerWildcardHandler(
     handler: EventHandler<BaseEvent>,
-    config: EventHandlerConfig = {}
+    config: EventHandlerConfig = {},
   ): string {
     return this.registerHandler('*', handler, config);
   }
@@ -1088,7 +1114,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     event: TEvent,
     fromDomain: Domain,
     toDomain: Domain,
-    operation: string
+    operation: string,
   ): Promise<Result<EventProcessingResult>> {
     const startTime = Date.now();
 
@@ -1097,11 +1123,19 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
       if (this.config.domainValidation) {
         const validator = this.domainValidators.get(fromDomain);
         if (validator) {
-          validator.trackCrossings(fromDomain, toDomain, `event_routing:${operation}`);
+          validator.trackCrossings(
+            fromDomain,
+            toDomain,
+            `event_routing:${operation}`,
+          );
         }
 
         // Validate event against target domain schema
-        const validationResult = await this.validateCrossDomainEvent(event, fromDomain, toDomain);
+        const validationResult = await this.validateCrossDomainEvent(
+          event,
+          fromDomain,
+          toDomain,
+        );
         if (!validationResult.success) {
           return {
             success: false,
@@ -1193,30 +1227,38 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     let filteredEvents = this.eventHistory.slice();
 
     if (criteria.eventType) {
-      filteredEvents = filteredEvents.filter((e) => e.type === criteria.eventType);
+      filteredEvents = filteredEvents.filter(
+        (e) => e.type === criteria.eventType,
+      );
     }
 
     if (criteria.domain) {
-      filteredEvents = filteredEvents.filter((e) => e.domain === criteria.domain);
+      filteredEvents = filteredEvents.filter(
+        (e) => e.domain === criteria.domain,
+      );
     }
 
     if (criteria.startTime) {
-      filteredEvents = filteredEvents.filter((e) => e.timestamp >= criteria.startTime!);
+      filteredEvents = filteredEvents.filter(
+        (e) => e.timestamp >= criteria.startTime!,
+      );
     }
 
     if (criteria.endTime) {
-      filteredEvents = filteredEvents.filter((e) => e.timestamp <= criteria.endTime!);
+      filteredEvents = filteredEvents.filter(
+        (e) => e.timestamp <= criteria.endTime!,
+      );
     }
 
     if (criteria.correlationId) {
       filteredEvents = filteredEvents.filter(
-        (e) => e.metadata?.correlationId === criteria.correlationId
+        (e) => e.metadata?.correlationId === criteria.correlationId,
       );
     }
 
     if (criteria.tags && criteria.tags.length > 0) {
       filteredEvents = filteredEvents.filter((e) =>
-        e.metadata?.tags?.some((tag) => criteria.tags!.includes(tag))
+        e.metadata?.tags?.some((tag) => criteria.tags!.includes(tag)),
       );
     }
 
@@ -1267,9 +1309,14 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     const now = Date.now();
     const uptimeSeconds = (now - this.startTime) / 1000;
 
-    const domainEventCounts: Record<Domain, number> = {} as Record<Domain, number>;
+    const domainEventCounts: Record<Domain, number> = {} as Record<
+      Domain,
+      number
+    >;
     for (const domain of Object.values(Domain)) {
-      domainEventCounts[domain] = this.eventHistory.filter((e) => e.domain === domain).length;
+      domainEventCounts[domain] = this.eventHistory.filter(
+        (e) => e.domain === domain,
+      ).length;
     }
 
     const totalProcessingTimes = Array.from(this.processingStats.values())
@@ -1278,20 +1325,25 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
     const averageProcessingTime =
       totalProcessingTimes.length > 0
-        ? totalProcessingTimes.reduce((sum, time) => sum + time, 0) / totalProcessingTimes.length
+        ? totalProcessingTimes.reduce((sum, time) => sum + time, 0) /
+          totalProcessingTimes.length
         : 0;
 
     const failedEvents = this.eventHistory.length - totalProcessingTimes.length;
-    const failureRate = this.eventHistory.length > 0 ? failedEvents / this.eventHistory.length : 0;
+    const failureRate =
+      this.eventHistory.length > 0
+        ? failedEvents / this.eventHistory.length
+        : 0;
 
     return {
       totalEvents: this.eventCounter,
-      eventsPerSecond: uptimeSeconds > 0 ? this.eventCounter / uptimeSeconds : 0,
+      eventsPerSecond:
+        uptimeSeconds > 0 ? this.eventCounter / uptimeSeconds : 0,
       averageProcessingTime,
       failureRate,
       handlerCount: Array.from(this.eventHandlers.values()).reduce(
         (sum, handlers) => sum + handlers.length,
-        0
+        0,
       ),
       domainEventCounts,
       memoryUsage: this.estimateMemoryUsage(),
@@ -1424,7 +1476,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
   private async processEventHandlers<TEvent extends BaseEvent>(
     event: TEvent,
-    options: { timeout: number }
+    options: { timeout: number },
   ): Promise<{
     handlerResults: Array<{
       handlerId: string;
@@ -1453,8 +1505,14 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     const wildcardHandlers = this.getHandlers('*');
 
     // Combine and deduplicate handlers
-    const allHandlers = [...specificHandlers, ...domainHandlers, ...wildcardHandlers];
-    const uniqueHandlers = Array.from(new Map(allHandlers.map((h) => [h.id, h])).values());
+    const allHandlers = [
+      ...specificHandlers,
+      ...domainHandlers,
+      ...wildcardHandlers,
+    ];
+    const uniqueHandlers = Array.from(
+      new Map(allHandlers.map((h) => [h.id, h])).values(),
+    );
 
     if (uniqueHandlers.length === 0) {
       return { handlerResults, validationTime };
@@ -1465,7 +1523,8 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
       eventBus: this,
       logger: this.logger,
       startTime: new Date(),
-      correlationId: event.metadata?.correlationId || this.generateCorrelationId(),
+      correlationId:
+        event.metadata?.correlationId || this.generateCorrelationId(),
       metadata: {},
     };
 
@@ -1494,8 +1553,8 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           new Promise((_, reject) =>
             setTimeout(
               () => reject(new Error('Handler timeout')),
-              handler.config.timeout || options.timeout
-            )
+              handler.config.timeout || options.timeout,
+            ),
           ),
         ]);
 
@@ -1536,7 +1595,10 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           handlerId: 'unknown',
           success: false,
           processingTime: 0,
-          error: result.reason instanceof Error ? result.reason : new Error(String(result.reason)),
+          error:
+            result.reason instanceof Error
+              ? result.reason
+              : new Error(String(result.reason)),
         });
       }
     }
@@ -1545,7 +1607,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
   }
 
   private async validateEventAtDomainBoundary<TEvent extends BaseEvent>(
-    event: TEvent
+    event: TEvent,
   ): Promise<Result<TEvent>> {
     const validator = this.domainValidators.get(event.domain);
     if (!validator) {
@@ -1565,15 +1627,14 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           success: true,
           data: validatedEvent,
         };
-      } else {
-        // If no schema, just validate basic structure
-        const basicSchema: TypeSchema<BaseEvent> = BaseEventSchema;
-        validator.validateInput(event, basicSchema);
-        return {
-          success: true,
-          data: event,
-        };
       }
+      // If no schema, just validate basic structure
+      const basicSchema: TypeSchema<BaseEvent> = BaseEventSchema;
+      validator.validateInput(event, basicSchema);
+      return {
+        success: true,
+        data: event,
+      };
     } catch (error) {
       return {
         success: false,
@@ -1585,7 +1646,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
   private async validateCrossDomainEvent<TEvent extends BaseEvent>(
     event: TEvent,
     fromDomain: Domain,
-    toDomain: Domain
+    toDomain: Domain,
   ): Promise<Result<TEvent>> {
     try {
       const schema = this.getEventSchema(event.type);
@@ -1595,18 +1656,17 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
           schema,
           fromDomain,
           toDomain,
-          `event_validation:${event.type}`
+          `event_validation:${event.type}`,
         );
         return {
           success: true,
           data: validatedEvent,
         };
-      } else {
-        return {
-          success: true,
-          data: event,
-        };
       }
+      return {
+        success: true,
+        data: event,
+      };
     } catch (error) {
       return {
         success: false,
@@ -1646,7 +1706,11 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
     }
   }
 
-  private trackEventMetrics(eventType: string, processingTime: number, success: boolean): void {
+  private trackEventMetrics(
+    eventType: string,
+    processingTime: number,
+    success: boolean,
+  ): void {
     if (!this.processingStats.has(eventType)) {
       this.processingStats.set(eventType, []);
     }
@@ -1664,22 +1728,28 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
   private registerSystemEventHandlers(): void {
     // Register handler for error events to log them
-    this.registerHandler('error.occurred', async (event: ErrorOccurredEvent) => {
-      this.logger.error('System error occurred', {
-        error: event.payload.error.message,
-        severity: event.payload.severity,
-        recoverable: event.payload.recoverable,
-        context: event.payload.context,
-      });
-    });
+    this.registerHandler(
+      'error.occurred',
+      async (event: ErrorOccurredEvent) => {
+        this.logger.error('System error occurred', {
+          error: event.payload.error.message,
+          severity: event.payload.severity,
+          recoverable: event.payload.recoverable,
+          context: event.payload.context,
+        });
+      },
+    );
 
     // Register handler for system events
-    this.registerHandler('system.started', async (event: SystemStartedEvent) => {
-      this.logger.info('System started', {
-        version: event.payload.version,
-        startTime: event.payload.startTime,
-      });
-    });
+    this.registerHandler(
+      'system.started',
+      async (event: SystemStartedEvent) => {
+        this.logger.info('System started', {
+          version: event.payload.version,
+          startTime: event.payload.startTime,
+        });
+      },
+    );
   }
 
   private generateEventId(): string {
@@ -1700,7 +1770,9 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
 
   private estimateMemoryUsage(): number {
     const eventHistorySize = JSON.stringify(this.eventHistory).length;
-    const cacheSize = JSON.stringify(Array.from(this.eventCache.values())).length;
+    const cacheSize = JSON.stringify(
+      Array.from(this.eventCache.values()),
+    ).length;
     const handlerSize = this.eventHandlers.size * 1000; // Rough estimate
     return eventHistorySize + cacheSize + handlerSize;
   }
@@ -1765,7 +1837,7 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
  */
 export function createTypeSafeEventBus(
   config?: EventSystemConfig,
-  domainValidator?: DomainBoundaryValidator
+  domainValidator?: DomainBoundaryValidator,
 ): TypeSafeEventBus {
   return new TypeSafeEventBus(config, domainValidator);
 }
@@ -1777,7 +1849,7 @@ export function createEvent<TEvent extends BaseEvent>(
   type: TEvent['type'],
   domain: Domain,
   payload: Omit<TEvent, 'id' | 'type' | 'domain' | 'timestamp' | 'version'>,
-  metadata?: Partial<EventMetadata>
+  metadata?: Partial<EventMetadata>,
 ): TEvent {
   return {
     id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -1819,7 +1891,7 @@ export function isBaseEvent(obj: unknown): obj is BaseEvent {
  */
 export function isDomainEvent<TDomain extends Domain>(
   event: BaseEvent,
-  domain: TDomain
+  domain: TDomain,
 ): event is BaseEvent & { domain: TDomain } {
   return event.domain === domain;
 }
@@ -1828,7 +1900,7 @@ export function isDomainEvent<TDomain extends Domain>(
  * Extract event type from event class
  */
 export function getEventType<TEvent extends BaseEvent>(
-  eventClass: new (...args: any[]) => TEvent
+  eventClass: new (...args: any[]) => TEvent,
 ): string {
   // This would require reflection or a different approach in TypeScript
   // For now, events should define their own type property

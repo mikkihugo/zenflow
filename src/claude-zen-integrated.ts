@@ -51,7 +51,7 @@ export class ClaudeZenIntegrated {
       if (arg === '--port' && i + 1 < args.length) {
         const nextArg = args[i + 1];
         if (nextArg !== undefined && options) {
-          options.port = parseInt(nextArg, 10);
+          options.port = Number.parseInt(nextArg, 10);
         }
         i++; // Skip next argument
       } else if (arg === '--daemon') {
@@ -88,26 +88,45 @@ export class ClaudeZenIntegrated {
       const app = express.default();
 
       // Basic health check endpoint
-      app.get('/health', (_req: unknown, res: { json: (data: unknown) => void }) => {
-        res.json({
-          status: 'healthy',
-          timestamp: new Date().toISOString(),
-          version: '2.0.0-alpha.73',
-        });
-      });
+      app.get(
+        '/health',
+        (_req: unknown, res: { json: (data: unknown) => void }) => {
+          res.json({
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            version: '2.0.0-alpha.73',
+          });
+        },
+      );
 
       // API status endpoint
-      app.get('/api/status', (_req: unknown, res: { json: (data: unknown) => void }) => {
-        res.json({
-          status: 'running',
-          mode: this.options.dev ? 'development' : 'production',
-          daemon: this.options.daemon,
-          uptime: process.uptime(),
-        });
-      });
+      app.get(
+        '/api/status',
+        (_req: unknown, res: { json: (data: unknown) => void }) => {
+          res.json({
+            status: 'running',
+            mode: this.options.dev ? 'development' : 'production',
+            daemon: this.options.daemon,
+            uptime: process.uptime(),
+          });
+        },
+      );
 
       // Start server
-      this.server = app.listen(this.options.port, () => {});
+      this.server = app.listen(this.options.port, () => {
+        logger.info(`✅ HTTP server started on port ${this.options.port}`);
+        logger.info(
+          `🌐 Health check: http://localhost:${this.options.port}/health`,
+        );
+      });
+
+      this.server.on('error', (err: unknown) => {
+        logger.error(`❌ Server error:`, err);
+        if (err.code === 'EADDRINUSE') {
+          logger.error(`Port ${this.options.port} is already in use`);
+        }
+        throw err;
+      });
     } catch (error) {
       logger.error('❌ Failed to start HTTP server:', error);
       throw error;

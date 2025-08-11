@@ -31,7 +31,11 @@ export class AdvancedCLICommands {
    * @param args
    * @param options
    */
-  async executeCommand(commandName: string, args: string[], options: any): Promise<CommandResult> {
+  async executeCommand(
+    commandName: string,
+    args: string[],
+    options: any,
+  ): Promise<CommandResult> {
     const context: CommandContext = {
       command: commandName,
       args,

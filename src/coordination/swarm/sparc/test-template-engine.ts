@@ -25,7 +25,11 @@ async function testTemplateEngine() {
     name: 'Test Memory System',
     domain: 'memory-systems',
     complexity: 'moderate',
-    requirements: ['Fast data retrieval', 'Caching support', 'Backup functionality'],
+    requirements: [
+      'Fast data retrieval',
+      'Caching support',
+      'Backup functionality',
+    ],
     constraints: ['Must use TypeScript', 'Memory usage under 1GB'],
   };
   const bestMatch = templateEngine.findBestTemplate(testProject);
@@ -35,7 +39,10 @@ async function testTemplateEngine() {
       bestMatch?.compatibility?.warnings?.forEach((_warning) => {});
     }
     try {
-      const result = await templateEngine.applyTemplate(bestMatch?.template, testProject);
+      const result = await templateEngine.applyTemplate(
+        bestMatch?.template,
+        testProject,
+      );
 
       if (result?.customizations.length > 0) {
         result?.customizations?.forEach((_customization) => {});

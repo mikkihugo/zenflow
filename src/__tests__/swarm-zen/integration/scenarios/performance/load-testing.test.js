@@ -45,12 +45,14 @@ describe('Performance Under Load Integration Tests', () => {
       for (let batch = 0; batch < totalAgents / batchSize; batch++) {
         const batchPromises = [];
         for (let i = 0; i < batchSize; i++) {
-          const agentType = ['coder', 'researcher', 'analyst', 'optimizer'][i % 4];
+          const agentType = ['coder', 'researcher', 'analyst', 'optimizer'][
+            i % 4
+          ];
           batchPromises.push(
             swarm.spawnAgent({
               type: agentType,
               lightweight: true,
-            })
+            }),
           );
         }
 
@@ -80,12 +82,13 @@ describe('Performance Under Load Integration Tests', () => {
             task: `Stress test task ${i}`,
             strategy: 'parallel',
             maxAgents: 5,
-          })
+          }),
         );
       }
 
       const taskResults = await Promise.all(tasks);
-      const executionMetrics = performanceMonitor.stopTracking('task-execution');
+      const executionMetrics =
+        performanceMonitor.stopTracking('task-execution');
 
       // Verify task completion
       expect(taskResults).to.have.lengthOf(50);
@@ -121,7 +124,7 @@ describe('Performance Under Load Integration Tests', () => {
       const agents = await Promise.all(
         Array(30)
           .fill()
-          .map(() => swarm.spawnAgent({ type: 'coder' }))
+          .map(() => swarm.spawnAgent({ type: 'coder' })),
       );
 
       // Measure response times under increasing load
@@ -140,7 +143,7 @@ describe('Performance Under Load Integration Tests', () => {
             swarm.executeAgentTask(agents[i % agents.length].id, {
               task: 'Quick computation',
               complexity: 'low',
-            })
+            }),
           );
         }
 
@@ -197,7 +200,7 @@ describe('Performance Under Load Integration Tests', () => {
             swarm.orchestrateTask({
               task: 'Dynamic load task',
               duration: 500, // 500ms tasks
-            })
+            }),
           );
         }
         await Promise.all(tasks);
@@ -220,8 +223,12 @@ describe('Performance Under Load Integration Tests', () => {
       // Verify scaling occurred
       expect(scalingEvents).to.have.length.at.least(2);
 
-      const scaleUpEvents = scalingEvents.filter((e) => e.action === 'scale-up');
-      const scaleDownEvents = scalingEvents.filter((e) => e.action === 'scale-down');
+      const scaleUpEvents = scalingEvents.filter(
+        (e) => e.action === 'scale-up',
+      );
+      const scaleDownEvents = scalingEvents.filter(
+        (e) => e.action === 'scale-down',
+      );
 
       expect(scaleUpEvents).to.have.length.at.least(1);
       expect(scaleDownEvents).to.have.length.at.least(1);
@@ -262,7 +269,7 @@ describe('Performance Under Load Integration Tests', () => {
       const _agents = await Promise.all(
         Array(20)
           .fill()
-          .map(() => swarm.spawnAgent({ type: 'coder' }))
+          .map(() => swarm.spawnAgent({ type: 'coder' })),
       );
 
       // Sustained workload for 30 seconds
@@ -277,7 +284,7 @@ describe('Performance Under Load Integration Tests', () => {
               task: 'Memory test task',
               data: Buffer.alloc(Math.random() * 1024 * 1024), // 0-1MB random data
               strategy: 'parallel',
-            })
+            }),
           );
         }
 
@@ -295,7 +302,8 @@ describe('Performance Under Load Integration Tests', () => {
 
       // Analyze memory usage
       const avgMemory =
-        memorySnapshots.reduce((sum, s) => sum + s.heapUsed, 0) / memorySnapshots.length;
+        memorySnapshots.reduce((sum, s) => sum + s.heapUsed, 0) /
+        memorySnapshots.length;
       const maxMemory = Math.max(...memorySnapshots.map((s) => s.heapUsed));
       const minMemory = Math.min(...memorySnapshots.map((s) => s.heapUsed));
       const memoryVariance = maxMemory - minMemory;
@@ -309,8 +317,10 @@ describe('Performance Under Load Integration Tests', () => {
       const firstHalf = memorySnapshots.slice(0, memorySnapshots.length / 2);
       const secondHalf = memorySnapshots.slice(memorySnapshots.length / 2);
 
-      const avgFirstHalf = firstHalf.reduce((sum, s) => sum + s.heapUsed, 0) / firstHalf.length;
-      const avgSecondHalf = secondHalf.reduce((sum, s) => sum + s.heapUsed, 0) / secondHalf.length;
+      const avgFirstHalf =
+        firstHalf.reduce((sum, s) => sum + s.heapUsed, 0) / firstHalf.length;
+      const avgSecondHalf =
+        secondHalf.reduce((sum, s) => sum + s.heapUsed, 0) / secondHalf.length;
 
       // Second half shouldn't be significantly higher (no leak)
       expect(avgSecondHalf).to.be.lessThan(avgFirstHalf * 1.2);
@@ -353,7 +363,7 @@ describe('Performance Under Load Integration Tests', () => {
               operation: 'transform',
             },
             streaming: true,
-          })
+          }),
         );
       }
 
@@ -444,7 +454,7 @@ describe('Performance Under Load Integration Tests', () => {
             type: selectedWorkload.type,
             estimatedDuration: selectedWorkload.duration,
             affinityType: selectedWorkload.type.replace('ing', 'er'),
-          })
+          }),
         );
       }
 
@@ -481,8 +491,13 @@ describe('Performance Under Load Integration Tests', () => {
 
         // Average duration should be close to estimated
         const avgDuration = stats.totalTime / stats.count;
-        const expectedDuration = workloadTypes.find((w) => w.type === type).duration;
-        expect(avgDuration).to.be.within(expectedDuration * 0.8, expectedDuration * 1.5);
+        const expectedDuration = workloadTypes.find(
+          (w) => w.type === type,
+        ).duration;
+        expect(avgDuration).to.be.within(
+          expectedDuration * 0.8,
+          expectedDuration * 1.5,
+        );
       });
 
       // Overall performance
@@ -595,7 +610,7 @@ describe('Performance Under Load Integration Tests', () => {
       const _agents = await Promise.all(
         Array(50)
           .fill()
-          .map(() => swarm.spawnAgent({ type: 'coder' }))
+          .map(() => swarm.spawnAgent({ type: 'coder' })),
       );
 
       // Execute many tasks
@@ -605,7 +620,7 @@ describe('Performance Under Load Integration Tests', () => {
           swarm.orchestrateTask({
             task: `Cleanup test task ${i}`,
             timeout: 5000,
-          })
+          }),
         );
       }
 

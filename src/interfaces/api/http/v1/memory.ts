@@ -53,7 +53,7 @@ export const createMemoryRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -82,7 +82,7 @@ export const createMemoryRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    })
+    }),
   );
 
   // ===== KEY-VALUE OPERATIONS =====
@@ -96,7 +96,7 @@ export const createMemoryRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       const storeId = req.params.storeId;
       const pattern = req.query.pattern as string;
-      const limit = parseInt(req.query.limit as string) || 100;
+      const limit = Number.parseInt(req.query.limit as string) || 100;
 
       log(LogLevel.DEBUG, 'Listing memory keys', req, {
         storeId,
@@ -120,7 +120,7 @@ export const createMemoryRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -161,7 +161,7 @@ export const createMemoryRoutes = (): Router => {
       });
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -202,7 +202,7 @@ export const createMemoryRoutes = (): Router => {
       });
 
       res.json(result);
-    })
+    }),
   );
 
   /**
@@ -226,7 +226,7 @@ export const createMemoryRoutes = (): Router => {
       });
 
       res.status(204).send();
-    })
+    }),
   );
 
   // ===== BATCH OPERATIONS =====
@@ -273,7 +273,7 @@ export const createMemoryRoutes = (): Router => {
           missing: 0,
         },
       });
-    })
+    }),
   );
 
   /**
@@ -318,7 +318,7 @@ export const createMemoryRoutes = (): Router => {
           failed: 0,
         },
       });
-    })
+    }),
   );
 
   // ===== MEMORY STATISTICS =====
@@ -362,7 +362,7 @@ export const createMemoryRoutes = (): Router => {
       };
 
       res.json(result);
-    })
+    }),
   );
 
   // ===== DISTRIBUTED MEMORY OPERATIONS =====
@@ -402,11 +402,14 @@ export const createMemoryRoutes = (): Router => {
       logPerformance('memory_sync', result?.duration, req, {
         storeId,
         syncType: result?.type,
-        totalChanges: result?.changes?.added + result?.changes?.updated + result?.changes?.removed,
+        totalChanges:
+          result?.changes?.added +
+          result?.changes?.updated +
+          result?.changes?.removed,
       });
 
       res.status(202).json(result);
-    })
+    }),
   );
 
   // ===== MEMORY HEALTH =====
@@ -441,7 +444,7 @@ export const createMemoryRoutes = (): Router => {
 
       const statusCode = result?.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(result);
-    })
+    }),
   );
 
   return router;

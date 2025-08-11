@@ -165,7 +165,9 @@ class UELValidationCLI {
       if (exitCode === 0) {
         this.logger.success('🎉 All UEL validations passed!');
       } else {
-        this.logger.warn(`⚠️  UEL validation completed with issues (exit code: ${exitCode})`);
+        this.logger.warn(
+          `⚠️  UEL validation completed with issues (exit code: ${exitCode})`,
+        );
       }
 
       process.exit(exitCode);
@@ -183,7 +185,9 @@ class UELValidationCLI {
     try {
       await fs.access(uelPath);
     } catch {
-      throw new Error('UEL module not found. Ensure src/interfaces/events/index.ts exists.');
+      throw new Error(
+        'UEL module not found. Ensure src/interfaces/events/index.ts exists.',
+      );
     }
 
     // Check if TypeScript is available
@@ -273,27 +277,42 @@ class UELValidationCLI {
 
       // Validate system health
       if (!systemStatus.initialized) {
-        errors.push({ message: 'UEL system not properly initialized', severity: 'critical' });
+        errors.push({
+          message: 'UEL system not properly initialized',
+          severity: 'critical',
+        });
         score -= 30;
       }
 
       if (systemStatus.components.factory !== true) {
-        errors.push({ message: 'Factory component not available', severity: 'high' });
+        errors.push({
+          message: 'Factory component not available',
+          severity: 'high',
+        });
         score -= 20;
       }
 
       if (systemStatus.components.registry !== true) {
-        errors.push({ message: 'Registry component not available', severity: 'high' });
+        errors.push({
+          message: 'Registry component not available',
+          severity: 'high',
+        });
         score -= 20;
       }
 
       if (systemStatus.components.eventManager !== true) {
-        warnings.push({ message: 'Event Manager component not initialized', impact: 'medium' });
+        warnings.push({
+          message: 'Event Manager component not initialized',
+          impact: 'medium',
+        });
         score -= 10;
       }
 
       if (systemStatus.components.validation !== true) {
-        warnings.push({ message: 'Validation framework not enabled', impact: 'low' });
+        warnings.push({
+          message: 'Validation framework not enabled',
+          impact: 'low',
+        });
         score -= 5;
       }
 
@@ -319,7 +338,8 @@ class UELValidationCLI {
       if (systemStatus.factoryStats.totalManagers === 0) {
         recommendations.push({
           type: 'setup',
-          message: 'No event managers created yet - consider setting up default managers',
+          message:
+            'No event managers created yet - consider setting up default managers',
           priority: 'medium',
         });
       }
@@ -372,7 +392,10 @@ class UELValidationCLI {
       }
 
       // Check adapter implementations
-      const adapterPath = path.join(__dirname, '../src/interfaces/events/adapters');
+      const adapterPath = path.join(
+        __dirname,
+        '../src/interfaces/events/adapters',
+      );
       try {
         const adapters = await fs.readdir(adapterPath);
         const requiredAdapters = [
@@ -384,25 +407,40 @@ class UELValidationCLI {
 
         for (const adapter of requiredAdapters) {
           if (!adapters.includes(adapter)) {
-            warnings.push({ message: `Recommended adapter missing: ${adapter}`, impact: 'medium' });
+            warnings.push({
+              message: `Recommended adapter missing: ${adapter}`,
+              impact: 'medium',
+            });
             score -= 5;
           }
         }
       } catch {
-        warnings.push({ message: 'Adapters directory not accessible', impact: 'high' });
+        warnings.push({
+          message: 'Adapters directory not accessible',
+          impact: 'high',
+        });
         score -= 15;
       }
 
       // Check for system integrations
       const integrationChecks = [
         { file: 'src/core/event-bus.ts', name: 'Core Event Bus' },
-        { file: 'src/core/application-coordinator.ts', name: 'Application Coordinator' },
-        { file: 'src/interfaces/events/observer-system.ts', name: 'Observer System' },
+        {
+          file: 'src/core/application-coordinator.ts',
+          name: 'Application Coordinator',
+        },
+        {
+          file: 'src/interfaces/events/observer-system.ts',
+          name: 'Observer System',
+        },
       ];
 
       for (const check of integrationChecks) {
         try {
-          const content = await fs.readFile(path.join(__dirname, '..', check.file), 'utf8');
+          const content = await fs.readFile(
+            path.join(__dirname, '..', check.file),
+            'utf8',
+          );
 
           // Check if it uses EventEmitter
           if (content.includes('extends EventEmitter')) {
@@ -417,15 +455,24 @@ class UELValidationCLI {
           if (content.includes('UEL') || content.includes('EventManager')) {
             // Already integrated or in progress
           } else {
-            warnings.push({ message: `${check.name} not integrated with UEL`, impact: 'low' });
+            warnings.push({
+              message: `${check.name} not integrated with UEL`,
+              impact: 'low',
+            });
             score -= 3;
           }
         } catch {
-          warnings.push({ message: `Could not analyze ${check.name} integration`, impact: 'low' });
+          warnings.push({
+            message: `Could not analyze ${check.name} integration`,
+            impact: 'low',
+          });
         }
       }
     } catch (error) {
-      errors.push({ message: `Integration validation failed: ${error.message}`, severity: 'high' });
+      errors.push({
+        message: `Integration validation failed: ${error.message}`,
+        severity: 'high',
+      });
       score -= 25;
     }
 
@@ -446,7 +493,10 @@ class UELValidationCLI {
 
     try {
       // Import event types
-      const eventTypesPath = path.join(__dirname, '../src/interfaces/events/types.ts');
+      const eventTypesPath = path.join(
+        __dirname,
+        '../src/interfaces/events/types.ts',
+      );
       const content = await fs.readFile(eventTypesPath, 'utf8');
 
       // Check for required event type definitions
@@ -463,21 +513,37 @@ class UELValidationCLI {
       ];
 
       for (const type of requiredTypes) {
-        if (!content.includes(`interface ${type}`) && !content.includes(`type ${type}`)) {
-          errors.push({ message: `Required event type missing: ${type}`, severity: 'medium' });
+        if (
+          !(
+            content.includes(`interface ${type}`) ||
+            content.includes(`type ${type}`)
+          )
+        ) {
+          errors.push({
+            message: `Required event type missing: ${type}`,
+            severity: 'medium',
+          });
           score -= 10;
         }
       }
 
       // Check for event categories
       if (!content.includes('EventCategories')) {
-        warnings.push({ message: 'Event categories enum not found', impact: 'medium' });
+        warnings.push({
+          message: 'Event categories enum not found',
+          impact: 'medium',
+        });
         score -= 5;
       }
 
       // Check for type guards
-      if (!content.includes('UELTypeGuards') && !content.includes('TypeGuards')) {
-        warnings.push({ message: 'Type guard utilities not found', impact: 'medium' });
+      if (
+        !(content.includes('UELTypeGuards') || content.includes('TypeGuards'))
+      ) {
+        warnings.push({
+          message: 'Type guard utilities not found',
+          impact: 'medium',
+        });
         score -= 5;
       }
 
@@ -491,7 +557,10 @@ class UELValidationCLI {
       }
 
       if (eventInterfaces.length < 5) {
-        warnings.push({ message: 'Low number of event type definitions found', impact: 'medium' });
+        warnings.push({
+          message: 'Low number of event type definitions found',
+          impact: 'medium',
+        });
         score -= 10;
       }
 
@@ -501,13 +570,17 @@ class UELValidationCLI {
         priority: 'low',
       });
     } catch (error) {
-      errors.push({ message: `Event type validation failed: ${error.message}`, severity: 'high' });
+      errors.push({
+        message: `Event type validation failed: ${error.message}`,
+        severity: 'high',
+      });
       score = 0;
     }
 
     return {
       success:
-        errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
+        errors.filter((e) => e.severity === 'critical' || e.severity === 'high')
+          .length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
@@ -523,9 +596,8 @@ class UELValidationCLI {
 
     try {
       // Test compatibility layer
-      const { UELCompatibleEventEmitter, EventEmitterMigrationHelper } = await import(
-        '../src/interfaces/events/compatibility.ts'
-      );
+      const { UELCompatibleEventEmitter, EventEmitterMigrationHelper } =
+        await import('../src/interfaces/events/compatibility.ts');
 
       // Create test EventEmitter
       const testEmitter = new UELCompatibleEventEmitter({
@@ -540,21 +612,30 @@ class UELValidationCLI {
       testEmitter.emit('test');
 
       if (!eventReceived) {
-        errors.push({ message: 'Basic EventEmitter compatibility broken', severity: 'critical' });
+        errors.push({
+          message: 'Basic EventEmitter compatibility broken',
+          severity: 'critical',
+        });
         score -= 50;
       }
 
       // Test UEL status methods
       const status = testEmitter.getUELStatus();
       if (typeof status.enabled !== 'boolean') {
-        errors.push({ message: 'UEL status reporting broken', severity: 'medium' });
+        errors.push({
+          message: 'UEL status reporting broken',
+          severity: 'medium',
+        });
         score -= 15;
       }
 
       // Test migration helper
       const migrationHelper = new EventEmitterMigrationHelper();
       if (typeof migrationHelper.analyzeEventEmitter !== 'function') {
-        errors.push({ message: 'Migration helper functionality missing', severity: 'medium' });
+        errors.push({
+          message: 'Migration helper functionality missing',
+          severity: 'medium',
+        });
         score -= 15;
       }
 
@@ -563,7 +644,10 @@ class UELValidationCLI {
       const mappedStatus = testEmitter.getUELStatus();
 
       if (mappedStatus.mappedEvents !== 1) {
-        warnings.push({ message: 'Event mapping functionality may have issues', impact: 'medium' });
+        warnings.push({
+          message: 'Event mapping functionality may have issues',
+          impact: 'medium',
+        });
         score -= 10;
       }
     } catch (error) {
@@ -590,7 +674,10 @@ class UELValidationCLI {
     let score = 100;
 
     try {
-      const factoriesPath = path.join(__dirname, '../src/interfaces/events/factories.ts');
+      const factoriesPath = path.join(
+        __dirname,
+        '../src/interfaces/events/factories.ts',
+      );
       const content = await fs.readFile(factoriesPath, 'utf8');
 
       // Check for required factory exports
@@ -603,30 +690,43 @@ class UELValidationCLI {
 
       for (const factory of requiredFactories) {
         if (!content.includes(`export.*${factory}`)) {
-          warnings.push({ message: `Factory export may be missing: ${factory}`, impact: 'medium' });
+          warnings.push({
+            message: `Factory export may be missing: ${factory}`,
+            impact: 'medium',
+          });
           score -= 10;
         }
       }
 
       // Check for factory interfaces
       if (!content.includes('IEventManagerFactory')) {
-        errors.push({ message: 'Core factory interface missing', severity: 'high' });
+        errors.push({
+          message: 'Core factory interface missing',
+          severity: 'high',
+        });
         score -= 20;
       }
 
       // Check for event manager type definitions
       if (!content.includes('EventManagerTypes')) {
-        errors.push({ message: 'Event manager types enum missing', severity: 'medium' });
+        errors.push({
+          message: 'Event manager types enum missing',
+          severity: 'medium',
+        });
         score -= 15;
       }
     } catch (error) {
-      errors.push({ message: `Factory validation failed: ${error.message}`, severity: 'high' });
+      errors.push({
+        message: `Factory validation failed: ${error.message}`,
+        severity: 'high',
+      });
       score = 0;
     }
 
     return {
       success:
-        errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
+        errors.filter((e) => e.severity === 'critical' || e.severity === 'high')
+          .length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
@@ -641,10 +741,17 @@ class UELValidationCLI {
     let score = 100;
 
     try {
-      const { EventRegistry } = await import('../src/interfaces/events/registry.ts');
+      const { EventRegistry } = await import(
+        '../src/interfaces/events/registry.ts'
+      );
 
       // Test registry creation
-      const logger = { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} };
+      const logger = {
+        debug: () => {},
+        info: () => {},
+        warn: () => {},
+        error: () => {},
+      };
       const registry = new EventRegistry(logger);
 
       // Test initialization
@@ -653,7 +760,10 @@ class UELValidationCLI {
       // Test basic operations
       const stats = registry.getRegistryStats();
       if (typeof stats.totalManagers !== 'number') {
-        errors.push({ message: 'Registry statistics not properly structured', severity: 'medium' });
+        errors.push({
+          message: 'Registry statistics not properly structured',
+          severity: 'medium',
+        });
         score -= 15;
       }
 
@@ -665,19 +775,26 @@ class UELValidationCLI {
 
       const eventTypes = registry.getEventTypes();
       if (!eventTypes.includes('test:validation')) {
-        errors.push({ message: 'Event type registration not working', severity: 'high' });
+        errors.push({
+          message: 'Event type registration not working',
+          severity: 'high',
+        });
         score -= 25;
       }
 
       await registry.shutdownAll();
     } catch (error) {
-      errors.push({ message: `Registry validation failed: ${error.message}`, severity: 'high' });
+      errors.push({
+        message: `Registry validation failed: ${error.message}`,
+        severity: 'high',
+      });
       score -= 30;
     }
 
     return {
       success:
-        errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
+        errors.filter((e) => e.severity === 'critical' || e.severity === 'high')
+          .length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
@@ -707,7 +824,10 @@ class UELValidationCLI {
 
       // Test initialization time
       if (initTime > 5000) {
-        warnings.push({ message: `Slow UEL initialization: ${initTime}ms`, impact: 'medium' });
+        warnings.push({
+          message: `Slow UEL initialization: ${initTime}ms`,
+          impact: 'medium',
+        });
         score -= 10;
       }
 
@@ -717,7 +837,10 @@ class UELValidationCLI {
       const createTime = Date.now() - createStartTime;
 
       if (createTime > 1000) {
-        warnings.push({ message: `Slow event manager creation: ${createTime}ms`, impact: 'low' });
+        warnings.push({
+          message: `Slow event manager creation: ${createTime}ms`,
+          impact: 'low',
+        });
         score -= 5;
       }
 
@@ -736,7 +859,8 @@ class UELValidationCLI {
 
       recommendations.push({
         type: 'performance',
-        message: 'Consider implementing performance monitoring for production use',
+        message:
+          'Consider implementing performance monitoring for production use',
         priority: 'medium',
       });
     } catch (error) {
@@ -749,7 +873,8 @@ class UELValidationCLI {
 
     return {
       success:
-        errors.filter((e) => e.severity === 'critical' || e.severity === 'high').length === 0,
+        errors.filter((e) => e.severity === 'critical' || e.severity === 'high')
+          .length === 0,
       score: Math.max(0, score),
       errors,
       warnings,
@@ -762,13 +887,20 @@ class UELValidationCLI {
     const totalTests = this.validationResults.length;
     const passedTests = this.validationResults.filter((r) => r.success).length;
     const overallScore =
-      totalTests > 0 ? this.validationResults.reduce((sum, r) => sum + r.score, 0) / totalTests : 0;
+      totalTests > 0
+        ? this.validationResults.reduce((sum, r) => sum + r.score, 0) /
+          totalTests
+        : 0;
 
     const allErrors = this.validationResults.flatMap((r) => r.errors || []);
     const allWarnings = this.validationResults.flatMap((r) => r.warnings || []);
-    const allRecommendations = this.validationResults.flatMap((r) => r.recommendations || []);
+    const allRecommendations = this.validationResults.flatMap(
+      (r) => r.recommendations || [],
+    );
 
-    const criticalErrors = allErrors.filter((e) => e.severity === 'critical').length;
+    const criticalErrors = allErrors.filter(
+      (e) => e.severity === 'critical',
+    ).length;
     const highErrors = allErrors.filter((e) => e.severity === 'high').length;
 
     return {
@@ -879,7 +1011,10 @@ class UELValidationCLI {
   }
 
   async attemptFixes(report) {
-    if (report.details.errors.length === 0 && report.details.warnings.length === 0) {
+    if (
+      report.details.errors.length === 0 &&
+      report.details.warnings.length === 0
+    ) {
       this.logger.info('No issues to fix');
       return;
     }
@@ -890,7 +1025,10 @@ class UELValidationCLI {
     const fixCount = 0;
 
     for (const error of report.details.errors) {
-      if (error.message.includes('missing') && error.message.includes('component')) {
+      if (
+        error.message.includes('missing') &&
+        error.message.includes('component')
+      ) {
         // Could attempt to generate missing components
         this.logger.debug(`Could potentially fix: ${error.message}`);
       }
@@ -906,14 +1044,18 @@ class UELValidationCLI {
     if (fixCount > 0) {
       this.logger.success(`Applied ${fixCount} automated fixes`);
     } else {
-      this.logger.info('No automated fixes available - manual intervention required');
+      this.logger.info(
+        'No automated fixes available - manual intervention required',
+      );
     }
   }
 
   determineExitCode(report) {
     const { errors } = report.details;
 
-    const criticalErrors = errors.filter((e) => e.severity === 'critical').length;
+    const criticalErrors = errors.filter(
+      (e) => e.severity === 'critical',
+    ).length;
     const highErrors = errors.filter((e) => e.severity === 'high').length;
 
     if (criticalErrors > 0) return 3;

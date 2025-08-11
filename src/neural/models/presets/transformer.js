@@ -35,10 +35,22 @@ class TransformerModel extends NeuralModel {
     // Initialize multi-head attention weights for each layer
     for (let layer = 0; layer < this.config.layers; layer++) {
       this.attentionWeights.set(`layer_${layer}`, {
-        query: this.createWeight([this.config.dimensions, this.config.dimensions]),
-        key: this.createWeight([this.config.dimensions, this.config.dimensions]),
-        value: this.createWeight([this.config.dimensions, this.config.dimensions]),
-        output: this.createWeight([this.config.dimensions, this.config.dimensions]),
+        query: this.createWeight([
+          this.config.dimensions,
+          this.config.dimensions,
+        ]),
+        key: this.createWeight([
+          this.config.dimensions,
+          this.config.dimensions,
+        ]),
+        value: this.createWeight([
+          this.config.dimensions,
+          this.config.dimensions,
+        ]),
+        output: this.createWeight([
+          this.config.dimensions,
+          this.config.dimensions,
+        ]),
       });
 
       // Layer normalization parameters
@@ -49,16 +61,25 @@ class TransformerModel extends NeuralModel {
 
       // Feed-forward network weights
       this.feedForwardWeights.push({
-        w1: this.createWeight([this.config.dimensions, this.config.ffDimensions]),
+        w1: this.createWeight([
+          this.config.dimensions,
+          this.config.ffDimensions,
+        ]),
         b1: new Float32Array(this.config.ffDimensions).fill(0.0),
-        w2: this.createWeight([this.config.ffDimensions, this.config.dimensions]),
+        w2: this.createWeight([
+          this.config.ffDimensions,
+          this.config.dimensions,
+        ]),
         b2: new Float32Array(this.config.dimensions).fill(0.0),
       });
     }
 
     // Output layer weights
     this.outputWeights = {
-      projection: this.createWeight([this.config.dimensions, this.config.vocabularySize]),
+      projection: this.createWeight([
+        this.config.dimensions,
+        this.config.vocabularySize,
+      ]),
       bias: new Float32Array(this.config.vocabularySize).fill(0.0),
     };
   }
@@ -77,11 +98,14 @@ class TransformerModel extends NeuralModel {
   }
 
   createPositionalEncoding() {
-    const encoding = new Float32Array(this.config.maxSequenceLength * this.config.dimensions);
+    const encoding = new Float32Array(
+      this.config.maxSequenceLength * this.config.dimensions,
+    );
 
     for (let pos = 0; pos < this.config.maxSequenceLength; pos++) {
       for (let i = 0; i < this.config.dimensions; i++) {
-        const angle = pos / 10000 ** ((2 * Math.floor(i / 2)) / this.config.dimensions);
+        const angle =
+          pos / 10000 ** ((2 * Math.floor(i / 2)) / this.config.dimensions);
 
         if (i % 2 === 0) {
           encoding[pos * this.config.dimensions + i] = Math.sin(angle);
@@ -101,11 +125,13 @@ class TransformerModel extends NeuralModel {
 
     // Validate input dimensions
     if (batchSize <= 0 || sequenceLength <= 0) {
-      throw new Error(`Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`);
+      throw new Error(
+        `Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`,
+      );
     }
     if (sequenceLength > this.config.maxSequenceLength) {
       throw new Error(
-        `Sequence length ${sequenceLength} exceeds maximum ${this.config.maxSequenceLength}`
+        `Sequence length ${sequenceLength} exceeds maximum ${this.config.maxSequenceLength}`,
       );
     }
 
@@ -158,7 +184,7 @@ class TransformerModel extends NeuralModel {
 
     // Scaled dot-product attention for each head
     const attentionScores = new Float32Array(
-      batchSize * this.config.heads * sequenceLength * sequenceLength
+      batchSize * this.config.heads * sequenceLength * sequenceLength,
     );
 
     for (let b = 0; b < batchSize; b++) {
@@ -205,11 +231,15 @@ class TransformerModel extends NeuralModel {
       attentionWeights,
       VHeads,
       batchSize,
-      sequenceLength
+      sequenceLength,
     );
 
     // Concatenate heads and project
-    const concatenated = this.concatenateHeads(attendedValues, batchSize, sequenceLength);
+    const concatenated = this.concatenateHeads(
+      attendedValues,
+      batchSize,
+      sequenceLength,
+    );
     const output = this.matmul(concatenated, weights.output);
 
     // Apply dropout if training
@@ -264,7 +294,9 @@ class TransformerModel extends NeuralModel {
       const std = Math.sqrt(variance + 1e-5);
       for (let j = 0; j < lastDim; j++) {
         const idx = i * lastDim + j;
-        normalized[idx] = normParams.gamma[j] * ((input[idx] - mean) / std) + normParams.beta[j];
+        normalized[idx] =
+          normParams.gamma[j] * ((input[idx] - mean) / std) +
+          normParams.beta[j];
       }
     }
 
@@ -299,10 +331,17 @@ class TransformerModel extends NeuralModel {
 
       // Process batches
       for (let i = 0; i < shuffled.length; i += batchSize) {
-        const batch = shuffled.slice(i, Math.min(i + batchSize, shuffled.length));
+        const batch = shuffled.slice(
+          i,
+          Math.min(i + batchSize, shuffled.length),
+        );
 
         // Adaptive learning rate with warmup
-        const currentLR = this.getAdaptiveLearningRate(learningRate, globalStep, warmupSteps);
+        const currentLR = this.getAdaptiveLearningRate(
+          learningRate,
+          globalStep,
+          warmupSteps,
+        );
 
         // Forward pass
         const predictions = await this.forward(batch.inputs, true);
@@ -326,7 +365,11 @@ class TransformerModel extends NeuralModel {
         epoch: epoch + 1,
         trainLoss: avgTrainLoss,
         valLoss,
-        learningRate: this.getAdaptiveLearningRate(learningRate, globalStep, warmupSteps),
+        learningRate: this.getAdaptiveLearningRate(
+          learningRate,
+          globalStep,
+          warmupSteps,
+        ),
       });
     }
 
@@ -341,7 +384,8 @@ class TransformerModel extends NeuralModel {
     // Learning rate schedule with warmup (as in original Transformer paper)
     const arg1 = Math.sqrt(step);
     const arg2 = step * warmupSteps ** -1.5;
-    const lr = baseLR * Math.min(arg1, arg2) * Math.sqrt(this.config.dimensions);
+    const lr =
+      baseLR * Math.min(arg1, arg2) * Math.sqrt(this.config.dimensions);
     return lr;
   }
 
@@ -349,24 +393,31 @@ class TransformerModel extends NeuralModel {
   tokenEmbedding(tokenIndices) {
     // Simplified token embedding - in practice would use learned embeddings
     const embedded = new Float32Array(
-      tokenIndices.shape[0] * tokenIndices.shape[1] * this.config.dimensions
+      tokenIndices.shape[0] * tokenIndices.shape[1] * this.config.dimensions,
     );
 
     for (let b = 0; b < tokenIndices.shape[0]; b++) {
       for (let s = 0; s < tokenIndices.shape[1]; s++) {
         for (let d = 0; d < this.config.dimensions; d++) {
           const idx =
-            b * tokenIndices.shape[1] * this.config.dimensions + s * this.config.dimensions + d;
+            b * tokenIndices.shape[1] * this.config.dimensions +
+            s * this.config.dimensions +
+            d;
           // Simple embedding based on token index
           embedded[idx] =
-            (tokenIndices[b * tokenIndices.shape[1] + s] % this.config.vocabularySize) /
+            (tokenIndices[b * tokenIndices.shape[1] + s] %
+              this.config.vocabularySize) /
               this.config.vocabularySize +
             (Math.random() - 0.5) * 0.1;
         }
       }
     }
 
-    embedded.shape = [tokenIndices.shape[0], tokenIndices.shape[1], this.config.dimensions];
+    embedded.shape = [
+      tokenIndices.shape[0],
+      tokenIndices.shape[1],
+      this.config.dimensions,
+    ];
     return embedded;
   }
 
@@ -377,7 +428,9 @@ class TransformerModel extends NeuralModel {
       for (let s = 0; s < sequenceLength; s++) {
         for (let d = 0; d < this.config.dimensions; d++) {
           const embIdx =
-            b * sequenceLength * this.config.dimensions + s * this.config.dimensions + d;
+            b * sequenceLength * this.config.dimensions +
+            s * this.config.dimensions +
+            d;
           const posIdx = s * this.config.dimensions + d;
 
           result[embIdx] = embeddings[embIdx] + this.positionalEncoding[posIdx];
@@ -419,7 +472,9 @@ class TransformerModel extends NeuralModel {
 
   concatenateHeads(tensor, batchSize, sequenceLength) {
     // Reshape from [batch, heads, sequence, head_dimension] to [batch, sequence, dimensions]
-    const concatenated = new Float32Array(batchSize * sequenceLength * this.config.dimensions);
+    const concatenated = new Float32Array(
+      batchSize * sequenceLength * this.config.dimensions,
+    );
 
     for (let b = 0; b < batchSize; b++) {
       for (let s = 0; s < sequenceLength; s++) {
@@ -453,7 +508,7 @@ class TransformerModel extends NeuralModel {
     const stride = sequenceLength;
 
     for (let i = 0; i < scores.length; i += stride) {
-      let maxScore = -Infinity;
+      let maxScore = Number.NEGATIVE_INFINITY;
 
       // Find max for numerical stability
       for (let j = 0; j < stride; j++) {
@@ -478,7 +533,7 @@ class TransformerModel extends NeuralModel {
 
   applyAttentionWeights(weights, values, batchSize, sequenceLength) {
     const output = new Float32Array(
-      batchSize * this.config.heads * sequenceLength * this.headDimension
+      batchSize * this.config.heads * sequenceLength * this.headDimension,
     );
 
     for (let b = 0; b < batchSize; b++) {
@@ -548,7 +603,9 @@ class TransformerModel extends NeuralModel {
     count += this.config.layers * 2 * this.config.dimensions; // gamma, beta
 
     // Output projection
-    count += this.config.dimensions * this.config.vocabularySize + this.config.vocabularySize;
+    count +=
+      this.config.dimensions * this.config.vocabularySize +
+      this.config.vocabularySize;
 
     return count;
   }

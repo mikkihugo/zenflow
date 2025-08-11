@@ -284,8 +284,12 @@ export interface PerformanceMetrics {
 
 // Schema validation utilities (Google standard: explicit validation)
 export const SchemaValidators = {
-  isValidAgentId: (id: string): boolean => /^[a-z]+-[0-9a-z]+-[0-9a-z]+$/.test(id),
-  isValidTaskId: (id: string): boolean => /^task-[a-z]+-[0-9a-z]+-[0-9a-z]+$/.test(id),
-  isValidPriority: (priority: number): boolean => priority >= 0 && priority <= 100,
-  isValidWorkload: (workload: number): boolean => workload >= 0 && workload <= 100,
+  isValidAgentId: (id: string): boolean =>
+    /^[a-z]+-[0-9a-z]+-[0-9a-z]+$/.test(id),
+  isValidTaskId: (id: string): boolean =>
+    /^task-[a-z]+-[0-9a-z]+-[0-9a-z]+$/.test(id),
+  isValidPriority: (priority: number): boolean =>
+    priority >= 0 && priority <= 100,
+  isValidWorkload: (workload: number): boolean =>
+    workload >= 0 && workload <= 100,
 } as const;

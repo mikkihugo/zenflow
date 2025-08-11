@@ -40,13 +40,15 @@ export class CoordinationServiceFactory
    *
    * @param config
    */
-  async create(config: CoordinationServiceAdapterConfig): Promise<CoordinationServiceAdapter> {
+  async create(
+    config: CoordinationServiceAdapterConfig,
+  ): Promise<CoordinationServiceAdapter> {
     this.logger.info(`Creating coordination service adapter: ${config?.name}`);
 
     // Check if instance already exists
     if (this.instances.has(config?.name)) {
       this.logger.warn(
-        `Coordination service adapter ${config?.name} already exists, returning existing instance`
+        `Coordination service adapter ${config?.name} already exists, returning existing instance`,
       );
       return this.instances.get(config?.name)!;
     }
@@ -55,10 +57,15 @@ export class CoordinationServiceFactory
       const adapter = createCoordinationServiceAdapter(config);
       this.instances.set(config?.name, adapter);
 
-      this.logger.info(`Coordination service adapter created successfully: ${config?.name}`);
+      this.logger.info(
+        `Coordination service adapter created successfully: ${config?.name}`,
+      );
       return adapter;
     } catch (error) {
-      this.logger.error(`Failed to create coordination service adapter ${config?.name}:`, error);
+      this.logger.error(
+        `Failed to create coordination service adapter ${config?.name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -69,9 +76,11 @@ export class CoordinationServiceFactory
    * @param configs
    */
   async createMultiple(
-    configs: CoordinationServiceAdapterConfig[]
+    configs: CoordinationServiceAdapterConfig[],
   ): Promise<CoordinationServiceAdapter[]> {
-    this.logger.info(`Creating ${configs.length} coordination service adapters`);
+    this.logger.info(
+      `Creating ${configs.length} coordination service adapters`,
+    );
 
     const results: CoordinationServiceAdapter[] = [];
 
@@ -80,7 +89,10 @@ export class CoordinationServiceFactory
         const adapter = await this.create(config);
         results.push(adapter);
       } catch (error) {
-        this.logger.error(`Failed to create coordination service adapter ${config?.name}:`, error);
+        this.logger.error(
+          `Failed to create coordination service adapter ${config?.name}:`,
+          error,
+        );
         throw error;
       }
     }
@@ -130,7 +142,10 @@ export class CoordinationServiceFactory
       this.logger.info(`Coordination service adapter removed: ${name}`);
       return true;
     } catch (error) {
-      this.logger.error(`Failed to remove coordination service adapter ${name}:`, error);
+      this.logger.error(
+        `Failed to remove coordination service adapter ${name}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -139,7 +154,11 @@ export class CoordinationServiceFactory
    * Get supported service types.
    */
   getSupportedTypes(): string[] {
-    return [ServiceType.COORDINATION, ServiceType.DAA, ServiceType.SESSION_RECOVERY];
+    return [
+      ServiceType.COORDINATION,
+      ServiceType.DAA,
+      ServiceType.SESSION_RECOVERY,
+    ];
   }
 
   /**
@@ -160,9 +179,14 @@ export class CoordinationServiceFactory
     const startPromises = this.list().map(async (adapter) => {
       try {
         await adapter.start();
-        this.logger.debug(`Started coordination service adapter: ${adapter.name}`);
+        this.logger.debug(
+          `Started coordination service adapter: ${adapter.name}`,
+        );
       } catch (error) {
-        this.logger.error(`Failed to start coordination service adapter ${adapter.name}:`, error);
+        this.logger.error(
+          `Failed to start coordination service adapter ${adapter.name}:`,
+          error,
+        );
         throw error;
       }
     });
@@ -179,9 +203,14 @@ export class CoordinationServiceFactory
     const stopPromises = this.list().map(async (adapter) => {
       try {
         await adapter.stop();
-        this.logger.debug(`Stopped coordination service adapter: ${adapter.name}`);
+        this.logger.debug(
+          `Stopped coordination service adapter: ${adapter.name}`,
+        );
       } catch (error) {
-        this.logger.error(`Failed to stop coordination service adapter ${adapter.name}:`, error);
+        this.logger.error(
+          `Failed to stop coordination service adapter ${adapter.name}:`,
+          error,
+        );
       }
     });
 
@@ -192,7 +221,9 @@ export class CoordinationServiceFactory
    * Perform health check on all coordination service adapters.
    */
   async healthCheckAll(): Promise<Map<string, any>> {
-    this.logger.debug('Performing health check on all coordination service adapters');
+    this.logger.debug(
+      'Performing health check on all coordination service adapters',
+    );
 
     const results = new Map<string, any>();
     const adapters = this.list();
@@ -204,7 +235,7 @@ export class CoordinationServiceFactory
       } catch (error) {
         this.logger.error(
           `Health check failed for coordination service adapter ${adapter.name}:`,
-          error
+          error,
         );
         results?.set(adapter.name, {
           name: adapter.name,
@@ -227,7 +258,9 @@ export class CoordinationServiceFactory
    * Get metrics from all coordination service adapters.
    */
   async getMetricsAll(): Promise<Map<string, any>> {
-    this.logger.debug('Collecting metrics from all coordination service adapters');
+    this.logger.debug(
+      'Collecting metrics from all coordination service adapters',
+    );
 
     const results = new Map<string, any>();
     const adapters = this.list();
@@ -239,7 +272,7 @@ export class CoordinationServiceFactory
       } catch (error) {
         this.logger.error(
           `Failed to get metrics for coordination service adapter ${adapter.name}:`,
-          error
+          error,
         );
       }
     });
@@ -263,7 +296,7 @@ export class CoordinationServiceFactory
         } catch (error) {
           this.logger.error(
             `Failed to destroy coordination service adapter ${adapter.name}:`,
-            error
+            error,
           );
         }
       });
@@ -273,7 +306,10 @@ export class CoordinationServiceFactory
 
       this.logger.info('Coordination service factory shutdown completed');
     } catch (error) {
-      this.logger.error('Error during coordination service factory shutdown:', error);
+      this.logger.error(
+        'Error during coordination service factory shutdown:',
+        error,
+      );
       throw error;
     }
   }
@@ -304,7 +340,7 @@ export function createAgentCoordinationConfig(
     topology?: 'mesh' | 'hierarchical' | 'ring' | 'star';
     enableLearning?: boolean;
     autoSpawn?: boolean;
-  }
+  },
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
     type: ServiceType.COORDINATION,
@@ -354,7 +390,7 @@ export function createSessionCoordinationConfig(
     maxSessions?: number;
     checkpointInterval?: number;
     autoRecovery?: boolean;
-  }
+  },
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
     type: ServiceType.SESSION_RECOVERY,
@@ -399,7 +435,7 @@ export function createDAACoordinationConfig(
     enableMetaLearning?: boolean;
     enableCognitive?: boolean;
     analysisInterval?: number;
-  }
+  },
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
     type: ServiceType.DAA,
@@ -442,7 +478,7 @@ export function createHighPerformanceCoordinationConfig(
     maxConcurrency?: number;
     requestTimeout?: number;
     cacheSize?: number;
-  }
+  },
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
     type: ServiceType.COORDINATION,

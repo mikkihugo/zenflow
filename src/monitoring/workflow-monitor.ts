@@ -1,14 +1,14 @@
 /**
  * Advanced Workflow Monitoring and Observability System
- * 
+ *
  * Comprehensive monitoring solution for the multi-level workflow architecture
  * with real-time metrics, alerting, distributed tracing, and performance analytics.
  */
 
 import { EventEmitter } from 'events';
-import { createLogger } from '../core/logger.ts';
 import { createAdaptiveOptimizer } from '../config/memory-optimization.ts';
 import { getSystemInfo } from '../config/system-info.ts';
+import { createLogger } from '../core/logger.ts';
 
 const logger = createLogger('workflow-monitor');
 
@@ -117,7 +117,7 @@ export class WorkflowMonitor extends EventEmitter {
 
   constructor(config: Partial<MonitoringConfig> = {}) {
     super();
-    
+
     this.config = {
       enabled: true,
       metricsInterval: 10000, // 10 seconds
@@ -125,25 +125,25 @@ export class WorkflowMonitor extends EventEmitter {
         memoryUtilization: 80,
         cpuUtilization: 75,
         errorRate: 0.05,
-        responseTime: 1000
+        responseTime: 1000,
       },
       retention: {
         metrics: 30,
-        alerts: 7
+        alerts: 7,
       },
       exporters: {
         prometheus: false,
         grafana: false,
-        console: true
+        console: true,
       },
-      ...config
+      ...config,
     };
 
     this.memoryOptimizer = createAdaptiveOptimizer();
-    
+
     logger.info('📊 Workflow Monitor initialized with configuration:', {
       metricsInterval: this.config.metricsInterval,
-      alertThresholds: this.config.alertThresholds
+      alertThresholds: this.config.alertThresholds,
     });
   }
 
@@ -191,7 +191,7 @@ export class WorkflowMonitor extends EventEmitter {
     }
 
     logger.info('🛑 Stopping workflow monitoring...');
-    
+
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
       this.monitoringInterval = undefined;
@@ -207,34 +207,38 @@ export class WorkflowMonitor extends EventEmitter {
    */
   private async collectMetrics(): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       const systemInfo = getSystemInfo();
       const memoryStats = this.memoryOptimizer.getMemoryStats();
-      
+
       // Collect system metrics
       const systemMetrics = await this.collectSystemMetrics(systemInfo);
-      
+
       // Collect workflow metrics
       const workflowMetrics = await this.collectWorkflowMetrics(memoryStats);
-      
+
       // Collect Kanban Flow component metrics
       const kanbanMetrics = await this.collectKanbanMetrics();
-      
+
       // Check for alerts
-      const alerts = await this.checkAlerts(systemMetrics, workflowMetrics, kanbanMetrics);
+      const alerts = await this.checkAlerts(
+        systemMetrics,
+        workflowMetrics,
+        kanbanMetrics,
+      );
 
       const metrics: WorkflowMetrics = {
         timestamp: new Date(),
         system: systemMetrics,
         workflow: workflowMetrics,
         kanban: kanbanMetrics,
-        alerts
+        alerts,
       };
 
       // Store metrics
       this.metricsHistory.push(metrics);
-      
+
       // Cleanup old metrics
       this.cleanupOldMetrics();
 
@@ -248,7 +252,6 @@ export class WorkflowMonitor extends EventEmitter {
       if (collectionTime > 1000) {
         logger.warn(`⚠️ Metrics collection took ${collectionTime}ms (>1s)`);
       }
-
     } catch (error) {
       logger.error('❌ Failed to collect metrics:', error);
       throw error;
@@ -258,9 +261,11 @@ export class WorkflowMonitor extends EventEmitter {
   /**
    * Collect system-level metrics
    */
-  private async collectSystemMetrics(systemInfo: any): Promise<WorkflowMetrics['system']> {
+  private async collectSystemMetrics(
+    systemInfo: any,
+  ): Promise<WorkflowMetrics['system']> {
     const memoryStats = this.memoryOptimizer.getMemoryStats();
-    
+
     // Get current performance data
     let performanceData;
     try {
@@ -276,56 +281,69 @@ export class WorkflowMonitor extends EventEmitter {
         utilizationPercent: memoryStats.utilization * 100,
         portfolioAllocated: memoryStats.allocated.portfolio,
         programAllocated: memoryStats.allocated.program,
-        swarmAllocated: memoryStats.allocated.swarm
+        swarmAllocated: memoryStats.allocated.swarm,
       },
       cpu: {
-        utilizationPercent: performanceData?.cpuUtilization ? performanceData.cpuUtilization * 100 : 0,
+        utilizationPercent: performanceData?.cpuUtilization
+          ? performanceData.cpuUtilization * 100
+          : 0,
         coreCount: systemInfo.cpuCores,
-        loadAverage: [0.5, 0.3, 0.2] // Mock load average - would use os.loadavg() in real implementation
+        loadAverage: [0.5, 0.3, 0.2], // Mock load average - would use os.loadavg() in real implementation
       },
       performance: {
         throughput: performanceData?.throughput || 0,
         avgResponseTime: performanceData?.avgResponseTime || 0,
         errorRate: performanceData?.errorRate || 0,
-        uptime: process.uptime() * 1000
-      }
+        uptime: process.uptime() * 1000,
+      },
     };
   }
 
   /**
    * Collect workflow-level metrics
    */
-  private async collectWorkflowMetrics(memoryStats: any): Promise<WorkflowMetrics['workflow']> {
+  private async collectWorkflowMetrics(
+    memoryStats: any,
+  ): Promise<WorkflowMetrics['workflow']> {
     const systemInfo = getSystemInfo();
-    
+
     return {
       portfolio: {
         activeStreams: memoryStats.allocated.portfolio,
         maxStreams: systemInfo.recommendedConfig.maxPortfolioStreams,
-        utilizationPercent: (memoryStats.allocated.portfolio / systemInfo.recommendedConfig.maxPortfolioStreams) * 100,
+        utilizationPercent:
+          (memoryStats.allocated.portfolio /
+            systemInfo.recommendedConfig.maxPortfolioStreams) *
+          100,
         completedTasks: 150, // Mock data - would track actual completions
         failedTasks: 5,
         avgCompletionTime: 3600000, // 1 hour average
-        bottlenecks: []
+        bottlenecks: [],
       },
       program: {
         activeStreams: memoryStats.allocated.program,
         maxStreams: systemInfo.recommendedConfig.maxProgramStreams,
-        utilizationPercent: (memoryStats.allocated.program / systemInfo.recommendedConfig.maxProgramStreams) * 100,
+        utilizationPercent:
+          (memoryStats.allocated.program /
+            systemInfo.recommendedConfig.maxProgramStreams) *
+          100,
         completedTasks: 450,
         failedTasks: 12,
         avgCompletionTime: 1800000, // 30 minutes average
-        bottlenecks: []
+        bottlenecks: [],
       },
       swarm: {
         activeStreams: memoryStats.allocated.swarm,
         maxStreams: systemInfo.recommendedConfig.maxSwarmStreams,
-        utilizationPercent: (memoryStats.allocated.swarm / systemInfo.recommendedConfig.maxSwarmStreams) * 100,
+        utilizationPercent:
+          (memoryStats.allocated.swarm /
+            systemInfo.recommendedConfig.maxSwarmStreams) *
+          100,
         completedTasks: 1200,
         failedTasks: 25,
         avgCompletionTime: 600000, // 10 minutes average
-        bottlenecks: ['memory_allocation', 'network_io']
-      }
+        bottlenecks: ['memory_allocation', 'network_io'],
+      },
     };
   }
 
@@ -334,7 +352,7 @@ export class WorkflowMonitor extends EventEmitter {
    */
   private async collectKanbanMetrics(): Promise<WorkflowMetrics['kanban']> {
     const now = new Date();
-    
+
     return {
       flowManager: {
         status: 'active',
@@ -344,7 +362,7 @@ export class WorkflowMonitor extends EventEmitter {
         cpuUsage: 23.1,
         operations: 1547,
         errors: 2,
-        lastUpdate: now
+        lastUpdate: now,
       },
       bottleneckDetector: {
         status: 'active',
@@ -354,7 +372,7 @@ export class WorkflowMonitor extends EventEmitter {
         cpuUsage: 18.5,
         operations: 2103,
         errors: 0,
-        lastUpdate: now
+        lastUpdate: now,
       },
       metricsTracker: {
         status: 'active',
@@ -364,7 +382,7 @@ export class WorkflowMonitor extends EventEmitter {
         cpuUsage: 35.2,
         operations: 4521,
         errors: 1,
-        lastUpdate: now
+        lastUpdate: now,
       },
       resourceManager: {
         status: 'active',
@@ -374,7 +392,7 @@ export class WorkflowMonitor extends EventEmitter {
         cpuUsage: 28.7,
         operations: 987,
         errors: 3,
-        lastUpdate: now
+        lastUpdate: now,
       },
       integrationManager: {
         status: 'active',
@@ -384,8 +402,8 @@ export class WorkflowMonitor extends EventEmitter {
         cpuUsage: 21.3,
         operations: 756,
         errors: 0,
-        lastUpdate: now
-      }
+        lastUpdate: now,
+      },
     };
   }
 
@@ -395,25 +413,33 @@ export class WorkflowMonitor extends EventEmitter {
   private async checkAlerts(
     systemMetrics: WorkflowMetrics['system'],
     workflowMetrics: WorkflowMetrics['workflow'],
-    kanbanMetrics: WorkflowMetrics['kanban']
+    kanbanMetrics: WorkflowMetrics['kanban'],
   ): Promise<Alert[]> {
     const alerts: Alert[] = [];
     const now = new Date();
 
     // Memory utilization alerts
-    if (systemMetrics.memory.utilizationPercent > this.config.alertThresholds.memoryUtilization) {
+    if (
+      systemMetrics.memory.utilizationPercent >
+      this.config.alertThresholds.memoryUtilization
+    ) {
       const alertId = 'memory-utilization-high';
       if (!this.activeAlerts.has(alertId)) {
         const alert: Alert = {
           id: alertId,
-          severity: systemMetrics.memory.utilizationPercent > 90 ? 'critical' : 'warning',
+          severity:
+            systemMetrics.memory.utilizationPercent > 90
+              ? 'critical'
+              : 'warning',
           component: 'system-memory',
           message: `Memory utilization is ${systemMetrics.memory.utilizationPercent.toFixed(1)}% (threshold: ${this.config.alertThresholds.memoryUtilization}%)`,
           timestamp: now,
           resolved: false,
-          metadata: { utilizationPercent: systemMetrics.memory.utilizationPercent }
+          metadata: {
+            utilizationPercent: systemMetrics.memory.utilizationPercent,
+          },
         };
-        
+
         this.activeAlerts.set(alertId, alert);
         alerts.push(alert);
         this.emit('alert', alert);
@@ -432,19 +458,25 @@ export class WorkflowMonitor extends EventEmitter {
     }
 
     // CPU utilization alerts
-    if (systemMetrics.cpu.utilizationPercent > this.config.alertThresholds.cpuUtilization) {
+    if (
+      systemMetrics.cpu.utilizationPercent >
+      this.config.alertThresholds.cpuUtilization
+    ) {
       const alertId = 'cpu-utilization-high';
       if (!this.activeAlerts.has(alertId)) {
         const alert: Alert = {
           id: alertId,
-          severity: systemMetrics.cpu.utilizationPercent > 85 ? 'error' : 'warning',
+          severity:
+            systemMetrics.cpu.utilizationPercent > 85 ? 'error' : 'warning',
           component: 'system-cpu',
           message: `CPU utilization is ${systemMetrics.cpu.utilizationPercent.toFixed(1)}% (threshold: ${this.config.alertThresholds.cpuUtilization}%)`,
           timestamp: now,
           resolved: false,
-          metadata: { utilizationPercent: systemMetrics.cpu.utilizationPercent }
+          metadata: {
+            utilizationPercent: systemMetrics.cpu.utilizationPercent,
+          },
         };
-        
+
         this.activeAlerts.set(alertId, alert);
         alerts.push(alert);
         this.emit('alert', alert);
@@ -464,9 +496,9 @@ export class WorkflowMonitor extends EventEmitter {
             message: `Component ${componentName} health is ${metrics.health}% (threshold: 80%)`,
             timestamp: now,
             resolved: false,
-            metadata: { health: metrics.health, component: componentName }
+            metadata: { health: metrics.health, component: componentName },
           };
-          
+
           this.activeAlerts.set(alertId, alert);
           alerts.push(alert);
           this.emit('alert', alert);
@@ -476,19 +508,23 @@ export class WorkflowMonitor extends EventEmitter {
     });
 
     // Error rate alerts
-    if (systemMetrics.performance.errorRate > this.config.alertThresholds.errorRate) {
+    if (
+      systemMetrics.performance.errorRate >
+      this.config.alertThresholds.errorRate
+    ) {
       const alertId = 'error-rate-high';
       if (!this.activeAlerts.has(alertId)) {
         const alert: Alert = {
           id: alertId,
-          severity: systemMetrics.performance.errorRate > 0.1 ? 'error' : 'warning',
+          severity:
+            systemMetrics.performance.errorRate > 0.1 ? 'error' : 'warning',
           component: 'system-performance',
           message: `Error rate is ${(systemMetrics.performance.errorRate * 100).toFixed(2)}% (threshold: ${(this.config.alertThresholds.errorRate * 100).toFixed(2)}%)`,
           timestamp: now,
           resolved: false,
-          metadata: { errorRate: systemMetrics.performance.errorRate }
+          metadata: { errorRate: systemMetrics.performance.errorRate },
         };
-        
+
         this.activeAlerts.set(alertId, alert);
         alerts.push(alert);
         this.emit('alert', alert);
@@ -506,11 +542,11 @@ export class WorkflowMonitor extends EventEmitter {
     if (this.config.exporters.console) {
       await this.exportToConsole(metrics);
     }
-    
+
     if (this.config.exporters.prometheus) {
       await this.exportToPrometheus(metrics);
     }
-    
+
     if (this.config.exporters.grafana) {
       await this.exportToGrafana(metrics);
     }
@@ -528,10 +564,10 @@ export class WorkflowMonitor extends EventEmitter {
       workflowStreams: {
         portfolio: `${metrics.workflow.portfolio.activeStreams}/${metrics.workflow.portfolio.maxStreams}`,
         program: `${metrics.workflow.program.activeStreams}/${metrics.workflow.program.maxStreams}`,
-        swarm: `${metrics.workflow.swarm.activeStreams}/${metrics.workflow.swarm.maxStreams}`
-      }
+        swarm: `${metrics.workflow.swarm.activeStreams}/${metrics.workflow.swarm.maxStreams}`,
+      },
     };
-    
+
     logger.debug('📊 Metrics:', summary);
   }
 
@@ -559,12 +595,12 @@ export class WorkflowMonitor extends EventEmitter {
   private cleanupOldMetrics(): void {
     const retentionMs = this.config.retention.metrics * 24 * 60 * 60 * 1000;
     const cutoffTime = new Date(Date.now() - retentionMs);
-    
+
     const initialCount = this.metricsHistory.length;
     this.metricsHistory = this.metricsHistory.filter(
-      metrics => metrics.timestamp > cutoffTime
+      (metrics) => metrics.timestamp > cutoffTime,
     );
-    
+
     const cleanedCount = initialCount - this.metricsHistory.length;
     if (cleanedCount > 0) {
       logger.debug(`🧹 Cleaned up ${cleanedCount} old metrics records`);
@@ -575,7 +611,9 @@ export class WorkflowMonitor extends EventEmitter {
    * Get current metrics
    */
   public getCurrentMetrics(): WorkflowMetrics | null {
-    return this.metricsHistory.length > 0 ? this.metricsHistory[this.metricsHistory.length - 1] : null;
+    return this.metricsHistory.length > 0
+      ? this.metricsHistory[this.metricsHistory.length - 1]
+      : null;
   }
 
   /**
@@ -606,7 +644,7 @@ export class WorkflowMonitor extends EventEmitter {
   public updateConfiguration(updates: Partial<MonitoringConfig>): void {
     this.config = { ...this.config, ...updates };
     logger.info('🔧 Updated monitoring configuration:', updates);
-    
+
     // Restart monitoring if interval changed
     if (updates.metricsInterval && this.isRunning) {
       this.stop().then(() => this.start());
@@ -618,49 +656,74 @@ export class WorkflowMonitor extends EventEmitter {
    */
   public generatePerformanceReport(hours: number = 24): any {
     const cutoffTime = new Date(Date.now() - hours * 60 * 60 * 1000);
-    const relevantMetrics = this.metricsHistory.filter(m => m.timestamp > cutoffTime);
-    
+    const relevantMetrics = this.metricsHistory.filter(
+      (m) => m.timestamp > cutoffTime,
+    );
+
     if (relevantMetrics.length === 0) {
       return { error: 'No metrics available for the specified time range' };
     }
 
-    const memoryUtilizations = relevantMetrics.map(m => m.system.memory.utilizationPercent);
-    const cpuUtilizations = relevantMetrics.map(m => m.system.cpu.utilizationPercent);
-    const throughputs = relevantMetrics.map(m => m.system.performance.throughput);
-    const errorRates = relevantMetrics.map(m => m.system.performance.errorRate);
+    const memoryUtilizations = relevantMetrics.map(
+      (m) => m.system.memory.utilizationPercent,
+    );
+    const cpuUtilizations = relevantMetrics.map(
+      (m) => m.system.cpu.utilizationPercent,
+    );
+    const throughputs = relevantMetrics.map(
+      (m) => m.system.performance.throughput,
+    );
+    const errorRates = relevantMetrics.map(
+      (m) => m.system.performance.errorRate,
+    );
 
     return {
       timeRange: {
         hours,
         from: cutoffTime.toISOString(),
         to: new Date().toISOString(),
-        sampleCount: relevantMetrics.length
+        sampleCount: relevantMetrics.length,
       },
       memory: {
-        average: (memoryUtilizations.reduce((sum, val) => sum + val, 0) / memoryUtilizations.length).toFixed(2) + '%',
+        average:
+          (
+            memoryUtilizations.reduce((sum, val) => sum + val, 0) /
+            memoryUtilizations.length
+          ).toFixed(2) + '%',
         peak: Math.max(...memoryUtilizations).toFixed(2) + '%',
-        minimum: Math.min(...memoryUtilizations).toFixed(2) + '%'
+        minimum: Math.min(...memoryUtilizations).toFixed(2) + '%',
       },
       cpu: {
-        average: (cpuUtilizations.reduce((sum, val) => sum + val, 0) / cpuUtilizations.length).toFixed(2) + '%',
+        average:
+          (
+            cpuUtilizations.reduce((sum, val) => sum + val, 0) /
+            cpuUtilizations.length
+          ).toFixed(2) + '%',
         peak: Math.max(...cpuUtilizations).toFixed(2) + '%',
-        minimum: Math.min(...cpuUtilizations).toFixed(2) + '%'
+        minimum: Math.min(...cpuUtilizations).toFixed(2) + '%',
       },
       throughput: {
-        average: (throughputs.reduce((sum, val) => sum + val, 0) / throughputs.length).toFixed(2),
+        average: (
+          throughputs.reduce((sum, val) => sum + val, 0) / throughputs.length
+        ).toFixed(2),
         peak: Math.max(...throughputs).toFixed(2),
-        minimum: Math.min(...throughputs).toFixed(2)
+        minimum: Math.min(...throughputs).toFixed(2),
       },
       reliability: {
-        averageErrorRate: ((errorRates.reduce((sum, val) => sum + val, 0) / errorRates.length) * 100).toFixed(3) + '%',
+        averageErrorRate:
+          (
+            (errorRates.reduce((sum, val) => sum + val, 0) /
+              errorRates.length) *
+            100
+          ).toFixed(3) + '%',
         peakErrorRate: (Math.max(...errorRates) * 100).toFixed(3) + '%',
-        uptime: '99.99%' // Mock uptime calculation
+        uptime: '99.99%', // Mock uptime calculation
       },
       alerts: {
         total: relevantMetrics.reduce((sum, m) => sum + m.alerts.length, 0),
         bySeverity: this.groupAlertsBySeverity(relevantMetrics),
-        mostFrequent: this.getMostFrequentAlerts(relevantMetrics)
-      }
+        mostFrequent: this.getMostFrequentAlerts(relevantMetrics),
+      },
     };
   }
 
@@ -669,13 +732,13 @@ export class WorkflowMonitor extends EventEmitter {
    */
   private groupAlertsBySeverity(metrics: WorkflowMetrics[]): any {
     const groupedAlerts = { info: 0, warning: 0, error: 0, critical: 0 };
-    
-    metrics.forEach(m => {
-      m.alerts.forEach(alert => {
+
+    metrics.forEach((m) => {
+      m.alerts.forEach((alert) => {
         groupedAlerts[alert.severity]++;
       });
     });
-    
+
     return groupedAlerts;
   }
 
@@ -684,14 +747,14 @@ export class WorkflowMonitor extends EventEmitter {
    */
   private getMostFrequentAlerts(metrics: WorkflowMetrics[]): any[] {
     const alertCounts = new Map<string, number>();
-    
-    metrics.forEach(m => {
-      m.alerts.forEach(alert => {
+
+    metrics.forEach((m) => {
+      m.alerts.forEach((alert) => {
         const count = alertCounts.get(alert.component) || 0;
         alertCounts.set(alert.component, count + 1);
       });
     });
-    
+
     return Array.from(alertCounts.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
@@ -702,7 +765,9 @@ export class WorkflowMonitor extends EventEmitter {
 /**
  * Create and configure workflow monitor
  */
-export function createWorkflowMonitor(config?: Partial<MonitoringConfig>): WorkflowMonitor {
+export function createWorkflowMonitor(
+  config?: Partial<MonitoringConfig>,
+): WorkflowMonitor {
   return new WorkflowMonitor(config);
 }
 
@@ -716,17 +781,17 @@ export const PRODUCTION_MONITORING_CONFIG: MonitoringConfig = {
     memoryUtilization: 85,
     cpuUtilization: 80,
     errorRate: 0.01,
-    responseTime: 2000
+    responseTime: 2000,
   },
   retention: {
     metrics: 30,
-    alerts: 14
+    alerts: 14,
   },
   exporters: {
     prometheus: true,
     grafana: true,
-    console: false
-  }
+    console: false,
+  },
 };
 
 /**
@@ -739,15 +804,15 @@ export const DEVELOPMENT_MONITORING_CONFIG: MonitoringConfig = {
     memoryUtilization: 90,
     cpuUtilization: 85,
     errorRate: 0.05,
-    responseTime: 5000
+    responseTime: 5000,
   },
   retention: {
     metrics: 1,
-    alerts: 1
+    alerts: 1,
   },
   exporters: {
     prometheus: false,
     grafana: false,
-    console: true
-  }
+    console: true,
+  },
 };

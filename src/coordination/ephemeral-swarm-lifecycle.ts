@@ -101,7 +101,7 @@ export class EphemeralSwarmManager extends EventEmitter {
 
   constructor(
     private eventBus: IEventBus,
-    private logger?: ILogger
+    private logger?: ILogger,
   ) {
     super();
     this.startCleanupProcess();
@@ -123,15 +123,14 @@ export class EphemeralSwarmManager extends EventEmitter {
     // Check if we can create swarm immediately
     if (this.activeSwarms.size < this.maxConcurrentSwarms) {
       return await this.createSwarm(request);
-    } else {
-      // Queue the request
-      this.swarmQueue.push(request);
-      this.logger?.info('Swarm queued - max concurrent limit reached', {
-        swarmId: request.id,
-        queueLength: this.swarmQueue.length,
-      });
-      return request.id;
     }
+    // Queue the request
+    this.swarmQueue.push(request);
+    this.logger?.info('Swarm queued - max concurrent limit reached', {
+      swarmId: request.id,
+      queueLength: this.swarmQueue.length,
+    });
+    return request.id;
   }
 
   /**
@@ -194,7 +193,10 @@ export class EphemeralSwarmManager extends EventEmitter {
    * @param swarm
    * @param request
    */
-  private async spawnAgents(swarm: SwarmInstance, request: SwarmRequest): Promise<void> {
+  private async spawnAgents(
+    swarm: SwarmInstance,
+    request: SwarmRequest,
+  ): Promise<void> {
     this.logger?.debug('Spawning agents for swarm', {
       swarmId: swarm.id,
       agentTypes: request.requiredAgents,
@@ -239,7 +241,10 @@ export class EphemeralSwarmManager extends EventEmitter {
    * @param agent
    * @param swarmId
    */
-  private async spawnSingleAgent(agent: EphemeralAgent, swarmId: string): Promise<void> {
+  private async spawnSingleAgent(
+    agent: EphemeralAgent,
+    swarmId: string,
+  ): Promise<void> {
     // This integrates with our enhanced Task tool
     (this.eventBus as any).emit('agent:spawn:request', {
       swarmId,
@@ -312,7 +317,10 @@ export class EphemeralSwarmManager extends EventEmitter {
    * @param swarm
    * @param step
    */
-  private async executeTaskStep(swarm: SwarmInstance, step: TaskStep): Promise<void> {
+  private async executeTaskStep(
+    swarm: SwarmInstance,
+    step: TaskStep,
+  ): Promise<void> {
     step.status = 'running';
     step.startTime = new Date();
 
@@ -361,16 +369,19 @@ export class EphemeralSwarmManager extends EventEmitter {
    * @param swarm
    * @param _step
    */
-  private selectAgentForStep(swarm: SwarmInstance, _step: TaskStep): EphemeralAgent | null {
+  private selectAgentForStep(
+    swarm: SwarmInstance,
+    _step: TaskStep,
+  ): EphemeralAgent | null {
     const availableAgents = swarm.agents.filter(
-      (a) => a.status === 'active' || a.status === 'idle'
+      (a) => a.status === 'active' || a.status === 'idle',
     );
 
     if (availableAgents.length === 0) return null;
 
     // Simple selection: least busy agent
     return availableAgents.reduce((best, current) =>
-      current?.taskCount < best.taskCount ? current : best
+      current?.taskCount < best.taskCount ? current : best,
     );
   }
 
@@ -536,7 +547,7 @@ export class EphemeralSwarmManager extends EventEmitter {
 
       // Check if all tasks are done
       const allStepsCompleted = swarm.task.steps.every(
-        (step) => step.status === 'completed' || step.status === 'failed'
+        (step) => step.status === 'completed' || step.status === 'failed',
       );
 
       if (allStepsCompleted) {
@@ -577,7 +588,7 @@ export class EphemeralSwarmManager extends EventEmitter {
       queuedRequests: this.swarmQueue.length,
       totalAgents: Array.from(this.activeSwarms.values()).reduce(
         (sum, swarm) => sum + swarm.agents.length,
-        0
+        0,
       ),
       swarms: Array.from(this.activeSwarms.entries()).map(([id, swarm]) => ({
         id,
@@ -617,8 +628,8 @@ export class EphemeralSwarmManager extends EventEmitter {
     }
 
     // Terminate all active swarms
-    const terminationPromises = Array.from(this.activeSwarms.keys()).map((swarmId) =>
-      this.terminateSwarm(swarmId, 'manager_shutdown')
+    const terminationPromises = Array.from(this.activeSwarms.keys()).map(
+      (swarmId) => this.terminateSwarm(swarmId, 'manager_shutdown'),
     );
 
     await Promise.all(terminationPromises);

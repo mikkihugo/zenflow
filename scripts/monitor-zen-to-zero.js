@@ -113,8 +113,7 @@ class ZenMonitor {
         this.stuckCount++;
         if (this.stuckCount >= 3) {
           // console.log(
-          ('⚠️ Stuck at same error count for 3 iterations - may need manual intervention');
-          )
+          
           // console.log(`💡 Try running: npm run fix:zen:eslint or npm run fix:zen:warnings`);
           break;
         }
@@ -170,7 +169,6 @@ class ZenMonitor {
     } else {
       // console.log(
       `💡 ${finalErrors} errors remaining - may need manual review or different fixing strategy`;
-      )
     }
   }
 }

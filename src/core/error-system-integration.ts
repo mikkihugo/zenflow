@@ -123,7 +123,7 @@ export class IntegratedErrorHandler {
       throw new SystemError(
         `Error system initialization failed: ${error instanceof Error ? error.message : String(error)}`,
         'ERROR_SYSTEM_INIT_FAILED',
-        'critical'
+        'critical',
       );
     }
   }
@@ -154,7 +154,8 @@ export class IntegratedErrorHandler {
         logger.error(`FACT System Alert: ${message}`);
 
         // Could implement FACT-specific recovery actions
-        const factBoundary = systemResilienceOrchestrator.getErrorBoundary('fact');
+        const factBoundary =
+          systemResilienceOrchestrator.getErrorBoundary('fact');
         if (factBoundary) {
           await factBoundary.attemptRecovery();
         }
@@ -163,11 +164,16 @@ export class IntegratedErrorHandler {
 
     // Swarm Coordination Alert
     errorMonitor.addAlertHandler(async (_alert, message) => {
-      if (message.includes('Swarm') || message.includes('swarm_') || message.includes('agent_')) {
+      if (
+        message.includes('Swarm') ||
+        message.includes('swarm_') ||
+        message.includes('agent_')
+      ) {
         logger.error(`Swarm System Alert: ${message}`);
 
         // Could implement swarm-specific recovery actions
-        const swarmBoundary = systemResilienceOrchestrator.getErrorBoundary('swarm');
+        const swarmBoundary =
+          systemResilienceOrchestrator.getErrorBoundary('swarm');
         if (swarmBoundary) {
           await swarmBoundary.attemptRecovery();
         }
@@ -234,7 +240,8 @@ export class IntegratedErrorHandler {
           ],
         };
       },
-      condition: (error) => error instanceof FACTError || error instanceof NetworkError,
+      condition: (error) =>
+        error instanceof FACTError || error instanceof NetworkError,
       priority: 1,
     });
     // RAG system fallbacks
@@ -303,25 +310,36 @@ export class IntegratedErrorHandler {
       let shouldShutdown = false;
       let shutdownReason = '';
       // Check critical error rate
-      if (systemHealth.errorRate > this.config.emergencyThresholds.criticalErrorRate) {
+      if (
+        systemHealth.errorRate >
+        this.config.emergencyThresholds.criticalErrorRate
+      ) {
         shouldShutdown = true;
         shutdownReason = `Critical error rate: ${systemHealth.errorRate}/min > ${this.config.emergencyThresholds.criticalErrorRate}/min`;
       }
       // Check memory usage
-      const memoryUsagePercent = (resilienceStatus.resources.memoryUsageMB / 512) * 100; // Assuming 512MB limit
-      if (memoryUsagePercent > this.config.emergencyThresholds.memoryUsagePercent) {
+      const memoryUsagePercent =
+        (resilienceStatus.resources.memoryUsageMB / 512) * 100; // Assuming 512MB limit
+      if (
+        memoryUsagePercent > this.config.emergencyThresholds.memoryUsagePercent
+      ) {
         shouldShutdown = true;
         shutdownReason = `Memory usage critical: ${memoryUsagePercent.toFixed(1)}% > ${this.config.emergencyThresholds.memoryUsagePercent}%`;
       }
       // Check system health score
-      if (systemHealth.userSatisfactionScore < this.config.emergencyThresholds.systemHealthScore) {
+      if (
+        systemHealth.userSatisfactionScore <
+        this.config.emergencyThresholds.systemHealthScore
+      ) {
         shouldShutdown = true;
         shutdownReason = `System health critical: ${systemHealth.userSatisfactionScore} < ${this.config.emergencyThresholds.systemHealthScore}`;
       }
       if (shouldShutdown) {
         this.emergencyMode = true;
         logger.error(`Emergency shutdown triggered: ${shutdownReason}`);
-        await systemResilienceOrchestrator.initiateEmergencyShutdown(shutdownReason);
+        await systemResilienceOrchestrator.initiateEmergencyShutdown(
+          shutdownReason,
+        );
       }
     } catch (error) {
       logger.error('Failed to check emergency thresholds:', error);
@@ -334,14 +352,16 @@ export class IntegratedErrorHandler {
       useRecovery?: boolean;
       useFallback?: boolean;
       reportToMonitoring?: boolean;
-    } = {}
+    } = {},
   ): Promise<{
     recovered: boolean;
     result?: any;
     finalError?: BaseClaudeZenError;
   }> {
     if (!this.initialized) {
-      logger.warn('Error handling system not initialized, using basic handling');
+      logger.warn(
+        'Error handling system not initialized, using basic handling',
+      );
       throw error;
     }
     const defaults = {
@@ -369,7 +389,7 @@ export class IntegratedErrorHandler {
         finalError: new SystemError(
           'System in emergency mode - functionality limited',
           'EMERGENCY_MODE_ACTIVE',
-          'critical'
+          'critical',
         ),
       };
     }
@@ -390,7 +410,7 @@ export class IntegratedErrorHandler {
             circuitBreakerThreshold: this.config.circuitBreakerThreshold,
             fallbackEnabled: finalOptions?.useFallback,
             gracefulDegradation: true,
-          }
+          },
         );
         return {
           recovered: true,
@@ -410,7 +430,10 @@ export class IntegratedErrorHandler {
       finalError: claudeZenError,
     };
   }
-  private classifyError(error: Error, context: Partial<ErrorContext>): BaseClaudeZenError {
+  private classifyError(
+    error: Error,
+    context: Partial<ErrorContext>,
+  ): BaseClaudeZenError {
     // Use MCP error classifier if this is from an MCP operation
     if (context.component === 'MCP' || context.operation?.includes('mcp')) {
       return mcpErrorHandler.classifyError(error, {
@@ -428,23 +451,42 @@ export class IntegratedErrorHandler {
     if (error.message.includes('timeout')) {
       return new SystemError(error.message, 'TIMEOUT', 'high', context);
     }
-    if (error.message.includes('network') || error.message.includes('ECONNREFUSED')) {
-      return new NetworkError(error.message, undefined, context.operation, 'medium');
+    if (
+      error.message.includes('network') ||
+      error.message.includes('ECONNREFUSED')
+    ) {
+      return new NetworkError(
+        error.message,
+        undefined,
+        context.operation,
+        'medium',
+      );
     }
-    if (context.component === 'FACT' || context.operation?.startsWith('fact_')) {
+    if (
+      context.component === 'FACT' ||
+      context.operation?.startsWith('fact_')
+    ) {
       return new FACTError(error.message, 'medium', context);
     }
     if (context.component === 'RAG' || context.operation?.includes('rag_')) {
       return new RAGError(error.message, 'medium', context);
     }
-    if (context.component === 'Swarm' || context.operation?.includes('swarm_')) {
+    if (
+      context.component === 'Swarm' ||
+      context.operation?.includes('swarm_')
+    ) {
       return new SwarmError(error.message, undefined, 'medium', context);
     }
     if (context.component === 'WASM' || error.message.includes('wasm')) {
       return new WASMError(error.message, 'high', context);
     }
     // Default system error
-    return new SystemError(error.message, 'UNCLASSIFIED_ERROR', 'medium', context);
+    return new SystemError(
+      error.message,
+      'UNCLASSIFIED_ERROR',
+      'medium',
+      context,
+    );
   }
   public async executeWithErrorHandling<T>(
     operation: () => Promise<T>,
@@ -459,7 +501,7 @@ export class IntegratedErrorHandler {
         maxRetries?: number;
         fallbackEnabled?: boolean;
       };
-    } = {}
+    } = {},
   ): Promise<T> {
     if (!this.initialized) {
       return await operation();
@@ -474,15 +516,15 @@ export class IntegratedErrorHandler {
           resilienceOptions.errorBoundary = options?.resilience?.errorBoundary;
         if (options?.resilience?.timeoutMs)
           resilienceOptions.timeoutMs = options?.resilience?.timeoutMs;
-        if (context.operation) resilienceOptions.operationName = context.operation;
+        if (context.operation)
+          resilienceOptions.operationName = context.operation;
 
         return await systemResilienceOrchestrator.executeWithResilience(
           operation,
-          resilienceOptions
+          resilienceOptions,
         );
-      } else {
-        return await operation();
       }
+      return await operation();
     } catch (error) {
       const handleResult = await this.handleError(error as Error, context, {
         useRecovery: true,
@@ -491,9 +533,8 @@ export class IntegratedErrorHandler {
       });
       if (handleResult?.recovered && handleResult?.result !== undefined) {
         return handleResult?.result;
-      } else {
-        throw handleResult?.finalError || error;
       }
+      throw handleResult?.finalError || error;
     }
   }
   public getSystemStatus(): {
@@ -537,7 +578,9 @@ export class IntegratedErrorHandler {
       errorRecoveryOrchestrator.resetSystem();
       // If emergency shutdown is needed
       if (this.emergencyMode) {
-        await systemResilienceOrchestrator.initiateEmergencyShutdown('System shutdown requested');
+        await systemResilienceOrchestrator.initiateEmergencyShutdown(
+          'System shutdown requested',
+        );
       }
       this.initialized = false;
       this.emergencyMode = false;
@@ -553,7 +596,9 @@ export class IntegratedErrorHandler {
 // ===============================
 // Global instance
 let globalErrorHandler: IntegratedErrorHandler | null = null;
-export function initializeErrorHandling(config?: Partial<ErrorHandlingConfig>): Promise<void> {
+export function initializeErrorHandling(
+  config?: Partial<ErrorHandlingConfig>,
+): Promise<void> {
   if (globalErrorHandler) {
     logger.warn('Global error handler already initialized');
     return Promise.resolve();
@@ -566,14 +611,14 @@ export function getErrorHandler(): IntegratedErrorHandler {
     throw new SystemError(
       'Error handling system not initialized. Call initializeErrorHandling() first.',
       'ERROR_HANDLER_NOT_INITIALIZED',
-      'critical'
+      'critical',
     );
   }
   return globalErrorHandler;
 }
 export async function handleErrorGlobally(
   error: Error,
-  context?: Partial<ErrorContext>
+  context?: Partial<ErrorContext>,
 ): Promise<{
   recovered: boolean;
   result?: any;
@@ -584,9 +629,13 @@ export async function handleErrorGlobally(
 export async function executeWithErrorHandling<T>(
   operation: () => Promise<T>,
   context: Partial<ErrorContext>,
-  options?: any
+  options?: any,
 ): Promise<T> {
-  return getErrorHandler().executeWithErrorHandling(operation, context, options);
+  return getErrorHandler().executeWithErrorHandling(
+    operation,
+    context,
+    options,
+  );
 }
 export function getSystemStatus(): any {
   if (!globalErrorHandler) {

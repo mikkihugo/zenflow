@@ -10,6 +10,7 @@
 
 import { getLogger } from '../../../config/logging-config.ts';
 import { CommandExecutionEngine } from '../command-execution-engine.ts';
+import { getVersion } from './version-utils.js';
 
 const logger = getLogger('mock-command-handler');
 
@@ -40,16 +41,23 @@ export class MockCommandHandler {
    * @param args
    * @param flags
    */
-  static async executeInit(args: string[], flags: Record<string, any>): Promise<CommandResult> {
+  static async executeInit(
+    args: string[],
+    flags: Record<string, any>,
+  ): Promise<CommandResult> {
     try {
       const projectName = args[0] || 'claude-zen-project';
       const template = flags.template || 'basic';
 
-      logger.debug(`Initializing project: ${projectName} with template: ${template}`);
+      logger.debug(
+        `Initializing project: ${projectName} with template: ${template}`,
+      );
 
       // For now, provide a mock implementation since CLI structure has changed
       // TODO: Integrate with actual CLI commands when available
-      logger.info(`Mock: Initializing project ${projectName} with template ${template}`);
+      logger.info(
+        `Mock: Initializing project ${projectName} with template ${template}`,
+      );
 
       const result = {
         projectName,
@@ -78,7 +86,10 @@ export class MockCommandHandler {
    * @param _args
    * @param flags
    */
-  static async executeStatus(_args: string[], flags: Record<string, any>): Promise<CommandResult> {
+  static async executeStatus(
+    _args: string[],
+    flags: Record<string, any>,
+  ): Promise<CommandResult> {
     try {
       logger.debug('Getting system status');
 
@@ -89,7 +100,7 @@ export class MockCommandHandler {
       };
 
       const status = {
-        version: '2.0.0-alpha.73',
+        version: getVersion(),
         status: 'healthy',
         uptime: process.uptime() * 1000,
         components: {
@@ -137,7 +148,10 @@ export class MockCommandHandler {
    * @param args
    * @param flags
    */
-  static async executeSwarm(args: string[], flags: Record<string, any>): Promise<CommandResult> {
+  static async executeSwarm(
+    args: string[],
+    flags: Record<string, any>,
+  ): Promise<CommandResult> {
     try {
       const action = args[0];
 
@@ -227,7 +241,10 @@ export class MockCommandHandler {
    * @param args
    * @param flags
    */
-  static async executeMCP(args: string[], flags: Record<string, any>): Promise<CommandResult> {
+  static async executeMCP(
+    args: string[],
+    flags: Record<string, any>,
+  ): Promise<CommandResult> {
     try {
       const action = args[0];
 
@@ -300,7 +317,7 @@ export class MockCommandHandler {
    */
   static async executeWorkspace(
     args: string[],
-    _flags: Record<string, any>
+    _flags: Record<string, any>,
   ): Promise<CommandResult> {
     try {
       const action = args[0];
@@ -380,7 +397,8 @@ export class MockCommandHandler {
       logger.error('Workspace command failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Workspace command failed',
+        error:
+          error instanceof Error ? error.message : 'Workspace command failed',
       };
     }
   }
@@ -395,15 +413,20 @@ export class MockCommandHandler {
   static async executeCommand(
     command: string,
     args: string[],
-    flags: Record<string, any>
+    flags: Record<string, any>,
   ): Promise<CommandResult> {
     logger.debug(`Delegating command execution to engine: ${command}`);
 
     try {
       // Delegate to the pure TypeScript engine
-      const result = await CommandExecutionEngine.executeCommand(command, args, flags, {
-        cwd: process.cwd(),
-      });
+      const result = await CommandExecutionEngine.executeCommand(
+        command,
+        args,
+        flags,
+        {
+          cwd: process.cwd(),
+        },
+      );
 
       // Convert engine result to expected format
       return {
@@ -416,7 +439,8 @@ export class MockCommandHandler {
       logger.error(`Mock command handler failed for ${command}:`, error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Command execution failed',
+        error:
+          error instanceof Error ? error.message : 'Command execution failed',
       };
     }
   }

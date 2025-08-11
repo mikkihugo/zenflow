@@ -182,7 +182,7 @@ export class HealthMonitor extends EventEmitter {
   registerHealthCheck(
     name: string,
     checkFunction: HealthCheckFunction,
-    options: Partial<HealthCheck> = {}
+    options: Partial<HealthCheck> = {},
   ): HealthCheck {
     const healthCheck = {
       name,
@@ -190,7 +190,7 @@ export class HealthMonitor extends EventEmitter {
       weight: options?.weight || 1,
       timeout: options?.timeout || 5000,
       enabled: options?.enabled !== false,
-      critical: options?.critical || false,
+      critical: options?.critical,
       description: options?.description || `Custom health check: ${name}`,
       lastRun: null,
       lastResult: null,
@@ -238,8 +238,8 @@ export class HealthMonitor extends EventEmitter {
     logger.error('🔍 Running health checks...');
 
     // Run all registered health checks
-    const checkPromises = Array.from(this.healthChecks.entries()).map(([name, check]) =>
-      this.runSingleHealthCheck(name, check)
+    const checkPromises = Array.from(this.healthChecks.entries()).map(
+      ([name, check]) => this.runSingleHealthCheck(name, check),
     );
 
     const checkResults = await Promise.allSettled(checkPromises);
@@ -289,7 +289,7 @@ export class HealthMonitor extends EventEmitter {
           results[checkName] = {
             score: 0,
             status: 'error',
-            details: (result).reason?.message ?? 'Unknown error',
+            details: result.reason?.message ?? 'Unknown error',
             metrics: {},
             timestamp: new Date().toISOString(),
             duration: 0,
@@ -305,7 +305,8 @@ export class HealthMonitor extends EventEmitter {
     });
 
     // Calculate overall health score
-    const overallScore = totalWeight > 0 ? Math.round(totalScore / totalWeight) : 0;
+    const overallScore =
+      totalWeight > 0 ? Math.round(totalScore / totalWeight) : 0;
     const duration = performance.now() - startTime;
 
     const healthReport = {
@@ -332,7 +333,9 @@ export class HealthMonitor extends EventEmitter {
     await this.processHealthAlerts(healthReport);
 
     this.emit('healthCheck', healthReport);
-    logger.error(`✅ Health check completed: ${overallScore}% (${duration.toFixed(1)}ms)`);
+    logger.error(
+      `✅ Health check completed: ${overallScore}% (${duration.toFixed(1)}ms)`,
+    );
 
     return healthReport;
   }
@@ -343,7 +346,10 @@ export class HealthMonitor extends EventEmitter {
    * @param name
    * @param check
    */
-  async runSingleHealthCheck(name: string, check: HealthCheck): Promise<HealthCheckResult> {
+  async runSingleHealthCheck(
+    name: string,
+    check: HealthCheck,
+  ): Promise<HealthCheckResult> {
     if (!check.enabled) {
       return {
         score: 100,
@@ -359,19 +365,29 @@ export class HealthMonitor extends EventEmitter {
     try {
       // Create timeout promise
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error(`Health check timeout: ${name}`)), check.timeout);
+        setTimeout(
+          () => reject(new Error(`Health check timeout: ${name}`)),
+          check.timeout,
+        );
       });
 
       // Run the health check with timeout
-      const result = await Promise.race([check.checkFunction(), timeoutPromise]);
+      const result = await Promise.race([
+        check.checkFunction(),
+        timeoutPromise,
+      ]);
 
       const duration = performance.now() - startTime;
 
       // Normalize result format
       const normalizedResult: HealthCheckResult = {
-        score: typeof result === 'number' ? result : ((result as any)?.score ?? 100),
+        score:
+          typeof result === 'number' ? result : ((result as any)?.score ?? 100),
         status: (result as any)?.status || 'healthy',
-        details: (result as any)?.details || (result as any)?.message || 'Health check passed',
+        details:
+          (result as any)?.details ||
+          (result as any)?.message ||
+          'Health check passed',
         metrics: (result as any)?.metrics || {},
         duration: (result as any)?.duration ?? duration,
       };
@@ -399,7 +415,8 @@ export class HealthMonitor extends EventEmitter {
       isRunning: this.isRunning,
       checkCount: this.healthChecks.size,
       alerts: this.alerts.length,
-      uptime: this.isRunning && this.startTime ? Date.now() - this.startTime : 0,
+      uptime:
+        this.isRunning && this.startTime ? Date.now() - this.startTime : 0,
     };
   }
 
@@ -484,7 +501,11 @@ export class HealthMonitor extends EventEmitter {
           },
         };
       },
-      { weight: 2, critical: true, description: 'System memory usage monitoring' }
+      {
+        weight: 2,
+        critical: true,
+        description: 'System memory usage monitoring',
+      },
     );
 
     // Event loop lag check
@@ -507,7 +528,8 @@ export class HealthMonitor extends EventEmitter {
 
             resolve({
               score,
-              status: score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
+              status:
+                score > 70 ? 'healthy' : score > 50 ? 'warning' : 'critical',
               details: `Event loop lag: ${lag.toFixed(2)}ms`,
               metrics: {
                 lag,
@@ -517,7 +539,7 @@ export class HealthMonitor extends EventEmitter {
           });
         });
       },
-      { weight: 1, description: 'Event loop performance monitoring' }
+      { weight: 1, description: 'Event loop performance monitoring' },
     );
 
     // CPU usage check (simplified)
@@ -550,7 +572,7 @@ export class HealthMonitor extends EventEmitter {
           },
         };
       },
-      { weight: 1, description: 'CPU usage monitoring' }
+      { weight: 1, description: 'CPU usage monitoring' },
     );
 
     // Persistence connectivity check
@@ -600,21 +622,28 @@ export class HealthMonitor extends EventEmitter {
           };
         }
       },
-      { weight: 3, critical: true, description: 'Database connectivity monitoring' }
+      {
+        weight: 3,
+        critical: true,
+        description: 'Database connectivity monitoring',
+      },
     );
   }
 
   private determineHealthStatus(
     score: number,
-    criticalFailures: number
+    criticalFailures: number,
   ): 'healthy' | 'warning' | 'critical' {
-    if (criticalFailures > 0 || score < (this.options.criticalThreshold ?? 50)) {
+    if (
+      criticalFailures > 0 ||
+      score < (this.options.criticalThreshold ?? 50)
+    ) {
       return 'critical';
-    } else if (score < (this.options.alertThreshold ?? 70)) {
-      return 'warning';
-    } else {
-      return 'healthy';
     }
+    if (score < (this.options.alertThreshold ?? 70)) {
+      return 'warning';
+    }
+    return 'healthy';
   }
 
   private async processHealthAlerts(healthReport: HealthReport): Promise<void> {

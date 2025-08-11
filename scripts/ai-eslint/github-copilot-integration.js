@@ -45,7 +45,7 @@ export class GitHubCopilotIntegration {
 
       if (!this.apiKey) {
         throw new Error(
-          'GitHub Copilot OAuth token required. Please sign into Copilot via VS Code or JetBrains IDE, or set OPENAI_API_KEY environment variable.'
+          'GitHub Copilot OAuth token required. Please sign into Copilot via VS Code or JetBrains IDE, or set OPENAI_API_KEY environment variable.',
         );
       }
 
@@ -73,32 +73,65 @@ export class GitHubCopilotIntegration {
     // Method 2: Try to read from GitHub Copilot apps.json (JetBrains)
     try {
       const os = await import('os');
-      const configPath = path.join(os.homedir(), '.config', 'github-copilot', 'apps.json');
+      const configPath = path.join(
+        os.homedir(),
+        '.config',
+        'github-copilot',
+        'apps.json',
+      );
       if (fs.existsSync(configPath)) {
         const appsData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-        if (appsData && appsData['github.com'] && appsData['github.com'].oauth_token) {
-          console.log('   🔑 Using GitHub Copilot OAuth token from apps.json (JetBrains)');
+        if (
+          appsData &&
+          appsData['github.com'] &&
+          appsData['github.com'].oauth_token
+        ) {
+          console.log(
+            '   🔑 Using GitHub Copilot OAuth token from apps.json (JetBrains)',
+          );
           return appsData['github.com'].oauth_token;
         }
       }
     } catch (error) {
-      console.warn('   ⚠️ Could not read GitHub Copilot apps.json:', error.message);
+      console.warn(
+        '   ⚠️ Could not read GitHub Copilot apps.json:',
+        error.message,
+      );
     }
 
     // Method 2.5: Try to read from VS Code GitHub Copilot extension
     try {
       const os = await import('os');
       const vscodeConfigPaths = [
-        path.join(os.homedir(), '.vscode', 'User', 'globalStorage', 'github.copilot'),
-        path.join(os.homedir(), '.vscode-insiders', 'User', 'globalStorage', 'github.copilot'),
-        path.join(os.homedir(), '.config', 'Code', 'User', 'globalStorage', 'github.copilot'),
+        path.join(
+          os.homedir(),
+          '.vscode',
+          'User',
+          'globalStorage',
+          'github.copilot',
+        ),
+        path.join(
+          os.homedir(),
+          '.vscode-insiders',
+          'User',
+          'globalStorage',
+          'github.copilot',
+        ),
+        path.join(
+          os.homedir(),
+          '.config',
+          'Code',
+          'User',
+          'globalStorage',
+          'github.copilot',
+        ),
         path.join(
           os.homedir(),
           '.config',
           'Code - Insiders',
           'User',
           'globalStorage',
-          'github.copilot'
+          'github.copilot',
         ),
       ];
 
@@ -106,7 +139,11 @@ export class GitHubCopilotIntegration {
         const tokenPath = path.join(vscodeConfigPath, 'hosts.json');
         if (fs.existsSync(tokenPath)) {
           const hostsData = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
-          if (hostsData && hostsData['github.com'] && hostsData['github.com'].oauth_token) {
+          if (
+            hostsData &&
+            hostsData['github.com'] &&
+            hostsData['github.com'].oauth_token
+          ) {
             console.log('   🔑 Using GitHub Copilot OAuth token from VS Code');
             return hostsData['github.com'].oauth_token;
           }
@@ -178,10 +215,18 @@ export class GitHubCopilotIntegration {
       console.log(`   🔍 Processing ${errors.length} errors`);
 
       // Check pattern cache first
-      const patternKey = this.generatePatternKey(errors, path.extname(filePath));
+      const patternKey = this.generatePatternKey(
+        errors,
+        path.extname(filePath),
+      );
       if (this.patternCache.has(patternKey)) {
         console.log(`   ⚡ PATTERN CACHE: Using learned fix`);
-        return await this.applyLearnedPattern(filePath, patternKey, fileContent, startTime);
+        return await this.applyLearnedPattern(
+          filePath,
+          patternKey,
+          fileContent,
+          startTime,
+        );
       }
 
       // Step 1: Diagnose errors using GPT-4o (compact prompt)
@@ -194,7 +239,8 @@ export class GitHubCopilotIntegration {
         messages: [
           {
             role: 'system',
-            content: 'TypeScript expert. Analyze errors, provide JSON fix strategy.',
+            content:
+              'TypeScript expert. Analyze errors, provide JSON fix strategy.',
           },
           {
             role: 'user',
@@ -218,8 +264,12 @@ JSON: {"analysis":"cause","strategy":"fix","confidence":0.9}`,
         };
       }
 
-      console.log(`   🎯 Confidence: ${((diagnosis.confidence || 0.7) * 100).toFixed(1)}%`);
-      console.log(`   📝 Strategy: ${(diagnosis.strategy || '').substring(0, 60)}...`);
+      console.log(
+        `   🎯 Confidence: ${((diagnosis.confidence || 0.7) * 100).toFixed(1)}%`,
+      );
+      console.log(
+        `   📝 Strategy: ${(diagnosis.strategy || '').substring(0, 60)}...`,
+      );
 
       // Step 2: Generate fixed code using GPT-4o (compact prompt)
       const compactCode = this.truncateFileContext(fileContent, 1200); // Larger limit for fixing
@@ -228,7 +278,8 @@ JSON: {"analysis":"cause","strategy":"fix","confidence":0.9}`,
         messages: [
           {
             role: 'system',
-            content: 'TypeScript dev. Fix code issues, return JSON with complete corrected code.',
+            content:
+              'TypeScript dev. Fix code issues, return JSON with complete corrected code.',
           },
           {
             role: 'user',
@@ -269,7 +320,9 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`,
       this.totalCost += cost; // Still $0.00!
       this.updateAverageTime(duration);
 
-      console.log(`   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: FREE 🆓)`);
+      console.log(
+        `   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: FREE 🆓)`,
+      );
 
       // Save patterns periodically
       if (this.successCount % 3 === 0) {
@@ -309,7 +362,9 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`,
     });
 
     if (!response.ok) {
-      throw new Error(`GitHub Copilot API error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `GitHub Copilot API error: ${response.status} ${response.statusText}`,
+      );
     }
 
     const data = await response.json();
@@ -342,7 +397,11 @@ JSON: {"fixedCode":"corrected code","explanation":"changes"}`,
     const patterns = {
       'module-resolution': ['Cannot find module', 'Module not found'],
       'export-members': ['has no exported member', 'not exported'],
-      'missing-properties': ['Property', 'does not exist', 'Property does not exist'],
+      'missing-properties': [
+        'Property',
+        'does not exist',
+        'Property does not exist',
+      ],
       'type-assignment': ['is not assignable to', 'Type mismatch'],
       'duplicate-ids': ['Duplicate identifier', 'already declared'],
       'optional-properties': ['exactOptionalPropertyTypes', 'undefined'],
@@ -429,7 +488,7 @@ JSON: {"fixedCode":"corrected","explanation":"changes"}`,
       this.updateAverageTime(duration);
 
       console.log(
-        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (FREE 🆓) - Used ${pattern.usageCount}x`
+        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (FREE 🆓) - Used ${pattern.usageCount}x`,
       );
 
       return {
@@ -455,8 +514,12 @@ JSON: {"fixedCode":"corrected","explanation":"changes"}`,
 
     // Keep imports and a small sample of the problematic area
     const lines = content.split('\\n');
-    const importLines = lines.filter((line) => line.trim().startsWith('import')).slice(0, 5); // Max 5 imports
-    const otherLines = lines.filter((line) => !line.trim().startsWith('import'));
+    const importLines = lines
+      .filter((line) => line.trim().startsWith('import'))
+      .slice(0, 5); // Max 5 imports
+    const otherLines = lines.filter(
+      (line) => !line.trim().startsWith('import'),
+    );
 
     let result = importLines.join('\\n') + '\\n\\n';
     const remaining = maxChars - result.length - 100; // Leave buffer
@@ -542,8 +605,10 @@ JSON: {"fixedCode":"corrected","explanation":"changes"}`,
       model: this.model,
       cacheHitRate:
         this.successCount > 0
-          ? Array.from(this.patternCache.values()).reduce((sum, p) => sum + p.usageCount, 0) /
-            this.successCount
+          ? Array.from(this.patternCache.values()).reduce(
+              (sum, p) => sum + p.usageCount,
+              0,
+            ) / this.successCount
           : 0,
     };
   }
@@ -558,8 +623,12 @@ JSON: {"fixedCode":"corrected","explanation":"changes"}`,
     console.log(`   🎯 Successful Fixes: ${stats.successfulFixes}`);
     console.log(`   🧠 Patterns Learned: ${stats.patternsLearned}`);
     console.log(`   💰 Total Cost: FREE 🆓 (GitHub Copilot)`);
-    console.log(`   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`);
-    console.log(`   🔄 Cache Hit Rate: ${(stats.cacheHitRate * 100).toFixed(1)}%`);
+    console.log(
+      `   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`,
+    );
+    console.log(
+      `   🔄 Cache Hit Rate: ${(stats.cacheHitRate * 100).toFixed(1)}%`,
+    );
   }
 
   /**

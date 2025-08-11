@@ -64,12 +64,20 @@ async function testServerStartup() {
 
     mcpProcess.stdout.on('data', (data) => {
       const output = data.toString();
-      initializationLogs.push({ type: 'stdout', data: output.trim(), timestamp: Date.now() });
+      initializationLogs.push({
+        type: 'stdout',
+        data: output.trim(),
+        timestamp: Date.now(),
+      });
     });
 
     mcpProcess.stderr.on('data', (data) => {
       const output = data.toString();
-      initializationLogs.push({ type: 'stderr', data: output.trim(), timestamp: Date.now() });
+      initializationLogs.push({
+        type: 'stderr',
+        data: output.trim(),
+        timestamp: Date.now(),
+      });
 
       // Enhanced readiness detection
       if (
@@ -85,7 +93,7 @@ async function testServerStartup() {
           'passed',
           'Server started successfully',
           null,
-          duration
+          duration,
         );
         resolve({ serverReady: true, logs: initializationLogs });
       }
@@ -98,7 +106,7 @@ async function testServerStartup() {
         'failed',
         'Failed to start server process',
         error.message,
-        duration
+        duration,
       );
       reject({ error, logs: initializationLogs });
     });
@@ -111,9 +119,12 @@ async function testServerStartup() {
           'failed',
           `Server exited unexpectedly (code: ${code}, signal: ${signal})`,
           null,
-          duration
+          duration,
         );
-        reject({ error: `Process exited with code ${code}`, logs: initializationLogs });
+        reject({
+          error: `Process exited with code ${code}`,
+          logs: initializationLogs,
+        });
       }
     });
 
@@ -127,7 +138,7 @@ async function testServerStartup() {
           'failed',
           'Server startup timeout (30s)',
           null,
-          duration
+          duration,
         );
         reject({ error: 'Server startup timeout', logs: initializationLogs });
       }
@@ -164,13 +175,22 @@ async function testStdioCommunication() {
             'passed',
             'JSON-RPC communication working',
             null,
-            duration
+            duration,
           );
         } else {
-          addTestResult('Stdio Communication', 'failed', 'Invalid JSON-RPC response format');
+          addTestResult(
+            'Stdio Communication',
+            'failed',
+            'Invalid JSON-RPC response format',
+          );
         }
       } catch (error) {
-        addTestResult('Stdio Communication', 'failed', 'Invalid JSON response', error.message);
+        addTestResult(
+          'Stdio Communication',
+          'failed',
+          'Invalid JSON response',
+          error.message,
+        );
       }
       resolve();
     });
@@ -178,7 +198,13 @@ async function testStdioCommunication() {
     setTimeout(() => {
       if (!responseReceived) {
         const duration = Date.now() - startTime;
-        addTestResult('Stdio Communication', 'failed', 'Response timeout', null, duration);
+        addTestResult(
+          'Stdio Communication',
+          'failed',
+          'Response timeout',
+          null,
+          duration,
+        );
         resolve();
       }
     }, 10000);
@@ -187,7 +213,12 @@ async function testStdioCommunication() {
     try {
       mcpProcess.stdin.write(`${JSON.stringify(testRequest)}\n`);
     } catch (error) {
-      addTestResult('Stdio Communication', 'failed', 'Failed to write to stdin', error.message);
+      addTestResult(
+        'Stdio Communication',
+        'failed',
+        'Failed to write to stdin',
+        error.message,
+      );
       resolve();
     }
   });
@@ -230,7 +261,7 @@ async function testServerStability() {
                 'passed',
                 `All ${expectedResponses} requests handled successfully`,
                 null,
-                duration
+                duration,
               );
               mcpProcess.stdout.removeListener('data', responseHandler);
               resolve();
@@ -242,7 +273,7 @@ async function testServerStability() {
           'Server Stability',
           'failed',
           'Invalid JSON in stability test',
-          error.message
+          error.message,
         );
         mcpProcess.stdout.removeListener('data', responseHandler);
         resolve();
@@ -271,7 +302,7 @@ async function testServerStability() {
           'failed',
           `Only ${responsesReceived}/${expectedResponses} responses received`,
           null,
-          duration
+          duration,
         );
         mcpProcess.stdout.removeListener('data', responseHandler);
         resolve();
@@ -295,14 +326,20 @@ async function testGracefulShutdown() {
       const duration = Date.now() - startTime;
       shutdownCompleted = true;
       if (code === 0 || signal === 'SIGTERM') {
-        addTestResult('Graceful Shutdown', 'passed', 'Server shutdown gracefully', null, duration);
+        addTestResult(
+          'Graceful Shutdown',
+          'passed',
+          'Server shutdown gracefully',
+          null,
+          duration,
+        );
       } else {
         addTestResult(
           'Graceful Shutdown',
           'failed',
           `Unexpected exit code: ${code}, signal: ${signal}`,
           null,
-          duration
+          duration,
         );
       }
       resolve();
@@ -321,13 +358,24 @@ async function testGracefulShutdown() {
       setTimeout(() => {
         if (!shutdownCompleted) {
           const duration = Date.now() - startTime;
-          addTestResult('Graceful Shutdown', 'failed', 'Shutdown timeout', null, duration);
+          addTestResult(
+            'Graceful Shutdown',
+            'failed',
+            'Shutdown timeout',
+            null,
+            duration,
+          );
           mcpProcess.kill('SIGKILL');
           resolve();
         }
       }, 10000);
     } catch (error) {
-      addTestResult('Graceful Shutdown', 'failed', 'Failed to initiate shutdown', error.message);
+      addTestResult(
+        'Graceful Shutdown',
+        'failed',
+        'Failed to initiate shutdown',
+        error.message,
+      );
       resolve();
     }
   });
@@ -335,9 +383,18 @@ async function testGracefulShutdown() {
 
 // Generate comprehensive report
 async function generateReport() {
-  results.summary.passRate = ((results.summary.passed / results.summary.total) * 100).toFixed(2);
+  results.summary.passRate = (
+    (results.summary.passed / results.summary.total) *
+    100
+  ).toFixed(2);
 
-  const resultsDir = path.join(__dirname, '..', 'docker', 'test-results', 'mcp-reliability');
+  const resultsDir = path.join(
+    __dirname,
+    '..',
+    'docker',
+    'test-results',
+    'mcp-reliability',
+  );
   const resultsPath = path.join(resultsDir, 'mcp-server-reliability.json');
 
   await fs.mkdir(resultsDir, { recursive: true });

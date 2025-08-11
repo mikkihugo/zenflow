@@ -324,7 +324,7 @@ global.simulateSwarmWorkflow = async (swarm: MockSwarm, tasks: unknown[]) => {
 
       agent.status = 'idle';
       agent.tasks = agent.tasks.filter(
-        (t) => (t as { id: string }).id !== (task as { id: string }).id
+        (t) => (t as { id: string }).id !== (task as { id: string }).id,
       );
     }
   }
@@ -460,12 +460,18 @@ declare global {
   var originalWebSocket: typeof WebSocket;
   var mockSpawn: jest.Mock;
 
-  function createTestServer(port: number, routes?: TestRoute[]): Promise<unknown>;
+  function createTestServer(
+    port: number,
+    routes?: TestRoute[],
+  ): Promise<unknown>;
   function createTestClient(baseURL: string): TestClient;
   function waitForPort(port: number, timeout?: number): Promise<boolean>;
   function setupDatabaseFixtures(fixtures: DatabaseFixtures): Promise<void>;
   function createMockSwarm(agentCount?: number): MockSwarm;
-  function simulateSwarmWorkflow(swarm: MockSwarm, tasks: unknown[]): Promise<unknown[]>;
+  function simulateSwarmWorkflow(
+    swarm: MockSwarm,
+    tasks: unknown[],
+  ): Promise<unknown[]>;
   function createMockMCPClient(): MockMCPClient;
   function validateMCPProtocol(message: MCPMessage): void;
 }

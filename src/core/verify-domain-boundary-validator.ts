@@ -70,24 +70,38 @@ async function verifyDomainBoundaryValidator(): Promise<void> {
     };
 
     const validatedAgent = validator.validateInput(agentData, agentSchema);
-    console.log(`   - Agent validation: ${validatedAgent.id} - ${validatedAgent.status}`);
+    console.log(
+      `   - Agent validation: ${validatedAgent.id} - ${validatedAgent.status}`,
+    );
 
     // 3. Registry Test
     console.log('✅ Testing validator registry...');
     const coordValidator = getDomainValidator(Domain.COORDINATION);
     const workflowValidator = getDomainValidator(Domain.WORKFLOWS);
 
-    console.log(`   - Coordination validator created: ${coordValidator !== undefined}`);
-    console.log(`   - Workflows validator created: ${workflowValidator !== undefined}`);
-    console.log(`   - Different validators: ${coordValidator !== workflowValidator}`);
+    console.log(
+      `   - Coordination validator created: ${coordValidator !== undefined}`,
+    );
+    console.log(
+      `   - Workflows validator created: ${workflowValidator !== undefined}`,
+    );
+    console.log(
+      `   - Different validators: ${coordValidator !== workflowValidator}`,
+    );
 
     // 4. Domain Crossing Tracking
     console.log('✅ Testing domain crossing tracking...');
-    coordValidator.trackCrossings(Domain.COORDINATION, Domain.WORKFLOWS, 'test-operation');
+    coordValidator.trackCrossings(
+      Domain.COORDINATION,
+      Domain.WORKFLOWS,
+      'test-operation',
+    );
 
     const crossings = coordValidator.getDomainCrossings();
     console.log(`   - Domain crossings tracked: ${crossings.length}`);
-    console.log(`   - First crossing: ${crossings[0]?.fromDomain} -> ${crossings[0]?.toDomain}`);
+    console.log(
+      `   - First crossing: ${crossings[0]?.fromDomain} -> ${crossings[0]?.toDomain}`,
+    );
 
     // 5. Performance Metrics
     console.log('✅ Testing performance metrics...');

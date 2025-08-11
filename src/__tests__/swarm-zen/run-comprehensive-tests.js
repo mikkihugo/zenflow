@@ -85,9 +85,14 @@ class TestRunner {
 
     // Check node version
     const nodeVersion = process.version;
-    const majorVersion = parseInt(nodeVersion.split('.')[0].substring(1), 10);
+    const majorVersion = Number.parseInt(
+      nodeVersion.split('.')[0].substring(1),
+      10,
+    );
     if (majorVersion < 14) {
-      console.error(chalk.red(`❌ Node.js ${nodeVersion} is too old. Required: >= 14.0.0`));
+      console.error(
+        chalk.red(`❌ Node.js ${nodeVersion} is too old. Required: >= 14.0.0`),
+      );
       process.exit(1);
     }
   }
@@ -178,19 +183,22 @@ class TestRunner {
       summary: {
         total: this.results.length,
         passed: this.results.filter((r) => r.success).length,
-        failed: this.results.filter((r) => !r.success && !r.skipped).length,
+        failed: this.results.filter((r) => !(r.success || r.skipped)).length,
         skipped: this.results.filter((r) => r.skipped).length,
       },
     };
 
     await fs.writeFile(
       path.join(reportDir, `test-report-${Date.now()}.json`),
-      JSON.stringify(testReport, null, 2)
+      JSON.stringify(testReport, null, 2),
     );
 
     // Coverage report
     try {
-      const coverageFile = path.join(process.cwd(), 'coverage/coverage-summary.json');
+      const coverageFile = path.join(
+        process.cwd(),
+        'coverage/coverage-summary.json',
+      );
       const coverageData = JSON.parse(await fs.readFile(coverageFile, 'utf-8'));
 
       this.coverageData = coverageData.total;
@@ -198,14 +206,18 @@ class TestRunner {
       // Generate coverage badge
       const coveragePercent = coverageData.total.lines.pct;
       const _badgeColor =
-        coveragePercent >= 90 ? 'green' : coveragePercent >= 80 ? 'yellow' : 'red';
+        coveragePercent >= 90
+          ? 'green'
+          : coveragePercent >= 80
+            ? 'yellow'
+            : 'red';
     } catch (_error) {}
 
     // Performance summary
     const perfReport = await this.generatePerformanceReport();
     await fs.writeFile(
       path.join(reportDir, 'performance-summary.json'),
-      JSON.stringify(perfReport, null, 2)
+      JSON.stringify(perfReport, null, 2),
     );
   }
 
@@ -227,7 +239,7 @@ class TestRunner {
         if (line.includes('initialization:')) {
           const match = line.match(/avg=(\d+\.?\d*)/);
           if (match) {
-            metrics.wasmInitialization.actual = parseFloat(match[1]);
+            metrics.wasmInitialization.actual = Number.parseFloat(match[1]);
           }
         }
         // ... parse other metrics
@@ -237,7 +249,9 @@ class TestRunner {
     return {
       timestamp: new Date().toISOString(),
       metrics,
-      meetsTargets: Object.values(metrics).every((m) => m.actual === null || m.actual <= m.target),
+      meetsTargets: Object.values(metrics).every(
+        (m) => m.actual === null || m.actual <= m.target,
+      ),
     };
   }
 
@@ -245,7 +259,9 @@ class TestRunner {
     const _totalDuration = (performance.now() - this.startTime) / 1000;
     this.results.forEach((result) => {
       const _icon = result.skipped ? '⚪' : result.success ? '✅' : '❌';
-      const _time = result.duration ? ` (${(result.duration / 1000).toFixed(2)}s)` : '';
+      const _time = result.duration
+        ? ` (${(result.duration / 1000).toFixed(2)}s)`
+        : '';
     });
 
     // Coverage summary
@@ -254,7 +270,7 @@ class TestRunner {
 
     // Overall summary
     const _passed = this.results.filter((r) => r.success).length;
-    const failed = this.results.filter((r) => !r.success && !r.skipped).length;
+    const failed = this.results.filter((r) => !(r.success || r.skipped)).length;
     const _skipped = this.results.filter((r) => r.skipped).length;
 
     if (failed === 0) {

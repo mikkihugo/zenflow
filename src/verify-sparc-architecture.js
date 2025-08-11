@@ -60,7 +60,9 @@ class VerificationDatabaseAdapter {
 async function verifyDatabaseDrivenArchitecture() {
   try {
     const mockDb = new VerificationDatabaseAdapter();
-    const architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(mockDb);
+    const architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(
+      mockDb,
+    );
 
     await architectureEngine.initialize();
     const samplePseudocode = {
@@ -69,8 +71,20 @@ async function verifyDatabaseDrivenArchitecture() {
         {
           name: 'TaskCoordinator',
           purpose: 'Coordinate distributed tasks across agents',
-          inputs: [{ name: 'tasks', type: 'Task[]', description: 'Tasks to coordinate' }],
-          outputs: [{ name: 'assignments', type: 'Assignment[]', description: 'Task assignments' }],
+          inputs: [
+            {
+              name: 'tasks',
+              type: 'Task[]',
+              description: 'Tasks to coordinate',
+            },
+          ],
+          outputs: [
+            {
+              name: 'assignments',
+              type: 'Assignment[]',
+              description: 'Task assignments',
+            },
+          ],
           steps: [
             {
               stepNumber: 1,
@@ -90,8 +104,20 @@ async function verifyDatabaseDrivenArchitecture() {
         {
           name: 'ResourceManager',
           purpose: 'Manage computational resources',
-          inputs: [{ name: 'resources', type: 'Resource[]', description: 'Available resources' }],
-          outputs: [{ name: 'allocation', type: 'Allocation', description: 'Resource allocation' }],
+          inputs: [
+            {
+              name: 'resources',
+              type: 'Resource[]',
+              description: 'Available resources',
+            },
+          ],
+          outputs: [
+            {
+              name: 'allocation',
+              type: 'Allocation',
+              description: 'Resource allocation',
+            },
+          ],
           steps: [
             {
               stepNumber: 1,
@@ -114,7 +140,11 @@ async function verifyDatabaseDrivenArchitecture() {
           name: 'TaskQueue',
           type: 'PriorityQueue',
           properties: [
-            { name: 'queue', type: 'Task[]', description: 'Priority-ordered task queue' },
+            {
+              name: 'queue',
+              type: 'Task[]',
+              description: 'Priority-ordered task queue',
+            },
           ],
           methods: [
             {
@@ -129,7 +159,11 @@ async function verifyDatabaseDrivenArchitecture() {
           name: 'AgentRegistry',
           type: 'HashMap',
           properties: [
-            { name: 'agents', type: 'Map<string, Agent>', description: 'Agent registry' },
+            {
+              name: 'agents',
+              type: 'Map<string, Agent>',
+              description: 'Agent registry',
+            },
           ],
           methods: [
             {
@@ -145,24 +179,40 @@ async function verifyDatabaseDrivenArchitecture() {
         {
           name: 'Main Coordination Flow',
           type: 'sequential',
-          steps: ['Initialize agents', 'Process tasks', 'Monitor progress', 'Report results'],
+          steps: [
+            'Initialize agents',
+            'Process tasks',
+            'Monitor progress',
+            'Report results',
+          ],
         },
       ],
       optimizations: [
-        { type: 'algorithmic', description: 'Use efficient priority queue', impact: 'high' },
-        { type: 'caching', description: 'Cache agent capabilities', impact: 'medium' },
+        {
+          type: 'algorithmic',
+          description: 'Use efficient priority queue',
+          impact: 'high',
+        },
+        {
+          type: 'caching',
+          description: 'Cache agent capabilities',
+          impact: 'medium',
+        },
       ],
       dependencies: [
         { name: 'Agent Management', type: 'internal' },
         { name: 'Task Processing', type: 'internal' },
       ],
     };
-    const architecture = await architectureEngine.designArchitecture(samplePseudocode);
-    const validation = await architectureEngine.validateArchitecturalConsistency(
-      architecture.systemArchitecture
-    );
+    const architecture =
+      await architectureEngine.designArchitecture(samplePseudocode);
+    const validation =
+      await architectureEngine.validateArchitecturalConsistency(
+        architecture.systemArchitecture,
+      );
     try {
-      const _retrievedArchitecture = await architectureEngine.getArchitectureById(architecture.id);
+      const _retrievedArchitecture =
+        await architectureEngine.getArchitectureById(architecture.id);
       const _stats = await architectureEngine.getArchitectureStatistics();
       const _searchResults = await architectureEngine.searchArchitectures({
         domain: 'general',

@@ -16,16 +16,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   clearAllClaudeZenMocks,
   createClaudeZenMocks,
-  MockHiveMindService,
-  MockQueensService,
-  MockNeuralFrameworkService,
-  MockClaudeZenApiService,
+  type MockClaudeZenApiService,
+  type MockHiveMindService,
+  type MockNeuralFrameworkService,
+  type MockQueensService,
 } from './helpers/claude-zen-tdd-london-mocks.ts';
 
 // === CLAUDE-ZEN ARCHITECTURE MOCKS ===
 
 // Mock Claude-Zen Hive Mind - The central coordination system
-
 
 // Mock MCP Server - Model Context Protocol integration
 const mockMcpServer = {
@@ -46,11 +45,16 @@ const mockWebSocketManager = {
 // === CONTRACT INTERFACES ===
 
 interface HiveMindContract {
-  initialize(config: { queens: string[]; neuralFramework: boolean }): Promise<void>;
+  initialize(config: {
+    queens: string[];
+    neuralFramework: boolean;
+  }): Promise<void>;
   spawnQueen(type: string, config: any): Promise<string>;
   coordinateQueens(task: any): Promise<any>;
   processTask(task: any): Promise<any>;
-  getQueenStatus(): Promise<Array<{ id: string; type: string; status: string }>>;
+  getQueenStatus(): Promise<
+    Array<{ id: string; type: string; status: string }>
+  >;
 }
 
 interface QueenContract {
@@ -150,11 +154,16 @@ describe('Claude-Zen TDD London School Architecture', () => {
           confidence: prediction.confidence,
         });
 
-        const designResult = await mockQueens.architectQueen.design(decisionContext);
+        const designResult =
+          await mockQueens.architectQueen.design(decisionContext);
 
         // Assert - Verify neural integration contract
-        expect(mockNeuralFramework.initializeNetwork).toHaveBeenCalledWith('decision-transformer');
-        expect(mockNeuralFramework.predict).toHaveBeenCalledWith(decisionContext);
+        expect(mockNeuralFramework.initializeNetwork).toHaveBeenCalledWith(
+          'decision-transformer',
+        );
+        expect(mockNeuralFramework.predict).toHaveBeenCalledWith(
+          decisionContext,
+        );
         expect(designResult?.pattern).toBe('use-pattern-X');
         expect(designResult?.confidence).toBe(0.92);
       });
@@ -187,9 +196,11 @@ describe('Claude-Zen TDD London School Architecture', () => {
           'code',
         ]);
         expect(mockWebSocketManager.broadcastQueenStatus).toHaveBeenCalledWith(
-          taskProgress.progress
+          taskProgress.progress,
         );
-        expect(mockWebSocketManager.streamTaskProgress).toHaveBeenCalledWith(taskProgress);
+        expect(mockWebSocketManager.streamTaskProgress).toHaveBeenCalledWith(
+          taskProgress,
+        );
       });
     });
   });
@@ -218,7 +229,9 @@ describe('Claude-Zen TDD London School Architecture', () => {
           specialization: 'microservices',
           experience: 'senior',
         });
-        expect(mockQueens.architectQueen.coordinate).toHaveBeenCalledWith(['queen-code-001']);
+        expect(mockQueens.architectQueen.coordinate).toHaveBeenCalledWith([
+          'queen-code-001',
+        ]);
         expect(status).toContainEqual({
           id: 'queen-arch-001',
           type: 'architect',
@@ -253,14 +266,19 @@ describe('Claude-Zen TDD London School Architecture', () => {
         });
 
         // Act - Test API to MCP bridge
-        const apiResponse = await mockClaudeZenApi.handleTaskRequest(apiRequest);
+        const apiResponse =
+          await mockClaudeZenApi.handleTaskRequest(apiRequest);
         const mcpResponse = await mockMcpServer.handleToolCall(mcpToolCall);
 
         // Assert - Verify bridging contract
-        expect(mockClaudeZenApi.handleTaskRequest).toHaveBeenCalledWith(apiRequest);
+        expect(mockClaudeZenApi.handleTaskRequest).toHaveBeenCalledWith(
+          apiRequest,
+        );
         expect(mockMcpServer.handleToolCall).toHaveBeenCalledWith(mcpToolCall);
         expect(apiResponse?.status).toBe('processing');
-        expect(mcpResponse?.result?.analysis).toBe('component-extraction-recommended');
+        expect(mcpResponse?.result?.analysis).toBe(
+          'component-extraction-recommended',
+        );
       });
     });
   });
@@ -297,11 +315,11 @@ describe('Claude-Zen TDD London School Architecture', () => {
       // Assert - Verify the orchestration conversation
       expect(mockTaskCoordinator.assignTask).toHaveBeenCalledWith(
         'architect',
-        complexTask.designPhase
+        complexTask.designPhase,
       );
       expect(mockTaskCoordinator.assignTask).toHaveBeenCalledWith(
         'code',
-        complexTask.implementationPhase
+        complexTask.implementationPhase,
       );
       expect(mockTaskCoordinator.trackProgress).toHaveBeenCalledWith('all');
       expect(mockTaskCoordinator.synthesizeResults).toHaveBeenCalled();
@@ -324,7 +342,10 @@ describe('Claude-Zen TDD London School Architecture', () => {
       const dynamicQueenSystem = {
         handleUnknownTask: async (task: any) => {
           const bestQueen = mockCapabilityMatcher?.findBestQueen(task);
-          const compatibility = mockCapabilityMatcher?.assessCompatibility(bestQueen, task);
+          const compatibility = mockCapabilityMatcher?.assessCompatibility(
+            bestQueen,
+            task,
+          );
 
           if (compatibility > 0.8) {
             return mockQueenRegistry.invoke(bestQueen, task);
@@ -335,7 +356,9 @@ describe('Claude-Zen TDD London School Architecture', () => {
       };
 
       // The test defines the contract through mock expectations
-      mockCapabilityMatcher?.findBestQueen?.mockReturnValue('specialized-queen-v2');
+      mockCapabilityMatcher?.findBestQueen?.mockReturnValue(
+        'specialized-queen-v2',
+      );
       mockCapabilityMatcher?.assessCompatibility?.mockReturnValue(0.95);
       mockQueenRegistry.invoke.mockResolvedValue({ result: 'task-completed' });
 

@@ -4,14 +4,19 @@
 
 import { getLogger } from '../config/logging-config';
 
-const logger = getLogger('coordination-load-balancing-algorithms-ml-predictive');
+const logger = getLogger(
+  'coordination-load-balancing-algorithms-ml-predictive',
+);
 
 /**
  * Machine Learning Predictive Load Balancing Algorithm.
  * Uses ML models to predict optimal agent selection and performance.
  */
 
-import type { LoadBalancingAlgorithm, PredictionEngine } from '../interfaces.ts';
+import type {
+  LoadBalancingAlgorithm,
+  PredictionEngine,
+} from '../interfaces.ts';
 import type {
   Agent,
   HistoricalData,
@@ -93,18 +98,22 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   public async selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
       throw new Error('No available agents');
     }
 
     // Extract features for prediction
-    const predictions = await this.generatePredictions(task, availableAgents, metrics);
+    const predictions = await this.generatePredictions(
+      task,
+      availableAgents,
+      metrics,
+    );
 
     // Filter predictions with sufficient confidence
     const viablePredictions = predictions.filter(
-      (p) => p.confidenceScore >= this.config.predictionThreshold
+      (p) => p.confidenceScore >= this.config.predictionThreshold,
     );
 
     if (viablePredictions.length === 0) {
@@ -122,7 +131,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     scoredPredictions.sort((a, b) => b.compositeScore - a.compositeScore);
 
     const bestPrediction = scoredPredictions[0];
-    const selectedAgent = availableAgents.find((a) => a.id === bestPrediction.agentId)!;
+    const selectedAgent = availableAgents.find(
+      (a) => a.id === bestPrediction.agentId,
+    )!;
 
     const alternatives = scoredPredictions
       .slice(1, 4)
@@ -144,7 +155,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
    *
    * @param config
    */
-  public async updateConfiguration(config: Record<string, any>): Promise<void> {
+  public async updateConfiguration(
+    config: Record<string, unknown>,
+  ): Promise<void> {
     this.config = { ...this.config, ...config };
 
     // Retrain models if configuration changed significantly
@@ -161,12 +174,14 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
     const avgAccuracy =
       performances.length > 0
-        ? performances.reduce((sum, p) => sum + p.accuracy, 0) / performances.length
+        ? performances.reduce((sum, p) => sum + p.accuracy, 0) /
+          performances.length
         : 0;
 
     const avgPrecision =
       performances.length > 0
-        ? performances.reduce((sum, p) => sum + p.precision, 0) / performances.length
+        ? performances.reduce((sum, p) => sum + p.precision, 0) /
+          performances.length
         : 0;
 
     return {
@@ -191,7 +206,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     agentId: string,
     task: Task,
     duration: number,
-    success: boolean
+    success: boolean,
   ): Promise<void> {
     // Record historical data for training
     const historicalEntry: HistoricalData = {
@@ -279,7 +294,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   private async generatePredictions(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): Promise<PredictionResult[]> {
     const predictions: PredictionResult[] = [];
 
@@ -306,7 +321,11 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
    * @param agent
    * @param metrics
    */
-  private extractFeatures(task: Task, agent: Agent, metrics?: LoadMetrics): MLFeatures {
+  private extractFeatures(
+    task: Task,
+    agent: Agent,
+    metrics?: LoadMetrics,
+  ): MLFeatures {
     const now = new Date();
 
     return {
@@ -344,7 +363,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     // Get predictions from each model
     for (const [modelType, _model] of this.models) {
       try {
-        const prediction = await this.predictionEngine.predict(this.normalizeFeatures(features));
+        const prediction = await this.predictionEngine.predict(
+          this.normalizeFeatures(features),
+        );
         predictions.set(modelType, prediction);
       } catch (error) {
         logger.warn(`Model ${modelType} prediction failed:`, error);
@@ -393,7 +414,10 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
    * @param prediction
    * @param task
    */
-  private calculateCompositeScore(prediction: PredictionResult, task: Task): number {
+  private calculateCompositeScore(
+    prediction: PredictionResult,
+    task: Task,
+  ): number {
     // Weight factors based on task priority
     const latencyWeight = task.priority > 3 ? 0.6 : 0.4;
     const successWeight = task.priority > 3 ? 0.3 : 0.4;
@@ -438,7 +462,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   /**
    * Prepare training data from historical records.
    */
-  private prepareTrainingData(): any[] {
+  private prepareTrainingData(): unknown[] {
     return this.historicalData.map((entry) => ({
       features: this.extractFeaturesFromHistorical(entry),
       target: {
@@ -457,7 +481,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
     return (
       // Retrain every 500 new data points
-      timeSinceRetraining > this.config.retrainingInterval || this.historicalData.length % 500 === 0
+      timeSinceRetraining > this.config.retrainingInterval ||
+      this.historicalData.length % 500 === 0
     );
   }
 
@@ -471,7 +496,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   private fallbackSelection(
     _task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
+    metrics: Map<string, LoadMetrics>,
   ): RoutingResult {
     // Simple heuristic: select agent with best recent performance
     let bestAgent = availableAgents[0];
@@ -496,7 +521,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       selectedAgent: bestAgent,
       confidence: 0.5,
       reasoning: 'ML prediction unavailable, used heuristic fallback',
-      alternativeAgents: availableAgents.filter((a) => a.id !== bestAgent.id).slice(0, 2),
+      alternativeAgents: availableAgents
+        .filter((a) => a.id !== bestAgent.id)
+        .slice(0, 2),
       estimatedLatency: metrics.get(bestAgent.id)?.responseTime || 1000,
       expectedQuality: 0.7,
     };
@@ -522,7 +549,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   private getHistoricalSuccessRate(agentId: string, taskType: string): number {
     const relevantData = this.historicalData.filter(
-      (entry) => entry.agentId === agentId && entry.taskType === taskType
+      (entry) => entry.agentId === agentId && entry.taskType === taskType,
     );
 
     if (relevantData.length === 0) return 0.8; // Default
@@ -534,7 +561,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   private calculateAgentCapability(agent: Agent, task: Task): number {
     // Calculate how well agent capabilities match task requirements
     const matchingCapabilities = task.requiredCapabilities.filter((cap) =>
-      agent.capabilities.includes(cap)
+      agent.capabilities.includes(cap),
     ).length;
 
     return task.requiredCapabilities.length > 0
@@ -587,13 +614,18 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     if (predictions.size < 2) return 0.5;
 
     const latencies = Array.from(predictions.values()).map((p) => p.latency);
-    const successRates = Array.from(predictions.values()).map((p) => p.successRate);
+    const successRates = Array.from(predictions.values()).map(
+      (p) => p.successRate,
+    );
 
     const latencyVariance = this.calculateVariance(latencies);
     const successVariance = this.calculateVariance(successRates);
 
     // Lower variance = higher confidence
-    const confidence = Math.max(0.1, 1 - (latencyVariance + successVariance) / 2);
+    const confidence = Math.max(
+      0.1,
+      1 - (latencyVariance + successVariance) / 2,
+    );
     return Math.min(1.0, confidence);
   }
 
@@ -601,12 +633,15 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     if (values.length === 0) return 0;
 
     const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const variance = values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
+    const variance =
+      values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
 
     return variance;
   }
 
-  private calculateFeatureImportance(_features: MLFeatures): Record<string, number> {
+  private calculateFeatureImportance(
+    _features: MLFeatures,
+  ): Record<string, number> {
     // Simplified feature importance calculation
     return {
       currentLoad: 0.25,
@@ -654,18 +689,23 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     _agentId: string,
     _task: Task,
     _duration: number,
-    _success: boolean
+    _success: boolean,
   ): Promise<void> {
     // Update model performance metrics based on actual outcomes
     // This would involve comparing predictions with actual results
   }
 
-  private async updateAgentReliabilityModel(_agentId: string, _reliable: boolean): Promise<void> {
+  private async updateAgentReliabilityModel(
+    _agentId: string,
+    _reliable: boolean,
+  ): Promise<void> {
     // Update agent reliability in the model
     // This would adjust the agent's reliability score in the training data
   }
 
-  private extractFeaturesFromHistorical(entry: HistoricalData): Record<string, number> {
+  private extractFeaturesFromHistorical(
+    entry: HistoricalData,
+  ): Record<string, number> {
     // Extract normalized features from historical data entry
     const timestamp = entry.timestamp;
     return {
@@ -679,7 +719,10 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     };
   }
 
-  private async evaluateModel(_modelType: string, _trainingData: any[]): Promise<void> {
+  private async evaluateModel(
+    _modelType: string,
+    _trainingData: unknown[],
+  ): Promise<void> {
     // Evaluate model performance using cross-validation
     // This would implement proper ML evaluation metrics
   }
@@ -694,7 +737,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   private generateModelVersion(currentVersion: string): string {
     const parts = currentVersion?.split('.');
-    const patch = parseInt(parts[2]) + 1;
+    const patch = Number.parseInt(parts[2]) + 1;
     return `${parts[0]}.${parts[1]}.${patch}`;
   }
 
@@ -732,7 +775,7 @@ class DefaultPredictionEngine implements PredictionEngine {
     return Math.max(100, prediction);
   }
 
-  async train(data: any[]): Promise<void> {
+  async train(data: unknown[]): Promise<void> {
     // Mock training - in practice this would implement actual ML training
     this.model = { trained: true, dataSize: data.length };
   }

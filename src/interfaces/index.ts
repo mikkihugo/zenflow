@@ -14,12 +14,12 @@
  * @file Interfaces module exports.
  */
 
-export * from './api';
+export * from './api/index.js';
 // Advanced CLI System (Revolutionary AI-powered capabilities)
 export * from './cli';
-export * from './mcp';
-export * from './terminal';
-export * from './web';
+export * from './mcp/index.js';
+export * from './terminal/index.js';
+export * from './web/index.js';
 
 // Enhanced Interface types
 export interface InterfaceConfig {
@@ -44,10 +44,24 @@ export const InterfaceUtils = {
 
     // Check for advanced CLI indicators
     const args = process.argv.slice(2);
-    const advancedCommands = ['create', 'optimize', 'generate', 'swarm', 'neural'];
-    const aiFlags = ['--ai-assist', '--real-time', '--optimize', '--neural', '--swarm'];
+    const advancedCommands = [
+      'create',
+      'optimize',
+      'generate',
+      'swarm',
+      'neural',
+    ];
+    const aiFlags = [
+      '--ai-assist',
+      '--real-time',
+      '--optimize',
+      '--neural',
+      '--swarm',
+    ];
 
-    const hasAdvancedCommand = args.some((arg) => advancedCommands.includes(arg));
+    const hasAdvancedCommand = args.some((arg) =>
+      advancedCommands.includes(arg),
+    );
     const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
     if (hasAdvancedCommand || hasAIFlag) return 'advanced-cli';
@@ -60,24 +74,45 @@ export const InterfaceUtils = {
     const args = process.argv.slice(2);
 
     // Check for advanced CLI indicators
-    const advancedCommands = ['create', 'optimize', 'generate', 'swarm', 'neural'];
-    const aiFlags = ['--ai-assist', '--real-time', '--optimize', '--neural', '--swarm'];
+    const advancedCommands = [
+      'create',
+      'optimize',
+      'generate',
+      'swarm',
+      'neural',
+    ];
+    const aiFlags = [
+      '--ai-assist',
+      '--real-time',
+      '--optimize',
+      '--neural',
+      '--swarm',
+    ];
 
-    const hasAdvancedCommand = args.some((arg) => advancedCommands.includes(arg));
+    const hasAdvancedCommand = args.some((arg) =>
+      advancedCommands.includes(arg),
+    );
     const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
     if (hasAdvancedCommand || hasAIFlag) return 'advanced';
 
-    if (process.argv.includes('--ui') || process.argv.includes('--tui')) return 'tui';
-    if (process.argv.includes('--interactive') || process.argv.includes('-i')) return 'tui';
-    if (process.argv.length > 2 && !process.argv.slice(2).some((arg) => arg.startsWith('-')))
+    if (process.argv.includes('--ui') || process.argv.includes('--tui'))
+      return 'tui';
+    if (process.argv.includes('--interactive') || process.argv.includes('-i'))
+      return 'tui';
+    if (
+      process.argv.length > 2 &&
+      !process.argv.slice(2).some((arg) => arg.startsWith('-'))
+    )
       return 'cli';
     if (process.stdout.isTTY) return 'tui';
     return 'cli';
   },
 
   validateConfig(config: InterfaceConfig): boolean {
-    return ['terminal', 'web', 'mcp', 'api', 'advanced-cli'].includes(config?.['mode']);
+    return ['terminal', 'web', 'mcp', 'api', 'advanced-cli'].includes(
+      config?.['mode'],
+    );
   },
 
   isAdvancedCLIEnabled(): boolean {
@@ -85,13 +120,29 @@ export const InterfaceUtils = {
     const flags = process.env;
 
     // Check for advanced CLI indicators
-    const advancedCommands = ['create', 'optimize', 'generate', 'swarm', 'neural'];
-    const aiFlags = ['--ai-assist', '--real-time', '--optimize', '--neural', '--swarm'];
+    const advancedCommands = [
+      'create',
+      'optimize',
+      'generate',
+      'swarm',
+      'neural',
+    ];
+    const aiFlags = [
+      '--ai-assist',
+      '--real-time',
+      '--optimize',
+      '--neural',
+      '--swarm',
+    ];
 
-    const hasAdvancedCommand = args.some((arg) => advancedCommands.includes(arg));
+    const hasAdvancedCommand = args.some((arg) =>
+      advancedCommands.includes(arg),
+    );
     const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
-    return hasAdvancedCommand || hasAIFlag || flags['CLAUDE_ADVANCED_CLI'] === 'true';
+    return (
+      hasAdvancedCommand || hasAIFlag || flags['CLAUDE_ADVANCED_CLI'] === 'true'
+    );
   },
 };
 

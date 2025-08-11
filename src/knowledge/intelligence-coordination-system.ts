@@ -30,7 +30,7 @@ export interface ExpertiseDiscoveryEngine extends EventEmitter {
   reputationSystem: ReputationSystem;
 
   // Required methods
-  incorporateSpecialization(specialization: any): Promise<void>;
+  incorporateSpecialization(specialization: Specialization): Promise<void>;
   shutdown(): Promise<void>;
 }
 
@@ -101,7 +101,12 @@ export type ExpertiseLevel =
   | 'expert'
   | 'master';
 
-export type ProficiencyLevel = 'basic' | 'proficient' | 'advanced' | 'expert' | 'master';
+export type ProficiencyLevel =
+  | 'basic'
+  | 'proficient'
+  | 'advanced'
+  | 'expert'
+  | 'master';
 
 export type DiscoveryType =
   | 'behavioral-analysis'
@@ -342,9 +347,19 @@ export type RelationshipType =
   | 'complementary'
   | 'derived'
   | 'analogous';
-export type CertificationLevel = 'basic' | 'intermediate' | 'advanced' | 'expert' | 'master';
+export type CertificationLevel =
+  | 'basic'
+  | 'intermediate'
+  | 'advanced'
+  | 'expert'
+  | 'master';
 export type VerificationStatus = 'pending' | 'verified' | 'expired' | 'revoked';
-export type ComplexityLevel = 'low' | 'medium' | 'high' | 'very-high' | 'extreme';
+export type ComplexityLevel =
+  | 'low'
+  | 'medium'
+  | 'high'
+  | 'very-high'
+  | 'extreme';
 export type CollaborationRole =
   | 'leader'
   | 'contributor'
@@ -357,9 +372,24 @@ export type AlgorithmType =
   | 'heuristic'
   | 'hybrid'
   | 'rule-based';
-export type ChangeType = 'improvement' | 'decline' | 'shift' | 'emergence' | 'specialization';
-export type GrowthPatternType = 'linear' | 'exponential' | 'logistic' | 'oscillating' | 'plateau';
-export type TrendDirection = 'increasing' | 'decreasing' | 'stable' | 'oscillating' | 'emerging';
+export type ChangeType =
+  | 'improvement'
+  | 'decline'
+  | 'shift'
+  | 'emergence'
+  | 'specialization';
+export type GrowthPatternType =
+  | 'linear'
+  | 'exponential'
+  | 'logistic'
+  | 'oscillating'
+  | 'plateau';
+export type TrendDirection =
+  | 'increasing'
+  | 'decreasing'
+  | 'stable'
+  | 'oscillating'
+  | 'emerging';
 
 // Supporting interfaces
 export interface CompetencyDefinition {
@@ -529,7 +559,12 @@ export interface CollaborationOutcome {
 }
 
 // Additional supporting types
-export type ConstraintType = 'time' | 'resource' | 'capability' | 'priority' | 'dependency';
+export type ConstraintType =
+  | 'time'
+  | 'resource'
+  | 'capability'
+  | 'priority'
+  | 'dependency';
 export type EvidenceType =
   | 'performance'
   | 'certification'
@@ -551,9 +586,42 @@ export interface AssessmentCriterion {
   measurableIndicators: string[];
 }
 
+/**
+ * Supported parameter value types for intelligence coordination
+ */
+export type ParameterValue =
+  | string
+  | number
+  | boolean
+  | string[]
+  | number[]
+  | Record<string, unknown>
+  | null
+  | undefined;
+
+/**
+ * Generic configuration type for flexible settings
+ */
+export type ConfigurationValue = Record<string, unknown>;
+
+/**
+ * Generic data container for analysis and processing
+ */
+export type DataContainer =
+  | Record<string, unknown>
+  | unknown[]
+  | string
+  | number
+  | boolean;
+
+/**
+ * Range constraints for numeric or comparable values
+ */
+export type RangeValue = string | number | Date;
+
 export interface Parameter {
   name: string;
-  value: any;
+  value: ParameterValue;
   type: string;
   description: string;
 }
@@ -623,9 +691,24 @@ export interface AdjustmentRule {
 
 // Additional enum types
 export type SlotType = 'available' | 'busy' | 'tentative' | 'out-of-office';
-export type RequirementType = 'skill' | 'experience' | 'certification' | 'tool' | 'resource';
-export type ResourceType = 'document' | 'tool' | 'person' | 'system' | 'environment';
-export type AssessmentType = 'quiz' | 'project' | 'presentation' | 'peer-review' | 'practical';
+export type RequirementType =
+  | 'skill'
+  | 'experience'
+  | 'certification'
+  | 'tool'
+  | 'resource';
+export type ResourceType =
+  | 'document'
+  | 'tool'
+  | 'person'
+  | 'system'
+  | 'environment';
+export type AssessmentType =
+  | 'quiz'
+  | 'project'
+  | 'presentation'
+  | 'peer-review'
+  | 'practical';
 
 export interface AccessibilityInfo {
   level: AccessLevel;
@@ -639,7 +722,7 @@ export type AccessLevel = 'public' | 'restricted' | 'private' | 'confidential';
 export interface ContextCondition {
   condition: string;
   operator: string;
-  value: any;
+  value: ParameterValue;
   weight: number;
 }
 
@@ -662,7 +745,7 @@ export interface MaintainabilityMetrics {
 
 export interface AlgorithmParameter {
   name: string;
-  value: any;
+  value: ParameterValue;
   type: ParameterType;
   constraints: ParameterConstraint[];
   description: string;
@@ -740,7 +823,7 @@ export interface EvolutionImpact {
 
 export interface PatternCharacteristic {
   characteristic: string;
-  value: any;
+  value: ParameterValue;
   confidence: number;
   stability: number;
   predictiveValue: number;
@@ -908,15 +991,40 @@ export interface QoSMonitoring {
 }
 
 // Supporting types and enums
-export type ParameterType = 'number' | 'string' | 'boolean' | 'object' | 'array';
-export type TriggerType = 'threshold' | 'pattern' | 'anomaly' | 'time-based' | 'event-driven';
-export type ImpactScope = 'local' | 'domain' | 'system' | 'global' | 'ecosystem';
-export type ComparisonOperator = 'equals' | 'greater' | 'less' | 'contains' | 'matches';
-export type ConstraintSeverity = 'low' | 'medium' | 'high' | 'critical' | 'blocking';
+export type ParameterType =
+  | 'number'
+  | 'string'
+  | 'boolean'
+  | 'object'
+  | 'array';
+export type TriggerType =
+  | 'threshold'
+  | 'pattern'
+  | 'anomaly'
+  | 'time-based'
+  | 'event-driven';
+export type ImpactScope =
+  | 'local'
+  | 'domain'
+  | 'system'
+  | 'global'
+  | 'ecosystem';
+export type ComparisonOperator =
+  | 'equals'
+  | 'greater'
+  | 'less'
+  | 'contains'
+  | 'matches';
+export type ConstraintSeverity =
+  | 'low'
+  | 'medium'
+  | 'high'
+  | 'critical'
+  | 'blocking';
 
 export interface ParameterConstraint {
   constraintType: string;
-  value: any;
+  value: ParameterValue;
   message: string;
 }
 
@@ -1079,7 +1187,7 @@ export interface AdaptationStrategy {
 
 export interface AdaptationParameter {
   name: string;
-  value: any;
+  value: ParameterValue;
   range: ValueRange;
   learnable: boolean;
 }
@@ -1134,13 +1242,39 @@ export interface PricingModel {
 }
 
 // Additional enum types
-export type EffectType = 'positive' | 'negative' | 'neutral' | 'mixed' | 'unknown';
+export type EffectType =
+  | 'positive'
+  | 'negative'
+  | 'neutral'
+  | 'mixed'
+  | 'unknown';
 export type ChannelType = 'email' | 'sms' | 'slack' | 'webhook' | 'dashboard';
-export type NotificationType = 'alert' | 'warning' | 'info' | 'emergency' | 'routine';
+export type NotificationType =
+  | 'alert'
+  | 'warning'
+  | 'info'
+  | 'emergency'
+  | 'routine';
 export type UrgencyLevel = 'low' | 'medium' | 'high' | 'critical' | 'emergency';
-export type NotificationFormat = 'text' | 'html' | 'json' | 'formatted' | 'structured';
-export type AggregationType = 'sum' | 'average' | 'min' | 'max' | 'count' | 'percentile';
-export type PricingType = 'fixed' | 'variable' | 'tiered' | 'usage-based' | 'subscription';
+export type NotificationFormat =
+  | 'text'
+  | 'html'
+  | 'json'
+  | 'formatted'
+  | 'structured';
+export type AggregationType =
+  | 'sum'
+  | 'average'
+  | 'min'
+  | 'max'
+  | 'count'
+  | 'percentile';
+export type PricingType =
+  | 'fixed'
+  | 'variable'
+  | 'tiered'
+  | 'usage-based'
+  | 'subscription';
 
 // Supporting detailed interfaces
 export interface ValidationError {
@@ -1173,7 +1307,7 @@ export interface ResponseAction {
 export interface ScenarioCondition {
   parameter: string;
   operator: ComparisonOperator;
-  value: any;
+  value: ParameterValue;
   weight: number;
 }
 
@@ -1191,10 +1325,10 @@ export interface AccessControl {
 }
 
 export interface ValueRange {
-  min: any;
-  max: any;
-  step?: any;
-  discrete?: any[];
+  min: RangeValue;
+  max: RangeValue;
+  step?: RangeValue;
+  discrete?: ParameterValue[];
 }
 
 export interface LearningAlgorithm {
@@ -1206,7 +1340,7 @@ export interface LearningAlgorithm {
 
 export interface LearningParameter {
   name: string;
-  value: any;
+  value: ParameterValue;
   adaptable: boolean;
   range: ValueRange;
 }
@@ -1263,23 +1397,40 @@ export interface BillingConfig {
 export type ErrorSeverity = 'low' | 'medium' | 'high' | 'critical';
 export type ActionType = 'notify' | 'escalate' | 'remediate' | 'log' | 'ignore';
 export type WidgetType = 'chart' | 'table' | 'metric' | 'alert' | 'custom';
-export type LearningType = 'supervised' | 'unsupervised' | 'reinforcement' | 'hybrid';
-export type BaselineType = 'historical' | 'statistical' | 'theoretical' | 'peer-comparison';
-export type ReportFrequency = 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly';
+export type LearningType =
+  | 'supervised'
+  | 'unsupervised'
+  | 'reinforcement'
+  | 'hybrid';
+export type BaselineType =
+  | 'historical'
+  | 'statistical'
+  | 'theoretical'
+  | 'peer-comparison';
+export type ReportFrequency =
+  | 'hourly'
+  | 'daily'
+  | 'weekly'
+  | 'monthly'
+  | 'quarterly';
 export type ReportFormat = 'pdf' | 'html' | 'csv' | 'json' | 'dashboard';
 export type DiscountType = 'percentage' | 'fixed' | 'volume' | 'loyalty';
 export type BillingCycle = 'monthly' | 'quarterly' | 'annually' | 'usage-based';
-export type PaymentMethod = 'credit-card' | 'bank-transfer' | 'invoice' | 'cryptocurrency';
+export type PaymentMethod =
+  | 'credit-card'
+  | 'bank-transfer'
+  | 'invoice'
+  | 'cryptocurrency';
 
 export interface ActionParameter {
   name: string;
-  value: any;
+  value: ParameterValue;
   required: boolean;
 }
 
 export interface WidgetConfig {
   title: string;
-  settings: Map<string, any>;
+  settings: Map<string, ConfigurationValue>;
   refresh: number;
   interactive: boolean;
 }
@@ -1305,7 +1456,7 @@ export interface AccessRestriction {
 
 export interface Hyperparameter {
   name: string;
-  value: any;
+  value: ParameterValue;
   tunable: boolean;
   range: ValueRange;
 }
@@ -1360,9 +1511,18 @@ export interface BillingTerms {
 export type DataSourceType = 'database' | 'api' | 'file' | 'stream' | 'cache';
 export type RestrictionType = 'ip' | 'time' | 'location' | 'device' | 'role';
 export type OptimizationDirection = 'minimize' | 'maximize' | 'target';
-export type ValidationMethod = 'cross-validation' | 'holdout' | 'bootstrap' | 'time-series';
+export type ValidationMethod =
+  | 'cross-validation'
+  | 'holdout'
+  | 'bootstrap'
+  | 'time-series';
 export type SamplingMethod = 'random' | 'stratified' | 'systematic' | 'cluster';
-export type VisualizationType = 'chart' | 'graph' | 'table' | 'heatmap' | 'dashboard';
+export type VisualizationType =
+  | 'chart'
+  | 'graph'
+  | 'table'
+  | 'heatmap'
+  | 'dashboard';
 
 export interface ConnectionConfig {
   host: string;
@@ -1413,7 +1573,7 @@ export interface CredentialInfo {
 
 export interface QueryParameter {
   name: string;
-  value: any;
+  value: ParameterValue;
   type: string;
 }
 
@@ -1440,19 +1600,24 @@ export interface DataRequirement {
 export interface SelectionCriteria {
   field: string;
   operator: ComparisonOperator;
-  value: any;
+  value: ParameterValue;
   weight: number;
 }
 
 // Final enum types
 export type CachingStrategy = 'lru' | 'lfu' | 'fifo' | 'random' | 'ttl';
 export type InvalidationScope = 'key' | 'pattern' | 'tag' | 'all';
-export type CredentialType = 'basic' | 'bearer' | 'oauth' | 'certificate' | 'api-key';
+export type CredentialType =
+  | 'basic'
+  | 'bearer'
+  | 'oauth'
+  | 'certificate'
+  | 'api-key';
 
 export interface DataFilter {
   field: string;
   operator: string;
-  value: any;
+  value: ParameterValue;
 }
 
 export interface DataAggregation {
@@ -1669,7 +1834,12 @@ export type AdaptationMechanismType =
   | 'predictive'
   | 'learning'
   | 'hybrid';
-export type EmergenceConditionType = 'threshold' | 'pattern' | 'correlation' | 'anomaly' | 'trend';
+export type EmergenceConditionType =
+  | 'threshold'
+  | 'pattern'
+  | 'correlation'
+  | 'anomaly'
+  | 'trend';
 export type EmergenceIndicatorType =
   | 'quantitative'
   | 'qualitative'
@@ -1681,7 +1851,12 @@ export type DetectionAlgorithmType =
   | 'machine-learning'
   | 'pattern-matching'
   | 'heuristic';
-export type SpecializationLevel = 'emerging' | 'developing' | 'established' | 'advanced' | 'expert';
+export type SpecializationLevel =
+  | 'emerging'
+  | 'developing'
+  | 'established'
+  | 'advanced'
+  | 'expert';
 
 // Supporting interfaces for detailed configurations
 export interface ResolutionRule {
@@ -1890,7 +2065,7 @@ export interface LoopStability {
 
 export interface ConditionParameter {
   name: string;
-  value: any;
+  value: ParameterValue;
   sensitivity: number;
   constraints: ParameterConstraint[];
 }
@@ -2002,19 +2177,51 @@ export interface SpecializationPerformance {
 }
 
 // Final enum types
-export type AdjustmentType = 'linear' | 'proportional' | 'adaptive' | 'predictive';
-export type ComplianceStatus = 'compliant' | 'warning' | 'violation' | 'critical';
-export type AlertSeverity = 'info' | 'warning' | 'error' | 'critical' | 'emergency';
-export type AlertFrequency = 'immediate' | 'batched' | 'scheduled' | 'throttled';
+export type AdjustmentType =
+  | 'linear'
+  | 'proportional'
+  | 'adaptive'
+  | 'predictive';
+export type ComplianceStatus =
+  | 'compliant'
+  | 'warning'
+  | 'violation'
+  | 'critical';
+export type AlertSeverity =
+  | 'info'
+  | 'warning'
+  | 'error'
+  | 'critical'
+  | 'emergency';
+export type AlertFrequency =
+  | 'immediate'
+  | 'batched'
+  | 'scheduled'
+  | 'throttled';
 export type ViolationSeverity = 'minor' | 'major' | 'critical' | 'catastrophic';
-export type FeedbackSourceType = 'user' | 'system' | 'peer' | 'automated' | 'expert';
+export type FeedbackSourceType =
+  | 'user'
+  | 'system'
+  | 'peer'
+  | 'automated'
+  | 'expert';
 export type AdaptationActionType =
   | 'parameter-change'
   | 'algorithm-switch'
   | 'resource-allocation'
   | 'policy-update';
-export type ScopeLevel = 'individual' | 'team' | 'department' | 'organization' | 'ecosystem';
-export type RiskType = 'operational' | 'strategic' | 'technical' | 'financial' | 'compliance';
+export type ScopeLevel =
+  | 'individual'
+  | 'team'
+  | 'department'
+  | 'organization'
+  | 'ecosystem';
+export type RiskType =
+  | 'operational'
+  | 'strategic'
+  | 'technical'
+  | 'financial'
+  | 'compliance';
 export type TuningMethod =
   | 'grid-search'
   | 'random-search'
@@ -2037,7 +2244,7 @@ export interface EscalationCriteria {
 
 export interface BoundConstraint {
   type: ConstraintType;
-  value: any;
+  value: ConfigurationValue;
   enforcement: EnforcementLevel;
 }
 
@@ -2066,7 +2273,7 @@ export type EnforcementLevel = 'soft' | 'hard' | 'critical' | 'absolute';
 // Additional missing supporting interfaces
 export interface AdjustmentParameter {
   name: string;
-  value: any;
+  value: ConfigurationValue;
   range: ValueRange;
   adaptable: boolean;
   sensitivity: number;
@@ -2080,7 +2287,7 @@ export interface ReportDistribution {
 }
 
 export interface ChannelConfiguration {
-  settings: Map<string, any>;
+  settings: Map<string, ConfigurationValue>;
   credentials: ChannelCredentials;
   limits: ChannelLimits;
   formatting: MessageFormatting;
@@ -2111,7 +2318,7 @@ export interface SuppressionRule {
 
 export interface SuppressionCondition {
   type: SuppressionType;
-  value: any;
+  value: ConfigurationValue;
   operator: ComparisonOperator;
   timeWindow: number;
 }
@@ -2283,7 +2490,7 @@ export interface IntegrationValidation {
 export interface ActionCondition {
   condition: string;
   operator: string;
-  value: any;
+  value: ConfigurationValue;
   priority: number;
 }
 
@@ -2544,28 +2751,94 @@ export interface PerformanceComparison {
 
 // Enum types for new interfaces
 export type ChannelStatus = 'active' | 'inactive' | 'degraded' | 'maintenance';
-export type SuppressionType = 'time-based' | 'count-based' | 'condition-based' | 'manual';
-export type ResolutionStatus = 'pending' | 'in-progress' | 'resolved' | 'escalated';
-export type ScheduleFrequency = 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly';
-export type PreprocessingOperation = 'clean' | 'normalize' | 'transform' | 'aggregate' | 'filter';
-export type CollectionMethodType = 'survey' | 'interview' | 'observation' | 'automated' | 'hybrid';
-export type AutomationLevel = 'manual' | 'semi-automated' | 'automated' | 'fully-automated';
-export type TargetType = 'system' | 'service' | 'database' | 'api' | 'application';
-export type IntegrationMechanismType = 'api' | 'webhook' | 'message-queue' | 'database' | 'file';
-export type EffectSeverity = 'negligible' | 'minor' | 'moderate' | 'major' | 'severe';
-export type ImpactMagnitude = 'low' | 'medium' | 'high' | 'very-high' | 'extreme';
-export type TestMethod = 'unit' | 'integration' | 'system' | 'acceptance' | 'performance';
+export type SuppressionType =
+  | 'time-based'
+  | 'count-based'
+  | 'condition-based'
+  | 'manual';
+export type ResolutionStatus =
+  | 'pending'
+  | 'in-progress'
+  | 'resolved'
+  | 'escalated';
+export type ScheduleFrequency =
+  | 'hourly'
+  | 'daily'
+  | 'weekly'
+  | 'monthly'
+  | 'quarterly';
+export type PreprocessingOperation =
+  | 'clean'
+  | 'normalize'
+  | 'transform'
+  | 'aggregate'
+  | 'filter';
+export type CollectionMethodType =
+  | 'survey'
+  | 'interview'
+  | 'observation'
+  | 'automated'
+  | 'hybrid';
+export type AutomationLevel =
+  | 'manual'
+  | 'semi-automated'
+  | 'automated'
+  | 'fully-automated';
+export type TargetType =
+  | 'system'
+  | 'service'
+  | 'database'
+  | 'api'
+  | 'application';
+export type IntegrationMechanismType =
+  | 'api'
+  | 'webhook'
+  | 'message-queue'
+  | 'database'
+  | 'file';
+export type EffectSeverity =
+  | 'negligible'
+  | 'minor'
+  | 'moderate'
+  | 'major'
+  | 'severe';
+export type ImpactMagnitude =
+  | 'low'
+  | 'medium'
+  | 'high'
+  | 'very-high'
+  | 'extreme';
+export type TestMethod =
+  | 'unit'
+  | 'integration'
+  | 'system'
+  | 'acceptance'
+  | 'performance';
 export type MetricType = 'counter' | 'gauge' | 'histogram' | 'timer' | 'rate';
-export type RecommendationAction = 'develop' | 'enhance' | 'maintain' | 'redirect' | 'discontinue';
-export type AlertType = 'threshold' | 'anomaly' | 'trend' | 'pattern' | 'system';
-export type VerificationMethod = 'peer-review' | 'automated' | 'expert-assessment' | 'benchmark';
+export type RecommendationAction =
+  | 'develop'
+  | 'enhance'
+  | 'maintain'
+  | 'redirect'
+  | 'discontinue';
+export type AlertType =
+  | 'threshold'
+  | 'anomaly'
+  | 'trend'
+  | 'pattern'
+  | 'system';
+export type VerificationMethod =
+  | 'peer-review'
+  | 'automated'
+  | 'expert-assessment'
+  | 'benchmark';
 
 // Missing type definitions for validation and testing
 export interface TestCriteria {
   criteriaId: string;
   name: string;
   condition: string;
-  expectedValue: any;
+  expectedValue: ConfigurationValue;
   tolerance?: number;
 }
 
@@ -2606,7 +2879,7 @@ export interface ConstraintBounds {
   lower?: number;
   upper?: number;
   step?: number;
-  allowedValues?: any[];
+  allowedValues?: ConfigurationValue[];
 }
 
 export interface MetricCalculation {
@@ -2619,7 +2892,7 @@ export interface MetricCalculation {
 export interface StorageRepository {
   type: 'database' | 'file' | 'memory' | 'cloud';
   location: string;
-  credentials?: any;
+  credentials?: Record<string, unknown>;
 }
 
 export interface StorageSchema {
@@ -2632,7 +2905,7 @@ export interface StorageSchema {
 export interface IndexingStrategy {
   type: 'btree' | 'hash' | 'fulltext' | 'spatial';
   fields: string[];
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 }
 
 export interface AnalysisAutomation {
@@ -2663,12 +2936,17 @@ export interface ExpectedOutcome {
   confidence: number;
 }
 
-export type ReportType = 'summary' | 'detailed' | 'executive' | 'technical' | 'operational';
+export type ReportType =
+  | 'summary'
+  | 'detailed'
+  | 'executive'
+  | 'technical'
+  | 'operational';
 
 export interface SpecializationWidget {
   widgetId: string;
   type: string;
-  data: any;
+  data: DataContainer;
   position: WidgetPosition;
 }
 
@@ -2681,7 +2959,7 @@ export interface DashboardLayout {
 export interface AlertCondition {
   metric: string;
   operator: 'gt' | 'lt' | 'eq' | 'ne' | 'contains';
-  value: any;
+  value: ConfigurationValue;
   duration?: number;
 }
 
@@ -2696,7 +2974,7 @@ export interface StageObjective {
   objectiveId: string;
   description: string;
   metrics: string[];
-  target: any;
+  target: ConfigurationValue;
 }
 
 // Supporting type definitions
@@ -2833,8 +3111,18 @@ export interface OverrideCondition {
 }
 
 // Final enum types
-export type RecipientType = 'individual' | 'group' | 'role' | 'system' | 'external';
-export type FilterAction = 'include' | 'exclude' | 'transform' | 'route' | 'flag';
+export type RecipientType =
+  | 'individual'
+  | 'group'
+  | 'role'
+  | 'system'
+  | 'external';
+export type FilterAction =
+  | 'include'
+  | 'exclude'
+  | 'transform'
+  | 'route'
+  | 'flag';
 
 export interface FormatVariable {
   name: string;
@@ -2918,7 +3206,11 @@ export interface SchedulePattern {
   priority: number;
 }
 
-export type ExceptionType = 'unavailable' | 'limited' | 'extended' | 'emergency';
+export type ExceptionType =
+  | 'unavailable'
+  | 'limited'
+  | 'extended'
+  | 'emergency';
 
 /**
  * Knowledge Routing System.
@@ -3163,8 +3455,8 @@ export interface CollectiveMemoryManager extends EventEmitter {
   episodicMemory: EpisodicMemorySystem;
 
   // Required methods
-  storeTransferExperience(transfer: any): Promise<void>;
-  recordRoutingSuccess(routing: any): Promise<void>;
+  storeTransferExperience(transfer: TransferExperience): Promise<void>;
+  recordRoutingSuccess(routing: RoutingResult): Promise<void>;
   shutdown(): Promise<void>;
   semanticMemory: SemanticMemorySystem;
 }
@@ -3243,7 +3535,11 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   private knowledgeTransfers = new Map<string, TransferKnowledge>();
   private coordinationHistory = new Map<string, CoordinationEvent[]>();
 
-  constructor(config: IntelligenceCoordinationConfig, logger: ILogger, eventBus: IEventBus) {
+  constructor(
+    config: IntelligenceCoordinationConfig,
+    logger: ILogger,
+    eventBus: IEventBus,
+  ) {
     super();
     this.config = config;
     this.logger = logger;
@@ -3259,31 +3555,31 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
     this.expertiseDiscovery = new ExpertiseDiscoverySystemImpl(
       this.config.expertiseDiscovery,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.knowledgeRouting = new KnowledgeRoutingSystemImpl(
       this.config.knowledgeRouting,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.specializationDetector = new SpecializationEmergenceDetectorImpl(
       this.config.specializationDetection,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.crossDomainTransfer = new CrossDomainTransferSystemImpl(
       this.config.crossDomainTransfer,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.collectiveMemory = new CollectiveMemoryManagerImpl(
       this.config.collectiveMemory,
       this.logger,
-      this.eventBus
+      this.eventBus,
     );
 
     this.setupIntegrations();
@@ -3300,10 +3596,13 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
     });
 
     // Specialization Detection -> Expertise Discovery
-    this.specializationDetector.on('specialization:emerged', async (specialization) => {
-      await this.expertiseDiscovery.incorporateSpecialization(specialization);
-      this.emit('expertise:specialized', specialization);
-    });
+    this.specializationDetector.on(
+      'specialization:emerged',
+      async (specialization) => {
+        await this.expertiseDiscovery.incorporateSpecialization(specialization);
+        this.emit('expertise:specialized', specialization);
+      },
+    );
 
     // Cross-Domain Transfer -> Collective Memory
     this.crossDomainTransfer.on('transfer:completed', async (transfer) => {
@@ -3328,7 +3627,9 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
    *
    * @param agents
    */
-  async discoverSwarmExpertise(agents: string[]): Promise<ExpertiseDiscoveryResult> {
+  async discoverSwarmExpertise(
+    agents: string[],
+  ): Promise<ExpertiseDiscoveryResult> {
     const startTime = Date.now();
 
     try {
@@ -3337,24 +3638,29 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       });
 
       // Run parallel expertise discovery across all agents
-      const discoveryPromises = agents.map((agentId) => this.discoverAgentExpertise(agentId));
+      const discoveryPromises = agents.map((agentId) =>
+        this.discoverAgentExpertise(agentId),
+      );
 
       const expertiseProfiles = await Promise.all(discoveryPromises);
 
       // Analyze expertise distribution across the swarm
-      const expertiseDistribution = await this.analyzeExpertiseDistribution(expertiseProfiles);
+      const expertiseDistribution =
+        await this.analyzeExpertiseDistribution(expertiseProfiles);
 
       // Identify expertise gaps and overlaps
       const gapAnalysis = await this.identifyExpertiseGaps(expertiseProfiles);
 
       // Build expertise network graph
-      const expertiseNetwork = await this.buildExpertiseNetwork(expertiseProfiles);
+      const expertiseNetwork =
+        await this.buildExpertiseNetwork(expertiseProfiles);
 
       // Generate specialization recommendations
-      const specializationRecommendations = await this.generateSpecializationRecommendations(
-        expertiseDistribution,
-        gapAnalysis
-      );
+      const specializationRecommendations =
+        await this.generateSpecializationRecommendations(
+          expertiseDistribution,
+          gapAnalysis,
+        );
 
       const result: ExpertiseDiscoveryResult = {
         discoveryId: `expertise-${Date.now()}`,
@@ -3395,7 +3701,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
    */
   async routeKnowledgeQuery(
     query: KnowledgeQuery,
-    routingOptions?: RoutingOptions
+    routingOptions?: RoutingOptions,
   ): Promise<RoutingResult> {
     const startTime = Date.now();
 
@@ -3412,20 +3718,20 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       // Identify candidate experts based on expertise profiles
       const candidateExperts = await this.identifyCandidateExperts(
         queryAnalysis,
-        this.expertiseProfiles
+        this.expertiseProfiles,
       );
 
       // Apply routing strategy to select optimal expert(s)
       const routingStrategy = await this.selectRoutingStrategy(
         queryAnalysis,
         candidateExperts,
-        routingOptions
+        routingOptions,
       );
 
       const selectedExperts = await this.applyRoutingStrategy(
         routingStrategy,
         candidateExperts,
-        queryAnalysis
+        queryAnalysis,
       );
 
       // Route query to selected expert(s)
@@ -3436,7 +3742,8 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       });
 
       // Monitor routing performance and collect feedback
-      const performanceMetrics = await this.monitorRoutingPerformance(routingExecution);
+      const performanceMetrics =
+        await this.monitorRoutingPerformance(routingExecution);
 
       const result: RoutingResult = {
         routingId: `routing-${Date.now()}`,
@@ -3467,7 +3774,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
    * @param observationPeriod
    */
   async detectSpecializationEmergence(
-    observationPeriod: number = 3600000 // 1 hour default
+    observationPeriod: number = 3600000, // 1 hour default
   ): Promise<SpecializationEmergenceResult> {
     const startTime = Date.now();
 
@@ -3478,27 +3785,34 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       });
 
       // Collect performance and behavior data over observation period
-      const behaviorData = await this.collectBehaviorData([], observationPeriod);
+      const behaviorData = await this.collectBehaviorData(
+        [],
+        observationPeriod,
+      );
 
       // Apply emergence detection algorithms
       const detectionResults = await Promise.all(
         this.specializationDetector.detectionAlgorithms.map((algorithm) =>
-          this.applyEmergenceDetection(behaviorData)
-        )
+          this.applyEmergenceDetection(behaviorData),
+        ),
       );
 
       // Consolidate detection results
-      const consolidatedResults = await this.consolidateDetectionResults(detectionResults);
+      const consolidatedResults =
+        await this.consolidateDetectionResults(detectionResults);
 
       // Validate detected emergence patterns
-      const validatedPatterns = await this.validateEmergencePatterns(consolidatedResults);
+      const validatedPatterns =
+        await this.validateEmergencePatterns(consolidatedResults);
 
       // Generate adaptation recommendations
       const adaptationRecommendations =
         await this.generateAdaptationRecommendations(validatedPatterns);
 
       // Apply automatic adaptations where configured
-      const appliedAdaptations = await this.applyAutomaticAdaptations(adaptationRecommendations);
+      const appliedAdaptations = await this.applyAutomaticAdaptations(
+        adaptationRecommendations,
+      );
 
       const result: SpecializationEmergenceResult = {
         detectionId: `emergence-${Date.now()}`,
@@ -3535,7 +3849,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   async facilitateCrossDomainTransfer(
     sourceDomain: string,
     targetDomain: string,
-    transferType: TransferType = 'analogy-based'
+    transferType: TransferType = 'analogy-based',
   ): Promise<CrossDomainTransferResult> {
     const startTime = Date.now();
 
@@ -3547,30 +3861,41 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       });
 
       // Analyze domain compatibility and transfer potential
-      const domainAnalysis = await this.analyzeDomainCompatibility(sourceDomain, targetDomain);
+      const domainAnalysis = await this.analyzeDomainCompatibility(
+        sourceDomain,
+        targetDomain,
+      );
 
       // Select optimal transfer mechanism
-      const transferMechanism = await this.selectTransferMechanism(domainAnalysis);
+      const transferMechanism =
+        await this.selectTransferMechanism(domainAnalysis);
 
       // Extract transferable knowledge from source domain
       const extractedKnowledge = await this.extractTransferableKnowledge(
         sourceDomain,
-        transferMechanism
+        transferMechanism,
       );
 
       // Apply transfer mechanism to adapt knowledge
-      const adaptedKnowledge = await this.adaptKnowledge(extractedKnowledge, targetDomain);
+      const adaptedKnowledge = await this.adaptKnowledge(
+        extractedKnowledge,
+        targetDomain,
+      );
 
       // Validate transfer quality and applicability
-      const validationResults = await this.validateTransfer(adaptedKnowledge, targetDomain);
+      const validationResults = await this.validateTransfer(
+        adaptedKnowledge,
+        targetDomain,
+      );
 
       // Apply validated knowledge to target domain
       const applicationResults = await this.applyTransferredKnowledge(
-        validationResults?.validKnowledge
+        validationResults?.validKnowledge,
       );
 
       // Evaluate transfer effectiveness
-      const effectivenessEvaluation = await this.evaluateTransferEffectiveness(applicationResults);
+      const effectivenessEvaluation =
+        await this.evaluateTransferEffectiveness(applicationResults);
 
       const result: CrossDomainTransferResult = {
         transferId: `transfer-${Date.now()}`,
@@ -3634,7 +3959,8 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
       crossDomainTransfer: {
         activeTransfers: this.knowledgeTransfers.size,
         transferSuccessRate: await this.getTransferSuccessRate(),
-        averageTransferEffectiveness: await this.getAverageTransferEffectiveness(),
+        averageTransferEffectiveness:
+          await this.getAverageTransferEffectiveness(),
         domainCoverage: await this.getDomainCoverage(),
       },
       collectiveMemory: {
@@ -3678,13 +4004,15 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
   }
 
   // Implementation of utility methods would continue here...
-  private async discoverAgentExpertise(_agentId: string): Promise<ExpertiseProfile> {
+  private async discoverAgentExpertise(
+    _agentId: string,
+  ): Promise<ExpertiseProfile> {
     // Implementation placeholder
     return {} as ExpertiseProfile;
   }
 
   private async analyzeExpertiseDistribution(
-    _profiles: ExpertiseProfile[]
+    _profiles: ExpertiseProfile[],
   ): Promise<ExpertiseDistribution> {
     // Implementation placeholder
     return {} as ExpertiseDistribution;
@@ -3692,129 +4020,183 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 
   // Additional utility methods...
 
-  private async identifyExpertiseGaps(_profiles: ExpertiseProfile[]): Promise<any> {
+  private async identifyExpertiseGaps(
+    _profiles: ExpertiseProfile[],
+  ): Promise<AnalysisResult> {
     // Implementation placeholder
     return {};
   }
 
-  private async buildExpertiseNetwork(_profiles: ExpertiseProfile[]): Promise<any> {
+  private async buildExpertiseNetwork(
+    _profiles: ExpertiseProfile[],
+  ): Promise<AnalysisResult> {
     // Implementation placeholder
     return {};
   }
 
   private async generateSpecializationRecommendations(
-    _distribution: any,
-    _gapAnalysis: any
-  ): Promise<any[]> {
+    _distribution: WorkloadDistribution,
+    _gapAnalysis: GapAnalysis,
+  ): Promise<AnalysisResult[]> {
     // Implementation placeholder
     return [];
   }
 
-  private async analyzeQueryRequirements(_query: any): Promise<any> {
+  private async analyzeQueryRequirements(
+    _query: QueryRequest,
+  ): Promise<QueryAnalysis> {
     // Implementation placeholder
-    return {};
+    return {} as QueryAnalysis;
   }
 
-  private async identifyCandidateExperts(_analysis: any, _profiles: any): Promise<any[]> {
-    // Implementation placeholder
-    return [];
-  }
-
-  private async selectRoutingStrategy(_analysis: any, _experts: any, _options?: any): Promise<any> {
-    // Implementation placeholder
-    return {};
-  }
-
-  private async applyRoutingStrategy(_strategy: any, _experts: any, _query: any): Promise<any> {
-    // Implementation placeholder
-    return {};
-  }
-
-  private async executeRouting(_routing: any): Promise<any> {
-    // Implementation placeholder
-    return {};
-  }
-
-  private async monitorRoutingPerformance(_routing: any): Promise<any> {
-    // Implementation placeholder
-    return {};
-  }
-
-  updateRoutingTable(_data: any): void {
-    // Implementation placeholder
-  }
-
-  private async collectBehaviorData(_agents: any, _period: any): Promise<any> {
-    // Implementation placeholder
-    return {};
-  }
-
-  private applyEmergenceDetection(_behaviorData: any): any {
-    // Implementation placeholder
-    return {};
-  }
-
-  private async consolidateDetectionResults(_detectionResults: any): Promise<any> {
-    // Implementation placeholder
-    return {};
-  }
-
-  private async validateEmergencePatterns(_patterns: any): Promise<any> {
-    // Implementation placeholder
-    return {};
-  }
-
-  private generateAdaptationRecommendations(_patterns: any): any[] {
+  private async identifyCandidateExperts(
+    _analysis: QueryAnalysis,
+    _profiles: ExpertProfile[],
+  ): Promise<ExpertProfile[]> {
     // Implementation placeholder
     return [];
   }
 
-  private async applyAutomaticAdaptations(_recommendations: any): Promise<any> {
+  private async selectRoutingStrategy(
+    _analysis: QueryAnalysis,
+    _experts: ExpertProfile[],
+    _options?: RoutingOptions,
+  ): Promise<RoutingStrategy> {
+    // Implementation placeholder
+    return {} as RoutingStrategy;
+  }
+
+  private async applyRoutingStrategy(
+    _strategy: RoutingStrategy,
+    _experts: ExpertProfile[],
+    _query: QueryRequest,
+  ): Promise<AnalysisResult> {
     // Implementation placeholder
     return {};
   }
 
-  private calculateEmergenceScore(_patterns: any): number {
+  private async executeRouting(_routing: RoutingPlan): Promise<RoutingResult> {
+    // Implementation placeholder
+    return {} as RoutingResult;
+  }
+
+  private async monitorRoutingPerformance(
+    _routing: RoutingPlan,
+  ): Promise<PerformanceReport> {
+    // Implementation placeholder
+    return {} as PerformanceReport;
+  }
+
+  updateRoutingTable(_data: RoutingTableData): void {
+    // Implementation placeholder
+  }
+
+  private async collectBehaviorData(
+    _agents: AgentProfile[],
+    _period: TimeRange,
+  ): Promise<BehaviorData> {
+    // Implementation placeholder
+    return {};
+  }
+
+  private applyEmergenceDetection(
+    _behaviorData: BehaviorData,
+  ): EmergencePattern[] {
+    // Implementation placeholder
+    return {};
+  }
+
+  private async consolidateDetectionResults(
+    _detectionResults: EmergencePattern[],
+  ): Promise<AnalysisResult> {
+    // Implementation placeholder
+    return {};
+  }
+
+  private async validateEmergencePatterns(
+    _patterns: EmergencePattern[],
+  ): Promise<ValidationResult> {
+    // Implementation placeholder
+    return {};
+  }
+
+  private generateAdaptationRecommendations(
+    _patterns: EmergencePattern[],
+  ): AdaptationRecommendation[] {
+    // Implementation placeholder
+    return [];
+  }
+
+  private async applyAutomaticAdaptations(
+    _recommendations: AdaptationRecommendation[],
+  ): Promise<AdaptationResult> {
+    // Implementation placeholder
+    return {};
+  }
+
+  private calculateEmergenceScore(_patterns: EmergencePattern[]): number {
     // Implementation placeholder
     return 0;
   }
 
-  private async analyzeDomainCompatibility(_sourceDomain: any, _targetDomain: any): Promise<any> {
+  private async analyzeDomainCompatibility(
+    _sourceDomain: Domain,
+    _targetDomain: Domain,
+  ): Promise<AnalysisResult> {
     // Implementation placeholder
     return {};
   }
 
-  private async selectTransferMechanism(_compatibility: any): Promise<any> {
+  private async selectTransferMechanism(
+    _compatibility: CompatibilityAnalysis,
+  ): Promise<TransferMechanism> {
     // Implementation placeholder
     return {};
   }
 
-  private async extractTransferableKnowledge(_source: any, _mechanism: any): Promise<any> {
+  private async extractTransferableKnowledge(
+    _source: KnowledgeSource,
+    _mechanism: TransferMechanism,
+  ): Promise<AnalysisResult> {
     // Implementation placeholder
     return {};
   }
 
-  private async adaptKnowledge(_knowledge: any, _targetContext: any): Promise<any> {
+  private async adaptKnowledge(
+    _knowledge: KnowledgeItem,
+    _targetContext: Context,
+  ): Promise<AnalysisResult> {
     // Implementation placeholder
     return {};
   }
 
-  private async validateTransfer(_adaptedKnowledge: any, _targetContext: any): Promise<any> {
+  private async validateTransfer(
+    _adaptedKnowledge: KnowledgeItem,
+    _targetContext: Context,
+  ): Promise<AnalysisResult> {
     // Implementation placeholder
     return {};
   }
 
-  private async applyTransferredKnowledge(_validatedResults: any): Promise<any> {
+  private async applyTransferredKnowledge(
+    _validatedResults: ValidationResult[],
+  ): Promise<AnalysisResult> {
     // Implementation placeholder
     return {};
   }
 
-  private async evaluateTransferEffectiveness(_transfer: any): Promise<any> {
+  private async evaluateTransferEffectiveness(
+    _transfer: TransferResult,
+  ): Promise<EffectivenessReport> {
     // Implementation placeholder
     return {};
   }
 
-  private async transferKnowledge(_source: any, _target: any, _knowledge: any): Promise<any> {
+  private async transferKnowledge(
+    _source: KnowledgeSource,
+    _target: KnowledgeTarget,
+    _knowledge: KnowledgeItem,
+  ): Promise<AnalysisResult> {
     // Implementation placeholder
     return {};
   }
@@ -3899,7 +4281,7 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
     return 0;
   }
 
-  private propagateMemoryInsights(_memory: any): void {
+  private propagateMemoryInsights(_memory: MemoryInsights): void {
     // Implementation placeholder
   }
 }
@@ -4017,18 +4399,18 @@ export interface CrossDomainTransferResult {
   extractedItems: number;
   adaptedItems: number;
   validatedItems: number;
-  applicationResults: any;
+  applicationResults: ApplicationResult[];
   effectivenessScore: number;
   transferTime: number;
   timestamp: number;
 }
 
 export interface IntelligenceCoordinationMetrics {
-  expertiseDiscovery: any;
-  knowledgeRouting: any;
-  specializationEmergence: any;
-  crossDomainTransfer: any;
-  collectiveMemory: any;
+  expertiseDiscovery: ExpertiseReport;
+  knowledgeRouting: RoutingReport;
+  specializationEmergence: EmergenceReport;
+  crossDomainTransfer: TransferReport;
+  collectiveMemory: MemoryReport;
 }
 
 // Additional interfaces and types
@@ -4079,16 +4461,16 @@ export interface IntegrationMonitoring {
   monitorId: string;
   integrationId: string;
   status: string;
-  metrics: any;
-  alerts: any[];
+  metrics: PerformanceMetrics;
+  alerts: Alert[];
 }
 
 export interface OptimizationAlgorithm {
   algorithmId: string;
   name: string;
   type: string;
-  parameters: any;
-  performance: any;
+  parameters: ConfigurationValue;
+  performance: PerformanceData;
 }
 
 export interface MeasurementDefinition {
@@ -4113,7 +4495,7 @@ export interface RenewalTerms {
 export interface TerminationClause {
   condition: string;
   notice: number;
-  penalties: any;
+  penalties: PenaltySchedule;
 }
 
 export interface ModificationPolicy {
@@ -4188,7 +4570,7 @@ export interface PreprocessingOperationConfig {
 
 export interface OperationParameter {
   name: string;
-  value: any;
+  value: ConfigurationValue;
   type: string;
 }
 
@@ -4224,7 +4606,7 @@ export interface ConsistencyCheck {
 // Additional missing type definitions for augmentation and benchmarking
 export interface AugmentationTechnique {
   technique: string;
-  parameters: any;
+  parameters: ConfigurationValue;
   probability: number;
 }
 
@@ -4307,19 +4689,19 @@ export interface QualityReporting {
 export interface ProcessingOperation {
   operation: string;
   type: string;
-  parameters: any;
+  parameters: ConfigurationValue;
 }
 
 export interface ProcessingInput {
   source: string;
   format: string;
-  validation: any;
+  validation: ValidationSettings;
 }
 
 export interface ProcessingOutput {
   destination: string;
   format: string;
-  transformation: any;
+  transformation: TransformationRules;
 }
 
 export interface ProcessingValidation {
@@ -4330,7 +4712,7 @@ export interface ProcessingValidation {
 
 export interface AggregationMethod {
   method: string;
-  parameters: any;
+  parameters: ConfigurationValue;
 }
 
 export interface AggregationWeight {
@@ -4341,7 +4723,7 @@ export interface AggregationWeight {
 export interface AggregationFilter {
   field: string;
   operator: string;
-  value: any;
+  value: ConfigurationValue;
 }
 
 export interface AggregationValidation {
@@ -4352,7 +4734,7 @@ export interface AggregationValidation {
 export interface AnalysisTechnique {
   technique: string;
   algorithms: string[];
-  parameters: any;
+  parameters: ConfigurationValue;
 }
 
 export interface AnalysisModel {
@@ -4406,7 +4788,7 @@ export interface IntegrationInterface {
 export interface DataMapping {
   source: string;
   target: string;
-  transformation: any;
+  transformation: TransformationRules;
 }
 
 export interface TargetValidation {
@@ -4417,7 +4799,7 @@ export interface TargetValidation {
 export interface IntegrationProtocol {
   protocol: string;
   version: string;
-  parameters: any;
+  parameters: ConfigurationValue;
 }
 
 export interface IntegrationSecurity {
@@ -4434,15 +4816,15 @@ export interface IntegrationRule {
 
 export interface IntegrationTest {
   test: string;
-  expected: any;
-  actual: any;
+  expected: ExpectedValue;
+  actual: ActualValue;
   passed: boolean;
 }
 
 export interface ValidationMonitoring {
   metrics: string[];
-  alerts: any[];
-  reporting: any;
+  alerts: Alert[];
+  reporting: ReportingConfig;
 }
 
 export interface ValidationReporting {
@@ -4489,18 +4871,18 @@ export interface RiskResponse {
 
 export interface SearchParameter {
   parameter: string;
-  value: any;
+  value: ConfigurationValue;
   type: string;
 }
 
 export interface SearchConstraint {
   constraint: string;
-  value: any;
+  value: ConfigurationValue;
 }
 
 export interface SearchBoundary {
   type: string;
-  limits: any;
+  limits: ResourceLimits;
 }
 
 export interface SamplingStrategy {
@@ -4624,9 +5006,9 @@ export interface BenchmarkComparison {
 
 export interface BenchmarkContext {
   environment: string;
-  conditions: Record<string, any>;
+  conditions: Record<string, unknown>;
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface TrendFactor {
@@ -4666,7 +5048,7 @@ export interface EmergenceEvent {
   description: string;
   severity: 'low' | 'medium' | 'high';
   agents: string[];
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 export interface SpecializationIntervention {
@@ -4695,7 +5077,7 @@ export interface OptimizationStrategy {
   id: string;
   name: string;
   algorithm: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
 }
 
 export interface TransferRelationship {
@@ -4711,13 +5093,13 @@ export interface TransferRecord {
   timestamp: number;
   success: boolean;
   effectiveness: number;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
 }
 
 export interface AnalogyMapping {
   id: string;
-  sourceStructure: any;
-  targetStructure: any;
+  sourceStructure: DataStructure;
+  targetStructure: DataStructure;
   mappingStrength: number;
   validationScore: number;
 }
@@ -4731,7 +5113,7 @@ export interface AbstractionLevelInfo {
   id: string;
   level: number;
   concepts: string[];
-  abstraction: any;
+  abstraction: AbstractionLevel;
 }
 
 export interface HierarchyRelationship {
@@ -4751,7 +5133,7 @@ export interface TransferPath {
 export interface TransferStep {
   id: string;
   operation: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   expectedOutcome: string;
 }
 
@@ -4808,7 +5190,7 @@ export interface DomainTransferHistory {
 
 export interface AnalogyMappingAlgorithm {
   name: string;
-  algorithm: (source: any, target: any) => AnalogyMapping;
+  algorithm: (source: DataStructure, target: DataStructure) => AnalogyMapping;
   accuracy: number;
   performance: PerformanceMetric[];
 }
@@ -4838,14 +5220,14 @@ export interface DatabaseStatistics {
 }
 
 export interface CreativityEngine {
-  generateAnalogies: (context: any) => AnalogyMapping[];
-  evaluateCreativity: (solution: any) => number;
-  enhanceCreativity: (parameters: any) => void;
+  generateAnalogies: (context: AnalysisContext) => AnalogyMapping[];
+  evaluateCreativity: (solution: CreativeSolution) => number;
+  enhanceCreativity: (parameters: CreativityParameters) => void;
 }
 
 export interface GeneralizationAlgorithm {
   name: string;
-  generalize: (examples: any[]) => any;
+  generalize: (examples: Example[]) => GeneralizedPattern;
   accuracy: number;
   applicability: string[];
 }
@@ -4865,27 +5247,33 @@ export interface ConceptRelationship {
 }
 
 export interface PatternExtractionEngine {
-  extractPatterns: (data: any[]) => Pattern[];
+  extractPatterns: (data: DataPoint[]) => Pattern[];
   validatePatterns: (patterns: Pattern[]) => Pattern[];
-  applyPatterns: (pattern: Pattern, context: any) => any;
+  applyPatterns: (
+    pattern: Pattern,
+    context: AnalysisContext,
+  ) => ApplicationResult;
 }
 
 export interface Pattern {
   id: string;
   name: string;
-  structure: any;
+  structure: KnowledgeStructure;
   confidence: number;
   applicability: string[];
 }
 
 export interface KnowledgeDistillationEngine {
-  distillKnowledge: (rawKnowledge: any) => DistilledKnowledge;
+  distillKnowledge: (rawKnowledge: RawKnowledge) => DistilledKnowledge;
   validateDistillation: (knowledge: DistilledKnowledge) => boolean;
-  applyKnowledge: (knowledge: DistilledKnowledge, context: any) => any;
+  applyKnowledge: (
+    knowledge: DistilledKnowledge,
+    context: AnalysisContext,
+  ) => ApplicationResult;
 }
 
 export interface DistilledKnowledge {
-  essence: any;
+  essence: KnowledgeEssence;
   principles: string[];
   applications: string[];
   constraints: string[];
@@ -4908,8 +5296,8 @@ export interface TransferTestCase {
   name: string;
   sourceDomain: string;
   targetDomain: string;
-  expectedOutcome: any;
-  actualOutcome?: any;
+  expectedOutcome: ExpectedOutcome;
+  actualOutcome?: ActualOutcome;
 }
 
 export interface TransferBenchmark {
@@ -5006,8 +5394,8 @@ export interface SemanticMemorySystem {
 export interface MemoryEpisode {
   id: string;
   timestamp: number;
-  context: any;
-  content: any;
+  context: EpisodeContext;
+  content: EpisodeContent;
   importance: number;
 }
 
@@ -5018,15 +5406,15 @@ export interface EpisodicIndex {
 }
 
 export interface EpisodicRetrieval {
-  retrieve: (query: any) => MemoryEpisode[];
-  rank: (episodes: MemoryEpisode[], query: any) => MemoryEpisode[];
+  retrieve: (query: MemoryQuery) => MemoryEpisode[];
+  rank: (episodes: MemoryEpisode[], query: MemoryQuery) => MemoryEpisode[];
 }
 
 export interface SemanticConcept {
   id: string;
   name: string;
   definition: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   relationships: string[];
 }
 
@@ -5053,7 +5441,7 @@ export interface MemoryGraph {
 export interface MemoryNode {
   id: string;
   type: string;
-  content: any;
+  content: EpisodeContent;
   connections: string[];
   importance: number;
 }
@@ -5096,28 +5484,28 @@ export interface HierarchyLevel {
 
 export interface PromotionRule {
   id: string;
-  condition: (memory: any) => boolean;
+  condition: (memory: MemoryItem) => boolean;
   fromLevel: number;
   toLevel: number;
 }
 
 export interface DegradationRule {
   id: string;
-  condition: (memory: any) => boolean;
+  condition: (memory: MemoryItem) => boolean;
   fromLevel: number;
   toLevel: number;
 }
 
 export interface MemoryDistributionStrategy {
   strategy: string;
-  algorithm: (memories: any[]) => Map<string, any[]>;
+  algorithm: (memories: MemoryItem[]) => Map<string, MemoryItem[]>;
   loadBalancing: boolean;
 }
 
 export interface MemoryContent {
   id: string;
   type: string;
-  data: any;
+  data: DataContainer;
   metadata: MemoryMetadata;
   encoding: string;
 }
@@ -5156,14 +5544,14 @@ export interface MemoryAssociation {
 
 export interface IndexingSystem {
   indices: MemoryIndex[];
-  buildIndex: (memories: any[]) => MemoryIndex;
-  updateIndex: (index: MemoryIndex, changes: any[]) => MemoryIndex;
+  buildIndex: (memories: MemoryItem[]) => MemoryIndex;
+  updateIndex: (index: MemoryIndex, changes: MemoryChange[]) => MemoryIndex;
 }
 
 export interface MemoryIndex {
   id: string;
   type: string;
-  structure: any;
+  structure: KnowledgeStructure;
   performance: IndexPerformance;
 }
 
@@ -5176,7 +5564,7 @@ export interface IndexPerformance {
 
 export interface SearchAlgorithm {
   name: string;
-  search: (query: any, index: MemoryIndex) => SearchResult[];
+  search: (query: MemoryQuery, index: MemoryIndex) => SearchResult[];
   performance: AlgorithmPerformance;
 }
 
@@ -5184,8 +5572,8 @@ export interface SearchResult {
   id: string;
   relevance: number;
   confidence: number;
-  content: any;
-  metadata: any;
+  content: EpisodeContent;
+  metadata: SearchMetadata;
 }
 
 export interface AlgorithmPerformance {
@@ -5196,7 +5584,7 @@ export interface AlgorithmPerformance {
 }
 
 export interface RankingMechanism {
-  rank: (results: SearchResult[], context: any) => SearchResult[];
+  rank: (results: SearchResult[], context: SearchContext) => SearchResult[];
   factors: RankingFactor[];
   weights: Map<string, number>;
 }
@@ -5204,32 +5592,35 @@ export interface RankingMechanism {
 export interface RankingFactor {
   name: string;
   weight: number;
-  calculate: (result: SearchResult, context: any) => number;
+  calculate: (result: SearchResult, context: SearchContext) => number;
 }
 
 export interface ContextualRetrievalEngine {
-  retrieveContextual: (query: any, context: any) => RetrievalResult[];
+  retrieveContextual: (
+    query: MemoryQuery,
+    context: RetrievalContext,
+  ) => RetrievalResult[];
   contextAnalysis: ContextAnalysis;
   adaptiveRanking: boolean;
 }
 
 export interface RetrievalResult {
-  content: any;
+  content: EpisodeContent;
   relevance: number;
   contextMatch: number;
   confidence: number;
 }
 
 export interface ContextAnalysis {
-  analyze: (context: any) => ContextFeatures;
-  similarity: (context1: any, context2: any) => number;
+  analyze: (context: AnalysisContext) => ContextFeatures;
+  similarity: (context1: AnalysisContext, context2: AnalysisContext) => number;
 }
 
 export interface ContextFeatures {
-  temporal: any;
-  semantic: any;
-  structural: any;
-  behavioral: any;
+  temporal: TemporalFeatures;
+  semantic: SemanticFeatures;
+  structural: StructuralFeatures;
+  behavioral: BehavioralFeatures;
 }
 
 export interface ForgettingCurve {
@@ -5246,7 +5637,7 @@ export interface ForgettingParameters {
 }
 
 export interface ImportanceWeighting {
-  calculateImportance: (memory: any, context: any) => number;
+  calculateImportance: (memory: MemoryItem, context: AnalysisContext) => number;
   factors: ImportanceFactor[];
   dynamicWeighting: boolean;
 }
@@ -5254,18 +5645,18 @@ export interface ImportanceWeighting {
 export interface ImportanceFactor {
   name: string;
   weight: number;
-  calculate: (memory: any) => number;
+  calculate: (memory: MemoryItem) => number;
 }
 
 export interface SelectiveForgettingEngine {
-  shouldForget: (memory: any) => boolean;
+  shouldForget: (memory: MemoryItem) => boolean;
   forgettingStrategy: string;
   protectedMemories: Set<string>;
 }
 
 export interface ConsolidationTrigger {
   id: string;
-  condition: (memories: any[]) => boolean;
+  condition: (memories: MemoryItem[]) => boolean;
   priority: number;
   action: string;
 }
@@ -5288,7 +5679,7 @@ export interface DistributionChannel {
   id: string;
   name: string;
   type: ChannelType;
-  config: Record<string, any>;
+  config: Record<string, unknown>;
 }
 
 export interface QueryRequirements {
@@ -5296,20 +5687,20 @@ export interface QueryRequirements {
   domain?: string;
   urgency: 'low' | 'medium' | 'high' | 'critical';
   requiredExpertise?: ExpertiseLevel;
-  constraints?: Record<string, any>;
+  constraints?: Record<string, unknown>;
 }
 
 export interface RoutingPreference {
   type: 'load-balancing' | 'expertise-match' | 'availability' | 'cost';
   weight: number;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
 }
 
 export interface TransferKnowledge {
   id: string;
   sourceDomain: string;
   targetDomain: string;
-  knowledge: any;
+  knowledge: KnowledgeBase;
   transferType: TransferType;
   confidence: number;
   effectiveness?: number;
@@ -5317,13 +5708,16 @@ export interface TransferKnowledge {
 
 // Placeholder interfaces for system implementations
 interface ExpertiseDiscoverySystem {
-  incorporateSpecialization(specialization: any): Promise<void>;
+  incorporateSpecialization(specialization: SpecializationData): Promise<void>;
   shutdown(): Promise<void>;
   on(event: string, handler: Function): void;
 }
 
 // Placeholder implementation for ExpertiseDiscoverySystem
-class ExpertiseDiscoverySystemImpl extends EventEmitter implements ExpertiseDiscoveryEngine {
+class ExpertiseDiscoverySystemImpl
+  extends EventEmitter
+  implements ExpertiseDiscoveryEngine
+{
   expertiseProfiles = new Map<string, ExpertiseProfile>();
   discoveryMechanisms: DiscoveryMechanism[] = [];
   expertiseEvolution!: ExpertiseEvolutionTracker;
@@ -5331,14 +5725,16 @@ class ExpertiseDiscoverySystemImpl extends EventEmitter implements ExpertiseDisc
   reputationSystem!: ReputationSystem;
 
   constructor(
-    private config: any,
-    private logger: any,
-    private eventBus: any
+    private config: ConfigurationValue,
+    private logger: Logger,
+    private eventBus: EventBus,
   ) {
     super();
   }
 
-  async incorporateSpecialization(specialization: any): Promise<void> {
+  async incorporateSpecialization(
+    specialization: SpecializationData,
+  ): Promise<void> {
     // Store the specialization in expertise profiles
     const agentId = specialization.agentId || `agent-${Date.now()}`;
     const existingProfile = this.expertiseProfiles.get(agentId);
@@ -5409,7 +5805,10 @@ class ExpertiseDiscoverySystemImpl extends EventEmitter implements ExpertiseDisc
 }
 
 // Additional implementation classes
-class KnowledgeRoutingSystemImpl extends EventEmitter implements KnowledgeRoutingSystem {
+class KnowledgeRoutingSystemImpl
+  extends EventEmitter
+  implements KnowledgeRoutingSystem
+{
   routingTable = new Map<string, RoutingEntry[]>();
   routingStrategies: RoutingStrategy[] = [];
   loadBalancing: LoadBalancingConfig;
@@ -5417,15 +5816,16 @@ class KnowledgeRoutingSystemImpl extends EventEmitter implements KnowledgeRoutin
   adaptiveRouting: AdaptiveRoutingConfig;
 
   constructor(
-    private config: any,
-    private logger: any,
-    private eventBus: any
+    private config: ConfigurationValue,
+    private logger: Logger,
+    private eventBus: EventBus,
   ) {
     super();
     // Initialize required properties
     this.loadBalancing = config.loadBalancing || ({} as LoadBalancingConfig);
     this.qualityOfService = config.qualityOfService || ({} as QoSConfig);
-    this.adaptiveRouting = config.adaptiveRouting || ({} as AdaptiveRoutingConfig);
+    this.adaptiveRouting =
+      config.adaptiveRouting || ({} as AdaptiveRoutingConfig);
   }
 
   async updateRoutingTable(profile: ExpertiseProfile): Promise<void> {
@@ -5486,7 +5886,10 @@ class KnowledgeRoutingSystemImpl extends EventEmitter implements KnowledgeRoutin
     this.routingStrategies.length = 0;
   }
 
-  override on(event: string | symbol, listener: (...args: any[]) => void): this {
+  override on(
+    event: string | symbol,
+    listener: (...args: unknown[]) => void,
+  ): this {
     return super.on(event, listener);
   }
 }
@@ -5502,16 +5905,17 @@ class SpecializationEmergenceDetectorImpl
   feedbackLoops: FeedbackLoop[] = [];
 
   constructor(
-    private config: any,
-    private logger: any,
-    private eventBus: any
+    private config: ConfigurationValue,
+    private logger: Logger,
+    private eventBus: EventBus,
   ) {
     super();
     // Initialize required properties
-    this.specialization = config.specialization || ({} as SpecializationTracker);
+    this.specialization =
+      config.specialization || ({} as SpecializationTracker);
   }
 
-  async detectEmergingSpecialization(data: any): Promise<void> {
+  async detectEmergingSpecialization(data: SpecializationData): Promise<void> {
     // Analyze patterns and detect emerging specializations
     const specialization = {
       id: `spec-${Date.now()}`,
@@ -5535,12 +5939,18 @@ class SpecializationEmergenceDetectorImpl
     this.feedbackLoops.length = 0;
   }
 
-  override on(event: string | symbol, listener: (...args: any[]) => void): this {
+  override on(
+    event: string | symbol,
+    listener: (...args: unknown[]) => void,
+  ): this {
     return super.on(event, listener);
   }
 }
 
-class CrossDomainTransferSystemImpl extends EventEmitter implements CrossDomainTransferSystem {
+class CrossDomainTransferSystemImpl
+  extends EventEmitter
+  implements CrossDomainTransferSystem
+{
   transferMap: CrossDomainTransferMap;
   analogyEngine: AnalogyEngine;
   abstractionEngine: AbstractionEngine;
@@ -5548,20 +5958,23 @@ class CrossDomainTransferSystemImpl extends EventEmitter implements CrossDomainT
   transferOptimization: TransferOptimizationEngine;
 
   constructor(
-    private config: any,
-    private logger: any,
-    private eventBus: any
+    private config: ConfigurationValue,
+    private logger: Logger,
+    private eventBus: EventBus,
   ) {
     super();
     // Initialize required properties
     this.transferMap = config.transferMap || ({} as CrossDomainTransferMap);
     this.analogyEngine = config.analogyEngine || ({} as AnalogyEngine);
-    this.abstractionEngine = config.abstractionEngine || ({} as AbstractionEngine);
-    this.transferValidation = config.transferValidation || ({} as TransferValidationSystem);
-    this.transferOptimization = config.transferOptimization || ({} as TransferOptimizationEngine);
+    this.abstractionEngine =
+      config.abstractionEngine || ({} as AbstractionEngine);
+    this.transferValidation =
+      config.transferValidation || ({} as TransferValidationSystem);
+    this.transferOptimization =
+      config.transferOptimization || ({} as TransferOptimizationEngine);
   }
 
-  async completeTransfer(transferData: any): Promise<void> {
+  async completeTransfer(transferData: TransferData): Promise<void> {
     const transfer = {
       id: `transfer-${Date.now()}`,
       sourceDomain: transferData.sourceDomain,
@@ -5578,12 +5991,18 @@ class CrossDomainTransferSystemImpl extends EventEmitter implements CrossDomainT
     this.removeAllListeners();
   }
 
-  override on(event: string | symbol, listener: (...args: any[]) => void): this {
+  override on(
+    event: string | symbol,
+    listener: (...args: unknown[]) => void,
+  ): this {
     return super.on(event, listener);
   }
 }
 
-class CollectiveMemoryManagerImpl extends EventEmitter implements CollectiveMemoryManager {
+class CollectiveMemoryManagerImpl
+  extends EventEmitter
+  implements CollectiveMemoryManager
+{
   sharedMemory!: SharedMemorySpace;
   memoryConsolidation!: MemoryConsolidationEngine;
   retrieval!: MemoryRetrievalSystem;
@@ -5592,14 +6011,14 @@ class CollectiveMemoryManagerImpl extends EventEmitter implements CollectiveMemo
   semanticMemory!: SemanticMemorySystem;
 
   constructor(
-    private config: any,
-    private logger: any,
-    private eventBus: any
+    private config: ConfigurationValue,
+    private logger: Logger,
+    private eventBus: EventBus,
   ) {
     super();
   }
 
-  async storeTransferExperience(experience: any): Promise<void> {
+  async storeTransferExperience(experience: TransferExperience): Promise<void> {
     // Store the transfer experience in memory for future use
     const memoryEntry = {
       id: `memory-${Date.now()}`,
@@ -5613,7 +6032,7 @@ class CollectiveMemoryManagerImpl extends EventEmitter implements CollectiveMemo
     this.emit('memory:retrieved', memoryEntry);
   }
 
-  async recordRoutingSuccess(success: any): Promise<void> {
+  async recordRoutingSuccess(success: RoutingSuccess): Promise<void> {
     // Record successful routing patterns for optimization
     const memoryEntry = {
       id: `routing-${Date.now()}`,
@@ -5639,7 +6058,7 @@ class CollectiveMemoryManagerImpl extends EventEmitter implements CollectiveMemo
 export interface StorageLocation {
   type: 'memory' | 'file' | 'database' | 'cloud';
   path: string;
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 }
 
 // Fix recipients property type mismatch in notification interfaces

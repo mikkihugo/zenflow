@@ -3,9 +3,15 @@
  */
 
 import { getLogger } from '../../../../config/logging-config.ts';
-import { Priority, type ProjectDomain, type SPARCProject } from '../types/sparc-types.ts';
+import {
+  Priority,
+  type ProjectDomain,
+  type SPARCProject,
+} from '../types/sparc-types.ts';
 
-const logger = getLogger('coordination-swarm-sparc-integrations-roadmap-integration');
+const logger = getLogger(
+  'coordination-swarm-sparc-integrations-roadmap-integration',
+);
 
 // Roadmap-specific type definitions
 export interface Epic {
@@ -70,10 +76,13 @@ import * as path from 'node:path';
 export interface SPARCRoadmapPlanning {
   generateEpicFromSPARCProject(project: SPARCProject): Promise<Epic>;
   generateFeaturesFromProject(project: SPARCProject): Promise<Feature[]>;
-  addProjectToRoadmap(project: SPARCProject, targetQuarter: string): Promise<void>;
+  addProjectToRoadmap(
+    project: SPARCProject,
+    targetQuarter: string,
+  ): Promise<void>;
   generateDomainRoadmap(
     domain: ProjectDomain,
-    timeframe: { start: string; end: string }
+    timeframe: { start: string; end: string },
   ): Promise<Roadmap>;
 }
 
@@ -103,7 +112,8 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
       features: [], // Will be populated when features are generated
       business_value: this.calculateBusinessValue(project),
       timeline: {
-        start_date: new Date().toISOString().split('T')[0] || new Date().toISOString(),
+        start_date:
+          new Date().toISOString().split('T')[0] || new Date().toISOString(),
         end_date: this.calculateEpicEndDate(project),
       },
       status: 'approved',
@@ -184,7 +194,10 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
    * @param project
    * @param targetQuarter
    */
-  async addProjectToRoadmap(project: SPARCProject, targetQuarter: string): Promise<void> {
+  async addProjectToRoadmap(
+    project: SPARCProject,
+    targetQuarter: string,
+  ): Promise<void> {
     try {
       // Load existing roadmap or create new one
       let roadmap: Roadmap;
@@ -243,7 +256,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
    */
   async generateDomainRoadmap(
     domain: ProjectDomain,
-    timeframe: { start: string; end: string }
+    timeframe: { start: string; end: string },
   ): Promise<Roadmap> {
     const roadmap: Roadmap = {
       id: `${domain}-roadmap`,
@@ -298,7 +311,10 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
       // Save files
       await fs.writeFile(this.epicsFile, JSON.stringify(epics, null, 2));
-      await fs.writeFile(this.featuresFile, JSON.stringify(featuresData, null, 2));
+      await fs.writeFile(
+        this.featuresFile,
+        JSON.stringify(featuresData, null, 2),
+      );
     } catch (error) {
       logger.warn('Could not save project artifacts:', error);
     }
@@ -323,12 +339,17 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   private calculateBusinessValue(project: SPARCProject): string {
     const domainValues = {
-      'swarm-coordination': 'High - Core platform capability for agent coordination',
-      'neural-networks': 'High - AI/ML acceleration and intelligence enhancement',
-      'memory-systems': 'Medium - Infrastructure efficiency and data management',
-      'rest-api': 'Medium - External integration and user interface capabilities',
+      'swarm-coordination':
+        'High - Core platform capability for agent coordination',
+      'neural-networks':
+        'High - AI/ML acceleration and intelligence enhancement',
+      'memory-systems':
+        'Medium - Infrastructure efficiency and data management',
+      'rest-api':
+        'Medium - External integration and user interface capabilities',
       interfaces: 'Medium - User experience and system accessibility',
-      'wasm-integration': 'High - Performance optimization and computational efficiency',
+      'wasm-integration':
+        'High - Performance optimization and computational efficiency',
       general: 'Low to Medium - General platform improvements',
     };
 
@@ -359,30 +380,31 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   private getFeatureStatus(
     project: SPARCProject,
-    phase: string
+    phase: string,
   ): 'backlog' | 'planned' | 'in_progress' | 'completed' {
     if (project.progress?.completedPhases?.includes(phase as any)) {
       return 'completed';
-    } else if (project.currentPhase === phase) {
-      return 'in_progress';
-    } else {
-      return 'planned';
     }
+    if (project.currentPhase === phase) {
+      return 'in_progress';
+    }
+    return 'planned';
   }
 
   private generateRoadmapDescription(project: SPARCProject): string {
     return `${project.name} - ${project.domain} domain implementation using SPARC methodology. Complexity: moderate.`;
   }
 
-  private determineRoadmapItemType(project: SPARCProject): 'epic' | 'feature' | 'initiative' {
+  private determineRoadmapItemType(
+    project: SPARCProject,
+  ): 'epic' | 'feature' | 'initiative' {
     // For now, determine based on project domain and size
     const highComplexityDomains = ['neural-networks', 'swarm-coordination'];
 
     if (highComplexityDomains.includes(project.domain)) {
       return 'epic';
-    } else {
-      return 'feature';
     }
+    return 'feature';
   }
 
   private calculateEffortEstimate(_project: SPARCProject): number {
@@ -397,33 +419,45 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
     return complexityPoints.moderate;
   }
 
-  private mapBusinessValueToLevel(project: SPARCProject): 'high' | 'medium' | 'low' {
-    const highValueDomains = ['swarm-coordination', 'neural-networks', 'wasm-integration'];
+  private mapBusinessValueToLevel(
+    project: SPARCProject,
+  ): 'high' | 'medium' | 'low' {
+    const highValueDomains = [
+      'swarm-coordination',
+      'neural-networks',
+      'wasm-integration',
+    ];
 
     if (highValueDomains.includes(project.domain)) {
       return 'high';
-    } else {
-      return 'medium';
     }
+    return 'medium';
   }
 
   private extractProjectDependencies(project: SPARCProject): string[] {
     return project.specification?.dependencies?.map((dep) => dep.name) || [];
   }
 
-  private calculateEndQuarter(startQuarter: string, quartersAhead: number): string {
+  private calculateEndQuarter(
+    startQuarter: string,
+    quartersAhead: number,
+  ): string {
     const parts = startQuarter.split('-Q');
     if (parts.length !== 2) {
-      throw new Error(`Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`);
+      throw new Error(
+        `Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`,
+      );
     }
 
     const [year, quarter] = parts;
-    if (!year || !quarter) {
-      throw new Error(`Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`);
+    if (!(year && quarter)) {
+      throw new Error(
+        `Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`,
+      );
     }
 
-    const startQuarterNum = parseInt(quarter, 10);
-    let endYear = parseInt(year, 10);
+    const startQuarterNum = Number.parseInt(quarter, 10);
+    let endYear = Number.parseInt(year, 10);
     let endQuarter = startQuarterNum + quartersAhead;
 
     while (endQuarter > 4) {
@@ -436,14 +470,15 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   private generateDomainRoadmapItems(
     domain: ProjectDomain,
-    timeframe: { start: string; end: string }
+    timeframe: { start: string; end: string },
   ): RoadmapItem[] {
     // Generate domain-specific roadmap items based on strategic priorities
     const domainStrategies = {
       'swarm-coordination': [
         {
           title: 'Advanced Agent Coordination',
-          description: 'Enhanced swarm intelligence and coordination algorithms',
+          description:
+            'Enhanced swarm intelligence and coordination algorithms',
           effort_estimate: 34,
           business_value: 'high' as const,
         },

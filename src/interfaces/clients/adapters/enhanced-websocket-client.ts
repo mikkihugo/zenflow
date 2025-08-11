@@ -65,7 +65,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * @param urlOrConfig
    * @param legacyOptions
    */
-  constructor(urlOrConfig: string | WebSocketClientConfig, legacyOptions?: WebSocketClientOptions) {
+  constructor(
+    urlOrConfig: string | WebSocketClientConfig,
+    legacyOptions?: WebSocketClientOptions,
+  ) {
     super();
 
     // Handle both legacy and new construction patterns
@@ -240,7 +243,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       uptime: Date.now() - this.startTime,
       metadata: {
         connectionId: this.connectionId,
-        readyState: (this.ws?.readyState ?? WebSocket.CLOSED) as WebSocketReadyState,
+        readyState: (this.ws?.readyState ??
+          WebSocket.CLOSED) as WebSocketReadyState,
         queuedMessages: this.messageQueue.length,
         reconnectAttempts: this.reconnectAttempts,
         url: this.url,
@@ -266,7 +270,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * @param options.
    * @param options
    */
-  async get<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
+  async get<T = any>(
+    endpoint: string,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>> {
     return this.sendRequest('GET', endpoint, undefined, options);
   }
 
@@ -280,7 +287,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   async post<T = any>(
     endpoint: string,
     data?: any,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('POST', endpoint, data, options);
   }
@@ -295,7 +302,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   async put<T = any>(
     endpoint: string,
     data?: any,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('PUT', endpoint, data, options);
   }
@@ -307,7 +314,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * @param options.
    * @param options
    */
-  async delete<T = any>(endpoint: string, options?: RequestOptions): Promise<ClientResponse<T>> {
+  async delete<T = any>(
+    endpoint: string,
+    options?: RequestOptions,
+  ): Promise<ClientResponse<T>> {
     return this.sendRequest('DELETE', endpoint, undefined, options);
   }
 
@@ -335,7 +345,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   override on(
     event: 'connect' | 'disconnect' | 'error' | 'retry' | string,
-    handler: (...args: any[]) => void
+    handler: (...args: unknown[]) => void,
   ): this {
     return super.on(event, handler);
   }
@@ -347,13 +357,12 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * @param handler.
    * @param handler
    */
-  override off(event: string, handler?: (...args: any[]) => void): this {
+  override off(event: string, handler?: (...args: unknown[]) => void): this {
     if (handler) {
       return super.off(event, handler);
-    } else {
-      super.removeAllListeners(event);
-      return this;
     }
+    super.removeAllListeners(event);
+    return this;
   }
 
   /**
@@ -376,7 +385,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    * @param data.
    * @param data
    */
-  send(data: any): void {
+  send(data: unknown): void {
     const message = typeof data === 'string' ? data : JSON.stringify(data);
     if (this._isConnected && this.ws) {
       try {
@@ -428,7 +437,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   async sendMessage<T = any>(
     message: WebSocketMessage<T>,
-    _options?: WebSocketRequestOptions
+    _options?: WebSocketRequestOptions,
   ): Promise<void> {
     const messageWithId = {
       id: this.generateMessageId(),
@@ -452,12 +461,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
         this.updateMetrics(false, 0);
         throw error;
       }
+    } else if (this.config.messageQueue?.enabled) {
+      this.queueMessage(serialized);
     } else {
-      if (this.config.messageQueue?.enabled) {
-        this.queueMessage(serialized);
-      } else {
-        throw new Error('WebSocket not connected and queuing is disabled');
-      }
+      throw new Error('WebSocket not connected and queuing is disabled');
     }
   }
 
@@ -467,7 +474,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   getConnectionInfo(): WebSocketConnectionInfo {
     return {
       ...this.connectionInfo,
-      readyState: (this.ws?.readyState ?? WebSocket.CLOSED) as WebSocketReadyState,
+      readyState: (this.ws?.readyState ??
+        WebSocket.CLOSED) as WebSocketReadyState,
       bufferedAmount: this.ws?.bufferedAmount || 0,
       lastActivity: new Date(),
     };
@@ -486,15 +494,19 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       messagesSent: this.connectionInfo.messagesSent,
       messagesReceived: this.connectionInfo.messagesReceived,
       messagesSentPerSecond:
-        this.connectionInfo.messagesSent / ((Date.now() - this.startTime) / 1000),
+        this.connectionInfo.messagesSent /
+        ((Date.now() - this.startTime) / 1000),
       messagesReceivedPerSecond:
-        this.connectionInfo.messagesReceived / ((Date.now() - this.startTime) / 1000),
+        this.connectionInfo.messagesReceived /
+        ((Date.now() - this.startTime) / 1000),
 
       bytesSent: this.connectionInfo.bytesSent,
       bytesReceived: this.connectionInfo.bytesReceived,
-      bytesSentPerSecond: this.connectionInfo.bytesSent / ((Date.now() - this.startTime) / 1000),
+      bytesSentPerSecond:
+        this.connectionInfo.bytesSent / ((Date.now() - this.startTime) / 1000),
       bytesReceivedPerSecond:
-        this.connectionInfo.bytesReceived / ((Date.now() - this.startTime) / 1000),
+        this.connectionInfo.bytesReceived /
+        ((Date.now() - this.startTime) / 1000),
 
       averageLatency: this.connectionInfo.latency || 0,
       p95Latency: this.connectionInfo.latency || 0,
@@ -527,7 +539,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
   private handleMessage(event: MessageEvent): void {
     try {
-      let data: any;
+      let data: unknown;
 
       // Handle different message types
       if (typeof event.data === 'string') {
@@ -570,7 +582,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
     method: string,
     endpoint: string,
     data?: any,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ClientResponse<T>> {
     const requestId = this.generateMessageId();
     const startTime = Date.now();
@@ -593,10 +605,10 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           this.off(`response:${requestId}`, responseHandler);
           reject(new Error('Request timeout'));
         },
-        options?.timeout || this.config.timeout || 30000
+        options?.timeout || this.config.timeout || 30000,
       );
 
-      const responseHandler = (responseData: any) => {
+      const responseHandler = (responseData: unknown) => {
         clearTimeout(timeout);
         const duration = Date.now() - startTime;
 
@@ -688,8 +700,13 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
     }
   }
 
-  private isHeartbeatResponse(data: any): boolean {
-    return data && (data.type === 'pong' || data.type === 'heartbeat' || data.type === 'ping');
+  private isHeartbeatResponse(data: unknown): boolean {
+    return (
+      data &&
+      (data.type === 'pong' ||
+        data.type === 'heartbeat' ||
+        data.type === 'ping')
+    );
   }
 
   private async measurePingTime(): Promise<number> {
@@ -699,7 +716,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
       const startTime = Date.now();
       const pingId = this.generateMessageId();
 
-      const pongHandler = (data: any) => {
+      const pongHandler = (data: unknown) => {
         if (data.id === pingId) {
           const responseTime = Date.now() - startTime;
           this.off('message', pongHandler);
@@ -772,15 +789,20 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
     }
 
     if (duration > 0) {
-      const totalLatency = this.metrics.averageLatency * (this.metrics.requestCount - 1);
-      this.metrics.averageLatency = (totalLatency + duration) / this.metrics.requestCount;
+      const totalLatency =
+        this.metrics.averageLatency * (this.metrics.requestCount - 1);
+      this.metrics.averageLatency =
+        (totalLatency + duration) / this.metrics.requestCount;
     }
 
     const uptime = (Date.now() - this.startTime) / 1000;
     this.metrics.throughput = this.metrics.requestCount / Math.max(uptime, 1);
   }
 
-  private convertLegacyToUACL(url: string, options: WebSocketClientOptions): WebSocketClientConfig {
+  private convertLegacyToUACL(
+    url: string,
+    options: WebSocketClientOptions,
+  ): WebSocketClientConfig {
     return {
       name: `ws-client-${Date.now()}`,
       baseURL: url,
@@ -805,9 +827,11 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
     };
   }
 
-  private convertUACLToLegacy(config: WebSocketClientConfig): WebSocketClientOptions {
+  private convertUACLToLegacy(
+    config: WebSocketClientConfig,
+  ): WebSocketClientOptions {
     return {
-      reconnect: config?.reconnection?.enabled || true,
+      reconnect: true,
       reconnectInterval: config?.reconnection?.initialDelay || 1000,
       maxReconnectAttempts: config?.reconnection?.maxAttempts || 10,
       timeout: config?.timeout || 30000,

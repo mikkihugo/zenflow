@@ -24,7 +24,7 @@ interface ClaudeIntegrationOptions {
   interactive?: boolean;
   workingDir?: string;
   packageName?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface SetupResults {
@@ -32,9 +32,9 @@ interface SetupResults {
   workingDir: string;
   success: boolean;
   modules: {
-    docs?: any;
-    remote?: any;
-    core?: any;
+    docs?: unknown;
+    remote?: unknown;
+    core?: unknown;
   };
 }
 
@@ -46,11 +46,11 @@ class ClaudeIntegrationOrchestrator {
 
   constructor(options: ClaudeIntegrationOptions = {}) {
     this.options = {
-      autoSetup: options?.autoSetup || false,
-      forceSetup: options?.forceSetup || false,
-      mergeSetup: options?.mergeSetup || false,
-      backupSetup: options?.backupSetup || false,
-      noBackup: options?.noBackup || false,
+      autoSetup: options?.autoSetup,
+      forceSetup: options?.forceSetup,
+      mergeSetup: options?.mergeSetup,
+      backupSetup: options?.backupSetup,
+      noBackup: options?.noBackup,
       interactive: options?.interactive !== false, // Default to true
       workingDir: options?.workingDir || process.cwd(),
       packageName: options?.packageName || 'ruv-swarm',
@@ -93,7 +93,7 @@ class ClaudeIntegrationOrchestrator {
           if (results.modules) {
             results.modules.core = await this.core.initialize();
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
           if (results.modules) {
             results.modules.core = {
               success: false,
@@ -102,24 +102,22 @@ class ClaudeIntegrationOrchestrator {
             };
           }
         }
-      } else {
-        if (results.modules) {
-          results.modules.core = {
-            success: true,
-            manualSetup: true,
-            instructions: [
-              'Run: claude mcp add ruv-swarm npx ruv-swarm mcp start',
-              'Test with: mcp__zen-swarm__agent_spawn',
-            ],
-          };
-        }
+      } else if (results.modules) {
+        results.modules.core = {
+          success: true,
+          manualSetup: true,
+          instructions: [
+            'Run: claude mcp add ruv-swarm npx ruv-swarm mcp start',
+            'Test with: mcp__zen-swarm__agent_spawn',
+          ],
+        };
       }
       if (results?.modules?.core?.manualSetup) {
       } else {
       }
 
       return results;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('❌ Integration setup failed:', error.message);
       throw error;
     }
@@ -130,14 +128,14 @@ class ClaudeIntegrationOrchestrator {
    *
    * @param prompt
    */
-  async invokeClaudeWithPrompt(prompt: string): Promise<any> {
+  async invokeClaudeWithPrompt(prompt: string): Promise<unknown> {
     return await this.core.invokeClaudeWithPrompt(prompt);
   }
 
   /**
    * Check integration status.
    */
-  async checkStatus(): Promise<any> {
+  async checkStatus(): Promise<unknown> {
     try {
       const status = {
         claudeAvailable: await this.core.isClaudeAvailable(),
@@ -147,7 +145,7 @@ class ClaudeIntegrationOrchestrator {
       };
 
       return status;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('❌ Status check failed:', error.message);
       throw error;
     }
@@ -181,7 +179,8 @@ class ClaudeIntegrationOrchestrator {
           // Ensure workingDir is defined with fallback and proper typing
           const workingDir: string = this.options.workingDir ?? process.cwd();
           // Ensure file is a string (filter out any undefined values)
-          const fileName: string = typeof file === 'string' ? file : String(file || '');
+          const fileName: string =
+            typeof file === 'string' ? file : String(file || '');
           if (fileName) {
             const filePath = path.join(workingDir, fileName);
             await fs.rm(filePath, { recursive: true, force: true });
@@ -192,7 +191,7 @@ class ClaudeIntegrationOrchestrator {
         }
       }
       return { success: true, removedFiles };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('❌ Cleanup failed:', error.message);
       throw error;
     }
@@ -201,7 +200,7 @@ class ClaudeIntegrationOrchestrator {
 
 // Convenience function for simple setup
 async function setupClaudeIntegration(
-  options: ClaudeIntegrationOptions = {}
+  options: ClaudeIntegrationOptions = {},
 ): Promise<SetupResults> {
   const orchestrator = new ClaudeIntegrationOrchestrator(options);
   return await orchestrator.setupIntegration();
@@ -210,8 +209,8 @@ async function setupClaudeIntegration(
 // Convenience function for Claude invocation
 async function invokeClaudeWithSwarm(
   prompt: string,
-  options: ClaudeIntegrationOptions = {}
-): Promise<any> {
+  options: ClaudeIntegrationOptions = {},
+): Promise<unknown> {
   const orchestrator = new ClaudeIntegrationOrchestrator(options);
   return await orchestrator.invokeClaudeWithPrompt(prompt);
 }

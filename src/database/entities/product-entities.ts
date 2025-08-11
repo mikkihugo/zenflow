@@ -12,6 +12,53 @@
 
 import type { DocumentType } from '../types/workflow-types';
 
+// Additional entities for compatibility with tests
+export interface ProjectEntity {
+  id: string;
+  name: string;
+  description?: string;
+  status: 'active' | 'inactive' | 'completed' | 'archived';
+  owner?: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface BaseDocumentEntity {
+  id: string;
+  type: string;
+  title: string;
+  content: string;
+  summary?: string;
+  status: 'draft' | 'review' | 'approved' | 'archived' | 'in_progress' | 'todo';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  author?: string;
+  tags: string[];
+  project_id?: string;
+  parent_document_id?: string;
+  dependencies: string[];
+  related_documents: string[];
+  version: string;
+  checksum: string;
+  metadata: Record<string, any>;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface DocumentRelationshipEntity {
+  id: string;
+  from_document_id: string;
+  to_document_id: string;
+  relationship_type:
+    | 'depends_on'
+    | 'blocks'
+    | 'related_to'
+    | 'part_of'
+    | 'implements'
+    | 'validates';
+  created_at: Date;
+  updated_at: Date;
+}
+
 /**
  * Base entity for all Product Flow documents.
  *
@@ -22,10 +69,12 @@ export interface BaseProductEntity {
   type: DocumentType;
   title: string;
   content: string;
+  summary?: string; // Add missing summary property
   status: 'draft' | 'review' | 'approved' | 'archived';
   priority: 'low' | 'medium' | 'high' | 'critical';
   author?: string;
   tags: string[];
+  keywords: string[]; // Add missing keywords property
 
   // Relationships
   project_id?: string;
@@ -120,7 +169,12 @@ export interface PRDDocumentEntity extends BaseProductEntity {
 
   non_functional_requirements: Array<{
     id: string;
-    type: 'performance' | 'security' | 'usability' | 'reliability' | 'scalability';
+    type:
+      | 'performance'
+      | 'security'
+      | 'usability'
+      | 'reliability'
+      | 'scalability';
     description: string;
     metrics: string;
   }>;
@@ -207,7 +261,12 @@ export interface FeatureDocumentEntity extends BaseProductEntity {
   task_ids: string[]; // Task document IDs
 
   // Implementation tracking
-  implementation_status: 'not_started' | 'in_progress' | 'code_complete' | 'testing' | 'done';
+  implementation_status:
+    | 'not_started'
+    | 'in_progress'
+    | 'code_complete'
+    | 'testing'
+    | 'done';
   test_coverage_percentage?: number;
 
   // ==================== SPARC METHODOLOGY INTEGRATION ====================
@@ -287,7 +346,12 @@ export interface TaskDocumentEntity extends BaseProductEntity {
   type: 'task';
 
   // Task-specific fields (Business Requirements - WHAT to implement)
-  task_type: 'development' | 'testing' | 'documentation' | 'deployment' | 'research';
+  task_type:
+    | 'development'
+    | 'testing'
+    | 'documentation'
+    | 'deployment'
+    | 'research';
   estimated_hours: number;
   actual_hours?: number;
 
@@ -308,7 +372,12 @@ export interface TaskDocumentEntity extends BaseProductEntity {
   // Source and completion
   source_feature_id?: string;
   assigned_to?: string;
-  completion_status: 'todo' | 'in_progress' | 'code_review' | 'testing' | 'done';
+  completion_status:
+    | 'todo'
+    | 'in_progress'
+    | 'code_review'
+    | 'testing'
+    | 'done';
 
   // Code generation results
   generated_code?: {
@@ -492,7 +561,12 @@ export interface ProductProjectEntity {
         | 'interfaces'
         | 'general';
       complexity: 'simple' | 'moderate' | 'high' | 'complex' | 'enterprise';
-      current_phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
+      current_phase:
+        | 'specification'
+        | 'pseudocode'
+        | 'architecture'
+        | 'refinement'
+        | 'completion';
       progress_percentage: number; // 0-100% completion
       created_at: Date;
       updated_at: Date;
@@ -824,27 +898,39 @@ export const PRODUCT_DATABASE_SCHEMAS = {
  * @param doc
  * @example
  */
-export function isVisionDocument(doc: BaseProductEntity): doc is VisionDocumentEntity {
+export function isVisionDocument(
+  doc: BaseProductEntity,
+): doc is VisionDocumentEntity {
   return doc.type === 'vision';
 }
 
-export function isADRDocument(doc: BaseProductEntity): doc is ADRDocumentEntity {
+export function isADRDocument(
+  doc: BaseProductEntity,
+): doc is ADRDocumentEntity {
   return doc.type === 'adr';
 }
 
-export function isPRDDocument(doc: BaseProductEntity): doc is PRDDocumentEntity {
+export function isPRDDocument(
+  doc: BaseProductEntity,
+): doc is PRDDocumentEntity {
   return doc.type === 'prd';
 }
 
-export function isEpicDocument(doc: BaseProductEntity): doc is EpicDocumentEntity {
+export function isEpicDocument(
+  doc: BaseProductEntity,
+): doc is EpicDocumentEntity {
   return doc.type === 'epic';
 }
 
-export function isFeatureDocument(doc: BaseProductEntity): doc is FeatureDocumentEntity {
+export function isFeatureDocument(
+  doc: BaseProductEntity,
+): doc is FeatureDocumentEntity {
   return doc.type === 'feature';
 }
 
-export function isTaskDocument(doc: BaseProductEntity): doc is TaskDocumentEntity {
+export function isTaskDocument(
+  doc: BaseProductEntity,
+): doc is TaskDocumentEntity {
   return doc.type === 'task';
 }
 

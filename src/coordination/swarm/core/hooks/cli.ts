@@ -48,7 +48,7 @@ async function main() {
         continue: true,
         error: errorMessage,
         stack: process.env['DEBUG'] ? errorStack : undefined,
-      })
+      }),
     );
     process.exit(1); // Non-blocking error
   }

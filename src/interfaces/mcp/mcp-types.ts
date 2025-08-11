@@ -43,20 +43,33 @@ export interface McpToolSpec<TInput = any, TOutput = any> {
 
 export type McpToolRegistryMap = Record<McpToolId, McpToolSpec<any, any>>;
 
-export function createOutcome<T>(spec: McpToolSpec, start: number, result: T): McpToolResult<T> {
-  return { ok: true, tool: spec.id || spec.name, durationMs: Date.now() - start, data: result };
+export function createOutcome<T>(
+  spec: McpToolSpec,
+  start: number,
+  result: T,
+): McpToolResult<T> {
+  return {
+    ok: true,
+    tool: spec.id || spec.name,
+    durationMs: Date.now() - start,
+    data: result,
+  };
 }
 
 export function createErrorOutcome(
   spec: McpToolSpec | { name: string; id?: string },
   start: number,
-  error: unknown
+  error: unknown,
 ): McpToolError {
   const err = error as any;
   return {
     ok: false,
     tool: spec.id || spec.name,
     durationMs: Date.now() - start,
-    error: { message: err?.message || String(error), code: err?.code, stack: err?.stack },
+    error: {
+      message: err?.message || String(error),
+      code: err?.code,
+      stack: err?.stack,
+    },
   };
 }
